@@ -12,7 +12,9 @@
   * [Semantics](#semantics) 
   * [attributes](#attributes)
 - [Schemas](#schemas)
-
+- [Addressing Layers and Schemas](#addressing-layers-and-schemas)
+  * [Strong Reference: Hash](#strong-reference-hash)
+  * [Weak Reference: IRI](#weak-reference-iri)
 
 # Layered Schemas
 
@@ -628,3 +630,145 @@ optionally, adds a signature by the schema publisher for the schema
 users to validate.
 
 
+# Addressing Layers and Schemas
+
+Schema layers may refer to other schemas through a `reference`:
+
+```
+"attributes": {
+  "attr1": {
+     "reference": <reference to other object>
+  }
+}
+```
+
+Such references are only valid if the referenced object is a schema
+(that is, a `reference` cannot refer to a layer).
+
+
+Schemas also refer to other layers:
+
+```
+{
+  "@type": "Schema",
+  "objectType": "SomeObject",
+  "layers": [
+     <layer1>,
+     <layer2>
+     ...
+  ]
+}
+```
+
+These references are only valid if the referenced objects are either
+layers or schemas with the same `objectType`.
+
+This feature raises the problem of resolving those references
+correctly. This is done using a "Schema Registry". A schema registry
+decides what schemas and layers will be used to satisfy a given
+reference based on the context and the object type.
+
+## Strong reference: Hash
+
+This links a layer or object using a hash of the object:
+
+```
+{
+  "@type": "Schema",
+  "objectType": "SomeObject",
+  "layers": [
+     "sha256:a948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb85d299a192a447"
+  ]
+}
+```
+
+This is a valid reference only if the referenced object is a layer or
+another schema, and it has the same `objectType`.
+
+Similarly:
+
+```
+{
+  "@type": "Layer",
+  "objectType": "SomeObject",
+  "attributes": {
+    "attr1": {
+       "reference": "sha256:a948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb85d299a192a447"
+    } 
+  }
+}
+```
+
+This reference is valid only if it points to a schema with the same
+`objectType`. A reference to a layer in this context is meaningless.
+
+## Weak reference: IRI
+
+This kind of reference may refer to multiple schemas:
+
+```
+{
+  "@type": "Schema",
+  "objectType": "SomeObject",
+  "layers": [
+     "http://example.org/SomeObject/layer/v1.2"
+  ]
+}
+```
+
+The schema registry can resolve this link based on its own
+configuration. For instance, if a registry allows only unique version
+numbers, the above link would resolve to a definite schema.
+
+## Decentralized Strong Reference
+
+With decentralized schema registries it is important to ensure that
+data processed using layers from one registry can be interpreted and
+processed correctly when another registry is used at some other
+context. The following representation ensures schema layer
+immutability and strong references in the absence of centralized
+registries:
+
+```
+{
+  "@type": "Schema",
+  "objectType": "SomeObject",
+  "refDomain": "sha256:87ab50c3dfec7afff0e5cd0559981665059c65d7a97d5f8374d294535740f534",
+  "layers": [
+       "http://example.org/SomeObject/layer/v1.2"
+  ]
+}
+```
+
+This schema has a reference to a `refDomain` object containing the
+strong references to schema layers and schemas.
+
+```
+{
+  "@context": "http://schemas.cloudprivacylabs.com/schema.jsonld",
+  "@type": "RefDomain",
+  "references": {
+    "http://example.org/SomeObject/layer/v1.2": {
+      "reference": "sha256:ab36367212..."
+    },
+    "http://example.org/SomeObject": {
+      "reference": [
+        "sha256:74639847fe736...",
+        "sha256:84878344...",
+        ...
+      ]
+    },
+  ...
+  }
+}
+```
+
+The `references` specifies a set of strong references for each weak
+reference. This means that any weak references encountered while
+processing data using the schema, only one of the specified objects
+can be used.
+
+This structure cryptographically ties a schema to its `refDomain`, and
+also to all the layers contained in that `refDomain`, so registry
+users can be sure that only a known set of schema layers are used to
+satisfy a weak reference to a schema.
