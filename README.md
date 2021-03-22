@@ -299,92 +299,17 @@ The format of a schema layer is as follows:
 The @context defines several types and terms. Each term has specific
 semantics and algorithms associated with it.
 
-`Layer` type is used to describe a schema layer. 
+[@context](schemas/layers.jsonld)
 
- * objectType: This is the entity type defined by the schema base
+ * `Layer` type is used to describe a schema layer. 
+ * `objectType`: This is the entity type defined by the schema base
  
-```
-        "Layer": {
-            "@id": "http://schemas.cloudprivacylabs.com/Layer",
-            "@context": {
-                "@version": 1.1,
-                "objectType": {
-                    "@id": "http://schemas.cloudprivacylabs.com/Schema/objectType",
-                    "@type": "@id"
-                }
-            }
-        },
-
-```
-
-`attributes` term is used in schema layers. It defines a nested
-attribute structure:
-
-```
-"attributes": {
-    "@id": "http://schemas.cloudprivacylabs.com/attributes",
-    "@container": "@id",
-    "@context": {
-        "@version": 1.1,
-        "name": {  
-            "@id": "http://schemas.cloudprivacylabs.com/attribute/name"
-        },
-        "reference": {
-            "@id": "http://schemas.cloudprivacylabs.com/attribute/reference",
-            "@type": "@id"
-        },  
-        "arrayItems": {
-            "@id": "http://schemas.cloudprivacylabs.com/attribute/arrayItems",
-            "@context": {
-                "@version": 1.1,
-                "reference": {
-                    "@id": "http://schemas.cloudprivacylabs.com/attribute/reference",
-                    "@type": "@id"
-                },
-                "allOf": {
-                    "@id": "http://schemas.cloudprivacylabs.com/attribute/allOf",
-                    "@container": "@list",
-                    "@context": {
-                        "@version": 1.1
-                    }
-                },
-                "oneOf": {
-                    "@id": "http://schemas.cloudprivacylabs.com/attribute/oneOf",
-                    "@container": "@list",
-                    "@context": {
-                        "@version": 1.1
-                    }
-                }
-            }
-        },
-        "allOf": {
-            "@id": "http://schemas.cloudprivacylabs.com/attribute/allOf",
-            "@container": "@list",
-            "@context": {
-                "@version": 1.1,
-                "reference": {
-                    "@id": "http://schemas.cloudprivacylabs.com/attribute/reference",
-                    "@type": "@id"
-                }
-            }
-        },
-        "oneOf": {
-            "@id": "http://schemas.cloudprivacylabs.com/attribute/oneOf",
-            "@container": "@list",
-            "@context": {
-                "@version": 1.1,
-                "reference": {
-                    "@id": "http://schemas.cloudprivacylabs.com/attribute/reference",
-                    "@type": "@id"
-                }
-            }
-        }
-    }
-},
-```
-
-  * `@id`: Specifies the id for the attribute. It must be unique in
-    the schema it is defined in. 
+ Object structure related terms:
+ 
+ * `attributes` term is used in schema layers. It defines a nested
+attribute structure.``
+  * `@id` (for each attribute): Specifies the id for the attribute. It
+    must be unique in the schema it is defined in.
   * `reference`: Specifies another object referenced by this object
   * `arrayItems`: If the defined attributes is an array, `arrayItems`
     specifies the structure of one element.
@@ -394,35 +319,8 @@ attribute structure:
     the elements of this term.
   * `name`: Name of this attribute as it appears in data.
   
-```
-"privacyClassification": {
-    "@id": "http://schemas.cloudprivacylabs.com/attribute/privacyClassification",
-    "@container": "@set"
-},
-"information": {
-    "@id": "http://schemas.cloudprivacylabs.com/attribute/information"
-},
-"encoding": {
-    "@id": "http://schemas.cloudprivacylabs.com/attribute/encoding"
-},
-"type": {
-    "@id": "http://schemas.cloudprivacylabs.com/attribute/type"
-},
-"format": {
-    "@id": "http://schemas.cloudprivacylabs.com/attribute/format"
-},
-"pattern": {
-    "@id": "http://schemas.cloudprivacylabs.com/attribute/pattern"
-},
-"label": {
-    "@id": "http://schemas.cloudprivacylabs.com/attribute/label"
-},
-"enumeration": {
-    "@id": "http://schemas.cloudprivacylabs.com/attribute/enumeration",
-    "@container": "@list"
-},
-
-```
+Predefined attribute annotations are below. You can include
+additional @contexts for cusom annotations.
   
   * `privacyClassification`: A set of flags associated with the
     term. Each flag can belong to an ontology that flags this
@@ -645,7 +543,7 @@ defines a new attribute. An attribute can be one of:
   * A simple value: If none of the above exists, the value is a simple
     value.
     
-The term `attributes` defines a `merge` algorithm that receives two
+The term `attributes` defines a `compose` algorithm that receives two
 `attributes` and combines the contents of matching attributes:
 
 Input 1 :
@@ -690,7 +588,7 @@ Result:
 }
 ```
 
-During the merge operation:
+During the compose operation:
   * Attributes that are defined as `@set` in the context
     (`privacyClassification`) are combined
   * If a term is defined as `@list`, contents of the second input is
