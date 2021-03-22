@@ -23,6 +23,7 @@ import (
 	"github.com/spf13/cobra"
 
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 func init() {
@@ -101,7 +102,7 @@ var ingestCSVCmd = &cobra.Command{
 			if err != nil {
 				failErr(err)
 			}
-			out, _ := json.MarshalIndent(data.ToMap(), "", "  ")
+			out, _ := json.MarshalIndent(ls.DataModelToMap(data, true), "", "  ")
 			fmt.Println(string(out))
 		}
 	},

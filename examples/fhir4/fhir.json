@@ -832,15 +832,19 @@
         }
     ],
     "schema": "fhirrepo/{{.name}}_schema.jsonld",
-    "schemaId": "http://hl7.org/fhir/{{.name}}/schema",
-    "schemaBase": "fhirrepo/{{.name}}_base.jsonld",
-    "schemaBaseId": "http://hl7.org/fhir/{{.name}}/schemaBase",
-    "schemaBaseTerms": ["http://schemas.cloudprivacylabs.com/attribute/name"],
-        
+    "schemaId": "http://hl7.org/fhir/{{.name}}/schema",        
     "objectType": "http://hl7.org/fhir/{{.name}}",
-    "overlays": [
+    "layers": [
         {
-            "@id": "http://hl7.org/fhir/{{.name}}/overlay/format",
+            "@id": "http://hl7.org/fhir/{{.name}}/base",
+            "terms": [
+                "http://schemas.cloudprivacylabs.com/attribute/name"
+            ],
+            "file": "fhirrepo/{{.name}}_base.jsonld",
+	    "includeEmpty": true
+        },
+        {
+            "@id": "http://hl7.org/fhir/{{.name}}/format",
             "terms": [
                 "http://schemas.cloudprivacylabs.com/attribute/format",
                 "http://schemas.cloudprivacylabs.com/attribute/pattern"
@@ -848,17 +852,17 @@
             "file": "fhirrepo/{{.name}}_format.jsonld"
         },
         {
-            "@id": "http://hl7.org/fhir/{{.name}}/overlay/type",
+            "@id": "http://hl7.org/fhir/{{.name}}/type",
             "terms": ["http://schemas.cloudprivacylabs.com/attribute/type"],
             "file": "fhirrepo/{{.name}}_type.jsonld"
         },
         {
-            "@id": "http://hl7.org/fhir/{{.name}}/overlay/enum",
+            "@id": "http://hl7.org/fhir/{{.name}}/enum",
             "terms": ["http://schemas.cloudprivacylabs.com/attribute/enumeration"],
             "file": "fhirrepo/{{.name}}_enum.jsonld"
         },
         {
-            "@id": "http://hl7.org/fhir/{{.name}}/overlay/info",
+            "@id": "http://hl7.org/fhir/{{.name}}/info",
             "terms": ["http://schemas.cloudprivacylabs.com/attribute/information"],
             "file": "fhirrepo/{{.name}}_info.jsonld"
         }

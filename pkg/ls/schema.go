@@ -17,7 +17,7 @@ import (
 	"github.com/piprate/json-gold/ld"
 )
 
-// Schema contains the schema metadata, schema base, and the overlays
+// Schema contains the schema metadata and layer pointers
 type Schema struct {
 	ID             string
 	IssuedBy       string
@@ -27,8 +27,7 @@ type Schema struct {
 	Classification string
 	ObjectType     string
 	ObjectVersion  string
-	SchemaBase     string
-	Overlays       []string
+	Layers         []string
 
 	Composed *SchemaLayer
 }
@@ -71,9 +70,8 @@ func (schema *Schema) UnmarshalExpanded(in interface{}) error {
 		return ErrInvalidInput
 	}
 	schema.ObjectVersion = GetStringValue("@value", m[SchemaTerms.ObjectVersion.ID])
-	schema.SchemaBase = GetNodeID(m[SchemaTerms.Base.ID])
-	for _, el := range GetListElements(m[SchemaTerms.Overlays.ID]) {
-		schema.Overlays = append(schema.Overlays, GetNodeID(el))
+	for _, el := range GetListElements(m[SchemaTerms.Layers.ID]) {
+		schema.Layers = append(schema.Layers, GetNodeID(el))
 	}
 	return nil
 }
@@ -106,15 +104,12 @@ func (schema *Schema) MarshalExpanded() interface{} {
 	if len(schema.ObjectVersion) != 0 {
 		ret[SchemaTerms.ObjectVersion.ID] = []interface{}{map[string]interface{}{"@value": schema.ObjectVersion}}
 	}
-	if len(schema.SchemaBase) != 0 {
-		ret[SchemaTerms.Base.ID] = []interface{}{map[string]interface{}{"@id": schema.SchemaBase}}
-	}
-	if len(schema.Overlays) != 0 {
-		overlays := make([]interface{}, 0, len(schema.Overlays))
-		for _, x := range schema.Overlays {
-			overlays = append(overlays, map[string]interface{}{"@id": x})
+	if len(schema.Layers) != 0 {
+		layers := make([]interface{}, 0, len(schema.Layers))
+		for _, x := range schema.Layers {
+			layers = append(layers, map[string]interface{}{"@id": x})
 		}
-		ret[SchemaTerms.Overlays.ID] = []interface{}{map[string]interface{}{"@list": overlays}}
+		ret[SchemaTerms.Layers.ID] = []interface{}{map[string]interface{}{"@list": layers}}
 	}
 	return ret
 }

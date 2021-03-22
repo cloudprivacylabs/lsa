@@ -1,13 +1,106 @@
 [
   {
-    "@id": "http://hl7.org/fhir/ResearchDefinition/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/ResearchDefinition/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/ResearchDefinition"
       }
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/ResearchDefinition.status",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "draft"
+              },
+              {
+                "@value": "active"
+              },
+              {
+                "@value": "retired"
+              },
+              {
+                "@value": "unknown"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ResearchDefinition.reviewer",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ResearchDefinition.reviewer.*.telecom",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ResearchDefinition.reviewer.*.telecom.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "phone"
+                              },
+                              {
+                                "@value": "fax"
+                              },
+                              {
+                                "@value": "email"
+                              },
+                              {
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ResearchDefinition.reviewer.*.telecom.*.use",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/ResearchDefinition.identifier",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
@@ -42,41 +135,17 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ResearchDefinition.contact",
+        "@id": "http://hl7.org/fhir/ResearchDefinition.editor",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/ResearchDefinition.contact.*.telecom",
+                "@id": "http://hl7.org/fhir/ResearchDefinition.editor.*.telecom",
                 "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
                   {
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/ResearchDefinition.contact.*.telecom.*.use",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ResearchDefinition.contact.*.telecom.*.system",
+                        "@id": "http://hl7.org/fhir/ResearchDefinition.editor.*.telecom.*.system",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [
@@ -104,65 +173,9 @@
                             ]
                           }
                         ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ResearchDefinition.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ResearchDefinition.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ResearchDefinition.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "ResearchDefinition"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ResearchDefinition.endorser",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ResearchDefinition.endorser.*.telecom",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      },
                       {
-                        "@id": "http://hl7.org/fhir/ResearchDefinition.endorser.*.telecom.*.use",
+                        "@id": "http://hl7.org/fhir/ResearchDefinition.editor.*.telecom.*.use",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [
@@ -180,129 +193,6 @@
                               },
                               {
                                 "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ResearchDefinition.endorser.*.telecom.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ResearchDefinition.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "draft"
-              },
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "retired"
-              },
-              {
-                "@value": "unknown"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ResearchDefinition.author",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ResearchDefinition.author.*.telecom",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ResearchDefinition.author.*.telecom.*.use",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ResearchDefinition.author.*.telecom.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
                               }
                             ]
                           }
@@ -451,17 +341,79 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ResearchDefinition.reviewer",
+        "@id": "http://hl7.org/fhir/ResearchDefinition.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "ResearchDefinition"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ResearchDefinition.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ResearchDefinition.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ResearchDefinition.author",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/ResearchDefinition.reviewer.*.telecom",
+                "@id": "http://hl7.org/fhir/ResearchDefinition.author.*.telecom",
                 "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
                   {
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/ResearchDefinition.reviewer.*.telecom.*.system",
+                        "@id": "http://hl7.org/fhir/ResearchDefinition.author.*.telecom.*.use",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ResearchDefinition.author.*.telecom.*.system",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [
@@ -489,9 +441,27 @@
                             ]
                           }
                         ]
-                      },
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ResearchDefinition.contact",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ResearchDefinition.contact.*.telecom",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/ResearchDefinition.reviewer.*.telecom.*.use",
+                        "@id": "http://hl7.org/fhir/ResearchDefinition.contact.*.telecom.*.use",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [
@@ -509,6 +479,36 @@
                               },
                               {
                                 "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ResearchDefinition.contact.*.telecom.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "phone"
+                              },
+                              {
+                                "@value": "fax"
+                              },
+                              {
+                                "@value": "email"
+                              },
+                              {
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
                               }
                             ]
                           }
@@ -523,17 +523,17 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ResearchDefinition.editor",
+        "@id": "http://hl7.org/fhir/ResearchDefinition.endorser",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/ResearchDefinition.editor.*.telecom",
+                "@id": "http://hl7.org/fhir/ResearchDefinition.endorser.*.telecom",
                 "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
                   {
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/ResearchDefinition.editor.*.telecom.*.use",
+                        "@id": "http://hl7.org/fhir/ResearchDefinition.endorser.*.telecom.*.use",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [
@@ -557,7 +557,7 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/ResearchDefinition.editor.*.telecom.*.system",
+                        "@id": "http://hl7.org/fhir/ResearchDefinition.endorser.*.telecom.*.system",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [

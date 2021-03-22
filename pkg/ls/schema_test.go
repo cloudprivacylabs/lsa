@@ -22,13 +22,13 @@ func TestSchemaMarshal(t *testing.T) {
 "@context": "../../schemas/schema.jsonld",
 "@id": "http://hl7.org/fhir/Account/schema",
 "@type": "Schema",
-"schemaBase": "http://hl7.org/fhir/Account/schemaBase",
 "objectType":  "http://hl7.org/fhir/Account",
-"overlays": [
-          "http://hl7.org/fhir/Account/overlay/format",
-          "http://hl7.org/fhir/Account/overlay/type",
-          "http://hl7.org/fhir/Account/overlay/enum",
-          "http://hl7.org/fhir/Account/overlay/info"
+"layers": [
+          "http://hl7.org/fhir/Account/base",
+          "http://hl7.org/fhir/Account/format",
+          "http://hl7.org/fhir/Account/type",
+          "http://hl7.org/fhir/Account/enum",
+          "http://hl7.org/fhir/Account/info"
         ]
 }`)
 	t.Logf("Expanded: %v", sch)
@@ -37,14 +37,14 @@ func TestSchemaMarshal(t *testing.T) {
 		t.Error(err)
 	}
 	if s.ID != "http://hl7.org/fhir/Account/schema" ||
-		s.SchemaBase != "http://hl7.org/fhir/Account/schemaBase" ||
 		s.ObjectType != "http://hl7.org/fhir/Account" {
 		t.Errorf("Wrong schema data")
 	}
-	if s.Overlays[0] != "http://hl7.org/fhir/Account/overlay/format" ||
-		s.Overlays[1] != "http://hl7.org/fhir/Account/overlay/type" ||
-		s.Overlays[2] != "http://hl7.org/fhir/Account/overlay/enum" ||
-		s.Overlays[3] != "http://hl7.org/fhir/Account/overlay/info" {
-		t.Errorf("Wrong overlays")
+	if s.Layers[0] != "http://hl7.org/fhir/Account/base" ||
+		s.Layers[1] != "http://hl7.org/fhir/Account/format" ||
+		s.Layers[2] != "http://hl7.org/fhir/Account/type" ||
+		s.Layers[3] != "http://hl7.org/fhir/Account/enum" ||
+		s.Layers[4] != "http://hl7.org/fhir/Account/info" {
+		t.Errorf("Wrong layers")
 	}
 }

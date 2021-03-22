@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/CodeSystem/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/CodeSystem/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/CodeSystem"
@@ -9,24 +9,140 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/CodeSystem.content",
+        "@id": "http://hl7.org/fhir/CodeSystem.status",
         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
             "@list": [
               {
-                "@value": "not-present"
+                "@value": "draft"
               },
               {
-                "@value": "example"
+                "@value": "active"
               },
               {
-                "@value": "fragment"
+                "@value": "retired"
               },
               {
-                "@value": "complete"
+                "@value": "unknown"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CodeSystem.identifier",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/CodeSystem.identifier.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CodeSystem.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/CodeSystem.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CodeSystem.property",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/CodeSystem.property.*.type",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "code"
+                      },
+                      {
+                        "@value": "Coding"
+                      },
+                      {
+                        "@value": "string"
+                      },
+                      {
+                        "@value": "integer"
+                      },
+                      {
+                        "@value": "boolean"
+                      },
+                      {
+                        "@value": "dateTime"
+                      },
+                      {
+                        "@value": "decimal"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CodeSystem.hierarchyMeaning",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "grouped-by"
               },
               {
-                "@value": "supplement"
+                "@value": "is-a"
+              },
+              {
+                "@value": "part-of"
+              },
+              {
+                "@value": "classified-with"
               }
             ]
           }
@@ -39,6 +155,78 @@
             "@list": [
               {
                 "@value": "CodeSystem"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CodeSystem.contact",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/CodeSystem.contact.*.telecom",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CodeSystem.contact.*.telecom.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "phone"
+                              },
+                              {
+                                "@value": "fax"
+                              },
+                              {
+                                "@value": "email"
+                              },
+                              {
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CodeSystem.contact.*.telecom.*.use",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -137,212 +325,24 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/CodeSystem.property",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/CodeSystem.property.*.type",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "code"
-                      },
-                      {
-                        "@value": "Coding"
-                      },
-                      {
-                        "@value": "string"
-                      },
-                      {
-                        "@value": "integer"
-                      },
-                      {
-                        "@value": "boolean"
-                      },
-                      {
-                        "@value": "dateTime"
-                      },
-                      {
-                        "@value": "decimal"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CodeSystem.contact",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/CodeSystem.contact.*.telecom",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CodeSystem.contact.*.telecom.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CodeSystem.contact.*.telecom.*.use",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CodeSystem.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/CodeSystem.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CodeSystem.hierarchyMeaning",
+        "@id": "http://hl7.org/fhir/CodeSystem.content",
         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
             "@list": [
               {
-                "@value": "grouped-by"
+                "@value": "not-present"
               },
               {
-                "@value": "is-a"
+                "@value": "example"
               },
               {
-                "@value": "part-of"
+                "@value": "fragment"
               },
               {
-                "@value": "classified-with"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CodeSystem.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "draft"
+                "@value": "complete"
               },
               {
-                "@value": "active"
-              },
-              {
-                "@value": "retired"
-              },
-              {
-                "@value": "unknown"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CodeSystem.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/CodeSystem.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
+                "@value": "supplement"
               }
             ]
           }

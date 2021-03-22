@@ -1,46 +1,13 @@
 [
   {
-    "@id": "http://hl7.org/fhir/PaymentReconciliation/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/PaymentReconciliation/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/PaymentReconciliation"
       }
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
-      {
-        "@id": "http://hl7.org/fhir/PaymentReconciliation.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/PaymentReconciliation.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
       {
         "@id": "http://hl7.org/fhir/PaymentReconciliation.detail",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
@@ -136,6 +103,18 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/PaymentReconciliation.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "PaymentReconciliation"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/PaymentReconciliation.text",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
@@ -162,12 +141,54 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/PaymentReconciliation.resourceType",
+        "@id": "http://hl7.org/fhir/PaymentReconciliation.identifier",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/PaymentReconciliation.identifier.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/PaymentReconciliation.outcome",
         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
             "@list": [
               {
-                "@value": "PaymentReconciliation"
+                "@value": "queued"
+              },
+              {
+                "@value": "complete"
+              },
+              {
+                "@value": "error"
+              },
+              {
+                "@value": "partial"
               }
             ]
           }
@@ -197,27 +218,6 @@
                     "@value": "old"
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/PaymentReconciliation.outcome",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "queued"
-              },
-              {
-                "@value": "complete"
-              },
-              {
-                "@value": "error"
-              },
-              {
-                "@value": "partial"
               }
             ]
           }

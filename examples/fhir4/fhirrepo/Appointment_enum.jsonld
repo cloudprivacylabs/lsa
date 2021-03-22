@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/Appointment/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/Appointment/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/Appointment"
@@ -9,12 +9,39 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/Appointment.resourceType",
+        "@id": "http://hl7.org/fhir/Appointment.status",
         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
             "@list": [
               {
-                "@value": "Appointment"
+                "@value": "proposed"
+              },
+              {
+                "@value": "pending"
+              },
+              {
+                "@value": "booked"
+              },
+              {
+                "@value": "arrived"
+              },
+              {
+                "@value": "fulfilled"
+              },
+              {
+                "@value": "cancelled"
+              },
+              {
+                "@value": "noshow"
+              },
+              {
+                "@value": "entered-in-error"
+              },
+              {
+                "@value": "checked-in"
+              },
+              {
+                "@value": "waitlist"
               }
             ]
           }
@@ -39,39 +66,6 @@
                   },
                   {
                     "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Appointment.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Appointment.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
                   }
                 ]
               }
@@ -128,39 +122,45 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Appointment.status",
+        "@id": "http://hl7.org/fhir/Appointment.identifier",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Appointment.identifier.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Appointment.resourceType",
         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
             "@list": [
               {
-                "@value": "proposed"
-              },
-              {
-                "@value": "pending"
-              },
-              {
-                "@value": "booked"
-              },
-              {
-                "@value": "arrived"
-              },
-              {
-                "@value": "fulfilled"
-              },
-              {
-                "@value": "cancelled"
-              },
-              {
-                "@value": "noshow"
-              },
-              {
-                "@value": "entered-in-error"
-              },
-              {
-                "@value": "checked-in"
-              },
-              {
-                "@value": "waitlist"
+                "@value": "Appointment"
               }
             ]
           }

@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/Person/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/Person/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/Person"
@@ -9,47 +9,50 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/Person.address",
+        "@id": "http://hl7.org/fhir/Person.gender",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "male"
+              },
+              {
+                "@value": "female"
+              },
+              {
+                "@value": "other"
+              },
+              {
+                "@value": "unknown"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Person.identifier",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Person.address.*.use",
+                "@id": "http://hl7.org/fhir/Person.identifier.*.use",
                 "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                   {
                     "@list": [
                       {
-                        "@value": "home"
+                        "@value": "usual"
                       },
                       {
-                        "@value": "work"
+                        "@value": "official"
                       },
                       {
                         "@value": "temp"
                       },
                       {
+                        "@value": "secondary"
+                      },
+                      {
                         "@value": "old"
-                      },
-                      {
-                        "@value": "billing"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Person.address.*.type",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "postal"
-                      },
-                      {
-                        "@value": "physical"
-                      },
-                      {
-                        "@value": "both"
                       }
                     ]
                   }
@@ -60,26 +63,35 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Person.link",
+        "@id": "http://hl7.org/fhir/Person.name",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Person.link.*.assurance",
+                "@id": "http://hl7.org/fhir/Person.name.*.use",
                 "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                   {
                     "@list": [
                       {
-                        "@value": "level1"
+                        "@value": "usual"
                       },
                       {
-                        "@value": "level2"
+                        "@value": "official"
                       },
                       {
-                        "@value": "level3"
+                        "@value": "temp"
                       },
                       {
-                        "@value": "level4"
+                        "@value": "nickname"
+                      },
+                      {
+                        "@value": "anonymous"
+                      },
+                      {
+                        "@value": "old"
+                      },
+                      {
+                        "@value": "maiden"
                       }
                     ]
                   }
@@ -165,78 +177,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Person.name",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Person.name.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "nickname"
-                      },
-                      {
-                        "@value": "anonymous"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "maiden"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Person.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Person.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/Person.text",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
@@ -263,21 +203,81 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Person.gender",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "@id": "http://hl7.org/fhir/Person.address",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
-            "@list": [
+            "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@value": "male"
+                "@id": "http://hl7.org/fhir/Person.address.*.type",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "postal"
+                      },
+                      {
+                        "@value": "physical"
+                      },
+                      {
+                        "@value": "both"
+                      }
+                    ]
+                  }
+                ]
               },
               {
-                "@value": "female"
-              },
+                "@id": "http://hl7.org/fhir/Person.address.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "home"
+                      },
+                      {
+                        "@value": "work"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "old"
+                      },
+                      {
+                        "@value": "billing"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Person.link",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@value": "other"
-              },
-              {
-                "@value": "unknown"
+                "@id": "http://hl7.org/fhir/Person.link.*.assurance",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "level1"
+                      },
+                      {
+                        "@value": "level2"
+                      },
+                      {
+                        "@value": "level3"
+                      },
+                      {
+                        "@value": "level4"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }

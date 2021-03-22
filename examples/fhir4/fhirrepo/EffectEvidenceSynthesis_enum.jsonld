@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/EffectEvidenceSynthesis"
@@ -101,20 +101,38 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.resultsByExposure",
+        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.relatedArtifact",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.resultsByExposure.*.exposureState",
+                "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.relatedArtifact.*.type",
                 "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                   {
                     "@list": [
                       {
-                        "@value": "exposure"
+                        "@value": "documentation"
                       },
                       {
-                        "@value": "exposure-alternative"
+                        "@value": "justification"
+                      },
+                      {
+                        "@value": "citation"
+                      },
+                      {
+                        "@value": "predecessor"
+                      },
+                      {
+                        "@value": "successor"
+                      },
+                      {
+                        "@value": "derived-from"
+                      },
+                      {
+                        "@value": "depends-on"
+                      },
+                      {
+                        "@value": "composed-of"
                       }
                     ]
                   }
@@ -158,6 +176,30 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.resultsByExposure",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.resultsByExposure.*.exposureState",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "exposure"
+                      },
+                      {
+                        "@value": "exposure-alternative"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.status",
         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
@@ -179,41 +221,17 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.reviewer",
+        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.contact",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.reviewer.*.telecom",
+                "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.contact.*.telecom",
                 "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
                   {
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.reviewer.*.telecom.*.use",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.reviewer.*.telecom.*.system",
+                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.contact.*.telecom.*.system",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [
@@ -237,6 +255,30 @@
                               },
                               {
                                 "@value": "other"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.contact.*.telecom.*.use",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
                               }
                             ]
                           }
@@ -251,41 +293,17 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.author",
+        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.endorser",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.author.*.telecom",
+                "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.endorser.*.telecom",
                 "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
                   {
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.author.*.telecom.*.use",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.author.*.telecom.*.system",
+                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.endorser.*.telecom.*.system",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [
@@ -309,6 +327,30 @@
                               },
                               {
                                 "@value": "other"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.endorser.*.telecom.*.use",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
                               }
                             ]
                           }
@@ -343,18 +385,6 @@
                     "@value": "empty"
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "EffectEvidenceSynthesis"
               }
             ]
           }
@@ -433,131 +463,17 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.contact",
+        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.reviewer",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.contact.*.telecom",
+                "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.reviewer.*.telecom",
                 "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
                   {
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.contact.*.telecom.*.use",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.contact.*.telecom.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.relatedArtifact",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.relatedArtifact.*.type",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "documentation"
-                      },
-                      {
-                        "@value": "justification"
-                      },
-                      {
-                        "@value": "citation"
-                      },
-                      {
-                        "@value": "predecessor"
-                      },
-                      {
-                        "@value": "successor"
-                      },
-                      {
-                        "@value": "derived-from"
-                      },
-                      {
-                        "@value": "depends-on"
-                      },
-                      {
-                        "@value": "composed-of"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.endorser",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.endorser.*.telecom",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.endorser.*.telecom.*.system",
+                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.reviewer.*.telecom.*.system",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [
@@ -587,7 +503,7 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.endorser.*.telecom.*.use",
+                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.reviewer.*.telecom.*.use",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [
@@ -613,6 +529,90 @@
                     ]
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.author",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.author.*.telecom",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.author.*.telecom.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "phone"
+                              },
+                              {
+                                "@value": "fax"
+                              },
+                              {
+                                "@value": "email"
+                              },
+                              {
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.author.*.telecom.*.use",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "EffectEvidenceSynthesis"
               }
             ]
           }

@@ -1,13 +1,102 @@
 [
   {
-    "@id": "http://hl7.org/fhir/Device/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/Device/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/Device"
       }
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/Device.contact",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Device.contact.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "home"
+                      },
+                      {
+                        "@value": "work"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "old"
+                      },
+                      {
+                        "@value": "mobile"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Device.contact.*.system",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "phone"
+                      },
+                      {
+                        "@value": "fax"
+                      },
+                      {
+                        "@value": "email"
+                      },
+                      {
+                        "@value": "pager"
+                      },
+                      {
+                        "@value": "url"
+                      },
+                      {
+                        "@value": "sms"
+                      },
+                      {
+                        "@value": "other"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Device.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Device.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/Device.identifier",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
@@ -36,6 +125,66 @@
                     ]
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Device.property",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Device.property.*.valueQuantity",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Device.property.*.valueQuantity.*.comparator",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Device.status",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "active"
+              },
+              {
+                "@value": "inactive"
+              },
+              {
+                "@value": "entered-in-error"
+              },
+              {
+                "@value": "unknown"
               }
             ]
           }
@@ -116,6 +265,18 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/Device.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "Device"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/Device.udiCarrier",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
@@ -146,167 +307,6 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Device.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Device.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Device.contact",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Device.contact.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "home"
-                      },
-                      {
-                        "@value": "work"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "mobile"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Device.contact.*.system",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "phone"
-                      },
-                      {
-                        "@value": "fax"
-                      },
-                      {
-                        "@value": "email"
-                      },
-                      {
-                        "@value": "pager"
-                      },
-                      {
-                        "@value": "url"
-                      },
-                      {
-                        "@value": "sms"
-                      },
-                      {
-                        "@value": "other"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Device.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "Device"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Device.property",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Device.property.*.valueQuantity",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Device.property.*.valueQuantity.*.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Device.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "inactive"
-              },
-              {
-                "@value": "entered-in-error"
-              },
-              {
-                "@value": "unknown"
               }
             ]
           }

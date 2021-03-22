@@ -1,13 +1,567 @@
 [
   {
-    "@id": "http://hl7.org/fhir/EventDefinition/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/EventDefinition/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/EventDefinition"
       }
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/EventDefinition.identifier",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EventDefinition.identifier.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EventDefinition.endorser",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EventDefinition.endorser.*.telecom",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.endorser.*.telecom.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "phone"
+                              },
+                              {
+                                "@value": "fax"
+                              },
+                              {
+                                "@value": "email"
+                              },
+                              {
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.endorser.*.telecom.*.use",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EventDefinition.trigger",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.type",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "named-event"
+                      },
+                      {
+                        "@value": "periodic"
+                      },
+                      {
+                        "@value": "data-changed"
+                      },
+                      {
+                        "@value": "data-added"
+                      },
+                      {
+                        "@value": "data-modified"
+                      },
+                      {
+                        "@value": "data-removed"
+                      },
+                      {
+                        "@value": "data-accessed"
+                      },
+                      {
+                        "@value": "data-access-ended"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.sort",
+                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                          {
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.sort.*.direction",
+                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "ascending"
+                                      },
+                                      {
+                                        "@value": "descending"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.dateFilter",
+                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                          {
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.dateFilter.*.valueDuration",
+                                "http://schemas.cloudprivacylabs.com/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.dateFilter.*.valueDuration.comparator",
+                                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.condition",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.condition.language",
+                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "text/cql"
+                          },
+                          {
+                            "@value": "text/fhirpath"
+                          },
+                          {
+                            "@value": "application/x-fhir-query"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsRange",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsRange.low",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsRange.low.comparator",
+                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsRange.high",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsRange.high.comparator",
+                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.when",
+                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                          {
+                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "MORN"
+                                  },
+                                  {
+                                    "@value": "MORN.early"
+                                  },
+                                  {
+                                    "@value": "MORN.late"
+                                  },
+                                  {
+                                    "@value": "NOON"
+                                  },
+                                  {
+                                    "@value": "AFT"
+                                  },
+                                  {
+                                    "@value": "AFT.early"
+                                  },
+                                  {
+                                    "@value": "AFT.late"
+                                  },
+                                  {
+                                    "@value": "EVE"
+                                  },
+                                  {
+                                    "@value": "EVE.early"
+                                  },
+                                  {
+                                    "@value": "EVE.late"
+                                  },
+                                  {
+                                    "@value": "NIGHT"
+                                  },
+                                  {
+                                    "@value": "PHS"
+                                  },
+                                  {
+                                    "@value": "HS"
+                                  },
+                                  {
+                                    "@value": "WAKE"
+                                  },
+                                  {
+                                    "@value": "C"
+                                  },
+                                  {
+                                    "@value": "CM"
+                                  },
+                                  {
+                                    "@value": "CD"
+                                  },
+                                  {
+                                    "@value": "CV"
+                                  },
+                                  {
+                                    "@value": "AC"
+                                  },
+                                  {
+                                    "@value": "ACM"
+                                  },
+                                  {
+                                    "@value": "ACD"
+                                  },
+                                  {
+                                    "@value": "ACV"
+                                  },
+                                  {
+                                    "@value": "PC"
+                                  },
+                                  {
+                                    "@value": "PCM"
+                                  },
+                                  {
+                                    "@value": "PCD"
+                                  },
+                                  {
+                                    "@value": "PCV"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.durationUnit",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "s"
+                              },
+                              {
+                                "@value": "min"
+                              },
+                              {
+                                "@value": "h"
+                              },
+                              {
+                                "@value": "d"
+                              },
+                              {
+                                "@value": "wk"
+                              },
+                              {
+                                "@value": "mo"
+                              },
+                              {
+                                "@value": "a"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.periodUnit",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "s"
+                              },
+                              {
+                                "@value": "min"
+                              },
+                              {
+                                "@value": "h"
+                              },
+                              {
+                                "@value": "d"
+                              },
+                              {
+                                "@value": "wk"
+                              },
+                              {
+                                "@value": "mo"
+                              },
+                              {
+                                "@value": "a"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsDuration",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsDuration.comparator",
+                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EventDefinition.contact",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EventDefinition.contact.*.telecom",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.contact.*.telecom.*.use",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.contact.*.telecom.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "phone"
+                              },
+                              {
+                                "@value": "fax"
+                              },
+                              {
+                                "@value": "email"
+                              },
+                              {
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/EventDefinition.useContext",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
@@ -143,29 +697,80 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/EventDefinition.identifier",
+        "@id": "http://hl7.org/fhir/EventDefinition.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "EventDefinition"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EventDefinition.editor",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/EventDefinition.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "@id": "http://hl7.org/fhir/EventDefinition.editor.*.telecom",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
                   {
-                    "@list": [
+                    "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@value": "usual"
+                        "@id": "http://hl7.org/fhir/EventDefinition.editor.*.telecom.*.use",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
                       },
                       {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
+                        "@id": "http://hl7.org/fhir/EventDefinition.editor.*.telecom.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "phone"
+                              },
+                              {
+                                "@value": "fax"
+                              },
+                              {
+                                "@value": "email"
+                              },
+                              {
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
@@ -248,78 +853,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/EventDefinition.endorser",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EventDefinition.endorser.*.telecom",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.endorser.*.telecom.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.endorser.*.telecom.*.use",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/EventDefinition.status",
         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
@@ -335,527 +868,6 @@
               },
               {
                 "@value": "unknown"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EventDefinition.editor",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EventDefinition.editor.*.telecom",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.editor.*.telecom.*.use",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.editor.*.telecom.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EventDefinition.contact",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EventDefinition.contact.*.telecom",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.contact.*.telecom.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.contact.*.telecom.*.use",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EventDefinition.trigger",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsRange",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsRange.high",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsRange.high.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsRange.low",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsRange.low.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsDuration",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsDuration.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.durationUnit",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "s"
-                              },
-                              {
-                                "@value": "min"
-                              },
-                              {
-                                "@value": "h"
-                              },
-                              {
-                                "@value": "d"
-                              },
-                              {
-                                "@value": "wk"
-                              },
-                              {
-                                "@value": "mo"
-                              },
-                              {
-                                "@value": "a"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.periodUnit",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "s"
-                              },
-                              {
-                                "@value": "min"
-                              },
-                              {
-                                "@value": "h"
-                              },
-                              {
-                                "@value": "d"
-                              },
-                              {
-                                "@value": "wk"
-                              },
-                              {
-                                "@value": "mo"
-                              },
-                              {
-                                "@value": "a"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.when",
-                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                          {
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "MORN"
-                                  },
-                                  {
-                                    "@value": "MORN.early"
-                                  },
-                                  {
-                                    "@value": "MORN.late"
-                                  },
-                                  {
-                                    "@value": "NOON"
-                                  },
-                                  {
-                                    "@value": "AFT"
-                                  },
-                                  {
-                                    "@value": "AFT.early"
-                                  },
-                                  {
-                                    "@value": "AFT.late"
-                                  },
-                                  {
-                                    "@value": "EVE"
-                                  },
-                                  {
-                                    "@value": "EVE.early"
-                                  },
-                                  {
-                                    "@value": "EVE.late"
-                                  },
-                                  {
-                                    "@value": "NIGHT"
-                                  },
-                                  {
-                                    "@value": "PHS"
-                                  },
-                                  {
-                                    "@value": "HS"
-                                  },
-                                  {
-                                    "@value": "WAKE"
-                                  },
-                                  {
-                                    "@value": "C"
-                                  },
-                                  {
-                                    "@value": "CM"
-                                  },
-                                  {
-                                    "@value": "CD"
-                                  },
-                                  {
-                                    "@value": "CV"
-                                  },
-                                  {
-                                    "@value": "AC"
-                                  },
-                                  {
-                                    "@value": "ACM"
-                                  },
-                                  {
-                                    "@value": "ACD"
-                                  },
-                                  {
-                                    "@value": "ACV"
-                                  },
-                                  {
-                                    "@value": "PC"
-                                  },
-                                  {
-                                    "@value": "PCM"
-                                  },
-                                  {
-                                    "@value": "PCD"
-                                  },
-                                  {
-                                    "@value": "PCV"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.dateFilter",
-                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                          {
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.dateFilter.*.valueDuration",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.dateFilter.*.valueDuration.comparator",
-                                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "\u003c"
-                                          },
-                                          {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.sort",
-                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                          {
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.sort.*.direction",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "ascending"
-                                      },
-                                      {
-                                        "@value": "descending"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.condition",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.condition.language",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "text/cql"
-                          },
-                          {
-                            "@value": "text/fhirpath"
-                          },
-                          {
-                            "@value": "application/x-fhir-query"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.type",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "named-event"
-                      },
-                      {
-                        "@value": "periodic"
-                      },
-                      {
-                        "@value": "data-changed"
-                      },
-                      {
-                        "@value": "data-added"
-                      },
-                      {
-                        "@value": "data-modified"
-                      },
-                      {
-                        "@value": "data-removed"
-                      },
-                      {
-                        "@value": "data-accessed"
-                      },
-                      {
-                        "@value": "data-access-ended"
-                      }
-                    ]
-                  }
-                ]
               }
             ]
           }
@@ -928,18 +940,6 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EventDefinition.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "EventDefinition"
               }
             ]
           }

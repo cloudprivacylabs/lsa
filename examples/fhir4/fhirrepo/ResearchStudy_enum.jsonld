@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/ResearchStudy/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/ResearchStudy/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/ResearchStudy"
@@ -9,96 +9,33 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/ResearchStudy.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "administratively-completed"
-              },
-              {
-                "@value": "approved"
-              },
-              {
-                "@value": "closed-to-accrual"
-              },
-              {
-                "@value": "closed-to-accrual-and-intervention"
-              },
-              {
-                "@value": "completed"
-              },
-              {
-                "@value": "disapproved"
-              },
-              {
-                "@value": "in-review"
-              },
-              {
-                "@value": "temporarily-closed-to-accrual"
-              },
-              {
-                "@value": "temporarily-closed-to-accrual-and-intervention"
-              },
-              {
-                "@value": "withdrawn"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ResearchStudy.relatedArtifact",
+        "@id": "http://hl7.org/fhir/ResearchStudy.identifier",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/ResearchStudy.relatedArtifact.*.type",
+                "@id": "http://hl7.org/fhir/ResearchStudy.identifier.*.use",
                 "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                   {
                     "@list": [
                       {
-                        "@value": "documentation"
+                        "@value": "usual"
                       },
                       {
-                        "@value": "justification"
+                        "@value": "official"
                       },
                       {
-                        "@value": "citation"
+                        "@value": "temp"
                       },
                       {
-                        "@value": "predecessor"
+                        "@value": "secondary"
                       },
                       {
-                        "@value": "successor"
-                      },
-                      {
-                        "@value": "derived-from"
-                      },
-                      {
-                        "@value": "depends-on"
-                      },
-                      {
-                        "@value": "composed-of"
+                        "@value": "old"
                       }
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ResearchStudy.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "ResearchStudy"
               }
             ]
           }
@@ -177,33 +114,54 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ResearchStudy.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@id": "http://hl7.org/fhir/ResearchStudy.status",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@list": [
               {
-                "@id": "http://hl7.org/fhir/ResearchStudy.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
+                "@value": "active"
+              },
+              {
+                "@value": "administratively-completed"
+              },
+              {
+                "@value": "approved"
+              },
+              {
+                "@value": "closed-to-accrual"
+              },
+              {
+                "@value": "closed-to-accrual-and-intervention"
+              },
+              {
+                "@value": "completed"
+              },
+              {
+                "@value": "disapproved"
+              },
+              {
+                "@value": "in-review"
+              },
+              {
+                "@value": "temporarily-closed-to-accrual"
+              },
+              {
+                "@value": "temporarily-closed-to-accrual-and-intervention"
+              },
+              {
+                "@value": "withdrawn"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ResearchStudy.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "ResearchStudy"
               }
             ]
           }
@@ -228,6 +186,48 @@
                   },
                   {
                     "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ResearchStudy.relatedArtifact",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ResearchStudy.relatedArtifact.*.type",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "documentation"
+                      },
+                      {
+                        "@value": "justification"
+                      },
+                      {
+                        "@value": "citation"
+                      },
+                      {
+                        "@value": "predecessor"
+                      },
+                      {
+                        "@value": "successor"
+                      },
+                      {
+                        "@value": "derived-from"
+                      },
+                      {
+                        "@value": "depends-on"
+                      },
+                      {
+                        "@value": "composed-of"
+                      }
+                    ]
                   }
                 ]
               }

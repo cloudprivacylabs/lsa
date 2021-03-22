@@ -1,13 +1,39 @@
 [
   {
-    "@id": "http://hl7.org/fhir/Observation/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/Observation/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/Observation"
       }
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/Observation.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Observation.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/Observation.referenceRange",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
@@ -16,32 +42,6 @@
               {
                 "@id": "http://hl7.org/fhir/Observation.referenceRange.*.age",
                 "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Observation.referenceRange.*.age.high",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Observation.referenceRange.*.age.high.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
                   {
                     "@id": "http://hl7.org/fhir/Observation.referenceRange.*.age.low",
                     "http://schemas.cloudprivacylabs.com/attributes": [
@@ -67,28 +67,28 @@
                         ]
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Observation.referenceRange.*.low",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                  },
                   {
-                    "@id": "http://hl7.org/fhir/Observation.referenceRange.*.low.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                    "@id": "http://hl7.org/fhir/Observation.referenceRange.*.age.high",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@list": [
+                        "@id": "http://hl7.org/fhir/Observation.referenceRange.*.age.high.comparator",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
                           }
                         ]
                       }
@@ -121,33 +121,28 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Observation.valueSampledData",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Observation.valueSampledData.origin",
-            "http://schemas.cloudprivacylabs.com/attributes": [
+              },
               {
-                "@id": "http://hl7.org/fhir/Observation.valueSampledData.origin.comparator",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "@id": "http://hl7.org/fhir/Observation.referenceRange.*.low",
+                "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/Observation.referenceRange.*.low.comparator",
+                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                       {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
                       }
                     ]
                   }
@@ -188,119 +183,6 @@
                       },
                       {
                         "@value": "a"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.periodUnit",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "s"
-                      },
-                      {
-                        "@value": "min"
-                      },
-                      {
-                        "@value": "h"
-                      },
-                      {
-                        "@value": "d"
-                      },
-                      {
-                        "@value": "wk"
-                      },
-                      {
-                        "@value": "mo"
-                      },
-                      {
-                        "@value": "a"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.boundsRange",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.boundsRange.low",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.boundsRange.low.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.boundsRange.high",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.boundsRange.high.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.boundsDuration",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.boundsDuration.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
                       }
                     ]
                   }
@@ -396,6 +278,304 @@
                     ]
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.boundsRange",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.boundsRange.low",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.boundsRange.low.comparator",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.boundsRange.high",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.boundsRange.high.comparator",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.periodUnit",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "s"
+                      },
+                      {
+                        "@value": "min"
+                      },
+                      {
+                        "@value": "h"
+                      },
+                      {
+                        "@value": "d"
+                      },
+                      {
+                        "@value": "wk"
+                      },
+                      {
+                        "@value": "mo"
+                      },
+                      {
+                        "@value": "a"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.boundsDuration",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Observation.effectiveTiming.repeat.boundsDuration.comparator",
+                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Observation.status",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "registered"
+              },
+              {
+                "@value": "preliminary"
+              },
+              {
+                "@value": "final"
+              },
+              {
+                "@value": "amended"
+              },
+              {
+                "@value": "corrected"
+              },
+              {
+                "@value": "cancelled"
+              },
+              {
+                "@value": "entered-in-error"
+              },
+              {
+                "@value": "unknown"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Observation.valueRatio",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Observation.valueRatio.numerator",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Observation.valueRatio.numerator.comparator",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Observation.valueRatio.denominator",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Observation.valueRatio.denominator.comparator",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Observation.valueQuantity",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Observation.valueQuantity.comparator",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "\u003c"
+                  },
+                  {
+                    "@value": "\u003c="
+                  },
+                  {
+                    "@value": "\u003e="
+                  },
+                  {
+                    "@value": "\u003e"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Observation.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "Observation"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Observation.valueRange",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Observation.valueRange.low",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Observation.valueRange.low.comparator",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Observation.valueRange.high",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Observation.valueRange.high.comparator",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -406,120 +586,6 @@
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Observation.component.*.valueRatio",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Observation.component.*.valueRatio.numerator",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Observation.component.*.valueRatio.numerator.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Observation.component.*.valueRatio.denominator",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Observation.component.*.valueRatio.denominator.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Observation.component.*.valueRange",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Observation.component.*.valueRange.high",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Observation.component.*.valueRange.high.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Observation.component.*.valueRange.low",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Observation.component.*.valueRange.low.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
               {
                 "@id": "http://hl7.org/fhir/Observation.component.*.valueSampledData",
                 "http://schemas.cloudprivacylabs.com/attributes": [
@@ -612,6 +678,32 @@
                         "@id": "http://hl7.org/fhir/Observation.component.*.referenceRange.*.age",
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
+                            "@id": "http://hl7.org/fhir/Observation.component.*.referenceRange.*.age.low",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/Observation.component.*.referenceRange.*.age.low.comparator",
+                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
                             "@id": "http://hl7.org/fhir/Observation.component.*.referenceRange.*.age.high",
                             "http://schemas.cloudprivacylabs.com/attributes": [
                               {
@@ -636,30 +728,118 @@
                                 ]
                               }
                             ]
-                          },
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Observation.component.*.valueRatio",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Observation.component.*.valueRatio.numerator",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Observation.component.*.valueRatio.numerator.comparator",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
-                            "@id": "http://hl7.org/fhir/Observation.component.*.referenceRange.*.age.low",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@list": [
                               {
-                                "@id": "http://hl7.org/fhir/Observation.component.*.referenceRange.*.age.low.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Observation.component.*.valueRatio.denominator",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Observation.component.*.valueRatio.denominator.comparator",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Observation.component.*.valueRange",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Observation.component.*.valueRange.low",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Observation.component.*.valueRange.low.comparator",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Observation.component.*.valueRange.high",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Observation.component.*.valueRange.high.comparator",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
                               }
                             ]
                           }
@@ -692,184 +872,6 @@
                         ]
                       }
                     ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Observation.valueQuantity",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Observation.valueQuantity.comparator",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "\u003c"
-                  },
-                  {
-                    "@value": "\u003c="
-                  },
-                  {
-                    "@value": "\u003e="
-                  },
-                  {
-                    "@value": "\u003e"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Observation.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "Observation"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Observation.valueRatio",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Observation.valueRatio.numerator",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Observation.valueRatio.numerator.comparator",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Observation.valueRatio.denominator",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Observation.valueRatio.denominator.comparator",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Observation.valueRange",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Observation.valueRange.low",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Observation.valueRange.low.comparator",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Observation.valueRange.high",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Observation.valueRange.high.comparator",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Observation.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Observation.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
                   }
                 ]
               }
@@ -911,33 +913,31 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Observation.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "@id": "http://hl7.org/fhir/Observation.valueSampledData",
+        "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/Observation.valueSampledData.origin",
+            "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@value": "registered"
-              },
-              {
-                "@value": "preliminary"
-              },
-              {
-                "@value": "final"
-              },
-              {
-                "@value": "amended"
-              },
-              {
-                "@value": "corrected"
-              },
-              {
-                "@value": "cancelled"
-              },
-              {
-                "@value": "entered-in-error"
-              },
-              {
-                "@value": "unknown"
+                "@id": "http://hl7.org/fhir/Observation.valueSampledData.origin.comparator",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }

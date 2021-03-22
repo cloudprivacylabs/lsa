@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/NutritionOrder/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/NutritionOrder/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/NutritionOrder"
@@ -9,79 +9,26 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/NutritionOrder.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/NutritionOrder.supplement",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
-            "@id": "http://hl7.org/fhir/NutritionOrder.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.caloricDensity",
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.caloricDensity.comparator",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
                   {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-              {
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat",
+                        "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat",
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.boundsRange",
+                            "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.boundsRange",
                             "http://schemas.cloudprivacylabs.com/attributes": [
                               {
-                                "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.boundsRange.low",
+                                "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.boundsRange.low",
                                 "http://schemas.cloudprivacylabs.com/attributes": [
                                   {
-                                    "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.boundsRange.low.comparator",
+                                    "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.boundsRange.low.comparator",
                                     "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                                       {
                                         "@list": [
@@ -104,10 +51,10 @@
                                 ]
                               },
                               {
-                                "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.boundsRange.high",
+                                "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.boundsRange.high",
                                 "http://schemas.cloudprivacylabs.com/attributes": [
                                   {
-                                    "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.boundsRange.high.comparator",
+                                    "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.boundsRange.high.comparator",
                                     "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                                       {
                                         "@list": [
@@ -132,7 +79,124 @@
                             ]
                           },
                           {
-                            "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.durationUnit",
+                            "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.boundsDuration",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.boundsDuration.comparator",
+                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.when",
+                            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                              {
+                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "MORN"
+                                      },
+                                      {
+                                        "@value": "MORN.early"
+                                      },
+                                      {
+                                        "@value": "MORN.late"
+                                      },
+                                      {
+                                        "@value": "NOON"
+                                      },
+                                      {
+                                        "@value": "AFT"
+                                      },
+                                      {
+                                        "@value": "AFT.early"
+                                      },
+                                      {
+                                        "@value": "AFT.late"
+                                      },
+                                      {
+                                        "@value": "EVE"
+                                      },
+                                      {
+                                        "@value": "EVE.early"
+                                      },
+                                      {
+                                        "@value": "EVE.late"
+                                      },
+                                      {
+                                        "@value": "NIGHT"
+                                      },
+                                      {
+                                        "@value": "PHS"
+                                      },
+                                      {
+                                        "@value": "HS"
+                                      },
+                                      {
+                                        "@value": "WAKE"
+                                      },
+                                      {
+                                        "@value": "C"
+                                      },
+                                      {
+                                        "@value": "CM"
+                                      },
+                                      {
+                                        "@value": "CD"
+                                      },
+                                      {
+                                        "@value": "CV"
+                                      },
+                                      {
+                                        "@value": "AC"
+                                      },
+                                      {
+                                        "@value": "ACM"
+                                      },
+                                      {
+                                        "@value": "ACD"
+                                      },
+                                      {
+                                        "@value": "ACV"
+                                      },
+                                      {
+                                        "@value": "PC"
+                                      },
+                                      {
+                                        "@value": "PCM"
+                                      },
+                                      {
+                                        "@value": "PCD"
+                                      },
+                                      {
+                                        "@value": "PCV"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.periodUnit",
                             "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                               {
                                 "@list": [
@@ -162,31 +226,118 @@
                             ]
                           },
                           {
-                            "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.boundsDuration",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.durationUnit",
+                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                               {
-                                "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.boundsDuration.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                "@list": [
                                   {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
+                                    "@value": "s"
+                                  },
+                                  {
+                                    "@value": "min"
+                                  },
+                                  {
+                                    "@value": "h"
+                                  },
+                                  {
+                                    "@value": "d"
+                                  },
+                                  {
+                                    "@value": "wk"
+                                  },
+                                  {
+                                    "@value": "mo"
+                                  },
+                                  {
+                                    "@value": "a"
                                   }
                                 ]
                               }
                             ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.quantity",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.quantity.comparator",
+                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
                           },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/NutritionOrder.identifier",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/NutritionOrder.identifier.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration",
+            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+              {
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
                           {
                             "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.when",
                             "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
@@ -279,7 +430,120 @@
                             ]
                           },
                           {
+                            "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.boundsDuration",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.boundsDuration.comparator",
+                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.boundsRange",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.boundsRange.low",
+                                "http://schemas.cloudprivacylabs.com/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.boundsRange.low.comparator",
+                                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.boundsRange.high",
+                                "http://schemas.cloudprivacylabs.com/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.boundsRange.high.comparator",
+                                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
                             "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.periodUnit",
+                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "s"
+                                  },
+                                  {
+                                    "@value": "min"
+                                  },
+                                  {
+                                    "@value": "h"
+                                  },
+                                  {
+                                    "@value": "d"
+                                  },
+                                  {
+                                    "@value": "wk"
+                                  },
+                                  {
+                                    "@value": "mo"
+                                  },
+                                  {
+                                    "@value": "a"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.administration.*.schedule.repeat.durationUnit",
                             "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                               {
                                 "@list": [
@@ -426,10 +690,10 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.maxVolumeToDeliver",
+            "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.caloricDensity",
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.maxVolumeToDeliver.comparator",
+                "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.caloricDensity.comparator",
                 "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                   {
                     "@list": [
@@ -450,328 +714,26 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NutritionOrder.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          },
           {
-            "@list": [
-              {
-                "@value": "NutritionOrder"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NutritionOrder.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
+            "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.maxVolumeToDeliver",
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/NutritionOrder.identifier.*.use",
+                "@id": "http://hl7.org/fhir/NutritionOrder.enteralFormula.maxVolumeToDeliver.comparator",
                 "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                   {
                     "@list": [
                       {
-                        "@value": "usual"
+                        "@value": "\u003c"
                       },
                       {
-                        "@value": "official"
+                        "@value": "\u003c="
                       },
                       {
-                        "@value": "temp"
+                        "@value": "\u003e="
                       },
                       {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NutritionOrder.supplement",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.quantity",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.quantity.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.boundsRange",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.boundsRange.low",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.boundsRange.low.comparator",
-                                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "\u003c"
-                                          },
-                                          {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.boundsRange.high",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.boundsRange.high.comparator",
-                                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "\u003c"
-                                          },
-                                          {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.periodUnit",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "s"
-                                  },
-                                  {
-                                    "@value": "min"
-                                  },
-                                  {
-                                    "@value": "h"
-                                  },
-                                  {
-                                    "@value": "d"
-                                  },
-                                  {
-                                    "@value": "wk"
-                                  },
-                                  {
-                                    "@value": "mo"
-                                  },
-                                  {
-                                    "@value": "a"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.durationUnit",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "s"
-                                  },
-                                  {
-                                    "@value": "min"
-                                  },
-                                  {
-                                    "@value": "h"
-                                  },
-                                  {
-                                    "@value": "d"
-                                  },
-                                  {
-                                    "@value": "wk"
-                                  },
-                                  {
-                                    "@value": "mo"
-                                  },
-                                  {
-                                    "@value": "a"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.when",
-                            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                              {
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "MORN"
-                                      },
-                                      {
-                                        "@value": "MORN.early"
-                                      },
-                                      {
-                                        "@value": "MORN.late"
-                                      },
-                                      {
-                                        "@value": "NOON"
-                                      },
-                                      {
-                                        "@value": "AFT"
-                                      },
-                                      {
-                                        "@value": "AFT.early"
-                                      },
-                                      {
-                                        "@value": "AFT.late"
-                                      },
-                                      {
-                                        "@value": "EVE"
-                                      },
-                                      {
-                                        "@value": "EVE.early"
-                                      },
-                                      {
-                                        "@value": "EVE.late"
-                                      },
-                                      {
-                                        "@value": "NIGHT"
-                                      },
-                                      {
-                                        "@value": "PHS"
-                                      },
-                                      {
-                                        "@value": "HS"
-                                      },
-                                      {
-                                        "@value": "WAKE"
-                                      },
-                                      {
-                                        "@value": "C"
-                                      },
-                                      {
-                                        "@value": "CM"
-                                      },
-                                      {
-                                        "@value": "CD"
-                                      },
-                                      {
-                                        "@value": "CV"
-                                      },
-                                      {
-                                        "@value": "AC"
-                                      },
-                                      {
-                                        "@value": "ACM"
-                                      },
-                                      {
-                                        "@value": "ACD"
-                                      },
-                                      {
-                                        "@value": "ACV"
-                                      },
-                                      {
-                                        "@value": "PC"
-                                      },
-                                      {
-                                        "@value": "PCM"
-                                      },
-                                      {
-                                        "@value": "PCD"
-                                      },
-                                      {
-                                        "@value": "PCV"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.boundsDuration",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/NutritionOrder.supplement.*.schedule.*.repeat.boundsDuration.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
+                        "@value": "\u003e"
                       }
                     ]
                   }
@@ -817,6 +779,32 @@
                               },
                               {
                                 "@value": "a"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NutritionOrder.oralDiet.schedule.*.repeat.boundsDuration",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/NutritionOrder.oralDiet.schedule.*.repeat.boundsDuration.comparator",
+                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
                               }
                             ]
                           }
@@ -914,62 +902,6 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/NutritionOrder.oralDiet.schedule.*.repeat.boundsDuration",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/NutritionOrder.oralDiet.schedule.*.repeat.boundsDuration.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/NutritionOrder.oralDiet.schedule.*.repeat.periodUnit",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "s"
-                              },
-                              {
-                                "@value": "min"
-                              },
-                              {
-                                "@value": "h"
-                              },
-                              {
-                                "@value": "d"
-                              },
-                              {
-                                "@value": "wk"
-                              },
-                              {
-                                "@value": "mo"
-                              },
-                              {
-                                "@value": "a"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
                         "@id": "http://hl7.org/fhir/NutritionOrder.oralDiet.schedule.*.repeat.boundsRange",
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
@@ -1025,6 +957,36 @@
                             ]
                           }
                         ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NutritionOrder.oralDiet.schedule.*.repeat.periodUnit",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "s"
+                              },
+                              {
+                                "@value": "min"
+                              },
+                              {
+                                "@value": "h"
+                              },
+                              {
+                                "@value": "d"
+                              },
+                              {
+                                "@value": "wk"
+                              },
+                              {
+                                "@value": "mo"
+                              },
+                              {
+                                "@value": "a"
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
@@ -1062,6 +1024,44 @@
                         ]
                       }
                     ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/NutritionOrder.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "NutritionOrder"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/NutritionOrder.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/NutritionOrder.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
                   }
                 ]
               }

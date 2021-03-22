@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/AuditEvent/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/AuditEvent/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/AuditEvent"
@@ -9,12 +9,26 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/AuditEvent.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "@id": "http://hl7.org/fhir/AuditEvent.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/AuditEvent.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
               {
-                "@value": "AuditEvent"
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
               }
             ]
           }
@@ -39,53 +53,6 @@
               },
               {
                 "@value": "E"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent.outcome",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "0"
-              },
-              {
-                "@value": "4"
-              },
-              {
-                "@value": "8"
-              },
-              {
-                "@value": "12"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
               }
             ]
           }
@@ -124,6 +91,39 @@
                     ]
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AuditEvent.outcome",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "0"
+              },
+              {
+                "@value": "4"
+              },
+              {
+                "@value": "8"
+              },
+              {
+                "@value": "12"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AuditEvent.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "AuditEvent"
               }
             ]
           }

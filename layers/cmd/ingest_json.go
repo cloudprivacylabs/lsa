@@ -20,6 +20,7 @@ import (
 	"github.com/spf13/cobra"
 
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 func init() {
@@ -61,7 +62,7 @@ var ingestJSONCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		out, _ := json.MarshalIndent(ingested.ToMap(), "", "  ")
+		out, _ := json.MarshalIndent(ls.DataModelToMap(ingested, true), "", "  ")
 		fmt.Println(string(out))
 	},
 }

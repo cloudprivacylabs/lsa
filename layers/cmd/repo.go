@@ -30,10 +30,9 @@ import (
 type SchemaRepository struct {
 	sync.Mutex
 
-	schemaIDs   map[string]*ls.Schema
-	objects     map[string]*ls.Schema
-	schemaBases map[string]*ls.SchemaLayer
-	overlays    map[string]*ls.SchemaLayer
+	schemaIDs map[string]*ls.Schema
+	objects   map[string]*ls.Schema
+	layers    map[string]*ls.SchemaLayer
 
 	resolvedSchemasID         map[string]*ls.SchemaLayer
 	resolvedSchemasObjectType map[string]*ls.SchemaLayer
@@ -48,11 +47,8 @@ func (s *SchemaRepository) init() {
 	if s.objects == nil {
 		s.objects = make(map[string]*ls.Schema)
 	}
-	if s.schemaBases == nil {
-		s.schemaBases = make(map[string]*ls.SchemaLayer)
-	}
-	if s.overlays == nil {
-		s.overlays = make(map[string]*ls.SchemaLayer)
+	if s.layers == nil {
+		s.layers = make(map[string]*ls.SchemaLayer)
 	}
 	if s.resolvedSchemasID == nil {
 		s.resolvedSchemasID = make(map[string]*ls.SchemaLayer)
@@ -94,11 +90,7 @@ func (s *SchemaRepository) Add(obj interface{}) error {
 		s.schemaIDs[k.ID] = k
 		s.objects[k.ObjectType] = k
 	case *ls.SchemaLayer:
-		if k.Type == ls.TermSchemaBaseType {
-			s.schemaBases[k.ID] = k
-		} else {
-			s.overlays[k.ID] = k
-		}
+		s.layers[k.ID] = k
 	}
 	return nil
 }
@@ -151,14 +143,9 @@ func (s *SchemaRepository) GetSchemaByType(t string) *ls.Schema {
 	return s.objects[t]
 }
 
-func (s *SchemaRepository) GetOverlay(id string) *ls.SchemaLayer {
+func (s *SchemaRepository) GetLayer(id string) *ls.SchemaLayer {
 	s.init()
-	return s.overlays[id]
-}
-
-func (s *SchemaRepository) GetSchemaBase(id string) *ls.SchemaLayer {
-	s.init()
-	return s.schemaBases[id]
+	return s.layers[id]
 }
 
 func (s *SchemaRepository) ComposeSchema(schema *ls.Schema) (*ls.SchemaLayer, error) {
@@ -168,17 +155,15 @@ func (s *SchemaRepository) ComposeSchema(schema *ls.Schema) (*ls.SchemaLayer, er
 		return schema.Composed, nil
 	}
 
-	schemaBase := s.GetSchemaBase(schema.SchemaBase)
-	if schemaBase == nil {
-		return nil, fmt.Errorf("Cannot find schema base %s %+v", schema.SchemaBase, schema)
-	}
-	composed := schemaBase.Clone()
-	for _, ovl := range schema.Overlays {
-		overlay := s.GetOverlay(ovl)
+	var composed *ls.SchemaLayer
+	for _, ovl := range schema.Layers {
+		overlay := s.GetLayer(ovl)
 		if overlay == nil {
-			return nil, fmt.Errorf("Cannot find overlay %s", ovl)
+			return nil, fmt.Errorf("Cannot find layer %s", ovl)
 		}
-		if err := composed.Compose(ls.ComposeOptions{}, overlay); err != nil {
+		if composed == nil {
+			composed = overlay.Clone()
+		} else if err := composed.Compose(ls.ComposeOptions{}, overlay); err != nil {
 			return nil, err
 		}
 	}

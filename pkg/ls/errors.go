@@ -52,7 +52,7 @@ func (e ErrIncompatibleComposition) Error() string {
 	return fmt.Sprintf("IncompatibleComposition: %s %s", e.ID, e.Msg)
 }
 
-// ErrInvalidLayerType is retured if a layer is not a schema base or overlay
+// ErrInvalidLayerType is retured if incorrect layer type is detected
 type ErrInvalidLayerType string
 
 func (e ErrInvalidLayerType) Error() string {

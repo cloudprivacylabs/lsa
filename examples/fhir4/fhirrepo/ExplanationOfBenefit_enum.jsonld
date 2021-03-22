@@ -1,13 +1,358 @@
 [
   {
-    "@id": "http://hl7.org/fhir/ExplanationOfBenefit/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/ExplanationOfBenefit/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/ExplanationOfBenefit"
       }
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.status",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "active"
+              },
+              {
+                "@value": "cancelled"
+              },
+              {
+                "@value": "draft"
+              },
+              {
+                "@value": "entered-in-error"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.identifier",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.identifier.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.accident",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.accident.locationAddress",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.accident.locationAddress.type",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "postal"
+                      },
+                      {
+                        "@value": "physical"
+                      },
+                      {
+                        "@value": "both"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.accident.locationAddress.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "home"
+                      },
+                      {
+                        "@value": "work"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "old"
+                      },
+                      {
+                        "@value": "billing"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.payment",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.payment.identifier",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.payment.identifier.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.processNote",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.processNote.*.type",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "display"
+                      },
+                      {
+                        "@value": "print"
+                      },
+                      {
+                        "@value": "printoper"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.quantity",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.quantity.comparator",
+                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.subDetail",
+                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                          {
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.subDetail.*.quantity",
+                                "http://schemas.cloudprivacylabs.com/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.subDetail.*.quantity.comparator",
+                                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.locationAddress",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.locationAddress.type",
+                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "postal"
+                          },
+                          {
+                            "@value": "physical"
+                          },
+                          {
+                            "@value": "both"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.locationAddress.use",
+                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "home"
+                          },
+                          {
+                            "@value": "work"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "old"
+                          },
+                          {
+                            "@value": "billing"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.quantity",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.quantity.comparator",
+                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/ExplanationOfBenefit.resourceType",
         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
@@ -30,32 +375,6 @@
                 "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
                   {
                     "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.detail.*.quantity",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.detail.*.quantity.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
                       {
                         "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.detail.*.subDetail",
                         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
@@ -84,6 +403,32 @@
                                         ]
                                       }
                                     ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.detail.*.quantity",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.detail.*.quantity.comparator",
+                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
                                   }
                                 ]
                               }
@@ -208,151 +553,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.accident",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.accident.locationAddress",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.accident.locationAddress.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "home"
-                      },
-                      {
-                        "@value": "work"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "billing"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.accident.locationAddress.type",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "postal"
-                      },
-                      {
-                        "@value": "physical"
-                      },
-                      {
-                        "@value": "both"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.payment",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.payment.identifier",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.payment.identifier.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/ExplanationOfBenefit.related",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
@@ -379,206 +579,6 @@
                           },
                           {
                             "@value": "old"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "cancelled"
-              },
-              {
-                "@value": "draft"
-              },
-              {
-                "@value": "entered-in-error"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.processNote",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.processNote.*.type",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "display"
-                      },
-                      {
-                        "@value": "print"
-                      },
-                      {
-                        "@value": "printoper"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.locationAddress",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.locationAddress.type",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "postal"
-                          },
-                          {
-                            "@value": "physical"
-                          },
-                          {
-                            "@value": "both"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.locationAddress.use",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "home"
-                          },
-                          {
-                            "@value": "work"
-                          },
-                          {
-                            "@value": "temp"
-                          },
-                          {
-                            "@value": "old"
-                          },
-                          {
-                            "@value": "billing"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.quantity",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.quantity.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.subDetail",
-                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                          {
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.subDetail.*.quantity",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.subDetail.*.quantity.comparator",
-                                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "\u003c"
-                                          },
-                                          {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.quantity",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.quantity.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
                           }
                         ]
                       }

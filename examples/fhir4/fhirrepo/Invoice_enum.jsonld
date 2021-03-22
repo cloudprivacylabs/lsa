@@ -1,13 +1,25 @@
 [
   {
-    "@id": "http://hl7.org/fhir/Invoice/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/Invoice/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/Invoice"
       }
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/Invoice.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "Invoice"
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/Invoice.identifier",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
@@ -36,63 +48,6 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Invoice.lineItem",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Invoice.lineItem.*.priceComponent",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Invoice.lineItem.*.priceComponent.*.type",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "base"
-                              },
-                              {
-                                "@value": "surcharge"
-                              },
-                              {
-                                "@value": "deduction"
-                              },
-                              {
-                                "@value": "discount"
-                              },
-                              {
-                                "@value": "tax"
-                              },
-                              {
-                                "@value": "informational"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Invoice.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "Invoice"
               }
             ]
           }
@@ -149,6 +104,51 @@
                       },
                       {
                         "@value": "informational"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Invoice.lineItem",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Invoice.lineItem.*.priceComponent",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Invoice.lineItem.*.priceComponent.*.type",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "base"
+                              },
+                              {
+                                "@value": "surcharge"
+                              },
+                              {
+                                "@value": "deduction"
+                              },
+                              {
+                                "@value": "discount"
+                              },
+                              {
+                                "@value": "tax"
+                              },
+                              {
+                                "@value": "informational"
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }

@@ -45,11 +45,8 @@ const uriBase = "http://schemas.cloudprivacylabs.com"
 // TermSchemaType is the object type for a schema
 const TermSchemaType = uriBase + "/Schema"
 
-// TermSchemaBaseType is the object type for a schema base
-const TermSchemaBaseType = uriBase + "/SchemaBase"
-
-// TermOverlayType is the object type for an overlay
-const TermOverlayType = uriBase + "/Overlay"
+// TermLayerType is the object type for layers
+const TermLayerType = uriBase + "/Layer"
 
 // AttributeStructure defines the terms used in defining the structure of
 // attributes in schema layers
@@ -197,8 +194,7 @@ var SchemaTerms = struct {
 	Classification Term
 	ObjectType     Term
 	ObjectVersion  Term
-	Base           Term
-	Overlays       Term
+	Layers         Term
 }{
 	IssuedBy: Term{
 		ID:   uriBase + "/Schema/issuedBy",
@@ -228,20 +224,20 @@ var SchemaTerms = struct {
 		ID:   uriBase + "/Schema/objectVersion",
 		Type: TermTypeValue,
 	},
-	Base: Term{
-		ID:   uriBase + "/Schema/schemaBase",
-		Type: TermTypeID,
-	},
-	Overlays: Term{
-		ID:   uriBase + "/Schema/overlays",
+	Layers: Term{
+		ID:   uriBase + "/Schema/layers",
 		Type: TermTypeIDList,
 	},
 }
 
 var DocTerms = struct {
-	Value             Term
-	Attributes        Term
-	ArrayElements     Term
+	// Value of the attribute from the input document
+	Value Term
+	// Attributes, for the ingested document
+	Attributes Term
+	// ArrayElements, for the ingested document
+	ArrayElements Term
+	// A reference to the schema attribute
 	SchemaAttributeID Term
 }{
 	Value: Term{
@@ -285,6 +281,5 @@ var Terms = map[string]*Term{
 	SchemaTerms.Classification.ID: &SchemaTerms.Classification,
 	SchemaTerms.ObjectType.ID:     &SchemaTerms.ObjectType,
 	SchemaTerms.ObjectVersion.ID:  &SchemaTerms.ObjectVersion,
-	SchemaTerms.Base.ID:           &SchemaTerms.Base,
-	SchemaTerms.Overlays.ID:       &SchemaTerms.Overlays,
+	SchemaTerms.Layers.ID:         &SchemaTerms.Layers,
 }

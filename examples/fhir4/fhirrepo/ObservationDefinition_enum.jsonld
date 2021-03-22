@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/ObservationDefinition/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/ObservationDefinition/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/ObservationDefinition"
@@ -9,39 +9,109 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
+        "@id": "http://hl7.org/fhir/ObservationDefinition.permittedDataType",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "Quantity"
+                  },
+                  {
+                    "@value": "CodeableConcept"
+                  },
+                  {
+                    "@value": "string"
+                  },
+                  {
+                    "@value": "boolean"
+                  },
+                  {
+                    "@value": "integer"
+                  },
+                  {
+                    "@value": "Range"
+                  },
+                  {
+                    "@value": "Ratio"
+                  },
+                  {
+                    "@value": "SampledData"
+                  },
+                  {
+                    "@value": "time"
+                  },
+                  {
+                    "@value": "dateTime"
+                  },
+                  {
+                    "@value": "Period"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ObservationDefinition.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "ObservationDefinition"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ObservationDefinition.identifier",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ObservationDefinition.identifier.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.gender",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "male"
-                      },
-                      {
-                        "@value": "female"
-                      },
-                      {
-                        "@value": "other"
-                      },
-                      {
-                        "@value": "unknown"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.gestationalAge",
+                "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.range",
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.gestationalAge.low",
+                    "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.range.high",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.gestationalAge.low.comparator",
+                        "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.range.high.comparator",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [
@@ -64,10 +134,10 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.gestationalAge.high",
+                    "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.range.low",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.gestationalAge.high.comparator",
+                        "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.range.low.comparator",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [
@@ -86,6 +156,45 @@
                             ]
                           }
                         ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.category",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "reference"
+                      },
+                      {
+                        "@value": "critical"
+                      },
+                      {
+                        "@value": "absolute"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.gender",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "male"
+                      },
+                      {
+                        "@value": "female"
+                      },
+                      {
+                        "@value": "other"
+                      },
+                      {
+                        "@value": "unknown"
                       }
                     ]
                   }
@@ -149,13 +258,13 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.range",
+                "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.gestationalAge",
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.range.low",
+                    "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.gestationalAge.low",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.range.low.comparator",
+                        "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.gestationalAge.low.comparator",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [
@@ -178,10 +287,10 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.range.high",
+                    "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.gestationalAge.high",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.range.high.comparator",
+                        "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.gestationalAge.high.comparator",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [
@@ -200,115 +309,6 @@
                             ]
                           }
                         ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ObservationDefinition.qualifiedInterval.*.category",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "reference"
-                      },
-                      {
-                        "@value": "critical"
-                      },
-                      {
-                        "@value": "absolute"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ObservationDefinition.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "ObservationDefinition"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ObservationDefinition.permittedDataType",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "Quantity"
-                  },
-                  {
-                    "@value": "CodeableConcept"
-                  },
-                  {
-                    "@value": "string"
-                  },
-                  {
-                    "@value": "boolean"
-                  },
-                  {
-                    "@value": "integer"
-                  },
-                  {
-                    "@value": "Range"
-                  },
-                  {
-                    "@value": "Ratio"
-                  },
-                  {
-                    "@value": "SampledData"
-                  },
-                  {
-                    "@value": "time"
-                  },
-                  {
-                    "@value": "dateTime"
-                  },
-                  {
-                    "@value": "Period"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ObservationDefinition.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ObservationDefinition.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
                       }
                     ]
                   }

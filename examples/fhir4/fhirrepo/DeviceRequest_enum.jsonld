@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/DeviceRequest/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/DeviceRequest/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/DeviceRequest"
@@ -9,99 +9,71 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/DeviceRequest.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DeviceRequest.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceRequest.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceRequest.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceRequest.groupIdentifier",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DeviceRequest.groupIdentifier.use",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "usual"
-                  },
-                  {
-                    "@value": "official"
-                  },
-                  {
-                    "@value": "temp"
-                  },
-                  {
-                    "@value": "secondary"
-                  },
-                  {
-                    "@value": "old"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
             "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat",
             "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.periodUnit",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "s"
+                      },
+                      {
+                        "@value": "min"
+                      },
+                      {
+                        "@value": "h"
+                      },
+                      {
+                        "@value": "d"
+                      },
+                      {
+                        "@value": "wk"
+                      },
+                      {
+                        "@value": "mo"
+                      },
+                      {
+                        "@value": "a"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.durationUnit",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "s"
+                      },
+                      {
+                        "@value": "min"
+                      },
+                      {
+                        "@value": "h"
+                      },
+                      {
+                        "@value": "d"
+                      },
+                      {
+                        "@value": "wk"
+                      },
+                      {
+                        "@value": "mo"
+                      },
+                      {
+                        "@value": "a"
+                      }
+                    ]
+                  }
+                ]
+              },
               {
                 "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsDuration",
                 "http://schemas.cloudprivacylabs.com/attributes": [
@@ -121,63 +93,6 @@
                           },
                           {
                             "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.high",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.high.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.low",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.low.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
                           }
                         ]
                       }
@@ -277,60 +192,57 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.periodUnit",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange",
+                "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.low",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@value": "s"
-                      },
-                      {
-                        "@value": "min"
-                      },
-                      {
-                        "@value": "h"
-                      },
-                      {
-                        "@value": "d"
-                      },
-                      {
-                        "@value": "wk"
-                      },
-                      {
-                        "@value": "mo"
-                      },
-                      {
-                        "@value": "a"
+                        "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.low.comparator",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.durationUnit",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  },
                   {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.high",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@value": "s"
-                      },
-                      {
-                        "@value": "min"
-                      },
-                      {
-                        "@value": "h"
-                      },
-                      {
-                        "@value": "d"
-                      },
-                      {
-                        "@value": "wk"
-                      },
-                      {
-                        "@value": "mo"
-                      },
-                      {
-                        "@value": "a"
+                        "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.high.comparator",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
@@ -341,12 +253,33 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/DeviceRequest.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "@id": "http://hl7.org/fhir/DeviceRequest.identifier",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
-            "@list": [
+            "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@value": "DeviceRequest"
+                "@id": "http://hl7.org/fhir/DeviceRequest.identifier.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -357,32 +290,6 @@
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueQuantity",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueQuantity.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
               {
                 "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueRange",
                 "http://schemas.cloudprivacylabs.com/attributes": [
@@ -437,6 +344,99 @@
                         ]
                       }
                     ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueQuantity",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueQuantity.comparator",
+                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceRequest.groupIdentifier",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DeviceRequest.groupIdentifier.use",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "usual"
+                  },
+                  {
+                    "@value": "official"
+                  },
+                  {
+                    "@value": "temp"
+                  },
+                  {
+                    "@value": "secondary"
+                  },
+                  {
+                    "@value": "old"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceRequest.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "DeviceRequest"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceRequest.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DeviceRequest.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
                   }
                 ]
               }

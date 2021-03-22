@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/GuidanceResponse/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/GuidanceResponse/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/GuidanceResponse"
@@ -9,26 +9,27 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/GuidanceResponse.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/GuidanceResponse.status",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
-            "@id": "http://hl7.org/fhir/GuidanceResponse.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "@list": [
               {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
+                "@value": "success"
+              },
+              {
+                "@value": "data-requested"
+              },
+              {
+                "@value": "data-required"
+              },
+              {
+                "@value": "in-progress"
+              },
+              {
+                "@value": "failure"
+              },
+              {
+                "@value": "entered-in-error"
               }
             ]
           }
@@ -97,45 +98,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/GuidanceResponse.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "success"
-              },
-              {
-                "@value": "data-requested"
-              },
-              {
-                "@value": "data-required"
-              },
-              {
-                "@value": "in-progress"
-              },
-              {
-                "@value": "failure"
-              },
-              {
-                "@value": "entered-in-error"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/GuidanceResponse.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "GuidanceResponse"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/GuidanceResponse.dataRequirement",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
@@ -198,6 +160,44 @@
                     ]
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/GuidanceResponse.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/GuidanceResponse.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/GuidanceResponse.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "GuidanceResponse"
               }
             ]
           }

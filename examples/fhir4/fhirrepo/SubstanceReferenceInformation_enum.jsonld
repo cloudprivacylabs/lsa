@@ -1,13 +1,63 @@
 [
   {
-    "@id": "http://hl7.org/fhir/SubstanceReferenceInformation/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/SubstanceReferenceInformation/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/SubstanceReferenceInformation"
       }
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.geneElement",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.geneElement.*.element",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.geneElement.*.element.use",
+                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "usual"
+                          },
+                          {
+                            "@value": "official"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "SubstanceReferenceInformation"
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.text",
         "http://schemas.cloudprivacylabs.com/attributes": [
@@ -69,60 +119,8 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.target.*.amountQuantity",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.target.*.amountQuantity.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
                 "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.target.*.amountRange",
                 "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.target.*.amountRange.low",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.target.*.amountRange.low.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
                   {
                     "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.target.*.amountRange.high",
                     "http://schemas.cloudprivacylabs.com/attributes": [
@@ -148,58 +146,60 @@
                         ]
                       }
                     ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.geneElement",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.geneElement.*.element",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                  },
                   {
-                    "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.geneElement.*.element.use",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                    "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.target.*.amountRange.low",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@list": [
+                        "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.target.*.amountRange.low.comparator",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
-                            "@value": "usual"
-                          },
-                          {
-                            "@value": "official"
-                          },
-                          {
-                            "@value": "temp"
-                          },
-                          {
-                            "@value": "secondary"
-                          },
-                          {
-                            "@value": "old"
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
                           }
                         ]
                       }
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
+              },
               {
-                "@value": "SubstanceReferenceInformation"
+                "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.target.*.amountQuantity",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/SubstanceReferenceInformation.target.*.amountQuantity.comparator",
+                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }

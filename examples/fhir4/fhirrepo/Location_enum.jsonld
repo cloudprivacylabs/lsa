@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/Location/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/Location/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/Location"
@@ -9,26 +9,38 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/Location.address",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/Location.status",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
-            "@id": "http://hl7.org/fhir/Location.address.type",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "@list": [
               {
-                "@list": [
-                  {
-                    "@value": "postal"
-                  },
-                  {
-                    "@value": "physical"
-                  },
-                  {
-                    "@value": "both"
-                  }
-                ]
+                "@value": "active"
+              },
+              {
+                "@value": "suspended"
+              },
+              {
+                "@value": "inactive"
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Location.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "Location"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Location.address",
+        "http://schemas.cloudprivacylabs.com/attributes": [
           {
             "@id": "http://hl7.org/fhir/Location.address.use",
             "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
@@ -52,16 +64,22 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Location.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          },
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/Location.address.type",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
               {
-                "@value": "Location"
+                "@list": [
+                  {
+                    "@value": "postal"
+                  },
+                  {
+                    "@value": "physical"
+                  },
+                  {
+                    "@value": "both"
+                  }
+                ]
               }
             ]
           }
@@ -109,10 +127,67 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/Location.identifier",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Location.identifier.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/Location.telecom",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Location.telecom.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "home"
+                      },
+                      {
+                        "@value": "work"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "old"
+                      },
+                      {
+                        "@value": "mobile"
+                      }
+                    ]
+                  }
+                ]
+              },
               {
                 "@id": "http://hl7.org/fhir/Location.telecom.*.system",
                 "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
@@ -138,81 +213,6 @@
                       },
                       {
                         "@value": "other"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Location.telecom.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "home"
-                      },
-                      {
-                        "@value": "work"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "mobile"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Location.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "suspended"
-              },
-              {
-                "@value": "inactive"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Location.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Location.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
                       }
                     ]
                   }

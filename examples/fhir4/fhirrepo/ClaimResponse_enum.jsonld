@@ -1,13 +1,72 @@
 [
   {
-    "@id": "http://hl7.org/fhir/ClaimResponse/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/ClaimResponse/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/ClaimResponse"
       }
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/ClaimResponse.identifier",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ClaimResponse.identifier.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ClaimResponse.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/ClaimResponse.processNote",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
@@ -74,79 +133,6 @@
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.locationAddress",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.locationAddress.use",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "home"
-                          },
-                          {
-                            "@value": "work"
-                          },
-                          {
-                            "@value": "temp"
-                          },
-                          {
-                            "@value": "old"
-                          },
-                          {
-                            "@value": "billing"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.locationAddress.type",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "postal"
-                          },
-                          {
-                            "@value": "physical"
-                          },
-                          {
-                            "@value": "both"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.quantity",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.quantity.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
               {
                 "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.detail",
                 "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
@@ -216,35 +202,75 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ClaimResponse.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+              },
               {
-                "@id": "http://hl7.org/fhir/ClaimResponse.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.quantity",
+                "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.quantity.comparator",
+                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                       {
-                        "@value": "usual"
-                      },
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.locationAddress",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.locationAddress.type",
+                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                       {
-                        "@value": "official"
-                      },
+                        "@list": [
+                          {
+                            "@value": "postal"
+                          },
+                          {
+                            "@value": "physical"
+                          },
+                          {
+                            "@value": "both"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.locationAddress.use",
+                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                       {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
+                        "@list": [
+                          {
+                            "@value": "home"
+                          },
+                          {
+                            "@value": "work"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "old"
+                          },
+                          {
+                            "@value": "billing"
+                          }
+                        ]
                       }
                     ]
                   }
@@ -261,32 +287,6 @@
             "@list": [
               {
                 "@value": "ClaimResponse"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ClaimResponse.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ClaimResponse.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
               }
             ]
           }

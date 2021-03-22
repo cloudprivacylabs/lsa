@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/EpisodeOfCare/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/EpisodeOfCare/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/EpisodeOfCare"
@@ -15,6 +15,36 @@
             "@list": [
               {
                 "@value": "EpisodeOfCare"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EpisodeOfCare.status",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "planned"
+              },
+              {
+                "@value": "waitlist"
+              },
+              {
+                "@value": "active"
+              },
+              {
+                "@value": "onhold"
+              },
+              {
+                "@value": "finished"
+              },
+              {
+                "@value": "cancelled"
+              },
+              {
+                "@value": "entered-in-error"
               }
             ]
           }
@@ -60,30 +90,26 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "@id": "http://hl7.org/fhir/EpisodeOfCare.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
               {
-                "@value": "planned"
-              },
-              {
-                "@value": "waitlist"
-              },
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "onhold"
-              },
-              {
-                "@value": "finished"
-              },
-              {
-                "@value": "cancelled"
-              },
-              {
-                "@value": "entered-in-error"
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
               }
             ]
           }
@@ -115,32 +141,6 @@
                         "@value": "old"
                       }
                     ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
                   }
                 ]
               }

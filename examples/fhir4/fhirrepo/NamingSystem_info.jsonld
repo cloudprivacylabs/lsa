@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/NamingSystem/overlay/info",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/NamingSystem/info",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/NamingSystem"
@@ -17,10 +17,10 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/NamingSystem._responsible",
+        "@id": "http://hl7.org/fhir/NamingSystem._status",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/NamingSystem._responsible.id",
+            "@id": "http://hl7.org/fhir/NamingSystem._status.id",
             "http://schemas.cloudprivacylabs.com/attribute/information": [
               {
                 "@value": "A sequence of Unicode characters"
@@ -30,10 +30,44 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/NamingSystem.name",
-        "http://schemas.cloudprivacylabs.com/attribute/information": [
+        "@id": "http://hl7.org/fhir/NamingSystem.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@value": "A sequence of Unicode characters"
+            "@id": "http://hl7.org/fhir/NamingSystem.text.id",
+            "http://schemas.cloudprivacylabs.com/attribute/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/information": [
+              {
+                "@value": "The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data."
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem.text._status",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/NamingSystem.text._status.id",
+                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem.text.div",
+            "http://schemas.cloudprivacylabs.com/attribute/information": [
+              {
+                "@value": "xhtml - escaped html (see specfication)"
+              }
+            ]
           }
         ]
       },
@@ -41,10 +75,15 @@
         "@id": "http://hl7.org/fhir/NamingSystem.meta",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/NamingSystem.meta.lastUpdated",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
+            "@id": "http://hl7.org/fhir/NamingSystem.meta._lastUpdated",
+            "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@value": "An instant in time - known at least to the second"
+                "@id": "http://hl7.org/fhir/NamingSystem.meta._lastUpdated.id",
+                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
               }
             ]
           },
@@ -53,6 +92,30 @@
             "http://schemas.cloudprivacylabs.com/attribute/information": [
               {
                 "@value": "String of characters used to identify a name or a resource"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem.meta.versionId",
+            "http://schemas.cloudprivacylabs.com/attribute/information": [
+              {
+                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem.meta.id",
+            "http://schemas.cloudprivacylabs.com/attribute/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem.meta.lastUpdated",
+            "http://schemas.cloudprivacylabs.com/attribute/information": [
+              {
+                "@value": "An instant in time - known at least to the second"
               }
             ]
           },
@@ -69,15 +132,158 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/NamingSystem.meta.tag",
+            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+              {
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._system",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._system.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._userSelected",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._userSelected.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._code",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._code.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*.userSelected",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "Value of \"true\" or \"false\""
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*.system",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "String of characters used to identify a name or a resource"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*.version",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*.display",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._version",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._version.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*.code",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._display",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._display.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/NamingSystem.meta.security",
             "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
               {
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*._system",
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*.code",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*._display",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*._system.id",
+                        "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*._display.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*._version",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*._version.id",
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
                             "@value": "A sequence of Unicode characters"
@@ -100,35 +306,6 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
                     "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*.userSelected",
                     "http://schemas.cloudprivacylabs.com/attribute/information": [
                       {
@@ -137,10 +314,10 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*.code",
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*.id",
                     "http://schemas.cloudprivacylabs.com/attribute/information": [
                       {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                        "@value": "A sequence of Unicode characters"
                       }
                     ]
                   },
@@ -158,10 +335,31 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*.id",
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*.version",
                     "http://schemas.cloudprivacylabs.com/attribute/information": [
                       {
                         "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*.display",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*._system",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*._system.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
                       }
                     ]
                   },
@@ -172,162 +370,6 @@
                         "@value": "String of characters used to identify a name or a resource"
                       }
                     ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.meta.security.*._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem.meta.tag",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-              {
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "String of characters used to identify a name or a resource"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "Value of \"true\" or \"false\""
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.meta.tag.*._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem.meta.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem.meta._lastUpdated",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/NamingSystem.meta._lastUpdated.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
                   }
                 ]
               }
@@ -347,14 +389,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/NamingSystem.meta.versionId",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/NamingSystem.meta._source",
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
@@ -370,10 +404,153 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/NamingSystem._publisher",
+        "@id": "http://hl7.org/fhir/NamingSystem.type",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/NamingSystem._publisher.id",
+            "@id": "http://hl7.org/fhir/NamingSystem.type.coding",
+            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+              {
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._version",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._version.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*.code",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._display",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._display.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*.system",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "String of characters used to identify a name or a resource"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._system",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._system.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._code",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._code.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._userSelected",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._userSelected.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*.userSelected",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "Value of \"true\" or \"false\""
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*.version",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*.display",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem.type.text",
+            "http://schemas.cloudprivacylabs.com/attribute/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem.type._text",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/NamingSystem.type._text.id",
+                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem.type.id",
             "http://schemas.cloudprivacylabs.com/attribute/information": [
               {
                 "@value": "A sequence of Unicode characters"
@@ -383,10 +560,36 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/NamingSystem.usage",
+        "@id": "http://hl7.org/fhir/NamingSystem._implicitRules",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem._implicitRules.id",
+            "http://schemas.cloudprivacylabs.com/attribute/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/NamingSystem.id",
         "http://schemas.cloudprivacylabs.com/attribute/information": [
           {
-            "@value": "A sequence of Unicode characters"
+            "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/NamingSystem._language",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem._language.id",
+            "http://schemas.cloudprivacylabs.com/attribute/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
           }
         ]
       },
@@ -399,28 +602,54 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/NamingSystem.language",
+        "http://schemas.cloudprivacylabs.com/attribute/information": [
+          {
+            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/NamingSystem.name",
+        "http://schemas.cloudprivacylabs.com/attribute/information": [
+          {
+            "@value": "A sequence of Unicode characters"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/NamingSystem._date",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem._date.id",
+            "http://schemas.cloudprivacylabs.com/attribute/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
               {
                 "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding",
                 "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
                   {
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                        "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*._code",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
                           {
-                            "@value": "Value of \"true\" or \"false\""
+                            "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*._code.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
                           }
                         ]
                       },
@@ -438,6 +667,14 @@
                         ]
                       },
                       {
+                        "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "String of characters used to identify a name or a resource"
+                          }
+                        ]
+                      },
+                      {
                         "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*.version",
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
@@ -446,18 +683,31 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*.code",
+                        "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*.display",
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
-                            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                            "@value": "A sequence of Unicode characters"
                           }
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*._code",
+                        "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*._system",
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*._code.id",
+                            "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*._system.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*._version",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*._version.id",
                             "http://schemas.cloudprivacylabs.com/attribute/information": [
                               {
                                 "@value": "A sequence of Unicode characters"
@@ -480,31 +730,18 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*.display",
+                        "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*.userSelected",
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
-                            "@value": "A sequence of Unicode characters"
+                            "@value": "Value of \"true\" or \"false\""
                           }
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*._version",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*._version.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*.system",
+                        "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*.code",
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
-                            "@value": "String of characters used to identify a name or a resource"
+                            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
                           }
                         ]
                       },
@@ -513,19 +750,6 @@
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
                             "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.coding.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
                           }
                         ]
                       }
@@ -553,16 +777,50 @@
                     ]
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/NamingSystem.jurisdiction.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
               }
             ]
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/NamingSystem.id",
+        "@id": "http://hl7.org/fhir/NamingSystem._name",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem._name.id",
+            "http://schemas.cloudprivacylabs.com/attribute/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/NamingSystem._responsible",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem._responsible.id",
+            "http://schemas.cloudprivacylabs.com/attribute/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/NamingSystem.date",
         "http://schemas.cloudprivacylabs.com/attribute/information": [
           {
-            "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
+            "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
           }
         ]
       },
@@ -580,18 +838,10 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/NamingSystem.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/information": [
-          {
-            "@value": "This is a NamingSystem resource"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem._status",
+        "@id": "http://hl7.org/fhir/NamingSystem._kind",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/NamingSystem._status.id",
+            "@id": "http://hl7.org/fhir/NamingSystem._kind.id",
             "http://schemas.cloudprivacylabs.com/attribute/information": [
               {
                 "@value": "A sequence of Unicode characters"
@@ -601,10 +851,34 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/NamingSystem.usage",
+        "http://schemas.cloudprivacylabs.com/attribute/information": [
+          {
+            "@value": "A sequence of Unicode characters"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/NamingSystem.status",
+        "http://schemas.cloudprivacylabs.com/attribute/information": [
+          {
+            "@value": "The status of this naming system. Enables tracking the life-cycle of the content."
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/NamingSystem.contact",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/NamingSystem.contact.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
               {
                 "@id": "http://hl7.org/fhir/NamingSystem.contact.*.name",
                 "http://schemas.cloudprivacylabs.com/attribute/information": [
@@ -632,20 +906,7 @@
                   {
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.id",
+                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.value",
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
                             "@value": "A sequence of Unicode characters"
@@ -653,53 +914,8 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.use",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "Identifies the purpose for the contact point."
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.rank",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "An integer with a value that is positive (e.g. \u003e0)"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*._rank",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*._rank.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "Telecommunications form for contact point - what communications system is required to make use of the contact."
-                          }
-                        ]
-                      },
-                      {
                         "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.period",
                         "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.period.start",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-                              }
-                            ]
-                          },
                           {
                             "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.period._start",
                             "http://schemas.cloudprivacylabs.com/attributes": [
@@ -741,6 +957,38 @@
                                 "@value": "A sequence of Unicode characters"
                               }
                             ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.period.start",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.rank",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "An integer with a value that is positive (e.g. \u003e0)"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.use",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "Identifies the purpose for the contact point."
                           }
                         ]
                       },
@@ -771,22 +1019,40 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.value",
+                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.system",
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
-                            "@value": "A sequence of Unicode characters"
+                            "@value": "Telecommunications form for contact point - what communications system is required to make use of the contact."
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*._system",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*._system.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*._rank",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*._rank.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
                           }
                         ]
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/NamingSystem.contact.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
                   }
                 ]
               }
@@ -803,10 +1069,26 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/NamingSystem._implicitRules",
+        "@id": "http://hl7.org/fhir/NamingSystem.description",
+        "http://schemas.cloudprivacylabs.com/attribute/information": [
+          {
+            "@value": "A string that may contain Github Flavored Markdown syntax for optional processing by a mark down presentation engine"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/NamingSystem.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/information": [
+          {
+            "@value": "This is a NamingSystem resource"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/NamingSystem._publisher",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/NamingSystem._implicitRules.id",
+            "@id": "http://hl7.org/fhir/NamingSystem._publisher.id",
             "http://schemas.cloudprivacylabs.com/attribute/information": [
               {
                 "@value": "A sequence of Unicode characters"
@@ -816,208 +1098,18 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/NamingSystem._date",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/NamingSystem.responsible",
+        "http://schemas.cloudprivacylabs.com/attribute/information": [
           {
-            "@id": "http://hl7.org/fhir/NamingSystem._date.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
+            "@value": "A sequence of Unicode characters"
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/NamingSystem.text",
+        "@id": "http://hl7.org/fhir/NamingSystem._description",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/NamingSystem.text.div",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "xhtml - escaped html (see specfication)"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem.text.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data."
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem.text._status",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/NamingSystem.text._status.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem.type",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem.type.coding",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-              {
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "String of characters used to identify a name or a resource"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "Value of \"true\" or \"false\""
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.type.coding.*._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem.type.text",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem.type._text",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/NamingSystem.type._text.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem.type.id",
+            "@id": "http://hl7.org/fhir/NamingSystem._description.id",
             "http://schemas.cloudprivacylabs.com/attribute/information": [
               {
                 "@value": "A sequence of Unicode characters"
@@ -1032,303 +1124,13 @@
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "Value of \"true\" or \"false\""
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "String of characters used to identify a name or a resource"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding",
-                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                      {
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*.userSelected",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "Value of \"true\" or \"false\""
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._userSelected",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._userSelected.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._version",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._version.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._display",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._display.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*.code",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._code",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._code.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*.display",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*.system",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "String of characters used to identify a name or a resource"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*.version",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._system",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._system.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.text",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept._text",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept._text.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
                 "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity",
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._value",
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._system",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._value.id",
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._system.id",
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
                             "@value": "A sequence of Unicode characters"
@@ -1354,19 +1156,6 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
                     "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity.value",
                     "http://schemas.cloudprivacylabs.com/attribute/information": [
                       {
@@ -1379,6 +1168,27 @@
                     "http://schemas.cloudprivacylabs.com/attribute/information": [
                       {
                         "@value": "How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is \"\u003c\" , then the real value is \u003c stated value."
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._value",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._value.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
                       }
                     ]
                   },
@@ -1404,10 +1214,10 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._unit",
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._code",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._unit.id",
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._code.id",
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
                             "@value": "A sequence of Unicode characters"
@@ -1417,10 +1227,10 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._system",
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._unit",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._system.id",
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity._unit.id",
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
                             "@value": "A sequence of Unicode characters"
@@ -1435,37 +1245,16 @@
                 "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange",
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
                     "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low",
                     "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low.unit",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low.value",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A rational number with implicit precision"
-                          }
-                        ]
-                      },
                       {
                         "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low.system",
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
@@ -1475,23 +1264,18 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low.comparator",
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low.code",
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
-                            "@value": "How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is \"\u003c\" , then the real value is \u003c stated value."
+                            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
                           }
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low._comparator",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low.value",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low._comparator.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
+                            "@value": "A rational number with implicit precision"
                           }
                         ]
                       },
@@ -1509,27 +1293,6 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low._unit",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low._unit.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                          }
-                        ]
-                      },
-                      {
                         "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low._code",
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
@@ -1543,10 +1306,65 @@
                         ]
                       },
                       {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low._system",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low._system.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low._comparator",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low._comparator.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low.unit",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low.comparator",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is \"\u003c\" , then the real value is \u003c stated value."
+                          }
+                        ]
+                      },
+                      {
                         "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low.id",
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
                             "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low._unit",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low._unit.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
                           }
                         ]
                       }
@@ -1555,14 +1373,6 @@
                   {
                     "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high",
                     "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is \"\u003c\" , then the real value is \u003c stated value."
-                          }
-                        ]
-                      },
                       {
                         "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high._system",
                         "http://schemas.cloudprivacylabs.com/attributes": [
@@ -1573,35 +1383,6 @@
                                 "@value": "A sequence of Unicode characters"
                               }
                             ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high._unit",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high._unit.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "String of characters used to identify a name or a resource"
                           }
                         ]
                       },
@@ -1619,10 +1400,15 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high.value",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high._comparator",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
                           {
-                            "@value": "A rational number with implicit precision"
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high._comparator.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
                           }
                         ]
                       },
@@ -1631,6 +1417,59 @@
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
                             "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "String of characters used to identify a name or a resource"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high.code",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high.comparator",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is \"\u003c\" , then the real value is \u003c stated value."
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high.value",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A rational number with implicit precision"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high._unit",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high._unit.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
                           }
                         ]
                       },
@@ -1646,20 +1485,273 @@
                             ]
                           }
                         ]
-                      },
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code.display",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high.id",
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._version",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._version.id",
                         "http://schemas.cloudprivacylabs.com/attribute/information": [
                           {
                             "@value": "A sequence of Unicode characters"
                           }
                         ]
-                      },
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._userSelected",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high._comparator",
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._userSelected.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code.userSelected",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "Value of \"true\" or \"false\""
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code.code",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code.system",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "String of characters used to identify a name or a resource"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code.version",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._system",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._system.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._code",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._code.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._display",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.code._display.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept._text",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept._text.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding",
+                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                      {
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high._comparator.id",
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*.userSelected",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "Value of \"true\" or \"false\""
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._version",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._version.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._code",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._code.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._userSelected",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._userSelected.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*.system",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "String of characters used to identify a name or a resource"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._system",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._system.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*.code",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._display",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*._display.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*.version",
+                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.coding.*.display",
                             "http://schemas.cloudprivacylabs.com/attribute/information": [
                               {
                                 "@value": "A sequence of Unicode characters"
@@ -1671,7 +1763,7 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.id",
+                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueCodeableConcept.text",
                     "http://schemas.cloudprivacylabs.com/attribute/information": [
                       {
                         "@value": "A sequence of Unicode characters"
@@ -1679,48 +1771,6 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem.status",
-        "http://schemas.cloudprivacylabs.com/attribute/information": [
-          {
-            "@value": "The status of this naming system. Enables tracking the life-cycle of the content."
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem._language",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem._language.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem.language",
-        "http://schemas.cloudprivacylabs.com/attribute/information": [
-          {
-            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem._kind",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem._kind.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A sequence of Unicode characters"
               }
             ]
           }
@@ -1732,31 +1782,10 @@
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*.type",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "Identifies the unique identifier scheme used for this particular identifier."
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*._value",
+                "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*._preferred",
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*._value.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*._comment",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*._comment.id",
+                    "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*._preferred.id",
                     "http://schemas.cloudprivacylabs.com/attribute/information": [
                       {
                         "@value": "A sequence of Unicode characters"
@@ -1768,6 +1797,27 @@
               {
                 "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*.period",
                 "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*.period._end",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*.period._end.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*.period.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
                   {
                     "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*.period.start",
                     "http://schemas.cloudprivacylabs.com/attribute/information": [
@@ -1796,27 +1846,6 @@
                         "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
                       }
                     ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*.period._end",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*.period._end.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*.period.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
                   }
                 ]
               },
@@ -1829,10 +1858,52 @@
                 ]
               },
               {
+                "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*.type",
+                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                  {
+                    "@value": "Identifies the unique identifier scheme used for this particular identifier."
+                  }
+                ]
+              },
+              {
                 "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*.value",
                 "http://schemas.cloudprivacylabs.com/attribute/information": [
                   {
                     "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*.comment",
+                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*._comment",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*._comment.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*._value",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*._value.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
                   }
                 ]
               },
@@ -1856,79 +1927,8 @@
                     "@value": "Value of \"true\" or \"false\""
                   }
                 ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*.comment",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*._preferred",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*._preferred.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem._name",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem._name.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem._description",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem._description.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem.responsible",
-        "http://schemas.cloudprivacylabs.com/attribute/information": [
-          {
-            "@value": "A sequence of Unicode characters"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem.date",
-        "http://schemas.cloudprivacylabs.com/attribute/information": [
-          {
-            "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem.description",
-        "http://schemas.cloudprivacylabs.com/attribute/information": [
-          {
-            "@value": "A string that may contain Github Flavored Markdown syntax for optional processing by a mark down presentation engine"
           }
         ]
       }

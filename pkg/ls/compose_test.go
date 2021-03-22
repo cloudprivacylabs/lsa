@@ -46,7 +46,7 @@ func getLayer(in interface{}) *SchemaLayer {
 func TestMerge1(t *testing.T) {
 	base := expand(t, `{
 "@context": "../../schemas/layers.jsonld",
-"@type":"SchemaBase",
+"@type":"Layer",
 "attributes": [
 {
   "@id":  "attr1" 
@@ -71,7 +71,7 @@ func TestMerge1(t *testing.T) {
 	t.Logf("Base: %+v", base)
 	ovl := expand(t, `{
 "@context": ["../../schemas/layers.jsonld",{"@vocab":"http://test/"}],
-"@type":"Overlay",
+"@type":"Layer",
 "attributes":[
 {
   "@id":"attr1",
@@ -144,7 +144,7 @@ func TestMerge1(t *testing.T) {
 func TestMergeArray(t *testing.T) {
 	base := expand(t, `{
   "@context":"../../schemas/layers.jsonld",
-  "@type": "SchemaBase",
+  "@type": "Layer",
   "attributes": {
     "array": {
       "arrayItems":  {
@@ -154,7 +154,7 @@ func TestMergeArray(t *testing.T) {
 }`)
 	ovl := expand(t, `{
   "@context": "../../schemas/layers.jsonld",
-  "@type": "Overlay",
+  "@type": "Layer",
   "attributes": {
     "array": {
       "arrayItems": {
@@ -187,7 +187,7 @@ func TestMergeArray(t *testing.T) {
 func TestMergeChoice(t *testing.T) {
 	base := expand(t, `{
   "@context": "../../schemas/layers.jsonld",
-  "@type" : "SchemaBase",
+  "@type" : "Layer",
   "attributes": {
    "attr": {
 	   "oneOf": [
@@ -201,7 +201,7 @@ func TestMergeChoice(t *testing.T) {
 }`)
 	ovl := expand(t, `{
   "@context": "../../schemas/layers.jsonld",
-  "@type": "Overlay",
+  "@type": "Layer",
   "attributes": {
    "attr": {
 	   "oneOf": [
@@ -236,7 +236,7 @@ func TestMergeChoice(t *testing.T) {
 func TestOverride(t *testing.T) {
 	base := expand(t, `{
 "@context": "../../schemas/layers.jsonld",
-"@type":"SchemaBase",
+"@type":"Layer",
 "attributes": [
 	{
  	"@id":  "attr1" ,
@@ -246,7 +246,7 @@ func TestOverride(t *testing.T) {
 }`)
 	ovl := expand(t, `{
 "@context": "../../schemas/layers.jsonld",
-"@type":"Overlay",
+"@type":"Layer",
 "attributes": [
 	{
  	"@id":  "attr1" ,

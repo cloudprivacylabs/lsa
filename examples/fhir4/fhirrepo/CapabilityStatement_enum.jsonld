@@ -1,476 +1,13 @@
 [
   {
-    "@id": "http://hl7.org/fhir/CapabilityStatement/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/CapabilityStatement/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/CapabilityStatement"
       }
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
-      {
-        "@id": "http://hl7.org/fhir/CapabilityStatement.kind",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "instance"
-              },
-              {
-                "@value": "capability"
-              },
-              {
-                "@value": "requirements"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CapabilityStatement.document",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/CapabilityStatement.document.*.mode",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "producer"
-                      },
-                      {
-                        "@value": "consumer"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CapabilityStatement.messaging",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/CapabilityStatement.messaging.*.supportedMessage",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CapabilityStatement.messaging.*.supportedMessage.*.mode",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "sender"
-                              },
-                              {
-                                "@value": "receiver"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CapabilityStatement.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "draft"
-              },
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "retired"
-              },
-              {
-                "@value": "unknown"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CapabilityStatement.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "CapabilityStatement"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CapabilityStatement.rest",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.searchParam",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.searchParam.*.type",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "number"
-                              },
-                              {
-                                "@value": "date"
-                              },
-                              {
-                                "@value": "string"
-                              },
-                              {
-                                "@value": "token"
-                              },
-                              {
-                                "@value": "reference"
-                              },
-                              {
-                                "@value": "composite"
-                              },
-                              {
-                                "@value": "quantity"
-                              },
-                              {
-                                "@value": "uri"
-                              },
-                              {
-                                "@value": "special"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.mode",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "client"
-                      },
-                      {
-                        "@value": "server"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.interaction",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.interaction.*.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "transaction"
-                              },
-                              {
-                                "@value": "batch"
-                              },
-                              {
-                                "@value": "search-system"
-                              },
-                              {
-                                "@value": "history-system"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.conditionalRead",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "not-supported"
-                              },
-                              {
-                                "@value": "modified-since"
-                              },
-                              {
-                                "@value": "not-match"
-                              },
-                              {
-                                "@value": "full-support"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.referencePolicy",
-                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                          {
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "literal"
-                                  },
-                                  {
-                                    "@value": "logical"
-                                  },
-                                  {
-                                    "@value": "resolves"
-                                  },
-                                  {
-                                    "@value": "enforced"
-                                  },
-                                  {
-                                    "@value": "local"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.searchParam",
-                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                          {
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.searchParam.*.type",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "number"
-                                      },
-                                      {
-                                        "@value": "date"
-                                      },
-                                      {
-                                        "@value": "string"
-                                      },
-                                      {
-                                        "@value": "token"
-                                      },
-                                      {
-                                        "@value": "reference"
-                                      },
-                                      {
-                                        "@value": "composite"
-                                      },
-                                      {
-                                        "@value": "quantity"
-                                      },
-                                      {
-                                        "@value": "uri"
-                                      },
-                                      {
-                                        "@value": "special"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.versioning",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "no-version"
-                              },
-                              {
-                                "@value": "versioned"
-                              },
-                              {
-                                "@value": "versioned-update"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.interaction",
-                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                          {
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.interaction.*.code",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "read"
-                                      },
-                                      {
-                                        "@value": "vread"
-                                      },
-                                      {
-                                        "@value": "update"
-                                      },
-                                      {
-                                        "@value": "patch"
-                                      },
-                                      {
-                                        "@value": "delete"
-                                      },
-                                      {
-                                        "@value": "history-instance"
-                                      },
-                                      {
-                                        "@value": "history-type"
-                                      },
-                                      {
-                                        "@value": "create"
-                                      },
-                                      {
-                                        "@value": "search-type"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.conditionalDelete",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "not-supported"
-                              },
-                              {
-                                "@value": "single"
-                              },
-                              {
-                                "@value": "multiple"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CapabilityStatement.contact",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/CapabilityStatement.contact.*.telecom",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CapabilityStatement.contact.*.telecom.*.use",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CapabilityStatement.contact.*.telecom.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
       {
         "@id": "http://hl7.org/fhir/CapabilityStatement.fhirVersion",
         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
@@ -544,26 +81,156 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/CapabilityStatement.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/CapabilityStatement.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
-            "@id": "http://hl7.org/fhir/CapabilityStatement.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "@list": [
               {
-                "@list": [
+                "@value": "CapabilityStatement"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CapabilityStatement.contact",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/CapabilityStatement.contact.*.telecom",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
                   {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CapabilityStatement.contact.*.telecom.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "phone"
+                              },
+                              {
+                                "@value": "fax"
+                              },
+                              {
+                                "@value": "email"
+                              },
+                              {
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CapabilityStatement.contact.*.telecom.*.use",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CapabilityStatement.status",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "draft"
+              },
+              {
+                "@value": "active"
+              },
+              {
+                "@value": "retired"
+              },
+              {
+                "@value": "unknown"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CapabilityStatement.messaging",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/CapabilityStatement.messaging.*.supportedMessage",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CapabilityStatement.messaging.*.supportedMessage.*.mode",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "sender"
+                              },
+                              {
+                                "@value": "receiver"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CapabilityStatement.kind",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "instance"
+              },
+              {
+                "@value": "capability"
+              },
+              {
+                "@value": "requirements"
               }
             ]
           }
@@ -604,6 +271,32 @@
                 "@id": "http://hl7.org/fhir/CapabilityStatement.useContext.*.valueRange",
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
+                    "@id": "http://hl7.org/fhir/CapabilityStatement.useContext.*.valueRange.low",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CapabilityStatement.useContext.*.valueRange.low.comparator",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
                     "@id": "http://hl7.org/fhir/CapabilityStatement.useContext.*.valueRange.high",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
@@ -628,26 +321,333 @@
                         ]
                       }
                     ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CapabilityStatement.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/CapabilityStatement.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
                   },
                   {
-                    "@id": "http://hl7.org/fhir/CapabilityStatement.useContext.*.valueRange.low",
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CapabilityStatement.document",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/CapabilityStatement.document.*.mode",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "producer"
+                      },
+                      {
+                        "@value": "consumer"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CapabilityStatement.rest",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.mode",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "client"
+                      },
+                      {
+                        "@value": "server"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/CapabilityStatement.useContext.*.valueRange.low.comparator",
+                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.searchParam",
+                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                          {
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.searchParam.*.type",
+                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "number"
+                                      },
+                                      {
+                                        "@value": "date"
+                                      },
+                                      {
+                                        "@value": "string"
+                                      },
+                                      {
+                                        "@value": "token"
+                                      },
+                                      {
+                                        "@value": "reference"
+                                      },
+                                      {
+                                        "@value": "composite"
+                                      },
+                                      {
+                                        "@value": "quantity"
+                                      },
+                                      {
+                                        "@value": "uri"
+                                      },
+                                      {
+                                        "@value": "special"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.referencePolicy",
+                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                          {
+                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "literal"
+                                  },
+                                  {
+                                    "@value": "logical"
+                                  },
+                                  {
+                                    "@value": "resolves"
+                                  },
+                                  {
+                                    "@value": "enforced"
+                                  },
+                                  {
+                                    "@value": "local"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.conditionalRead",
                         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                           {
                             "@list": [
                               {
-                                "@value": "\u003c"
+                                "@value": "not-supported"
                               },
                               {
-                                "@value": "\u003c="
+                                "@value": "modified-since"
                               },
                               {
-                                "@value": "\u003e="
+                                "@value": "not-match"
                               },
                               {
-                                "@value": "\u003e"
+                                "@value": "full-support"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.interaction",
+                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                          {
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.interaction.*.code",
+                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "read"
+                                      },
+                                      {
+                                        "@value": "vread"
+                                      },
+                                      {
+                                        "@value": "update"
+                                      },
+                                      {
+                                        "@value": "patch"
+                                      },
+                                      {
+                                        "@value": "delete"
+                                      },
+                                      {
+                                        "@value": "history-instance"
+                                      },
+                                      {
+                                        "@value": "history-type"
+                                      },
+                                      {
+                                        "@value": "create"
+                                      },
+                                      {
+                                        "@value": "search-type"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.conditionalDelete",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "not-supported"
+                              },
+                              {
+                                "@value": "single"
+                              },
+                              {
+                                "@value": "multiple"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.resource.*.versioning",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "no-version"
+                              },
+                              {
+                                "@value": "versioned"
+                              },
+                              {
+                                "@value": "versioned-update"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.searchParam",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.searchParam.*.type",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "number"
+                              },
+                              {
+                                "@value": "date"
+                              },
+                              {
+                                "@value": "string"
+                              },
+                              {
+                                "@value": "token"
+                              },
+                              {
+                                "@value": "reference"
+                              },
+                              {
+                                "@value": "composite"
+                              },
+                              {
+                                "@value": "quantity"
+                              },
+                              {
+                                "@value": "uri"
+                              },
+                              {
+                                "@value": "special"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.interaction",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CapabilityStatement.rest.*.interaction.*.code",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "transaction"
+                              },
+                              {
+                                "@value": "batch"
+                              },
+                              {
+                                "@value": "search-system"
+                              },
+                              {
+                                "@value": "history-system"
                               }
                             ]
                           }

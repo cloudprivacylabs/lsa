@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/DiagnosticReport/overlay/type",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/DiagnosticReport/type",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/DiagnosticReport"
@@ -9,86 +9,57 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/DiagnosticReport.language",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DiagnosticReport.effectiveDateTime",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod.start",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod._start",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod._start.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod.end",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod._end",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod._end.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/DiagnosticReport.identifier",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*._system",
+                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period",
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*._system.id",
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period.start",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period._start",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period._start.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period.end",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period._end",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period._end.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period.id",
                     "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
                         "@value": "string"
@@ -114,10 +85,10 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*._value",
+                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*._system",
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*._value.id",
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*._system.id",
                     "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
                         "@value": "string"
@@ -127,21 +98,29 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type",
+                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*._use",
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type._text",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*._use.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type._text.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
+                        "@value": "string"
                       }
                     ]
-                  },
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.system",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type",
+                "http://schemas.cloudprivacylabs.com/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.id",
                     "http://schemas.cloudprivacylabs.com/attribute/type": [
@@ -156,10 +135,60 @@
                       {
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
+                            "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*.version",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*.system",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*.code",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
                             "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*._display",
                             "http://schemas.cloudprivacylabs.com/attributes": [
                               {
                                 "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*._display.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*._code",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*._code.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*._userSelected",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*._userSelected.id",
                                 "http://schemas.cloudprivacylabs.com/attribute/type": [
                                   {
                                     "@value": "string"
@@ -190,57 +219,7 @@
                             ]
                           },
                           {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*.code",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*._code",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*._code.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
                             "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*._userSelected",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*._userSelected.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*.system",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type.coding.*.version",
                             "http://schemas.cloudprivacylabs.com/attribute/type": [
                               {
                                 "@value": "string"
@@ -279,46 +258,12 @@
                         "@value": "string"
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.system",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*._use",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*._use.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period.end",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period._end",
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type._text",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period._end.id",
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.type._text.id",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
@@ -326,55 +271,23 @@
                         ]
                       }
                     ]
-                  },
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*._value",
+                "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period.id",
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*._value.id",
                     "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
                         "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period.start",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period._start",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.identifier.*.period._start.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
                       }
                     ]
                   }
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DiagnosticReport.implicitRules",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DiagnosticReport.id",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "string"
           }
         ]
       },
@@ -392,8 +305,369 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/DiagnosticReport.implicitRules",
+        "http://schemas.cloudprivacylabs.com/attribute/type": [
+          {
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DiagnosticReport._language",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport._language.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DiagnosticReport.category",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.category.*._text",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.category.*._text.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*.userSelected",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "boolean"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*.code",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._system",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._system.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*.display",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._code",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._code.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._version",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._version.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._userSelected",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._userSelected.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*.version",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._display",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._display.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.text",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DiagnosticReport.code",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding",
+            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+              {
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*.version",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._system",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._system.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._version",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._version.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._code",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._code.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._userSelected",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._userSelected.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._display",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._display.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*.system",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*.display",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*.userSelected",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "boolean"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*.code",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport.code.text",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport.code._text",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.code._text.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport.code.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DiagnosticReport.effectiveDateTime",
+        "http://schemas.cloudprivacylabs.com/attribute/type": [
+          {
+            "@value": "string"
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/DiagnosticReport.meta",
         "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport.meta.lastUpdated",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport.meta.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
           {
             "@id": "http://hl7.org/fhir/DiagnosticReport.meta._versionId",
             "http://schemas.cloudprivacylabs.com/attributes": [
@@ -434,90 +708,20 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/DiagnosticReport.meta.source",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport.meta.profile",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-              {
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security",
             "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
               {
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*.system",
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*.version",
                     "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
                         "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
                       }
                     ]
                   },
                   {
                     "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*.version",
                     "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
                         "@value": "string"
@@ -538,10 +742,52 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*.userSelected",
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*.system",
                     "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
-                        "@value": "boolean"
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*.code",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*._display",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*._display.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*._version",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*._version.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
                       }
                     ]
                   },
@@ -559,15 +805,23 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*._version",
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*._userSelected",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*._version.id",
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*._userSelected.id",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
                           }
                         ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.security.*.userSelected",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "boolean"
                       }
                     ]
                   }
@@ -576,26 +830,30 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/DiagnosticReport.meta.lastUpdated",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport.meta.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/DiagnosticReport.meta.versionId",
             "http://schemas.cloudprivacylabs.com/attribute/type": [
               {
                 "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport.meta.source",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport.meta.profile",
+            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+              {
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
               }
             ]
           },
@@ -614,14 +872,6 @@
                             "@value": "string"
                           }
                         ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.tag.*.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
                       }
                     ]
                   },
@@ -660,15 +910,18 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.tag.*._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.tag.*.code",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.meta.tag.*._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.tag.*.display",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
                       }
                     ]
                   },
@@ -686,10 +939,15 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.tag.*.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.tag.*._display",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@value": "string"
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.meta.tag.*._display.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
                       }
                     ]
                   },
@@ -702,7 +960,7 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.tag.*.display",
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.meta.tag.*.system",
                     "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
                         "@value": "string"
@@ -718,6 +976,355 @@
                     ]
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DiagnosticReport._effectiveDateTime",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport._effectiveDateTime.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusion",
+        "http://schemas.cloudprivacylabs.com/attribute/type": [
+          {
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.url",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._hash",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._hash.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.hash",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._size",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._size.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._language",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._language.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._data",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._data.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.size",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "number"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.title",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.data",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._title",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._title.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.contentType",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.language",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._url",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._url.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._contentType",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._contentType.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._creation",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._creation.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.creation",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DiagnosticReport.language",
+        "http://schemas.cloudprivacylabs.com/attribute/type": [
+          {
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DiagnosticReport._implicitRules",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport._implicitRules.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DiagnosticReport.media",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.media.*.comment",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.media.*._comment",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DiagnosticReport.media.*._comment.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.media.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DiagnosticReport.id",
+        "http://schemas.cloudprivacylabs.com/attribute/type": [
+          {
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DiagnosticReport._conclusion",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport._conclusion.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DiagnosticReport.issued",
+        "http://schemas.cloudprivacylabs.com/attribute/type": [
+          {
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod._start",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod._start.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod.end",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod._end",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod._end.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DiagnosticReport.effectivePeriod.start",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
               }
             ]
           }
@@ -750,57 +1357,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/DiagnosticReport.media",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.media.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.media.*.comment",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.media.*._comment",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.media.*._comment.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DiagnosticReport._conclusion",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport._conclusion.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
@@ -811,41 +1367,7 @@
                   {
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._userSelected",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._userSelected.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*.system",
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*.version",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
@@ -866,15 +1388,44 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._display",
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._code",
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._display.id",
+                            "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._code.id",
                             "http://schemas.cloudprivacylabs.com/attribute/type": [
                               {
                                 "@value": "string"
                               }
                             ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._userSelected",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._userSelected.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*.code",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
                           }
                         ]
                       },
@@ -887,18 +1438,10 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "boolean"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._code",
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._system",
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._code.id",
+                            "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._system.id",
                             "http://schemas.cloudprivacylabs.com/attribute/type": [
                               {
                                 "@value": "string"
@@ -916,10 +1459,23 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*.version",
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*.userSelected",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
-                            "@value": "string"
+                            "@value": "boolean"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._display",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/DiagnosticReport.conclusionCode.*.coding.*._display.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
                           }
                         ]
                       }
@@ -953,562 +1509,6 @@
                 "http://schemas.cloudprivacylabs.com/attribute/type": [
                   {
                     "@value": "string"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._language",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._language.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.hash",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._size",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._size.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.language",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._data",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._data.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.url",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.size",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "number"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.contentType",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._url",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._url.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._title",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._title.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._creation",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._creation.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._hash",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._hash.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.creation",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._contentType",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*._contentType.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.title",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.presentedForm.*.data",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DiagnosticReport._language",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport._language.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DiagnosticReport._effectiveDateTime",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport._effectiveDateTime.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DiagnosticReport._implicitRules",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport._implicitRules.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DiagnosticReport.code",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport.code._text",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.code._text.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport.code.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-              {
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "boolean"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.code.coding.*.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/DiagnosticReport.code.text",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DiagnosticReport.conclusion",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DiagnosticReport.issued",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DiagnosticReport.category",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "boolean"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._code",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._code.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._userSelected",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._userSelected.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._display",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._display.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*.display",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*.version",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._version",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.coding.*._version.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.category.*.text",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DiagnosticReport.category.*._text",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DiagnosticReport.category.*._text.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
                   }
                 ]
               }

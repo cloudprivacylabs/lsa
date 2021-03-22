@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/Coverage/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/Coverage/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/Coverage"
@@ -9,38 +9,45 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/Coverage.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "@id": "http://hl7.org/fhir/Coverage.identifier",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
-            "@list": [
+            "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@value": "Coverage"
+                "@id": "http://hl7.org/fhir/Coverage.identifier.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Coverage.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/Coverage.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
-            "@id": "http://hl7.org/fhir/Coverage.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "@list": [
               {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
+                "@value": "Coverage"
               }
             ]
           }
@@ -82,31 +89,24 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Coverage.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@id": "http://hl7.org/fhir/Coverage.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@id": "http://hl7.org/fhir/Coverage.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
               {
-                "@id": "http://hl7.org/fhir/Coverage.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "@list": [
                   {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
                   }
                 ]
               }

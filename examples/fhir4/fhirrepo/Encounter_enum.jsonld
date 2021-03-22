@@ -1,84 +1,13 @@
 [
   {
-    "@id": "http://hl7.org/fhir/Encounter/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/Encounter/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/Encounter"
       }
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
-      {
-        "@id": "http://hl7.org/fhir/Encounter.length",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Encounter.length.comparator",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "\u003c"
-                  },
-                  {
-                    "@value": "\u003c="
-                  },
-                  {
-                    "@value": "\u003e="
-                  },
-                  {
-                    "@value": "\u003e"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Encounter.statusHistory",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Encounter.statusHistory.*.status",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "planned"
-                      },
-                      {
-                        "@value": "arrived"
-                      },
-                      {
-                        "@value": "triaged"
-                      },
-                      {
-                        "@value": "in-progress"
-                      },
-                      {
-                        "@value": "onleave"
-                      },
-                      {
-                        "@value": "finished"
-                      },
-                      {
-                        "@value": "cancelled"
-                      },
-                      {
-                        "@value": "entered-in-error"
-                      },
-                      {
-                        "@value": "unknown"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
       {
         "@id": "http://hl7.org/fhir/Encounter.hospitalization",
         "http://schemas.cloudprivacylabs.com/attributes": [
@@ -87,69 +16,6 @@
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
                 "@id": "http://hl7.org/fhir/Encounter.hospitalization.preAdmissionIdentifier.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Encounter.location",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Encounter.location.*.status",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "planned"
-                      },
-                      {
-                        "@value": "active"
-                      },
-                      {
-                        "@value": "reserved"
-                      },
-                      {
-                        "@value": "completed"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Encounter.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Encounter.identifier.*.use",
                 "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
                   {
                     "@list": [
@@ -245,6 +111,140 @@
               },
               {
                 "@value": "unknown"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Encounter.statusHistory",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Encounter.statusHistory.*.status",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "planned"
+                      },
+                      {
+                        "@value": "arrived"
+                      },
+                      {
+                        "@value": "triaged"
+                      },
+                      {
+                        "@value": "in-progress"
+                      },
+                      {
+                        "@value": "onleave"
+                      },
+                      {
+                        "@value": "finished"
+                      },
+                      {
+                        "@value": "cancelled"
+                      },
+                      {
+                        "@value": "entered-in-error"
+                      },
+                      {
+                        "@value": "unknown"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Encounter.length",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Encounter.length.comparator",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "\u003c"
+                  },
+                  {
+                    "@value": "\u003c="
+                  },
+                  {
+                    "@value": "\u003e="
+                  },
+                  {
+                    "@value": "\u003e"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Encounter.location",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Encounter.location.*.status",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "planned"
+                      },
+                      {
+                        "@value": "active"
+                      },
+                      {
+                        "@value": "reserved"
+                      },
+                      {
+                        "@value": "completed"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Encounter.identifier",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Encounter.identifier.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }

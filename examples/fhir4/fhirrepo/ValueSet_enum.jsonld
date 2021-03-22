@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/ValueSet/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/ValueSet/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/ValueSet"
@@ -9,33 +9,151 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/ValueSet.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "draft"
-              },
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "retired"
-              },
-              {
-                "@value": "unknown"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/ValueSet.resourceType",
         "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
             "@list": [
               {
                 "@value": "ValueSet"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ValueSet.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ValueSet.text.status",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ValueSet.compose",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ValueSet.compose.exclude",
+            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+              {
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ValueSet.compose.exclude.*.filter",
+                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                      {
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ValueSet.compose.exclude.*.filter.*.op",
+                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "="
+                                  },
+                                  {
+                                    "@value": "is-a"
+                                  },
+                                  {
+                                    "@value": "descendent-of"
+                                  },
+                                  {
+                                    "@value": "is-not-a"
+                                  },
+                                  {
+                                    "@value": "regex"
+                                  },
+                                  {
+                                    "@value": "in"
+                                  },
+                                  {
+                                    "@value": "not-in"
+                                  },
+                                  {
+                                    "@value": "generalizes"
+                                  },
+                                  {
+                                    "@value": "exists"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ValueSet.compose.include",
+            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+              {
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ValueSet.compose.include.*.filter",
+                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                      {
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ValueSet.compose.include.*.filter.*.op",
+                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "="
+                                  },
+                                  {
+                                    "@value": "is-a"
+                                  },
+                                  {
+                                    "@value": "descendent-of"
+                                  },
+                                  {
+                                    "@value": "is-not-a"
+                                  },
+                                  {
+                                    "@value": "regex"
+                                  },
+                                  {
+                                    "@value": "in"
+                                  },
+                                  {
+                                    "@value": "not-in"
+                                  },
+                                  {
+                                    "@value": "generalizes"
+                                  },
+                                  {
+                                    "@value": "exists"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -65,6 +183,78 @@
                       },
                       {
                         "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ValueSet.contact",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ValueSet.contact.*.telecom",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ValueSet.contact.*.telecom.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "phone"
+                              },
+                              {
+                                "@value": "fax"
+                              },
+                              {
+                                "@value": "email"
+                              },
+                              {
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ValueSet.contact.*.telecom.*.use",
+                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
@@ -167,211 +357,21 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ValueSet.compose",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/ValueSet.status",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
-            "@id": "http://hl7.org/fhir/ValueSet.compose.include",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+            "@list": [
               {
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ValueSet.compose.include.*.filter",
-                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                      {
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ValueSet.compose.include.*.filter.*.op",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "="
-                                  },
-                                  {
-                                    "@value": "is-a"
-                                  },
-                                  {
-                                    "@value": "descendent-of"
-                                  },
-                                  {
-                                    "@value": "is-not-a"
-                                  },
-                                  {
-                                    "@value": "regex"
-                                  },
-                                  {
-                                    "@value": "in"
-                                  },
-                                  {
-                                    "@value": "not-in"
-                                  },
-                                  {
-                                    "@value": "generalizes"
-                                  },
-                                  {
-                                    "@value": "exists"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ValueSet.compose.exclude",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@value": "draft"
+              },
               {
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ValueSet.compose.exclude.*.filter",
-                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                      {
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ValueSet.compose.exclude.*.filter.*.op",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "="
-                                  },
-                                  {
-                                    "@value": "is-a"
-                                  },
-                                  {
-                                    "@value": "descendent-of"
-                                  },
-                                  {
-                                    "@value": "is-not-a"
-                                  },
-                                  {
-                                    "@value": "regex"
-                                  },
-                                  {
-                                    "@value": "in"
-                                  },
-                                  {
-                                    "@value": "not-in"
-                                  },
-                                  {
-                                    "@value": "generalizes"
-                                  },
-                                  {
-                                    "@value": "exists"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ValueSet.contact",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+                "@value": "active"
+              },
               {
-                "@id": "http://hl7.org/fhir/ValueSet.contact.*.telecom",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ValueSet.contact.*.telecom.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ValueSet.contact.*.telecom.*.use",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ValueSet.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ValueSet.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "@value": "retired"
+              },
               {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
+                "@value": "unknown"
               }
             ]
           }

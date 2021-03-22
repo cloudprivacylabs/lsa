@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/Linkage/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/Linkage/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/Linkage"
@@ -9,12 +9,27 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/Linkage.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "@id": "http://hl7.org/fhir/Linkage.item",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
-            "@list": [
+            "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@value": "Linkage"
+                "@id": "http://hl7.org/fhir/Linkage.item.*.type",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "source"
+                      },
+                      {
+                        "@value": "alternate"
+                      },
+                      {
+                        "@value": "historical"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -47,27 +62,12 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Linkage.item",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@id": "http://hl7.org/fhir/Linkage.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@list": [
               {
-                "@id": "http://hl7.org/fhir/Linkage.item.*.type",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "source"
-                      },
-                      {
-                        "@value": "alternate"
-                      },
-                      {
-                        "@value": "historical"
-                      }
-                    ]
-                  }
-                ]
+                "@value": "Linkage"
               }
             ]
           }

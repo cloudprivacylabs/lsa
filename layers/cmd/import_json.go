@@ -49,20 +49,18 @@ var importJSONCmd = &cobra.Command{
   "schema": "schema output file",
   "schemaId": "schema id",
   "objectType": "object type",
-  "schemaBase": "schema base output file",
-  "schemaBaseId": "schema base id",
-  "overlays": [
+  "layers": [
      {
          "@id": "output object id",
-         "terms": [ terms to include in the overlay ],
+         "terms": [ terms to include in the layer ],
          "file": "output file"
      },
      ...
    ]
 }
 
-Each element in the input will be compiled, and sliced into a schema base plus
-overlays, and saved as a schema+schema base+overlays. The file names, @ids, and terms
+Each element in the input will be compiled, and sliced into a layers, and saved 
+as a schema+layers. The file names, @ids, and terms
 are Go templates, you can reference entity names and references using {{.name}} and {{.ref}}.
 `,
 	Args: cobra.ExactArgs(1),
@@ -73,28 +71,24 @@ are Go templates, you can reference entity names and references using {{.name}} 
 		}
 
 		type overlay struct {
-			Terms  []string `json:"terms"`
-			termst []*template.Template
-			File   string `json:"file"`
-			filet  *template.Template
-			ID     string `json:"@id"`
-			idt    *template.Template
+			Terms        []string `json:"terms"`
+			termst       []*template.Template
+			File         string `json:"file"`
+			filet        *template.Template
+			ID           string `json:"@id"`
+			idt          *template.Template
+			IncludeEmpty bool `json:"includeEmpty"`
 		}
 
 		type request struct {
-			Entities        []jsonsch.Entity `json:"entities"`
-			SchemaID        string           `json:"schemaId"`
-			schemaIDt       *template.Template
-			SchemaBaseID    string `json:"schemaBaseId"`
-			schemaBaseIDt   *template.Template
-			Schema          string `json:"schema"`
-			schemat         *template.Template
-			ObjectType      string `json:"objectType"`
-			objectTypet     *template.Template
-			SchemaBase      string `json:"schemaBase"`
-			schemaBaset     *template.Template
-			Overlays        []overlay `json:"overlays"`
-			SchemaBaseTerms []string  `json:"schemaBaseTerms"`
+			Entities    []jsonsch.Entity `json:"entities"`
+			SchemaID    string           `json:"schemaId"`
+			schemaIDt   *template.Template
+			Schema      string `json:"schema"`
+			schemat     *template.Template
+			ObjectType  string `json:"objectType"`
+			objectTypet *template.Template
+			Layers      []overlay `json:"layers"`
 		}
 
 		var req request
@@ -106,16 +100,14 @@ are Go templates, you can reference entity names and references using {{.name}} 
 		}
 
 		req.schemaIDt = template.Must(template.New("schemaID").Parse(req.SchemaID))
-		req.schemaBaseIDt = template.Must(template.New("schemaBaseID").Parse(req.SchemaBaseID))
-		req.schemaBaset = template.Must(template.New("schemaBase").Parse(req.SchemaBase))
 		req.schemat = template.Must(template.New("schema").Parse(req.Schema))
 		req.objectTypet = template.Must(template.New("objectType").Parse(req.ObjectType))
-		for i := range req.Overlays {
-			for _, x := range req.Overlays[i].Terms {
-				req.Overlays[i].termst = append(req.Overlays[i].termst, template.Must(template.New(fmt.Sprintf("terms-%d", i)).Parse(x)))
+		for i := range req.Layers {
+			for _, x := range req.Layers[i].Terms {
+				req.Layers[i].termst = append(req.Layers[i].termst, template.Must(template.New(fmt.Sprintf("terms-%d", i)).Parse(x)))
 			}
-			req.Overlays[i].filet = template.Must(template.New(fmt.Sprintf("file-%d", i)).Parse(req.Overlays[i].File))
-			req.Overlays[i].idt = template.Must(template.New(fmt.Sprintf("id-%d", i)).Parse(req.Overlays[i].ID))
+			req.Layers[i].filet = template.Must(template.New(fmt.Sprintf("file-%d", i)).Parse(req.Layers[i].File))
+			req.Layers[i].idt = template.Must(template.New(fmt.Sprintf("id-%d", i)).Parse(req.Layers[i].ID))
 		}
 
 		exec := func(t *template.Template, entity jsonsch.Entity) string {
@@ -140,40 +132,17 @@ are Go templates, you can reference entity names and references using {{.name}} 
 		}
 
 		for i, item := range results {
-			if len(req.SchemaBase) > 0 {
-				layer := ls.NewEmptySchemaLayer()
-				a := item.BaseAttributes.Slice(func(term string, attribute *ls.Attribute) bool {
-					if len(term) == 0 {
-						return true
-					}
-					for _, x := range req.SchemaBaseTerms {
-						if x == term {
-							return true
-						}
-					}
-					return false
-				})
-				if a != nil {
-					layer.Attributes = *a
-				}
-				layer.ID = exec(req.schemaBaseIDt, req.Entities[i])
-				layer.ObjectType = exec(req.objectTypet, req.Entities[i])
-				layer.Type = ls.TermSchemaBaseType
-				data, err := json.MarshalIndent(layer.MarshalExpanded(), "", "  ")
-				if err != nil {
-					failErr(err)
-				}
-				ioutil.WriteFile(exec(req.schemaBaset, req.Entities[i]), data, 0664)
-			}
-
-			overlayIDs := make([]string, 0)
-			for _, ovl := range req.Overlays {
+			layerIDs := make([]string, 0)
+			for _, ovl := range req.Layers {
 				inclterms := make(map[string]struct{})
 				for _, x := range ovl.termst {
 					inclterms[exec(x, req.Entities[i])] = struct{}{}
 				}
 				layer := ls.NewEmptySchemaLayer()
 				a := item.BaseAttributes.Slice(func(term string, attribute *ls.Attribute) bool {
+					if len(term) == 0 && ovl.IncludeEmpty {
+						return true
+					}
 					_, ok := inclterms[term]
 					return ok
 				})
@@ -181,9 +150,8 @@ are Go templates, you can reference entity names and references using {{.name}} 
 					layer.Attributes = *a
 				}
 				layer.ID = exec(ovl.idt, req.Entities[i])
-				layer.Type = ls.TermOverlayType
 				layer.ObjectType = exec(req.objectTypet, req.Entities[i])
-				overlayIDs = append(overlayIDs, layer.ID)
+				layerIDs = append(layerIDs, layer.ID)
 				data, err := json.MarshalIndent(layer.MarshalExpanded(), "", "  ")
 				if err != nil {
 					failErr(err)
@@ -195,8 +163,7 @@ are Go templates, you can reference entity names and references using {{.name}} 
 				sch := ls.Schema{
 					ID:         exec(req.schemaIDt, req.Entities[i]),
 					ObjectType: exec(req.objectTypet, req.Entities[i]),
-					SchemaBase: exec(req.schemaBaseIDt, req.Entities[i]),
-					Overlays:   overlayIDs,
+					Layers:     layerIDs,
 				}
 				data, _ := json.MarshalIndent(sch.MarshalExpanded(), "", "  ")
 				ioutil.WriteFile(exec(req.schemat, req.Entities[i]), data, 0664)

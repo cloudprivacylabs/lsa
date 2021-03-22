@@ -26,7 +26,6 @@ import (
 func init() {
 	rootCmd.AddCommand(composeCmd)
 	composeCmd.Flags().String("format", "jsonld", "Output format (jsonld, jsonschema)")
-	composeCmd.Flags().String("config", "", "Output configuration")
 	composeCmd.Flags().StringP("output", "o", "", "Output file")
 	composeCmd.Flags().String("repo", "", "Schema repository directory")
 }
@@ -34,28 +33,7 @@ func init() {
 var composeCmd = &cobra.Command{
 	Use:   "compose",
 	Short: "Compose a schema from components",
-	Long: `Compose a schema from components and output the resulting schema. The arguments
-depend on the output format.
-
-  --output jsonschema
-
-An output configuration can specify type, format, and reference mappings:
-
-{
-   "typeMap": {
-     "typeInSchema": "json type",
-     ...
-   },
-   "formatMap": {
-     "formatInSchema": "json format"
-     ...
-   },
-   "refMap": {
-     "referenceInSchema": "reference to json schema"
-    ...
-  }
-}
-`,
+	Long:  `Compose a schema from components and output the resulting schema layer.`,
 
 	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -72,18 +50,11 @@ An output configuration can specify type, format, and reference mappings:
 			}
 			switch t := obj.(type) {
 			case *ls.SchemaLayer:
-				if t.Type == ls.TermSchemaBaseType {
-					if output != nil {
-						fail("Cannot compose schema base onto another")
-					}
+				if output == nil {
 					output = t
 				} else {
-					if output == nil {
-						output = t
-					} else {
-						if err := output.Compose(ls.ComposeOptions{}, t); err != nil {
-							failErr(err)
-						}
+					if err := output.Compose(ls.ComposeOptions{}, t); err != nil {
+						failErr(err)
 					}
 				}
 			case *ls.Schema:

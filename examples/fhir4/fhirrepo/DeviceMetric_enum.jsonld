@@ -1,13 +1,64 @@
 [
   {
-    "@id": "http://hl7.org/fhir/DeviceMetric/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/DeviceMetric/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/DeviceMetric"
       }
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/DeviceMetric.calibration",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DeviceMetric.calibration.*.type",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "unspecified"
+                      },
+                      {
+                        "@value": "offset"
+                      },
+                      {
+                        "@value": "gain"
+                      },
+                      {
+                        "@value": "two-point"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DeviceMetric.calibration.*.state",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "not-calibrated"
+                      },
+                      {
+                        "@value": "calibration-required"
+                      },
+                      {
+                        "@value": "calibrated"
+                      },
+                      {
+                        "@value": "unspecified"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/DeviceMetric.text",
         "http://schemas.cloudprivacylabs.com/attributes": [
@@ -29,6 +80,126 @@
                     "@value": "empty"
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceMetric.category",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "measurement"
+              },
+              {
+                "@value": "setting"
+              },
+              {
+                "@value": "calculation"
+              },
+              {
+                "@value": "unspecified"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceMetric.resourceType",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "DeviceMetric"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceMetric.color",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "black"
+              },
+              {
+                "@value": "red"
+              },
+              {
+                "@value": "green"
+              },
+              {
+                "@value": "yellow"
+              },
+              {
+                "@value": "blue"
+              },
+              {
+                "@value": "magenta"
+              },
+              {
+                "@value": "cyan"
+              },
+              {
+                "@value": "white"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceMetric.identifier",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DeviceMetric.identifier.*.use",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceMetric.operationalStatus",
+        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "on"
+              },
+              {
+                "@value": "off"
+              },
+              {
+                "@value": "standby"
+              },
+              {
+                "@value": "entered-in-error"
               }
             ]
           }
@@ -269,177 +440,6 @@
                             "@value": "PCV"
                           }
                         ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceMetric.category",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "measurement"
-              },
-              {
-                "@value": "setting"
-              },
-              {
-                "@value": "calculation"
-              },
-              {
-                "@value": "unspecified"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceMetric.color",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "black"
-              },
-              {
-                "@value": "red"
-              },
-              {
-                "@value": "green"
-              },
-              {
-                "@value": "yellow"
-              },
-              {
-                "@value": "blue"
-              },
-              {
-                "@value": "magenta"
-              },
-              {
-                "@value": "cyan"
-              },
-              {
-                "@value": "white"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceMetric.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "DeviceMetric"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceMetric.calibration",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceMetric.calibration.*.state",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "not-calibrated"
-                      },
-                      {
-                        "@value": "calibration-required"
-                      },
-                      {
-                        "@value": "calibrated"
-                      },
-                      {
-                        "@value": "unspecified"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DeviceMetric.calibration.*.type",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "unspecified"
-                      },
-                      {
-                        "@value": "offset"
-                      },
-                      {
-                        "@value": "gain"
-                      },
-                      {
-                        "@value": "two-point"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceMetric.operationalStatus",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "on"
-              },
-              {
-                "@value": "off"
-              },
-              {
-                "@value": "standby"
-              },
-              {
-                "@value": "entered-in-error"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceMetric.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceMetric.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
                       }
                     ]
                   }

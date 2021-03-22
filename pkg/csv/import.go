@@ -27,9 +27,7 @@ type ImportSpec struct {
 }
 
 type LayerSpec struct {
-	Output string `json:"output"`
-	// SchemaBase or Overlay
-	Type    string          `json:"type"`
+	Output  string          `json:"output"`
 	Columns []ColumnProfile `json:"columns"`
 }
 
@@ -113,19 +111,9 @@ func Import(spec ImportSpec, input [][]string) (layers []*ls.SchemaLayer, err er
 			}
 		}
 		m := ls.NewEmptySchemaLayer()
-		switch layer.Type {
-		case "SchemaBase", ls.TermSchemaBaseType:
-			m.Attributes = *attributes
-			m.Type = ls.TermSchemaBaseType
-			m.ObjectType = spec.ObjectType
-			layers = append(layers, m)
-
-		case "Overlay", ls.TermOverlayType:
-			m.Attributes = *attributes
-			m.Type = ls.TermOverlayType
-			m.ObjectType = spec.ObjectType
-			layers = append(layers, m)
-		}
+		m.Attributes = *attributes
+		m.ObjectType = spec.ObjectType
+		layers = append(layers, m)
 	}
 	return
 }

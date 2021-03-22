@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/HealthcareService/overlay/type",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/HealthcareService/type",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/HealthcareService"
@@ -9,12 +9,49 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode",
+        "@id": "http://hl7.org/fhir/HealthcareService.implicitRules",
+        "http://schemas.cloudprivacylabs.com/attribute/type": [
+          {
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.name",
+        "http://schemas.cloudprivacylabs.com/attribute/type": [
+          {
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.telecom",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.id",
+                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.rank",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "number"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._value",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._value.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.value",
                 "http://schemas.cloudprivacylabs.com/attribute/type": [
                   {
                     "@value": "string"
@@ -22,253 +59,76 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._rank",
+                "http://schemas.cloudprivacylabs.com/attributes": [
                   {
+                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._rank.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._use",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._use.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period.start",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period._start",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*.display",
+                        "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period._start.id",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*.version",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._version",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._version.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._code",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._code.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._display",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._display.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "boolean"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._userSelected",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._userSelected.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
                           }
                         ]
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.text",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  },
                   {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*._text",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*._text.id",
+                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period.end",
                     "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
                         "@value": "string"
                       }
                     ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService._implicitRules",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService._implicitRules.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService._comment",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService._comment.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.availableTime",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._availableStartTime",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                  },
                   {
-                    "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._availableStartTime.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*.availableEndTime",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._allDay",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._allDay.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*.allDay",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "boolean"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*.availableStartTime",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._availableEndTime",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._availableEndTime.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._daysOfWeek",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period._end",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._daysOfWeek.*.id",
+                        "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period._end.id",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
@@ -276,14 +136,27 @@
                         ]
                       }
                     ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._system",
+                "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@value": "string"
+                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._system.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
                   }
                 ]
               }
@@ -292,178 +165,68 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/HealthcareService.photo",
+        "@id": "http://hl7.org/fhir/HealthcareService._extraDetails",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo.title",
+            "@id": "http://hl7.org/fhir/HealthcareService._extraDetails.id",
             "http://schemas.cloudprivacylabs.com/attribute/type": [
               {
                 "@value": "string"
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService._availabilityExceptions",
+        "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo.language",
+            "@id": "http://hl7.org/fhir/HealthcareService._availabilityExceptions.id",
             "http://schemas.cloudprivacylabs.com/attribute/type": [
               {
                 "@value": "string"
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.active",
+        "http://schemas.cloudprivacylabs.com/attribute/type": [
           {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo._creation",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.photo._creation.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
+            "@value": "boolean"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.id",
+        "http://schemas.cloudprivacylabs.com/attribute/type": [
           {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo.hash",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.language",
+        "http://schemas.cloudprivacylabs.com/attribute/type": [
           {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo._data",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.photo._data.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.availabilityExceptions",
+        "http://schemas.cloudprivacylabs.com/attribute/type": [
           {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo._title",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.photo._title.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService._name",
+        "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo._language",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.photo._language.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo.size",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "number"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo.url",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo.data",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo._hash",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.photo._hash.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo._size",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.photo._size.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo.contentType",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo._url",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.photo._url.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo._contentType",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.photo._contentType.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.photo.creation",
+            "@id": "http://hl7.org/fhir/HealthcareService._name.id",
             "http://schemas.cloudprivacylabs.com/attribute/type": [
               {
                 "@value": "string"
@@ -477,19 +240,6 @@
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.communication.*._text",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.communication.*._text.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
               {
                 "@id": "http://hl7.org/fhir/HealthcareService.communication.*.id",
                 "http://schemas.cloudprivacylabs.com/attribute/type": [
@@ -512,18 +262,10 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*.display",
+                        "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*.version",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "boolean"
                           }
                         ]
                       },
@@ -532,19 +274,6 @@
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
                             "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*._version",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*._version.id",
                             "http://schemas.cloudprivacylabs.com/attribute/type": [
                               {
                                 "@value": "string"
@@ -567,10 +296,10 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*.code",
+                        "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*.userSelected",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
-                            "@value": "string"
+                            "@value": "boolean"
                           }
                         ]
                       },
@@ -588,6 +317,30 @@
                         ]
                       },
                       {
+                        "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*.display",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*.code",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
                         "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*._display",
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
@@ -601,18 +354,15 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*._version",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
                           {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*.version",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
+                            "@id": "http://hl7.org/fhir/HealthcareService.communication.*.coding.*._version.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
                           }
                         ]
                       }
@@ -627,45 +377,12 @@
                     "@value": "string"
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.availabilityExceptions",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.extraDetails",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.category",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.category.*.text",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
               },
               {
-                "@id": "http://hl7.org/fhir/HealthcareService.category.*._text",
+                "@id": "http://hl7.org/fhir/HealthcareService.communication.*._text",
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/HealthcareService.category.*._text.id",
+                    "@id": "http://hl7.org/fhir/HealthcareService.communication.*._text.id",
                     "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
                         "@value": "string"
@@ -673,638 +390,6 @@
                     ]
                   }
                 ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.category.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._display",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._display.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._userSelected",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._userSelected.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*.display",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._version",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._version.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*.version",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "boolean"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._code",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._code.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService._active",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService._active.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.characteristic",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.text",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*._text",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*._text.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "boolean"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*.display",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._version",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._version.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._display",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._display.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._code",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._code.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._userSelected",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._userSelected.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*.version",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.notAvailable",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.description",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*._description",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*._description.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during.start",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during._start",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during._start.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during.end",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during._end",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during._end.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.text.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.text._status",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.text._status.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.appointmentRequired",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "boolean"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*._text",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*._text.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._display",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._display.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "boolean"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._code",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._code.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._userSelected",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._userSelected.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*.version",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._version",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._version.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*.display",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.text",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.active",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "boolean"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.name",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService._language",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService._language.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService._extraDetails",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService._extraDetails.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
               }
             ]
           }
@@ -1321,7 +406,15 @@
                   {
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*.code",
+                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*.userSelected",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "boolean"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*.id",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
@@ -1337,39 +430,10 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*._code",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*._code.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*.id",
+                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*.version",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*.display",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "boolean"
                           }
                         ]
                       },
@@ -1400,10 +464,10 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*._display",
+                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*._code",
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*._display.id",
+                            "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*._code.id",
                             "http://schemas.cloudprivacylabs.com/attribute/type": [
                               {
                                 "@value": "string"
@@ -1413,7 +477,20 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*.version",
+                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*._userSelected",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*._userSelected.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*.display",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
@@ -1421,10 +498,18 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*._userSelected",
+                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*.code",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*._display",
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*._userSelected.id",
+                            "@id": "http://hl7.org/fhir/HealthcareService.type.*.coding.*._display.id",
                             "http://schemas.cloudprivacylabs.com/attribute/type": [
                               {
                                 "@value": "string"
@@ -1471,410 +556,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/HealthcareService._appointmentRequired",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService._appointmentRequired.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.eligibility",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.text",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code._text",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code._text.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding",
-                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                      {
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._system",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._system.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*.code",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*.display",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*.system",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*.version",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._display",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._display.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*.userSelected",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "boolean"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._code",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._code.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._userSelected",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._userSelected.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._version",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._version.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.comment",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*._comment",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*._comment.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.comment",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.specialty",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.specialty.*._text",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.specialty.*._text.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._userSelected",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._userSelected.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "boolean"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._code",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._code.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._display",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._display.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*.version",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*.display",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._version",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._version.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.text",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.id",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService._availabilityExceptions",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService._availabilityExceptions.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/HealthcareService.language",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/HealthcareService.program",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
@@ -1885,7 +566,7 @@
                   {
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*.id",
+                        "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*.version",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
@@ -1897,14 +578,6 @@
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "boolean"
                           }
                         ]
                       },
@@ -1922,41 +595,7 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*._version",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*._version.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*._display",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*._display.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
                         "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*.version",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
@@ -1972,10 +611,52 @@
                         ]
                       },
                       {
+                        "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*._version",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*._version.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
                         "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*._code",
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
                             "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*._code.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*.userSelected",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "boolean"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*._display",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.program.*.coding.*._display.id",
                             "http://schemas.cloudprivacylabs.com/attribute/type": [
                               {
                                 "@value": "string"
@@ -2035,31 +716,130 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/HealthcareService.telecom",
+        "@id": "http://hl7.org/fhir/HealthcareService.appointmentRequired",
+        "http://schemas.cloudprivacylabs.com/attribute/type": [
+          {
+            "@value": "boolean"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.characteristic",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._use",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
                   {
-                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._use.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period._start",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period._start.id",
+                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._code",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._code.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*.version",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._display",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._display.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._version",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._version.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._userSelected",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._userSelected.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*.userSelected",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "boolean"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*.display",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._system",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*._system.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.coding.*.code",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
@@ -2067,48 +847,11 @@
                         ]
                       }
                     ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period.end",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period._end",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period._end.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.period.start",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.id",
+                "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.text",
                 "http://schemas.cloudprivacylabs.com/attribute/type": [
                   {
                     "@value": "string"
@@ -2116,10 +859,10 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._rank",
+                "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*._text",
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._rank.id",
+                    "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*._text.id",
                     "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
                         "@value": "string"
@@ -2129,44 +872,10 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._value",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._value.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._system",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.telecom.*._system.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.value",
+                "@id": "http://hl7.org/fhir/HealthcareService.characteristic.*.id",
                 "http://schemas.cloudprivacylabs.com/attribute/type": [
                   {
                     "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.telecom.*.rank",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "number"
                   }
                 ]
               }
@@ -2175,13 +884,160 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/HealthcareService._name",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
-            "@id": "http://hl7.org/fhir/HealthcareService._name.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
+            "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@value": "string"
+                "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*._text",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*._text.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*.code",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._display",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._display.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._userSelected",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._userSelected.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._system",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._system.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._version",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._version.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._code",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*._code.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*.userSelected",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "boolean"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*.version",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.coding.*.display",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.referralMethod.*.text",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
               }
             ]
           }
@@ -2191,7 +1047,7 @@
         "@id": "http://hl7.org/fhir/HealthcareService.meta",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/HealthcareService.meta.lastUpdated",
+            "@id": "http://hl7.org/fhir/HealthcareService.meta.source",
             "http://schemas.cloudprivacylabs.com/attribute/type": [
               {
                 "@value": "string"
@@ -2199,39 +1055,9 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/HealthcareService.meta.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
+            "@id": "http://hl7.org/fhir/HealthcareService.meta.profile",
+            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
               {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.meta.versionId",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.meta._source",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.meta._source.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HealthcareService.meta._versionId",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.meta._versionId.id",
                 "http://schemas.cloudprivacylabs.com/attribute/type": [
                   {
                     "@value": "string"
@@ -2246,15 +1072,10 @@
               {
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*.userSelected",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
+                        "@value": "boolean"
                       }
                     ]
                   },
@@ -2268,14 +1089,6 @@
                             "@value": "string"
                           }
                         ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
                       }
                     ]
                   },
@@ -2296,31 +1109,10 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "boolean"
-                      }
-                    ]
-                  },
-                  {
                     "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*._system",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*._code.id",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
@@ -2338,10 +1130,44 @@
                     ]
                   },
                   {
+                    "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*._code",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*._code.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
                     "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*._userSelected",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*._userSelected.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*.system",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*._version",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.meta.security.*._version.id",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
@@ -2357,6 +1183,27 @@
                         "@value": "string"
                       }
                     ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.meta.lastUpdated",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.meta._source",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.meta._source.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
                   }
                 ]
               }
@@ -2381,10 +1228,65 @@
               {
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._display",
+                    "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*.userSelected",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "boolean"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._version",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._display.id",
+                        "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._version.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._code",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._code.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._userSelected",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._userSelected.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._system",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._system.id",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
@@ -2418,36 +1320,15 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._system",
+                    "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._display",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._system.id",
+                        "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._display.id",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
                           }
                         ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "boolean"
                       }
                     ]
                   },
@@ -2458,47 +1339,13 @@
                         "@value": "string"
                       }
                     ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.meta.tag.*._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
                   }
                 ]
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/HealthcareService.meta.source",
+            "@id": "http://hl7.org/fhir/HealthcareService.meta.versionId",
             "http://schemas.cloudprivacylabs.com/attribute/type": [
               {
                 "@value": "string"
@@ -2506,9 +1353,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/HealthcareService.meta.profile",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+            "@id": "http://hl7.org/fhir/HealthcareService.meta.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
               {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.meta._versionId",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.meta._versionId.id",
                 "http://schemas.cloudprivacylabs.com/attribute/type": [
                   {
                     "@value": "string"
@@ -2520,7 +1376,20 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/HealthcareService.implicitRules",
+        "@id": "http://hl7.org/fhir/HealthcareService._implicitRules",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService._implicitRules.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.extraDetails",
         "http://schemas.cloudprivacylabs.com/attribute/type": [
           {
             "@value": "string"
@@ -2528,15 +1397,41 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/HealthcareService.identifier",
+        "@id": "http://hl7.org/fhir/HealthcareService.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.text._status",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.text._status.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.text.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.notAvailable",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period",
+                "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during",
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period.end",
+                    "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during.id",
                     "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
                         "@value": "string"
@@ -2544,10 +1439,18 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period._end",
+                    "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during.start",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during._start",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period._end.id",
+                        "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during._start.id",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
@@ -2557,7 +1460,7 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period.id",
+                    "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during.end",
                     "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
                         "@value": "string"
@@ -2565,18 +1468,10 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period.start",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period._start",
+                    "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during._end",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period._start.id",
+                        "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.during._end.id",
                         "http://schemas.cloudprivacylabs.com/attribute/type": [
                           {
                             "@value": "string"
@@ -2587,6 +1482,44 @@
                   }
                 ]
               },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*.description",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*._description",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.notAvailable.*._description.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.identifier",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
               {
                 "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.id",
                 "http://schemas.cloudprivacylabs.com/attribute/type": [
@@ -2600,175 +1533,6 @@
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/HealthcareService.identifier.*._value.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*._use",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*._use.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding",
-                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                      {
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._userSelected",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._userSelected.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*.display",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*.system",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*.version",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._display",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._display.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._code",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._code.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*.code",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._version",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._version.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*.userSelected",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "boolean"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._system",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._system.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.text",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type._text",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type._text.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.id",
                     "http://schemas.cloudprivacylabs.com/attribute/type": [
                       {
                         "@value": "string"
@@ -2805,6 +1569,1242 @@
                     "@value": "string"
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding",
+                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                      {
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*.code",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._system",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._system.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*.system",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._version",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._version.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*.userSelected",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "boolean"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*.version",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*.display",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._display",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._display.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._code",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._code.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._userSelected",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.coding.*._userSelected.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type.text",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type._text",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.type._text.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period.start",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period._start",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period._start.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period.end",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period._end",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period._end.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*.period.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.identifier.*._use",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.identifier.*._use.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.category",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.category.*._text",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.category.*._text.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.category.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._code",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._code.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*.version",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*.display",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*.userSelected",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "boolean"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*.code",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._system",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._system.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._userSelected",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._userSelected.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._display",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._display.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._version",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.category.*.coding.*._version.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.category.*.text",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.photo",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo._url",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.photo._url.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo.data",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo.url",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo._data",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.photo._data.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo.title",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo._language",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.photo._language.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo.hash",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo._size",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.photo._size.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo.language",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo.size",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "number"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo._contentType",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.photo._contentType.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo._creation",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.photo._creation.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo.creation",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo._title",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.photo._title.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo.contentType",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService.photo._hash",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.photo._hash.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.availableTime",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._allDay",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._allDay.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._daysOfWeek",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._daysOfWeek.*.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._availableStartTime",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._availableStartTime.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*.allDay",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "boolean"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._availableEndTime",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*._availableEndTime.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*.availableStartTime",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.availableTime.*.availableEndTime",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.eligibility",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code._text",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code._text.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding",
+                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                      {
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*.userSelected",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "boolean"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._version",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._version.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._code",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._code.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._userSelected",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._userSelected.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*.system",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*.version",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*.display",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._system",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._system.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*.code",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._display",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.coding.*._display.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.code.text",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.comment",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*._comment",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*._comment.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.eligibility.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService._comment",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService._comment.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService._appointmentRequired",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService._appointmentRequired.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService._active",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService._active.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*.code",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*.userSelected",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "boolean"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*.version",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*.display",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._version",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._version.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._code",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._code.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._userSelected",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._userSelected.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._system",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._system.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._display",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.coding.*._display.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*.text",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*._text",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.serviceProvisionCode.*._text.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.specialty",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.text",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.specialty.*._text",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/HealthcareService.specialty.*._text.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._version",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._version.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*.code",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._system",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._system.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._userSelected",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._userSelected.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*.userSelected",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "boolean"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*.version",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*.display",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._display",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._display.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._code",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService.specialty.*.coding.*._code.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService.comment",
+        "http://schemas.cloudprivacylabs.com/attribute/type": [
+          {
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/HealthcareService._language",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/HealthcareService._language.id",
+            "http://schemas.cloudprivacylabs.com/attribute/type": [
+              {
+                "@value": "string"
               }
             ]
           }

@@ -1,7 +1,7 @@
 [
   {
-    "@id": "http://hl7.org/fhir/ConceptMap/overlay/format",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/ConceptMap/format",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/ConceptMap"
@@ -9,10 +9,18 @@
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
       {
-        "@id": "http://hl7.org/fhir/ConceptMap._title",
+        "@id": "http://hl7.org/fhir/ConceptMap.id",
+        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+          {
+            "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap._status",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/ConceptMap._title.id",
+            "@id": "http://hl7.org/fhir/ConceptMap._status.id",
             "http://schemas.cloudprivacylabs.com/attribute/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
@@ -22,13 +30,857 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ConceptMap.meta",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/ConceptMap.name",
+        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
           {
-            "@id": "http://hl7.org/fhir/ConceptMap.meta._versionId",
+            "@value": "^[ \\r\\n\\t\\S]+$"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.date",
+        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+          {
+            "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.copyright",
+        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+          {
+            "@value": "^[ \\r\\n\\t\\S]+$"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.useContext",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/ConceptMap.meta._versionId.id",
+                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low.code",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._comparator",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._comparator.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low.value",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._value",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._value.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._system",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._system.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low.unit",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._code",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._code.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._unit",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._unit.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^\\S*$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high.code",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._value",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._value.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._code",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._code.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high.value",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._system",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._system.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._comparator",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._comparator.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._unit",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._unit.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high.unit",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^\\S*$"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._version",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._version.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._code",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._code.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code.system",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^\\S*$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code.version",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code.code",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._display",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._display.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._userSelected",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._userSelected.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code.userSelected",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^true|false$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code.display",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._system",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._system.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.text",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept._text",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept._text.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding",
+                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                      {
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*.system",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^\\S*$"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._display",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._display.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                  {
+                                    "@value": "^[ \\r\\n\\t\\S]+$"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*.userSelected",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^true|false$"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*.version",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*.display",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._system",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._system.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                  {
+                                    "@value": "^[ \\r\\n\\t\\S]+$"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*.code",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._version",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._version.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                  {
+                                    "@value": "^[ \\r\\n\\t\\S]+$"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._code",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._code.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                  {
+                                    "@value": "^[ \\r\\n\\t\\S]+$"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._userSelected",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._userSelected.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                  {
+                                    "@value": "^[ \\r\\n\\t\\S]+$"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity.unit",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity.value",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._code",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._code.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._unit",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._unit.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._system",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._system.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._comparator",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._comparator.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity.code",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._value",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._value.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity.system",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^\\S*$"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap._experimental",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap._experimental.id",
+            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap._date",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap._date.id",
+            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.contact",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.contact.*.name",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.contact.*._name",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.contact.*._name.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.value",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._rank",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._rank.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._system",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._system.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._value",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._value.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period._end",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period._end.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                  {
+                                    "@value": "^[ \\r\\n\\t\\S]+$"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period.start",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period._start",
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period._start.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                  {
+                                    "@value": "^[ \\r\\n\\t\\S]+$"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period.end",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._use",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._use.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.rank",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[1-9][0-9]*$"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.contact.*.id",
                 "http://schemas.cloudprivacylabs.com/attribute/pattern": [
                   {
                     "@value": "^[ \\r\\n\\t\\S]+$"
@@ -36,15 +888,180 @@
                 ]
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.implicitRules",
+        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
           {
-            "@id": "http://hl7.org/fhir/ConceptMap.meta.id",
-            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+            "@value": "^\\S*$"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*._text",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*._text.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.id",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding",
+                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  {
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*.version",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._version",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._version.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._code",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._code.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*.userSelected",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^true|false$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*.code",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^\\S*$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._system",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._system.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._userSelected",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._userSelected.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._display",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._display.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*.display",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.text",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.meta",
+        "http://schemas.cloudprivacylabs.com/attributes": [
           {
             "@id": "http://hl7.org/fhir/ConceptMap.meta._source",
             "http://schemas.cloudprivacylabs.com/attributes": [
@@ -59,10 +1076,182 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/ConceptMap.meta.lastUpdated",
+            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+              {
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap.meta.tag",
+            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+              {
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._display",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._display.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._version",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._version.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._code",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._code.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*.display",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*.version",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._system",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._system.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._userSelected",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._userSelected.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*.userSelected",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^true|false$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*.code",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*.system",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^\\S*$"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap.meta.versionId",
+            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+              {
+                "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap.meta._lastUpdated",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.meta._lastUpdated.id",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/ConceptMap.meta.source",
             "http://schemas.cloudprivacylabs.com/attribute/pattern": [
               {
                 "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap.meta.id",
+            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap.meta._versionId",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.meta._versionId.id",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
               }
             ]
           },
@@ -84,23 +1273,10 @@
               {
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*.code",
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*.system",
                     "http://schemas.cloudprivacylabs.com/attribute/pattern": [
                       {
-                        "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                        "@value": "^\\S*$"
                       }
                     ]
                   },
@@ -109,22 +1285,6 @@
                     "http://schemas.cloudprivacylabs.com/attribute/pattern": [
                       {
                         "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^true|false$"
                       }
                     ]
                   },
@@ -142,6 +1302,14 @@
                     ]
                   },
                   {
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*.code",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                      }
+                    ]
+                  },
+                  {
                     "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*._code",
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
@@ -151,14 +1319,6 @@
                             "@value": "^[ \\r\\n\\t\\S]+$"
                           }
                         ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
                       }
                     ]
                   },
@@ -176,10 +1336,10 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*.system",
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*.id",
                     "http://schemas.cloudprivacylabs.com/attribute/pattern": [
                       {
-                        "@value": "^\\S*$"
+                        "@value": "^[ \\r\\n\\t\\S]+$"
                       }
                     ]
                   },
@@ -195,157 +1355,35 @@
                         ]
                       }
                     ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap.meta.lastUpdated",
-            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-              {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap.meta._lastUpdated",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.meta._lastUpdated.id",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  },
                   {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap.meta.versionId",
-            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-              {
-                "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap.meta.tag",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-              {
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*.display",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  },
                   {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*.userSelected",
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*._userSelected",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*._userSelected.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.meta.security.*.userSelected",
                     "http://schemas.cloudprivacylabs.com/attribute/pattern": [
                       {
                         "@value": "^true|false$"
                       }
                     ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^\\S*$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.meta.tag.*._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
                   }
                 ]
               }
@@ -354,23 +1392,34 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ConceptMap._publisher",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/ConceptMap.targetCanonical",
+        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
           {
-            "@id": "http://hl7.org/fhir/ConceptMap._publisher.id",
-            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
+            "@value": "^\\S*$"
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ConceptMap._implicitRules",
+        "@id": "http://hl7.org/fhir/ConceptMap.targetUri",
+        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+          {
+            "@value": "^\\S*$"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.sourceCanonical",
+        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+          {
+            "@value": "^\\S*$"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap._sourceCanonical",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/ConceptMap._implicitRules.id",
+            "@id": "http://hl7.org/fhir/ConceptMap._sourceCanonical.id",
             "http://schemas.cloudprivacylabs.com/attribute/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
@@ -393,15 +1442,20 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ConceptMap.name",
-        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+        "@id": "http://hl7.org/fhir/ConceptMap._version",
+        "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@value": "^[ \\r\\n\\t\\S]+$"
+            "@id": "http://hl7.org/fhir/ConceptMap._version.id",
+            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ConceptMap.targetCanonical",
+        "@id": "http://hl7.org/fhir/ConceptMap.sourceUri",
         "http://schemas.cloudprivacylabs.com/attribute/pattern": [
           {
             "@value": "^\\S*$"
@@ -409,7 +1463,36 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ConceptMap.purpose",
+        "@id": "http://hl7.org/fhir/ConceptMap._language",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap._language.id",
+            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.url",
+        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+          {
+            "@value": "^\\S*$"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.title",
+        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+          {
+            "@value": "^[ \\r\\n\\t\\S]+$"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.publisher",
         "http://schemas.cloudprivacylabs.com/attribute/pattern": [
           {
             "@value": "^[ \\r\\n\\t\\S]+$"
@@ -422,15 +1505,20 @@
           {
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/ConceptMap.group.*.source",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                "@id": "http://hl7.org/fhir/ConceptMap.group.*._targetVersion",
+                "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@value": "^\\S*$"
+                    "@id": "http://hl7.org/fhir/ConceptMap.group.*._targetVersion.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/ConceptMap.group.*.sourceVersion",
+                "@id": "http://hl7.org/fhir/ConceptMap.group.*.id",
                 "http://schemas.cloudprivacylabs.com/attribute/pattern": [
                   {
                     "@value": "^[ \\r\\n\\t\\S]+$"
@@ -451,78 +1539,23 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped",
+                "@id": "http://hl7.org/fhir/ConceptMap.group.*._target",
                 "http://schemas.cloudprivacylabs.com/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped._mode",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped._mode.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped.url",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^\\S*$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped.id",
+                    "@id": "http://hl7.org/fhir/ConceptMap.group.*._target.id",
                     "http://schemas.cloudprivacylabs.com/attribute/pattern": [
                       {
                         "@value": "^[ \\r\\n\\t\\S]+$"
                       }
                     ]
-                  },
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.group.*.source",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
                   {
-                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
+                    "@value": "^\\S*$"
                   }
                 ]
               },
@@ -535,10 +1568,308 @@
                 ]
               },
               {
+                "@id": "http://hl7.org/fhir/ConceptMap.group.*.sourceVersion",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.group.*._source",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.group.*._source.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
                 "@id": "http://hl7.org/fhir/ConceptMap.group.*.element",
                 "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
                   {
                     "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target",
+                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                          {
+                            "http://schemas.cloudprivacylabs.com/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn",
+                                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                                  {
+                                    "http://schemas.cloudprivacylabs.com/attributes": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*._value",
+                                        "http://schemas.cloudprivacylabs.com/attributes": [
+                                          {
+                                            "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*._value.id",
+                                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                              {
+                                                "@value": "^[ \\r\\n\\t\\S]+$"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*.value",
+                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                          {
+                                            "@value": "^[ \\r\\n\\t\\S]+$"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*._property",
+                                        "http://schemas.cloudprivacylabs.com/attributes": [
+                                          {
+                                            "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*._property.id",
+                                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                              {
+                                                "@value": "^[ \\r\\n\\t\\S]+$"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*.display",
+                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                          {
+                                            "@value": "^[ \\r\\n\\t\\S]+$"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*.property",
+                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                          {
+                                            "@value": "^\\S*$"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*._display",
+                                        "http://schemas.cloudprivacylabs.com/attributes": [
+                                          {
+                                            "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*._display.id",
+                                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                              {
+                                                "@value": "^[ \\r\\n\\t\\S]+$"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*.id",
+                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                          {
+                                            "@value": "^[ \\r\\n\\t\\S]+$"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*.system",
+                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                          {
+                                            "@value": "^\\S*$"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product",
+                                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                                  {
+                                    "http://schemas.cloudprivacylabs.com/attributes": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*._display",
+                                        "http://schemas.cloudprivacylabs.com/attributes": [
+                                          {
+                                            "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*._display.id",
+                                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                              {
+                                                "@value": "^[ \\r\\n\\t\\S]+$"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*.id",
+                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                          {
+                                            "@value": "^[ \\r\\n\\t\\S]+$"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*._value",
+                                        "http://schemas.cloudprivacylabs.com/attributes": [
+                                          {
+                                            "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*._value.id",
+                                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                              {
+                                                "@value": "^[ \\r\\n\\t\\S]+$"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*.system",
+                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                          {
+                                            "@value": "^\\S*$"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*.display",
+                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                          {
+                                            "@value": "^[ \\r\\n\\t\\S]+$"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*.property",
+                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                          {
+                                            "@value": "^\\S*$"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*.value",
+                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                          {
+                                            "@value": "^[ \\r\\n\\t\\S]+$"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*._property",
+                                        "http://schemas.cloudprivacylabs.com/attributes": [
+                                          {
+                                            "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*._property.id",
+                                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                              {
+                                                "@value": "^[ \\r\\n\\t\\S]+$"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.id",
+                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                  {
+                                    "@value": "^[ \\r\\n\\t\\S]+$"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._code",
+                                "http://schemas.cloudprivacylabs.com/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._code.id",
+                                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                      {
+                                        "@value": "^[ \\r\\n\\t\\S]+$"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.code",
+                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                  {
+                                    "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._equivalence",
+                                "http://schemas.cloudprivacylabs.com/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._equivalence.id",
+                                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                      {
+                                        "@value": "^[ \\r\\n\\t\\S]+$"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.display",
+                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                  {
+                                    "@value": "^[ \\r\\n\\t\\S]+$"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._display",
+                                "http://schemas.cloudprivacylabs.com/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._display.id",
+                                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                      {
+                                        "@value": "^[ \\r\\n\\t\\S]+$"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.comment",
+                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                  {
+                                    "@value": "^[ \\r\\n\\t\\S]+$"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._comment",
+                                "http://schemas.cloudprivacylabs.com/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._comment.id",
+                                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                                      {
+                                        "@value": "^[ \\r\\n\\t\\S]+$"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      },
                       {
                         "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.code",
                         "http://schemas.cloudprivacylabs.com/attribute/pattern": [
@@ -580,278 +1911,27 @@
                             ]
                           }
                         ]
-                      },
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped.url",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
                       {
-                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target",
-                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                          {
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.display",
-                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                  {
-                                    "@value": "^[ \\r\\n\\t\\S]+$"
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.comment",
-                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                  {
-                                    "@value": "^[ \\r\\n\\t\\S]+$"
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._equivalence",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._equivalence.id",
-                                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                      {
-                                        "@value": "^[ \\r\\n\\t\\S]+$"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._comment",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._comment.id",
-                                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                      {
-                                        "@value": "^[ \\r\\n\\t\\S]+$"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                  {
-                                    "@value": "^[ \\r\\n\\t\\S]+$"
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.code",
-                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                  {
-                                    "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product",
-                                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                                  {
-                                    "http://schemas.cloudprivacylabs.com/attributes": [
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*._property",
-                                        "http://schemas.cloudprivacylabs.com/attributes": [
-                                          {
-                                            "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*._property.id",
-                                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                              {
-                                                "@value": "^[ \\r\\n\\t\\S]+$"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*.value",
-                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                          {
-                                            "@value": "^[ \\r\\n\\t\\S]+$"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*.display",
-                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                          {
-                                            "@value": "^[ \\r\\n\\t\\S]+$"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*.id",
-                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                          {
-                                            "@value": "^[ \\r\\n\\t\\S]+$"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*.property",
-                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                          {
-                                            "@value": "^\\S*$"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*._value",
-                                        "http://schemas.cloudprivacylabs.com/attributes": [
-                                          {
-                                            "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*._value.id",
-                                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                              {
-                                                "@value": "^[ \\r\\n\\t\\S]+$"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*.system",
-                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                          {
-                                            "@value": "^\\S*$"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*._display",
-                                        "http://schemas.cloudprivacylabs.com/attributes": [
-                                          {
-                                            "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.product.*._display.id",
-                                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                              {
-                                                "@value": "^[ \\r\\n\\t\\S]+$"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._code",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._code.id",
-                                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                      {
-                                        "@value": "^[ \\r\\n\\t\\S]+$"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._display",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*._display.id",
-                                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                      {
-                                        "@value": "^[ \\r\\n\\t\\S]+$"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn",
-                                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                                  {
-                                    "http://schemas.cloudprivacylabs.com/attributes": [
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*._value",
-                                        "http://schemas.cloudprivacylabs.com/attributes": [
-                                          {
-                                            "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*._value.id",
-                                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                              {
-                                                "@value": "^[ \\r\\n\\t\\S]+$"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*.system",
-                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                          {
-                                            "@value": "^\\S*$"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*.display",
-                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                          {
-                                            "@value": "^[ \\r\\n\\t\\S]+$"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*.id",
-                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                          {
-                                            "@value": "^[ \\r\\n\\t\\S]+$"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*._display",
-                                        "http://schemas.cloudprivacylabs.com/attributes": [
-                                          {
-                                            "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*._display.id",
-                                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                              {
-                                                "@value": "^[ \\r\\n\\t\\S]+$"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*._property",
-                                        "http://schemas.cloudprivacylabs.com/attributes": [
-                                          {
-                                            "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*._property.id",
-                                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                              {
-                                                "@value": "^[ \\r\\n\\t\\S]+$"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*.value",
-                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                          {
-                                            "@value": "^[ \\r\\n\\t\\S]+$"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.target.*.dependsOn.*.property",
-                                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                          {
-                                            "@value": "^\\S*$"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
+                        "@value": "^\\S*$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped._code",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.element.*.id",
+                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped._code.id",
                         "http://schemas.cloudprivacylabs.com/attribute/pattern": [
                           {
                             "@value": "^[ \\r\\n\\t\\S]+$"
@@ -859,17 +1939,54 @@
                         ]
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.group.*._source",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                  },
                   {
-                    "@id": "http://hl7.org/fhir/ConceptMap.group.*._source.id",
+                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped.code",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped.id",
                     "http://schemas.cloudprivacylabs.com/attribute/pattern": [
                       {
                         "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped._display",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped._display.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped.display",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped._mode",
+                    "http://schemas.cloudprivacylabs.com/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.group.*.unmapped._mode.id",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
+                          }
+                        ]
                       }
                     ]
                   }
@@ -882,50 +1999,113 @@
                     "@value": "^[ \\r\\n\\t\\S]+$"
                   }
                 ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.group.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.group.*._target",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.group.*._target.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.group.*._targetVersion",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.group.*._targetVersion.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  }
-                ]
               }
             ]
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ConceptMap._language",
+        "@id": "http://hl7.org/fhir/ConceptMap._title",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/ConceptMap._language.id",
+            "@id": "http://hl7.org/fhir/ConceptMap._title.id",
+            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.language",
+        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+          {
+            "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap._url",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap._url.id",
+            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.version",
+        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+          {
+            "@value": "^[ \\r\\n\\t\\S]+$"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap._targetCanonical",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap._targetCanonical.id",
+            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.experimental",
+        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+          {
+            "@value": "^true|false$"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.description",
+        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+          {
+            "@value": "^[ \\r\\n\\t\\S]+$"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap._name",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap._name.id",
+            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.text",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap.text._status",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.text._status.id",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap.text.id",
             "http://schemas.cloudprivacylabs.com/attribute/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
@@ -938,65 +2118,10 @@
         "@id": "http://hl7.org/fhir/ConceptMap.identifier",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/ConceptMap.identifier.period",
+            "@id": "http://hl7.org/fhir/ConceptMap.identifier._use",
             "http://schemas.cloudprivacylabs.com/attributes": [
               {
-                "@id": "http://hl7.org/fhir/ConceptMap.identifier.period._end",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.identifier.period._end.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.identifier.period.id",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.identifier.period.start",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                  {
-                    "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.identifier.period._start",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.identifier.period._start.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.identifier.period.end",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                  {
-                    "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap.identifier._system",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.identifier._system.id",
+                "@id": "http://hl7.org/fhir/ConceptMap.identifier._use.id",
                 "http://schemas.cloudprivacylabs.com/attribute/pattern": [
                   {
                     "@value": "^[ \\r\\n\\t\\S]+$"
@@ -1014,86 +2139,15 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ConceptMap.identifier._use",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.identifier._use.id",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap.identifier._value",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.identifier._value.id",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/ConceptMap.identifier.type",
             "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.text",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.identifier.type._text",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.identifier.type._text.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.id",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              },
               {
                 "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding",
                 "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
                   {
                     "http://schemas.cloudprivacylabs.com/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^true|false$"
-                          }
-                        ]
-                      },
-                      {
                         "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*.version",
                         "http://schemas.cloudprivacylabs.com/attribute/pattern": [
                           {
                             "@value": "^[ \\r\\n\\t\\S]+$"
@@ -1114,6 +2168,48 @@
                         ]
                       },
                       {
+                        "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*._code",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*._code.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*.system",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^\\S*$"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*._userSelected",
+                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*._userSelected.id",
+                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                              {
+                                "@value": "^[ \\r\\n\\t\\S]+$"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*.userSelected",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^true|false$"
+                          }
+                        ]
+                      },
+                      {
                         "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*._display",
                         "http://schemas.cloudprivacylabs.com/attributes": [
                           {
@@ -1123,6 +2219,14 @@
                                 "@value": "^[ \\r\\n\\t\\S]+$"
                               }
                             ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*.version",
+                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                          {
+                            "@value": "^[ \\r\\n\\t\\S]+$"
                           }
                         ]
                       },
@@ -1154,42 +2258,105 @@
                             "@value": "^[^\\s]+(\\s[^\\s]+)*$"
                           }
                         ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^\\S*$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*._code",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*._code.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*._userSelected",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.coding.*._userSelected.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
                       }
                     ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.text",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.identifier.type._text",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.identifier.type._text.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.identifier.type.id",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap.identifier._value",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.identifier._value.id",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap.identifier.period",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.identifier.period._start",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.identifier.period._start.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.identifier.period.end",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.identifier.period._end",
+                "http://schemas.cloudprivacylabs.com/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ConceptMap.identifier.period._end.id",
+                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                      {
+                        "@value": "^[ \\r\\n\\t\\S]+$"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.identifier.period.id",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.identifier.period.start",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
                   }
                 ]
               }
@@ -1204,6 +2371,19 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/ConceptMap.identifier._system",
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ConceptMap.identifier._system.id",
+                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/ConceptMap.identifier.value",
             "http://schemas.cloudprivacylabs.com/attribute/pattern": [
               {
@@ -1214,10 +2394,49 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ConceptMap.date",
+        "@id": "http://hl7.org/fhir/ConceptMap._sourceUri",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap._sourceUri.id",
+            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap._purpose",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap._purpose.id",
+            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap.purpose",
         "http://schemas.cloudprivacylabs.com/attribute/pattern": [
           {
-            "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+            "@value": "^[ \\r\\n\\t\\S]+$"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ConceptMap._implicitRules",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ConceptMap._implicitRules.id",
+            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
           }
         ]
       },
@@ -1226,462 +2445,6 @@
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
             "@id": "http://hl7.org/fhir/ConceptMap._description.id",
-            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.text",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*._text",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*._text.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._display",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._display.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*.version",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._code",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._code.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*.display",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^true|false$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._version",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._version.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^\\S*$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._userSelected",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.jurisdiction.*.coding.*._userSelected.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap._targetCanonical",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap._targetCanonical.id",
-            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap._url",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap._url.id",
-            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap._experimental",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap._experimental.id",
-            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.sourceCanonical",
-        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-          {
-            "@value": "^\\S*$"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.description",
-        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-          {
-            "@value": "^[ \\r\\n\\t\\S]+$"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap._status",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap._status.id",
-            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.contact",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.contact.*.name",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.contact.*._name",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.contact.*._name.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._rank",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._rank.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period.start",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period._start",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period._start.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                  {
-                                    "@value": "^[ \\r\\n\\t\\S]+$"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period.end",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period._end",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period._end.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                  {
-                                    "@value": "^[ \\r\\n\\t\\S]+$"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.period.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._value",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._value.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._use",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*._use.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.rank",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[1-9][0-9]*$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.contact.*.telecom.*.value",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.contact.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.publisher",
-        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-          {
-            "@value": "^[ \\r\\n\\t\\S]+$"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.experimental",
-        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-          {
-            "@value": "^true|false$"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap._version",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap._version.id",
-            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.version",
-        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-          {
-            "@value": "^[ \\r\\n\\t\\S]+$"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap._date",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap._date.id",
             "http://schemas.cloudprivacylabs.com/attribute/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
@@ -1704,773 +2467,10 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ConceptMap.id",
-        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-          {
-            "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap._purpose",
+        "@id": "http://hl7.org/fhir/ConceptMap._publisher",
         "http://schemas.cloudprivacylabs.com/attributes": [
           {
-            "@id": "http://hl7.org/fhir/ConceptMap._purpose.id",
-            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.url",
-        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-          {
-            "@value": "^\\S*$"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.language",
-        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-          {
-            "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap._sourceCanonical",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap._sourceCanonical.id",
-            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.useContext",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept._text",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept._text.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding",
-                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                      {
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*.userSelected",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^true|false$"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._version",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._version.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                  {
-                                    "@value": "^[ \\r\\n\\t\\S]+$"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._display",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._display.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                  {
-                                    "@value": "^[ \\r\\n\\t\\S]+$"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*.system",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^\\S*$"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._code",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._code.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                  {
-                                    "@value": "^[ \\r\\n\\t\\S]+$"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*.display",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*.version",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._system",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._system.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                  {
-                                    "@value": "^[ \\r\\n\\t\\S]+$"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*.code",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._userSelected",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.coding.*._userSelected.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                                  {
-                                    "@value": "^[ \\r\\n\\t\\S]+$"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueCodeableConcept.text",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity.value",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._unit",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._unit.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._comparator",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._comparator.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^\\S*$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._value",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity._value.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueQuantity.unit",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low.value",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._comparator",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._comparator.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^\\S*$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low.unit",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._unit",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._unit.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._code",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._code.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._value",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.low._value.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._value",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._value.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high.value",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._unit",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._unit.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._code",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._code.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^\\S*$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._comparator",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._comparator.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                              {
-                                "@value": "^[ \\r\\n\\t\\S]+$"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high.unit",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.high.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.valueRange.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^true|false$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^[ \\r\\n\\t\\S]+$"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                          {
-                            "@value": "^[ \\r\\n\\t\\S]+$"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ConceptMap.useContext.*.code.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                      {
-                        "@value": "^\\S*$"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap._sourceUri",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap._sourceUri.id",
-            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.title",
-        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-          {
-            "@value": "^[ \\r\\n\\t\\S]+$"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap._name",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap._name.id",
-            "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.sourceUri",
-        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-          {
-            "@value": "^\\S*$"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.targetUri",
-        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-          {
-            "@value": "^\\S*$"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.copyright",
-        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-          {
-            "@value": "^[ \\r\\n\\t\\S]+$"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.implicitRules",
-        "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-          {
-            "@value": "^\\S*$"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ConceptMap.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap.text._status",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ConceptMap.text._status.id",
-                "http://schemas.cloudprivacylabs.com/attribute/pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ConceptMap.text.id",
+            "@id": "http://hl7.org/fhir/ConceptMap._publisher.id",
             "http://schemas.cloudprivacylabs.com/attribute/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"

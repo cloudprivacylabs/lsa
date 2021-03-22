@@ -1,13 +1,72 @@
 [
   {
-    "@id": "http://hl7.org/fhir/DocumentReference/overlay/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Overlay",
+    "@id": "http://hl7.org/fhir/DocumentReference/enum",
+    "@type": "http://schemas.cloudprivacylabs.com/Layer",
     "http://schemas.cloudprivacylabs.com/Schema/objectType": [
       {
         "@value": "http://hl7.org/fhir/DocumentReference"
       }
     ],
     "http://schemas.cloudprivacylabs.com/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/DocumentReference.masterIdentifier",
+        "http://schemas.cloudprivacylabs.com/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DocumentReference.masterIdentifier.use",
+            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "usual"
+                  },
+                  {
+                    "@value": "official"
+                  },
+                  {
+                    "@value": "temp"
+                  },
+                  {
+                    "@value": "secondary"
+                  },
+                  {
+                    "@value": "old"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DocumentReference.relatesTo",
+        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+          {
+            "http://schemas.cloudprivacylabs.com/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DocumentReference.relatesTo.*.code",
+                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "replaces"
+                      },
+                      {
+                        "@value": "transforms"
+                      },
+                      {
+                        "@value": "signs"
+                      },
+                      {
+                        "@value": "appends"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/DocumentReference.identifier",
         "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
@@ -48,65 +107,6 @@
             "@list": [
               {
                 "@value": "DocumentReference"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DocumentReference.relatesTo",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DocumentReference.relatesTo.*.code",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "replaces"
-                      },
-                      {
-                        "@value": "transforms"
-                      },
-                      {
-                        "@value": "signs"
-                      },
-                      {
-                        "@value": "appends"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DocumentReference.masterIdentifier",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DocumentReference.masterIdentifier.use",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "usual"
-                  },
-                  {
-                    "@value": "official"
-                  },
-                  {
-                    "@value": "temp"
-                  },
-                  {
-                    "@value": "secondary"
-                  },
-                  {
-                    "@value": "old"
-                  }
-                ]
               }
             ]
           }
