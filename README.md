@@ -5,7 +5,7 @@
 
 - [Layered Schemas](#layered-schemas)
   * [Example Operation](#example-operation)
-- [What's in this Go Module?](#what-s-in-this-go-module)
+- [What's in this Go Module?](#whats-in-this-go-module)
 - [Schemas Layers](#schema-layers)
   * [@context](#context)
   * [Examples](#examples)
@@ -16,7 +16,7 @@
 
 # Layered Schemas
 
-Layered schema architecture is developed work with unified data
+Layered schema architecture is developed to work with unified data
 semantics regardless of the data capture locale, data representation,
 format, or terminology. Traditional schemas (such as JSON/XML schemas)
 describe the structure of data with limited semantic
