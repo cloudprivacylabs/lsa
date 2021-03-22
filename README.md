@@ -699,7 +699,8 @@ Similarly:
 }
 ```
 
-This reference is valid only if it points to a schema.
+This reference is valid only if it points to a schema. That schema can
+be for a different type of object.
 
 ## Weak reference: IRI
 
@@ -717,7 +718,10 @@ This kind of reference may refer to multiple schemas:
 
 The schema registry can resolve this link based on its own
 configuration. For instance, if a registry allows only unique version
-numbers, the above link would resolve to a definite schema.
+numbers, the above link would resolve to a definite schema. The link
+resolution can be dependent on the processing context. For instance,
+when processing data in a specific jurisdiction, layers tagged with
+that jurisdiction can be selected.
 
 ## Decentralized Strong Reference
 
