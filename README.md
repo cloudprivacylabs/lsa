@@ -15,6 +15,7 @@
 - [Addressing Layers and Schemas](#addressing-layers-and-schemas)
   * [Strong Reference: Hash](#strong-reference-hash)
   * [Weak Reference: IRI](#weak-reference-iri)
+  * [Decentralized Strong Reference](#decentralized-strong-reference)
 
 # Layered Schemas
 
