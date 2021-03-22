@@ -1,3 +1,19 @@
+[![GoDoc](https://godoc.org/github.com/cloudprivacylabs/lsa?status.svg)](https://godoc.org/github.com/cloudprivacylabs/lsa)
+[![Go Report Card](https://goreportcard.com/badge/github.com/cloudprivacylabs/lsa)](https://goreportcard.com/report/github.com/cloudprivacylabs/lsa)
+
+# Table of Contents
+
+- [Layered Schemas](#layered-schemas)
+  * [Example Operation](#example-operation)
+- [What's in this Go Module?](#what-s-in-this-go-module)
+- [Schemas Layers](#schema-layers)
+  * [@context](#context)
+  * [Examples](#examples)
+  * [Semantics](#semantics) 
+  * [attributes](#attributes)
+- [Schemas](#schemas)
+
+
 # Layered Schemas
 
 Layered schema architecture is developed work with unified data
@@ -91,12 +107,12 @@ An equivalent layered schema is as follows:
   "objectType": "TestObject",     // Name of the object defined by the schema
   "attributes": {                 // Attributes of the objec
     "id1": {                      // Attribute id
-       "attributeName": "link",   // Name of the attribute
+       "name": "link",   // Name of the attribute
        "type": "string",          // Type of the attribute (annotation)
        "format": "uri"            // Format of the attribute (annotation)
     },
     "id2": {                      // Attribute id
-       "attributeName": "num",    // Name of the attribute
+       "name": "num",    // Name of the attribute
        "type": "number"           // Type of the attribute (annotation)
     }
   }
@@ -112,10 +128,10 @@ We can slice this schema into three layers:
   "objectType": "TestObject",
   "attributes": {
     "id1": {
-       "attributeName": "link"
+       "name": "link"
     },
     "id2": {
-       "attributeName": "num"
+       "name": "num"
     }
   }
 }
@@ -167,21 +183,21 @@ When ingested, this data object will be annotated using schema attributes:
   "attributes": {
     "TestObject.link": {                      // Generated attribute ID
      "attributeId": "id1"                     // Link to schema attribute
-     "attributeName": "link",                 // Name of the attribute in the input
+     "name": "link",                 // Name of the attribute in the input
      "type": "string",                        // Annotation embedded from the schema
      "format": "uri",                         // Annotation embedded from the schema
      "value": "http://example.com?id=12345",  // Value of the attribute
     },
     "TestObject.num": {
      "attributeId": "id2"
-     "attributeName": "num",
+     "name": "num",
      "type": "number",
      "value": 1,
     },
     "TestObject.extraField": {                // This field does not exist in the schema
                                               // so there are no schema annotations
      "value": "test",                         // Value of the attribute
-     "attributeName": "extraField"            // Name of the attribute
+     "name": "extraField"            // Name of the attribute
     }
 }
 ```
@@ -208,7 +224,7 @@ Then the ingested document becomes:
   "attributes": {
     "TestObject.link": {
      "attributeId": "id1"
-     "attributeName": "link",
+     "name": "link",
      "type": "string",
      "format": "uri",
      "privacyClassification" "PII",            // New annotation from the added layer
@@ -221,7 +237,28 @@ An application can select all attributes containing `PII` in
 `privacyClassifications` and set their values to `null` to
 de-identify a data object.
 
-## Schemas Layers
+# What's in this Go Module?
+
+This Go module has the following open-source components:
+
+  * `pkg/ls`: This is the core package containing 
+    * models for schema layers and schema
+    * JSON-LD processing to slice and compose schema layers
+    * document model used for data ingestion
+  * `pkg/json`: The JSON adapter containing
+    * JSON schema to schema layers conversion
+    * JSON data ingestion
+  * `pkg/csv`: The CSV adapter containing
+    * CSV schema description to schema layers conversion
+    * CSV data ingestion. This first convers the CSV document to a 
+      flat JSON object, and uses the JSON adapter.
+  * `layers`: This is a CLI for
+    * importing JSON/CSV schemas
+    * ingesting JSON/CSV data, and outputting annotated data as JSON-LD
+    * Slicing and composing schema layers
+    * JSON-LD processing (expand, flatten, frame, etc.)
+
+# Schema Layers
 
 The format of a schema layer is as follows:
 
@@ -257,7 +294,7 @@ The format of a schema layer is as follows:
   * @id: The ID for the layer
   * objectType: The object described by this layer.
 
-### @context
+## @context
 
 The @context defines several types and terms. Each term has specific
 semantics and algorithms associated with it.
@@ -289,7 +326,7 @@ attribute structure:
     "@container": "@id",
     "@context": {
         "@version": 1.1,
-        "attributeName": {  
+        "name": {  
             "@id": "http://schemas.cloudprivacylabs.com/attribute/name"
         },
         "reference": {
@@ -355,7 +392,7 @@ attribute structure:
     combination of the contents of the elements of this term.
   * `oneOf`: Specifies polymorphism. The resulting element is one of
     the elements of this term.
-  * `attributeName`: Name of this attribute as it appears in data.
+  * `name`: Name of this attribute as it appears in data.
   
 ```
 "privacyClassification": {
@@ -399,7 +436,7 @@ attribute structure:
   * `information`: Comments
   * `enumeration`: Enumerated options for the attribute
 
-#### Examples
+## Examples
 
 A simple key/value pair is represented as:
 
@@ -426,7 +463,7 @@ author. Localized names can be given to this key using an overlay with term:
 ```
 {
    "@id": "<key>",
-   "attributeName": "name"
+   "name": "name"
 }
 ```
 
@@ -436,14 +473,14 @@ Nested objects can be defined for keys:
 "attributes": [
   {
     "@id": "name1",
-    "attributeName": "name"
+    "name": "name"
   },
   {
     "@id": "obj",
     "attributes": [
        {
          "@id": "name2",
-         "attributeName": "name"
+         "name": "name"
        }
     ]
   }
@@ -593,7 +630,7 @@ This describes the `p2` attribute as either `http://obj1` or
 Each term has well-defined semantics that include the meaning and
 operations defined for that term. 
 
-### Term: attributes
+### attributes
 
 The term `attributes` is a container where each node with an @id
 defines a new attribute. An attribute can be one of:
@@ -632,7 +669,7 @@ Input 2 :
     "privacyClassification": [ "flag2" ]
   },
   "k3": {
-    "attributeName": "attr3"
+    "name": "attr3"
   }
 }
 ```
@@ -646,7 +683,7 @@ Result:
   "k2": {
     "attributes": {
       "k3": {
-        "attributeName": "attr3"
+        "name": "attr3"
       }
     }
   }
@@ -661,7 +698,7 @@ During the merge operation:
   * For non-container terms, terms of input1 and input2 are merged,
     with input2 terms overwriting matching input1 terms
 
-## Schemas
+# Schemas
 
 A schema specifies one of more schema layers:
 
