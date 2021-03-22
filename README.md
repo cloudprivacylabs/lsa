@@ -21,20 +21,21 @@ with other layers representing variations in stuctural constraints,
 different languages or notationan differences based on locale,
 different security constraints based on context, etc.
 
-Using a layered schema, data objects can be "ingested". The input of
-the adapter is a representation format such as JSON, CSV, or XML. The
-output is a JSON-LD document containing data elements and schema
-annotations. An application can perform semantic processing using this
-JSON-LD document without knowing the input representation. After
-processing data, the application can generate output using another
-layered schema. 
+The following figure illustrates an application stack based on layered
+schema architectur. In this application, data objects (JSON, XML, CSV,
+etc.) are "ingested" using an adapter. These adapters convert incoming
+data into a common data model containing the ingested data element and
+their associated attribute information coming from the schema (this
+repository includes adapters for CSV and JSON data.) The application
+processes the data using this common data model, and then exports it
+using another adapter, which may use another schema for the operation.
+For example, an application can ingest tabular data from a CSV file,
+and then can generate a verifiable credential. Same
+application can also ingest a JSON data object using the same terms to
+generate a verifiable credential using the same logic.
 
 ![Data Processing with Layered Schemas](doc/layered-schemas-stack.png)
 
-For instance, an application can ingest tabular data from a CSV file,
-and then generate a verifiable credential document. Same application
-can also ingest a JSON data object using the same terms to generate a
-verifiable credential using the same logic.
 
 Use-cases for layered schemas include:
 
