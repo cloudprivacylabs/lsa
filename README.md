@@ -643,7 +643,7 @@ Schema layers may refer to other schemas through a `reference`:
 ```
 
 Such references are only valid if the referenced object is a schema
-(that is, a `reference` cannot refer to a layer).
+(that is, a `reference` cannot address a layer).
 
 
 Schemas also refer to other layers:
@@ -699,8 +699,7 @@ Similarly:
 }
 ```
 
-This reference is valid only if it points to a schema with the same
-`objectType`. A reference to a layer in this context is meaningless.
+This reference is valid only if it points to a schema.
 
 ## Weak reference: IRI
 
