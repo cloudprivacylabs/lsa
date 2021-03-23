@@ -15,6 +15,7 @@
 - [Addressing Layers and Schemas](#addressing-layers-and-schemas)
   * [Strong Reference: Hash](#strong-reference-hash)
   * [Weak Reference: IRI](#weak-reference-iri)
+- [Schema Bundles)(#schema-bundles)
   * [Decentralized Strong Reference](#decentralized-strong-reference)
 
 # Layered Schemas
@@ -614,6 +615,7 @@ A schema specifies one of more schema layers:
   "purpose": "...",
   "classification": "...",
   "objectType": "...",
+  "bundle": "...",
   "objectVersion": "...",
   "layers": [
      "layer1",
@@ -668,6 +670,8 @@ This feature raises the problem of resolving those references
 correctly. This is done using a "Schema Registry". A schema registry
 decides what schemas and layers will be used to satisfy a given
 reference based on the context and the object type.
+
+
 
 ## Strong reference: Hash
 
@@ -724,33 +728,16 @@ resolution can be dependent on the processing context. For instance,
 when processing data in a specific jurisdiction, layers tagged with
 that jurisdiction can be selected.
 
-## Decentralized Strong Reference
 
-With decentralized schema registries it is important to ensure that
-data processed using layers from one registry can be interpreted and
-processed correctly when another registry is used at some other
-context. The following representation ensures schema layer
-immutability and strong references in the absence of centralized
-registries:
+# Schema Bundles
 
-```
-{
-  "@type": "Schema",
-  "objectType": "SomeObject",
-  "refDomain": "sha256:87ab50c3dfec7afff0e5cd0559981665059c65d7a97d5f8374d294535740f534",
-  "layers": [
-       "http://example.org/SomeObject/layer/v1.2"
-  ]
-}
-```
-
-This schema has a reference to a `refDomain` object containing the
-strong references to schema layers and schemas.
+A schema bundle combines the layers necessary to construct all valid
+variations of a schema.
 
 ```
 {
   "@context": "http://schemas.cloudprivacylabs.com/schema.jsonld",
-  "@type": "RefDomain",
+  "@type": "SchemaBundle",
   "references": {
     "http://example.org/SomeObject/layer/v1.2": {
       "reference": "sha256:ab36367212..."
@@ -772,7 +759,29 @@ reference. This means that any weak references encountered while
 processing data using the schema, only one of the specified objects
 can be used.
 
-This structure cryptographically ties a schema to its `refDomain`, and
-also to all the layers contained in that `refDomain`, so registry
+This structure cryptographically ties a schema to its `bundle`, and
+also to all the layers contained in that `bundle`, so registry
 users can be sure that only a known set of schema layers are used to
 satisfy a weak reference to a schema.
+
+## Decentralized Strong Reference
+
+With decentralized operation it is important to ensure that data
+processed using layers from one registry can be interpreted and
+processed correctly when another registry is used at some other
+context. A schema bundle ensures that all layers used to interpret
+data are identical in every context:
+
+```
+{
+  "@type": "Schema",
+  "objectType": "SomeObject",
+  "bundle": "sha256:87ab50c3dfec7afff0e5cd0559981665059c65d7a97d5f8374d294535740f534",
+  "layers": [
+       "http://example.org/SomeObject/layer/v1.2"
+  ]
+}
+```
+
+This schema has a reference to a `bundle` containing the strong
+references to schema layers and schemas.
