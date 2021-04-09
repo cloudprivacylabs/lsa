@@ -20,14 +20,16 @@ import (
 
 func TestMarshal(t *testing.T) {
 	base := expand(t, `{
-"@context": "../../schemas/layers.jsonld",
-"@type":"Layer",
+"@context": "../../schemas/ls.jsonld",
+"@type":"Schema",
 "attributes": [
  {
-  "@id": "attr1"
+  "@id": "attr1",
+  "@type": "Value"
  },
  {
-  "@id":  "attr2" ,
+  "@id":  "attr2",
+  "@type": "Value",
   "privacyClassification": [
     {
       "@value": "flg1"
@@ -36,23 +38,29 @@ func TestMarshal(t *testing.T) {
  }
 ]
 }`)
-	s := SchemaLayer{}
+	s := Layer{}
 	if err := s.UnmarshalExpanded(base); err != nil {
 		t.Error(err)
 	}
 	x, _ := json.MarshalIndent(s.MarshalExpanded(), "", "")
-	if string(x) != `[
+	expected := `[
 {
 "@type": [
-"http://schemas.cloudprivacylabs.com/Layer"
+"` + uriBase + `/Schema"
 ],
-"http://schemas.cloudprivacylabs.com/attributes": [
+"` + uriBase + `/Object/attributes": [
 {
-"@id": "attr1"
+"@id": "attr1",
+"@type": [
+"` + uriBase + `/Value"
+]
 },
 {
 "@id": "attr2",
-"http://schemas.cloudprivacylabs.com/attribute/privacyClassification": [
+"@type": [
+"` + uriBase + `/Value"
+],
+"` + uriBase + `/attr/privacyClassification": [
 {
 "@value": "flg1"
 }
@@ -60,12 +68,13 @@ func TestMarshal(t *testing.T) {
 }
 ]
 }
-]` {
-		t.Errorf("Unexpected: %s", string(x))
+]`
+	if string(x) != expected {
+		t.Errorf("Unexpected: %s\n Expected: %s", string(x), expected)
 	}
 
 	attr := s.Attributes.FindByID("attr2")
-	if _, ok := attr.GetParent().(*Attributes); !ok {
+	if _, ok := attr.GetParent().(*ObjectType); !ok {
 		t.Errorf("Wrong parent")
 	}
 	if GetNodeValue(attr.Values[AttributeAnnotations.Privacy.ID].([]interface{})[0]) != "flg1" {

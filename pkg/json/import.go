@@ -90,8 +90,8 @@ func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
 type Artifacts struct {
 	Entity CompiledEntity
 
-	// Attributes for the schema base
-	BaseAttributes *ls.Attributes `json:"-"`
+	// Attributes for the schema
+	BaseAttributes *ls.ObjectType `json:"-"`
 }
 
 // Import a JSON schema
@@ -116,7 +116,7 @@ func Import(entities []CompiledEntity) ([]Artifacts, error) {
 		artifacts := Artifacts{}
 		artifacts.Entity = ctx.entities[i]
 
-		artifacts.BaseAttributes = ls.NewAttributes(nil)
+		artifacts.BaseAttributes = ls.NewObjectType(nil)
 		s.object.itr(ctx.currentEntity.ID, nil, artifacts.BaseAttributes)
 
 		ret = append(ret, artifacts)

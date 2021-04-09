@@ -46,10 +46,10 @@ type objectSchema struct {
 func (a arraySchema) itr(entityId string, name []string, out *ls.Attribute) {
 	elem := ls.NewAttribute(nil)
 	schemaAttrs(entityId, append(name, "*"), a.items, elem)
-	out.MakeArray(elem)
+	out.Type = &ls.ArrayType{elem}
 }
 
-func (obj objectSchema) itr(entityId string, name []string, out *ls.Attributes) {
+func (obj objectSchema) itr(entityId string, name []string, out *ls.ObjectType) {
 	for k, v := range obj.properties {
 		attr := ls.NewAttribute(nil)
 		nm := append(name, k)
@@ -86,13 +86,13 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, out *ls.At
 		out.Values[ls.AttributeAnnotations.Required.ID] = []interface{}{map[string]interface{}{"@value": true}}
 	}
 	if len(attr.reference) > 0 {
-		out.MakeReference(attr.reference)
+		out.Type = &ls.ReferenceType{attr.reference}
 		return
 	}
 	if attr.object != nil {
-		attrs := ls.NewAttributes(nil)
+		attrs := ls.NewObjectType(nil)
 		attr.object.itr(entityId, name, attrs)
-		out.MakeObject(attrs)
+		out.Type = attrs
 		return
 	}
 	if attr.array != nil {
@@ -113,10 +113,10 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, out *ls.At
 		return elements
 	}
 	if len(attr.oneOf) > 0 {
-		out.MakePolymorphic(buildChoices(attr.oneOf))
+		out.Type = &ls.PolymorphicType{buildChoices(attr.oneOf)}
 		return
 	}
 	if len(attr.allOf) > 0 {
-		out.MakeComposition(buildChoices(attr.allOf))
+		out.Type = &ls.CompositeType{buildChoices(attr.allOf)}
 	}
 }

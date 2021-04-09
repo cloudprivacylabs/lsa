@@ -19,20 +19,20 @@ import (
 
 func TestSchemaMarshal(t *testing.T) {
 	sch := expand(t, `{
-"@context": "../../schemas/schema.jsonld",
+"@context": "../../schemas/ls.jsonld",
 "@id": "http://hl7.org/fhir/Account/schema",
-"@type": "Schema",
+"@type": "SchemaManifest",
 "objectType":  "http://hl7.org/fhir/Account",
-"layers": [
-          "http://hl7.org/fhir/Account/base",
-          "http://hl7.org/fhir/Account/format",
+"schema": "http://base",
+"overlays": [
+             "http://hl7.org/fhir/Account/format",
           "http://hl7.org/fhir/Account/type",
           "http://hl7.org/fhir/Account/enum",
           "http://hl7.org/fhir/Account/info"
         ]
 }`)
 	t.Logf("Expanded: %v", sch)
-	s, err := NewSchema(sch)
+	s, err := SchemaManifestFromLD(sch)
 	if err != nil {
 		t.Error(err)
 	}
@@ -40,11 +40,13 @@ func TestSchemaMarshal(t *testing.T) {
 		s.ObjectType != "http://hl7.org/fhir/Account" {
 		t.Errorf("Wrong schema data")
 	}
-	if s.Layers[0] != "http://hl7.org/fhir/Account/base" ||
-		s.Layers[1] != "http://hl7.org/fhir/Account/format" ||
-		s.Layers[2] != "http://hl7.org/fhir/Account/type" ||
-		s.Layers[3] != "http://hl7.org/fhir/Account/enum" ||
-		s.Layers[4] != "http://hl7.org/fhir/Account/info" {
+	if s.Schema != "http://base" {
+		t.Errorf("Wrong base")
+	}
+	if s.Overlays[0] != "http://hl7.org/fhir/Account/format" ||
+		s.Overlays[1] != "http://hl7.org/fhir/Account/type" ||
+		s.Overlays[2] != "http://hl7.org/fhir/Account/enum" ||
+		s.Overlays[3] != "http://hl7.org/fhir/Account/info" {
 		t.Errorf("Wrong layers")
 	}
 }

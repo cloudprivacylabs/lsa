@@ -24,12 +24,14 @@ import (
 // slice is empty, returns nil. This will call filter once with empty
 // term, and f should return if the attribute should be included or
 // not.
-func (attributes *Attributes) Slice(filter func(string, *Attribute) bool) *Attributes {
-	ret := NewAttributes(nil)
+//
+// parent is the parent of the new attributes in the sliced layer
+func (attributes *ObjectType) Slice(filter func(string, *Attribute) bool, parent *Attribute, newLayer *Layer) *ObjectType {
+	ret := NewObjectType(parent)
 	for _, attr := range attributes.attributes {
-		newAttr := attr.Slice(filter)
+		newAttr := attr.Slice(filter, parent, newLayer)
 		if newAttr != nil {
-			ret.Add(newAttr)
+			ret.Add(newAttr, newLayer)
 		}
 	}
 	if ret.Len() > 0 {
@@ -42,52 +44,72 @@ func (attributes *Attributes) Slice(filter func(string, *Attribute) bool) *Attri
 // attribute, or any term in this attribute, or any attributes under
 // this attribute. This will call filter once with empty term, and f
 // should return if the attribute should be included or not.
-func (attribute *Attribute) Slice(filter func(string, *Attribute) bool) *Attribute {
-	newAttr := NewAttribute(nil)
+//
+// parent is the parent of the new attribute in the sliced layer
+func (attribute *Attribute) Slice(filter func(string, *Attribute) bool, parent *Attribute, newLayer *Layer) *Attribute {
+	newAttr := NewAttribute(parent)
 	newAttr.ID = attribute.ID
-	empty := !filter("", attribute)
+	full := filter("", attribute)
 
 	// Any term in attribute selected?
 	for k, v := range attribute.Values {
 		if filter(k, attribute) {
 			newAttr.Values[k] = ld.CloneDocument(v)
-			empty = false
-		}
-	}
-	if attribute.attributes != nil {
-		newAttr.attributes = attribute.attributes.Slice(filter)
-		if newAttr.attributes != nil {
-			empty = false
-		}
-	} else if attribute.arrayItems != nil {
-		newAttr.arrayItems = attribute.arrayItems.Slice(filter)
-		if newAttr.arrayItems != nil {
-			empty = false
-		}
-	} else if attribute.allOf != nil {
-		for _, x := range attribute.allOf {
-			n := x.Slice(filter)
-			if n != nil {
-				newAttr.allOf = append(newAttr.allOf, n)
-				empty = false
-			}
-		}
-	} else if attribute.oneOf != nil {
-		for _, x := range attribute.oneOf {
-			n := x.Slice(filter)
-			if n != nil {
-				newAttr.oneOf = append(newAttr.oneOf, n)
-				empty = false
-			}
-		}
-	} else if len(attribute.reference) > 0 {
-		if !empty {
-			newAttr.reference = attribute.reference
+			full = true
 		}
 	}
 
-	if empty {
+	fillOptions := func(options []*Attribute) []*Attribute {
+		ret := make([]*Attribute, 0, len(options))
+		for _, x := range options {
+			attr := x.Slice(filter, attribute, newLayer)
+			if attr != nil {
+				ret = append(ret, attr)
+			}
+		}
+		return ret
+	}
+	switch t := attribute.Type.(type) {
+	case *ObjectType:
+		n := t.Slice(filter, newAttr, newLayer)
+		if n != nil {
+			newAttr.Type = n
+			full = true
+		} else {
+			newAttr.Type = NewObjectType(newAttr)
+		}
+
+	case ValueType, *ReferenceType:
+		newAttr.Type = attribute.Type
+	case *ArrayType:
+		n := t.Attribute.Slice(filter, newAttr, newLayer)
+		if n != nil {
+			newAttr.Type = &ArrayType{n}
+			full = true
+		} else {
+			newAttr.Type = NewArrayType(newAttr)
+		}
+	case *CompositeType:
+		o := fillOptions(t.Options)
+		if len(o) > 0 {
+			newAttr.Type = &CompositeType{o}
+			full = true
+		} else {
+			newAttr.Type = &CompositeType{}
+		}
+	case *PolymorphicType:
+		o := fillOptions(t.Options)
+		if len(o) > 0 {
+			newAttr.Type = &PolymorphicType{o}
+			full = true
+		} else {
+			newAttr.Type = &PolymorphicType{}
+		}
+	}
+
+	if !full {
 		return nil
 	}
+
 	return newAttr
 }

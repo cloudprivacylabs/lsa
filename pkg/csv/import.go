@@ -36,7 +36,7 @@ type LayerSpec struct {
 // attribute names, and other columns for overlays. CSV does not
 // support nested attributes. Returns an array of *SchemaBase and
 // *SchemaLayer objects
-func Import(spec ImportSpec, input [][]string) (layers []*ls.SchemaLayer, err error) {
+func Import(spec ImportSpec, input [][]string) (layers []*ls.Layer, err error) {
 	getColValue := func(row []string, col int) (value string, ok bool) {
 		if col >= 0 && col < len(row) {
 			return row[col], true
@@ -44,7 +44,7 @@ func Import(spec ImportSpec, input [][]string) (layers []*ls.SchemaLayer, err er
 		return "", false
 	}
 	for _, layer := range spec.Layers {
-		attributes := ls.NewAttributes(nil)
+		attributes := ls.NewObjectType(nil)
 		for _, row := range input {
 			attribute := ls.NewAttribute(attributes)
 			for _, col := range layer.Columns {
@@ -73,18 +73,18 @@ func Import(spec ImportSpec, input [][]string) (layers []*ls.SchemaLayer, err er
 						}
 					}
 				}
-				if col.Name == ls.AttributeStructure.Attributes.ID ||
-					col.Name == ls.AttributeStructure.AllOf.ID ||
-					col.Name == ls.AttributeStructure.OneOf.ID ||
-					col.Name == ls.AttributeStructure.ArrayItems.ID {
+				if col.Name == ls.LayerTerms.Attributes.ID ||
+					col.Name == ls.LayerTerms.AllOf.ID ||
+					col.Name == ls.LayerTerms.OneOf.ID ||
+					col.Name == ls.LayerTerms.ArrayItems.ID {
 					return nil, fmt.Errorf("%s cannot be used in CSV", col.Name)
 				}
 				switch t {
 				case "@value":
 					attribute.Values[col.Name] = []map[string]interface{}{{"@value": colValue}}
 				case "@id":
-					if col.Name == ls.AttributeStructure.Reference.ID {
-						attribute.MakeReference(colValue)
+					if col.Name == ls.LayerTerms.Reference.ID {
+						attribute.Type = &ls.ReferenceType{colValue}
 					} else {
 						attribute.Values[col.Name] = []map[string]interface{}{{"@id": colValue}}
 					}
@@ -110,7 +110,7 @@ func Import(spec ImportSpec, input [][]string) (layers []*ls.SchemaLayer, err er
 				}
 			}
 		}
-		m := ls.NewEmptySchemaLayer()
+		m := ls.NewLayer()
 		m.Attributes = *attributes
 		m.ObjectType = spec.ObjectType
 		layers = append(layers, m)

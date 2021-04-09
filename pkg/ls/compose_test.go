@@ -35,8 +35,8 @@ func expand(t *testing.T, in string) []interface{} {
 	return ret
 }
 
-func getLayer(in interface{}) *SchemaLayer {
-	a := &SchemaLayer{}
+func getLayer(in interface{}) *Layer {
+	a := &Layer{}
 	if err := a.UnmarshalExpanded(in); err != nil {
 		panic(err)
 	}
@@ -45,14 +45,16 @@ func getLayer(in interface{}) *SchemaLayer {
 
 func TestMerge1(t *testing.T) {
 	base := expand(t, `{
-"@context": "../../schemas/layers.jsonld",
-"@type":"Layer",
+"@context": "../../schemas/ls.jsonld",
+"@type":"Schema",
 "attributes": [
 {
-  "@id":  "attr1" 
+  "@id":  "attr1",
+  "@type": "Value"
 },
 {
   "@id":  "attr2" ,
+  "@type": "Value",
   "privacyClassification": [
     {
       "@value": "flg1"
@@ -61,6 +63,7 @@ func TestMerge1(t *testing.T) {
 },
 {
   "@id":"attr3",
+  "@type": "Value",
   "privacyClassification": [
       {"@value": "flg2"},
       {"@value": "flg3"}
@@ -70,8 +73,8 @@ func TestMerge1(t *testing.T) {
 }`)
 	t.Logf("Base: %+v", base)
 	ovl := expand(t, `{
-"@context": ["../../schemas/layers.jsonld",{"@vocab":"http://test/"}],
-"@type":"Layer",
+"@context": ["../../schemas/ls.jsonld",{"@vocab":"http://test/"}],
+"@type":"Overlay",
 "attributes":[
 {
   "@id":"attr1",
@@ -103,7 +106,7 @@ func TestMerge1(t *testing.T) {
 	}
 	base = baseattr.MarshalExpanded().([]interface{})
 	t.Logf("%+v", base[0])
-	attrBase := base[0].(map[string]interface{})[AttributeStructure.Attributes.ID]
+	attrBase := base[0].(map[string]interface{})[LayerTerms.Attributes.ID]
 
 	attr1Arr := FindNodeByID(attrBase, "attr1")
 	if attr1Arr == nil {
@@ -143,26 +146,31 @@ func TestMerge1(t *testing.T) {
 
 func TestMergeArray(t *testing.T) {
 	base := expand(t, `{
-  "@context":"../../schemas/layers.jsonld",
-  "@type": "Layer",
+  "@context":"../../schemas/ls.jsonld",
+  "@type": "Schema",
   "attributes": {
     "array": {
-      "arrayItems":  {
+      "@type": "Array",
+      "items":  {
+        "@id": "http://items",
+        "@type": "Value"
       }
     }
   }
 }`)
 	ovl := expand(t, `{
-  "@context": "../../schemas/layers.jsonld",
-  "@type": "Layer",
+  "@context": "../../schemas/ls.jsonld",
+  "@type": "Overlay",
   "attributes": {
     "array": {
-      "arrayItems": {
+      "items": {
+       "@id": "http://items",
        "type":"string"
       }
     }
   }
 }`)
+	t.Logf("Base: %v", base)
 	t.Logf("Ovl: %v", ovl)
 	baseattr := getLayer(base)
 	ovlattr := getLayer(ovl)
@@ -171,14 +179,14 @@ func TestMergeArray(t *testing.T) {
 		t.Error(err)
 	}
 	base = baseattr.MarshalExpanded().([]interface{})
-	attrBase := base[0].(map[string]interface{})[AttributeStructure.Attributes.ID]
+	attrBase := base[0].(map[string]interface{})[LayerTerms.Attributes.ID]
 
 	array := FindNodeByID(attrBase, "array")
 	if array == nil {
 		t.Errorf("No array")
 		return
 	}
-	items := array[0].(map[string]interface{})[AttributeStructure.ArrayItems.ID].([]interface{})[0].(map[string]interface{})
+	items := array[0].(map[string]interface{})[LayerTerms.ArrayItems.ID].([]interface{})[0].(map[string]interface{})
 	if s := GetNodeValue(items[AttributeAnnotations.Type.ID].([]interface{})[0]); s != "string" {
 		t.Errorf("Missing type: %+v %s", items, s)
 	}
@@ -186,13 +194,15 @@ func TestMergeArray(t *testing.T) {
 
 func TestMergeChoice(t *testing.T) {
 	base := expand(t, `{
-  "@context": "../../schemas/layers.jsonld",
-  "@type" : "Layer",
+  "@context": "../../schemas/ls.jsonld",
+  "@type" : "Schema",
   "attributes": {
    "attr": {
+    "@type": "Polymorphic",
 	   "oneOf": [
 	    {
         "@id": "id1",
+        "@type": "Reference",
         "reference": "ref1"
 	    }
 	   ]
@@ -200,10 +210,11 @@ func TestMergeChoice(t *testing.T) {
   }
 }`)
 	ovl := expand(t, `{
-  "@context": "../../schemas/layers.jsonld",
-  "@type": "Layer",
+  "@context": "../../schemas/ls.jsonld",
+  "@type": "Overlay",
   "attributes": {
    "attr": {
+    "@type": "Polymorphic",
 	   "oneOf": [
 	    {
         "@id": "id1",
@@ -221,7 +232,7 @@ func TestMergeChoice(t *testing.T) {
 		t.Error(err)
 	}
 	base = baseattr.MarshalExpanded().([]interface{})
-	attrBase := base[0].(map[string]interface{})[AttributeStructure.Attributes.ID]
+	attrBase := base[0].(map[string]interface{})[LayerTerms.Attributes.ID]
 
 	item := FindNodeByID(attrBase, "id1")
 	if item == nil {
@@ -235,21 +246,23 @@ func TestMergeChoice(t *testing.T) {
 
 func TestOverride(t *testing.T) {
 	base := expand(t, `{
-"@context": "../../schemas/layers.jsonld",
-"@type":"Layer",
+"@context": "../../schemas/ls.jsonld",
+"@type":"Schema",
 "attributes": [
 	{
  	"@id":  "attr1" ,
+  "@type": "Value",
 	"type":"string"
  }
  ]
 }`)
 	ovl := expand(t, `{
-"@context": "../../schemas/layers.jsonld",
-"@type":"Layer",
+"@context": "../../schemas/ls.jsonld",
+"@type":"Overlay",
 "attributes": [
 	{
  	"@id":  "attr1" ,
+  "@type": "Value",
 	"type":"int"
  }
  ]
@@ -262,7 +275,7 @@ func TestOverride(t *testing.T) {
 	}
 	base = baseattr.MarshalExpanded().([]interface{})
 	t.Logf("%+v", base[0])
-	attrBase := base[0].(map[string]interface{})[AttributeStructure.Attributes.ID]
+	attrBase := base[0].(map[string]interface{})[LayerTerms.Attributes.ID]
 	item := FindNodeByID(attrBase, "attr1")
 	if GetNodeValue(item[0].(map[string]interface{})[AttributeAnnotations.Type.ID].([]interface{})[0]) != "int" {
 		t.Errorf("Expecting int")
