@@ -119,8 +119,8 @@ func (layer *Layer) UnmarshalExpanded(in interface{}) error {
 	layer.Root.Type = NewObjectType(layer.Root)
 
 	m := arr[0].(map[string]interface{})
-	layer.ObjectType = LayerTerms.ObjectType.GetExpanded(m)
-	layer.ObjectVersion = LayerTerms.ObjectVersion.GetExpanded(m)
+	layer.ObjectType = LayerTerms.ObjectType.GetExpandedString(m)
+	layer.ObjectVersion = LayerTerms.ObjectVersion.GetExpandedString(m)
 	layer.Index = make(map[string]*Attribute)
 	layer.Type = GetNodeType(arr[0])
 	if layer.Type != TermSchemaType && layer.Type != TermOverlayType {
@@ -165,8 +165,12 @@ func (layer *Layer) MarshalExpanded() interface{} {
 		ret["@id"] = layer.ID
 	}
 	ret["@type"] = []interface{}{layer.Type}
-	LayerTerms.ObjectType.PutExpanded(ret, layer.ObjectType)
-	LayerTerms.ObjectVersion.PutExpanded(ret, layer.ObjectVersion)
+	if len(layer.ObjectType) > 0 {
+		LayerTerms.ObjectType.PutExpanded(ret, layer.ObjectType)
+	}
+	if len(layer.ObjectVersion) > 0 {
+		LayerTerms.ObjectVersion.PutExpanded(ret, layer.ObjectVersion)
+	}
 	for k, v := range layer.Root.Values {
 		ret[k] = v
 	}

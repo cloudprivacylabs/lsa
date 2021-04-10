@@ -1,38 +1,39 @@
 [
   {
     "@id": "http://hl7.org/fhir/Substance/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Layer",
-    "http://schemas.cloudprivacylabs.com/Schema/objectType": [
+    "@type": [
+      "http://layeredschemas.org/v1.0/Overlay"
+    ],
+    "http://layeredschemas.org/v1.0/Layer/objectType": [
       {
         "@value": "http://hl7.org/fhir/Substance"
       }
     ],
-    "http://schemas.cloudprivacylabs.com/attributes": [
+    "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/Substance.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "@id": "http://hl7.org/fhir/Substance.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/Substance.text.status",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "@value": "Substance"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Substance.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "inactive"
-              },
-              {
-                "@value": "entered-in-error"
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
               }
             ]
           }
@@ -40,41 +41,24 @@
       },
       {
         "@id": "http://hl7.org/fhir/Substance.instance",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Substance.instance.*.quantity",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Substance.instance.*.quantity.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/Substance.instance.*.identifier",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/Substance.instance.*.identifier.use",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
                         "@list": [
                           {
@@ -97,30 +81,33 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Substance.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Substance.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              },
               {
-                "@list": [
+                "@id": "http://hl7.org/fhir/Substance.instance.*.quantity",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
+                    "@id": "http://hl7.org/fhir/Substance.instance.*.quantity.comparator",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
@@ -129,19 +116,61 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Substance.ingredient",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@id": "http://hl7.org/fhir/Substance.status",
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@list": [
+              {
+                "@value": "active"
+              },
+              {
+                "@value": "inactive"
+              },
+              {
+                "@value": "entered-in-error"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Substance.resourceType",
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "Substance"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Substance.ingredient",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/Substance.ingredient.*.quantity",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/Substance.ingredient.*.quantity.numerator",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/Substance.ingredient.*.quantity.numerator.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
                             "@list": [
                               {
@@ -164,10 +193,13 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/Substance.ingredient.*.quantity.denominator",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/Substance.ingredient.*.quantity.denominator.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
                             "@list": [
                               {
@@ -196,12 +228,18 @@
       },
       {
         "@id": "http://hl7.org/fhir/Substance.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/Substance.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
                     "@list": [
                       {

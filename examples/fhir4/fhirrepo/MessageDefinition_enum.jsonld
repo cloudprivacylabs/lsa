@@ -1,116 +1,37 @@
 [
   {
     "@id": "http://hl7.org/fhir/MessageDefinition/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Layer",
-    "http://schemas.cloudprivacylabs.com/Schema/objectType": [
+    "@type": [
+      "http://layeredschemas.org/v1.0/Overlay"
+    ],
+    "http://layeredschemas.org/v1.0/Layer/objectType": [
       {
         "@value": "http://hl7.org/fhir/MessageDefinition"
       }
     ],
-    "http://schemas.cloudprivacylabs.com/attributes": [
+    "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/MessageDefinition.category",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "@id": "http://hl7.org/fhir/MessageDefinition.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/MessageDefinition.text.status",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "@value": "consequence"
-              },
-              {
-                "@value": "currency"
-              },
-              {
-                "@value": "notification"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageDefinition.useContext",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueQuantity",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@list": [
                   {
-                    "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueQuantity.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange.low",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange.low.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
+                    "@value": "generated"
                   },
                   {
-                    "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange.high",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange.high.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
                   }
                 ]
               }
@@ -120,12 +41,18 @@
       },
       {
         "@id": "http://hl7.org/fhir/MessageDefinition.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/MessageDefinition.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
                     "@list": [
                       {
@@ -152,18 +79,51 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageDefinition.contact",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@id": "http://hl7.org/fhir/MessageDefinition.status",
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@list": [
+              {
+                "@value": "draft"
+              },
+              {
+                "@value": "active"
+              },
+              {
+                "@value": "retired"
+              },
+              {
+                "@value": "unknown"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageDefinition.contact",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/MessageDefinition.contact.*.telecom",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
                   {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/MessageDefinition.contact.*.telecom.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
                             "@list": [
                               {
@@ -193,7 +153,7 @@
                       },
                       {
                         "@id": "http://hl7.org/fhir/MessageDefinition.contact.*.telecom.*.use",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
                             "@list": [
                               {
@@ -224,29 +184,8 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageDefinition.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "draft"
-              },
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "retired"
-              },
-              {
-                "@value": "unknown"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/MessageDefinition.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
             "@list": [
               {
@@ -257,24 +196,108 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageDefinition.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/MessageDefinition.useContext",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "@id": "http://hl7.org/fhir/MessageDefinition.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@list": [
+                "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueQuantity",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@value": "generated"
+                    "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueQuantity.comparator",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange.high",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange.high.comparator",
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
                   },
                   {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
+                    "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange.low",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange.low.comparator",
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
@@ -283,8 +306,26 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/MessageDefinition.category",
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "consequence"
+              },
+              {
+                "@value": "currency"
+              },
+              {
+                "@value": "notification"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/MessageDefinition.responseRequired",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
             "@list": [
               {

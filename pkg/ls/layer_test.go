@@ -46,21 +46,21 @@ func TestMarshal(t *testing.T) {
 	expected := `[
 {
 "@type": [
-"` + uriBase + `/Schema"
+"` + LS + `/Schema"
 ],
-"` + uriBase + `/Object/attributes": [
+"` + LS + `/Object/attributes": [
 {
 "@id": "attr1",
 "@type": [
-"` + uriBase + `/Value"
+"` + LS + `/Value"
 ]
 },
 {
 "@id": "attr2",
 "@type": [
-"` + uriBase + `/Value"
+"` + LS + `/Value"
 ],
-"` + uriBase + `/attr/privacyClassification": [
+"` + LS + `/attr/privacyClassification": [
 {
 "@value": "flg1"
 }
@@ -73,11 +73,8 @@ func TestMarshal(t *testing.T) {
 		t.Errorf("Unexpected: %s\n Expected: %s", string(x), expected)
 	}
 
-	attr := s.Attributes.FindByID("attr2")
-	if _, ok := attr.GetParent().(*ObjectType); !ok {
-		t.Errorf("Wrong parent")
-	}
-	if GetNodeValue(attr.Values[AttributeAnnotations.Privacy.ID].([]interface{})[0]) != "flg1" {
+	attr := s.Index["attr2"]
+	if GetNodeValue(attr.Values[AttributeAnnotations.Privacy.GetTerm()].([]interface{})[0]) != "flg1" {
 		t.Errorf("Wrong flag: %v", attr.Values)
 	}
 }

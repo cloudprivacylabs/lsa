@@ -1,19 +1,36 @@
 [
   {
     "@id": "http://hl7.org/fhir/OperationOutcome/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Layer",
-    "http://schemas.cloudprivacylabs.com/Schema/objectType": [
+    "@type": [
+      "http://layeredschemas.org/v1.0/Overlay"
+    ],
+    "http://layeredschemas.org/v1.0/Layer/objectType": [
       {
         "@value": "http://hl7.org/fhir/OperationOutcome"
       }
     ],
-    "http://schemas.cloudprivacylabs.com/attributes": [
+    "http://layeredschemas.org/v1.0/Object/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/OperationOutcome.resourceType",
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "OperationOutcome"
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/OperationOutcome.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/OperationOutcome.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
                 "@list": [
                   {
@@ -36,12 +53,39 @@
       },
       {
         "@id": "http://hl7.org/fhir/OperationOutcome.issue",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.severity",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "fatal"
+                      },
+                      {
+                        "@value": "error"
+                      },
+                      {
+                        "@value": "warning"
+                      },
+                      {
+                        "@value": "information"
+                      }
+                    ]
+                  }
+                ]
+              },
               {
                 "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.code",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
                     "@list": [
                       {
@@ -140,39 +184,6 @@
                     ]
                   }
                 ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.severity",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "fatal"
-                      },
-                      {
-                        "@value": "error"
-                      },
-                      {
-                        "@value": "warning"
-                      },
-                      {
-                        "@value": "information"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/OperationOutcome.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "OperationOutcome"
               }
             ]
           }

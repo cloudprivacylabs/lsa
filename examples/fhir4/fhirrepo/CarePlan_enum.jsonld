@@ -1,21 +1,58 @@
 [
   {
     "@id": "http://hl7.org/fhir/CarePlan/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Layer",
-    "http://schemas.cloudprivacylabs.com/Schema/objectType": [
+    "@type": [
+      "http://layeredschemas.org/v1.0/Overlay"
+    ],
+    "http://layeredschemas.org/v1.0/Layer/objectType": [
       {
         "@value": "http://hl7.org/fhir/CarePlan"
       }
     ],
-    "http://schemas.cloudprivacylabs.com/attributes": [
+    "http://layeredschemas.org/v1.0/Object/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/CarePlan.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/CarePlan.text.status",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/CarePlan.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/CarePlan.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
                     "@list": [
                       {
@@ -42,97 +79,100 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/CarePlan.activity",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@id": "http://hl7.org/fhir/CarePlan.resourceType",
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@list": [
+              {
+                "@value": "CarePlan"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CarePlan.activity",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.dailyAmount",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.dailyAmount.comparator",
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
-                            "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.boundsRange",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@list": [
                               {
-                                "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.boundsRange.low",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.boundsRange.low.comparator",
-                                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "\u003c"
-                                          },
-                                          {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
+                                "@value": "\u003c"
                               },
                               {
-                                "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.boundsRange.high",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.boundsRange.high.comparator",
-                                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "\u003c"
-                                          },
-                                          {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
                               }
                             ]
-                          },
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.boundsDuration",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.periodUnit",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
                               {
-                                "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.boundsDuration.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                "@list": [
                                   {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
+                                    "@value": "s"
+                                  },
+                                  {
+                                    "@value": "min"
+                                  },
+                                  {
+                                    "@value": "h"
+                                  },
+                                  {
+                                    "@value": "d"
+                                  },
+                                  {
+                                    "@value": "wk"
+                                  },
+                                  {
+                                    "@value": "mo"
+                                  },
+                                  {
+                                    "@value": "a"
                                   }
                                 ]
                               }
@@ -140,9 +180,12 @@
                           },
                           {
                             "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.when",
-                            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Array"
+                            ],
+                            "http://layeredschemas.org/v1.0/Array/items": [
                               {
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
                                   {
                                     "@list": [
                                       {
@@ -230,8 +273,8 @@
                             ]
                           },
                           {
-                            "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.periodUnit",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                            "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.durationUnit",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
                               {
                                 "@list": [
                                   {
@@ -260,30 +303,95 @@
                             ]
                           },
                           {
-                            "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.durationUnit",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                            "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.boundsDuration",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
-                                "@list": [
+                                "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.boundsDuration.comparator",
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
                                   {
-                                    "@value": "s"
-                                  },
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.boundsRange",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.boundsRange.high",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
                                   {
-                                    "@value": "min"
-                                  },
+                                    "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.boundsRange.high.comparator",
+                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.boundsRange.low",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
                                   {
-                                    "@value": "h"
-                                  },
-                                  {
-                                    "@value": "d"
-                                  },
-                                  {
-                                    "@value": "wk"
-                                  },
-                                  {
-                                    "@value": "mo"
-                                  },
-                                  {
-                                    "@value": "a"
+                                    "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.scheduledTiming.repeat.boundsRange.low.comparator",
+                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
                                   }
                                 ]
                               }
@@ -294,8 +402,37 @@
                     ]
                   },
                   {
+                    "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.quantity",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.quantity.comparator",
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
                     "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.status",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
                         "@list": [
                           {
@@ -328,98 +465,8 @@
                         ]
                       }
                     ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.quantity",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.quantity.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.dailyAmount",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CarePlan.activity.*.detail.dailyAmount.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CarePlan.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/CarePlan.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CarePlan.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "CarePlan"
               }
             ]
           }

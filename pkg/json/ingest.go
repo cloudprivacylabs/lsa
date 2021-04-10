@@ -19,6 +19,7 @@ import (
 	"strconv"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/terms"
 )
 
 // ErrValidation is returned for validation errors
@@ -38,8 +39,8 @@ func validate(docValue interface{}, schemaTerms map[string]interface{}) error {
 	for k, termValue := range schemaTerms {
 		if len(k) > 0 && k[0] != '@' {
 			termMeta := ls.Terms[k]
-			if termMeta.Validate != nil {
-				if err := termMeta.Validate(termValue, docValue); err != nil {
+			if validator, ok := termMeta.(terms.Validator); ok {
+				if err := validator.Validate(termValue, docValue); err != nil {
 					return err
 				}
 			}
@@ -72,7 +73,7 @@ func Ingest(baseID string, input interface{}, schema *ls.Layer) (ls.DocumentNode
 		return nil, ErrNotAnObject
 	}
 	output := ls.NewObjectNode(baseID, "", nil)
-	err := mergeAttributes(baseID, m, &schema.Attributes, output)
+	err := mergeAttributes(baseID, m, schema.Root.GetAttributes(), output)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +98,7 @@ func mergeAttributes(baseID string, input map[string]interface{}, attributes *ls
 	schemaNodes := make(map[string]*ls.Attribute)
 	for i := 0; i < attributes.Len(); i++ {
 		attribute := attributes.Get(i)
-		name := ls.GetStringValue("@value", attribute.Values[ls.AttributeAnnotations.Name.ID])
+		name := ls.AttributeAnnotations.Name.GetExpandedString(attribute.Values)
 		if len(name) == 0 {
 			name = attribute.ID
 		}

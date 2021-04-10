@@ -1,20 +1,25 @@
 [
   {
     "@id": "http://hl7.org/fhir/OperationDefinition/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Layer",
-    "http://schemas.cloudprivacylabs.com/Schema/objectType": [
+    "@type": [
+      "http://layeredschemas.org/v1.0/Overlay"
+    ],
+    "http://layeredschemas.org/v1.0/Layer/objectType": [
       {
         "@value": "http://hl7.org/fhir/OperationDefinition"
       }
     ],
-    "http://schemas.cloudprivacylabs.com/attributes": [
+    "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/OperationDefinition.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "@id": "http://hl7.org/fhir/OperationDefinition.kind",
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
             "@list": [
               {
-                "@value": "OperationDefinition"
+                "@value": "operation"
+              },
+              {
+                "@value": "query"
               }
             ]
           }
@@ -22,15 +27,24 @@
       },
       {
         "@id": "http://hl7.org/fhir/OperationDefinition.useContext",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/OperationDefinition.useContext.*.valueQuantity",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/OperationDefinition.useContext.*.valueQuantity.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
                         "@list": [
                           {
@@ -53,13 +67,19 @@
               },
               {
                 "@id": "http://hl7.org/fhir/OperationDefinition.useContext.*.valueRange",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/OperationDefinition.useContext.*.valueRange.low",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/OperationDefinition.useContext.*.valueRange.low.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
                             "@list": [
                               {
@@ -82,10 +102,13 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/OperationDefinition.useContext.*.valueRange.high",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/OperationDefinition.useContext.*.valueRange.high.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
                             "@list": [
                               {
@@ -113,18 +136,42 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/OperationDefinition.contact",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@id": "http://hl7.org/fhir/OperationDefinition.resourceType",
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@list": [
+              {
+                "@value": "OperationDefinition"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/OperationDefinition.contact",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/OperationDefinition.contact.*.telecom",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
                   {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/OperationDefinition.contact.*.telecom.*.use",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
                             "@list": [
                               {
@@ -148,7 +195,7 @@
                       },
                       {
                         "@id": "http://hl7.org/fhir/OperationDefinition.contact.*.telecom.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
                             "@list": [
                               {
@@ -186,7 +233,7 @@
       },
       {
         "@id": "http://hl7.org/fhir/OperationDefinition.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
             "@list": [
               {
@@ -206,26 +253,14 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/OperationDefinition.kind",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "operation"
-              },
-              {
-                "@value": "query"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/OperationDefinition.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/OperationDefinition.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
                 "@list": [
                   {

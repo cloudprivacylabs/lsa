@@ -1,30 +1,38 @@
 [
   {
     "@id": "http://hl7.org/fhir/AuditEvent/type",
-    "@type": "http://schemas.cloudprivacylabs.com/Layer",
-    "http://schemas.cloudprivacylabs.com/Schema/objectType": [
+    "@type": [
+      "http://layeredschemas.org/v1.0/Overlay"
+    ],
+    "http://layeredschemas.org/v1.0/Layer/objectType": [
       {
         "@value": "http://hl7.org/fhir/AuditEvent"
       }
     ],
-    "http://schemas.cloudprivacylabs.com/attributes": [
+    "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/AuditEvent.recorded",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
+        "@id": "http://hl7.org/fhir/AuditEvent.source",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.text._status",
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@id": "http://hl7.org/fhir/AuditEvent.source.site",
+            "http://layeredschemas.org/v1.0/attr/type": [
               {
-                "@id": "http://hl7.org/fhir/AuditEvent.text._status.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.source._site",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.source._site.id",
+                "http://layeredschemas.org/v1.0/attr/type": [
                   {
                     "@value": "string"
                   }
@@ -33,160 +41,151 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent.text.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
+            "@id": "http://hl7.org/fhir/AuditEvent.source.type",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
               {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent.type",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.type.version",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.type.display",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.type._userSelected",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.type._userSelected.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@value": "string"
+                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*.userSelected",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "boolean"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._system.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*.system",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._version.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*.display",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*.code",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._display.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._userSelected.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._code.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*.version",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
                   }
                 ]
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent.type.code",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.type.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.type._version",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.type._version.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.type.system",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.type.userSelected",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "boolean"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.type._display",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.type._display.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.type._code",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.type._code.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.type._system",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.type._system.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent._language",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent._language.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent.id",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent._action",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent._action.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
+            "@id": "http://hl7.org/fhir/AuditEvent.source.id",
+            "http://layeredschemas.org/v1.0/attr/type": [
               {
                 "@value": "string"
               }
@@ -196,96 +195,96 @@
       },
       {
         "@id": "http://hl7.org/fhir/AuditEvent.agent",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.altId",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
               {
                 "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
                   {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding",
-                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
                           {
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*.display",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._system",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._system.id",
-                                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                      {
-                                        "@value": "string"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._version",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._version.id",
-                                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                      {
-                                        "@value": "string"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
                                 "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*.userSelected",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                "http://layeredschemas.org/v1.0/attr/type": [
                                   {
                                     "@value": "boolean"
                                   }
                                 ]
                               },
                               {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*.system",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*.code",
+                                "http://layeredschemas.org/v1.0/attr/type": [
                                   {
                                     "@value": "string"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*.id",
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*.system",
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._code",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._code.id",
+                                    "http://layeredschemas.org/v1.0/attr/type": [
+                                      {
+                                        "@value": "string"
+                                      }
+                                    ]
                                   }
                                 ]
                               },
                               {
                                 "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*.version",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*.code",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                "http://layeredschemas.org/v1.0/attr/type": [
                                   {
                                     "@value": "string"
                                   }
@@ -293,10 +292,13 @@
                               },
                               {
                                 "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._display",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
                                   {
                                     "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._display.id",
-                                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                    "http://layeredschemas.org/v1.0/attr/type": [
                                       {
                                         "@value": "string"
                                       }
@@ -305,11 +307,14 @@
                                 ]
                               },
                               {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._code",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._system",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
                                   {
-                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._code.id",
-                                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._system.id",
+                                    "http://layeredschemas.org/v1.0/attr/type": [
                                       {
                                         "@value": "string"
                                       }
@@ -319,14 +324,41 @@
                               },
                               {
                                 "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._userSelected",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
                                   {
                                     "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._userSelected.id",
-                                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                    "http://layeredschemas.org/v1.0/attr/type": [
                                       {
                                         "@value": "string"
                                       }
                                     ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._version",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*._version.id",
+                                    "http://layeredschemas.org/v1.0/attr/type": [
+                                      {
+                                        "@value": "string"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.coding.*.display",
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "string"
                                   }
                                 ]
                               }
@@ -336,7 +368,7 @@
                       },
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.text",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -344,352 +376,27 @@
                       },
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*._text",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
                             "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*._text.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                            "http://layeredschemas.org/v1.0/attr/type": [
                               {
                                 "@value": "string"
                               }
                             ]
                           }
                         ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.altId",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "boolean"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding",
-                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                          {
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*.display",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._system",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._system.id",
-                                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                      {
-                                        "@value": "string"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._display",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._display.id",
-                                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                      {
-                                        "@value": "string"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._code",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._code.id",
-                                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                      {
-                                        "@value": "string"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*.system",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*.version",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*.code",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._version",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._version.id",
-                                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                      {
-                                        "@value": "string"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._userSelected",
-                                "http://schemas.cloudprivacylabs.com/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._userSelected.id",
-                                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                      {
-                                        "@value": "string"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*.userSelected",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "boolean"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.text",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.role.*.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
                         ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*._text",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*._text.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.requestor",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "boolean"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.name",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.agent.*._altId",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*._altId.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.agent.*._requestor",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*._requestor.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
                       }
                     ]
                   }
@@ -697,34 +404,19 @@
               },
               {
                 "@id": "http://hl7.org/fhir/AuditEvent.agent.*.network",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.network.address",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.network._address",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.network._address.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.agent.*.network._type",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.agent.*.network._type.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -734,47 +426,29 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.agent.*.network.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.agent.*._name",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                  },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*._name.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.network.address",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.policy",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                  },
                   {
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.network._address",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.agent.*._policy",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*._policy.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.network._address.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -786,10 +460,13 @@
               },
               {
                 "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
@@ -797,15 +474,24 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding",
-                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
                       {
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
                             "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*._display",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
                                 "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*._display.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                "http://layeredschemas.org/v1.0/attr/type": [
                                   {
                                     "@value": "string"
                                   }
@@ -814,16 +500,16 @@
                             ]
                           },
                           {
-                            "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*.display",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                            "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*.userSelected",
+                            "http://layeredschemas.org/v1.0/attr/type": [
                               {
-                                "@value": "string"
+                                "@value": "boolean"
                               }
                             ]
                           },
                           {
-                            "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*.code",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                            "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*.system",
+                            "http://layeredschemas.org/v1.0/attr/type": [
                               {
                                 "@value": "string"
                               }
@@ -831,18 +517,53 @@
                           },
                           {
                             "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                            "http://layeredschemas.org/v1.0/attr/type": [
                               {
                                 "@value": "string"
                               }
                             ]
                           },
                           {
+                            "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*.version",
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*.code",
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*._userSelected",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*._userSelected.id",
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
                             "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*._version",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
                                 "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*._version.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                "http://layeredschemas.org/v1.0/attr/type": [
                                   {
                                     "@value": "string"
                                   }
@@ -852,10 +573,13 @@
                           },
                           {
                             "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*._code",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
                                 "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*._code.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                "http://layeredschemas.org/v1.0/attr/type": [
                                   {
                                     "@value": "string"
                                   }
@@ -864,37 +588,8 @@
                             ]
                           },
                           {
-                            "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*._userSelected",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*._userSelected.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*.system",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*.userSelected",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "boolean"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*.version",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                            "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*.display",
+                            "http://layeredschemas.org/v1.0/attr/type": [
                               {
                                 "@value": "string"
                               }
@@ -902,10 +597,13 @@
                           },
                           {
                             "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*._system",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
                                 "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.coding.*._system.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                                "http://layeredschemas.org/v1.0/attr/type": [
                                   {
                                     "@value": "string"
                                   }
@@ -919,7 +617,7 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type.text",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
@@ -927,10 +625,13 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type._text",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.agent.*.type._text.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -939,119 +640,22 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent.outcomeDesc",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent.meta",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.meta._lastUpdated",
-            "http://schemas.cloudprivacylabs.com/attributes": [
+              },
               {
-                "@id": "http://hl7.org/fhir/AuditEvent.meta._lastUpdated.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.meta.profile",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-              {
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.meta.versionId",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.meta.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.meta._versionId",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.meta._versionId.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.meta.lastUpdated",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.meta.source",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.meta.tag",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-              {
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._version.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -1060,43 +664,38 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@value": "string"
+                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._code.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media.userSelected",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "boolean"
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._display.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -1105,11 +704,30 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media.code",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
-                        "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._system.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -1118,11 +736,14 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media._userSelected.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -1131,17 +752,544 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media.system",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
-                        "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media.display",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.media.version",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.id",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.agent.*._name",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*._name.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._display",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._display.id",
+                                    "http://layeredschemas.org/v1.0/attr/type": [
+                                      {
+                                        "@value": "string"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*.userSelected",
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "boolean"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*.system",
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._code",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._code.id",
+                                    "http://layeredschemas.org/v1.0/attr/type": [
+                                      {
+                                        "@value": "string"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*.display",
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*.id",
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*.code",
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._system",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._system.id",
+                                    "http://layeredschemas.org/v1.0/attr/type": [
+                                      {
+                                        "@value": "string"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._version",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._version.id",
+                                    "http://layeredschemas.org/v1.0/attr/type": [
+                                      {
+                                        "@value": "string"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._userSelected",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*._userSelected.id",
+                                    "http://layeredschemas.org/v1.0/attr/type": [
+                                      {
+                                        "@value": "string"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.coding.*.version",
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.text",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*._text",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*._text.id",
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*.purposeOfUse.*.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
                         ]
                       }
                     ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.name",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.agent.*._policy",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.agent.*._policy.*.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.policy",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.requestor",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "boolean"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.agent.*._requestor",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*._requestor.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.agent.*._altId",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*._altId.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AuditEvent.type",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.type.system",
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.type._version",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.type._version.id",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.type.display",
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.type._system",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.type._system.id",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.type._display",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.type._display.id",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.type.userSelected",
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "boolean"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.type._userSelected",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.type._userSelected.id",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.type._code",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.type._code.id",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.type.id",
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.type.version",
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.type.code",
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AuditEvent._outcomeDesc",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent._outcomeDesc.id",
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AuditEvent._implicitRules",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent._implicitRules.id",
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AuditEvent._outcome",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent._outcome.id",
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AuditEvent.meta",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.meta.versionId",
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.meta._source",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.meta._source.id",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
                   }
                 ]
               }
@@ -1149,28 +1297,26 @@
           },
           {
             "@id": "http://hl7.org/fhir/AuditEvent.meta.security",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
               {
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
@@ -1178,10 +1324,13 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -1190,24 +1339,22 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*.code",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
-                        "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
+                        "@value": "string"
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._display.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -1217,36 +1364,15 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "boolean"
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
                     "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
@@ -1254,10 +1380,53 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*.system",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._version.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.meta.security.*._code.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -1270,50 +1439,46 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent.meta._source",
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@id": "http://hl7.org/fhir/AuditEvent.meta._versionId",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/AuditEvent.meta._source.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                "@id": "http://hl7.org/fhir/AuditEvent.meta._versionId.id",
+                "http://layeredschemas.org/v1.0/attr/type": [
                   {
                     "@value": "string"
                   }
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent.language",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
+          },
           {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent._outcome",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent._outcome.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
+            "@id": "http://hl7.org/fhir/AuditEvent.meta.id",
+            "http://layeredschemas.org/v1.0/attr/type": [
               {
                 "@value": "string"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent.source",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+          },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent.source._site",
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@id": "http://hl7.org/fhir/AuditEvent.meta.lastUpdated",
+            "http://layeredschemas.org/v1.0/attr/type": [
               {
-                "@id": "http://hl7.org/fhir/AuditEvent.source._site.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.meta._lastUpdated",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.meta._lastUpdated.id",
+                "http://layeredschemas.org/v1.0/attr/type": [
                   {
                     "@value": "string"
                   }
@@ -1322,118 +1487,147 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent.source.type",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+            "@id": "http://hl7.org/fhir/AuditEvent.meta.source",
+            "http://layeredschemas.org/v1.0/attr/type": [
               {
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.meta.tag",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._code.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*.system",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.source.type.*._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*.userSelected",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "boolean"
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*.version",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.source.type.*.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._version.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._system.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._userSelected.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*.code",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*._display.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.meta.tag.*.display",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
@@ -1444,165 +1638,77 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent.source.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
+            "@id": "http://hl7.org/fhir/AuditEvent.meta.profile",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
               {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.source.site",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
               }
             ]
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/AuditEvent.period",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/AuditEvent.outcomeDesc",
+        "http://layeredschemas.org/v1.0/attr/type": [
           {
-            "@id": "http://hl7.org/fhir/AuditEvent.period.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AuditEvent.id",
+        "http://layeredschemas.org/v1.0/attr/type": [
           {
-            "@id": "http://hl7.org/fhir/AuditEvent.period.start",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.period._start",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.period._start.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.period.end",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent.period._end",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.period._end.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
+            "@value": "string"
           }
         ]
       },
       {
         "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
                   {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._userSelected",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._userSelected.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._display",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._display.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "boolean"
                           }
                         ]
                       },
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._version",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
                             "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._version.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                            "http://layeredschemas.org/v1.0/attr/type": [
                               {
                                 "@value": "string"
                               }
@@ -1612,10 +1718,13 @@
                       },
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._code",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
                             "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._code.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                            "http://layeredschemas.org/v1.0/attr/type": [
                               {
                                 "@value": "string"
                               }
@@ -1625,17 +1734,89 @@
                       },
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*.version",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*.display",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*.code",
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._display",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._display.id",
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*.display",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._system",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._system.id",
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._userSelected",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*._userSelected.id",
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.coding.*.userSelected",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "boolean"
                           }
                         ]
                       }
@@ -1645,7 +1826,7 @@
               },
               {
                 "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.text",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                "http://layeredschemas.org/v1.0/attr/type": [
                   {
                     "@value": "string"
                   }
@@ -1653,10 +1834,13 @@
               },
               {
                 "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*._text",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*._text.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
@@ -1666,7 +1850,7 @@
               },
               {
                 "@id": "http://hl7.org/fhir/AuditEvent.purposeOfEvent.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                "http://layeredschemas.org/v1.0/attr/type": [
                   {
                     "@value": "string"
                   }
@@ -1678,128 +1862,24 @@
       },
       {
         "@id": "http://hl7.org/fhir/AuditEvent.entity",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/AuditEvent.entity.*.query",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                "@id": "http://hl7.org/fhir/AuditEvent.entity.*._query",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "boolean"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*._query.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
@@ -1808,122 +1888,16 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@id": "http://hl7.org/fhir/AuditEvent.entity.*._name",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*._name.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._code",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._code.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._userSelected",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._userSelected.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._version",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._version.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "boolean"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*.display",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._display",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._display.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*.version",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
+                        "@value": "string"
                       }
                     ]
                   }
@@ -1931,7 +1905,7 @@
               },
               {
                 "@id": "http://hl7.org/fhir/AuditEvent.entity.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                "http://layeredschemas.org/v1.0/attr/type": [
                   {
                     "@value": "string"
                   }
@@ -1939,25 +1913,18 @@
               },
               {
                 "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
                   {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*._type",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*._type.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*.type",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -1965,10 +1932,13 @@
                       },
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*._valueString",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
                             "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*._valueString.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                            "http://layeredschemas.org/v1.0/attr/type": [
                               {
                                 "@value": "string"
                               }
@@ -1977,27 +1947,46 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*._valueBase64Binary",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@value": "string"
+                            "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*._valueBase64Binary.id",
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
                           }
                         ]
                       },
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*.valueBase64Binary",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*._valueBase64Binary",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*.type",
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
-                            "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*._valueBase64Binary.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/type": [
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*._type",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*._type.id",
+                            "http://layeredschemas.org/v1.0/attr/type": [
                               {
                                 "@value": "string"
                               }
@@ -2007,7 +1996,7 @@
                       },
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.entity.*.detail.*.valueString",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -2018,69 +2007,315 @@
                 ]
               },
               {
+                "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role.display",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role.version",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._display.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role.userSelected",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "boolean"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._version.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._code.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._userSelected.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role.code",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role.system",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.role._system.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*.code",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._userSelected",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._userSelected.id",
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*.display",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*.system",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._version",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._version.id",
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._code",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._code.id",
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*.version",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._display",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._display.id",
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*.userSelected",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "boolean"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._system",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/AuditEvent.entity.*.securityLabel.*._system.id",
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.entity.*.query",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
                 "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._system.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -2090,26 +2325,21 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._display.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -2119,17 +2349,81 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "boolean"
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type.version",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._code.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._userSelected.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type.code",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.type._version.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
                       }
                     ]
                   }
@@ -2137,47 +2431,99 @@
               },
               {
                 "@id": "http://hl7.org/fhir/AuditEvent.entity.*.name",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                "http://layeredschemas.org/v1.0/attr/type": [
                   {
                     "@value": "string"
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/AuditEvent.entity.*._description",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@id": "http://hl7.org/fhir/AuditEvent.entity.*.description",
+                "http://layeredschemas.org/v1.0/attr/type": [
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*._description.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.entity.*._query",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*._query.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
+                    "@value": "string"
                   }
                 ]
               },
               {
                 "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle.version",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle.code",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._version.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._system.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle.display",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -2187,89 +2533,13 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/type": [
+                        "http://layeredschemas.org/v1.0/attr/type": [
                           {
                             "@value": "string"
                           }
@@ -2279,28 +2549,47 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "boolean"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle.system",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent.entity.*.lifecycle._code.id",
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/AuditEvent.entity.*.description",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                "@id": "http://hl7.org/fhir/AuditEvent.entity.*._description",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.entity.*._name",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*._name.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.entity.*._description.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
@@ -2313,11 +2602,30 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/AuditEvent._recorded",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/AuditEvent.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/AuditEvent._recorded.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
+            "@id": "http://hl7.org/fhir/AuditEvent.text._status",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.text._status.id",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.text.id",
+            "http://layeredschemas.org/v1.0/attr/type": [
               {
                 "@value": "string"
               }
@@ -2326,11 +2634,22 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/AuditEvent._implicitRules",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/AuditEvent.recorded",
+        "http://layeredschemas.org/v1.0/attr/type": [
           {
-            "@id": "http://hl7.org/fhir/AuditEvent._implicitRules.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AuditEvent._language",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent._language.id",
+            "http://layeredschemas.org/v1.0/attr/type": [
               {
                 "@value": "string"
               }
@@ -2340,94 +2659,32 @@
       },
       {
         "@id": "http://hl7.org/fhir/AuditEvent.subtype",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._userSelected",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._userSelected.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._display",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._display.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*.system",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*.display",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._system",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._system.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*.code",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*.version",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/AuditEvent.subtype.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                "http://layeredschemas.org/v1.0/attr/type": [
                   {
                     "@value": "string"
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._version",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._userSelected",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._version.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._userSelected.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
@@ -2437,10 +2694,85 @@
               },
               {
                 "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._code",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._code.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/type": [
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*.display",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*.version",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._display",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._display.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._system",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._system.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*.system",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._version",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent.subtype.*._version.id",
+                    "http://layeredschemas.org/v1.0/attr/type": [
                       {
                         "@value": "string"
                       }
@@ -2450,9 +2782,17 @@
               },
               {
                 "@id": "http://hl7.org/fhir/AuditEvent.subtype.*.userSelected",
-                "http://schemas.cloudprivacylabs.com/attribute/type": [
+                "http://layeredschemas.org/v1.0/attr/type": [
                   {
                     "@value": "boolean"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.subtype.*.code",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
                   }
                 ]
               }
@@ -2462,22 +2802,113 @@
       },
       {
         "@id": "http://hl7.org/fhir/AuditEvent.implicitRules",
-        "http://schemas.cloudprivacylabs.com/attribute/type": [
+        "http://layeredschemas.org/v1.0/attr/type": [
           {
             "@value": "string"
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/AuditEvent._outcomeDesc",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/AuditEvent.period",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/AuditEvent._outcomeDesc.id",
-            "http://schemas.cloudprivacylabs.com/attribute/type": [
+            "@id": "http://hl7.org/fhir/AuditEvent.period._end",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.period._end.id",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.period.id",
+            "http://layeredschemas.org/v1.0/attr/type": [
               {
                 "@value": "string"
               }
             ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.period.start",
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.period._start",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent.period._start.id",
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent.period.end",
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AuditEvent._recorded",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent._recorded.id",
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AuditEvent._action",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent._action.id",
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AuditEvent.language",
+        "http://layeredschemas.org/v1.0/attr/type": [
+          {
+            "@value": "string"
           }
         ]
       }

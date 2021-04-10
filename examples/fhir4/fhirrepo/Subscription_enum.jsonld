@@ -1,45 +1,18 @@
 [
   {
     "@id": "http://hl7.org/fhir/Subscription/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Layer",
-    "http://schemas.cloudprivacylabs.com/Schema/objectType": [
+    "@type": [
+      "http://layeredschemas.org/v1.0/Overlay"
+    ],
+    "http://layeredschemas.org/v1.0/Layer/objectType": [
       {
         "@value": "http://hl7.org/fhir/Subscription"
       }
     ],
-    "http://schemas.cloudprivacylabs.com/attributes": [
-      {
-        "@id": "http://hl7.org/fhir/Subscription.channel",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Subscription.channel.type",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "rest-hook"
-                  },
-                  {
-                    "@value": "websocket"
-                  },
-                  {
-                    "@value": "email"
-                  },
-                  {
-                    "@value": "sms"
-                  },
-                  {
-                    "@value": "message"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
+    "http://layeredschemas.org/v1.0/Object/attributes": [
       {
         "@id": "http://hl7.org/fhir/Subscription.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
             "@list": [
               {
@@ -50,37 +23,48 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Subscription.contact",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@id": "http://hl7.org/fhir/Subscription.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@id": "http://hl7.org/fhir/Subscription.text.status",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "@id": "http://hl7.org/fhir/Subscription.contact.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "@list": [
                   {
-                    "@list": [
-                      {
-                        "@value": "home"
-                      },
-                      {
-                        "@value": "work"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "mobile"
-                      }
-                    ]
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
                   }
                 ]
-              },
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Subscription.contact",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/Subscription.contact.*.system",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
                     "@list": [
                       {
@@ -107,30 +91,60 @@
                     ]
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Subscription.contact.*.use",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "home"
+                      },
+                      {
+                        "@value": "work"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "old"
+                      },
+                      {
+                        "@value": "mobile"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Subscription.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/Subscription.channel",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Subscription.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "@id": "http://hl7.org/fhir/Subscription.channel.type",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
                 "@list": [
                   {
-                    "@value": "generated"
+                    "@value": "rest-hook"
                   },
                   {
-                    "@value": "extensions"
+                    "@value": "websocket"
                   },
                   {
-                    "@value": "additional"
+                    "@value": "email"
                   },
                   {
-                    "@value": "empty"
+                    "@value": "sms"
+                  },
+                  {
+                    "@value": "message"
                   }
                 ]
               }
@@ -140,7 +154,7 @@
       },
       {
         "@id": "http://hl7.org/fhir/Subscription.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
             "@list": [
               {

@@ -1,19 +1,36 @@
 [
   {
     "@id": "http://hl7.org/fhir/AdverseEvent/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Layer",
-    "http://schemas.cloudprivacylabs.com/Schema/objectType": [
+    "@type": [
+      "http://layeredschemas.org/v1.0/Overlay"
+    ],
+    "http://layeredschemas.org/v1.0/Layer/objectType": [
       {
         "@value": "http://hl7.org/fhir/AdverseEvent"
       }
     ],
-    "http://schemas.cloudprivacylabs.com/attributes": [
+    "http://layeredschemas.org/v1.0/Object/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/AdverseEvent.resourceType",
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "AdverseEvent"
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/AdverseEvent.identifier",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/AdverseEvent.identifier.use",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
                 "@list": [
                   {
@@ -38,12 +55,15 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/AdverseEvent.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "@id": "http://hl7.org/fhir/AdverseEvent.actuality",
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
             "@list": [
               {
-                "@value": "AdverseEvent"
+                "@value": "actual"
+              },
+              {
+                "@value": "potential"
               }
             ]
           }
@@ -51,10 +71,13 @@
       },
       {
         "@id": "http://hl7.org/fhir/AdverseEvent.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/AdverseEvent.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
                 "@list": [
                   {
@@ -70,21 +93,6 @@
                     "@value": "empty"
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AdverseEvent.actuality",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "actual"
-              },
-              {
-                "@value": "potential"
               }
             ]
           }

@@ -1,70 +1,24 @@
 [
   {
     "@id": "http://hl7.org/fhir/DeviceMetric/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Layer",
-    "http://schemas.cloudprivacylabs.com/Schema/objectType": [
+    "@type": [
+      "http://layeredschemas.org/v1.0/Overlay"
+    ],
+    "http://layeredschemas.org/v1.0/Layer/objectType": [
       {
         "@value": "http://hl7.org/fhir/DeviceMetric"
       }
     ],
-    "http://schemas.cloudprivacylabs.com/attributes": [
-      {
-        "@id": "http://hl7.org/fhir/DeviceMetric.calibration",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceMetric.calibration.*.type",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "unspecified"
-                      },
-                      {
-                        "@value": "offset"
-                      },
-                      {
-                        "@value": "gain"
-                      },
-                      {
-                        "@value": "two-point"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DeviceMetric.calibration.*.state",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "not-calibrated"
-                      },
-                      {
-                        "@value": "calibration-required"
-                      },
-                      {
-                        "@value": "calibrated"
-                      },
-                      {
-                        "@value": "unspecified"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
+    "http://layeredschemas.org/v1.0/Object/attributes": [
       {
         "@id": "http://hl7.org/fhir/DeviceMetric.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/DeviceMetric.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
                 "@list": [
                   {
@@ -86,8 +40,20 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/DeviceMetric.resourceType",
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "DeviceMetric"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/DeviceMetric.category",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
             "@list": [
               {
@@ -107,20 +73,8 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/DeviceMetric.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "DeviceMetric"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/DeviceMetric.color",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
             "@list": [
               {
@@ -152,29 +106,53 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/DeviceMetric.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@id": "http://hl7.org/fhir/DeviceMetric.calibration",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/DeviceMetric.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "@id": "http://hl7.org/fhir/DeviceMetric.calibration.*.type",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
                     "@list": [
                       {
-                        "@value": "usual"
+                        "@value": "unspecified"
                       },
                       {
-                        "@value": "official"
+                        "@value": "offset"
                       },
                       {
-                        "@value": "temp"
+                        "@value": "gain"
                       },
                       {
-                        "@value": "secondary"
+                        "@value": "two-point"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DeviceMetric.calibration.*.state",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "not-calibrated"
                       },
                       {
-                        "@value": "old"
+                        "@value": "calibration-required"
+                      },
+                      {
+                        "@value": "calibrated"
+                      },
+                      {
+                        "@value": "unspecified"
                       }
                     ]
                   }
@@ -186,7 +164,7 @@
       },
       {
         "@id": "http://hl7.org/fhir/DeviceMetric.operationalStatus",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
             "@list": [
               {
@@ -207,105 +185,31 @@
       },
       {
         "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.durationUnit",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "s"
-                      },
-                      {
-                        "@value": "min"
-                      },
-                      {
-                        "@value": "h"
-                      },
-                      {
-                        "@value": "d"
-                      },
-                      {
-                        "@value": "wk"
-                      },
-                      {
-                        "@value": "mo"
-                      },
-                      {
-                        "@value": "a"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.boundsDuration",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.boundsDuration.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.periodUnit",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "s"
-                      },
-                      {
-                        "@value": "min"
-                      },
-                      {
-                        "@value": "h"
-                      },
-                      {
-                        "@value": "d"
-                      },
-                      {
-                        "@value": "wk"
-                      },
-                      {
-                        "@value": "mo"
-                      },
-                      {
-                        "@value": "a"
-                      }
-                    ]
-                  }
-                ]
-              },
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.boundsRange",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.boundsRange.low",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.boundsRange.low.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
                             "@list": [
                               {
@@ -328,10 +232,13 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.boundsRange.high",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.boundsRange.high.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
                             "@list": [
                               {
@@ -355,10 +262,73 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.when",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.durationUnit",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                    "@list": [
+                      {
+                        "@value": "s"
+                      },
+                      {
+                        "@value": "min"
+                      },
+                      {
+                        "@value": "h"
+                      },
+                      {
+                        "@value": "d"
+                      },
+                      {
+                        "@value": "wk"
+                      },
+                      {
+                        "@value": "mo"
+                      },
+                      {
+                        "@value": "a"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.periodUnit",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "s"
+                      },
+                      {
+                        "@value": "min"
+                      },
+                      {
+                        "@value": "h"
+                      },
+                      {
+                        "@value": "d"
+                      },
+                      {
+                        "@value": "wk"
+                      },
+                      {
+                        "@value": "mo"
+                      },
+                      {
+                        "@value": "a"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.when",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
                         "@list": [
                           {
@@ -440,6 +410,74 @@
                             "@value": "PCV"
                           }
                         ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.boundsDuration",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DeviceMetric.measurementPeriod.repeat.boundsDuration.comparator",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceMetric.identifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DeviceMetric.identifier.*.use",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
                       }
                     ]
                   }

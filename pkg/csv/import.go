@@ -18,6 +18,7 @@ import (
 	"strings"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/terms"
 )
 
 type ImportSpec struct {
@@ -44,9 +45,12 @@ func Import(spec ImportSpec, input [][]string) (layers []*ls.Layer, err error) {
 		return "", false
 	}
 	for _, layer := range spec.Layers {
-		attributes := ls.NewObjectType(nil)
+		newLayer := ls.NewLayer()
+		newLayer.ObjectType = spec.ObjectType
+		layers = append(layers, newLayer)
+
 		for _, row := range input {
-			attribute := ls.NewAttribute(attributes)
+			attribute := ls.NewAttribute(newLayer.Root)
 			for _, col := range layer.Columns {
 				if col.Index == spec.AttributeIDColumn {
 					continue
@@ -59,31 +63,49 @@ func Import(spec ImportSpec, input [][]string) (layers []*ls.Layer, err error) {
 				if len(t) == 0 {
 					term, ok := ls.Terms[col.Name]
 					if ok {
-						switch term.Type {
-						case ls.TermTypeID:
-							t = "@id"
-						case ls.TermTypeList:
-							t = "@list"
-						case ls.TermTypeSet:
-							t = "@set"
-						case ls.TermTypeIDList, ls.TermTypeIDSet:
-							t = "@idlist"
-						default:
-							t = "@value"
+						switch term.GetContainerType() {
+						case terms.SetTermType:
+							switch term.GetValueType() {
+							case terms.ValueTermType:
+								t = "@set"
+							case terms.IDTermType:
+								t = "@idlist"
+							case terms.ObjectTermType:
+								return nil, fmt.Errorf("Unsupported term: %s", col.Name)
+							}
+
+						case terms.ListTermType:
+							switch term.GetValueType() {
+							case terms.ValueTermType:
+								t = "@list"
+							case terms.IDTermType:
+								t = "@idlist"
+							case terms.ObjectTermType:
+								return nil, fmt.Errorf("Unsupported term: %s", col.Name)
+							}
+						case terms.MonadicTermType:
+							switch term.GetValueType() {
+							case terms.ValueTermType:
+								t = "@value"
+							case terms.IDTermType:
+								t = "@id"
+							case terms.ObjectTermType:
+								return nil, fmt.Errorf("Unsupported term: %s", col.Name)
+							}
 						}
 					}
 				}
-				if col.Name == ls.LayerTerms.Attributes.ID ||
-					col.Name == ls.LayerTerms.AllOf.ID ||
-					col.Name == ls.LayerTerms.OneOf.ID ||
-					col.Name == ls.LayerTerms.ArrayItems.ID {
+				if col.Name == ls.LayerTerms.Attributes.GetTerm() ||
+					col.Name == ls.LayerTerms.AllOf.GetTerm() ||
+					col.Name == ls.LayerTerms.OneOf.GetTerm() ||
+					col.Name == ls.LayerTerms.ArrayItems.GetTerm() {
 					return nil, fmt.Errorf("%s cannot be used in CSV", col.Name)
 				}
 				switch t {
 				case "@value":
 					attribute.Values[col.Name] = []map[string]interface{}{{"@value": colValue}}
 				case "@id":
-					if col.Name == ls.LayerTerms.Reference.ID {
+					if col.Name == ls.LayerTerms.Reference.GetTerm() {
 						attribute.Type = &ls.ReferenceType{colValue}
 					} else {
 						attribute.Values[col.Name] = []map[string]interface{}{{"@id": colValue}}
@@ -105,15 +127,11 @@ func Import(spec ImportSpec, input [][]string) (layers []*ls.Layer, err error) {
 			id, ok := getColValue(row, spec.AttributeIDColumn)
 			if ok {
 				attribute.ID = id
-				if err := attributes.Add(attribute); err != nil {
+				if err := newLayer.Root.GetAttributes().Add(attribute, newLayer); err != nil {
 					return nil, err
 				}
 			}
 		}
-		m := ls.NewLayer()
-		m.Attributes = *attributes
-		m.ObjectType = spec.ObjectType
-		layers = append(layers, m)
 	}
 	return
 }

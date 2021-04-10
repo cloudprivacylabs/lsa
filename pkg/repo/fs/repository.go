@@ -21,6 +21,7 @@ import (
 	"path/filepath"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/terms"
 	"github.com/piprate/json-gold/ld"
 )
 
@@ -35,11 +36,12 @@ const indexFile = "index.ls"
 type Repository struct {
 	root  string
 	index []IndexEntry
+	vocab terms.Vocabulary
 }
 
 // New returns a new file repository under the given directory.
-func New(root string) *Repository {
-	return &Repository{root: root}
+func New(root string, vocab terms.Vocabulary) *Repository {
+	return &Repository{root: root, vocab: vocab}
 }
 
 // LoadAndCompose loads the layer or schema manifest with the given
@@ -136,7 +138,7 @@ func (repo *Repository) compose(index int) (*ls.Layer, error) {
 		}
 		layers = append(layers, ovl)
 	}
-	result, err := ls.Compose(ls.ComposeOptions{}, layers...)
+	result, err := ls.Compose(ls.ComposeOptions{}, repo.vocab, layers...)
 	if err != nil {
 		return nil, err
 	}

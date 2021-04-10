@@ -1,71 +1,463 @@
 [
   {
     "@id": "http://hl7.org/fhir/RelatedPerson/info",
-    "@type": "http://schemas.cloudprivacylabs.com/Layer",
-    "http://schemas.cloudprivacylabs.com/Schema/objectType": [
+    "@type": [
+      "http://layeredschemas.org/v1.0/Overlay"
+    ],
+    "http://layeredschemas.org/v1.0/Layer/objectType": [
       {
         "@value": "http://hl7.org/fhir/RelatedPerson"
       }
     ],
-    "http://schemas.cloudprivacylabs.com/attributes": [
+    "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/RelatedPerson.implicitRules",
-        "http://schemas.cloudprivacylabs.com/attribute/information": [
+        "@id": "http://hl7.org/fhir/RelatedPerson.id",
+        "http://layeredschemas.org/v1.0/attr/information": [
           {
-            "@value": "String of characters used to identify a name or a resource"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/RelatedPerson.language",
-        "http://schemas.cloudprivacylabs.com/attribute/information": [
-          {
-            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/RelatedPerson._birthDate",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson._birthDate.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/RelatedPerson.birthDate",
-        "http://schemas.cloudprivacylabs.com/attribute/information": [
-          {
-            "@value": "A date or partial date (e.g. just year or year + month). There is no time zone. The format is a union of the schema types gYear, gYearMonth and date.  Dates SHALL be valid dates."
+            "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
           }
         ]
       },
       {
         "@id": "http://hl7.org/fhir/RelatedPerson.active",
-        "http://schemas.cloudprivacylabs.com/attribute/information": [
+        "http://layeredschemas.org/v1.0/attr/information": [
           {
             "@value": "Value of \"true\" or \"false\""
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/RelatedPerson.name",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@id": "http://hl7.org/fhir/RelatedPerson.implicitRules",
+        "http://layeredschemas.org/v1.0/attr/information": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@value": "String of characters used to identify a name or a resource"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/RelatedPerson.resourceType",
+        "http://layeredschemas.org/v1.0/attr/information": [
+          {
+            "@value": "This is a RelatedPerson resource"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/RelatedPerson.photo",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.name.*._given",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.contentType",
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.title",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._title",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._title.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.name.*._given.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.size",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "An integer with a value that is not negative (e.g. \u003e= 0)"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._hash",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._hash.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._language",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._language.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.data",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A stream of bytes"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._data",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._data.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._url",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._url.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._creation",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._creation.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.creation",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.id",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._size",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._size.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._contentType",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._contentType.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.hash",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A stream of bytes"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.url",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A URI that is a literal reference"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.language",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/RelatedPerson.identifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.use",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "The purpose of this identifier."
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.id",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._display",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._display.id",
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*.userSelected",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "Value of \"true\" or \"false\""
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._userSelected",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._userSelected.id",
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._code",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._code.id",
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*.id",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*.version",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*.code",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*.system",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "String of characters used to identify a name or a resource"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._version",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._version.id",
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*.display",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._system",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._system.id",
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.text",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type._text",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type._text.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
                           {
                             "@value": "A sequence of Unicode characters"
                           }
@@ -75,96 +467,157 @@
                   }
                 ]
               },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*._use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*._use.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*._value",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*._value.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period.end",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period._end",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period._end.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period.start",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period._start",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period._start.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.value",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.system",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "String of characters used to identify a name or a resource"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*._system",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*._system.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/RelatedPerson.name",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/RelatedPerson.name.*.prefix",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
                   {
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period.end",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period._end",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period._end.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period.start",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period._start",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period._start.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.name.*._prefix",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.name.*._prefix.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.name.*._text",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.name.*._text.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
@@ -174,7 +627,15 @@
               },
               {
                 "@id": "http://hl7.org/fhir/RelatedPerson.name.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.name.*.text",
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
                     "@value": "A sequence of Unicode characters"
                   }
@@ -182,20 +643,129 @@
               },
               {
                 "@id": "http://hl7.org/fhir/RelatedPerson.name.*.family",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
                     "@value": "A sequence of Unicode characters"
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.name.*._suffix",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period._end",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.name.*._suffix.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                        "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period._end.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period.start",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period._start",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period._start.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.name.*.period.end",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.name.*._text",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.name.*._text.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.name.*.use",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "Identifies the purpose for this name."
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.name.*.given",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.name.*._given",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.name.*._given.*.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
                           {
                             "@value": "A sequence of Unicode characters"
                           }
@@ -207,10 +777,51 @@
               },
               {
                 "@id": "http://hl7.org/fhir/RelatedPerson.name.*._use",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/RelatedPerson.name.*._use.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.name.*._suffix",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.name.*._suffix.*.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.name.*.suffix",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
@@ -220,10 +831,13 @@
               },
               {
                 "@id": "http://hl7.org/fhir/RelatedPerson.name.*._family",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/RelatedPerson.name.*._family.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
@@ -232,40 +846,23 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.name.*.given",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@id": "http://hl7.org/fhir/RelatedPerson.name.*._prefix",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
                   {
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.name.*.text",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.name.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "Identifies the purpose for this name."
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.name.*.suffix",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
+                        "@id": "http://hl7.org/fhir/RelatedPerson.name.*._prefix.*.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
                       }
                     ]
                   }
@@ -276,11 +873,14 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/RelatedPerson._gender",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/RelatedPerson._birthDate",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/RelatedPerson._gender.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
+            "@id": "http://hl7.org/fhir/RelatedPerson._birthDate.id",
+            "http://layeredschemas.org/v1.0/attr/information": [
               {
                 "@value": "A sequence of Unicode characters"
               }
@@ -289,427 +889,33 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/RelatedPerson.period",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/RelatedPerson.language",
+        "http://layeredschemas.org/v1.0/attr/information": [
           {
-            "@id": "http://hl7.org/fhir/RelatedPerson.period.end",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson.period._end",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.period._end.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson.period.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson.period.start",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson.period._start",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.period._start.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/RelatedPerson.meta",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson.meta._source",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.meta._source.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson.meta.lastUpdated",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "An instant in time - known at least to the second"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson.meta.profile",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-              {
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-              {
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "String of characters used to identify a name or a resource"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "Value of \"true\" or \"false\""
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson.meta.security",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-              {
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._code",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._code.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._userSelected",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._userSelected.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "String of characters used to identify a name or a resource"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*.code",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._display",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._display.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._version",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._version.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*.userSelected",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "Value of \"true\" or \"false\""
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*.version",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*.display",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._system",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._system.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson.meta.versionId",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson.meta._versionId",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.meta._versionId.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson.meta.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson.meta.source",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson.meta._lastUpdated",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.meta._lastUpdated.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
+            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
           }
         ]
       },
       {
         "@id": "http://hl7.org/fhir/RelatedPerson.telecom",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.rank",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*._use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@value": "An integer with a value that is positive (e.g. \u003e0)"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.system",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "Telecommunications form for contact point - what communications system is required to make use of the contact."
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.value",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*._value",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*._value.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*._use.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
@@ -718,11 +924,22 @@
                 ]
               },
               {
+                "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.value",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
                 "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.period",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.period.start",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
                       }
@@ -730,10 +947,13 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.period._start",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.period._start.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                        "http://layeredschemas.org/v1.0/attr/information": [
                           {
                             "@value": "A sequence of Unicode characters"
                           }
@@ -743,7 +963,7 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.period.end",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
                       }
@@ -751,10 +971,13 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.period._end",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.period._end.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
+                        "http://layeredschemas.org/v1.0/attr/information": [
                           {
                             "@value": "A sequence of Unicode characters"
                           }
@@ -764,7 +987,7 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.period.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
@@ -774,31 +997,21 @@
               },
               {
                 "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
                     "@value": "A sequence of Unicode characters"
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*._use",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*._value",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*._use.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*._system",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*._system.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*._value.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
@@ -808,10 +1021,37 @@
               },
               {
                 "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*._rank",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*._rank.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.rank",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "An integer with a value that is positive (e.g. \u003e0)"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*._system",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*._system.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
@@ -821,451 +1061,17 @@
               },
               {
                 "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
                     "@value": "Identifies the purpose for the contact point."
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/RelatedPerson._implicitRules",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson._implicitRules.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/RelatedPerson.relationship",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
               },
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@id": "http://hl7.org/fhir/RelatedPerson.telecom.*.system",
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._system",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._system.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*.userSelected",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "Value of \"true\" or \"false\""
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*.code",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*.system",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "String of characters used to identify a name or a resource"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*.version",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*.display",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._display",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._display.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._version",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._version.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._code",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._code.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._userSelected",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._userSelected.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.text",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*._text",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*._text.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/RelatedPerson.address",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._district",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._district.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.country",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.district",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.line",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._country",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._country.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._use",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._use.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "The purpose of this address."
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.city",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.text",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.postalCode",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._line",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                  {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.address.*._line.*.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._text",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._text.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._type",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._type.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period.start",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period._start",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period._start.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period.end",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period._end",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period._end.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._city",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._city.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._postalCode",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._postalCode.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.type",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "Distinguishes between physical addresses (those you can visit) and mailing addresses (e.g. PO Boxes and care-of addresses). Most addresses are both."
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._state",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._state.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.state",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
+                    "@value": "Telecommunications form for contact point - what communications system is required to make use of the contact."
                   }
                 ]
               }
@@ -1275,39 +1081,277 @@
       },
       {
         "@id": "http://hl7.org/fhir/RelatedPerson.gender",
-        "http://schemas.cloudprivacylabs.com/attribute/information": [
+        "http://layeredschemas.org/v1.0/attr/information": [
           {
             "@value": "Administrative Gender - the gender that the person is considered to have for administration and record keeping purposes."
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/RelatedPerson.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/information": [
+        "@id": "http://hl7.org/fhir/RelatedPerson.relationship",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "@value": "This is a RelatedPerson resource"
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._display",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._display.id",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*.userSelected",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "Value of \"true\" or \"false\""
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._code",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._code.id",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*.display",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._userSelected",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._userSelected.id",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*.version",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*.system",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "String of characters used to identify a name or a resource"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._version",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._version.id",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._system",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*._system.id",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.coding.*.code",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.text",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*._text",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*._text.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.relationship.*.id",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/RelatedPerson.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@id": "http://hl7.org/fhir/RelatedPerson._gender",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@id": "http://hl7.org/fhir/RelatedPerson._gender.id",
+            "http://layeredschemas.org/v1.0/attr/information": [
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/RelatedPerson._active",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson._active.id",
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/RelatedPerson.address",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._country",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._country.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.text",
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
                     "@value": "A sequence of Unicode characters"
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*._system",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.line",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
                   {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*._system.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
@@ -1316,238 +1360,165 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.value",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._postalCode",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._postalCode.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period._end",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period._end.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period.start",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period._start",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period._start.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*.period.end",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._district",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._district.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._line",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.address.*._line.*.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.district",
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
                     "@value": "A sequence of Unicode characters"
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.country",
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.text",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type._text",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type._text.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding",
-                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                      {
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._version",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._version.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*.version",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*.display",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._system",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._system.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*.userSelected",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "Value of \"true\" or \"false\""
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*.code",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._display",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._display.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._userSelected",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._userSelected.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*.system",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "String of characters used to identify a name or a resource"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._code",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.type.coding.*._code.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
+                    "@value": "A sequence of Unicode characters"
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.city",
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period.start",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period._start",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period._start.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period.end",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period._end",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.period._end.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
+                    "@value": "A sequence of Unicode characters"
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.use",
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
-                    "@value": "The purpose of this identifier."
+                    "@value": "The purpose of this address."
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*._use",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._text",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*._use.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._text.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
@@ -1556,25 +1527,124 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*.system",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.state",
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
-                    "@value": "String of characters used to identify a name or a resource"
+                    "@value": "A sequence of Unicode characters"
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*._value",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._type",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.identifier.*._value.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._type.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
                     ]
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._state",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._state.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._city",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._city.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.postalCode",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.type",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "Distinguishes between physical addresses (those you can visit) and mailing addresses (e.g. PO Boxes and care-of addresses). Most addresses are both."
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*.id",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.address.*._use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.address.*._use.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/RelatedPerson.birthDate",
+        "http://layeredschemas.org/v1.0/attr/information": [
+          {
+            "@value": "A date or partial date (e.g. just year or year + month). There is no time zone. The format is a union of the schema types gYear, gYearMonth and date.  Dates SHALL be valid dates."
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/RelatedPerson._implicitRules",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson._implicitRules.id",
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
               }
             ]
           }
@@ -1582,10 +1652,13 @@
       },
       {
         "@id": "http://hl7.org/fhir/RelatedPerson._language",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/RelatedPerson._language.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
+            "http://layeredschemas.org/v1.0/attr/information": [
               {
                 "@value": "A sequence of Unicode characters"
               }
@@ -1594,11 +1667,467 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/RelatedPerson.period",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.period._end",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.period._end.id",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.period.id",
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.period.start",
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.period._start",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.period._start.id",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.period.end",
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/RelatedPerson.meta",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.meta._lastUpdated",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.meta._lastUpdated.id",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.meta.source",
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "String of characters used to identify a name or a resource"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.meta.security",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._code.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*.display",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*.code",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._display.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*.userSelected",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "Value of \"true\" or \"false\""
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._userSelected.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._version.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*._system.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*.version",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.security.*.system",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "String of characters used to identify a name or a resource"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.meta._versionId",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.meta._versionId.id",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._system.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._userSelected.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*.version",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._display.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*.userSelected",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "Value of \"true\" or \"false\""
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*.display",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*.code",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*.system",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "String of characters used to identify a name or a resource"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._version.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.meta.tag.*._code.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.meta.profile",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.meta.id",
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.meta.versionId",
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.meta.lastUpdated",
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "An instant in time - known at least to the second"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson.meta._source",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.meta._source.id",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/RelatedPerson.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/RelatedPerson.text.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
+            "http://layeredschemas.org/v1.0/attr/information": [
               {
                 "@value": "A sequence of Unicode characters"
               }
@@ -1606,7 +2135,7 @@
           },
           {
             "@id": "http://hl7.org/fhir/RelatedPerson.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
+            "http://layeredschemas.org/v1.0/attr/information": [
               {
                 "@value": "The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data."
               }
@@ -1614,10 +2143,13 @@
           },
           {
             "@id": "http://hl7.org/fhir/RelatedPerson.text._status",
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/RelatedPerson.text._status.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
                     "@value": "A sequence of Unicode characters"
                   }
@@ -1627,7 +2159,7 @@
           },
           {
             "@id": "http://hl7.org/fhir/RelatedPerson.text.div",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
+            "http://layeredschemas.org/v1.0/attr/information": [
               {
                 "@value": "xhtml - escaped html (see specfication)"
               }
@@ -1636,248 +2168,68 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/RelatedPerson._active",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson._active.id",
-            "http://schemas.cloudprivacylabs.com/attribute/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/RelatedPerson.photo",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._language",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._language.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.language",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._hash",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._hash.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._data",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._data.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.creation",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.contentType",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.url",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A URI that is a literal reference"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.size",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "An integer with a value that is not negative (e.g. \u003e= 0)"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._size",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._size.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._url",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._url.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._contentType",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._contentType.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._creation",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._creation.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.data",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A stream of bytes"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._title",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.photo.*._title.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.title",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.photo.*.hash",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A stream of bytes"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/RelatedPerson.communication",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.id",
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
               {
                 "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language._text",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language._text.id",
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.id",
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
                   {
                     "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding",
-                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
                       {
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*.id",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._version",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._version.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*.userSelected",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "Value of \"true\" or \"false\""
-                              }
-                            ]
-                          },
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
                             "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*.version",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                            "http://layeredschemas.org/v1.0/attr/information": [
                               {
                                 "@value": "A sequence of Unicode characters"
                               }
@@ -1885,7 +2237,7 @@
                           },
                           {
                             "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*.display",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
+                            "http://layeredschemas.org/v1.0/attr/information": [
                               {
                                 "@value": "A sequence of Unicode characters"
                               }
@@ -1893,52 +2245,13 @@
                           },
                           {
                             "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._system",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
                                 "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._system.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*.system",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "String of characters used to identify a name or a resource"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._display",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._display.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*.code",
-                            "http://schemas.cloudprivacylabs.com/attribute/information": [
-                              {
-                                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._code",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._code.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                                "http://layeredschemas.org/v1.0/attr/information": [
                                   {
                                     "@value": "A sequence of Unicode characters"
                                   }
@@ -1948,10 +2261,93 @@
                           },
                           {
                             "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._userSelected",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
                                 "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._userSelected.id",
-                                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*.code",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._display",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._display.id",
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*.userSelected",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "Value of \"true\" or \"false\""
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*.id",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*.system",
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "String of characters used to identify a name or a resource"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._version",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._version.id",
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._code",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.coding.*._code.id",
+                                "http://layeredschemas.org/v1.0/attr/information": [
                                   {
                                     "@value": "A sequence of Unicode characters"
                                   }
@@ -1965,28 +2361,7 @@
                   },
                   {
                     "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.text",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language._text",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language._text.id",
-                        "http://schemas.cloudprivacylabs.com/attribute/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.language.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
@@ -1996,7 +2371,7 @@
               },
               {
                 "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.preferred",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
                     "@value": "Value of \"true\" or \"false\""
                   }
@@ -2004,34 +2379,21 @@
               },
               {
                 "@id": "http://hl7.org/fhir/RelatedPerson.communication.*._preferred",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/RelatedPerson.communication.*._preferred.id",
-                    "http://schemas.cloudprivacylabs.com/attribute/information": [
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
                     ]
                   }
                 ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson.communication.*.id",
-                "http://schemas.cloudprivacylabs.com/attribute/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/RelatedPerson.id",
-        "http://schemas.cloudprivacylabs.com/attribute/information": [
-          {
-            "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
           }
         ]
       }

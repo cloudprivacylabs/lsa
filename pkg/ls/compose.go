@@ -140,126 +140,6 @@ func (attribute *Attribute) Compose(options ComposeOptions, vocab terms.Vocabula
 	return ComposeTerms(vocab, attribute.Values, source.Values)
 }
 
-// Compose source into this attributes
-//func (attributes *ObjectType) Compose(options ComposeOptions, source *ObjectType) error {
-//	var err error
-
-// // Process target attributes and compose
-// for i := 0; i < attributes.Len(); i++ {
-// 	term1Attribute := attributes.Get(i)
-// 	// Is there a matching source attribute? It has to be at this level
-// 	term2Attribute := source.GetByID(term1Attribute.ID)
-// 	if term2Attribute == nil {
-// 		continue
-// 	}
-// 	// Descend the tree together
-// 	if err := term1Attribute.Compose(options, term2Attribute); err != nil {
-// 		return err
-// 	}
-// }
-// // If source has any attributes that are not in attributes, and if
-// // we are using a union composition, copy them over
-// if options.Union {
-// 	for i := 0; i < source.Len(); i++ {
-// 		sourceAttribute := source.Get(i)
-// 		if attributes.GetByID(sourceAttribute.ID) == nil {
-// 			newAttribute := sourceAttribute.Clone(attributes)
-// 			attributes.Add(newAttribute)
-// 		}
-// 	}
-// }
-// return nil
-//}
-
-// Compose source into this attribute
-// func (attribute *Attribute) Compose(options ComposeOptions, source *Attribute) error {
-// 	setType := func() {
-// 		attribute.Type = source.Type.Clone(attribute)
-// 	}
-// 	compose := func(targetOptions, sourceOptions []*Attribute) ([]*Attribute, error) {
-// 		for _, option := range sourceOptions {
-// 			found := false
-// 			for i := range targetOptions {
-// 				if targetOptions[i].ID == option.ID {
-// 					found = true
-// 					if err := targetOptions[i].Compose(options, option); err != nil {
-// 						return nil, err
-// 					}
-// 					break
-// 				}
-// 			}
-// 			if !found {
-// 				targetOptions = append(targetOptions, option.Clone(attribute))
-// 			}
-// 		}
-// 		return targetOptions, nil
-// 	}
-// 	switch t := attribute.Type.(type) {
-// 	case *ObjectType:
-// 		if sobj, ok := source.Type.(*ObjectType); ok {
-// 			if err := t.Compose(options, sobj); err != nil {
-// 				return err
-// 			}
-// 		} else {
-// 			setType()
-// 		}
-// 	case *ReferenceType:
-// 		if sref, ok := source.Type.(*ReferenceType); ok {
-// 			attribute.Type = sref
-// 		} else {
-// 			setType()
-// 		}
-// 	case *ArrayType:
-// 		if sarr, ok := source.Type.(*ArrayType); ok {
-// 			if err := t.Compose(options, sarr.Attribute); err != nil {
-// 				return err
-// 			}
-// 		} else {
-// 			setType()
-// 		}
-// 	case *CompositeType:
-// 		if scomp, ok := source.Type.(*CompositeType); ok {
-// 			var err error
-// 			if t.Options, err = compose(t.Options, scomp.Options); err != nil {
-// 				return err
-// 			}
-// 		} else {
-// 			setType()
-// 		}
-// 	case *PolymorphicType:
-// 		if spoly, ok := source.Type.(*PolymorphicType); ok {
-// 			var err error
-// 			if t.Options, err = compose(t.Options, spoly.Options); err != nil {
-// 				return err
-// 			}
-// 		} else {
-// 			setType()
-// 		}
-// 	}
-
-// 	for term, v2 := range source.Values {
-// 		v2Arr, _ := v2.([]interface{})
-// 		if v2Arr == nil {
-// 			continue
-// 		}
-// 		// If a term appears in both source and target, apply term-specific composition
-// 		if v1, exists := attribute.Values[term]; exists {
-// 			v1Arr, _ := v1.([]interface{})
-// 			if v1Arr == nil {
-// 				continue
-// 			}
-// 			result, err := composeTerm(options, term, v1, v2)
-// 			if err != nil {
-// 				return err
-// 			}
-// 			attribute.Values[term] = result
-// 		} else {
-// 			attribute.Values[term] = ld.CloneDocument(v2)
-// 		}
-// 	}
-// 	return nil
-// }
-
 // ComposeTerms composes the terms in target and source, and writes the result into target
 func ComposeTerms(vocab terms.Vocabulary, target, source map[string]interface{}) error {
 	for k, v := range source {
@@ -363,7 +243,7 @@ func Compose(options ComposeOptions, vocab terms.Vocabulary, layers ...*Layer) (
 // Check if the suffix attribute has matching ascendants
 func attributePathMatch(path, suffix []*Attribute) bool {
 	attributeMatch := func(a, b *Attribute) bool {
-		return a.ID == b.ID && a.Type == b.Type
+		return a.ID == b.ID && a.Type.GetType() == b.Type.GetType()
 	}
 	if len(suffix) > len(path) {
 		return false

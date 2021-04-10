@@ -21,13 +21,14 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
 
 func init() {
 	rootCmd.AddCommand(composeCmd)
 	composeCmd.Flags().String("format", "jsonld", "Output format (jsonld, jsonschema)")
 	composeCmd.Flags().StringP("output", "o", "", "Output file")
-	composeCmd.Flags().String("repo", "", "Schema repository directory")
+	composeCmd.Flags().String("repo", "", "Schema repository directory. If a repository is given, all layers are resolved using that repository. Otherwise, all layers are read as files.")
 }
 
 var composeCmd = &cobra.Command{
@@ -37,39 +38,46 @@ var composeCmd = &cobra.Command{
 
 	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		var output *ls.SchemaLayer
-		var repo *SchemaRepository
+		var repo *fs.Repository
+		repoDir, _ := cmd.Flags().GetString("repo")
+		if len(repoDir) > 0 {
+			repo = fs.New(repoDir, ls.Terms)
+			if err := repo.Load(true); err != nil {
+				failErr(err)
+			}
+		}
+
+		var output *ls.Layer
+		var err error
 		for _, arg := range args {
-			var v interface{}
-			if err := readJSON(arg, &v); err != nil {
-				failErr(err)
+			var obj interface{}
+			if repo == nil {
+				obj, err = fs.ReadRepositoryObject(arg)
+				if err != nil {
+					failErr(err)
+				}
+			} else {
+				obj = repo.GetSchemaManifest(arg)
+				if obj == nil {
+					obj = repo.GetLayer(arg)
+				}
+				if obj == nil {
+					fail("Not found: " + arg)
+				}
 			}
-			obj, err := parseSchemaObject(v)
-			if err != nil {
-				failErr(err)
-			}
+
 			switch t := obj.(type) {
-			case *ls.SchemaLayer:
+			case *ls.Layer:
 				if output == nil {
 					output = t
 				} else {
-					if err := output.Compose(ls.ComposeOptions{}, t); err != nil {
+					if err := output.Compose(ls.ComposeOptions{}, ls.Terms, t); err != nil {
 						failErr(err)
 					}
 				}
-			case *ls.Schema:
-				if repo == nil {
-					repoDir, _ := cmd.Flags().GetString("repo")
-					if len(repoDir) == 0 {
-						fail("No repository specified to resolve schema, specify --repo")
-					}
-					repo = &SchemaRepository{}
-					if err := repo.LoadDir(repoDir); err != nil {
-						failErr(err)
-					}
-				}
+			case *ls.SchemaManifest:
 				var err error
-				output, err = repo.ComposeSchema(t)
+				output, err = repo.GetComposedSchema(t.ID)
 				if err != nil {
 					failErr(err)
 				}

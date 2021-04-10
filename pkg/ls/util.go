@@ -86,31 +86,3 @@ func GetListElements(node interface{}) []interface{} {
 	elements, _ := m["@list"].([]interface{})
 	return elements
 }
-
-// FindNodeByID finds a node under the root by ID. Returns the
-// reversed full path to the node from the root if exists, that is,
-// the found node is at path[0], and root at path[len(path)-1]. Path
-// will be empty if it does not exist.
-func FindNodeByID(root interface{}, ID string) (path []interface{}) {
-	switch r := root.(type) {
-	case []interface{}:
-		for _, x := range r {
-			found := FindNodeByID(x, ID)
-			if len(found) > 0 {
-				return append(found, x)
-			}
-		}
-	case map[string]interface{}:
-		id := GetNodeID(r)
-		if id == ID {
-			return []interface{}{r}
-		}
-		for _, v := range r {
-			found := FindNodeByID(v, ID)
-			if len(found) > 0 {
-				return append(found, v)
-			}
-		}
-	}
-	return nil
-}

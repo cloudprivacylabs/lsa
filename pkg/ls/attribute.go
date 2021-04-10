@@ -364,11 +364,8 @@ func (p PolymorphicType) Clone(parent *Attribute) AttributeType {
 
 func (p *PolymorphicType) UnmarshalExpanded(input map[string]interface{}, parent *Attribute) error {
 	allOf := LayerTerms.OneOf.ElementsFromExpanded(input[LayerTerms.OneOf.GetTerm()])
-	if len(allOf) != 1 {
-		return ErrInvalidInput("Invalid polymorphic type")
-	}
 	p.Options = make([]*Attribute, 0)
-	for _, element := range GetListElements(allOf[0]) {
+	for _, element := range allOf {
 		attr := NewAttribute(parent)
 		if err := attr.UnmarshalExpanded(element, parent); err != nil {
 			return err
@@ -406,11 +403,8 @@ func (c CompositeType) Clone(parent *Attribute) AttributeType {
 
 func (c *CompositeType) UnmarshalExpanded(input map[string]interface{}, parent *Attribute) error {
 	allOf := LayerTerms.OneOf.ElementsFromExpanded(input[LayerTerms.OneOf.GetTerm()])
-	if len(allOf) != 1 {
-		return ErrInvalidInput("Invalid composite type")
-	}
 	c.Options = make([]*Attribute, 0)
-	for _, element := range GetListElements(allOf[0]) {
+	for _, element := range allOf {
 		attr := NewAttribute(parent)
 		if err := attr.UnmarshalExpanded(element, parent); err != nil {
 			return err

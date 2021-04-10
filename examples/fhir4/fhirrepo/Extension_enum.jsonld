@@ -1,104 +1,117 @@
 [
   {
     "@id": "http://hl7.org/fhir/Extension/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Layer",
-    "http://schemas.cloudprivacylabs.com/Schema/objectType": [
+    "@type": [
+      "http://layeredschemas.org/v1.0/Overlay"
+    ],
+    "http://layeredschemas.org/v1.0/Layer/objectType": [
       {
         "@value": "http://hl7.org/fhir/Extension"
       }
     ],
-    "http://schemas.cloudprivacylabs.com/attributes": [
+    "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/Extension.valueContributor",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/Extension.valueIdentifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Extension.valueContributor.contact",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+            "@id": "http://hl7.org/fhir/Extension.valueIdentifier.use",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@list": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueContributor.contact.*.telecom",
-                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                      {
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueContributor.contact.*.telecom.*.use",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "home"
-                                  },
-                                  {
-                                    "@value": "work"
-                                  },
-                                  {
-                                    "@value": "temp"
-                                  },
-                                  {
-                                    "@value": "old"
-                                  },
-                                  {
-                                    "@value": "mobile"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueContributor.contact.*.telecom.*.system",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "phone"
-                                  },
-                                  {
-                                    "@value": "fax"
-                                  },
-                                  {
-                                    "@value": "email"
-                                  },
-                                  {
-                                    "@value": "pager"
-                                  },
-                                  {
-                                    "@value": "url"
-                                  },
-                                  {
-                                    "@value": "sms"
-                                  },
-                                  {
-                                    "@value": "other"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
+                    "@value": "usual"
+                  },
+                  {
+                    "@value": "official"
+                  },
+                  {
+                    "@value": "temp"
+                  },
+                  {
+                    "@value": "secondary"
+                  },
+                  {
+                    "@value": "old"
                   }
                 ]
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueContactDetail",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Extension.valueContributor.type",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "@id": "http://hl7.org/fhir/Extension.valueContactDetail.telecom",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
               {
-                "@list": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@value": "author"
+                    "@id": "http://hl7.org/fhir/Extension.valueContactDetail.telecom.*.use",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "home"
+                          },
+                          {
+                            "@value": "work"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "old"
+                          },
+                          {
+                            "@value": "mobile"
+                          }
+                        ]
+                      }
+                    ]
                   },
                   {
-                    "@value": "editor"
-                  },
-                  {
-                    "@value": "reviewer"
-                  },
-                  {
-                    "@value": "endorser"
+                    "@id": "http://hl7.org/fhir/Extension.valueContactDetail.telecom.*.system",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "phone"
+                          },
+                          {
+                            "@value": "fax"
+                          },
+                          {
+                            "@value": "email"
+                          },
+                          {
+                            "@value": "pager"
+                          },
+                          {
+                            "@value": "url"
+                          },
+                          {
+                            "@value": "sms"
+                          },
+                          {
+                            "@value": "other"
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
@@ -108,10 +121,13 @@
       },
       {
         "@id": "http://hl7.org/fhir/Extension.valueHumanName",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/Extension.valueHumanName.use",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
                 "@list": [
                   {
@@ -142,57 +158,83 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/Extension.valueAddress",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.type",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "@id": "http://hl7.org/fhir/Extension.valueAddress.type",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
                 "@list": [
                   {
-                    "@value": "named-event"
+                    "@value": "postal"
                   },
                   {
-                    "@value": "periodic"
+                    "@value": "physical"
                   },
                   {
-                    "@value": "data-changed"
-                  },
-                  {
-                    "@value": "data-added"
-                  },
-                  {
-                    "@value": "data-modified"
-                  },
-                  {
-                    "@value": "data-removed"
-                  },
-                  {
-                    "@value": "data-accessed"
-                  },
-                  {
-                    "@value": "data-access-ended"
+                    "@value": "both"
                   }
                 ]
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.condition",
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@id": "http://hl7.org/fhir/Extension.valueAddress.use",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.condition.language",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "@list": [
+                  {
+                    "@value": "home"
+                  },
+                  {
+                    "@value": "work"
+                  },
+                  {
+                    "@value": "temp"
+                  },
+                  {
+                    "@value": "old"
+                  },
+                  {
+                    "@value": "billing"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueRatio",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueRatio.numerator",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueRatio.numerator.comparator",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
                     "@list": [
                       {
-                        "@value": "text/cql"
+                        "@value": "\u003c"
                       },
                       {
-                        "@value": "text/fhirpath"
+                        "@value": "\u003c="
                       },
                       {
-                        "@value": "application/x-fhir-query"
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
                       }
                     ]
                   }
@@ -201,14 +243,543 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming",
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@id": "http://hl7.org/fhir/Extension.valueRatio.denominator",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@id": "http://hl7.org/fhir/Extension.valueRatio.denominator.comparator",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.periodUnit",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueContactPoint",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueContactPoint.system",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "phone"
+                  },
+                  {
+                    "@value": "fax"
+                  },
+                  {
+                    "@value": "email"
+                  },
+                  {
+                    "@value": "pager"
+                  },
+                  {
+                    "@value": "url"
+                  },
+                  {
+                    "@value": "sms"
+                  },
+                  {
+                    "@value": "other"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueContactPoint.use",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "home"
+                  },
+                  {
+                    "@value": "work"
+                  },
+                  {
+                    "@value": "temp"
+                  },
+                  {
+                    "@value": "old"
+                  },
+                  {
+                    "@value": "mobile"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueDosage",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerLifetime",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerLifetime.comparator",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseRange",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseRange.low",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseRange.low.comparator",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseRange.high",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseRange.high.comparator",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateQuantity",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateQuantity.comparator",
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange.high",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange.high.comparator",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange.low",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange.low.comparator",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseQuantity",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseQuantity.comparator",
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.numerator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.numerator.comparator",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.denominator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.denominator.comparator",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.numerator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.numerator.comparator",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.denominator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.denominator.comparator",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerAdministration",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerAdministration.comparator",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueDosage.timing",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsDuration",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsDuration.comparator",
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.periodUnit",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
                         "@list": [
                           {
@@ -237,40 +808,13 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.durationUnit",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.when",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
                       {
-                        "@list": [
-                          {
-                            "@value": "s"
-                          },
-                          {
-                            "@value": "min"
-                          },
-                          {
-                            "@value": "h"
-                          },
-                          {
-                            "@value": "d"
-                          },
-                          {
-                            "@value": "wk"
-                          },
-                          {
-                            "@value": "mo"
-                          },
-                          {
-                            "@value": "a"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.when",
-                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                      {
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
                             "@list": [
                               {
@@ -358,14 +902,50 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.durationUnit",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
-                        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.high",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@list": [
                           {
-                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.high.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                            "@value": "s"
+                          },
+                          {
+                            "@value": "min"
+                          },
+                          {
+                            "@value": "h"
+                          },
+                          {
+                            "@value": "d"
+                          },
+                          {
+                            "@value": "wk"
+                          },
+                          {
+                            "@value": "mo"
+                          },
+                          {
+                            "@value": "a"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.low",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.low.comparator",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
                               {
                                 "@list": [
                                   {
@@ -387,11 +967,14 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.low",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.high",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.low.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                            "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.high.comparator",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
                               {
                                 "@list": [
                                   {
@@ -413,92 +996,111 @@
                         ]
                       }
                     ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueContributor",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueContributor.type",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "author"
                   },
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsDuration",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsDuration.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
+                    "@value": "editor"
+                  },
+                  {
+                    "@value": "reviewer"
+                  },
+                  {
+                    "@value": "endorser"
                   }
                 ]
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+            "@id": "http://hl7.org/fhir/Extension.valueContributor.contact",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
               {
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.dateFilter",
-                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                    "@id": "http://hl7.org/fhir/Extension.valueContributor.contact.*.telecom",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
                       {
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.dateFilter.*.valueDuration",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@id": "http://hl7.org/fhir/Extension.valueContributor.contact.*.telecom.*.system",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
                               {
-                                "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.dateFilter.*.valueDuration.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                "@list": [
                                   {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
+                                    "@value": "phone"
+                                  },
+                                  {
+                                    "@value": "fax"
+                                  },
+                                  {
+                                    "@value": "email"
+                                  },
+                                  {
+                                    "@value": "pager"
+                                  },
+                                  {
+                                    "@value": "url"
+                                  },
+                                  {
+                                    "@value": "sms"
+                                  },
+                                  {
+                                    "@value": "other"
                                   }
                                 ]
                               }
                             ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.sort",
-                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                      {
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                          },
                           {
-                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.sort.*.direction",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                            "@id": "http://hl7.org/fhir/Extension.valueContributor.contact.*.telecom.*.use",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
                               {
                                 "@list": [
                                   {
-                                    "@value": "ascending"
+                                    "@value": "home"
                                   },
                                   {
-                                    "@value": "descending"
+                                    "@value": "work"
+                                  },
+                                  {
+                                    "@value": "temp"
+                                  },
+                                  {
+                                    "@value": "old"
+                                  },
+                                  {
+                                    "@value": "mobile"
                                   }
                                 ]
                               }
@@ -515,14 +1117,115 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/Extension.valueRange",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueRange.low",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueRange.low.comparator",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueRange.high",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueRange.high.comparator",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueAge",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueAge.comparator",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "\u003c"
+                  },
+                  {
+                    "@value": "\u003c="
+                  },
+                  {
+                    "@value": "\u003e="
+                  },
+                  {
+                    "@value": "\u003e"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/Extension.valueUsageContext",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueQuantity",
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueQuantity.comparator",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
                     "@list": [
                       {
@@ -545,13 +1248,19 @@
           },
           {
             "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange",
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange.low",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange.low.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
                         "@list": [
                           {
@@ -574,10 +1283,13 @@
               },
               {
                 "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange.high",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange.high.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
                         "@list": [
                           {
@@ -603,140 +1315,26 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Extension.valueIdentifier",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueIdentifier.use",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "usual"
-                  },
-                  {
-                    "@value": "official"
-                  },
-                  {
-                    "@value": "temp"
-                  },
-                  {
-                    "@value": "secondary"
-                  },
-                  {
-                    "@value": "old"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueDataRequirement",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.dateFilter",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-              {
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.dateFilter.*.valueDuration",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.dateFilter.*.valueDuration.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.sort",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-              {
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.sort.*.direction",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "ascending"
-                          },
-                          {
-                            "@value": "descending"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/Extension.valueTiming",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.durationUnit",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "s"
-                      },
-                      {
-                        "@value": "min"
-                      },
-                      {
-                        "@value": "h"
-                      },
-                      {
-                        "@value": "d"
-                      },
-                      {
-                        "@value": "wk"
-                      },
-                      {
-                        "@value": "mo"
-                      },
-                      {
-                        "@value": "a"
-                      }
-                    ]
-                  }
-                ]
-              },
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsDuration",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsDuration.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
                         "@list": [
                           {
@@ -759,7 +1357,7 @@
               },
               {
                 "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.periodUnit",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
                     "@list": [
                       {
@@ -788,67 +1386,13 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.high",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.high.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.low",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.low.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
                 "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.when",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
                   {
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
                         "@list": [
                           {
@@ -934,218 +1478,134 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueDuration",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueDuration.comparator",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+              },
               {
-                "@list": [
-                  {
-                    "@value": "\u003c"
-                  },
-                  {
-                    "@value": "\u003c="
-                  },
-                  {
-                    "@value": "\u003e="
-                  },
-                  {
-                    "@value": "\u003e"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueDistance",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueDistance.comparator",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "\u003c"
-                  },
-                  {
-                    "@value": "\u003c="
-                  },
-                  {
-                    "@value": "\u003e="
-                  },
-                  {
-                    "@value": "\u003e"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueAddress",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueAddress.type",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "postal"
-                  },
-                  {
-                    "@value": "physical"
-                  },
-                  {
-                    "@value": "both"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueAddress.use",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "home"
-                  },
-                  {
-                    "@value": "work"
-                  },
-                  {
-                    "@value": "temp"
-                  },
-                  {
-                    "@value": "old"
-                  },
-                  {
-                    "@value": "billing"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueSampledData",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueSampledData.origin",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueSampledData.origin.comparator",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.durationUnit",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
                     "@list": [
                       {
-                        "@value": "\u003c"
+                        "@value": "s"
                       },
                       {
-                        "@value": "\u003c="
+                        "@value": "min"
                       },
                       {
-                        "@value": "\u003e="
+                        "@value": "h"
                       },
                       {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueAge",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueAge.comparator",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "\u003c"
-                  },
-                  {
-                    "@value": "\u003c="
-                  },
-                  {
-                    "@value": "\u003e="
-                  },
-                  {
-                    "@value": "\u003e"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueDosage",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.denominator",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.denominator.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "@value": "d"
+                      },
                       {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
+                        "@value": "wk"
+                      },
+                      {
+                        "@value": "mo"
+                      },
+                      {
+                        "@value": "a"
                       }
                     ]
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.numerator",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.numerator.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                    "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.low",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.low.comparator",
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.high",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.high.comparator",
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueDataRequirement",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.sort",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.sort.*.direction",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
                         "@list": [
                           {
-                            "@value": "\u003c"
+                            "@value": "ascending"
                           },
                           {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
+                            "@value": "descending"
                           }
                         ]
                       }
@@ -1156,213 +1616,25 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+            "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.dateFilter",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
               {
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.dateFilter.*.valueDuration",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.numerator",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.numerator.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.denominator",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.denominator.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseRange",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseRange.low",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseRange.low.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseRange.high",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseRange.high.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange.low",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange.low.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange.high",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange.high.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateQuantity",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateQuantity.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseQuantity",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseQuantity.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.dateFilter.*.valueDuration.comparator",
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
                             "@list": [
                               {
@@ -1386,26 +1658,151 @@
                 ]
               }
             ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueQuantity",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueQuantity.comparator",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "\u003c"
+                  },
+                  {
+                    "@value": "\u003c="
+                  },
+                  {
+                    "@value": "\u003e="
+                  },
+                  {
+                    "@value": "\u003e"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueExpression",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueExpression.language",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "text/cql"
+                  },
+                  {
+                    "@value": "text/fhirpath"
+                  },
+                  {
+                    "@value": "application/x-fhir-query"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueCount",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueCount.comparator",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "\u003c"
+                  },
+                  {
+                    "@value": "\u003c="
+                  },
+                  {
+                    "@value": "\u003e="
+                  },
+                  {
+                    "@value": "\u003e"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.type",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "named-event"
+                  },
+                  {
+                    "@value": "periodic"
+                  },
+                  {
+                    "@value": "data-changed"
+                  },
+                  {
+                    "@value": "data-added"
+                  },
+                  {
+                    "@value": "data-modified"
+                  },
+                  {
+                    "@value": "data-removed"
+                  },
+                  {
+                    "@value": "data-accessed"
+                  },
+                  {
+                    "@value": "data-access-ended"
+                  }
+                ]
+              }
+            ]
           },
           {
-            "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerAdministration",
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.condition",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerAdministration.comparator",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.condition.language",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
                     "@list": [
                       {
-                        "@value": "\u003c"
+                        "@value": "text/cql"
                       },
                       {
-                        "@value": "\u003c="
+                        "@value": "text/fhirpath"
                       },
                       {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
+                        "@value": "application/x-fhir-query"
                       }
                     ]
                   }
@@ -1414,20 +1811,32 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Extension.valueDosage.timing",
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.low",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.high",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.low.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.high.comparator",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
                               {
                                 "@list": [
                                   {
@@ -1449,11 +1858,14 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.high",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.low",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.high.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.low.comparator",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
                               {
                                 "@list": [
                                   {
@@ -1477,96 +1889,13 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.durationUnit",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.when",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
                       {
-                        "@list": [
-                          {
-                            "@value": "s"
-                          },
-                          {
-                            "@value": "min"
-                          },
-                          {
-                            "@value": "h"
-                          },
-                          {
-                            "@value": "d"
-                          },
-                          {
-                            "@value": "wk"
-                          },
-                          {
-                            "@value": "mo"
-                          },
-                          {
-                            "@value": "a"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsDuration",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsDuration.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.periodUnit",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "s"
-                          },
-                          {
-                            "@value": "min"
-                          },
-                          {
-                            "@value": "h"
-                          },
-                          {
-                            "@value": "d"
-                          },
-                          {
-                            "@value": "wk"
-                          },
-                          {
-                            "@value": "mo"
-                          },
-                          {
-                            "@value": "a"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.when",
-                    "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-                      {
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
                             "@list": [
                               {
@@ -1652,30 +1981,182 @@
                         ]
                       }
                     ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.durationUnit",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "s"
+                          },
+                          {
+                            "@value": "min"
+                          },
+                          {
+                            "@value": "h"
+                          },
+                          {
+                            "@value": "d"
+                          },
+                          {
+                            "@value": "wk"
+                          },
+                          {
+                            "@value": "mo"
+                          },
+                          {
+                            "@value": "a"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.periodUnit",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "s"
+                          },
+                          {
+                            "@value": "min"
+                          },
+                          {
+                            "@value": "h"
+                          },
+                          {
+                            "@value": "d"
+                          },
+                          {
+                            "@value": "wk"
+                          },
+                          {
+                            "@value": "mo"
+                          },
+                          {
+                            "@value": "a"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsDuration",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsDuration.comparator",
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerLifetime",
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
               {
-                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerLifetime.comparator",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.sort",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
                       {
-                        "@value": "\u003c"
-                      },
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.sort.*.direction",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "ascending"
+                                  },
+                                  {
+                                    "@value": "descending"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.dateFilter",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
                       {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.dateFilter.*.valueDuration",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.dateFilter.*.valueDuration.comparator",
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
@@ -1686,11 +2167,43 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/Extension.valueDuration",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueDuration.comparator",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "\u003c"
+                  },
+                  {
+                    "@value": "\u003c="
+                  },
+                  {
+                    "@value": "\u003e="
+                  },
+                  {
+                    "@value": "\u003e"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/Extension.valueRelatedArtifact",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/Extension.valueRelatedArtifact.type",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
                 "@list": [
                   {
@@ -1724,275 +2237,14 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Extension.valueRatio",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/Extension.valueDistance",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Extension.valueRatio.numerator",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueRatio.numerator.comparator",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueRatio.denominator",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueRatio.denominator.comparator",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueContactPoint",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueContactPoint.use",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "home"
-                  },
-                  {
-                    "@value": "work"
-                  },
-                  {
-                    "@value": "temp"
-                  },
-                  {
-                    "@value": "old"
-                  },
-                  {
-                    "@value": "mobile"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueContactPoint.system",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "phone"
-                  },
-                  {
-                    "@value": "fax"
-                  },
-                  {
-                    "@value": "email"
-                  },
-                  {
-                    "@value": "pager"
-                  },
-                  {
-                    "@value": "url"
-                  },
-                  {
-                    "@value": "sms"
-                  },
-                  {
-                    "@value": "other"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueContactDetail",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueContactDetail.telecom",
-            "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-              {
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueContactDetail.telecom.*.use",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "home"
-                          },
-                          {
-                            "@value": "work"
-                          },
-                          {
-                            "@value": "temp"
-                          },
-                          {
-                            "@value": "old"
-                          },
-                          {
-                            "@value": "mobile"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueContactDetail.telecom.*.system",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "phone"
-                          },
-                          {
-                            "@value": "fax"
-                          },
-                          {
-                            "@value": "email"
-                          },
-                          {
-                            "@value": "pager"
-                          },
-                          {
-                            "@value": "url"
-                          },
-                          {
-                            "@value": "sms"
-                          },
-                          {
-                            "@value": "other"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueExpression",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueExpression.language",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "text/cql"
-                  },
-                  {
-                    "@value": "text/fhirpath"
-                  },
-                  {
-                    "@value": "application/x-fhir-query"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueRange",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueRange.low",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueRange.low.comparator",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueRange.high",
-            "http://schemas.cloudprivacylabs.com/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueRange.high.comparator",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueCount",
-        "http://schemas.cloudprivacylabs.com/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueCount.comparator",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "@id": "http://hl7.org/fhir/Extension.valueDistance.comparator",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
                 "@list": [
                   {
@@ -2014,24 +2266,35 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Extension.valueQuantity",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/Extension.valueSampledData",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Extension.valueQuantity.comparator",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "@id": "http://hl7.org/fhir/Extension.valueSampledData.origin",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@list": [
+                "@id": "http://hl7.org/fhir/Extension.valueSampledData.origin.comparator",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
-                    "@value": "\u003c"
-                  },
-                  {
-                    "@value": "\u003c="
-                  },
-                  {
-                    "@value": "\u003e="
-                  },
-                  {
-                    "@value": "\u003e"
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
                   }
                 ]
               }

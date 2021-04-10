@@ -1,35 +1,37 @@
 [
   {
     "@id": "http://hl7.org/fhir/DocumentManifest/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Layer",
-    "http://schemas.cloudprivacylabs.com/Schema/objectType": [
+    "@type": [
+      "http://layeredschemas.org/v1.0/Overlay"
+    ],
+    "http://layeredschemas.org/v1.0/Layer/objectType": [
       {
         "@value": "http://hl7.org/fhir/DocumentManifest"
       }
     ],
-    "http://schemas.cloudprivacylabs.com/attributes": [
+    "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/DocumentManifest.masterIdentifier",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/DocumentManifest.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/DocumentManifest.masterIdentifier.use",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "@id": "http://hl7.org/fhir/DocumentManifest.text.status",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
                 "@list": [
                   {
-                    "@value": "usual"
+                    "@value": "generated"
                   },
                   {
-                    "@value": "official"
+                    "@value": "extensions"
                   },
                   {
-                    "@value": "temp"
+                    "@value": "additional"
                   },
                   {
-                    "@value": "secondary"
-                  },
-                  {
-                    "@value": "old"
+                    "@value": "empty"
                   }
                 ]
               }
@@ -38,38 +40,18 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/DocumentManifest.related",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@id": "http://hl7.org/fhir/DocumentManifest.status",
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@list": [
               {
-                "@id": "http://hl7.org/fhir/DocumentManifest.related.*.identifier",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DocumentManifest.related.*.identifier.use",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "usual"
-                          },
-                          {
-                            "@value": "official"
-                          },
-                          {
-                            "@value": "temp"
-                          },
-                          {
-                            "@value": "secondary"
-                          },
-                          {
-                            "@value": "old"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "@value": "current"
+              },
+              {
+                "@value": "superseded"
+              },
+              {
+                "@value": "entered-in-error"
               }
             ]
           }
@@ -77,7 +59,7 @@
       },
       {
         "@id": "http://hl7.org/fhir/DocumentManifest.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
             "@list": [
               {
@@ -89,12 +71,18 @@
       },
       {
         "@id": "http://hl7.org/fhir/DocumentManifest.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/DocumentManifest.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
                     "@list": [
                       {
@@ -121,42 +109,77 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/DocumentManifest.status",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "@id": "http://hl7.org/fhir/DocumentManifest.masterIdentifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/DocumentManifest.masterIdentifier.use",
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "@value": "current"
-              },
-              {
-                "@value": "superseded"
-              },
-              {
-                "@value": "entered-in-error"
+                "@list": [
+                  {
+                    "@value": "usual"
+                  },
+                  {
+                    "@value": "official"
+                  },
+                  {
+                    "@value": "temp"
+                  },
+                  {
+                    "@value": "secondary"
+                  },
+                  {
+                    "@value": "old"
+                  }
+                ]
               }
             ]
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/DocumentManifest.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@id": "http://hl7.org/fhir/DocumentManifest.related",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "@id": "http://hl7.org/fhir/DocumentManifest.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@list": [
+                "@id": "http://hl7.org/fhir/DocumentManifest.related.*.identifier",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
+                    "@id": "http://hl7.org/fhir/DocumentManifest.related.*.identifier.use",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "usual"
+                          },
+                          {
+                            "@value": "official"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }

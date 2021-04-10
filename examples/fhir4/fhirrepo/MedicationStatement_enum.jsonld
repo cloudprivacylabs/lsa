@@ -1,115 +1,186 @@
 [
   {
     "@id": "http://hl7.org/fhir/MedicationStatement/enum",
-    "@type": "http://schemas.cloudprivacylabs.com/Layer",
-    "http://schemas.cloudprivacylabs.com/Schema/objectType": [
+    "@type": [
+      "http://layeredschemas.org/v1.0/Overlay"
+    ],
+    "http://layeredschemas.org/v1.0/Layer/objectType": [
       {
         "@value": "http://hl7.org/fhir/MedicationStatement"
       }
     ],
-    "http://schemas.cloudprivacylabs.com/attributes": [
+    "http://layeredschemas.org/v1.0/Object/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/MedicationStatement.identifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationStatement.identifier.*.use",
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/MedicationStatement.dosage",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerAdministration",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerAdministration.comparator",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerPeriod",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerPeriod.numerator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerPeriod.numerator.comparator",
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerPeriod.denominator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerPeriod.denominator.comparator",
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
               {
                 "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate",
-                "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
                   {
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRatio",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRatio.numerator",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRatio.numerator.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRatio.denominator",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRatio.denominator.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateQuantity",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateQuantity.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
                         "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.doseRange",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.doseRange.high",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.doseRange.low",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
-                                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.doseRange.high.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.doseRange.low.comparator",
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
                                   {
                                     "@list": [
                                       {
@@ -131,11 +202,14 @@
                             ]
                           },
                           {
-                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.doseRange.low",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.doseRange.high",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
-                                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.doseRange.low.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.doseRange.high.comparator",
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
                                   {
                                     "@list": [
                                       {
@@ -160,13 +234,19 @@
                       },
                       {
                         "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRange",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
                             "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRange.low",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
                                 "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRange.low.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
                                   {
                                     "@list": [
                                       {
@@ -189,10 +269,13 @@
                           },
                           {
                             "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRange.high",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
                                 "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRange.high.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
                                   {
                                     "@list": [
                                       {
@@ -217,10 +300,108 @@
                       },
                       {
                         "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.doseQuantity",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
                             "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.doseQuantity.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRatio",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRatio.numerator",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRatio.numerator.comparator",
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRatio.denominator",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateRatio.denominator.comparator",
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateQuantity",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.doseAndRate.*.rateQuantity.comparator",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
                               {
                                 "@list": [
                                   {
@@ -246,123 +427,79 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerLifetime",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerLifetime.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerAdministration",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerAdministration.comparator",
-                    "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerPeriod",
-                "http://schemas.cloudprivacylabs.com/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerPeriod.numerator",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerPeriod.numerator.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerPeriod.denominator",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerPeriod.denominator.comparator",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
                 "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing",
-                "http://schemas.cloudprivacylabs.com/attributes": [
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat",
-                    "http://schemas.cloudprivacylabs.com/attributes": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.durationUnit",
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "s"
+                              },
+                              {
+                                "@value": "min"
+                              },
+                              {
+                                "@value": "h"
+                              },
+                              {
+                                "@value": "d"
+                              },
+                              {
+                                "@value": "wk"
+                              },
+                              {
+                                "@value": "mo"
+                              },
+                              {
+                                "@value": "a"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.boundsDuration",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.boundsDuration.comparator",
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       {
                         "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.periodUnit",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
                             "@list": [
                               {
@@ -392,9 +529,12 @@
                       },
                       {
                         "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.when",
-                        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
                           {
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
                               {
                                 "@list": [
                                   {
@@ -482,70 +622,20 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.boundsDuration",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.boundsDuration.comparator",
-                            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.durationUnit",
-                        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "s"
-                              },
-                              {
-                                "@value": "min"
-                              },
-                              {
-                                "@value": "h"
-                              },
-                              {
-                                "@value": "d"
-                              },
-                              {
-                                "@value": "wk"
-                              },
-                              {
-                                "@value": "mo"
-                              },
-                              {
-                                "@value": "a"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
                         "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.boundsRange",
-                        "http://schemas.cloudprivacylabs.com/attributes": [
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.boundsRange.high",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.boundsRange.low",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
-                                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.boundsRange.high.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.boundsRange.low.comparator",
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
                                   {
                                     "@list": [
                                       {
@@ -567,11 +657,14 @@
                             ]
                           },
                           {
-                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.boundsRange.low",
-                            "http://schemas.cloudprivacylabs.com/attributes": [
+                            "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.boundsRange.high",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
-                                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.boundsRange.low.comparator",
-                                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.timing.repeat.boundsRange.high.comparator",
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
                                   {
                                     "@list": [
                                       {
@@ -597,35 +690,31 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MedicationStatement.identifier",
-        "http://schemas.cloudprivacylabs.com/attribute/arrayItems": [
-          {
-            "http://schemas.cloudprivacylabs.com/attributes": [
+              },
               {
-                "@id": "http://hl7.org/fhir/MedicationStatement.identifier.*.use",
-                "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+                "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerLifetime",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/MedicationStatement.dosage.*.maxDosePerLifetime.comparator",
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
                       }
                     ]
                   }
@@ -637,10 +726,13 @@
       },
       {
         "@id": "http://hl7.org/fhir/MedicationStatement.text",
-        "http://schemas.cloudprivacylabs.com/attributes": [
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/MedicationStatement.text.status",
-            "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
                 "@list": [
                   {
@@ -663,7 +755,7 @@
       },
       {
         "@id": "http://hl7.org/fhir/MedicationStatement.resourceType",
-        "http://schemas.cloudprivacylabs.com/attribute/enumeration": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
             "@list": [
               {

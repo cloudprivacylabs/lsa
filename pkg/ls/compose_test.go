@@ -100,21 +100,20 @@ func TestMerge1(t *testing.T) {
 	t.Logf("Ovl: %v", ovl)
 	baseattr := getLayer(base)
 	ovlattr := getLayer(ovl)
-	err := baseattr.Attributes.Compose(ComposeOptions{}, &ovlattr.Attributes)
+	err := baseattr.Compose(ComposeOptions{}, Terms, ovlattr)
 	if err != nil {
 		t.Error(err)
 	}
 	base = baseattr.MarshalExpanded().([]interface{})
 	t.Logf("%+v", base[0])
-	attrBase := base[0].(map[string]interface{})[LayerTerms.Attributes.ID]
+	//	attrBase := base[0].(map[string]interface{})[LayerTerms.Attributes.GetTerm()]
 
-	attr1Arr := FindNodeByID(attrBase, "attr1")
-	if attr1Arr == nil {
+	attr1 := baseattr.Index["attr1"]
+	if attr1 == nil {
 		t.Errorf("No attr1")
 		return
 	}
-	attr1 := attr1Arr[0].(map[string]interface{})
-	sk, ok := attr1["http://test/someKey"]
+	sk, ok := attr1.Values["http://test/someKey"]
 	if !ok {
 		t.Errorf("Missing someKey")
 		return
@@ -123,22 +122,22 @@ func TestMerge1(t *testing.T) {
 		t.Errorf("Wrong value: %v", sk)
 	}
 
-	attr2Arr := FindNodeByID(attrBase, "attr2")
-	if attr2Arr == nil {
+	attr2 := baseattr.Index["attr2"]
+	if attr2 == nil {
 		t.Errorf("No attr2")
 		return
 	}
-	priv := attr2Arr[0].(map[string]interface{})[AttributeAnnotations.Privacy.ID].([]interface{})
+	priv := attr2.Values[AttributeAnnotations.Privacy.GetTerm()].([]interface{})
 	if GetNodeValue(priv[0]) != "flg1" || GetNodeValue(priv[1]) != "addFlg1" {
 		t.Errorf("Wrong flags: %v", priv)
 	}
 
-	attr3Arr := FindNodeByID(attrBase, "attr3")
-	if attr3Arr == nil {
+	attr3 := baseattr.Index["attr3"]
+	if attr3 == nil {
 		t.Errorf("No attr3")
 		return
 	}
-	priv = attr3Arr[0].(map[string]interface{})[AttributeAnnotations.Privacy.ID].([]interface{})
+	priv = attr3.Values[AttributeAnnotations.Privacy.GetTerm()].([]interface{})
 	if GetNodeValue(priv[0]) != "flg2" || GetNodeValue(priv[1]) != "flg3" || GetNodeValue(priv[2]) != "addFlg2" || GetNodeValue(priv[3]) != "addFlg3" {
 		t.Errorf("Wrong flags: %v", priv)
 	}
@@ -163,6 +162,7 @@ func TestMergeArray(t *testing.T) {
   "@type": "Overlay",
   "attributes": {
     "array": {
+     "@type": "Array",
       "items": {
        "@id": "http://items",
        "type":"string"
@@ -174,20 +174,20 @@ func TestMergeArray(t *testing.T) {
 	t.Logf("Ovl: %v", ovl)
 	baseattr := getLayer(base)
 	ovlattr := getLayer(ovl)
-	err := baseattr.Attributes.Compose(ComposeOptions{}, &ovlattr.Attributes)
+	err := baseattr.Compose(ComposeOptions{}, Terms, ovlattr)
 	if err != nil {
 		t.Error(err)
 	}
 	base = baseattr.MarshalExpanded().([]interface{})
-	attrBase := base[0].(map[string]interface{})[LayerTerms.Attributes.ID]
+	//	attrBase := base[0].(map[string]interface{})[LayerTerms.Attributes.GetTerm()]
 
-	array := FindNodeByID(attrBase, "array")
+	array := baseattr.Index["array"]
 	if array == nil {
 		t.Errorf("No array")
 		return
 	}
-	items := array[0].(map[string]interface{})[LayerTerms.ArrayItems.ID].([]interface{})[0].(map[string]interface{})
-	if s := GetNodeValue(items[AttributeAnnotations.Type.ID].([]interface{})[0]); s != "string" {
+	items := array.Type.(*ArrayType).Values
+	if s := GetNodeValue(items[AttributeAnnotations.Type.GetTerm()].([]interface{})[0]); s != "string" {
 		t.Errorf("Missing type: %+v %s", items, s)
 	}
 }
@@ -202,8 +202,7 @@ func TestMergeChoice(t *testing.T) {
 	   "oneOf": [
 	    {
         "@id": "id1",
-        "@type": "Reference",
-        "reference": "ref1"
+        "@type": "Value"
 	    }
 	   ]
 	 }
@@ -218,6 +217,7 @@ func TestMergeChoice(t *testing.T) {
 	   "oneOf": [
 	    {
         "@id": "id1",
+        "@type":"Value",
         "type": "string"
 	    }
 	   ]
@@ -227,19 +227,19 @@ func TestMergeChoice(t *testing.T) {
 	t.Logf("Ovl: %v", ovl)
 	baseattr := getLayer(base)
 	ovlattr := getLayer(ovl)
-	err := baseattr.Attributes.Compose(ComposeOptions{}, &ovlattr.Attributes)
+	err := baseattr.Compose(ComposeOptions{}, Terms, ovlattr)
 	if err != nil {
 		t.Error(err)
 	}
 	base = baseattr.MarshalExpanded().([]interface{})
-	attrBase := base[0].(map[string]interface{})[LayerTerms.Attributes.ID]
+	//	attrBase := base[0].(map[string]interface{})[LayerTerms.Attributes.GetTerm()]
 
-	item := FindNodeByID(attrBase, "id1")
+	item := baseattr.Index["id1"]
 	if item == nil {
 		t.Errorf("item not found")
 	}
-	t.Logf("%+v", item[0])
-	if GetNodeValue(item[0].(map[string]interface{})[AttributeAnnotations.Type.ID].([]interface{})[0]) != "string" {
+	t.Logf("%+v", item)
+	if GetNodeValue(item.Values[AttributeAnnotations.Type.GetTerm()].([]interface{})[0]) != "string" {
 		t.Errorf("Wrong value: %+v", item)
 	}
 }
@@ -269,18 +269,18 @@ func TestOverride(t *testing.T) {
 }`)
 	baseattr := getLayer(base)
 	ovlattr := getLayer(ovl)
-	err := baseattr.Attributes.Compose(ComposeOptions{}, &ovlattr.Attributes)
+	err := baseattr.Compose(ComposeOptions{}, Terms, ovlattr)
 	if err != nil {
 		t.Error(err)
 	}
 	base = baseattr.MarshalExpanded().([]interface{})
 	t.Logf("%+v", base[0])
-	attrBase := base[0].(map[string]interface{})[LayerTerms.Attributes.ID]
-	item := FindNodeByID(attrBase, "attr1")
-	if GetNodeValue(item[0].(map[string]interface{})[AttributeAnnotations.Type.ID].([]interface{})[0]) != "int" {
+	//attrBase := base[0].(map[string]interface{})[LayerTerms.Attributes.GetTerm()]
+	item := baseattr.Index["attr1"]
+	if GetNodeValue(item.Values[AttributeAnnotations.Type.GetTerm()].([]interface{})[0]) != "int" {
 		t.Errorf("Expecting int")
 	}
-	if len(item[0].(map[string]interface{})[AttributeAnnotations.Type.ID].([]interface{})) != 1 {
+	if len(item.Values[AttributeAnnotations.Type.GetTerm()].([]interface{})) != 1 {
 		t.Errorf("Expecting 1 elements")
 	}
 }

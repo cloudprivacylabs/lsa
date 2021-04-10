@@ -116,8 +116,8 @@ func (t ValueTerm) PutExpanded(dest map[string]interface{}, value interface{}) {
 	dest[string(t)] = t.MakeExpanded(value)
 }
 
-// GetExpanded gets the string term value from the map
-func (t ValueTerm) GetExpanded(src map[string]interface{}) string {
+// GetExpandedString gets the string term value from the map
+func (t ValueTerm) GetExpandedString(src map[string]interface{}) string {
 	return t.StringFromExpanded(src[string(t)])
 }
 

@@ -17,6 +17,21 @@ import (
 	"github.com/piprate/json-gold/ld"
 )
 
+// Slice a layer based on the filter func. The filter func decides
+// whether to include the term in the new slice. The filter function
+// will be called once for the empty term, and if the attribute is to
+// be included in the slice, filter should return true.
+//
+// The returned layer is of the same type and objectType as the source
+func (layer *Layer) Slice(filter func(string, *Attribute) bool) *Layer {
+	newLayer := NewLayer()
+	newLayer.Type = layer.Type
+	newLayer.ObjectType = layer.ObjectType
+	newLayer.ObjectVersion = layer.ObjectVersion
+	newLayer.Root = layer.Root.Slice(filter, nil, newLayer)
+	return newLayer
+}
+
 // Slice creates a copy of the attributes object by including terms
 // selected by the filter function. All attribute nodes are processed,
 // thus the filter function may return false for a node A and then
