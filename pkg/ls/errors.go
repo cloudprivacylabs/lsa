@@ -18,11 +18,27 @@ import (
 	"fmt"
 )
 
+type ErrNotFound string
+
+func (e ErrNotFound) Error() string { return "Not found: " + string(e) }
+
+type ErrInvalidComposition string
+
+func (e ErrInvalidComposition) Error() string { return "Invalid composition: " + string(e) }
+
 // ErrInvalidInput is used for invalid input to an api
-var ErrInvalidInput = errors.New("Invalid input")
+type ErrInvalidInput string
+
+func (e ErrInvalidInput) Error() string { return fmt.Sprintf("Invalid input: %s", string(e)) }
 
 // ErrAttributeWithoutID is returned when an attribute is parsed without an id
 var ErrAttributeWithoutID = errors.New("Attribute without ID")
+
+type ErrInvalidAttributeType string
+
+func (e ErrInvalidAttributeType) Error() string {
+	return "Invalid attribute type: " + string(e)
+}
 
 // ErrDuplicateAttribute is returned when a duplicate attribute ID is
 // detected in a layer
@@ -50,6 +66,7 @@ type ErrIncompatibleComposition struct {
 
 func (e ErrIncompatibleComposition) Error() string {
 	return fmt.Sprintf("IncompatibleComposition: %s %s", e.ID, e.Msg)
+
 }
 
 // ErrInvalidLayerType is retured if incorrect layer type is detected
@@ -71,4 +88,25 @@ type ErrValidation string
 
 func (e ErrValidation) Error() string {
 	return string(e)
+}
+
+type ErrIncompatible struct {
+	Source string
+	Target string
+}
+
+func (e ErrIncompatible) Error() string {
+	return fmt.Sprintf("Incompatible composition. target: %s, source: %s", e.Target, e.Source)
+}
+
+type ErrNotACompositeType string
+
+func (e ErrNotACompositeType) Error() string {
+	return "Not a composite type:" + string(e)
+}
+
+type ErrInvalidCompositeType string
+
+func (e ErrInvalidCompositeType) Error() string {
+	return "Invalid composite type:" + string(e)
 }

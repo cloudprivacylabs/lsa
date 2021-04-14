@@ -146,12 +146,12 @@ func DataModelToMap(root DocumentNode, embedSchema bool) interface{} {
 		sch := root.GetSchemaNode()
 		if sch == nil {
 			if len(root.GetName()) > 0 {
-				result[AttributeAnnotations.Name.ID] = []interface{}{map[string]interface{}{"@value": root.GetName()}}
+				AttributeAnnotations.Name.PutExpanded(result, root.GetName())
 			}
 			return
 		}
 		if len(sch.ID) > 0 {
-			result[DocTerms.SchemaAttributeID.ID] = []interface{}{map[string]interface{}{"@id": sch.ID}}
+			DocTerms.SchemaAttributeID.PutExpanded(result, sch.ID)
 		}
 		if embedSchema {
 			for k, v := range sch.Values {
@@ -161,11 +161,15 @@ func DataModelToMap(root DocumentNode, embedSchema bool) interface{} {
 	}
 	switch node := root.(type) {
 	case *NullNode:
-		result = map[string]interface{}{DocTerms.Value.ID: []interface{}{map[string]interface{}{"@value": nil}}}
+		m := map[string]interface{}{}
+		DocTerms.Value.PutExpanded(m, nil)
+		result = m
 		embed()
 
 	case *ValueNode:
-		result = map[string]interface{}{DocTerms.Value.ID: []interface{}{map[string]interface{}{"@value": node.Value}}}
+		m := map[string]interface{}{}
+		DocTerms.Value.PutExpanded(m, node.Value)
+		result = m
 		embed()
 
 	case *ObjectNode:
@@ -174,7 +178,7 @@ func DataModelToMap(root DocumentNode, embedSchema bool) interface{} {
 			children[ch.GetID()] = DataModelToMap(ch, embedSchema)
 		}
 		result = map[string]interface{}{
-			DocTerms.Attributes.ID: []interface{}{children},
+			DocTerms.Attributes.GetTerm(): []interface{}{children},
 		}
 		embed()
 
@@ -184,8 +188,7 @@ func DataModelToMap(root DocumentNode, embedSchema bool) interface{} {
 			el = append(el, DataModelToMap(x, embedSchema))
 		}
 		result = map[string]interface{}{
-			DocTerms.ArrayElements.ID: []interface{}{map[string]interface{}{"@list": el}},
-		}
+			DocTerms.ArrayElements.GetTerm(): DocTerms.ArrayElements.MakeExpandedContainer(el)}
 		embed()
 	}
 	return result
