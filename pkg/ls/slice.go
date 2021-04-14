@@ -28,7 +28,10 @@ func (layer *Layer) Slice(filter func(string, *Attribute) bool) *Layer {
 	newLayer.Type = layer.Type
 	newLayer.ObjectType = layer.ObjectType
 	newLayer.ObjectVersion = layer.ObjectVersion
-	newLayer.Root = layer.Root.Slice(filter, nil, newLayer)
+	root := layer.Root.Slice(filter, nil, newLayer)
+	if root != nil {
+		newLayer.Root = root
+	}
 	return newLayer
 }
 
@@ -94,7 +97,7 @@ func (attribute *Attribute) Slice(filter func(string, *Attribute) bool, parent *
 			newAttr.Type = NewObjectType(newAttr)
 		}
 
-	case ValueType, *ReferenceType:
+	case *ValueType, *ReferenceType:
 		newAttr.Type = attribute.Type
 	case *ArrayType:
 		n := t.Attribute.Slice(filter, newAttr, newLayer)

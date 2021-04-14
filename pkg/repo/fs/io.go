@@ -15,6 +15,7 @@ package fs
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -40,18 +41,21 @@ func ReadRepositoryObject(file string) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	if ret := ParseRepositoryObject(expanded); ret != nil {
-		return ret, nil
+	ret, err := ParseRepositoryObject(expanded)
+	if err != nil {
+		return nil, err
 	}
-	return nil, ErrUnrecognizedObject(file)
+	return ret, nil
 }
 
-func ParseRepositoryObject(expanded interface{}) interface{} {
-	if manifest, err := ls.SchemaManifestFromLD(expanded); err == nil {
-		return manifest
+func ParseRepositoryObject(expanded interface{}) (interface{}, error) {
+	manifest, err1 := ls.SchemaManifestFromLD(expanded)
+	if err1 == nil {
+		return manifest, nil
 	}
-	if layer, err := ls.LayerFromLD(expanded); err == nil {
-		return layer
+	layer, err2 := ls.LayerFromLD(expanded)
+	if err2 == nil {
+		return layer, nil
 	}
-	return nil
+	return nil, fmt.Errorf("Cannot parse object: Not a manifest: %v Not a layer: %v", err1, err2)
 }

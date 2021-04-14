@@ -34,14 +34,15 @@ const indexFile = "index.ls"
 // Repository implements a filesystem based schema repository under a
 // given directory
 type Repository struct {
-	root  string
-	index []IndexEntry
-	vocab terms.Vocabulary
+	logger func(string, error)
+	root   string
+	index  []IndexEntry
+	vocab  terms.Vocabulary
 }
 
 // New returns a new file repository under the given directory.
-func New(root string, vocab terms.Vocabulary) *Repository {
-	return &Repository{root: root, vocab: vocab}
+func New(root string, vocab terms.Vocabulary, errorLogger func(string, error)) *Repository {
+	return &Repository{root: root, vocab: vocab, logger: errorLogger}
 }
 
 // LoadAndCompose loads the layer or schema manifest with the given
@@ -244,13 +245,19 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, error) {
 			}
 			var obj interface{}
 			if err := json.Unmarshal(data, &obj); err != nil {
+				repo.logError(fname, err)
 				continue
 			}
 			expanded, err := proc.Expand(obj, nil)
 			if err != nil {
+				repo.logError(fname, err)
 				continue
 			}
-			obj = ParseRepositoryObject(expanded)
+			obj, err = ParseRepositoryObject(expanded)
+			if err != nil {
+				repo.logError(fname, err)
+				continue
+			}
 			if manifest, ok := obj.(*ls.SchemaManifest); ok {
 				entry := IndexEntry{
 					Type:       ls.TermSchemaManifestType,
@@ -267,8 +274,16 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, error) {
 					Payload:    expanded,
 				}
 				ret = append(ret, entry)
+			} else {
+				repo.logError(fname, fmt.Errorf("Cannot read object"))
 			}
 		}
 	}
 	return ret, nil
+}
+
+func (repo *Repository) logError(fname string, err error) {
+	if repo.logger != nil {
+		repo.logger(fname, err)
+	}
 }

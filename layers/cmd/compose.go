@@ -41,7 +41,9 @@ var composeCmd = &cobra.Command{
 		var repo *fs.Repository
 		repoDir, _ := cmd.Flags().GetString("repo")
 		if len(repoDir) > 0 {
-			repo = fs.New(repoDir, ls.Terms)
+			repo = fs.New(repoDir, ls.Terms, func(fname string, err error) {
+				fmt.Printf("%s: %s\n", fname, err)
+			})
 			if err := repo.Load(true); err != nil {
 				failErr(err)
 			}

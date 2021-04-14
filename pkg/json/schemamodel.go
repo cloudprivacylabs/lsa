@@ -119,4 +119,7 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, out *ls.At
 	if len(attr.allOf) > 0 {
 		out.Type = &ls.CompositeType{buildChoices(attr.allOf)}
 	}
+	if out.Type == nil {
+		out.Type = &ls.ValueType{}
+	}
 }

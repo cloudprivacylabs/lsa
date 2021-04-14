@@ -101,7 +101,7 @@ func (attribute *Attribute) ComposeOptions(layer *Layer) error {
 		}
 	redo:
 		switch optionType := option.Type.(type) {
-		case ValueType:
+		case *ValueType:
 			result.Add(option.Clone(attribute), layer)
 		case *CompositeType:
 			if err := option.ComposeOptions(layer); err != nil {
@@ -137,7 +137,7 @@ func (attribute *Attribute) UnmarshalExpanded(in interface{}, parent *Attribute)
 	t := GetNodeType(in)
 	switch t {
 	case AttributeTypes.Value:
-		attribute.Type = ValueType{}
+		attribute.Type = &ValueType{}
 	case AttributeTypes.Object:
 		attribute.Type = NewObjectType(attribute)
 	case AttributeTypes.Reference:
@@ -170,9 +170,7 @@ func (attribute *Attribute) UnmarshalExpanded(in interface{}, parent *Attribute)
 				attribute.Type = &PolymorphicType{}
 			}
 		}
-		if n == 0 {
-			attribute.Type = ValueType{}
-		} else if n > 1 {
+		if n != 1 {
 			return ErrInvalidInput("Cannot determine type of attribute:" + attribute.ID)
 		}
 	default:
@@ -229,7 +227,7 @@ func (attribute *Attribute) Iterate(f func(*Attribute) bool) bool {
 }
 
 func (attribute *Attribute) IsValue() bool {
-	_, ok := attribute.Type.(ValueType)
+	_, ok := attribute.Type.(*ValueType)
 	return ok
 }
 

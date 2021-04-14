@@ -56,7 +56,9 @@ var ingestCSVCmd = &cobra.Command{
 		if len(repoDir) == 0 {
 			fail("Specify a repository directory using --repo")
 		}
-		repo := fs.New(repoDir, ls.Terms)
+		repo := fs.New(repoDir, ls.Terms, func(fname string, err error) {
+			fmt.Printf("%s: %s\n", fname, err)
+		})
 		if err := repo.Load(true); err != nil {
 			failErr(err)
 		}
@@ -65,7 +67,12 @@ var ingestCSVCmd = &cobra.Command{
 		if schema == nil {
 			fail(fmt.Sprintf("Schema not found: %s", schemaId))
 		}
-		compiler := ls.Compiler{Resolver: func(x string) (string, error) { return x, nil },
+		compiler := ls.Compiler{Resolver: func(x string) (string, error) {
+			if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
+				return manifest.ID, nil
+			}
+			return x, nil
+		},
 			Loader: repo.LoadAndCompose,
 		}
 		resolved, err := compiler.Compile(schemaId)
