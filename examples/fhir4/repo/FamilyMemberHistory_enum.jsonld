@@ -11,77 +11,6 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/FamilyMemberHistory.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/FamilyMemberHistory.text.status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/FamilyMemberHistory.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "FamilyMemberHistory"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/FamilyMemberHistory.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "partial"
-              },
-              {
-                "@value": "completed"
-              },
-              {
-                "@value": "entered-in-error"
-              },
-              {
-                "@value": "health-unknown"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/FamilyMemberHistory.condition",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -92,6 +21,38 @@
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/FamilyMemberHistory.condition.*.onsetAge",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/FamilyMemberHistory.condition.*.onsetAge.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
               {
                 "@id": "http://hl7.org/fhir/FamilyMemberHistory.condition.*.onsetRange",
                 "@type": [
@@ -163,34 +124,106 @@
                     ]
                   }
                 ]
-              },
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/FamilyMemberHistory.deceasedAge",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/FamilyMemberHistory.deceasedAge.comparator",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "@id": "http://hl7.org/fhir/FamilyMemberHistory.condition.*.onsetAge",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "@list": [
                   {
-                    "@id": "http://hl7.org/fhir/FamilyMemberHistory.condition.*.onsetAge.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "@value": "\u003c"
+                  },
+                  {
+                    "@value": "\u003c="
+                  },
+                  {
+                    "@value": "\u003e="
+                  },
+                  {
+                    "@value": "\u003e"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/FamilyMemberHistory.ageRange",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/FamilyMemberHistory.ageRange.low",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/FamilyMemberHistory.ageRange.low.comparator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
                       {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/FamilyMemberHistory.ageRange.high",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/FamilyMemberHistory.ageRange.high.comparator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
                       }
                     ]
                   }
@@ -201,42 +234,71 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/FamilyMemberHistory.identifier",
+        "@id": "http://hl7.org/fhir/FamilyMemberHistory.text",
         "@type": [
-          "http://layeredschemas.org/v1.0/Array"
+          "http://layeredschemas.org/v1.0/Object"
         ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
+            "@id": "http://hl7.org/fhir/FamilyMemberHistory.text.status",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "http://layeredschemas.org/v1.0/Value"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "@id": "http://hl7.org/fhir/FamilyMemberHistory.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "@list": [
                   {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/FamilyMemberHistory.status",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "partial"
+              },
+              {
+                "@value": "completed"
+              },
+              {
+                "@value": "entered-in-error"
+              },
+              {
+                "@value": "health-unknown"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/FamilyMemberHistory.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "FamilyMemberHistory"
               }
             ]
           }
@@ -347,51 +409,18 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/FamilyMemberHistory.deceasedAge",
+        "@id": "http://hl7.org/fhir/FamilyMemberHistory.identifier",
         "@type": [
-          "http://layeredschemas.org/v1.0/Object"
+          "http://layeredschemas.org/v1.0/Array"
         ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "@id": "http://hl7.org/fhir/FamilyMemberHistory.deceasedAge.comparator",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "\u003c"
-                  },
-                  {
-                    "@value": "\u003c="
-                  },
-                  {
-                    "@value": "\u003e="
-                  },
-                  {
-                    "@value": "\u003e"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/FamilyMemberHistory.ageRange",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/FamilyMemberHistory.ageRange.high",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/FamilyMemberHistory.ageRange.high.comparator",
+                "@id": "http://hl7.org/fhir/FamilyMemberHistory.identifier.*.use",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -399,48 +428,19 @@
                   {
                     "@list": [
                       {
-                        "@value": "\u003c"
+                        "@value": "usual"
                       },
                       {
-                        "@value": "\u003c="
+                        "@value": "official"
                       },
                       {
-                        "@value": "\u003e="
+                        "@value": "temp"
                       },
                       {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/FamilyMemberHistory.ageRange.low",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/FamilyMemberHistory.ageRange.low.comparator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
+                        "@value": "secondary"
                       },
                       {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
+                        "@value": "old"
                       }
                     ]
                   }

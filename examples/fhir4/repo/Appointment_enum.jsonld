@@ -11,6 +11,48 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
+        "@id": "http://hl7.org/fhir/Appointment.status",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "proposed"
+              },
+              {
+                "@value": "pending"
+              },
+              {
+                "@value": "booked"
+              },
+              {
+                "@value": "arrived"
+              },
+              {
+                "@value": "fulfilled"
+              },
+              {
+                "@value": "cancelled"
+              },
+              {
+                "@value": "noshow"
+              },
+              {
+                "@value": "entered-in-error"
+              },
+              {
+                "@value": "checked-in"
+              },
+              {
+                "@value": "waitlist"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/Appointment.participant",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -21,30 +63,6 @@
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Appointment.participant.*.status",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "accepted"
-                      },
-                      {
-                        "@value": "declined"
-                      },
-                      {
-                        "@value": "tentative"
-                      },
-                      {
-                        "@value": "needs-action"
-                      }
-                    ]
-                  }
-                ]
-              },
               {
                 "@id": "http://hl7.org/fhir/Appointment.participant.*.required",
                 "@type": [
@@ -65,24 +83,9 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Appointment.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+              },
               {
-                "@id": "http://hl7.org/fhir/Appointment.identifier.*.use",
+                "@id": "http://hl7.org/fhir/Appointment.participant.*.status",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -90,19 +93,16 @@
                   {
                     "@list": [
                       {
-                        "@value": "usual"
+                        "@value": "accepted"
                       },
                       {
-                        "@value": "official"
+                        "@value": "declined"
                       },
                       {
-                        "@value": "temp"
+                        "@value": "tentative"
                       },
                       {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
+                        "@value": "needs-action"
                       }
                     ]
                   }
@@ -160,42 +160,42 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Appointment.status",
+        "@id": "http://hl7.org/fhir/Appointment.identifier",
         "@type": [
-          "http://layeredschemas.org/v1.0/Value"
+          "http://layeredschemas.org/v1.0/Array"
         ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "@list": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@value": "proposed"
-              },
-              {
-                "@value": "pending"
-              },
-              {
-                "@value": "booked"
-              },
-              {
-                "@value": "arrived"
-              },
-              {
-                "@value": "fulfilled"
-              },
-              {
-                "@value": "cancelled"
-              },
-              {
-                "@value": "noshow"
-              },
-              {
-                "@value": "entered-in-error"
-              },
-              {
-                "@value": "checked-in"
-              },
-              {
-                "@value": "waitlist"
+                "@id": "http://hl7.org/fhir/Appointment.identifier.*.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }

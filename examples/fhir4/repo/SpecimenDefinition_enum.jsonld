@@ -11,6 +11,56 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
+        "@id": "http://hl7.org/fhir/SpecimenDefinition.identifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/SpecimenDefinition.identifier.use",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "usual"
+                  },
+                  {
+                    "@value": "official"
+                  },
+                  {
+                    "@value": "temp"
+                  },
+                  {
+                    "@value": "secondary"
+                  },
+                  {
+                    "@value": "old"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/SpecimenDefinition.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "SpecimenDefinition"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -21,6 +71,125 @@
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling.*.temperatureRange",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling.*.temperatureRange.low",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling.*.temperatureRange.low.comparator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling.*.temperatureRange.high",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling.*.temperatureRange.high.comparator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling.*.maxDuration",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling.*.maxDuration.comparator",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
               {
                 "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.container",
                 "@type": [
@@ -142,160 +311,6 @@
                     ]
                   }
                 ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling.*.temperatureRange",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling.*.temperatureRange.low",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling.*.temperatureRange.low.comparator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling.*.temperatureRange.high",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling.*.temperatureRange.high.comparator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling.*.maxDuration",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/SpecimenDefinition.typeTested.*.handling.*.maxDuration.comparator",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/SpecimenDefinition.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/SpecimenDefinition.identifier.use",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "usual"
-                  },
-                  {
-                    "@value": "official"
-                  },
-                  {
-                    "@value": "temp"
-                  },
-                  {
-                    "@value": "secondary"
-                  },
-                  {
-                    "@value": "old"
-                  }
-                ]
               }
             ]
           }
@@ -328,21 +343,6 @@
                     "@value": "empty"
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/SpecimenDefinition.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "SpecimenDefinition"
               }
             ]
           }

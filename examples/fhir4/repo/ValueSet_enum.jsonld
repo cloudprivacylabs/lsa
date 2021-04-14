@@ -11,6 +11,96 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
+        "@id": "http://hl7.org/fhir/ValueSet.contact",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ValueSet.contact.*.telecom",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ValueSet.contact.*.telecom.*.system",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "phone"
+                              },
+                              {
+                                "@value": "fax"
+                              },
+                              {
+                                "@value": "email"
+                              },
+                              {
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ValueSet.contact.*.telecom.*.use",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/ValueSet.resourceType",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
@@ -20,6 +110,48 @@
             "@list": [
               {
                 "@value": "ValueSet"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ValueSet.identifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ValueSet.identifier.*.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -44,6 +176,125 @@
               },
               {
                 "@value": "unknown"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ValueSet.useContext",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ValueSet.useContext.*.valueRange",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ValueSet.useContext.*.valueRange.low",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ValueSet.useContext.*.valueRange.low.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ValueSet.useContext.*.valueRange.high",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ValueSet.useContext.*.valueRange.high.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ValueSet.useContext.*.valueQuantity",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ValueSet.useContext.*.valueQuantity.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -196,167 +447,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ValueSet.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ValueSet.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ValueSet.useContext",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ValueSet.useContext.*.valueRange",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ValueSet.useContext.*.valueRange.low",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ValueSet.useContext.*.valueRange.low.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ValueSet.useContext.*.valueRange.high",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ValueSet.useContext.*.valueRange.high.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ValueSet.useContext.*.valueQuantity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ValueSet.useContext.*.valueQuantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/ValueSet.text",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
@@ -381,96 +471,6 @@
                   },
                   {
                     "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ValueSet.contact",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ValueSet.contact.*.telecom",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ValueSet.contact.*.telecom.*.use",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ValueSet.contact.*.telecom.*.system",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
                   }
                 ]
               }

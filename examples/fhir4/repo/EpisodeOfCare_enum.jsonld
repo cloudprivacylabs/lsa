@@ -11,7 +11,7 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare.status",
+        "@id": "http://hl7.org/fhir/EpisodeOfCare.resourceType",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
@@ -19,25 +19,39 @@
           {
             "@list": [
               {
-                "@value": "planned"
-              },
+                "@value": "EpisodeOfCare"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EpisodeOfCare.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.text.status",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "@value": "waitlist"
-              },
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "onhold"
-              },
-              {
-                "@value": "finished"
-              },
-              {
-                "@value": "cancelled"
-              },
-              {
-                "@value": "entered-in-error"
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
               }
             ]
           }
@@ -80,21 +94,6 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "EpisodeOfCare"
               }
             ]
           }
@@ -149,32 +148,33 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare.text",
+        "@id": "http://hl7.org/fhir/EpisodeOfCare.status",
         "@type": [
-          "http://layeredschemas.org/v1.0/Object"
+          "http://layeredschemas.org/v1.0/Value"
         ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.text.status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "@list": [
               {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
+                "@value": "planned"
+              },
+              {
+                "@value": "waitlist"
+              },
+              {
+                "@value": "active"
+              },
+              {
+                "@value": "onhold"
+              },
+              {
+                "@value": "finished"
+              },
+              {
+                "@value": "cancelled"
+              },
+              {
+                "@value": "entered-in-error"
               }
             ]
           }

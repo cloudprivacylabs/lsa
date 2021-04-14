@@ -11,48 +11,6 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/Goal.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Goal.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/Goal.resourceType",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
@@ -62,6 +20,38 @@
             "@list": [
               {
                 "@value": "Goal"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Goal.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Goal.text.status",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
               }
             ]
           }
@@ -79,70 +69,30 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Goal.target.*.detailRange",
+                "@id": "http://hl7.org/fhir/Goal.target.*.detailQuantity",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/Goal.target.*.detailRange.low",
+                    "@id": "http://hl7.org/fhir/Goal.target.*.detailQuantity.comparator",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
+                      "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
-                        "@id": "http://hl7.org/fhir/Goal.target.*.detailRange.low.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                        "@list": [
                           {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Goal.target.*.detailRange.high",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Goal.target.*.detailRange.high.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                            "@value": "\u003c"
+                          },
                           {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
                           }
                         ]
                       }
@@ -183,19 +133,19 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/Goal.target.*.detailRatio",
+                "@id": "http://hl7.org/fhir/Goal.target.*.detailRange",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/Goal.target.*.detailRatio.numerator",
+                    "@id": "http://hl7.org/fhir/Goal.target.*.detailRange.high",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/Goal.target.*.detailRatio.numerator.comparator",
+                        "@id": "http://hl7.org/fhir/Goal.target.*.detailRange.high.comparator",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -220,6 +170,46 @@
                       }
                     ]
                   },
+                  {
+                    "@id": "http://hl7.org/fhir/Goal.target.*.detailRange.low",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Goal.target.*.detailRange.low.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Goal.target.*.detailRatio",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
                     "@id": "http://hl7.org/fhir/Goal.target.*.detailRatio.denominator",
                     "@type": [
@@ -251,34 +241,34 @@
                         ]
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Goal.target.*.detailQuantity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  },
                   {
-                    "@id": "http://hl7.org/fhir/Goal.target.*.detailQuantity.comparator",
+                    "@id": "http://hl7.org/fhir/Goal.target.*.detailRatio.numerator",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
+                      "http://layeredschemas.org/v1.0/Object"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@list": [
+                        "@id": "http://hl7.org/fhir/Goal.target.*.detailRatio.numerator.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
                           }
                         ]
                       }
@@ -330,30 +320,40 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Goal.text",
+        "@id": "http://hl7.org/fhir/Goal.identifier",
         "@type": [
-          "http://layeredschemas.org/v1.0/Object"
+          "http://layeredschemas.org/v1.0/Array"
         ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "@id": "http://hl7.org/fhir/Goal.text.status",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "http://layeredschemas.org/v1.0/Object"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@list": [
+                "@id": "http://hl7.org/fhir/Goal.identifier.*.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
                   }
                 ]
               }

@@ -11,90 +11,15 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/TestScript.contact",
+        "@id": "http://hl7.org/fhir/TestScript.resourceType",
         "@type": [
-          "http://layeredschemas.org/v1.0/Array"
+          "http://layeredschemas.org/v1.0/Value"
         ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "@list": [
               {
-                "@id": "http://hl7.org/fhir/TestScript.contact.*.telecom",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/TestScript.contact.*.telecom.*.use",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/TestScript.contact.*.telecom.*.system",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "@value": "TestScript"
               }
             ]
           }
@@ -246,6 +171,24 @@
                         ]
                       },
                       {
+                        "@id": "http://hl7.org/fhir/TestScript.setup.action.*.assert.direction",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "response"
+                              },
+                              {
+                                "@value": "request"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
                         "@id": "http://hl7.org/fhir/TestScript.setup.action.*.assert.operator",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
@@ -289,24 +232,6 @@
                             ]
                           }
                         ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/TestScript.setup.action.*.assert.direction",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "response"
-                              },
-                              {
-                                "@value": "request"
-                              }
-                            ]
-                          }
-                        ]
                       }
                     ]
                   }
@@ -344,54 +269,6 @@
                           "http://layeredschemas.org/v1.0/Object"
                         ],
                         "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/TestScript.test.*.action.*.assert.response",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "okay"
-                                  },
-                                  {
-                                    "@value": "created"
-                                  },
-                                  {
-                                    "@value": "noContent"
-                                  },
-                                  {
-                                    "@value": "notModified"
-                                  },
-                                  {
-                                    "@value": "bad"
-                                  },
-                                  {
-                                    "@value": "forbidden"
-                                  },
-                                  {
-                                    "@value": "notFound"
-                                  },
-                                  {
-                                    "@value": "methodNotAllowed"
-                                  },
-                                  {
-                                    "@value": "conflict"
-                                  },
-                                  {
-                                    "@value": "gone"
-                                  },
-                                  {
-                                    "@value": "preconditionFailed"
-                                  },
-                                  {
-                                    "@value": "unprocessable"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
                           {
                             "@id": "http://hl7.org/fhir/TestScript.test.*.action.*.assert.requestMethod",
                             "@type": [
@@ -487,6 +364,54 @@
                                 ]
                               }
                             ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/TestScript.test.*.action.*.assert.response",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "okay"
+                                  },
+                                  {
+                                    "@value": "created"
+                                  },
+                                  {
+                                    "@value": "noContent"
+                                  },
+                                  {
+                                    "@value": "notModified"
+                                  },
+                                  {
+                                    "@value": "bad"
+                                  },
+                                  {
+                                    "@value": "forbidden"
+                                  },
+                                  {
+                                    "@value": "notFound"
+                                  },
+                                  {
+                                    "@value": "methodNotAllowed"
+                                  },
+                                  {
+                                    "@value": "conflict"
+                                  },
+                                  {
+                                    "@value": "gone"
+                                  },
+                                  {
+                                    "@value": "preconditionFailed"
+                                  },
+                                  {
+                                    "@value": "unprocessable"
+                                  }
+                                ]
+                              }
+                            ]
                           }
                         ]
                       },
@@ -540,32 +465,143 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/TestScript.text",
+        "@id": "http://hl7.org/fhir/TestScript.useContext",
         "@type": [
-          "http://layeredschemas.org/v1.0/Object"
+          "http://layeredschemas.org/v1.0/Array"
         ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "@id": "http://hl7.org/fhir/TestScript.text.status",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "http://layeredschemas.org/v1.0/Object"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@list": [
+                "@id": "http://hl7.org/fhir/TestScript.useContext.*.valueQuantity",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
+                    "@id": "http://hl7.org/fhir/TestScript.useContext.*.valueQuantity.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/TestScript.useContext.*.valueRange",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/TestScript.useContext.*.valueRange.high",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/TestScript.useContext.*.valueRange.high.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/TestScript.useContext.*.valueRange.low",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/TestScript.useContext.*.valueRange.low.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/TestScript.status",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "draft"
+              },
+              {
+                "@value": "active"
+              },
+              {
+                "@value": "retired"
+              },
+              {
+                "@value": "unknown"
               }
             ]
           }
@@ -601,30 +637,6 @@
                     "@value": "old"
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/TestScript.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "draft"
-              },
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "retired"
-              },
-              {
-                "@value": "unknown"
               }
             ]
           }
@@ -695,7 +707,39 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/TestScript.useContext",
+        "@id": "http://hl7.org/fhir/TestScript.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/TestScript.text.status",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/TestScript.contact",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
         ],
@@ -706,19 +750,18 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/TestScript.useContext.*.valueRange",
+                "@id": "http://hl7.org/fhir/TestScript.contact.*.telecom",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
+                  "http://layeredschemas.org/v1.0/Array"
                 ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "http://layeredschemas.org/v1.0/Array/items": [
                   {
-                    "@id": "http://hl7.org/fhir/TestScript.useContext.*.valueRange.low",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/TestScript.useContext.*.valueRange.low.comparator",
+                        "@id": "http://hl7.org/fhir/TestScript.contact.*.telecom.*.use",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -726,31 +769,26 @@
                           {
                             "@list": [
                               {
-                                "@value": "\u003c"
+                                "@value": "home"
                               },
                               {
-                                "@value": "\u003c="
+                                "@value": "work"
                               },
                               {
-                                "@value": "\u003e="
+                                "@value": "temp"
                               },
                               {
-                                "@value": "\u003e"
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
                               }
                             ]
                           }
                         ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/TestScript.useContext.*.valueRange.high",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      },
                       {
-                        "@id": "http://hl7.org/fhir/TestScript.useContext.*.valueRange.high.comparator",
+                        "@id": "http://hl7.org/fhir/TestScript.contact.*.telecom.*.system",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -758,16 +796,25 @@
                           {
                             "@list": [
                               {
-                                "@value": "\u003c"
+                                "@value": "phone"
                               },
                               {
-                                "@value": "\u003c="
+                                "@value": "fax"
                               },
                               {
-                                "@value": "\u003e="
+                                "@value": "email"
                               },
                               {
-                                "@value": "\u003e"
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
                               }
                             ]
                           }
@@ -776,53 +823,6 @@
                     ]
                   }
                 ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/TestScript.useContext.*.valueQuantity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/TestScript.useContext.*.valueQuantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/TestScript.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "TestScript"
               }
             ]
           }

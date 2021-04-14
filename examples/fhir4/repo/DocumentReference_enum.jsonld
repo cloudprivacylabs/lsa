@@ -11,21 +11,6 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/DocumentReference.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "DocumentReference"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/DocumentReference.relatesTo",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -55,6 +40,69 @@
                       },
                       {
                         "@value": "appends"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DocumentReference.status",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "current"
+              },
+              {
+                "@value": "superseded"
+              },
+              {
+                "@value": "entered-in-error"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DocumentReference.identifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DocumentReference.identifier.*.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
                       }
                     ]
                   }
@@ -132,49 +180,7 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/DocumentReference.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DocumentReference.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DocumentReference.status",
+        "@id": "http://hl7.org/fhir/DocumentReference.resourceType",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
@@ -182,13 +188,7 @@
           {
             "@list": [
               {
-                "@value": "current"
-              },
-              {
-                "@value": "superseded"
-              },
-              {
-                "@value": "entered-in-error"
+                "@value": "DocumentReference"
               }
             ]
           }

@@ -11,45 +11,42 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/DeviceUseStatement.resourceType",
+        "@id": "http://hl7.org/fhir/DeviceUseStatement.identifier",
         "@type": [
-          "http://layeredschemas.org/v1.0/Value"
+          "http://layeredschemas.org/v1.0/Array"
         ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "@list": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@value": "DeviceUseStatement"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceUseStatement.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "completed"
-              },
-              {
-                "@value": "entered-in-error"
-              },
-              {
-                "@value": "intended"
-              },
-              {
-                "@value": "stopped"
-              },
-              {
-                "@value": "on-hold"
+                "@id": "http://hl7.org/fhir/DeviceUseStatement.identifier.*.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -67,72 +64,6 @@
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceUseStatement.timingTiming.repeat.durationUnit",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "s"
-                      },
-                      {
-                        "@value": "min"
-                      },
-                      {
-                        "@value": "h"
-                      },
-                      {
-                        "@value": "d"
-                      },
-                      {
-                        "@value": "wk"
-                      },
-                      {
-                        "@value": "mo"
-                      },
-                      {
-                        "@value": "a"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DeviceUseStatement.timingTiming.repeat.periodUnit",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "s"
-                      },
-                      {
-                        "@value": "min"
-                      },
-                      {
-                        "@value": "h"
-                      },
-                      {
-                        "@value": "d"
-                      },
-                      {
-                        "@value": "wk"
-                      },
-                      {
-                        "@value": "mo"
-                      },
-                      {
-                        "@value": "a"
-                      }
-                    ]
-                  }
-                ]
-              },
               {
                 "@id": "http://hl7.org/fhir/DeviceUseStatement.timingTiming.repeat.boundsRange",
                 "@type": [
@@ -198,6 +129,104 @@
                                 "@value": "\u003e"
                               }
                             ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DeviceUseStatement.timingTiming.repeat.periodUnit",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "s"
+                      },
+                      {
+                        "@value": "min"
+                      },
+                      {
+                        "@value": "h"
+                      },
+                      {
+                        "@value": "d"
+                      },
+                      {
+                        "@value": "wk"
+                      },
+                      {
+                        "@value": "mo"
+                      },
+                      {
+                        "@value": "a"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DeviceUseStatement.timingTiming.repeat.durationUnit",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "s"
+                      },
+                      {
+                        "@value": "min"
+                      },
+                      {
+                        "@value": "h"
+                      },
+                      {
+                        "@value": "d"
+                      },
+                      {
+                        "@value": "wk"
+                      },
+                      {
+                        "@value": "mo"
+                      },
+                      {
+                        "@value": "a"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DeviceUseStatement.timingTiming.repeat.boundsDuration",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DeviceUseStatement.timingTiming.repeat.boundsDuration.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
                           }
                         ]
                       }
@@ -301,38 +330,36 @@
                     ]
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceUseStatement.status",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "active"
               },
               {
-                "@id": "http://hl7.org/fhir/DeviceUseStatement.timingTiming.repeat.boundsDuration",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DeviceUseStatement.timingTiming.repeat.boundsDuration.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "@value": "completed"
+              },
+              {
+                "@value": "entered-in-error"
+              },
+              {
+                "@value": "intended"
+              },
+              {
+                "@value": "stopped"
+              },
+              {
+                "@value": "on-hold"
               }
             ]
           }
@@ -371,42 +398,15 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/DeviceUseStatement.identifier",
+        "@id": "http://hl7.org/fhir/DeviceUseStatement.resourceType",
         "@type": [
-          "http://layeredschemas.org/v1.0/Array"
+          "http://layeredschemas.org/v1.0/Value"
         ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "@list": [
               {
-                "@id": "http://hl7.org/fhir/DeviceUseStatement.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
+                "@value": "DeviceUseStatement"
               }
             ]
           }

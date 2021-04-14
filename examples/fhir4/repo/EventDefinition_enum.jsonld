@@ -11,128 +11,6 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/EventDefinition.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/EventDefinition.text.status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EventDefinition.contact",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EventDefinition.contact.*.telecom",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.contact.*.telecom.*.system",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.contact.*.telecom.*.use",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/EventDefinition.trigger",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -143,6 +21,166 @@
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.condition",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.condition.language",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "text/cql"
+                          },
+                          {
+                            "@value": "text/fhirpath"
+                          },
+                          {
+                            "@value": "application/x-fhir-query"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.sort",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.sort.*.direction",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "ascending"
+                                      },
+                                      {
+                                        "@value": "descending"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.dateFilter",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.dateFilter.*.valueDuration",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.dateFilter.*.valueDuration.comparator",
+                                    "@type": [
+                                      "http://layeredschemas.org/v1.0/Value"
+                                    ],
+                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.type",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "named-event"
+                      },
+                      {
+                        "@value": "periodic"
+                      },
+                      {
+                        "@value": "data-changed"
+                      },
+                      {
+                        "@value": "data-added"
+                      },
+                      {
+                        "@value": "data-modified"
+                      },
+                      {
+                        "@value": "data-removed"
+                      },
+                      {
+                        "@value": "data-accessed"
+                      },
+                      {
+                        "@value": "data-access-ended"
+                      }
+                    ]
+                  }
+                ]
+              },
               {
                 "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming",
                 "@type": [
@@ -155,6 +193,71 @@
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsDuration",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsDuration.comparator",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.periodUnit",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "s"
+                              },
+                              {
+                                "@value": "min"
+                              },
+                              {
+                                "@value": "h"
+                              },
+                              {
+                                "@value": "d"
+                              },
+                              {
+                                "@value": "wk"
+                              },
+                              {
+                                "@value": "mo"
+                              },
+                              {
+                                "@value": "a"
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       {
                         "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsRange",
                         "@type": [
@@ -222,71 +325,6 @@
                                     ]
                                   }
                                 ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsDuration",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.boundsDuration.comparator",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.timingTiming.repeat.periodUnit",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "s"
-                              },
-                              {
-                                "@value": "min"
-                              },
-                              {
-                                "@value": "h"
-                              },
-                              {
-                                "@value": "d"
-                              },
-                              {
-                                "@value": "wk"
-                              },
-                              {
-                                "@value": "mo"
-                              },
-                              {
-                                "@value": "a"
                               }
                             ]
                           }
@@ -425,166 +463,21 @@
                     ]
                   }
                 ]
-              },
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EventDefinition.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
               {
-                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.type",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "named-event"
-                      },
-                      {
-                        "@value": "periodic"
-                      },
-                      {
-                        "@value": "data-changed"
-                      },
-                      {
-                        "@value": "data-added"
-                      },
-                      {
-                        "@value": "data-modified"
-                      },
-                      {
-                        "@value": "data-removed"
-                      },
-                      {
-                        "@value": "data-accessed"
-                      },
-                      {
-                        "@value": "data-access-ended"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.condition",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.condition.language",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "text/cql"
-                          },
-                          {
-                            "@value": "text/fhirpath"
-                          },
-                          {
-                            "@value": "application/x-fhir-query"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.dateFilter",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.dateFilter.*.valueDuration",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Object"
-                                ],
-                                "http://layeredschemas.org/v1.0/Object/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.dateFilter.*.valueDuration.comparator",
-                                    "@type": [
-                                      "http://layeredschemas.org/v1.0/Value"
-                                    ],
-                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "\u003c"
-                                          },
-                                          {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.sort",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/EventDefinition.trigger.*.data.*.sort.*.direction",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "ascending"
-                                      },
-                                      {
-                                        "@value": "descending"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "@value": "EventDefinition"
               }
             ]
           }
@@ -642,7 +535,7 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/EventDefinition.author",
+        "@id": "http://hl7.org/fhir/EventDefinition.identifier",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
         ],
@@ -653,94 +546,31 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/EventDefinition.author.*.telecom",
+                "@id": "http://hl7.org/fhir/EventDefinition.identifier.*.use",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
+                  "http://layeredschemas.org/v1.0/Value"
                 ],
-                "http://layeredschemas.org/v1.0/Array/items": [
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                    "@list": [
                       {
-                        "@id": "http://hl7.org/fhir/EventDefinition.author.*.telecom.*.system",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
+                        "@value": "usual"
                       },
                       {
-                        "@id": "http://hl7.org/fhir/EventDefinition.author.*.telecom.*.use",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
                       }
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EventDefinition.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "EventDefinition"
               }
             ]
           }
@@ -852,138 +682,6 @@
                               },
                               {
                                 "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EventDefinition.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EventDefinition.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EventDefinition.reviewer",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EventDefinition.reviewer.*.telecom",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.reviewer.*.telecom.*.use",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EventDefinition.reviewer.*.telecom.*.system",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
                               }
                             ]
                           }
@@ -1112,7 +810,39 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/EventDefinition.endorser",
+        "@id": "http://hl7.org/fhir/EventDefinition.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/EventDefinition.text.status",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EventDefinition.author",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
         ],
@@ -1123,7 +853,7 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/EventDefinition.endorser.*.telecom",
+                "@id": "http://hl7.org/fhir/EventDefinition.author.*.telecom",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Array"
                 ],
@@ -1134,7 +864,97 @@
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/EventDefinition.endorser.*.telecom.*.system",
+                        "@id": "http://hl7.org/fhir/EventDefinition.author.*.telecom.*.use",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.author.*.telecom.*.system",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "phone"
+                              },
+                              {
+                                "@value": "fax"
+                              },
+                              {
+                                "@value": "email"
+                              },
+                              {
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EventDefinition.contact",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EventDefinition.contact.*.telecom",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.contact.*.telecom.*.system",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -1167,7 +987,187 @@
                         ]
                       },
                       {
+                        "@id": "http://hl7.org/fhir/EventDefinition.contact.*.telecom.*.use",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EventDefinition.endorser",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EventDefinition.endorser.*.telecom",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
                         "@id": "http://hl7.org/fhir/EventDefinition.endorser.*.telecom.*.use",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.endorser.*.telecom.*.system",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "phone"
+                              },
+                              {
+                                "@value": "fax"
+                              },
+                              {
+                                "@value": "email"
+                              },
+                              {
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EventDefinition.reviewer",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EventDefinition.reviewer.*.telecom",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.reviewer.*.telecom.*.system",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "phone"
+                              },
+                              {
+                                "@value": "fax"
+                              },
+                              {
+                                "@value": "email"
+                              },
+                              {
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EventDefinition.reviewer.*.telecom.*.use",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],

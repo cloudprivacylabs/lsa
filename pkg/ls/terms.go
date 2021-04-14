@@ -78,7 +78,7 @@ var AttributeAnnotations = struct {
 	Pattern:     terms.ValueTerm(LS + "/attr/pattern"),
 	Label:       terms.ValueTerm(LS + "/attr/label"),
 	Enumeration: EnumerationTerm{LS + "/attr/enumeration"},
-	Required:    RequiredTerm{LS + "/attribute/required"},
+	Required:    RequiredTerm{LS + "/attr/required"},
 }
 
 var DocTerms = struct {

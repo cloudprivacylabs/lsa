@@ -11,7 +11,31 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/Practitioner.telecom",
+        "@id": "http://hl7.org/fhir/Practitioner.gender",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "male"
+              },
+              {
+                "@value": "female"
+              },
+              {
+                "@value": "other"
+              },
+              {
+                "@value": "unknown"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Practitioner.address",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
         ],
@@ -22,7 +46,28 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Practitioner.telecom.*.use",
+                "@id": "http://hl7.org/fhir/Practitioner.address.*.type",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "postal"
+                      },
+                      {
+                        "@value": "physical"
+                      },
+                      {
+                        "@value": "both"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Practitioner.address.*.use",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -42,12 +87,84 @@
                         "@value": "old"
                       },
                       {
-                        "@value": "mobile"
+                        "@value": "billing"
                       }
                     ]
                   }
                 ]
-              },
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Practitioner.qualification",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Practitioner.qualification.*.identifier",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Practitioner.qualification.*.identifier.*.use",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "usual"
+                              },
+                              {
+                                "@value": "official"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "secondary"
+                              },
+                              {
+                                "@value": "old"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Practitioner.telecom",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/Practitioner.telecom.*.system",
                 "@type": [
@@ -76,6 +193,33 @@
                       },
                       {
                         "@value": "other"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Practitioner.telecom.*.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "home"
+                      },
+                      {
+                        "@value": "work"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "old"
+                      },
+                      {
+                        "@value": "mobile"
                       }
                     ]
                   }
@@ -166,63 +310,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Practitioner.qualification",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Practitioner.qualification.*.identifier",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Practitioner.qualification.*.identifier.*.use",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "usual"
-                              },
-                              {
-                                "@value": "official"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "secondary"
-                              },
-                              {
-                                "@value": "old"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/Practitioner.identifier",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -265,69 +352,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Practitioner.address",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Practitioner.address.*.type",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "postal"
-                      },
-                      {
-                        "@value": "physical"
-                      },
-                      {
-                        "@value": "both"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Practitioner.address.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "home"
-                      },
-                      {
-                        "@value": "work"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "billing"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/Practitioner.resourceType",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
@@ -337,30 +361,6 @@
             "@list": [
               {
                 "@value": "Practitioner"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Practitioner.gender",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "male"
-              },
-              {
-                "@value": "female"
-              },
-              {
-                "@value": "other"
-              },
-              {
-                "@value": "unknown"
               }
             ]
           }

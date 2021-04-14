@@ -11,6 +11,87 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
+        "@id": "http://hl7.org/fhir/Person.identifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Person.identifier.*.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Person.link",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Person.link.*.assurance",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "level1"
+                      },
+                      {
+                        "@value": "level2"
+                      },
+                      {
+                        "@value": "level3"
+                      },
+                      {
+                        "@value": "level4"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/Person.address",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -74,7 +155,7 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Person.identifier",
+        "@id": "http://hl7.org/fhir/Person.telecom",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
         ],
@@ -85,7 +166,7 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Person.identifier.*.use",
+                "@id": "http://hl7.org/fhir/Person.telecom.*.system",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -93,19 +174,52 @@
                   {
                     "@list": [
                       {
-                        "@value": "usual"
+                        "@value": "phone"
                       },
                       {
-                        "@value": "official"
+                        "@value": "fax"
+                      },
+                      {
+                        "@value": "email"
+                      },
+                      {
+                        "@value": "pager"
+                      },
+                      {
+                        "@value": "url"
+                      },
+                      {
+                        "@value": "sms"
+                      },
+                      {
+                        "@value": "other"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Person.telecom.*.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "home"
+                      },
+                      {
+                        "@value": "work"
                       },
                       {
                         "@value": "temp"
                       },
                       {
-                        "@value": "secondary"
+                        "@value": "old"
                       },
                       {
-                        "@value": "old"
+                        "@value": "mobile"
                       }
                     ]
                   }
@@ -225,120 +339,6 @@
                       },
                       {
                         "@value": "maiden"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Person.link",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Person.link.*.assurance",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "level1"
-                      },
-                      {
-                        "@value": "level2"
-                      },
-                      {
-                        "@value": "level3"
-                      },
-                      {
-                        "@value": "level4"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Person.telecom",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Person.telecom.*.system",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "phone"
-                      },
-                      {
-                        "@value": "fax"
-                      },
-                      {
-                        "@value": "email"
-                      },
-                      {
-                        "@value": "pager"
-                      },
-                      {
-                        "@value": "url"
-                      },
-                      {
-                        "@value": "sms"
-                      },
-                      {
-                        "@value": "other"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Person.telecom.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "home"
-                      },
-                      {
-                        "@value": "work"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "mobile"
                       }
                     ]
                   }

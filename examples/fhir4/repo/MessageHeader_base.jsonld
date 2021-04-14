@@ -11,49 +11,34 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/MessageHeader._eventUri",
+        "@id": "http://hl7.org/fhir/MessageHeader.sender",
         "@type": [
-          "http://layeredschemas.org/v1.0/Object"
+          "http://layeredschemas.org/v1.0/Reference"
         ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "http://layeredschemas.org/v1.0/Reference/reference": [
           {
-            "@id": "http://hl7.org/fhir/MessageHeader._eventUri.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader._eventUri.extension",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Reference"
-                ],
-                "http://layeredschemas.org/v1.0/Reference/reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "extension"
-              }
-            ]
+            "@id": "http://hl7.org/fhir/Reference"
           }
         ],
         "http://layeredschemas.org/v1.0/attr/name": [
           {
-            "@value": "_eventUri"
+            "@value": "sender"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader.enterer",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Reference"
+        ],
+        "http://layeredschemas.org/v1.0/Reference/reference": [
+          {
+            "@id": "http://hl7.org/fhir/Reference"
+          }
+        ],
+        "http://layeredschemas.org/v1.0/attr/name": [
+          {
+            "@value": "enterer"
           }
         ]
       },
@@ -80,6 +65,138 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
+                "@id": "http://hl7.org/fhir/MessageHeader.destination.*.target",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Reference"
+                ],
+                "http://layeredschemas.org/v1.0/Reference/reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "target"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.destination.*._endpoint",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.destination.*._endpoint.extension",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Reference"
+                        ],
+                        "http://layeredschemas.org/v1.0/Reference/reference": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "extension"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.destination.*._endpoint.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "id"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "_endpoint"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.destination.*.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "id"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.destination.*._name",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.destination.*._name.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "id"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.destination.*._name.extension",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Reference"
+                        ],
+                        "http://layeredschemas.org/v1.0/Reference/reference": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "_name"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.destination.*.endpoint",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "endpoint"
+                  }
+                ]
+              },
+              {
                 "@id": "http://hl7.org/fhir/MessageHeader.destination.*.extension",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Array"
@@ -103,49 +220,25 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.destination.*._name",
+                "@id": "http://hl7.org/fhir/MessageHeader.destination.*.modifierExtension",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
+                  "http://layeredschemas.org/v1.0/Array"
                 ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "http://layeredschemas.org/v1.0/Array/items": [
                   {
-                    "@id": "http://hl7.org/fhir/MessageHeader.destination.*._name.extension",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
+                      "http://layeredschemas.org/v1.0/Reference"
                     ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
+                    "http://layeredschemas.org/v1.0/Reference/reference": [
                       {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Reference"
-                        ],
-                        "http://layeredschemas.org/v1.0/Reference/reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "extension"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.destination.*._name.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "id"
+                        "@id": "http://hl7.org/fhir/Extension"
                       }
                     ]
                   }
                 ],
                 "http://layeredschemas.org/v1.0/attr/name": [
                   {
-                    "@value": "_name"
+                    "@value": "modifierExtension"
                   }
                 ]
               },
@@ -175,114 +268,6 @@
                     "@value": "receiver"
                   }
                 ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.destination.*.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "id"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.destination.*.target",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Reference"
-                ],
-                "http://layeredschemas.org/v1.0/Reference/reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "target"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.destination.*._endpoint",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.destination.*._endpoint.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "id"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.destination.*._endpoint.extension",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Reference"
-                        ],
-                        "http://layeredschemas.org/v1.0/Reference/reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "_endpoint"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.destination.*.endpoint",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "endpoint"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.destination.*.modifierExtension",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Reference"
-                    ],
-                    "http://layeredschemas.org/v1.0/Reference/reference": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "modifierExtension"
-                  }
-                ]
               }
             ]
           }
@@ -290,6 +275,33 @@
         "http://layeredschemas.org/v1.0/attr/name": [
           {
             "@value": "destination"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/name": [
+          {
+            "@value": "resourceType"
+          }
+        ],
+        "http://layeredschemas.org/v1.0/attr/required": [
+          {
+            "@value": true
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader.id",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/name": [
+          {
+            "@value": "id"
           }
         ]
       },
@@ -311,169 +323,6 @@
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._code.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_code"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "system"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._system.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_system"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._userSelected.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._userSelected.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_userSelected"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "id"
-                      }
-                    ]
-                  },
-                  {
                     "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.code",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
@@ -485,47 +334,13 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.version",
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.system",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
                     "http://layeredschemas.org/v1.0/attr/name": [
                       {
-                        "@value": "version"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "userSelected"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.extension",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Reference"
-                        ],
-                        "http://layeredschemas.org/v1.0/Reference/reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "extension"
+                        "@value": "system"
                       }
                     ]
                   },
@@ -577,6 +392,109 @@
                     ]
                   },
                   {
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "id"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.extension",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Reference"
+                        ],
+                        "http://layeredschemas.org/v1.0/Reference/reference": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "extension"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "display"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "userSelected"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._userSelected.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._userSelected.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_userSelected"
+                      }
+                    ]
+                  },
+                  {
                     "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._version",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
@@ -624,13 +542,107 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.display",
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._code.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._code.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_code"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._system.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._system.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_system"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.version",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
                     "http://layeredschemas.org/v1.0/attr/name": [
                       {
-                        "@value": "display"
+                        "@value": "version"
                       }
                     ]
                   }
@@ -743,35 +755,13 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageHeader.eventUri",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/name": [
-          {
-            "@value": "eventUri"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.meta",
+        "@id": "http://hl7.org/fhir/MessageHeader._eventUri",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.extension",
+            "@id": "http://hl7.org/fhir/MessageHeader._eventUri.extension",
             "@type": [
               "http://layeredschemas.org/v1.0/Array"
             ],
@@ -794,934 +784,47 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.versionId",
+            "@id": "http://hl7.org/fhir/MessageHeader._eventUri.id",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
             "http://layeredschemas.org/v1.0/attr/name": [
               {
-                "@value": "versionId"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.profile",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "profile"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta._lastUpdated",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.meta._lastUpdated.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "id"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.meta._lastUpdated.extension",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Reference"
-                    ],
-                    "http://layeredschemas.org/v1.0/Reference/reference": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "extension"
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "_lastUpdated"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta._source",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.meta._source.extension",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Reference"
-                    ],
-                    "http://layeredschemas.org/v1.0/Reference/reference": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "extension"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.meta._source.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "id"
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "_source"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.source",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "source"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.security",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "userSelected"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._code.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_code"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "system"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "id"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._version.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._version.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_version"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "code"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "display"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.extension",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Reference"
-                        ],
-                        "http://layeredschemas.org/v1.0/Reference/reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "extension"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._system.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_system"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "version"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._display.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._display.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_display"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._userSelected.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._userSelected.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_userSelected"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "security"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta._versionId",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.meta._versionId.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "id"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.meta._versionId.extension",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Reference"
-                    ],
-                    "http://layeredschemas.org/v1.0/Reference/reference": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "extension"
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "_versionId"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.tag",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._system.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_system"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._userSelected.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._userSelected.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_userSelected"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "id"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._version.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._version.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_version"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "version"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "system"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "userSelected"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.extension",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Reference"
-                        ],
-                        "http://layeredschemas.org/v1.0/Reference/reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "extension"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._display.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._display.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_display"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "code"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "display"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._code.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_code"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "tag"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.lastUpdated",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "lastUpdated"
+                "@value": "id"
               }
             ]
           }
         ],
         "http://layeredschemas.org/v1.0/attr/name": [
           {
-            "@value": "meta"
+            "@value": "_eventUri"
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageHeader.implicitRules",
+        "@id": "http://hl7.org/fhir/MessageHeader.eventUri",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
         "http://layeredschemas.org/v1.0/attr/name": [
           {
-            "@value": "implicitRules"
+            "@value": "eventUri"
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageHeader.id",
+        "@id": "http://hl7.org/fhir/MessageHeader.responsible",
         "@type": [
-          "http://layeredschemas.org/v1.0/Value"
+          "http://layeredschemas.org/v1.0/Reference"
         ],
-        "http://layeredschemas.org/v1.0/attr/name": [
+        "http://layeredschemas.org/v1.0/Reference/reference": [
           {
-            "@value": "id"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.focus",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Reference"
-            ],
-            "http://layeredschemas.org/v1.0/Reference/reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ]
+            "@id": "http://hl7.org/fhir/Reference"
           }
         ],
         "http://layeredschemas.org/v1.0/attr/name": [
           {
-            "@value": "focus"
+            "@value": "responsible"
           }
         ]
       },
@@ -1739,6 +842,11 @@
             "http://layeredschemas.org/v1.0/attr/name": [
               {
                 "@value": "div"
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/required": [
+              {
+                "@value": true
               }
             ]
           },
@@ -1842,34 +950,454 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageHeader.sender",
+        "@id": "http://hl7.org/fhir/MessageHeader.focus",
         "@type": [
-          "http://layeredschemas.org/v1.0/Reference"
+          "http://layeredschemas.org/v1.0/Array"
         ],
-        "http://layeredschemas.org/v1.0/Reference/reference": [
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "@id": "http://hl7.org/fhir/Reference"
+            "@type": [
+              "http://layeredschemas.org/v1.0/Reference"
+            ],
+            "http://layeredschemas.org/v1.0/Reference/reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ]
           }
         ],
         "http://layeredschemas.org/v1.0/attr/name": [
           {
-            "@value": "sender"
+            "@value": "focus"
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageHeader.enterer",
+        "@id": "http://hl7.org/fhir/MessageHeader.extension",
         "@type": [
-          "http://layeredschemas.org/v1.0/Reference"
+          "http://layeredschemas.org/v1.0/Array"
         ],
-        "http://layeredschemas.org/v1.0/Reference/reference": [
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "@id": "http://hl7.org/fhir/Reference"
+            "@type": [
+              "http://layeredschemas.org/v1.0/Reference"
+            ],
+            "http://layeredschemas.org/v1.0/Reference/reference": [
+              {
+                "@id": "http://hl7.org/fhir/Extension"
+              }
+            ]
           }
         ],
         "http://layeredschemas.org/v1.0/attr/name": [
           {
-            "@value": "enterer"
+            "@value": "extension"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader.eventCoding",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.version",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "version"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.code",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "code"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._system",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._system.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "id"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._system.extension",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Reference"
+                    ],
+                    "http://layeredschemas.org/v1.0/Reference/reference": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "extension"
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "_system"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._userSelected",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._userSelected.extension",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Reference"
+                    ],
+                    "http://layeredschemas.org/v1.0/Reference/reference": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "extension"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._userSelected.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "id"
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "_userSelected"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._version",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._version.extension",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Reference"
+                    ],
+                    "http://layeredschemas.org/v1.0/Reference/reference": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "extension"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._version.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "id"
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "_version"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._code",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._code.extension",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Reference"
+                    ],
+                    "http://layeredschemas.org/v1.0/Reference/reference": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "extension"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._code.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "id"
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "_code"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "id"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.extension",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Reference"
+                ],
+                "http://layeredschemas.org/v1.0/Reference/reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._display",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._display.extension",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Reference"
+                    ],
+                    "http://layeredschemas.org/v1.0/Reference/reference": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "extension"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._display.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "id"
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "_display"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.system",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "system"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.display",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "display"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.userSelected",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "userSelected"
+              }
+            ]
+          }
+        ],
+        "http://layeredschemas.org/v1.0/attr/name": [
+          {
+            "@value": "eventCoding"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader._language",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader._language.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "id"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader._language.extension",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Reference"
+                ],
+                "http://layeredschemas.org/v1.0/Reference/reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "extension"
+              }
+            ]
+          }
+        ],
+        "http://layeredschemas.org/v1.0/attr/name": [
+          {
+            "@value": "_language"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader.implicitRules",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/name": [
+          {
+            "@value": "implicitRules"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader.language",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/name": [
+          {
+            "@value": "language"
           }
         ]
       },
@@ -1897,74 +1425,11 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageHeader._implicitRules",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader._implicitRules.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader._implicitRules.extension",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Reference"
-                ],
-                "http://layeredschemas.org/v1.0/Reference/reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "extension"
-              }
-            ]
-          }
-        ],
-        "http://layeredschemas.org/v1.0/attr/name": [
-          {
-            "@value": "_implicitRules"
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/MessageHeader.response",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.response.details",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Reference"
-            ],
-            "http://layeredschemas.org/v1.0/Reference/reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "details"
-              }
-            ]
-          },
           {
             "@id": "http://hl7.org/fhir/MessageHeader.response.id",
             "@type": [
@@ -2098,6 +1563,17 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
+                "@id": "http://hl7.org/fhir/MessageHeader.response._code.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "id"
+                  }
+                ]
+              },
+              {
                 "@id": "http://hl7.org/fhir/MessageHeader.response._code.extension",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Array"
@@ -2119,22 +1595,27 @@
                     "@value": "extension"
                   }
                 ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.response._code.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "id"
-                  }
-                ]
               }
             ],
             "http://layeredschemas.org/v1.0/attr/name": [
               {
                 "@value": "_code"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.response.details",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Reference"
+            ],
+            "http://layeredschemas.org/v1.0/Reference/reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "details"
               }
             ]
           }
@@ -2146,502 +1627,13 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageHeader.source",
+        "@id": "http://hl7.org/fhir/MessageHeader._implicitRules",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.source._software",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source._software.extension",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Reference"
-                    ],
-                    "http://layeredschemas.org/v1.0/Reference/reference": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "extension"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source._software.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "id"
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "_software"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.source.contact",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact._rank",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._rank.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "id"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._rank.extension",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Reference"
-                        ],
-                        "http://layeredschemas.org/v1.0/Reference/reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "_rank"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.extension",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Reference"
-                    ],
-                    "http://layeredschemas.org/v1.0/Reference/reference": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "extension"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "id"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.value",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "value"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact._value",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._value.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "id"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._value.extension",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Reference"
-                        ],
-                        "http://layeredschemas.org/v1.0/Reference/reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "_value"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "use"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.rank",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "rank"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact._use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._use.extension",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Reference"
-                        ],
-                        "http://layeredschemas.org/v1.0/Reference/reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "extension"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._use.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "id"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "_use"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.system",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "system"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period._start",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period._start.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period._start.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_start"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period.end",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "end"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period._end",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period._end.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "id"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period._end.extension",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Reference"
-                            ],
-                            "http://layeredschemas.org/v1.0/Reference/reference": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension"
-                              }
-                            ]
-                          }
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/name": [
-                          {
-                            "@value": "extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "_end"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "id"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period.extension",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Reference"
-                        ],
-                        "http://layeredschemas.org/v1.0/Reference/reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "extension"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period.start",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "start"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "period"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact._system",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._system.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "id"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._system.extension",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Reference"
-                        ],
-                        "http://layeredschemas.org/v1.0/Reference/reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension"
-                          }
-                        ]
-                      }
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/name": [
-                      {
-                        "@value": "extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "_system"
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "contact"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.source.extension",
+            "@id": "http://hl7.org/fhir/MessageHeader._implicitRules.extension",
             "@type": [
               "http://layeredschemas.org/v1.0/Array"
             ],
@@ -2664,110 +1656,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.source.modifierExtension",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Reference"
-                ],
-                "http://layeredschemas.org/v1.0/Reference/reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.source._name",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source._name.extension",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Reference"
-                    ],
-                    "http://layeredschemas.org/v1.0/Reference/reference": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "extension"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source._name.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "id"
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "_name"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.source.software",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "software"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.source.endpoint",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "endpoint"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.source.version",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "version"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.source.id",
+            "@id": "http://hl7.org/fhir/MessageHeader._implicitRules.id",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -2776,143 +1665,11 @@
                 "@value": "id"
               }
             ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.source._version",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source._version.extension",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Reference"
-                    ],
-                    "http://layeredschemas.org/v1.0/Reference/reference": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "extension"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source._version.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "id"
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "_version"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.source.name",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "name"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.source._endpoint",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source._endpoint.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "id"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source._endpoint.extension",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Reference"
-                    ],
-                    "http://layeredschemas.org/v1.0/Reference/reference": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "extension"
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "_endpoint"
-              }
-            ]
           }
         ],
         "http://layeredschemas.org/v1.0/attr/name": [
           {
-            "@value": "source"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.responsible",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Reference"
-        ],
-        "http://layeredschemas.org/v1.0/Reference/reference": [
-          {
-            "@id": "http://hl7.org/fhir/Reference"
-          }
-        ],
-        "http://layeredschemas.org/v1.0/attr/name": [
-          {
-            "@value": "responsible"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/name": [
-          {
-            "@value": "resourceType"
+            "@value": "_implicitRules"
           }
         ]
       },
@@ -4547,36 +3304,71 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageHeader.extension",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Reference"
-            ],
-            "http://layeredschemas.org/v1.0/Reference/reference": [
-              {
-                "@id": "http://hl7.org/fhir/Extension"
-              }
-            ]
-          }
-        ],
-        "http://layeredschemas.org/v1.0/attr/name": [
-          {
-            "@value": "extension"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader._language",
+        "@id": "http://hl7.org/fhir/MessageHeader.meta",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/MessageHeader._language.extension",
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.lastUpdated",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "lastUpdated"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta._versionId",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.meta._versionId.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "id"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.meta._versionId.extension",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Reference"
+                    ],
+                    "http://layeredschemas.org/v1.0/Reference/reference": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "extension"
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "_versionId"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.extension",
             "@type": [
               "http://layeredschemas.org/v1.0/Array"
             ],
@@ -4599,7 +3391,351 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader._language.id",
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.security",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._version.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._version.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_version"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "code"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.extension",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Reference"
+                        ],
+                        "http://layeredschemas.org/v1.0/Reference/reference": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "extension"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "version"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._display.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._display.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_display"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "system"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._system.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._system.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_system"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._userSelected.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._userSelected.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_userSelected"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "display"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "userSelected"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "id"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._code.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._code.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_code"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "security"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.id",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -4608,55 +3744,446 @@
                 "@value": "id"
               }
             ]
-          }
-        ],
-        "http://layeredschemas.org/v1.0/attr/name": [
+          },
           {
-            "@value": "_language"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.language",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/name": [
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.source",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "source"
+              }
+            ]
+          },
           {
-            "@value": "language"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.author",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Reference"
-        ],
-        "http://layeredschemas.org/v1.0/Reference/reference": [
-          {
-            "@id": "http://hl7.org/fhir/Reference"
-          }
-        ],
-        "http://layeredschemas.org/v1.0/attr/name": [
-          {
-            "@value": "author"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.eventCoding",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._system",
+            "@id": "http://hl7.org/fhir/MessageHeader.meta._source",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._system.extension",
+                "@id": "http://hl7.org/fhir/MessageHeader.meta._source.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "id"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.meta._source.extension",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Reference"
+                    ],
+                    "http://layeredschemas.org/v1.0/Reference/reference": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "extension"
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "_source"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.versionId",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "versionId"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.profile",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "profile"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.tag",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._display.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._display.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_display"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._system.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._system.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_system"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._code.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._code.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_code"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "userSelected"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._userSelected.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._userSelected.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_userSelected"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.extension",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Reference"
+                        ],
+                        "http://layeredschemas.org/v1.0/Reference/reference": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "extension"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "version"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._version.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._version.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_version"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "code"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "display"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "system"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "id"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "tag"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta._lastUpdated",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.meta._lastUpdated.extension",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Array"
                 ],
@@ -4679,7 +4206,7 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._system.id",
+                "@id": "http://hl7.org/fhir/MessageHeader.meta._lastUpdated.id",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -4692,23 +4219,525 @@
             ],
             "http://layeredschemas.org/v1.0/attr/name": [
               {
-                "@value": "_system"
+                "@value": "_lastUpdated"
               }
             ]
-          },
+          }
+        ],
+        "http://layeredschemas.org/v1.0/attr/name": [
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.userSelected",
+            "@value": "meta"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader.source",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.source.id",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
             "http://layeredschemas.org/v1.0/attr/name": [
               {
-                "@value": "userSelected"
+                "@value": "id"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.version",
+            "@id": "http://hl7.org/fhir/MessageHeader.source.contact",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "use"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "id"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact._value",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._value.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "id"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._value.extension",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Reference"
+                        ],
+                        "http://layeredschemas.org/v1.0/Reference/reference": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "_value"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.rank",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "rank"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "id"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period.extension",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Reference"
+                        ],
+                        "http://layeredschemas.org/v1.0/Reference/reference": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "extension"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period.start",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "start"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period._start",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period._start.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period._start.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_start"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period.end",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "end"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period._end",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period._end.extension",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Reference"
+                            ],
+                            "http://layeredschemas.org/v1.0/Reference/reference": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension"
+                              }
+                            ]
+                          }
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "extension"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period._end.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/name": [
+                          {
+                            "@value": "id"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "_end"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "period"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact._system",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._system.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "id"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._system.extension",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Reference"
+                        ],
+                        "http://layeredschemas.org/v1.0/Reference/reference": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "_system"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.value",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "value"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact._rank",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._rank.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "id"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._rank.extension",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Reference"
+                        ],
+                        "http://layeredschemas.org/v1.0/Reference/reference": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "_rank"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact._use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._use.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "id"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._use.extension",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Reference"
+                        ],
+                        "http://layeredschemas.org/v1.0/Reference/reference": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension"
+                          }
+                        ]
+                      }
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/name": [
+                      {
+                        "@value": "extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "_use"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.system",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "system"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.extension",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Reference"
+                    ],
+                    "http://layeredschemas.org/v1.0/Reference/reference": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "extension"
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "contact"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.source._endpoint",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source._endpoint.extension",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Reference"
+                    ],
+                    "http://layeredschemas.org/v1.0/Reference/reference": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "extension"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source._endpoint.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "id"
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "_endpoint"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.source.version",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -4719,76 +4748,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._userSelected",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._userSelected.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "id"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._userSelected.extension",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Reference"
-                    ],
-                    "http://layeredschemas.org/v1.0/Reference/reference": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "extension"
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "_userSelected"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.id",
+            "@id": "http://hl7.org/fhir/MessageHeader.source.software",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
             "http://layeredschemas.org/v1.0/attr/name": [
               {
-                "@value": "id"
+                "@value": "software"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.display",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "display"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.extension",
+            "@id": "http://hl7.org/fhir/MessageHeader.source.modifierExtension",
             "@type": [
               "http://layeredschemas.org/v1.0/Array"
             ],
@@ -4806,18 +4777,18 @@
             ],
             "http://layeredschemas.org/v1.0/attr/name": [
               {
-                "@value": "extension"
+                "@value": "modifierExtension"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._code",
+            "@id": "http://hl7.org/fhir/MessageHeader.source._version",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._code.id",
+                "@id": "http://hl7.org/fhir/MessageHeader.source._version.id",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -4828,112 +4799,7 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._code.extension",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Reference"
-                    ],
-                    "http://layeredschemas.org/v1.0/Reference/reference": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "extension"
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "_code"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.system",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "system"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._display",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._display.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "id"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._display.extension",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Reference"
-                    ],
-                    "http://layeredschemas.org/v1.0/Reference/reference": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension"
-                      }
-                    ]
-                  }
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "extension"
-                  }
-                ]
-              }
-            ],
-            "http://layeredschemas.org/v1.0/attr/name": [
-              {
-                "@value": "_display"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._version",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._version.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/name": [
-                  {
-                    "@value": "id"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._version.extension",
+                "@id": "http://hl7.org/fhir/MessageHeader.source._version.extension",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Array"
                 ],
@@ -4963,20 +4829,169 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.code",
+            "@id": "http://hl7.org/fhir/MessageHeader.source.extension",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Reference"
+                ],
+                "http://layeredschemas.org/v1.0/Reference/reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.source.name",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
             "http://layeredschemas.org/v1.0/attr/name": [
               {
-                "@value": "code"
+                "@value": "name"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.source._name",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source._name.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "id"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source._name.extension",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Reference"
+                    ],
+                    "http://layeredschemas.org/v1.0/Reference/reference": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "extension"
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "_name"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.source._software",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source._software.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "id"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source._software.extension",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Reference"
+                    ],
+                    "http://layeredschemas.org/v1.0/Reference/reference": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension"
+                      }
+                    ]
+                  }
+                ],
+                "http://layeredschemas.org/v1.0/attr/name": [
+                  {
+                    "@value": "extension"
+                  }
+                ]
+              }
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "_software"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.source.endpoint",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/name": [
+              {
+                "@value": "endpoint"
               }
             ]
           }
         ],
         "http://layeredschemas.org/v1.0/attr/name": [
           {
-            "@value": "eventCoding"
+            "@value": "source"
+          }
+        ],
+        "http://layeredschemas.org/v1.0/attr/required": [
+          {
+            "@value": true
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader.author",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Reference"
+        ],
+        "http://layeredschemas.org/v1.0/Reference/reference": [
+          {
+            "@id": "http://hl7.org/fhir/Reference"
+          }
+        ],
+        "http://layeredschemas.org/v1.0/attr/name": [
+          {
+            "@value": "author"
           }
         ]
       }

@@ -11,7 +11,7 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/SupplyRequest.resourceType",
+        "@id": "http://hl7.org/fhir/SupplyRequest.status",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
@@ -19,39 +19,25 @@
           {
             "@list": [
               {
-                "@value": "SupplyRequest"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/SupplyRequest.quantity",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/SupplyRequest.quantity.comparator",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "@value": "draft"
+              },
               {
-                "@list": [
-                  {
-                    "@value": "\u003c"
-                  },
-                  {
-                    "@value": "\u003c="
-                  },
-                  {
-                    "@value": "\u003e="
-                  },
-                  {
-                    "@value": "\u003e"
-                  }
-                ]
+                "@value": "active"
+              },
+              {
+                "@value": "suspended"
+              },
+              {
+                "@value": "cancelled"
+              },
+              {
+                "@value": "completed"
+              },
+              {
+                "@value": "entered-in-error"
+              },
+              {
+                "@value": "unknown"
               }
             ]
           }
@@ -69,78 +55,6 @@
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.boundsRange",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.boundsRange.low",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.boundsRange.low.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.boundsRange.high",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.boundsRange.high.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
               {
                 "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.when",
                 "@type": [
@@ -239,32 +153,33 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.boundsDuration",
+                "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.periodUnit",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
+                  "http://layeredschemas.org/v1.0/Value"
                 ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
-                    "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.boundsDuration.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "@list": [
                       {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
+                        "@value": "s"
+                      },
+                      {
+                        "@value": "min"
+                      },
+                      {
+                        "@value": "h"
+                      },
+                      {
+                        "@value": "d"
+                      },
+                      {
+                        "@value": "wk"
+                      },
+                      {
+                        "@value": "mo"
+                      },
+                      {
+                        "@value": "a"
                       }
                     ]
                   }
@@ -304,75 +219,104 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.periodUnit",
+                "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.boundsRange",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "http://layeredschemas.org/v1.0/Object"
                 ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.boundsRange.low",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@value": "s"
-                      },
+                        "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.boundsRange.low.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.boundsRange.high",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@value": "min"
-                      },
-                      {
-                        "@value": "h"
-                      },
-                      {
-                        "@value": "d"
-                      },
-                      {
-                        "@value": "wk"
-                      },
-                      {
-                        "@value": "mo"
-                      },
-                      {
-                        "@value": "a"
+                        "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.boundsRange.high.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/SupplyRequest.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+              },
               {
-                "@id": "http://hl7.org/fhir/SupplyRequest.identifier.*.use",
+                "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.boundsDuration",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "http://layeredschemas.org/v1.0/Object"
                 ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/SupplyRequest.occurrenceTiming.repeat.boundsDuration.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
                       }
                     ]
                   }
@@ -383,7 +327,7 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/SupplyRequest.status",
+        "@id": "http://hl7.org/fhir/SupplyRequest.resourceType",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
@@ -391,25 +335,39 @@
           {
             "@list": [
               {
-                "@value": "draft"
-              },
+                "@value": "SupplyRequest"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/SupplyRequest.quantity",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/SupplyRequest.quantity.comparator",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "@value": "active"
-              },
-              {
-                "@value": "suspended"
-              },
-              {
-                "@value": "cancelled"
-              },
-              {
-                "@value": "completed"
-              },
-              {
-                "@value": "entered-in-error"
-              },
-              {
-                "@value": "unknown"
+                "@list": [
+                  {
+                    "@value": "\u003c"
+                  },
+                  {
+                    "@value": "\u003c="
+                  },
+                  {
+                    "@value": "\u003e="
+                  },
+                  {
+                    "@value": "\u003e"
+                  }
+                ]
               }
             ]
           }
@@ -426,6 +384,38 @@
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/SupplyRequest.parameter.*.valueQuantity",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/SupplyRequest.parameter.*.valueQuantity.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
               {
                 "@id": "http://hl7.org/fhir/SupplyRequest.parameter.*.valueRange",
                 "@type": [
@@ -497,38 +487,6 @@
                     ]
                   }
                 ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/SupplyRequest.parameter.*.valueQuantity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/SupplyRequest.parameter.*.valueQuantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
               }
             ]
           }
@@ -559,6 +517,48 @@
                   },
                   {
                     "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/SupplyRequest.identifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/SupplyRequest.identifier.*.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
                   }
                 ]
               }

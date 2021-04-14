@@ -11,25 +11,6 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/MessageHeader._eventUri",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader._eventUri.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/MessageHeader.definition",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
@@ -52,13 +33,13 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.destination.*._name",
+                "@id": "http://hl7.org/fhir/MessageHeader.destination.*._endpoint",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/MessageHeader.destination.*._name.id",
+                    "@id": "http://hl7.org/fhir/MessageHeader.destination.*._endpoint.id",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
@@ -67,17 +48,6 @@
                         "@value": "A sequence of Unicode characters"
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.destination.*.name",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
                   }
                 ]
               },
@@ -93,13 +63,13 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.destination.*._endpoint",
+                "@id": "http://hl7.org/fhir/MessageHeader.destination.*._name",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/MessageHeader.destination.*._endpoint.id",
+                    "@id": "http://hl7.org/fhir/MessageHeader.destination.*._name.id",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
@@ -121,8 +91,41 @@
                     "@value": "A URI that is a literal reference"
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.destination.*.name",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
               }
             ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/information": [
+          {
+            "@value": "This is a MessageHeader resource"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader.id",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/information": [
+          {
+            "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
           }
         ]
       },
@@ -144,21 +147,13 @@
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._code",
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.code",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
+                      "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
-                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
+                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
                       }
                     ]
                   },
@@ -174,32 +169,13 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._system",
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._display",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._userSelected.id",
+                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._display.id",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -223,18 +199,7 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.version",
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.display",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
@@ -256,13 +221,13 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._display",
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._userSelected",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._display.id",
+                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._userSelected.id",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -294,7 +259,45 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.display",
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._code.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*._system.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.reason.coding.*.version",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
@@ -352,24 +355,13 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageHeader.eventUri",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "Code that identifies the event this message represents and connects it with its definition. Events defined as part of the FHIR specification have the system value \"http://terminology.hl7.org/CodeSystem/message-events\".  Alternatively uri to the EventDefinition."
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.meta",
+        "@id": "http://hl7.org/fhir/MessageHeader._eventUri",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.id",
+            "@id": "http://hl7.org/fhir/MessageHeader._eventUri.id",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -378,488 +370,17 @@
                 "@value": "A sequence of Unicode characters"
               }
             ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.versionId",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.profile",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta._lastUpdated",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.meta._lastUpdated.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta._source",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.meta._source.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.source",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.security",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "Value of \"true\" or \"false\""
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "String of characters used to identify a name or a resource"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._version.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._display.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._userSelected.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta._versionId",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.meta._versionId.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.tag",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._userSelected.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._version.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "String of characters used to identify a name or a resource"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "Value of \"true\" or \"false\""
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._display.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.meta.lastUpdated",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "An instant in time - known at least to the second"
-              }
-            ]
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageHeader.implicitRules",
+        "@id": "http://hl7.org/fhir/MessageHeader.eventUri",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
         "http://layeredschemas.org/v1.0/attr/information": [
           {
-            "@value": "String of characters used to identify a name or a resource"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.id",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
+            "@value": "Code that identifies the event this message represents and connects it with its definition. Events defined as part of the FHIR specification have the system value \"http://terminology.hl7.org/CodeSystem/message-events\".  Alternatively uri to the EventDefinition."
           }
         ]
       },
@@ -924,13 +445,13 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageHeader._implicitRules",
+        "@id": "http://hl7.org/fhir/MessageHeader.eventCoding",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/MessageHeader._implicitRules.id",
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.version",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -939,6 +460,197 @@
                 "@value": "A sequence of Unicode characters"
               }
             ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.code",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._system",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._system.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._userSelected",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._userSelected.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._version",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._version.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._code",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._code.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._display",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._display.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.system",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "String of characters used to identify a name or a resource"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.display",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.userSelected",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "Value of \"true\" or \"false\""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader._language",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader._language.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader.implicitRules",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/information": [
+          {
+            "@value": "String of characters used to identify a name or a resource"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader.language",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/information": [
+          {
+            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
           }
         ]
       },
@@ -1022,19 +734,49 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/MessageHeader.source",
+        "@id": "http://hl7.org/fhir/MessageHeader._implicitRules",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.source._software",
+            "@id": "http://hl7.org/fhir/MessageHeader._implicitRules.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader.meta",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.lastUpdated",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "An instant in time - known at least to the second"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta._versionId",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.source._software.id",
+                "@id": "http://hl7.org/fhir/MessageHeader.meta._versionId.id",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -1047,19 +789,414 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.source.contact",
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.security",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "http://layeredschemas.org/v1.0/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "http://layeredschemas.org/v1.0/Array/items": [
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact._rank",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._rank.id",
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._version.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._display.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "String of characters used to identify a name or a resource"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._system.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._userSelected.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "Value of \"true\" or \"false\""
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.security.*._code.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.source",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "String of characters used to identify a name or a resource"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta._source",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.meta._source.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.versionId",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.profile",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta.tag",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._display.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._system.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._code.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "Value of \"true\" or \"false\""
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._userSelected.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*._version.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "String of characters used to identify a name or a resource"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.meta.tag.*.id",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
@@ -1070,9 +1207,17 @@
                     ]
                   }
                 ]
-              },
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.meta._lastUpdated",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.id",
+                "@id": "http://hl7.org/fhir/MessageHeader.meta._lastUpdated.id",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -1081,9 +1226,47 @@
                     "@value": "A sequence of Unicode characters"
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MessageHeader.source",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.source.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader.source.contact",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "Identifies the purpose for the contact point."
+                  }
+                ]
               },
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.value",
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.id",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -1113,17 +1296,6 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "Identifies the purpose for the contact point."
-                  }
-                ]
-              },
-              {
                 "@id": "http://hl7.org/fhir/MessageHeader.source.contact.rank",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
@@ -1135,13 +1307,13 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact._use",
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._use.id",
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period.id",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
@@ -1150,26 +1322,18 @@
                         "@value": "A sequence of Unicode characters"
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.system",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
+                  },
                   {
-                    "@value": "Telecommunications form for contact point - what communications system is required to make use of the contact."
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period.start",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+                      }
+                    ]
+                  },
                   {
                     "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period._start",
                     "@type": [
@@ -1218,28 +1382,6 @@
                         ]
                       }
                     ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact.period.start",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-                      }
-                    ]
                   }
                 ]
               },
@@ -1261,17 +1403,9 @@
                     ]
                   }
                 ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.source._name",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+              },
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.source._name.id",
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.value",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -1280,28 +1414,74 @@
                     "@value": "A sequence of Unicode characters"
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact._rank",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._rank.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact._use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader.source.contact._use.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.system",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "Telecommunications form for contact point - what communications system is required to make use of the contact."
+                  }
+                ]
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.source.software",
+            "@id": "http://hl7.org/fhir/MessageHeader.source._endpoint",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "http://layeredschemas.org/v1.0/Object"
             ],
-            "http://layeredschemas.org/v1.0/attr/information": [
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.source.endpoint",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "A URI that is a literal reference"
+                "@id": "http://hl7.org/fhir/MessageHeader.source._endpoint.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
               }
             ]
           },
@@ -1317,7 +1497,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.source.id",
+            "@id": "http://hl7.org/fhir/MessageHeader.source.software",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -1358,81 +1538,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.source._endpoint",
+            "@id": "http://hl7.org/fhir/MessageHeader.source._name",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.source._endpoint.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "This is a MessageHeader resource"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader._language",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader._language.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.language",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.eventCoding",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._system",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._system.id",
+                "@id": "http://hl7.org/fhir/MessageHeader.source._name.id",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -1445,35 +1557,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.userSelected",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "Value of \"true\" or \"false\""
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.version",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._userSelected",
+            "@id": "http://hl7.org/fhir/MessageHeader.source._software",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._userSelected.id",
+                "@id": "http://hl7.org/fhir/MessageHeader.source._software.id",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -1486,103 +1576,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.id",
+            "@id": "http://hl7.org/fhir/MessageHeader.source.endpoint",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
             "http://layeredschemas.org/v1.0/attr/information": [
               {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.display",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._code",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._code.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.system",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._display",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._display.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._version",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.eventCoding._version.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.eventCoding.code",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                "@value": "A URI that is a literal reference"
               }
             ]
           }

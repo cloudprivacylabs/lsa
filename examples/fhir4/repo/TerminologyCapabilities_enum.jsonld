@@ -11,6 +11,149 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
+        "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext.*.valueQuantity",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext.*.valueQuantity.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext.*.valueRange",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext.*.valueRange.low",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext.*.valueRange.low.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext.*.valueRange.high",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext.*.valueRange.high.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/TerminologyCapabilities.status",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "draft"
+              },
+              {
+                "@value": "active"
+              },
+              {
+                "@value": "retired"
+              },
+              {
+                "@value": "unknown"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/TerminologyCapabilities.contact",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -101,30 +244,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/TerminologyCapabilities.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "draft"
-              },
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "retired"
-              },
-              {
-                "@value": "unknown"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/TerminologyCapabilities.codeSearch",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
@@ -137,6 +256,21 @@
               },
               {
                 "@value": "all"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/TerminologyCapabilities.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "TerminologyCapabilities"
               }
             ]
           }
@@ -169,140 +303,6 @@
                     "@value": "empty"
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext.*.valueRange",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext.*.valueRange.low",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext.*.valueRange.low.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext.*.valueRange.high",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext.*.valueRange.high.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext.*.valueQuantity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/TerminologyCapabilities.useContext.*.valueQuantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/TerminologyCapabilities.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "TerminologyCapabilities"
               }
             ]
           }

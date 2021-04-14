@@ -11,18 +11,19 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/MedicationAdministration.identifier",
+        "@id": "http://hl7.org/fhir/MedicationAdministration.dosage",
         "@type": [
-          "http://layeredschemas.org/v1.0/Array"
+          "http://layeredschemas.org/v1.0/Object"
         ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
+            "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.dose",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/MedicationAdministration.identifier.*.use",
+                "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.dose.comparator",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -30,81 +31,23 @@
                   {
                     "@list": [
                       {
-                        "@value": "usual"
+                        "@value": "\u003c"
                       },
                       {
-                        "@value": "official"
+                        "@value": "\u003c="
                       },
                       {
-                        "@value": "temp"
+                        "@value": "\u003e="
                       },
                       {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
+                        "@value": "\u003e"
                       }
                     ]
                   }
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MedicationAdministration.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration.text.status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MedicationAdministration.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "MedicationAdministration"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MedicationAdministration.dosage",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+          },
           {
             "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.rateRatio",
             "@type": [
@@ -178,38 +121,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.dose",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.dose.comparator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.rateQuantity",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
@@ -236,6 +147,95 @@
                         "@value": "\u003e"
                       }
                     ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MedicationAdministration.identifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationAdministration.identifier.*.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MedicationAdministration.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "MedicationAdministration"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/MedicationAdministration.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration.text.status",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
                   }
                 ]
               }

@@ -43,21 +43,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/TestReport.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "TestReport"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/TestReport.identifier",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
@@ -93,6 +78,27 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/TestReport.result",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "pass"
+              },
+              {
+                "@value": "fail"
+              },
+              {
+                "@value": "pending"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/TestReport.status",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
@@ -114,42 +120,6 @@
               },
               {
                 "@value": "entered-in-error"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/TestReport.participant",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/TestReport.participant.*.type",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "test-engine"
-                      },
-                      {
-                        "@value": "client"
-                      },
-                      {
-                        "@value": "server"
-                      }
-                    ]
-                  }
-                ]
               }
             ]
           }
@@ -249,7 +219,7 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/TestReport.result",
+        "@id": "http://hl7.org/fhir/TestReport.resourceType",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
@@ -257,71 +227,7 @@
           {
             "@list": [
               {
-                "@value": "pass"
-              },
-              {
-                "@value": "fail"
-              },
-              {
-                "@value": "pending"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/TestReport.teardown",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/TestReport.teardown.action",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/TestReport.teardown.action.*.operation",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/TestReport.teardown.action.*.operation.result",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "pass"
-                              },
-                              {
-                                "@value": "skip"
-                              },
-                              {
-                                "@value": "fail"
-                              },
-                              {
-                                "@value": "warning"
-                              },
-                              {
-                                "@value": "error"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "@value": "TestReport"
               }
             ]
           }
@@ -414,6 +320,100 @@
                                     "@value": "error"
                                   }
                                 ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/TestReport.participant",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/TestReport.participant.*.type",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "test-engine"
+                      },
+                      {
+                        "@value": "client"
+                      },
+                      {
+                        "@value": "server"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/TestReport.teardown",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/TestReport.teardown.action",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/TestReport.teardown.action.*.operation",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/TestReport.teardown.action.*.operation.result",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "pass"
+                              },
+                              {
+                                "@value": "skip"
+                              },
+                              {
+                                "@value": "fail"
+                              },
+                              {
+                                "@value": "warning"
+                              },
+                              {
+                                "@value": "error"
                               }
                             ]
                           }

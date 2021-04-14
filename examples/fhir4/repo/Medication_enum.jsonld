@@ -64,6 +64,38 @@
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
+            "@id": "http://hl7.org/fhir/Medication.amount.numerator",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Medication.amount.numerator.comparator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/Medication.amount.denominator",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
@@ -94,15 +126,22 @@
                 ]
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Medication.identifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "@id": "http://hl7.org/fhir/Medication.amount.numerator",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Medication.amount.numerator.comparator",
+                "@id": "http://hl7.org/fhir/Medication.identifier.*.use",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -110,16 +149,19 @@
                   {
                     "@list": [
                       {
-                        "@value": "\u003c"
+                        "@value": "usual"
                       },
                       {
-                        "@value": "\u003c="
+                        "@value": "official"
                       },
                       {
-                        "@value": "\u003e="
+                        "@value": "temp"
                       },
                       {
-                        "@value": "\u003e"
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
                       }
                     ]
                   }
@@ -207,48 +249,6 @@
                             ]
                           }
                         ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Medication.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Medication.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
                       }
                     ]
                   }

@@ -11,21 +11,6 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/VerificationResult.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "VerificationResult"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/VerificationResult.text",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
@@ -58,6 +43,21 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/VerificationResult.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "VerificationResult"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/VerificationResult.frequency",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
@@ -69,6 +69,39 @@
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.durationUnit",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "s"
+                      },
+                      {
+                        "@value": "min"
+                      },
+                      {
+                        "@value": "h"
+                      },
+                      {
+                        "@value": "d"
+                      },
+                      {
+                        "@value": "wk"
+                      },
+                      {
+                        "@value": "mo"
+                      },
+                      {
+                        "@value": "a"
+                      }
+                    ]
+                  }
+                ]
+              },
               {
                 "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.periodUnit",
                 "@type": [
@@ -103,70 +136,30 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.boundsRange",
+                "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.boundsDuration",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.boundsRange.low",
+                    "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.boundsDuration.comparator",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
+                      "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
-                        "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.boundsRange.low.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                        "@list": [
                           {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.boundsRange.high",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.boundsRange.high.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                            "@value": "\u003c"
+                          },
                           {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
                           }
                         ]
                       }
@@ -272,63 +265,70 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.durationUnit",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "s"
-                      },
-                      {
-                        "@value": "min"
-                      },
-                      {
-                        "@value": "h"
-                      },
-                      {
-                        "@value": "d"
-                      },
-                      {
-                        "@value": "wk"
-                      },
-                      {
-                        "@value": "mo"
-                      },
-                      {
-                        "@value": "a"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.boundsDuration",
+                "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.boundsRange",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.boundsDuration.comparator",
+                    "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.boundsRange.low",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
+                      "http://layeredschemas.org/v1.0/Object"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@list": [
+                        "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.boundsRange.low.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
-                            "@value": "\u003c"
-                          },
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.boundsRange.high",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/VerificationResult.frequency.repeat.boundsRange.high.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
                           {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
                           }
                         ]
                       }

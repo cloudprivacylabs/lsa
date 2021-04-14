@@ -11,18 +11,7 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/ResearchSubject.id",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ResearchSubject.actualArm",
+        "@id": "http://hl7.org/fhir/ResearchSubject.assignedArm",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
@@ -39,7 +28,7 @@
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/ResearchSubject.meta.id",
+            "@id": "http://hl7.org/fhir/ResearchSubject.meta.lastUpdated",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -50,21 +39,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ResearchSubject.meta._versionId",
+            "@id": "http://hl7.org/fhir/ResearchSubject.meta.source",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "http://layeredschemas.org/v1.0/Value"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "http://layeredschemas.org/v1.0/attr/type": [
               {
-                "@id": "http://hl7.org/fhir/ResearchSubject.meta._versionId.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
+                "@value": "string"
               }
             ]
           },
@@ -91,13 +72,24 @@
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*._code",
+                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*.version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*._display",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*._code.id",
+                        "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*._display.id",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -159,43 +151,13 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*._userSelected",
+                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*._code",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*._userSelected.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*.userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "boolean"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*._display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*._display.id",
+                        "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*._code.id",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -219,13 +181,13 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*.version",
+                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*.userSelected",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
                     "http://layeredschemas.org/v1.0/attr/type": [
                       {
-                        "@value": "string"
+                        "@value": "boolean"
                       }
                     ]
                   },
@@ -250,19 +212,37 @@
                         "@value": "string"
                       }
                     ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ResearchSubject.meta.tag.*._userSelected.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ResearchSubject.meta._lastUpdated",
+            "@id": "http://hl7.org/fhir/ResearchSubject.meta.profile",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "http://layeredschemas.org/v1.0/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "http://layeredschemas.org/v1.0/Array/items": [
               {
-                "@id": "http://hl7.org/fhir/ResearchSubject.meta._lastUpdated.id",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -271,17 +251,6 @@
                     "@value": "string"
                   }
                 ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject.meta.source",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
               }
             ]
           },
@@ -297,67 +266,7 @@
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*._display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*._display.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*._code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*.system",
+                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*.display",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
@@ -398,13 +307,13 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*._version",
+                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*._display",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*._version.id",
+                        "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*._display.id",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -417,7 +326,7 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*.display",
+                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*.system",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
@@ -447,6 +356,55 @@
                     ]
                   },
                   {
+                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*._version.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*._code.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
                     "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*.version",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
@@ -456,6 +414,66 @@
                         "@value": "string"
                       }
                     ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ResearchSubject.meta.security.*.code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject.meta._lastUpdated",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ResearchSubject.meta._lastUpdated.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject.meta.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject.meta._versionId",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ResearchSubject.meta._versionId.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
                   }
                 ]
               }
@@ -479,46 +497,28 @@
                 ]
               }
             ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject.meta.lastUpdated",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject.meta.profile",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ResearchSubject._actualArm",
+        "@id": "http://hl7.org/fhir/ResearchSubject.id",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/type": [
+          {
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ResearchSubject._language",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/ResearchSubject._actualArm.id",
+            "@id": "http://hl7.org/fhir/ResearchSubject._language.id",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -531,73 +531,24 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ResearchSubject.period",
+        "@id": "http://hl7.org/fhir/ResearchSubject.language",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/type": [
+          {
+            "@value": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ResearchSubject._status",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/ResearchSubject.period._start",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ResearchSubject.period._start.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject.period.end",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject.period._end",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ResearchSubject.period._end.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject.period.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject.period.start",
+            "@id": "http://hl7.org/fhir/ResearchSubject._status.id",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -617,47 +568,6 @@
         "http://layeredschemas.org/v1.0/attr/type": [
           {
             "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ResearchSubject.language",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ResearchSubject.assignedArm",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ResearchSubject._assignedArm",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject._assignedArm.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
           }
         ]
       },
@@ -692,276 +602,13 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.system",
+                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.id",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
                 "http://layeredschemas.org/v1.0/attr/type": [
                   {
                     "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.text",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type._text",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type._text.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*.id",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._code",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._code.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*.system",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*.userSelected",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "boolean"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*.code",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*.display",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._userSelected",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._userSelected.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*.version",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._system",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._system.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._display",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._display.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._version",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._version.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*._value",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*._value.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*._use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*._use.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
                   }
                 ]
               },
@@ -1045,6 +692,25 @@
                 ]
               },
               {
+                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*._use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*._use.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
                 "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.value",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
@@ -1056,7 +722,7 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.id",
+                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.system",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -1065,8 +731,263 @@
                     "@value": "string"
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*.version",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._display",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._display.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*.userSelected",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "boolean"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._version",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._version.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*.code",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*.system",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._system",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._system.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._userSelected",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._userSelected.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._code",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*._code.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/type": [
+                                  {
+                                    "@value": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.coding.*.display",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/type": [
+                              {
+                                "@value": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.text",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type._text",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type._text.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/type": [
+                          {
+                            "@value": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*.type.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*._value",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/ResearchSubject.identifier.*._value.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/type": [
+                      {
+                        "@value": "string"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ResearchSubject.actualArm",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/type": [
+          {
+            "@value": "string"
           }
         ]
       },
@@ -1090,60 +1011,11 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/ResearchSubject._language",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject._language.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ResearchSubject._status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject._status.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/ResearchSubject.text",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject.text.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
           {
             "@id": "http://hl7.org/fhir/ResearchSubject.text._status",
             "@type": [
@@ -1160,6 +1032,134 @@
                     "@value": "string"
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject.text.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ResearchSubject.period",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject.period.start",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject.period._start",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ResearchSubject.period._start.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject.period.end",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject.period._end",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ResearchSubject.period._end.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/type": [
+                  {
+                    "@value": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject.period.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ResearchSubject._actualArm",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject._actualArm.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ResearchSubject._assignedArm",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject._assignedArm.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/type": [
+              {
+                "@value": "string"
               }
             ]
           }

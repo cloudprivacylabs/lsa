@@ -11,6 +11,41 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
+        "@id": "http://hl7.org/fhir/DeviceRequest.groupIdentifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DeviceRequest.groupIdentifier.use",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "usual"
+                  },
+                  {
+                    "@value": "official"
+                  },
+                  {
+                    "@value": "temp"
+                  },
+                  {
+                    "@value": "secondary"
+                  },
+                  {
+                    "@value": "old"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
@@ -22,103 +57,6 @@
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.when",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "MORN"
-                          },
-                          {
-                            "@value": "MORN.early"
-                          },
-                          {
-                            "@value": "MORN.late"
-                          },
-                          {
-                            "@value": "NOON"
-                          },
-                          {
-                            "@value": "AFT"
-                          },
-                          {
-                            "@value": "AFT.early"
-                          },
-                          {
-                            "@value": "AFT.late"
-                          },
-                          {
-                            "@value": "EVE"
-                          },
-                          {
-                            "@value": "EVE.early"
-                          },
-                          {
-                            "@value": "EVE.late"
-                          },
-                          {
-                            "@value": "NIGHT"
-                          },
-                          {
-                            "@value": "PHS"
-                          },
-                          {
-                            "@value": "HS"
-                          },
-                          {
-                            "@value": "WAKE"
-                          },
-                          {
-                            "@value": "C"
-                          },
-                          {
-                            "@value": "CM"
-                          },
-                          {
-                            "@value": "CD"
-                          },
-                          {
-                            "@value": "CV"
-                          },
-                          {
-                            "@value": "AC"
-                          },
-                          {
-                            "@value": "ACM"
-                          },
-                          {
-                            "@value": "ACD"
-                          },
-                          {
-                            "@value": "ACV"
-                          },
-                          {
-                            "@value": "PC"
-                          },
-                          {
-                            "@value": "PCM"
-                          },
-                          {
-                            "@value": "PCD"
-                          },
-                          {
-                            "@value": "PCV"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
               {
                 "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.periodUnit",
                 "@type": [
@@ -225,6 +163,103 @@
                 ]
               },
               {
+                "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.when",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "MORN"
+                          },
+                          {
+                            "@value": "MORN.early"
+                          },
+                          {
+                            "@value": "MORN.late"
+                          },
+                          {
+                            "@value": "NOON"
+                          },
+                          {
+                            "@value": "AFT"
+                          },
+                          {
+                            "@value": "AFT.early"
+                          },
+                          {
+                            "@value": "AFT.late"
+                          },
+                          {
+                            "@value": "EVE"
+                          },
+                          {
+                            "@value": "EVE.early"
+                          },
+                          {
+                            "@value": "EVE.late"
+                          },
+                          {
+                            "@value": "NIGHT"
+                          },
+                          {
+                            "@value": "PHS"
+                          },
+                          {
+                            "@value": "HS"
+                          },
+                          {
+                            "@value": "WAKE"
+                          },
+                          {
+                            "@value": "C"
+                          },
+                          {
+                            "@value": "CM"
+                          },
+                          {
+                            "@value": "CD"
+                          },
+                          {
+                            "@value": "CV"
+                          },
+                          {
+                            "@value": "AC"
+                          },
+                          {
+                            "@value": "ACM"
+                          },
+                          {
+                            "@value": "ACD"
+                          },
+                          {
+                            "@value": "ACV"
+                          },
+                          {
+                            "@value": "PC"
+                          },
+                          {
+                            "@value": "PCM"
+                          },
+                          {
+                            "@value": "PCD"
+                          },
+                          {
+                            "@value": "PCV"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
                 "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.durationUnit",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
@@ -294,73 +329,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/DeviceRequest.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DeviceRequest.text.status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceRequest.groupIdentifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DeviceRequest.groupIdentifier.use",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "usual"
-                  },
-                  {
-                    "@value": "official"
-                  },
-                  {
-                    "@value": "temp"
-                  },
-                  {
-                    "@value": "secondary"
-                  },
-                  {
-                    "@value": "old"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/DeviceRequest.parameter",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -371,6 +339,38 @@
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueQuantity",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueQuantity.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
               {
                 "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueRange",
                 "@type": [
@@ -442,38 +442,53 @@
                     ]
                   }
                 ]
-              },
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceRequest.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DeviceRequest.text.status",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueQuantity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "@list": [
                   {
-                    "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueQuantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceRequest.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "DeviceRequest"
               }
             ]
           }
@@ -516,21 +531,6 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceRequest.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "DeviceRequest"
               }
             ]
           }

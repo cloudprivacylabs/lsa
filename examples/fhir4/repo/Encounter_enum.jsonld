@@ -11,84 +11,6 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/Encounter.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "planned"
-              },
-              {
-                "@value": "arrived"
-              },
-              {
-                "@value": "triaged"
-              },
-              {
-                "@value": "in-progress"
-              },
-              {
-                "@value": "onleave"
-              },
-              {
-                "@value": "finished"
-              },
-              {
-                "@value": "cancelled"
-              },
-              {
-                "@value": "entered-in-error"
-              },
-              {
-                "@value": "unknown"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Encounter.location",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Encounter.location.*.status",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "planned"
-                      },
-                      {
-                        "@value": "active"
-                      },
-                      {
-                        "@value": "reserved"
-                      },
-                      {
-                        "@value": "completed"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/Encounter.statusHistory",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -143,30 +65,134 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Encounter.length",
+        "@id": "http://hl7.org/fhir/Encounter.hospitalization",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Encounter.length.comparator",
+            "@id": "http://hl7.org/fhir/Encounter.hospitalization.preAdmissionIdentifier",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "http://layeredschemas.org/v1.0/Object"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@list": [
+                "@id": "http://hl7.org/fhir/Encounter.hospitalization.preAdmissionIdentifier.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
-                    "@value": "\u003c"
-                  },
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Encounter.status",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "planned"
+              },
+              {
+                "@value": "arrived"
+              },
+              {
+                "@value": "triaged"
+              },
+              {
+                "@value": "in-progress"
+              },
+              {
+                "@value": "onleave"
+              },
+              {
+                "@value": "finished"
+              },
+              {
+                "@value": "cancelled"
+              },
+              {
+                "@value": "entered-in-error"
+              },
+              {
+                "@value": "unknown"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Encounter.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "Encounter"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Encounter.location",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Encounter.location.*.status",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
-                    "@value": "\u003c="
-                  },
-                  {
-                    "@value": "\u003e="
-                  },
-                  {
-                    "@value": "\u003e"
+                    "@list": [
+                      {
+                        "@value": "planned"
+                      },
+                      {
+                        "@value": "active"
+                      },
+                      {
+                        "@value": "reserved"
+                      },
+                      {
+                        "@value": "completed"
+                      }
+                    ]
                   }
                 ]
               }
@@ -201,21 +227,6 @@
                     "@value": "empty"
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Encounter.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "Encounter"
               }
             ]
           }
@@ -264,41 +275,30 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Encounter.hospitalization",
+        "@id": "http://hl7.org/fhir/Encounter.length",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Encounter.hospitalization.preAdmissionIdentifier",
+            "@id": "http://hl7.org/fhir/Encounter.length.comparator",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "http://layeredschemas.org/v1.0/Value"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "@id": "http://hl7.org/fhir/Encounter.hospitalization.preAdmissionIdentifier.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "@list": [
                   {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
+                    "@value": "\u003c"
+                  },
+                  {
+                    "@value": "\u003c="
+                  },
+                  {
+                    "@value": "\u003e="
+                  },
+                  {
+                    "@value": "\u003e"
                   }
                 ]
               }

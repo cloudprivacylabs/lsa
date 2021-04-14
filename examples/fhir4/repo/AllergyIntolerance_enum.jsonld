@@ -11,69 +11,6 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/AllergyIntolerance.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/AllergyIntolerance.text.status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AllergyIntolerance.category",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "food"
-                  },
-                  {
-                    "@value": "medication"
-                  },
-                  {
-                    "@value": "environment"
-                  },
-                  {
-                    "@value": "biologic"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/AllergyIntolerance.identifier",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -116,6 +53,60 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/AllergyIntolerance.type",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "allergy"
+              },
+              {
+                "@value": "intolerance"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AllergyIntolerance.criticality",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "low"
+              },
+              {
+                "@value": "high"
+              },
+              {
+                "@value": "unable-to-assess"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AllergyIntolerance.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "AllergyIntolerance"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/AllergyIntolerance.reaction",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -152,43 +143,106 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/AllergyIntolerance.onsetRange",
+        "@id": "http://hl7.org/fhir/AllergyIntolerance.onsetAge",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/AllergyIntolerance.onsetRange.high",
+            "@id": "http://hl7.org/fhir/AllergyIntolerance.onsetAge.comparator",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "http://layeredschemas.org/v1.0/Value"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "@id": "http://hl7.org/fhir/AllergyIntolerance.onsetRange.high.comparator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "@list": [
                   {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
+                    "@value": "\u003c"
+                  },
+                  {
+                    "@value": "\u003c="
+                  },
+                  {
+                    "@value": "\u003e="
+                  },
+                  {
+                    "@value": "\u003e"
                   }
                 ]
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AllergyIntolerance.category",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "food"
+                  },
+                  {
+                    "@value": "medication"
+                  },
+                  {
+                    "@value": "environment"
+                  },
+                  {
+                    "@value": "biologic"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AllergyIntolerance.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/AllergyIntolerance.text.status",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/AllergyIntolerance.onsetRange",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/AllergyIntolerance.onsetRange.low",
             "@type": [
@@ -220,88 +274,34 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AllergyIntolerance.type",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          },
           {
-            "@list": [
-              {
-                "@value": "allergy"
-              },
-              {
-                "@value": "intolerance"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AllergyIntolerance.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "AllergyIntolerance"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AllergyIntolerance.criticality",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "low"
-              },
-              {
-                "@value": "high"
-              },
-              {
-                "@value": "unable-to-assess"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AllergyIntolerance.onsetAge",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/AllergyIntolerance.onsetAge.comparator",
+            "@id": "http://hl7.org/fhir/AllergyIntolerance.onsetRange.high",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "http://layeredschemas.org/v1.0/Object"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@list": [
+                "@id": "http://hl7.org/fhir/AllergyIntolerance.onsetRange.high.comparator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
-                    "@value": "\u003c"
-                  },
-                  {
-                    "@value": "\u003c="
-                  },
-                  {
-                    "@value": "\u003e="
-                  },
-                  {
-                    "@value": "\u003e"
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
                   }
                 ]
               }

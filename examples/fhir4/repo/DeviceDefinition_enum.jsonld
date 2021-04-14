@@ -11,7 +11,7 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/DeviceDefinition.contact",
+        "@id": "http://hl7.org/fhir/DeviceDefinition.shelfLifeStorage",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
         ],
@@ -22,34 +22,137 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/DeviceDefinition.contact.*.use",
+                "@id": "http://hl7.org/fhir/DeviceDefinition.shelfLifeStorage.*.identifier",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "http://layeredschemas.org/v1.0/Object"
                 ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/DeviceDefinition.shelfLifeStorage.*.identifier.use",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
-                        "@value": "home"
-                      },
-                      {
-                        "@value": "work"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "mobile"
+                        "@list": [
+                          {
+                            "@value": "usual"
+                          },
+                          {
+                            "@value": "official"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/DeviceDefinition.contact.*.system",
+                "@id": "http://hl7.org/fhir/DeviceDefinition.shelfLifeStorage.*.period",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DeviceDefinition.shelfLifeStorage.*.period.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceDefinition.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DeviceDefinition.text.status",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceDefinition.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "DeviceDefinition"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.weight",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.weight.comparator",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -57,27 +160,210 @@
                   {
                     "@list": [
                       {
-                        "@value": "phone"
+                        "@value": "\u003c"
                       },
                       {
-                        "@value": "fax"
+                        "@value": "\u003c="
                       },
                       {
-                        "@value": "email"
+                        "@value": "\u003e="
                       },
                       {
-                        "@value": "pager"
-                      },
-                      {
-                        "@value": "url"
-                      },
-                      {
-                        "@value": "sms"
-                      },
-                      {
-                        "@value": "other"
+                        "@value": "\u003e"
                       }
                     ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.externalDiameter",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.externalDiameter.comparator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.nominalVolume",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.nominalVolume.comparator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.height",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.height.comparator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.width",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.width.comparator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.depth",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.depth.comparator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceDefinition.quantity",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DeviceDefinition.quantity.comparator",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "\u003c"
+                  },
+                  {
+                    "@value": "\u003c="
+                  },
+                  {
+                    "@value": "\u003e="
+                  },
+                  {
+                    "@value": "\u003e"
                   }
                 ]
               }
@@ -140,38 +426,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/DeviceDefinition.quantity",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DeviceDefinition.quantity.comparator",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "\u003c"
-                  },
-                  {
-                    "@value": "\u003c="
-                  },
-                  {
-                    "@value": "\u003e="
-                  },
-                  {
-                    "@value": "\u003e"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/DeviceDefinition.deviceName",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -211,303 +465,6 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.width",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.width.comparator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.nominalVolume",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.nominalVolume.comparator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.depth",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.depth.comparator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.externalDiameter",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.externalDiameter.comparator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.weight",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.weight.comparator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.height",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceDefinition.physicalCharacteristics.height.comparator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceDefinition.shelfLifeStorage",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceDefinition.shelfLifeStorage.*.period",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DeviceDefinition.shelfLifeStorage.*.period.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/DeviceDefinition.shelfLifeStorage.*.identifier",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DeviceDefinition.shelfLifeStorage.*.identifier.use",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "usual"
-                          },
-                          {
-                            "@value": "official"
-                          },
-                          {
-                            "@value": "temp"
-                          },
-                          {
-                            "@value": "secondary"
-                          },
-                          {
-                            "@value": "old"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceDefinition.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "DeviceDefinition"
               }
             ]
           }
@@ -556,30 +513,73 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/DeviceDefinition.text",
+        "@id": "http://hl7.org/fhir/DeviceDefinition.contact",
         "@type": [
-          "http://layeredschemas.org/v1.0/Object"
+          "http://layeredschemas.org/v1.0/Array"
         ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "@id": "http://hl7.org/fhir/DeviceDefinition.text.status",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "http://layeredschemas.org/v1.0/Object"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@list": [
+                "@id": "http://hl7.org/fhir/DeviceDefinition.contact.*.system",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
-                    "@value": "generated"
-                  },
+                    "@list": [
+                      {
+                        "@value": "phone"
+                      },
+                      {
+                        "@value": "fax"
+                      },
+                      {
+                        "@value": "email"
+                      },
+                      {
+                        "@value": "pager"
+                      },
+                      {
+                        "@value": "url"
+                      },
+                      {
+                        "@value": "sms"
+                      },
+                      {
+                        "@value": "other"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/DeviceDefinition.contact.*.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
+                    "@list": [
+                      {
+                        "@value": "home"
+                      },
+                      {
+                        "@value": "work"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "old"
+                      },
+                      {
+                        "@value": "mobile"
+                      }
+                    ]
                   }
                 ]
               }

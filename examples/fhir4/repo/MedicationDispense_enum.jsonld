@@ -11,6 +11,48 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
+        "@id": "http://hl7.org/fhir/MedicationDispense.identifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationDispense.identifier.*.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -54,393 +96,6 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.maxDosePerPeriod",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.maxDosePerPeriod.denominator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.maxDosePerPeriod.denominator.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.maxDosePerPeriod.numerator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.maxDosePerPeriod.numerator.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.maxDosePerAdministration",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.maxDosePerAdministration.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.boundsRange",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.boundsRange.high",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.boundsRange.high.comparator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.boundsRange.low",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.boundsRange.low.comparator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.durationUnit",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "s"
-                              },
-                              {
-                                "@value": "min"
-                              },
-                              {
-                                "@value": "h"
-                              },
-                              {
-                                "@value": "d"
-                              },
-                              {
-                                "@value": "wk"
-                              },
-                              {
-                                "@value": "mo"
-                              },
-                              {
-                                "@value": "a"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.when",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "MORN"
-                                  },
-                                  {
-                                    "@value": "MORN.early"
-                                  },
-                                  {
-                                    "@value": "MORN.late"
-                                  },
-                                  {
-                                    "@value": "NOON"
-                                  },
-                                  {
-                                    "@value": "AFT"
-                                  },
-                                  {
-                                    "@value": "AFT.early"
-                                  },
-                                  {
-                                    "@value": "AFT.late"
-                                  },
-                                  {
-                                    "@value": "EVE"
-                                  },
-                                  {
-                                    "@value": "EVE.early"
-                                  },
-                                  {
-                                    "@value": "EVE.late"
-                                  },
-                                  {
-                                    "@value": "NIGHT"
-                                  },
-                                  {
-                                    "@value": "PHS"
-                                  },
-                                  {
-                                    "@value": "HS"
-                                  },
-                                  {
-                                    "@value": "WAKE"
-                                  },
-                                  {
-                                    "@value": "C"
-                                  },
-                                  {
-                                    "@value": "CM"
-                                  },
-                                  {
-                                    "@value": "CD"
-                                  },
-                                  {
-                                    "@value": "CV"
-                                  },
-                                  {
-                                    "@value": "AC"
-                                  },
-                                  {
-                                    "@value": "ACM"
-                                  },
-                                  {
-                                    "@value": "ACD"
-                                  },
-                                  {
-                                    "@value": "ACV"
-                                  },
-                                  {
-                                    "@value": "PC"
-                                  },
-                                  {
-                                    "@value": "PCM"
-                                  },
-                                  {
-                                    "@value": "PCD"
-                                  },
-                                  {
-                                    "@value": "PCV"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.boundsDuration",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.boundsDuration.comparator",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.periodUnit",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "s"
-                              },
-                              {
-                                "@value": "min"
-                              },
-                              {
-                                "@value": "h"
-                              },
-                              {
-                                "@value": "d"
-                              },
-                              {
-                                "@value": "wk"
-                              },
-                              {
-                                "@value": "mo"
-                              },
-                              {
-                                "@value": "a"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
                 "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.doseAndRate",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Array"
@@ -457,38 +112,6 @@
                           "http://layeredschemas.org/v1.0/Object"
                         ],
                         "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.doseAndRate.*.rateRange.high",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.doseAndRate.*.rateRange.high.comparator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
                           {
                             "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.doseAndRate.*.rateRange.low",
                             "@type": [
@@ -520,66 +143,34 @@
                                 ]
                               }
                             ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.doseAndRate.*.doseQuantity",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          },
                           {
-                            "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.doseAndRate.*.doseQuantity.comparator",
+                            "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.doseAndRate.*.rateRange.high",
                             "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
+                              "http://layeredschemas.org/v1.0/Object"
                             ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
-                                "@list": [
+                                "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.doseAndRate.*.rateRange.high.comparator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
                                   {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.doseAndRate.*.rateQuantity",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.doseAndRate.*.rateQuantity.comparator",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
                                   }
                                 ]
                               }
@@ -730,6 +321,457 @@
                             ]
                           }
                         ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.doseAndRate.*.rateQuantity",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.doseAndRate.*.rateQuantity.comparator",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.doseAndRate.*.doseQuantity",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.doseAndRate.*.doseQuantity.comparator",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.boundsRange",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.boundsRange.high",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.boundsRange.high.comparator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.boundsRange.low",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.boundsRange.low.comparator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.durationUnit",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "s"
+                              },
+                              {
+                                "@value": "min"
+                              },
+                              {
+                                "@value": "h"
+                              },
+                              {
+                                "@value": "d"
+                              },
+                              {
+                                "@value": "wk"
+                              },
+                              {
+                                "@value": "mo"
+                              },
+                              {
+                                "@value": "a"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.boundsDuration",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.boundsDuration.comparator",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.when",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "MORN"
+                                  },
+                                  {
+                                    "@value": "MORN.early"
+                                  },
+                                  {
+                                    "@value": "MORN.late"
+                                  },
+                                  {
+                                    "@value": "NOON"
+                                  },
+                                  {
+                                    "@value": "AFT"
+                                  },
+                                  {
+                                    "@value": "AFT.early"
+                                  },
+                                  {
+                                    "@value": "AFT.late"
+                                  },
+                                  {
+                                    "@value": "EVE"
+                                  },
+                                  {
+                                    "@value": "EVE.early"
+                                  },
+                                  {
+                                    "@value": "EVE.late"
+                                  },
+                                  {
+                                    "@value": "NIGHT"
+                                  },
+                                  {
+                                    "@value": "PHS"
+                                  },
+                                  {
+                                    "@value": "HS"
+                                  },
+                                  {
+                                    "@value": "WAKE"
+                                  },
+                                  {
+                                    "@value": "C"
+                                  },
+                                  {
+                                    "@value": "CM"
+                                  },
+                                  {
+                                    "@value": "CD"
+                                  },
+                                  {
+                                    "@value": "CV"
+                                  },
+                                  {
+                                    "@value": "AC"
+                                  },
+                                  {
+                                    "@value": "ACM"
+                                  },
+                                  {
+                                    "@value": "ACD"
+                                  },
+                                  {
+                                    "@value": "ACV"
+                                  },
+                                  {
+                                    "@value": "PC"
+                                  },
+                                  {
+                                    "@value": "PCM"
+                                  },
+                                  {
+                                    "@value": "PCD"
+                                  },
+                                  {
+                                    "@value": "PCV"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.timing.repeat.periodUnit",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "s"
+                              },
+                              {
+                                "@value": "min"
+                              },
+                              {
+                                "@value": "h"
+                              },
+                              {
+                                "@value": "d"
+                              },
+                              {
+                                "@value": "wk"
+                              },
+                              {
+                                "@value": "mo"
+                              },
+                              {
+                                "@value": "a"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.maxDosePerAdministration",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.maxDosePerAdministration.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.maxDosePerPeriod",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.maxDosePerPeriod.numerator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.maxDosePerPeriod.numerator.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.maxDosePerPeriod.denominator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationDispense.dosageInstruction.*.maxDosePerPeriod.denominator.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
@@ -813,48 +855,6 @@
             "@list": [
               {
                 "@value": "MedicationDispense"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MedicationDispense.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationDispense.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
               }
             ]
           }

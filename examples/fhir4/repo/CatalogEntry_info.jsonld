@@ -11,6 +11,44 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
+        "@id": "http://hl7.org/fhir/CatalogEntry._implicitRules",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry._implicitRules.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CatalogEntry._language",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry._language.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/CatalogEntry.identifier",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -22,13 +60,32 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.id",
+                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.value",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
                 "http://layeredschemas.org/v1.0/attr/information": [
                   {
                     "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*._value",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*._value.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
                   }
                 ]
               },
@@ -40,36 +97,6 @@
                 "http://layeredschemas.org/v1.0/attr/information": [
                   {
                     "@value": "String of characters used to identify a name or a resource"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "The purpose of this identifier."
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*._system",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*._system.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
                   }
                 ]
               },
@@ -132,6 +159,17 @@
                             ]
                           },
                           {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*.system",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "String of characters used to identify a name or a resource"
+                              }
+                            ]
+                          },
+                          {
                             "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*._userSelected",
                             "@type": [
                               "http://layeredschemas.org/v1.0/Object"
@@ -151,13 +189,21 @@
                             ]
                           },
                           {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*.id",
+                            "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*._version",
                             "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
+                              "http://layeredschemas.org/v1.0/Object"
                             ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
-                                "@value": "A sequence of Unicode characters"
+                                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*._version.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
                               }
                             ]
                           },
@@ -169,66 +215,6 @@
                             "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
                                 "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*._code.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*.system",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "String of characters used to identify a name or a resource"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*._system",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*._system.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*.userSelected",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "Value of \"true\" or \"false\""
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*._version",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*._version.id",
                                 "@type": [
                                   "http://layeredschemas.org/v1.0/Value"
                                 ],
@@ -259,6 +245,47 @@
                             "http://layeredschemas.org/v1.0/attr/information": [
                               {
                                 "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*.userSelected",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "Value of \"true\" or \"false\""
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*._system",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.type.coding.*._system.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
                               }
                             ]
                           }
@@ -299,21 +326,13 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*._value",
+                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.use",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
+                  "http://layeredschemas.org/v1.0/Value"
                 ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "http://layeredschemas.org/v1.0/attr/information": [
                   {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*._value.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
+                    "@value": "The purpose of this identifier."
                   }
                 ]
               },
@@ -337,33 +356,11 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.value",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
                 "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.period",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.period.start",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-                      }
-                    ]
-                  },
                   {
                     "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.period._start",
                     "@type": [
@@ -423,73 +420,39 @@
                         "@value": "A sequence of Unicode characters"
                       }
                     ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.period.start",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+                      }
+                    ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CatalogEntry.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "Used to support catalog exchange even for unsupported products, e.g. getting list of medications even if not prescribable."
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CatalogEntry._orderable",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry._orderable.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
+              },
               {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CatalogEntry.validTo",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
               {
-                "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*._text",
+                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*._system",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*._text.id",
+                    "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*._system.id",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
@@ -500,204 +463,47 @@
                     ]
                   }
                 ]
-              },
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CatalogEntry.implicitRules",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/information": [
+          {
+            "@value": "String of characters used to identify a name or a resource"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CatalogEntry.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/information": [
+          {
+            "@value": "This is a CatalogEntry resource"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CatalogEntry._lastUpdated",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry._lastUpdated.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
               {
-                "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*.code",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*.userSelected",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "Value of \"true\" or \"false\""
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*.version",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._display",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._display.id",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._userSelected",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._userSelected.id",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._version",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._version.id",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*.display",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._code",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._code.id",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*.system",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "String of characters used to identify a name or a resource"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._system",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._system.id",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.text",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
+                "@value": "A sequence of Unicode characters"
               }
             ]
           }
@@ -734,11 +540,63 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/CatalogEntry.status",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/information": [
+          {
+            "@value": "Used to support catalog exchange even for unsupported products, e.g. getting list of medications even if not prescribable."
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CatalogEntry._validTo",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry._validTo.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/CatalogEntry.meta",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.meta.lastUpdated",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "An instant in time - known at least to the second"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.meta.source",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "String of characters used to identify a name or a resource"
+              }
+            ]
+          },
           {
             "@id": "http://hl7.org/fhir/CatalogEntry.meta._lastUpdated",
             "@type": [
@@ -753,35 +611,6 @@
                 "http://layeredschemas.org/v1.0/attr/information": [
                   {
                     "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.meta.versionId",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.meta.profile",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
                   }
                 ]
               }
@@ -818,24 +647,226 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/CatalogEntry.meta.lastUpdated",
+            "@id": "http://hl7.org/fhir/CatalogEntry.meta.profile",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "http://layeredschemas.org/v1.0/Array"
             ],
-            "http://layeredschemas.org/v1.0/attr/information": [
+            "http://layeredschemas.org/v1.0/Array/items": [
               {
-                "@value": "An instant in time - known at least to the second"
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
+                  }
+                ]
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/CatalogEntry.meta.source",
+            "@id": "http://hl7.org/fhir/CatalogEntry.meta.security",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*.userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "Value of \"true\" or \"false\""
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*.version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*.display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._system.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._display.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*.system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "String of characters used to identify a name or a resource"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._userSelected.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._version.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._code.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*.code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.meta._source",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.meta._source.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.meta.versionId",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
             "http://layeredschemas.org/v1.0/attr/information": [
               {
-                "@value": "String of characters used to identify a name or a resource"
+                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
               }
             ]
           },
@@ -850,6 +881,47 @@
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*.display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*._display.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
                   {
                     "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*._userSelected",
                     "@type": [
@@ -870,13 +942,13 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*.id",
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*.code",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
                     "http://layeredschemas.org/v1.0/attr/information": [
                       {
-                        "@value": "A sequence of Unicode characters"
+                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
                       }
                     ]
                   },
@@ -903,13 +975,24 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*._code",
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*.system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "String of characters used to identify a name or a resource"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*._system",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*._code.id",
+                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*._system.id",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -941,24 +1024,13 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*._display",
+                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*._code",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*._display.id",
+                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*._code.id",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -967,242 +1039,6 @@
                             "@value": "A sequence of Unicode characters"
                           }
                         ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*._system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*.display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.tag.*.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "String of characters used to identify a name or a resource"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.meta._source",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.meta._source.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.meta.security",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._userSelected.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "String of characters used to identify a name or a resource"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._display.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._version.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*.version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*.userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "Value of \"true\" or \"false\""
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.meta.security.*.display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
                       }
                     ]
                   }
@@ -1213,19 +1049,18 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod",
+        "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier",
         "@type": [
-          "http://layeredschemas.org/v1.0/Object"
+          "http://layeredschemas.org/v1.0/Array"
         ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod._start",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod._start.id",
+                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.id",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -1234,210 +1069,26 @@
                     "@value": "A sequence of Unicode characters"
                   }
                 ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod.end",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
+              },
               {
-                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod._end",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod._end.id",
+                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.system",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
                 "http://layeredschemas.org/v1.0/attr/information": [
                   {
-                    "@value": "A sequence of Unicode characters"
+                    "@value": "String of characters used to identify a name or a resource"
                   }
                 ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
+              },
               {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod.start",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CatalogEntry.type",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.type.coding",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._display.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._userSelected.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*.userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "Value of \"true\" or \"false\""
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "String of characters used to identify a name or a resource"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._version.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*.display",
+                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period.id",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
@@ -1448,50 +1099,69 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*.version",
+                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period.start",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
                     "http://layeredschemas.org/v1.0/attr/information": [
                       {
-                        "@value": "A sequence of Unicode characters"
+                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*.id",
+                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period._start",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period._start.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period.end",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
                     "http://layeredschemas.org/v1.0/attr/information": [
                       {
-                        "@value": "A sequence of Unicode characters"
+                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period._end",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period._end.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.type.text",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
+              },
               {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.type._text",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.type._text.id",
+                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.value",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -1500,17 +1170,299 @@
                     "@value": "A sequence of Unicode characters"
                   }
                 ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.type.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
+              },
               {
-                "@value": "A sequence of Unicode characters"
+                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*._system",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*._system.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "The purpose of this identifier."
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.text",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type._text",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type._text.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._display",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._display.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._code",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._code.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*.code",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*.display",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._system",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._system.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*.version",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*.system",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "String of characters used to identify a name or a resource"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*.userSelected",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "Value of \"true\" or \"false\""
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._userSelected",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._userSelected.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._version",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._version.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/information": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*._value",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*._value.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*._use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*._use.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -1539,7 +1491,70 @@
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalClassification.*.coding.*.system",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "String of characters used to identify a name or a resource"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalClassification.*.coding.*._code",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalClassification.*.coding.*._code.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalClassification.*.coding.*.code",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                          }
+                        ]
+                      },
+                      {
                         "@id": "http://hl7.org/fhir/CatalogEntry.additionalClassification.*.coding.*.display",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalClassification.*.coding.*.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalClassification.*.coding.*.version",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -1565,28 +1580,6 @@
                                 "@value": "A sequence of Unicode characters"
                               }
                             ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalClassification.*.coding.*.code",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalClassification.*.coding.*.version",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
                           }
                         ]
                       },
@@ -1629,17 +1622,6 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalClassification.*.coding.*.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      },
-                      {
                         "@id": "http://hl7.org/fhir/CatalogEntry.additionalClassification.*.coding.*._version",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Object"
@@ -1655,36 +1637,6 @@
                                 "@value": "A sequence of Unicode characters"
                               }
                             ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalClassification.*.coding.*._code",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalClassification.*.coding.*._code.id",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalClassification.*.coding.*.system",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "String of characters used to identify a name or a resource"
                           }
                         ]
                       },
@@ -1749,557 +1701,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/CatalogEntry.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.text.div",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "xhtml - escaped html (see specfication)"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.text.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.text.status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data."
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry.text._status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.text._status.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CatalogEntry._implicitRules",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry._implicitRules.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CatalogEntry.language",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CatalogEntry.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "This is a CatalogEntry resource"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*._system",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*._system.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type._text",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type._text.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._userSelected",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._userSelected.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._version",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._version.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*.code",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*.system",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "String of characters used to identify a name or a resource"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*.version",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._display",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._display.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*.id",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*.display",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._code",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._code.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._system",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*._system.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.coding.*.userSelected",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "Value of \"true\" or \"false\""
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.type.text",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*._use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*._use.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.system",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "String of characters used to identify a name or a resource"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period.start",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period._start",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period._start.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period.end",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period._end",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period._end.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.period.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.value",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*._value",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*._value.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.additionalIdentifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "The purpose of this identifier."
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CatalogEntry.id",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CatalogEntry._validTo",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/CatalogEntry._validTo.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/CatalogEntry.classification",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -2311,6 +1712,36 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
+                "@id": "http://hl7.org/fhir/CatalogEntry.classification.*._text",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.classification.*._text.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
                 "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Array"
@@ -2321,55 +1752,6 @@
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*._display",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*._display.id",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*._userSelected",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*._userSelected.id",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      },
                       {
                         "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*.code",
                         "@type": [
@@ -2393,25 +1775,6 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*._system",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*._system.id",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "A sequence of Unicode characters"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
                         "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*.userSelected",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
@@ -2430,6 +1793,36 @@
                         "http://layeredschemas.org/v1.0/attr/information": [
                           {
                             "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*.system",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "String of characters used to identify a name or a resource"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*._system",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*._system.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
                           }
                         ]
                       },
@@ -2472,13 +1865,51 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*.system",
+                        "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*._display",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*._display.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*.id",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
                         "http://layeredschemas.org/v1.0/attr/information": [
                           {
-                            "@value": "String of characters used to identify a name or a resource"
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*._userSelected",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.coding.*._userSelected.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
                           }
                         ]
                       }
@@ -2488,36 +1919,6 @@
               },
               {
                 "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.text",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.classification.*._text",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/CatalogEntry.classification.*._text.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/CatalogEntry.classification.*.id",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -2543,7 +1944,108 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/CatalogEntry.relatedEntry",
+        "@id": "http://hl7.org/fhir/CatalogEntry._orderable",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry._orderable.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CatalogEntry.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.text.status",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data."
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.text._status",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.text._status.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.text.div",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "xhtml - escaped html (see specfication)"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.text.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CatalogEntry.validTo",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/information": [
+          {
+            "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CatalogEntry.language",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/information": [
+          {
+            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
         ],
@@ -2554,16 +2056,327 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/CatalogEntry.relatedEntry.*.relationtype",
+                "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.id",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
                 "http://layeredschemas.org/v1.0/attr/information": [
                   {
-                    "@value": "The type of relation to the related item: child, parent, packageContent, containerPackage, usedIn, uses, requires, etc."
+                    "@value": "A sequence of Unicode characters"
                   }
                 ]
               },
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
+                  {
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._version",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._version.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._display",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._display.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._system",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._system.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*.code",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*.display",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*.userSelected",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "Value of \"true\" or \"false\""
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._userSelected",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._userSelected.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._code",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*._code.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/information": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*.system",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "String of characters used to identify a name or a resource"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.coding.*.version",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*.text",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*._text",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.additionalCharacteristic.*._text.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod.start",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod._start",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod._start.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod.end",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod._end",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.validityPeriod._end.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CatalogEntry.id",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/information": [
+          {
+            "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/CatalogEntry.relatedEntry",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/CatalogEntry.relatedEntry.*._relationtype",
                 "@type": [
@@ -2593,30 +2406,30 @@
                     "@value": "A sequence of Unicode characters"
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.relatedEntry.*.relationtype",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "The type of relation to the related item: child, parent, packageContent, containerPackage, usedIn, uses, requires, etc."
+                  }
+                ]
               }
             ]
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/CatalogEntry.implicitRules",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "String of characters used to identify a name or a resource"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CatalogEntry._lastUpdated",
+        "@id": "http://hl7.org/fhir/CatalogEntry.type",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/CatalogEntry._lastUpdated.id",
+            "@id": "http://hl7.org/fhir/CatalogEntry.type.id",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -2625,23 +2438,210 @@
                 "@value": "A sequence of Unicode characters"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CatalogEntry._language",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+          },
           {
-            "@id": "http://hl7.org/fhir/CatalogEntry._language.id",
+            "@id": "http://hl7.org/fhir/CatalogEntry.type.coding",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*.system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "String of characters used to identify a name or a resource"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._system.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._userSelected.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._version.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._code.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*.version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*._display.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*.code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*.display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/CatalogEntry.type.coding.*.userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "Value of \"true\" or \"false\""
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.type.text",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
             "http://layeredschemas.org/v1.0/attr/information": [
               {
                 "@value": "A sequence of Unicode characters"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CatalogEntry.type._text",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/CatalogEntry.type._text.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
               }
             ]
           }

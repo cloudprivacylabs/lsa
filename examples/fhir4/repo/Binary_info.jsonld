@@ -11,24 +11,13 @@
     ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/Binary.language",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Binary._contentType",
+        "@id": "http://hl7.org/fhir/Binary._data",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Binary._contentType.id",
+            "@id": "http://hl7.org/fhir/Binary._data.id",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -41,13 +30,32 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Binary._data",
+        "@id": "http://hl7.org/fhir/Binary._implicitRules",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Binary._data.id",
+            "@id": "http://hl7.org/fhir/Binary._implicitRules.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Binary._contentType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Binary._contentType.id",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -79,35 +87,13 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Binary.data",
+        "@id": "http://hl7.org/fhir/Binary.implicitRules",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
         "http://layeredschemas.org/v1.0/attr/information": [
           {
-            "@value": "A stream of bytes"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Binary.id",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Binary.contentType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+            "@value": "String of characters used to identify a name or a resource"
           }
         ]
       },
@@ -123,41 +109,22 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/Binary.id",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/information": [
+          {
+            "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/Binary.meta",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Binary.meta._versionId",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Binary.meta._versionId.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Binary.meta.lastUpdated",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "An instant in time - known at least to the second"
-              }
-            ]
-          },
           {
             "@id": "http://hl7.org/fhir/Binary.meta.security",
             "@type": [
@@ -169,6 +136,36 @@
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Binary.meta.security.*.version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Binary.meta.security.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Binary.meta.security.*._display.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
                   {
                     "@id": "http://hl7.org/fhir/Binary.meta.security.*.system",
                     "@type": [
@@ -211,6 +208,17 @@
                     ]
                   },
                   {
+                    "@id": "http://hl7.org/fhir/Binary.meta.security.*.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
                     "@id": "http://hl7.org/fhir/Binary.meta.security.*._userSelected",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
@@ -226,17 +234,6 @@
                             "@value": "A sequence of Unicode characters"
                           }
                         ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Binary.meta.security.*.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
                       }
                     ]
                   },
@@ -260,28 +257,6 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/Binary.meta.security.*.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Binary.meta.security.*.version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
                     "@id": "http://hl7.org/fhir/Binary.meta.security.*._code",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
@@ -301,21 +276,13 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/Binary.meta.security.*._display",
+                    "@id": "http://hl7.org/fhir/Binary.meta.security.*.code",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
+                      "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                    "http://layeredschemas.org/v1.0/attr/information": [
                       {
-                        "@id": "http://hl7.org/fhir/Binary.meta.security.*._display.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
+                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
                       }
                     ]
                   },
@@ -329,6 +296,55 @@
                         "@value": "A sequence of Unicode characters"
                       }
                     ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Binary.meta.source",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "String of characters used to identify a name or a resource"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Binary.meta._source",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Binary.meta._source.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Binary.meta._versionId",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Binary.meta._versionId.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/information": [
+                  {
+                    "@value": "A sequence of Unicode characters"
                   }
                 ]
               }
@@ -354,21 +370,24 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Binary.meta._source",
+            "@id": "http://hl7.org/fhir/Binary.meta.id",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "http://layeredschemas.org/v1.0/Value"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "http://layeredschemas.org/v1.0/attr/information": [
               {
-                "@id": "http://hl7.org/fhir/Binary.meta._source.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
+                "@value": "A sequence of Unicode characters"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Binary.meta.lastUpdated",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/information": [
+              {
+                "@value": "An instant in time - known at least to the second"
               }
             ]
           },
@@ -380,28 +399,6 @@
             "http://layeredschemas.org/v1.0/attr/information": [
               {
                 "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Binary.meta.source",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Binary.meta.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "A sequence of Unicode characters"
               }
             ]
           },
@@ -435,13 +432,13 @@
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/Binary.meta.tag.*.userSelected",
+                    "@id": "http://hl7.org/fhir/Binary.meta.tag.*.system",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
                     "http://layeredschemas.org/v1.0/attr/information": [
                       {
-                        "@value": "Value of \"true\" or \"false\""
+                        "@value": "String of characters used to identify a name or a resource"
                       }
                     ]
                   },
@@ -465,36 +462,6 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/Binary.meta.tag.*._version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Binary.meta.tag.*._version.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Binary.meta.tag.*.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  },
-                  {
                     "@id": "http://hl7.org/fhir/Binary.meta.tag.*.display",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
@@ -502,47 +469,6 @@
                     "http://layeredschemas.org/v1.0/attr/information": [
                       {
                         "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Binary.meta.tag.*.version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Binary.meta.tag.*.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "String of characters used to identify a name or a resource"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Binary.meta.tag.*._system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Binary.meta.tag.*._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
                       }
                     ]
                   },
@@ -577,6 +503,55 @@
                     ]
                   },
                   {
+                    "@id": "http://hl7.org/fhir/Binary.meta.tag.*.version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Binary.meta.tag.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Binary.meta.tag.*._system.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Binary.meta.tag.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Binary.meta.tag.*._version.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/information": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
                     "@id": "http://hl7.org/fhir/Binary.meta.tag.*._code",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
@@ -594,6 +569,28 @@
                         ]
                       }
                     ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Binary.meta.tag.*.code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Binary.meta.tag.*.userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/information": [
+                      {
+                        "@value": "Value of \"true\" or \"false\""
+                      }
+                    ]
                   }
                 ]
               }
@@ -602,32 +599,35 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Binary.implicitRules",
+        "@id": "http://hl7.org/fhir/Binary.language",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
         "http://layeredschemas.org/v1.0/attr/information": [
           {
-            "@value": "String of characters used to identify a name or a resource"
+            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Binary._implicitRules",
+        "@id": "http://hl7.org/fhir/Binary.contentType",
         "@type": [
-          "http://layeredschemas.org/v1.0/Object"
+          "http://layeredschemas.org/v1.0/Value"
         ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "http://layeredschemas.org/v1.0/attr/information": [
           {
-            "@id": "http://hl7.org/fhir/Binary._implicitRules.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
+            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Binary.data",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/information": [
+          {
+            "@value": "A stream of bytes"
           }
         ]
       }
