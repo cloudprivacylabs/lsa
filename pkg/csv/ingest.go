@@ -52,7 +52,7 @@ func ToJSON(row []string, profile IngestionProfile) (map[string]interface{}, err
 
 // Ingest converts a CSV row into JSON, and then uses JSON ingest to
 // convert data based on the schema
-func Ingest(baseID string, row []string, profile IngestionProfile, schema *ls.SchemaLayer) (ls.DocumentNode, error) {
+func Ingest(baseID string, row []string, profile IngestionProfile, schema *ls.Layer) (ls.DocumentNode, error) {
 	data, err := ToJSON(row, profile)
 	if err != nil {
 		return nil, err

@@ -1,18 +1,23 @@
 {
-    "@context": "http://schemas.cloudprivacylabs.com/layers.jsonld",
-    "@id": "http://cloudprivacylabs.com/person/schemaBase",
-    "@type": "Layer",
+    "@context": "http://layeredschemas.org/ls.jsonld",
+    "@id": "http://example.org/Person/schemaBase",
+    "@type": "Schema",
+    "objectType": "http://example.org/Person",
     "attributes": {
-        "http://test/firstName": {
-        "name":"firstName"
+        "http://example.org/Person/firstName": {
+            "@type": "Value",
+            "name":"firstName"
         },
-        "http://test/lastName": {
-        "name": "lastName"
+        "http://example.org/Person/lastName": {
+            "@type": "Value",
+            "name": "lastName"
         },
-        "http://test/contact": {
+        "http://example.org/Person/contact": {
+            "@type": "Array",
             "name": "contact",
-            "arrayItems": {
-                "reference": "http://cloudprivacylabs.com/contact"
+            "items": {
+               "@type": "Reference",
+                "reference": "http://example.org/Contact"
             }
         }
     }

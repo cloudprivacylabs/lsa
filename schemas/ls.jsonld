@@ -1,0 +1,145 @@
+{
+    "@context": {
+        "@version": 1.1,
+        "ls": "http://layeredschemas.org/v1.0/",
+        "Value": {
+            "@id": "ls:Value",
+            "@context": {}
+        },
+        "Object": {
+            "@id": "ls:Object",
+            "@context": {
+                "attributes": {
+                    "@id": "ls:Object/attributes",
+                    "@container": "@id"
+                }
+            }
+        },
+        "Array": {
+            "@id": "ls:Array",
+            "@context": {
+                "items": {
+                    "@id": "ls:Array/items"
+                }
+            }
+        },
+        "Reference": {
+            "@id": "ls:Reference",
+            "@context": {
+                "reference": {
+                    "@id":"ls:Reference/reference",
+                    "@type": "@id"
+                }
+            }
+        },
+        "Composite": {
+            "@id": "ls:Composite",
+            "@context": {
+                "allOf": {
+                    "@id": "ls:Composite/allOf",
+                    "@container": "@list"
+                }
+            }
+        },
+        "Polymorphic": {
+            "@id": "ls:Polymorphic",
+            "@context": {
+                "oneOf": {
+                    "@id": "ls:Polymorphic/oneOf",
+                    "@container": "@list"
+                }
+            }
+        },
+        "Overlay": {
+            "@id": "ls:Overlay",
+            "@context": {
+                "objectType": {
+                    "@id": "ls:Layer/objectType"
+                },
+                "objectVersion": {
+                    "@id": "ls:Layer/objectVersion"
+                },
+                "attributes": {
+                    "@id": "ls:Object/attributes",
+                    "@container": "@id"
+                }
+            }
+        },
+        "Schema": {
+            "@id": "ls:Schema",
+            "@context": {
+                "objectType": {
+                    "@id": "ls:Layer/objectType"
+                },
+                "objectVersion": {
+                    "@id": "ls:Layer/objectVersion"
+                },
+                "attributes": {
+                    "@id": "ls:Object/attributes",
+                    "@container": "@id"
+                }
+            }
+        },
+
+        "SchemaManifest": {
+            "@id": "ls:SchemaManifest",
+            "@context": {
+                "publishedAt": {
+                    "@id": "ls:SchemaManifest/publishedAt"
+                },
+                "objectType": {
+                    "@id": "ls:Layer/objectType"
+                },
+                "objectVersion": {
+                    "@id": "ls:Layer/objectVersion"
+                },
+                "bundle": {
+                    "@id": "ls:SchemaManifest/bundle",
+                    "@type": "@id"
+                },
+                "schema": {
+                    "@id": "ls:SchemaManifest/schema",
+                    "@type": "@id"
+                },
+                "overlays": {
+                    "@id": "ls:SchemaManifest/overlays",
+                    "@type": "@id",
+                    "@container": "@list"
+                }
+            }
+        },
+            
+        "name": {
+            "@id": "ls:attr/name"
+        },
+        "privacyClassification": {
+            "@id": "ls:attr/privacyClassification",
+            "@container": "@set"
+        },
+        "information": {
+            "@id": "ls:attr/information"
+        },
+        "encoding": {
+            "@id": "ls:attr/encoding"
+        },
+        "type": {
+            "@id": "ls:attr/type"
+        },
+        "format": {
+            "@id": "ls:attr/format"
+        },
+        "pattern": {
+            "@id": "ls:attr/pattern"
+        },
+        "label": {
+            "@id": "ls:attr/label"
+        },
+        "enumeration": {
+            "@id": "ls:attr/enumeration",
+            "@container": "@list"
+        },
+        "required": {
+            "@id": "ls:attr/required"
+        }
+    }
+}

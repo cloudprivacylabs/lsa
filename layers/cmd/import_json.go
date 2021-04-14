@@ -46,12 +46,13 @@ var importJSONCmd = &cobra.Command{
      },
     ...
    ],
-  "schema": "schema output file",
+  "schemaManifest": "schema output file",
   "schemaId": "schema id",
   "objectType": "object type",
   "layers": [
      {
          "@id": "output object id",
+         "type": "Schema" or "Overlay",
          "terms": [ terms to include in the layer ],
          "file": "output file"
      },
@@ -71,6 +72,7 @@ are Go templates, you can reference entity names and references using {{.name}} 
 		}
 
 		type overlay struct {
+			Type         string   `json:"type"`
 			Terms        []string `json:"terms"`
 			termst       []*template.Template
 			File         string `json:"file"`
@@ -84,7 +86,7 @@ are Go templates, you can reference entity names and references using {{.name}} 
 			Entities    []jsonsch.Entity `json:"entities"`
 			SchemaID    string           `json:"schemaId"`
 			schemaIDt   *template.Template
-			Schema      string `json:"schema"`
+			Schema      string `json:"schemaManifest"`
 			schemat     *template.Template
 			ObjectType  string `json:"objectType"`
 			objectTypet *template.Template
@@ -133,25 +135,35 @@ are Go templates, you can reference entity names and references using {{.name}} 
 
 		for i, item := range results {
 			layerIDs := make([]string, 0)
+			baseID := ""
 			for _, ovl := range req.Layers {
 				inclterms := make(map[string]struct{})
 				for _, x := range ovl.termst {
 					inclterms[exec(x, req.Entities[i])] = struct{}{}
 				}
-				layer := ls.NewEmptySchemaLayer()
-				a := item.BaseAttributes.Slice(func(term string, attribute *ls.Attribute) bool {
+				layer := item.Layer.Slice(func(term string, attribute *ls.Attribute) bool {
 					if len(term) == 0 && ovl.IncludeEmpty {
 						return true
 					}
 					_, ok := inclterms[term]
 					return ok
 				})
-				if a != nil {
-					layer.Attributes = *a
-				}
 				layer.ID = exec(ovl.idt, req.Entities[i])
+				if ovl.Type == "Overlay" || ovl.Type == ls.TermOverlayType {
+					layer.Type = ls.TermOverlayType
+					layerIDs = append(layerIDs, layer.ID)
+				}
+				if ovl.Type == "Schema" || ovl.Type == ls.TermSchemaType {
+					layer.Type = ls.TermSchemaType
+					if baseID != "" {
+						fail("Multiple schemas")
+					}
+					baseID = layer.ID
+				}
+				if len(layer.Type) == 0 {
+					fail("Layer type not specified")
+				}
 				layer.ObjectType = exec(req.objectTypet, req.Entities[i])
-				layerIDs = append(layerIDs, layer.ID)
 				data, err := json.MarshalIndent(layer.MarshalExpanded(), "", "  ")
 				if err != nil {
 					failErr(err)
@@ -160,10 +172,11 @@ are Go templates, you can reference entity names and references using {{.name}} 
 			}
 
 			if len(req.Schema) > 0 {
-				sch := ls.Schema{
+				sch := ls.SchemaManifest{
 					ID:         exec(req.schemaIDt, req.Entities[i]),
 					ObjectType: exec(req.objectTypet, req.Entities[i]),
-					Layers:     layerIDs,
+					Schema:     baseID,
+					Overlays:   layerIDs,
 				}
 				data, _ := json.MarshalIndent(sch.MarshalExpanded(), "", "  ")
 				ioutil.WriteFile(exec(req.schemat, req.Entities[i]), data, 0664)

@@ -87,20 +87,19 @@ func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
 	return nil
 }
 
-type Artifacts struct {
+type ImportedEntity struct {
 	Entity CompiledEntity
 
-	// Attributes for the schema base
-	BaseAttributes *ls.Attributes `json:"-"`
+	Layer *ls.Layer `json:"-"`
 }
 
 // Import a JSON schema
 //
 // A JSON schema may include many object definitions. This import
 // algorithm creates a schema for each entity.
-func Import(entities []CompiledEntity) ([]Artifacts, error) {
+func Import(entities []CompiledEntity) ([]ImportedEntity, error) {
 	ctx := importContext{entities: entities}
-	ret := make([]Artifacts, 0, len(ctx.entities))
+	ret := make([]ImportedEntity, 0, len(ctx.entities))
 	for i := range ctx.entities {
 		ctx.currentEntity = &ctx.entities[i]
 
@@ -113,13 +112,12 @@ func Import(entities []CompiledEntity) ([]Artifacts, error) {
 			return nil, fmt.Errorf("%s base schema is not an object", ctx.currentEntity.Name)
 		}
 
-		artifacts := Artifacts{}
-		artifacts.Entity = ctx.entities[i]
+		imported := ImportedEntity{}
+		imported.Entity = ctx.entities[i]
+		imported.Layer = ls.NewLayer()
+		s.object.itr(ctx.currentEntity.ID, nil, imported.Layer.Root.GetAttributes(), imported.Layer)
 
-		artifacts.BaseAttributes = ls.NewAttributes(nil)
-		s.object.itr(ctx.currentEntity.ID, nil, artifacts.BaseAttributes)
-
-		ret = append(ret, artifacts)
+		ret = append(ret, imported)
 	}
 	return ret, nil
 }

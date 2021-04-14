@@ -24,6 +24,7 @@ import (
 
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
 
 func init() {
@@ -51,20 +52,30 @@ var ingestCSVCmd = &cobra.Command{
 			}
 		}
 
-		repo := SchemaRepository{}
 		repoDir, _ := cmd.Flags().GetString("repo")
 		if len(repoDir) == 0 {
 			fail("Specify a repository directory using --repo")
 		}
-		if err := repo.LoadDir(repoDir); err != nil {
+		repo := fs.New(repoDir, ls.Terms, func(fname string, err error) {
+			fmt.Printf("%s: %s\n", fname, err)
+		})
+		if err := repo.Load(true); err != nil {
 			failErr(err)
 		}
 		schemaId, _ := cmd.Flags().GetString("schema")
-		schema := repo.GetSchemaByID(schemaId)
+		schema := repo.GetSchemaManifest(schemaId)
 		if schema == nil {
 			fail(fmt.Sprintf("Schema not found: %s", schemaId))
 		}
-		resolved, err := repo.ResolveSchemaForID(schemaId)
+		compiler := ls.Compiler{Resolver: func(x string) (string, error) {
+			if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
+				return manifest.ID, nil
+			}
+			return x, nil
+		},
+			Loader: repo.LoadAndCompose,
+		}
+		resolved, err := compiler.Compile(schemaId)
 		if err != nil {
 			failErr(err)
 		}

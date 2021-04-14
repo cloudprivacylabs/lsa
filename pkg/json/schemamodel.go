@@ -43,60 +43,60 @@ type objectSchema struct {
 	properties map[string]schemaProperty
 }
 
-func (a arraySchema) itr(entityId string, name []string, out *ls.Attribute) {
+func (a arraySchema) itr(entityId string, name []string, out *ls.Attribute, layer *ls.Layer) {
 	elem := ls.NewAttribute(nil)
-	schemaAttrs(entityId, append(name, "*"), a.items, elem)
-	out.MakeArray(elem)
+	schemaAttrs(entityId, append(name, "*"), a.items, elem, layer)
+	out.Type = &ls.ArrayType{elem}
 }
 
-func (obj objectSchema) itr(entityId string, name []string, out *ls.Attributes) {
+func (obj objectSchema) itr(entityId string, name []string, out *ls.ObjectType, layer *ls.Layer) {
 	for k, v := range obj.properties {
 		attr := ls.NewAttribute(nil)
 		nm := append(name, k)
-		schemaAttrs(entityId, nm, v, attr)
+		schemaAttrs(entityId, nm, v, attr, layer)
 		attr.ID = entityId + "." + strings.Join(nm, ".")
-		out.Add(attr)
+		out.Add(attr, layer)
 	}
 }
 
-func schemaAttrs(entityId string, name []string, attr schemaProperty, out *ls.Attribute) {
+func schemaAttrs(entityId string, name []string, attr schemaProperty, out *ls.Attribute, layer *ls.Layer) {
 	if len(attr.format) > 0 {
-		out.Values[ls.AttributeAnnotations.Format.ID] = []interface{}{map[string]interface{}{"@value": attr.format}}
+		ls.AttributeAnnotations.Format.PutExpanded(out.Values, attr.format)
 	}
 	if len(attr.typ) > 0 {
-		out.Values[ls.AttributeAnnotations.Type.ID] = []interface{}{map[string]interface{}{"@value": attr.typ}}
+		ls.AttributeAnnotations.Type.PutExpanded(out.Values, attr.typ)
 	}
 	if len(attr.key) > 0 {
-		out.Values[ls.AttributeAnnotations.Name.ID] = []interface{}{map[string]interface{}{"@value": attr.key}}
+		ls.AttributeAnnotations.Name.PutExpanded(out.Values, attr.key)
 	}
 	if len(attr.enum) > 0 {
 		elements := make([]interface{}, 0, len(attr.enum))
 		for _, v := range attr.enum {
 			elements = append(elements, map[string]interface{}{"@value": v})
 		}
-		out.Values[ls.AttributeAnnotations.Enumeration.ID] = []interface{}{map[string]interface{}{"@list": elements}}
+		out.Values[ls.AttributeAnnotations.Enumeration.GetTerm()] = []interface{}{map[string]interface{}{"@list": elements}}
 	}
 	if len(attr.pattern) > 0 {
-		out.Values[ls.AttributeAnnotations.Pattern.ID] = []interface{}{map[string]interface{}{"@value": attr.pattern}}
+		ls.AttributeAnnotations.Pattern.PutExpanded(out.Values, attr.pattern)
 	}
 	if len(attr.description) > 0 {
-		out.Values[ls.AttributeAnnotations.Information.ID] = []interface{}{map[string]interface{}{"@value": attr.description}}
+		out.Values[ls.AttributeAnnotations.Information.GetTerm()] = []interface{}{map[string]interface{}{"@value": attr.description}}
 	}
 	if attr.required {
-		out.Values[ls.AttributeAnnotations.Required.ID] = []interface{}{map[string]interface{}{"@value": true}}
+		ls.AttributeAnnotations.Required.PutExpanded(out.Values, true)
 	}
 	if len(attr.reference) > 0 {
-		out.MakeReference(attr.reference)
+		out.Type = &ls.ReferenceType{attr.reference}
 		return
 	}
 	if attr.object != nil {
-		attrs := ls.NewAttributes(nil)
-		attr.object.itr(entityId, name, attrs)
-		out.MakeObject(attrs)
+		attrs := ls.NewObjectType(nil)
+		attr.object.itr(entityId, name, attrs, layer)
+		out.Type = attrs
 		return
 	}
 	if attr.array != nil {
-		attr.array.itr(entityId, name, out)
+		attr.array.itr(entityId, name, out, layer)
 		return
 	}
 	buildChoices := func(arr []schemaProperty) []*ls.Attribute {
@@ -104,7 +104,7 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, out *ls.At
 		for i, x := range arr {
 			out := ls.NewAttribute(nil)
 			newName := append(name, fmt.Sprint(i))
-			schemaAttrs(entityId, newName, x, out)
+			schemaAttrs(entityId, newName, x, out, layer)
 			if out.ID == "" {
 				out.ID = entityId + "." + strings.Join(newName, ".")
 			}
@@ -113,10 +113,13 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, out *ls.At
 		return elements
 	}
 	if len(attr.oneOf) > 0 {
-		out.MakePolymorphic(buildChoices(attr.oneOf))
+		out.Type = &ls.PolymorphicType{buildChoices(attr.oneOf)}
 		return
 	}
 	if len(attr.allOf) > 0 {
-		out.MakeComposition(buildChoices(attr.allOf))
+		out.Type = &ls.CompositeType{buildChoices(attr.allOf)}
+	}
+	if out.Type == nil {
+		out.Type = &ls.ValueType{}
 	}
 }

@@ -22,279 +22,175 @@ import (
 type Attribute struct {
 	ID     string
 	Values map[string]interface{}
+	Type   AttributeType
 
-	parent     SchemaObject
-	attributes *Attributes
-	reference  string
-	arrayItems *Attribute
-	allOf      []*Attribute
-	oneOf      []*Attribute
+	parent *Attribute
+}
+
+type AttributeType interface {
+	GetType() string
+	Clone(*Attribute) AttributeType
+	Iterate(func(*Attribute) bool) bool
+	UnmarshalExpanded(map[string]interface{}, *Attribute) error
+	MarshalExpanded(map[string]interface{})
+}
+
+var AttributeTypes = struct {
+	Value       string
+	Object      string
+	Reference   string
+	Array       string
+	Composite   string
+	Polymorphic string
+}{
+	Value:       LS + "/Value",
+	Object:      LS + "/Object",
+	Reference:   LS + "/Reference",
+	Array:       LS + "/Array",
+	Composite:   LS + "/Composite",
+	Polymorphic: LS + "/Polymorphic",
 }
 
 // NewAttribute returns a new value attribute
-func NewAttribute(parent SchemaObject) *Attribute {
+func NewAttribute(parent *Attribute) *Attribute {
 	return &Attribute{parent: parent,
 		Values: make(map[string]interface{}),
 	}
 }
 
-func (attribute *Attribute) Clone(parent SchemaObject) *Attribute {
+// Clone returns a deep-copy of an attribute with a different parent
+func (attribute *Attribute) Clone(parent *Attribute) *Attribute {
 	ret := &Attribute{ID: attribute.ID,
-		Values:    ld.CloneDocument(attribute.Values).(map[string]interface{}),
-		parent:    parent,
-		reference: attribute.reference,
+		Values: ld.CloneDocument(attribute.Values).(map[string]interface{}),
+		parent: parent,
 	}
-	if attribute.attributes != nil {
-		ret.attributes = attribute.attributes.Clone(ret)
-	}
-	if attribute.arrayItems != nil {
-		ret.arrayItems = attribute.arrayItems.Clone(ret)
-	}
-	if attribute.allOf != nil {
-		ret.allOf = make([]*Attribute, len(attribute.allOf))
-		for i, x := range attribute.allOf {
-			ret.allOf[i] = x.Clone(ret)
-		}
-	}
-	if attribute.oneOf != nil {
-		ret.oneOf = make([]*Attribute, len(attribute.oneOf))
-		for i, x := range attribute.oneOf {
-			ret.oneOf[i] = x.Clone(ret)
-		}
+	if attribute.Type != nil {
+		ret.Type = attribute.Type.Clone(ret)
 	}
 	return ret
 }
 
-// GetParent returns the parent schema object
-func (attribute *Attribute) GetParent() SchemaObject {
+// GetParent returns the parent layer object
+func (attribute *Attribute) GetParent() *Attribute {
 	return attribute.parent
 }
 
-// IsValue is true if the attribute denotes a value
-func (attribute *Attribute) IsValue() bool {
-	return attribute.attributes == nil &&
-		len(attribute.reference) == 0 &&
-		attribute.arrayItems == nil &&
-		attribute.allOf == nil &&
-		attribute.oneOf == nil
-}
-
-// IsReference returns true if attribute is a reference
-func (attribute *Attribute) IsReference() bool {
-	return len(attribute.reference) != 0
-}
-
-// GetReference returns the reference
-func (attribute *Attribute) GetReference() string {
-	return attribute.reference
-}
-
-// IsObject returns true if attribute is an object, and thus has attributes
-func (attribute *Attribute) IsObject() bool {
-	return attribute.attributes != nil
-}
-
-// GetAttributes returns the object attributes
-func (attribute *Attribute) GetAttributes() *Attributes {
-	return attribute.attributes
-}
-
-// IsArray returns if this attribute is an array
-func (attribute *Attribute) IsArray() bool {
-	return attribute.arrayItems != nil
-}
-
-// GetArrayItems returns the items descriptor for the array
-func (attribute *Attribute) GetArrayItems() *Attribute {
-	return attribute.arrayItems
-}
-
-// IsComposition returns if the attribute has allOf
-func (attribute *Attribute) IsComposition() bool {
-	return attribute.allOf != nil
-}
-
-// GetCompositionOptions returns the allOf options
-func (attribute *Attribute) GetCompositionOptions() []*Attribute {
-	return attribute.allOf
-}
-
-// ComposeOptions composes the options of this attribute and makes it into a new
-// object
-func (attribute *Attribute) ComposeOptions() error {
-	if attribute.allOf == nil {
-		return nil
+// GetPath returns all objects from root to this attribute
+func (attribute *Attribute) GetPath() []*Attribute {
+	if attribute.parent == nil {
+		return []*Attribute{attribute}
 	}
-	ret := &Attributes{parent: attribute,
-		attributes:   make([]*Attribute, 0),
-		attributeMap: make(map[string]*Attribute)}
-	// All options must be an attribute
-	for _, option := range attribute.allOf {
-		if option.IsComposition() {
-			if err := option.ComposeOptions(); err != nil {
+	return append(attribute.parent.GetPath(), attribute)
+}
+
+// ComposeOptions composes the options of this composite attribute and makes it into a new
+// object attribute
+func (attribute *Attribute) ComposeOptions(layer *Layer) error {
+	if attribute.Type == nil {
+		return ErrNotACompositeType(attribute.ID)
+	}
+	composition, ok := attribute.Type.(*CompositeType)
+	if !ok {
+		return ErrNotACompositeType(attribute.ID)
+	}
+	result := NewObjectType(attribute)
+	// All options must be an attribute or object
+	for _, option := range composition.Options {
+		if option.Type == nil {
+			return ErrInvalidCompositeType(attribute.ID)
+		}
+	redo:
+		switch optionType := option.Type.(type) {
+		case *ValueType:
+			result.Add(option.Clone(attribute), layer)
+		case *CompositeType:
+			if err := option.ComposeOptions(layer); err != nil {
 				return err
 			}
-		}
-		if err := ret.Add(option); err != nil {
-			return err
+			if _, ok := option.Type.(*CompositeType); ok {
+				return ErrInvalidCompositeType(attribute.ID)
+			}
+			goto redo
+		case *ObjectType:
+			for i := 0; i < optionType.Len(); i++ {
+				result.Add(optionType.Get(i).Clone(attribute), layer)
+			}
+		case *PolymorphicType, *ReferenceType, *ArrayType:
+			return ErrInvalidCompositeType(attribute.ID)
 		}
 	}
-	attribute.MakeObject(ret)
+	attribute.Type = result
 	return nil
 }
 
-// IsPolyorphic returns if attribute has oneOf
-func (attribute *Attribute) IsPolymorphic() bool {
-	return attribute.oneOf != nil
-}
-
-// GetPolymorphicOptions returns the options for oneOf
-func (attribute *Attribute) GetPolymorphicOptions() []*Attribute {
-	return attribute.oneOf
-}
-
-// MakeObject converts this attribute to an object by setting its
-// attributes.
-func (attribute *Attribute) MakeObject(attributes *Attributes) {
-	attribute.attributes = attributes
-	attributes.parent = attribute
-	attribute.reference = ""
-	attribute.arrayItems = nil
-	attribute.allOf = nil
-	attribute.oneOf = nil
-}
-
-// MakeReference converts this attribute to a reference
-func (attribute *Attribute) MakeReference(ref string) {
-	attribute.attributes = nil
-	attribute.reference = ref
-	attribute.arrayItems = nil
-	attribute.allOf = nil
-	attribute.oneOf = nil
-}
-
-// MakeValue converts this attribute to a value
-func (attribute *Attribute) MakeValue() {
-	attribute.attributes = nil
-	attribute.reference = ""
-	attribute.arrayItems = nil
-	attribute.allOf = nil
-	attribute.oneOf = nil
-}
-
-// MakeArray converts this attribute to an array
-func (attribute *Attribute) MakeArray(arrayItems *Attribute) {
-	arrayItems.parent = attribute
-	attribute.attributes = nil
-	attribute.reference = ""
-	attribute.arrayItems = arrayItems
-	attribute.allOf = nil
-	attribute.oneOf = nil
-}
-
-// MakeComposition converts this attribute to a composition
-func (attribute *Attribute) MakeComposition(items []*Attribute) {
-	attribute.attributes = nil
-	attribute.reference = ""
-	attribute.arrayItems = nil
-	attribute.allOf = items
-	for _, x := range items {
-		x.parent = attribute
-	}
-	attribute.oneOf = nil
-}
-
-// MakePolymorphic converts this attribute to a polymorphic attribute
-func (attribute *Attribute) MakePolymorphic(items []*Attribute) {
-	attribute.attributes = nil
-	attribute.reference = ""
-	attribute.arrayItems = nil
-	attribute.allOf = nil
-	attribute.oneOf = items
-	for _, x := range items {
-		x.parent = attribute
-	}
-}
-
 // UnmarshalExpanded unmarshals an attribute. The input is a
-// map[string]interface{}. The attribute may or may not have an ID
-func (attribute *Attribute) UnmarshalExpanded(in interface{}) error {
+// map[string]interface{}. The attribute may or may not have an ID.
+// It must have a type
+func (attribute *Attribute) UnmarshalExpanded(in interface{}, parent *Attribute) error {
 	m, ok := in.(map[string]interface{})
 	if !ok {
-		return ErrInvalidInput
+		return ErrInvalidInput("Invalid attribute")
 	}
-	attribute.ID = ""
-	attribute.attributes = nil
-	attribute.reference = ""
-	attribute.arrayItems = nil
-	attribute.allOf = nil
-	attribute.oneOf = nil
+	attribute.ID = GetNodeID(in)
+	attribute.parent = parent
 	attribute.Values = make(map[string]interface{}, len(m))
-	elems := 0
+	t := GetNodeType(in)
+	switch t {
+	case AttributeTypes.Value:
+		attribute.Type = &ValueType{}
+	case AttributeTypes.Object:
+		attribute.Type = NewObjectType(attribute)
+	case AttributeTypes.Reference:
+		attribute.Type = &ReferenceType{}
+	case AttributeTypes.Array:
+		attribute.Type = NewArrayType(attribute)
+	case AttributeTypes.Composite:
+		attribute.Type = &CompositeType{}
+	case AttributeTypes.Polymorphic:
+		attribute.Type = &PolymorphicType{}
+	case "":
+		// Infer attribute type
+		n := 0
+		for k := range m {
+			switch k {
+			case string(LayerTerms.Attributes):
+				n++
+				attribute.Type = NewObjectType(attribute)
+			case string(LayerTerms.Reference):
+				n++
+				attribute.Type = &ReferenceType{}
+			case string(LayerTerms.ArrayItems):
+				n++
+				attribute.Type = NewArrayType(attribute)
+			case string(LayerTerms.AllOf):
+				n++
+				attribute.Type = &CompositeType{}
+			case string(LayerTerms.OneOf):
+				n++
+				attribute.Type = &PolymorphicType{}
+			}
+		}
+		if n != 1 {
+			return ErrInvalidInput("Cannot determine type of attribute:" + attribute.ID)
+		}
+	default:
+		return ErrInvalidAttributeType(attribute.ID + "/" + t)
+	}
+	if err := attribute.Type.UnmarshalExpanded(m, attribute); err != nil {
+		return err
+	}
 	for k, v := range m {
 		switch k {
-		case "@id":
-			attribute.ID = v.(string)
-		case AttributeStructure.Attributes.ID:
-			attribute.attributes = &Attributes{parent: attribute}
-			if err := attribute.attributes.UnmarshalExpanded(v); err != nil {
-				return err
-			}
-		case AttributeStructure.Reference.ID:
-			elems++
-			arr, ok := v.([]interface{})
-			if !ok || len(arr) > 1 {
-				return ErrInvalidInput
-			}
-			if len(arr) == 1 {
-				attribute.reference = GetNodeValue(arr[0]).(string)
-			}
-
-		case AttributeStructure.ArrayItems.ID:
-			elems++
-			arr, ok := v.([]interface{})
-			if !ok || len(arr) > 1 {
-				return ErrInvalidInput
-			}
-			if len(arr) == 1 {
-				attribute.arrayItems = &Attribute{parent: attribute}
-				if err := attribute.arrayItems.UnmarshalExpanded(arr[0]); err != nil {
-					return err
-				}
-			}
-
-		case AttributeStructure.AllOf.ID, AttributeStructure.OneOf.ID:
-			elems++
-			arr, ok := v.([]interface{})
-			if !ok || len(arr) != 1 {
-				return ErrInvalidInput
-			}
-			m, ok := arr[0].(map[string]interface{})
-			if !ok {
-				return ErrInvalidInput
-			}
-			arr, ok = m["@list"].([]interface{})
-			if !ok {
-				return ErrInvalidInput
-			}
-			attrs := make([]*Attribute, len(arr))
-			for i, x := range arr {
-				attrs[i] = &Attribute{parent: attribute}
-				if err := attrs[i].UnmarshalExpanded(x); err != nil {
-					return err
-				}
-			}
-			if k == AttributeStructure.AllOf.ID {
-				attribute.allOf = attrs
-			} else {
-				attribute.oneOf = attrs
-			}
+		case "@id",
+			"@type",
+			string(LayerTerms.Attributes),
+			string(LayerTerms.Reference),
+			string(LayerTerms.ArrayItems),
+			string(LayerTerms.AllOf),
+			string(LayerTerms.OneOf):
 		default:
 			attribute.Values[k] = v
 		}
-	}
-	if elems > 1 {
-		return ErrInvalidInput
 	}
 	return nil
 }
@@ -306,28 +202,9 @@ func (attribute *Attribute) MarshalExpanded() map[string]interface{} {
 	if len(attribute.ID) != 0 {
 		ret["@id"] = attribute.ID
 	}
-	if attribute.attributes != nil {
-		ret[AttributeStructure.Attributes.ID] = attribute.attributes.MarshalExpanded()
-	}
-	if len(attribute.reference) != 0 {
-		ret[AttributeStructure.Reference.ID] = []interface{}{map[string]interface{}{"@value": attribute.reference}}
-	}
-	if attribute.arrayItems != nil {
-		ret[AttributeStructure.ArrayItems.ID] = []interface{}{attribute.arrayItems.MarshalExpanded()}
-	}
-	if attribute.allOf != nil {
-		arr := make([]interface{}, len(attribute.allOf))
-		for i, item := range attribute.allOf {
-			arr[i] = item.MarshalExpanded()
-		}
-		ret[AttributeStructure.AllOf.ID] = []interface{}{map[string]interface{}{"@list": arr}}
-	}
-	if attribute.oneOf != nil {
-		arr := make([]interface{}, len(attribute.oneOf))
-		for i, item := range attribute.oneOf {
-			arr[i] = item.MarshalExpanded()
-		}
-		ret[AttributeStructure.OneOf.ID] = []interface{}{map[string]interface{}{"@list": arr}}
+	if attribute.Type != nil {
+		ret["@type"] = []interface{}{attribute.Type.GetType()}
+		attribute.Type.MarshalExpanded(ret)
 	}
 	for k, v := range attribute.Values {
 		ret[k] = v
@@ -341,25 +218,310 @@ func (attribute *Attribute) Iterate(f func(*Attribute) bool) bool {
 	if !f(attribute) {
 		return false
 	}
-	if attribute.attributes != nil {
-		if !attribute.attributes.Iterate(f) {
+	if attribute.Type != nil {
+		if !attribute.Type.Iterate(f) {
 			return false
 		}
 	}
-	if attribute.arrayItems != nil {
-		if !attribute.arrayItems.Iterate(f) {
+	return true
+}
+
+func (attribute *Attribute) IsValue() bool {
+	_, ok := attribute.Type.(*ValueType)
+	return ok
+}
+
+func (attribute *Attribute) GetObjectType() *ObjectType {
+	x, _ := attribute.Type.(*ObjectType)
+	return x
+}
+
+func (attribute *Attribute) GetArrayItems() *Attribute {
+	x, ok := attribute.Type.(*ArrayType)
+	if ok {
+		return x.Attribute
+	}
+	return nil
+}
+
+func (attribute *Attribute) GetPolymorphicOptions() []*Attribute {
+	x, ok := attribute.Type.(*PolymorphicType)
+	if ok {
+		return x.Options
+	}
+	return nil
+}
+
+func (attribute *Attribute) GetCompositionOptions() []*Attribute {
+	x, ok := attribute.Type.(*CompositeType)
+	if ok {
+		return x.Options
+	}
+	return nil
+}
+
+func (attribute *Attribute) GetAttributes() *ObjectType {
+	x, _ := attribute.Type.(*ObjectType)
+	return x
+}
+
+type ValueType struct{}
+
+func (v ValueType) GetType() string                                            { return AttributeTypes.Value }
+func (v ValueType) Iterate(func(*Attribute) bool) bool                         { return true }
+func (v ValueType) Clone(*Attribute) AttributeType                             { return ValueType{} }
+func (v ValueType) UnmarshalExpanded(map[string]interface{}, *Attribute) error { return nil }
+func (v ValueType) MarshalExpanded(map[string]interface{})                     {}
+
+type ReferenceType struct {
+	Reference string
+}
+
+func (r ReferenceType) GetType() string                    { return AttributeTypes.Reference }
+func (r ReferenceType) Iterate(func(*Attribute) bool) bool { return true }
+func (r ReferenceType) Clone(*Attribute) AttributeType     { return &ReferenceType{r.Reference} }
+func (r *ReferenceType) UnmarshalExpanded(input map[string]interface{}, parent *Attribute) error {
+	r.Reference = LayerTerms.Reference.GetExpandedString(input)
+	if len(r.Reference) == 0 {
+		return ErrInvalidInput("Empty reference")
+	}
+	return nil
+}
+func (r ReferenceType) MarshalExpanded(out map[string]interface{}) {
+	LayerTerms.Reference.PutExpanded(out, r.Reference)
+}
+
+type ArrayType struct {
+	*Attribute
+}
+
+func NewArrayType(parent *Attribute) *ArrayType {
+	return &ArrayType{Attribute: NewAttribute(parent)}
+}
+
+func (a ArrayType) GetType() string { return AttributeTypes.Array }
+
+func (a ArrayType) Iterate(f func(*Attribute) bool) bool {
+	if a.Type != nil {
+		return a.Type.Iterate(f)
+	}
+	return true
+}
+
+func (a ArrayType) Clone(parent *Attribute) AttributeType {
+	return &ArrayType{Attribute: a.Attribute.Clone(parent)}
+}
+
+func (a *ArrayType) UnmarshalExpanded(input map[string]interface{}, parent *Attribute) error {
+	a.Attribute = NewAttribute(parent)
+	items, _ := input[LayerTerms.ArrayItems.GetTerm()].([]interface{})
+	if len(items) != 1 {
+		return ErrInvalidInput("Empty array item")
+	}
+	if err := a.Attribute.UnmarshalExpanded(items[0], parent); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a ArrayType) MarshalExpanded(out map[string]interface{}) {
+	r := a.Attribute.MarshalExpanded()
+	out[LayerTerms.ArrayItems.GetTerm()] = []interface{}{r}
+}
+
+type PolymorphicType struct {
+	Options []*Attribute
+}
+
+func optionsToList(options []*Attribute) map[string]interface{} {
+	out := make([]interface{}, 0, len(options))
+	for _, x := range options {
+		r := x.MarshalExpanded()
+		out = append(out, r)
+	}
+	return map[string]interface{}{"@list": out}
+}
+
+func (p PolymorphicType) GetType() string { return AttributeTypes.Polymorphic }
+func (p PolymorphicType) Iterate(f func(*Attribute) bool) bool {
+	for _, attr := range p.Options {
+		if !attr.Iterate(f) {
 			return false
 		}
 	}
-	for _, x := range attribute.allOf {
-		if !x.Iterate(f) {
+	return true
+}
+
+func (p PolymorphicType) Clone(parent *Attribute) AttributeType {
+	ret := make([]*Attribute, len(p.Options))
+	for i, x := range p.Options {
+		ret[i] = x.Clone(parent)
+	}
+	return &PolymorphicType{Options: ret}
+}
+
+func (p *PolymorphicType) UnmarshalExpanded(input map[string]interface{}, parent *Attribute) error {
+	allOf := LayerTerms.OneOf.ElementsFromExpanded(input[LayerTerms.OneOf.GetTerm()])
+	p.Options = make([]*Attribute, 0)
+	for _, element := range allOf {
+		attr := NewAttribute(parent)
+		if err := attr.UnmarshalExpanded(element, parent); err != nil {
+			return err
+		}
+		p.Options = append(p.Options, attr)
+	}
+	return nil
+}
+
+func (p PolymorphicType) MarshalExpanded(out map[string]interface{}) {
+	out[LayerTerms.OneOf.GetTerm()] = []interface{}{optionsToList(p.Options)}
+}
+
+type CompositeType struct {
+	Options []*Attribute
+}
+
+func (c CompositeType) GetType() string { return AttributeTypes.Composite }
+func (c CompositeType) Iterate(f func(*Attribute) bool) bool {
+	for _, attr := range c.Options {
+		if !attr.Iterate(f) {
 			return false
 		}
 	}
-	for _, x := range attribute.oneOf {
+	return true
+}
+
+func (c CompositeType) Clone(parent *Attribute) AttributeType {
+	ret := make([]*Attribute, len(c.Options))
+	for i, x := range c.Options {
+		ret[i] = x.Clone(parent)
+	}
+	return &CompositeType{ret}
+}
+
+func (c *CompositeType) UnmarshalExpanded(input map[string]interface{}, parent *Attribute) error {
+	allOf := LayerTerms.OneOf.ElementsFromExpanded(input[LayerTerms.OneOf.GetTerm()])
+	c.Options = make([]*Attribute, 0)
+	for _, element := range allOf {
+		attr := NewAttribute(parent)
+		if err := attr.UnmarshalExpanded(element, parent); err != nil {
+			return err
+		}
+		c.Options = append(c.Options, attr)
+	}
+	return nil
+}
+
+func (c CompositeType) MarshalExpanded(out map[string]interface{}) {
+	out[LayerTerms.AllOf.GetTerm()] = []interface{}{optionsToList(c.Options)}
+}
+
+// ObjectType describes an object
+type ObjectType struct {
+	attribute    *Attribute
+	attributes   []*Attribute
+	attributeMap map[string]*Attribute
+}
+
+// NewObjectType returns a new empty object for the given attribute
+func NewObjectType(attr *Attribute) *ObjectType {
+	return &ObjectType{
+		attribute:    attr,
+		attributes:   make([]*Attribute, 0),
+		attributeMap: make(map[string]*Attribute),
+	}
+}
+
+func (attributes ObjectType) GetType() string { return AttributeTypes.Object }
+
+func (attributes *ObjectType) Clone(parent *Attribute) AttributeType {
+	ret := &ObjectType{
+		attribute:    parent,
+		attributes:   make([]*Attribute, len(attributes.attributes)),
+		attributeMap: make(map[string]*Attribute, len(attributes.attributes)),
+	}
+	for i, a := range attributes.attributes {
+		newNode := a.Clone(parent)
+		ret.attributes[i] = newNode
+		ret.attributeMap[newNode.ID] = newNode
+	}
+	return ret
+}
+
+// Len returns the number of attributes included in this Attributes object
+func (attributes *ObjectType) Len() int {
+	return len(attributes.attributes)
+}
+
+// Get returns the n'th attribute
+func (attributes *ObjectType) Get(n int) *Attribute {
+	return attributes.attributes[n]
+}
+
+// GetByID returns the attribute by its ID. The returned attribute is
+// an immediate child of this Attributed object
+func (attributes *ObjectType) GetByID(ID string) *Attribute {
+	return attributes.attributeMap[ID]
+}
+
+// Iterates the child attributes depth first, calls f for each
+// attribute until f returns false
+func (attributes *ObjectType) Iterate(f func(*Attribute) bool) bool {
+	for _, x := range attributes.attributes {
 		if !x.Iterate(f) {
 			return false
 		}
 	}
 	return true
+}
+
+// Add a new attribute to this attributes. If the same ID was used or
+// if the attribute does not have an ID, returns error
+func (attributes *ObjectType) Add(attribute *Attribute, layer *Layer) error {
+	if len(attribute.ID) == 0 {
+		return ErrAttributeWithoutID
+	}
+	if _, exists := layer.Index[attribute.ID]; exists {
+		return ErrDuplicateAttribute(attribute.ID)
+	}
+	attribute.parent = attributes.attribute
+	attributes.attributes = append(attributes.attributes, attribute)
+	attributes.attributeMap[attribute.ID] = attribute
+	layer.Index[attribute.ID] = attribute
+	return nil
+}
+
+// UmarshalExpanded unmarshals an expanded jsonld document to
+// attributes. The input is []interface{} where each element is an
+// attribute
+func (attributes *ObjectType) UnmarshalExpanded(in map[string]interface{}, parent *Attribute) error {
+	arr := LayerTerms.Attributes.ElementsFromExpanded(in[LayerTerms.Attributes.GetTerm()])
+	if arr == nil {
+		return ErrInvalidInput("Invalid attributes")
+	}
+	attributes.attributes = make([]*Attribute, 0, len(arr))
+	attributes.attributeMap = make(map[string]*Attribute, len(arr))
+	attributes.attribute = parent
+	for _, attr := range arr {
+		a := Attribute{}
+		if err := a.UnmarshalExpanded(attr, parent); err != nil {
+			return err
+		}
+		if len(a.ID) == 0 {
+			return ErrAttributeWithoutID
+		}
+		a.parent = parent
+		attributes.attributes = append(attributes.attributes, &a)
+		attributes.attributeMap[a.ID] = &a
+	}
+	return nil
+}
+
+// Marshal attributes as an expanded JSON-LD object
+func (attributes *ObjectType) MarshalExpanded(out map[string]interface{}) {
+	ret := make([]interface{}, 0, len(attributes.attributes))
+	for _, x := range attributes.attributes {
+		ret = append(ret, x.MarshalExpanded())
+	}
+	out[LayerTerms.Attributes.GetTerm()] = ret
 }

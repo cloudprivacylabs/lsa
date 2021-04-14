@@ -15,6 +15,8 @@ package ls
 
 import (
 	"github.com/piprate/json-gold/ld"
+
+	"github.com/cloudprivacylabs/lsa/pkg/terms"
 )
 
 type ComposeOptions struct {
@@ -25,162 +27,156 @@ type ComposeOptions struct {
 	Union bool
 }
 
-// Compose schema layers. Directly modifies the target.
-func (layer *SchemaLayer) Compose(options ComposeOptions, source *SchemaLayer) error {
-	if err := layer.Attributes.Compose(options, &source.Attributes); err != nil {
+// Compose schema layers. Directly modifies the target. The source
+// must be an overlay.
+func (layer *Layer) Compose(options ComposeOptions, vocab terms.Vocabulary, source *Layer) error {
+	if source.Type != TermOverlayType {
+		return ErrInvalidComposition("Composition source is not an overlay")
+	}
+	if len(layer.ObjectType) > 0 && len(source.ObjectType) > 0 {
+		if layer.ObjectType != source.ObjectType {
+			return ErrIncompatible{Target: layer.ObjectType, Source: source.ObjectType}
+		}
+	}
+	err := ComposeTerms(vocab, layer.Root.Values, source.Root.Values)
+	if err != nil {
 		return err
 	}
-	return layer.Validate()
+	// Process source attributes and compose
+	source.Root.GetAttributes().Iterate(func(srcAttribute *Attribute) bool {
+		// Is source in target?
+		targetAttribute, exists := layer.Index[srcAttribute.ID]
+		if !exists {
+			// The attribute does not exist. If options = Union, we add this attribute to target
+			if options.Union {
+				if err = layer.addAttribute(srcAttribute); err != nil {
+					return false
+				}
+			}
+		} else {
+			// Attribute exists in target. Do we have matching paths?
+			if attributePathMatch(targetAttribute.GetPath(), srcAttribute.GetPath()) {
+				err = targetAttribute.Compose(options, vocab, srcAttribute)
+				if err != nil {
+					return false
+				}
+			} else if options.Union {
+				if err = layer.addAttribute(srcAttribute); err != nil {
+					return false
+				}
+			}
+		}
+		return true
+	})
+	return err
+}
+
+func (layer *Layer) addAttribute(source *Attribute) error {
+	// Add the attribute and all necessary parents
+	srcParent := source.GetParent()
+	var tgtParent *Attribute
+	for {
+		if srcParent == nil {
+			tgtParent = layer.Root
+			break
+		} else {
+			// Does parent exist in the layer? If so, attach to that parent
+			target, exists := layer.Index[srcParent.ID]
+			if exists {
+				tgtParent = target
+				break
+			}
+			srcParent = srcParent.GetParent()
+		}
+	}
+	// Here, parent is non-nil
+	// If there is a parent, then the parent is either an object or array
+	newAttr := source.Clone(tgtParent)
+	switch tgt := tgtParent.Type.(type) {
+	case *ObjectType:
+		if err := tgt.Add(newAttr, layer); err != nil {
+			return err
+		}
+	case *PolymorphicType:
+		tgt.Options = append(tgt.Options, newAttr)
+	case *CompositeType:
+		tgt.Options = append(tgt.Options, newAttr)
+	default:
+		return ErrInvalidComposition(source.ID)
+	}
+	return nil
 }
 
 // Compose source into this attributes
-func (attributes *Attributes) Compose(options ComposeOptions, source *Attributes) error {
-	// Process target attributes and compose
-	for i := 0; i < attributes.Len(); i++ {
-		term1Attribute := attributes.Get(i)
-		// Is there a matching source attribute? It has to be at this level
-		term2Attribute := source.GetByID(term1Attribute.ID)
-		if term2Attribute == nil {
-			continue
+func (attribute *Attribute) Compose(options ComposeOptions, vocab terms.Vocabulary, source *Attribute) error {
+	switch t := attribute.Type.(type) {
+	case *ObjectType:
+		if _, ok := source.Type.(*ObjectType); !ok {
+			return ErrInvalidComposition(source.ID)
 		}
-		// Descend the tree together
-		if err := term1Attribute.Compose(options, term2Attribute); err != nil {
-			return err
+	case *ReferenceType:
+		if sref, ok := source.Type.(*ReferenceType); ok {
+			attribute.Type = sref
+		} else {
+			return ErrInvalidComposition(source.ID)
 		}
-	}
-	// If source has any attributes that are not in attributes, and if
-	// we are using a union composition, copy them over
-	if options.Union {
-		for i := 0; i < source.Len(); i++ {
-			sourceAttribute := source.Get(i)
-			if attributes.GetByID(sourceAttribute.ID) == nil {
-				newAttribute := sourceAttribute.Clone(attributes)
-				attributes.Add(newAttribute)
+	case *ArrayType:
+		if sarr, ok := source.Type.(*ArrayType); ok {
+			if err := t.Compose(options, vocab, sarr.Attribute); err != nil {
+				return err
 			}
+		} else {
+			return ErrInvalidComposition(source.ID)
+		}
+	case *CompositeType:
+		if _, ok := source.Type.(*CompositeType); !ok {
+			return ErrInvalidComposition(source.ID)
+		}
+	case *PolymorphicType:
+		if _, ok := source.Type.(*PolymorphicType); !ok {
+			return ErrInvalidComposition(source.ID)
 		}
 	}
-	return nil
+	return ComposeTerms(vocab, attribute.Values, source.Values)
 }
 
-// Compose source into this attribute
-func (attribute *Attribute) Compose(options ComposeOptions, source *Attribute) error {
-	setType := func() {
-		attribute.attributes = nil
-		attribute.reference = ""
-		attribute.arrayItems = nil
-		attribute.allOf = nil
-		attribute.oneOf = nil
-		if source.attributes != nil {
-			attribute.attributes = source.attributes.Clone(attribute)
-		} else if len(source.reference) != 0 {
-			attribute.reference = source.reference
-		} else if source.arrayItems != nil {
-			attribute.arrayItems = source.arrayItems.Clone(attribute)
-		} else if source.allOf != nil {
-			attribute.allOf = make([]*Attribute, len(source.allOf))
-			for i, x := range source.allOf {
-				attribute.allOf[i] = x.Clone(attribute)
-			}
-		} else if source.oneOf != nil {
-			attribute.oneOf = make([]*Attribute, len(source.oneOf))
-			for i, x := range source.oneOf {
-				attribute.oneOf[i] = x.Clone(attribute)
-			}
-		}
-	}
-	compose := func(targetOptions, sourceOptions []*Attribute) ([]*Attribute, error) {
-		for _, option := range sourceOptions {
-			found := false
-			for i := range targetOptions {
-				if targetOptions[i].ID == option.ID {
-					found = true
-					if err := targetOptions[i].Compose(options, option); err != nil {
-						return nil, err
-					}
-					break
+// ComposeTerms composes the terms in target and source, and writes the result into target
+func ComposeTerms(vocab terms.Vocabulary, target, source map[string]interface{}) error {
+	for k, v := range source {
+		targetTerm, exists := target[k]
+		if !exists {
+			target[k] = ld.CloneDocument(v)
+		} else {
+			term := vocab[k]
+			if term == nil {
+				value, err := DefaultComposeTerm(targetTerm, v)
+				if err != nil {
+					return err
 				}
+				target[k] = value
+			} else if cmp, ok := term.(terms.Composable); ok {
+				value, err := cmp.Compose(targetTerm, v)
+				if err != nil {
+					return err
+				}
+				target[k] = value
+			} else {
+				return ErrInvalidComposition(k)
 			}
-			if !found {
-				targetOptions = append(targetOptions, option.Clone(attribute))
-			}
-		}
-		return targetOptions, nil
-	}
-	switch {
-	case attribute.IsObject():
-		if source.IsObject() {
-			if err := attribute.GetAttributes().Compose(options, source.GetAttributes()); err != nil {
-				return err
-			}
-		} else {
-			setType()
-		}
-	case attribute.IsReference():
-		if source.IsReference() {
-			attribute.reference = source.reference
-		} else {
-			setType()
-		}
-	case attribute.IsArray():
-		if source.IsArray() {
-			if err := attribute.GetArrayItems().Compose(options, source.GetArrayItems()); err != nil {
-				return err
-			}
-		} else {
-			setType()
-		}
-	case attribute.IsComposition():
-		if source.IsComposition() {
-			var err error
-			if attribute.allOf, err = compose(attribute.allOf, source.allOf); err != nil {
-				return err
-			}
-		} else {
-			setType()
-		}
-	case attribute.IsPolymorphic():
-		if source.IsPolymorphic() {
-			var err error
-			if attribute.oneOf, err = compose(attribute.oneOf, source.oneOf); err != nil {
-				return err
-			}
-		} else {
-			setType()
-		}
-	}
-
-	for term, v2 := range source.Values {
-		v2Arr, _ := v2.([]interface{})
-		if v2Arr == nil {
-			continue
-		}
-		// If a term appears in both source and target, apply term-specific composition
-		if v1, exists := attribute.Values[term]; exists {
-			v1Arr, _ := v1.([]interface{})
-			if v1Arr == nil {
-				continue
-			}
-			result, err := composeTerm(options, term, v1, v2)
-			if err != nil {
-				return err
-			}
-			attribute.Values[term] = result
-		} else {
-			attribute.Values[term] = ld.CloneDocument(v2)
 		}
 	}
 	return nil
 }
 
-func composeTerm(options ComposeOptions, term string, t1, t2 interface{}) (interface{}, error) {
-	t := Terms[term]
-	if t != nil {
-		if t.Compose != nil {
-			return t.Compose(options, t1, t2)
-		}
-	}
-	return DefaultComposeTerm(options, t1, t2)
-}
+// func composeTerm(options ComposeOptions, term string, t1, t2 interface{}) (interface{}, error) {
+// 	t := Terms[term]
+// 	if t != nil {
+// 		if t.Compose != nil {
+// 			return t.Compose(options, t1, t2)
+// 		}
+// 	}
+// 	return DefaultComposeTerm(options, t1, t2)
+// }
 
 // DefaultComposeTerm is the default term composition algorithm
 //
@@ -188,7 +184,7 @@ func composeTerm(options ComposeOptions, term string, t1, t2 interface{}) (inter
 // If t1 is nil, returns copy of t2
 // If t1 and t2 are lists, append t2 to t1
 // If t1 and t2 are sets, combine them
-func DefaultComposeTerm(options ComposeOptions, t1, t2 interface{}) (interface{}, error) {
+func DefaultComposeTerm(t1, t2 interface{}) (interface{}, error) {
 	if t2 == nil {
 		if t1 == nil {
 			return nil, nil
@@ -218,10 +214,44 @@ func DefaultComposeTerm(options ComposeOptions, t1, t2 interface{}) (interface{}
 	return append(arr1, arr2...), nil
 }
 
-// OverrideComposeTerm overrides t1 with t2
-func OverrideComposeTerm(options ComposeOptions, t1, t2 interface{}) (interface{}, error) {
-	if t2 == nil {
-		return ld.CloneDocument(t1), nil
+// // OverrideComposeTerm overrides t1 with t2
+// func OverrideComposeTerm(options ComposeOptions, t1, t2 interface{}) (interface{}, error) {
+// 	if t2 == nil {
+// 		return ld.CloneDocument(t1), nil
+// 	}
+// 	return ld.CloneDocument(t2), nil
+// }
+
+// Compose the layers to build another layer or schema. If the first
+// layer is a schema, the result is a schema. Otherwise, the result is
+// another overlay. A schema can only appear as the first element.
+func Compose(options ComposeOptions, vocab terms.Vocabulary, layers ...*Layer) (*Layer, error) {
+	var composed *Layer
+	for i, layer := range layers {
+		if i == 0 {
+			composed = layer.Clone()
+		} else {
+			if layer.Type == TermSchemaType {
+				return nil, ErrInvalidComposition("Schema must be the base element")
+			}
+			composed.Compose(options, vocab, layer)
+		}
 	}
-	return ld.CloneDocument(t2), nil
+	return composed, nil
+}
+
+// Check if the suffix attribute has matching ascendants
+func attributePathMatch(path, suffix []*Attribute) bool {
+	attributeMatch := func(a, b *Attribute) bool {
+		return a.ID == b.ID && a.Type.GetType() == b.Type.GetType()
+	}
+	if len(suffix) > len(path) {
+		return false
+	}
+	for i := range suffix {
+		if !attributeMatch(path[len(path)-1-i], suffix[len(suffix)-1-i]) {
+			return false
+		}
+	}
+	return true
 }
