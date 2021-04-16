@@ -78,3 +78,68 @@ func TestMarshal(t *testing.T) {
 		t.Errorf("Wrong flag: %v", attr.Values)
 	}
 }
+
+func TestMarshalList(t *testing.T) {
+	base := expand(t, `{
+"@context": "../../schemas/ls.jsonld",
+"@type":"Schema",
+"attributeList": [
+ {
+  "@id": "attr1",
+  "@type": "Value"
+ },
+ {
+  "@id":  "attr2",
+  "@type": "Value",
+  "privacyClassification": [
+    {
+      "@value": "flg1"
+    }
+  ]
+ }
+]
+}`)
+	s := Layer{}
+	if err := s.UnmarshalExpanded(base); err != nil {
+		t.Error(err)
+	}
+	x, _ := json.MarshalIndent(s.MarshalExpanded(), "", "")
+	expected := `[
+{
+"@type": [
+"` + LS + `/Schema"
+],
+"` + LS + `/Object/attributeList": [
+{
+"@list": [
+{
+"@id": "attr1",
+"@type": [
+"` + LS + `/Value"
+]
+},
+{
+"@id": "attr2",
+"@type": [
+"` + LS + `/Value"
+],
+"` + LS + `/attr/privacyClassification": [
+{
+"@value": "flg1"
+}
+]
+}
+]
+}
+]
+}
+]`
+	if string(x) != expected {
+		t.Errorf("Unexpected: %s\n Expected: %s", string(x), expected)
+	}
+
+	attr := s.Index["attr2"]
+	if GetNodeValue(attr.Values[AttributeAnnotations.Privacy.GetTerm()].([]interface{})[0]) != "flg1" {
+		t.Errorf("Wrong flag: %v", attr.Values)
+	}
+}

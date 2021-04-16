@@ -99,6 +99,7 @@ var DocTerms = struct {
 
 // Terms contains the registered terms
 var Terms = terms.NewVocabulary(LayerTerms.Attributes,
+	LayerTerms.AttributeList,
 	LayerTerms.Reference,
 	LayerTerms.ArrayItems,
 	LayerTerms.AllOf,

@@ -90,7 +90,7 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, out *ls.At
 		return
 	}
 	if attr.object != nil {
-		attrs := ls.NewObjectType(nil)
+		attrs := ls.NewObjectType(nil, false)
 		attr.object.itr(entityId, name, attrs, layer)
 		out.Type = attrs
 		return

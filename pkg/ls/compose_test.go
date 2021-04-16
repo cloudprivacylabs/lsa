@@ -78,18 +78,21 @@ func TestMerge1(t *testing.T) {
 "attributes":[
 {
   "@id":"attr1",
+  "@type": "Value",
    "someKey" : [
      {"@value": "someValue"}
    ]
 },
 {
   "@id":"attr2",
+  "@type": "Value",
    "privacyClassification" : [
      {"@value": "addFlg1"}
    ]
 },
 {
   "@id": "attr3",
+  "@type": "Value",
    "privacyClassification" : [
      {"@value": "addFlg2"},
      {"@value": "addFlg3"}
@@ -164,6 +167,7 @@ func TestMergeArray(t *testing.T) {
     "array": {
      "@type": "Array",
       "items": {
+       "@type": "Value",
        "@id": "http://items",
        "type":"string"
       }

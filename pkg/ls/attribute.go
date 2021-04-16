@@ -15,6 +15,8 @@ package ls
 
 import (
 	"github.com/piprate/json-gold/ld"
+
+	"github.com/cloudprivacylabs/lsa/pkg/terms"
 )
 
 // Attribute contains the structural elements of attributes as well as
@@ -93,7 +95,7 @@ func (attribute *Attribute) ComposeOptions(layer *Layer) error {
 	if !ok {
 		return ErrNotACompositeType(attribute.ID)
 	}
-	result := NewObjectType(attribute)
+	result := NewObjectType(attribute, true)
 	// All options must be an attribute or object
 	for _, option := range composition.Options {
 		if option.Type == nil {
@@ -139,7 +141,7 @@ func (attribute *Attribute) UnmarshalExpanded(in interface{}, parent *Attribute)
 	case AttributeTypes.Value:
 		attribute.Type = &ValueType{}
 	case AttributeTypes.Object:
-		attribute.Type = NewObjectType(attribute)
+		attribute.Type = NewObjectType(attribute, false)
 	case AttributeTypes.Reference:
 		attribute.Type = &ReferenceType{}
 	case AttributeTypes.Array:
@@ -155,7 +157,10 @@ func (attribute *Attribute) UnmarshalExpanded(in interface{}, parent *Attribute)
 			switch k {
 			case string(LayerTerms.Attributes):
 				n++
-				attribute.Type = NewObjectType(attribute)
+				attribute.Type = NewObjectType(attribute, false)
+			case string(LayerTerms.AttributeList):
+				n++
+				attribute.Type = NewObjectType(attribute, true)
 			case string(LayerTerms.Reference):
 				n++
 				attribute.Type = &ReferenceType{}
@@ -418,17 +423,22 @@ func (c CompositeType) MarshalExpanded(out map[string]interface{}) {
 
 // ObjectType describes an object
 type ObjectType struct {
-	attribute    *Attribute
-	attributes   []*Attribute
-	attributeMap map[string]*Attribute
+	attribute  *Attribute
+	attributes []*Attribute
+	// If attributes are specified using an AttributeList, this is set to true
+	listContainer bool
+	attributeMap  map[string]*Attribute
 }
 
-// NewObjectType returns a new empty object for the given attribute
-func NewObjectType(attr *Attribute) *ObjectType {
+// NewObjectType returns a new empty object for the given
+// attribute. If list is true, result is an attribute list. If list is
+// false, result is an attribute set
+func NewObjectType(attr *Attribute, list bool) *ObjectType {
 	return &ObjectType{
-		attribute:    attr,
-		attributes:   make([]*Attribute, 0),
-		attributeMap: make(map[string]*Attribute),
+		attribute:     attr,
+		attributes:    make([]*Attribute, 0),
+		listContainer: list,
+		attributeMap:  make(map[string]*Attribute),
 	}
 }
 
@@ -436,9 +446,10 @@ func (attributes ObjectType) GetType() string { return AttributeTypes.Object }
 
 func (attributes *ObjectType) Clone(parent *Attribute) AttributeType {
 	ret := &ObjectType{
-		attribute:    parent,
-		attributes:   make([]*Attribute, len(attributes.attributes)),
-		attributeMap: make(map[string]*Attribute, len(attributes.attributes)),
+		attribute:     parent,
+		attributes:    make([]*Attribute, len(attributes.attributes)),
+		listContainer: attributes.listContainer,
+		attributeMap:  make(map[string]*Attribute, len(attributes.attributes)),
 	}
 	for i, a := range attributes.attributes {
 		newNode := a.Clone(parent)
@@ -495,7 +506,17 @@ func (attributes *ObjectType) Add(attribute *Attribute, layer *Layer) error {
 // attributes. The input is []interface{} where each element is an
 // attribute
 func (attributes *ObjectType) UnmarshalExpanded(in map[string]interface{}, parent *Attribute) error {
-	arr := LayerTerms.Attributes.ElementsFromExpanded(in[LayerTerms.Attributes.GetTerm()])
+	var term terms.ContainerTerm
+	term = LayerTerms.Attributes
+	attrs, ok := in[term.GetTerm()]
+	if !ok {
+		term = LayerTerms.AttributeList
+		attrs = in[term.GetTerm()]
+		attributes.listContainer = true
+	} else {
+		attributes.listContainer = false
+	}
+	arr := term.ElementsFromExpanded(attrs)
 	if arr == nil {
 		return ErrInvalidInput("Invalid attributes")
 	}
@@ -523,5 +544,9 @@ func (attributes *ObjectType) MarshalExpanded(out map[string]interface{}) {
 	for _, x := range attributes.attributes {
 		ret = append(ret, x.MarshalExpanded())
 	}
-	out[LayerTerms.Attributes.GetTerm()] = ret
+	if attributes.listContainer {
+		out[LayerTerms.AttributeList.GetTerm()] = LayerTerms.AttributeList.MakeExpandedContainer(ret)
+	} else {
+		out[LayerTerms.Attributes.GetTerm()] = LayerTerms.Attributes.MakeExpandedContainer(ret)
+	}
 }

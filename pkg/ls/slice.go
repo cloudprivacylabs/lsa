@@ -45,7 +45,7 @@ func (layer *Layer) Slice(filter func(string, *Attribute) bool) *Layer {
 //
 // parent is the parent of the new attributes in the sliced layer
 func (attributes *ObjectType) Slice(filter func(string, *Attribute) bool, parent *Attribute, newLayer *Layer) *ObjectType {
-	ret := NewObjectType(parent)
+	ret := NewObjectType(parent, attributes.listContainer)
 	for _, attr := range attributes.attributes {
 		newAttr := attr.Slice(filter, parent, newLayer)
 		if newAttr != nil {
@@ -94,7 +94,7 @@ func (attribute *Attribute) Slice(filter func(string, *Attribute) bool, parent *
 			newAttr.Type = n
 			full = true
 		} else {
-			newAttr.Type = NewObjectType(newAttr)
+			newAttr.Type = NewObjectType(newAttr, t.listContainer)
 		}
 
 	case *ValueType, *ReferenceType:

@@ -29,6 +29,7 @@ var LayerTerms = struct {
 	ObjectType    terms.ValueTerm
 	ObjectVersion terms.ValueTerm
 	Attributes    terms.ObjectSetTerm
+	AttributeList terms.ObjectListTerm
 	Reference     terms.IDTerm
 	ArrayItems    terms.ObjectTerm
 	AllOf         terms.ObjectListTerm
@@ -37,6 +38,7 @@ var LayerTerms = struct {
 	ObjectType:    terms.ValueTerm(LS + "/Layer/objectType"),
 	ObjectVersion: terms.ValueTerm(LS + "/Layer/objectVersion"),
 	Attributes:    terms.ObjectSetTerm(LS + "/Object/attributes"),
+	AttributeList: terms.ObjectListTerm(LS + "/Object/attributeList"),
 
 	// Reference is an IRI that points to another object
 	Reference: terms.IDTerm(LS + "/Reference/reference"),
@@ -85,7 +87,7 @@ func (layer *Layer) Clone() *Layer {
 // NewLayer returns an empty schema layer
 func NewLayer() *Layer {
 	root := NewAttribute(nil)
-	root.Type = NewObjectType(root)
+	root.Type = NewObjectType(root, false)
 	return &Layer{Root: root,
 		Index: make(map[string]*Attribute),
 	}
@@ -116,7 +118,7 @@ func (layer *Layer) UnmarshalExpanded(in interface{}) error {
 	layer.ID = ""
 	layer.Type = ""
 	layer.Root = NewAttribute(nil)
-	layer.Root.Type = NewObjectType(layer.Root)
+	layer.Root.Type = NewObjectType(layer.Root, false)
 
 	m := arr[0].(map[string]interface{})
 	layer.ObjectType = LayerTerms.ObjectType.GetExpandedString(m)
@@ -149,6 +151,7 @@ func (layer *Layer) UnmarshalExpanded(in interface{}) error {
 			layer.ID = v.(string)
 		case "@type":
 		case string(LayerTerms.Attributes),
+			string(LayerTerms.AttributeList),
 			string(LayerTerms.ObjectType),
 			string(LayerTerms.ObjectVersion):
 		default:
