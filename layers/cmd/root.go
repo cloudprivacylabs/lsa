@@ -86,6 +86,13 @@ func readJSONFileOrStdin(input []string, output interface{}) error {
 	return readJSON(input[0], output)
 }
 
+func readFileOrStdin(input []string) ([]byte, error) {
+	if len(input) == 0 {
+		return ioutil.ReadAll(os.Stdin)
+	}
+	return ioutil.ReadFile(input[0])
+}
+
 func readJSONMultiple(input []string) ([]interface{}, error) {
 	out := make([]interface{}, 0, len(input))
 	for _, x := range input {

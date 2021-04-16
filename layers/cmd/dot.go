@@ -14,19 +14,22 @@
 package cmd
 
 import (
-	"fmt"
+	"os"
 
 	"github.com/piprate/json-gold/ld"
 	"github.com/spf13/cobra"
+
+	"github.com/cloudprivacylabs/lsa/pkg/rdf"
+	"github.com/cloudprivacylabs/lsa/pkg/rdf/mrdf"
 )
 
 func init() {
-	rootCmd.AddCommand(triplesCmd)
+	rdfCmd.AddCommand(dotCmd)
 }
 
-var triplesCmd = &cobra.Command{
-	Use:   "triples",
-	Short: "Return triples from a JSON-LD document",
+var dotCmd = &cobra.Command{
+	Use:   "dot",
+	Short: "DOT graph from a JSON-LD document",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		var input interface{}
@@ -40,8 +43,12 @@ var triplesCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		for _, x := range triples.(*ld.RDFDataset).GetQuads("@default") {
-			fmt.Printf("%s %s %s\n", x.Subject.GetValue(), x.Predicate.GetValue(), x.Object.GetValue())
+
+		g := mrdf.NewGraph()
+		if err := g.AddQuads(triples.(*ld.RDFDataset).GetQuads("@default")); err != nil {
+			failErr(err)
 		}
+		nodes, edges := g.ToGraph()
+		rdf.ToDOT("G", nodes, edges, os.Stdout)
 	},
 }
