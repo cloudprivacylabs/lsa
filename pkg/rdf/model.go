@@ -114,7 +114,12 @@ type GraphNode struct {
 	ID string
 }
 
-func ToDOT(graphName string, nodes []GraphNode, edges [][2]string, out io.Writer) error {
+type GraphEdge struct {
+	From, To string
+	Label    string
+}
+
+func ToDOT(graphName string, nodes []GraphNode, edges []GraphEdge, out io.Writer) error {
 	if _, err := fmt.Fprintf(out, "digraph %s {\n", graphName); err != nil {
 		return err
 	}
@@ -127,8 +132,14 @@ func ToDOT(graphName string, nodes []GraphNode, edges [][2]string, out io.Writer
 		}
 	}
 	for _, e := range edges {
-		if _, err := fmt.Fprintf(out, "  %s -> %s;\n", e[0], e[1]); err != nil {
-			return err
+		if len(e.Label) > 0 {
+			if _, err := fmt.Fprintf(out, "  %s -> %s [label=\"%s\"];\n", e.From, e.To, e.Label); err != nil {
+				return err
+			}
+		} else {
+			if _, err := fmt.Fprintf(out, "  %s -> %s;\n", e.From, e.To); err != nil {
+				return err
+			}
 		}
 	}
 	if _, err := fmt.Fprintf(out, "}\n"); err != nil {

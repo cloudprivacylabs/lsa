@@ -30,6 +30,7 @@ func (e ErrUnrecognizedNode) Error() string { return fmt.Sprintf("Unrecognized N
 
 type node struct {
 	rdf.Node
+	predicate bool
 }
 
 type triple struct {
@@ -89,6 +90,7 @@ func (g *G) AddTriple(t rdf.Triple) bool {
 	}
 
 	predicateNode := g.newNode(rdf.ToBasicNode(t.Predicate))
+	predicateNode.predicate = true
 
 	var objectNode *node
 	if idnode, ok := t.Object.(rdf.IDNode); ok {
@@ -155,28 +157,21 @@ func (g *G) AddQuads(quads []*ld.Quad) error {
 	return nil
 }
 
-func (g *G) ToGraph() (nodes []rdf.GraphNode, edges [][2]string) {
+func (g *G) ToGraph() (nodes []rdf.GraphNode, edges []rdf.GraphEdge) {
 	nm := make(map[*node]string)
 	i := 0
 	for el := g.allNodes.Front(); el != nil; el = el.Next() {
 		node := el.Value.(*node)
-		id := fmt.Sprintf("n_%d", i)
-		nm[node] = id
-		nodes = append(nodes, rdf.GraphNode{Node: node.Node, ID: id})
-		i++
+		if !node.predicate {
+			id := fmt.Sprintf("n_%d", i)
+			nm[node] = id
+			nodes = append(nodes, rdf.GraphNode{Node: node.Node, ID: id})
+			i++
+		}
 	}
-	edg := make(map[[2]string]struct{})
 	for _, tr := range g.triples {
-		e := [2]string{nm[tr[0]], nm[tr[1]]}
-		if _, ok := edg[e]; !ok {
-			edges = append(edges, e)
-			edg[e] = struct{}{}
-		}
-		e = [2]string{nm[tr[1]], nm[tr[2]]}
-		if _, ok := edg[e]; !ok {
-			edges = append(edges, e)
-			edg[e] = struct{}{}
-		}
+		e := rdf.GraphEdge{From: nm[tr[0]], To: nm[tr[2]], Label: tr[1].Node.(rdf.IDNode).GetID()}
+		edges = append(edges, e)
 	}
 	return
 }
