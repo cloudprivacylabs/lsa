@@ -459,6 +459,11 @@ func (attributes *ObjectType) Clone(parent *Attribute) AttributeType {
 	return ret
 }
 
+// IsOrdered returns if the attributes is an ordered list
+func (attributes *ObjectType) IsOrdered() bool {
+	return attributes.listContainer
+}
+
 // Len returns the number of attributes included in this Attributes object
 func (attributes *ObjectType) Len() int {
 	return len(attributes.attributes)

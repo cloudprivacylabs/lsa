@@ -75,6 +75,14 @@ func NewGraph() *G {
 	return &G{idNodes: make(map[string]*node), triples: make(map[triple][3]*node)}
 }
 
+func (g *G) GetTriples() []rdf.Triple {
+	ret := make([]rdf.Triple, 0)
+	for _, x := range g.triples {
+		ret = append(ret, rdf.Triple{Subject: x[0].Node.(rdf.IDNode), Predicate: x[1].Node.(rdf.IRI), Object: x[2].Node})
+	}
+	return ret
+}
+
 // AddTriple adds a triple to the graph. Returns true if triple was
 // inserted. Returns false if triple already exists. If nodes are not in the graph, they are inserted
 func (g *G) AddTriple(t rdf.Triple) bool {
@@ -106,6 +114,10 @@ func (g *G) AddTriple(t rdf.Triple) bool {
 	return true
 }
 
+func (g *G) Add(subject rdf.IDNode, pred rdf.IRI, object rdf.Node) bool {
+	return g.AddTriple(rdf.Triple{Subject: subject, Predicate: pred, Object: object})
+}
+
 // RemoveTriple removes the given triple. Returns true if triple is removed
 func (g *G) RemoveTriple(t rdf.Triple) bool {
 	tr := makeTriple(t)
@@ -121,6 +133,10 @@ func (g *G) RemoveTriple(t rdf.Triple) bool {
 	}
 
 	return true
+}
+
+func (g *G) Remove(subject rdf.IDNode, pred rdf.IRI, object rdf.Node) bool {
+	return g.RemoveTriple(rdf.Triple{Subject: subject, Predicate: pred, Object: object})
 }
 
 // AddQuads adds all the quads from the jsonld library
@@ -157,7 +173,7 @@ func (g *G) AddQuads(quads []*ld.Quad) error {
 	return nil
 }
 
-func (g *G) ToGraph() (nodes []rdf.GraphNode, edges []rdf.GraphEdge) {
+func (g *G) ToDOT() (nodes []rdf.DOTNode, edges []rdf.DOTEdge) {
 	nm := make(map[*node]string)
 	i := 0
 	for el := g.allNodes.Front(); el != nil; el = el.Next() {
@@ -165,12 +181,12 @@ func (g *G) ToGraph() (nodes []rdf.GraphNode, edges []rdf.GraphEdge) {
 		if !node.predicate {
 			id := fmt.Sprintf("n_%d", i)
 			nm[node] = id
-			nodes = append(nodes, rdf.GraphNode{Node: node.Node, ID: id})
+			nodes = append(nodes, rdf.DOTNode{Node: node.Node, ID: id})
 			i++
 		}
 	}
 	for _, tr := range g.triples {
-		e := rdf.GraphEdge{From: nm[tr[0]], To: nm[tr[2]], Label: tr[1].Node.(rdf.IDNode).GetID()}
+		e := rdf.DOTEdge{From: nm[tr[0]], To: nm[tr[2]], Label: tr[1].Node.(rdf.IDNode).GetID()}
 		edges = append(edges, e)
 	}
 	return

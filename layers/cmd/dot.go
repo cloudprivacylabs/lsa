@@ -48,7 +48,7 @@ var dotCmd = &cobra.Command{
 		if err := g.AddQuads(triples.(*ld.RDFDataset).GetQuads("@default")); err != nil {
 			failErr(err)
 		}
-		nodes, edges := g.ToGraph()
+		nodes, edges := g.ToDOT()
 		rdf.ToDOT("G", nodes, edges, os.Stdout)
 	},
 }

@@ -61,12 +61,8 @@ var parseNquadsCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		rdfDataset, err := ld.ParseNQuads(string(data))
-		if err != nil {
-			failErr(err)
-		}
 		proc := ld.NewJsonLdProcessor()
-		jsonld, err := proc.FromRDF(rdfDataset, nil)
+		jsonld, err := proc.FromRDF(string(data), nil)
 		if err != nil {
 			failErr(err)
 		}

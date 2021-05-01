@@ -16,11 +16,15 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
+	"github.com/piprate/json-gold/ld"
 	"github.com/spf13/cobra"
 
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/rdf"
+	"github.com/cloudprivacylabs/lsa/pkg/rdf/mrdf"
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
 
@@ -28,6 +32,7 @@ func init() {
 	ingestCmd.AddCommand(ingestJSONCmd)
 	ingestJSONCmd.Flags().String("schema", "", "Schema id to use")
 	ingestJSONCmd.MarkFlagRequired("schema")
+	ingestJSONCmd.Flags().String("format", "json", "Output format, json, rdf, or dot")
 }
 
 var ingestJSONCmd = &cobra.Command{
@@ -65,11 +70,31 @@ var ingestJSONCmd = &cobra.Command{
 			failErr(err)
 		}
 
-		ingested, err := jsoningest.Ingest(resolved.ObjectType, input, resolved)
-		if err != nil {
-			failErr(err)
+		format, _ := cmd.Flags().GetString("format")
+		switch format {
+		case "json":
+			ingested, err := jsoningest.Ingest(resolved.ObjectType, input, resolved)
+			if err != nil {
+				failErr(err)
+			}
+			out, _ := json.MarshalIndent(ls.DataModelToMap(ingested, true), "", "  ")
+			fmt.Println(string(out))
+
+		case "rdf", "dot":
+			ingester := jsoningest.NewGraphIngester(resolved)
+			output := mrdf.NewGraph()
+			if err := ingester.Ingest(output, resolved.ObjectType, input); err != nil {
+				failErr(err)
+			}
+			if format == "rdf" {
+				ds := rdf.ToRDFDataset(output.GetTriples())
+				ser := ld.NQuadRDFSerializer{}
+				v, _ := ser.Serialize(ds)
+				fmt.Println(v)
+			} else {
+				nodes, edges := output.ToDOT()
+				rdf.ToDOT("g", nodes, edges, os.Stdout)
+			}
 		}
-		out, _ := json.MarshalIndent(ls.DataModelToMap(ingested, true), "", "  ")
-		fmt.Println(string(out))
 	},
 }

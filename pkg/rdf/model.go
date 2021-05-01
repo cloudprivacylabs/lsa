@@ -14,8 +14,35 @@
 package rdf
 
 import (
-	"fmt"
-	"io"
+	"github.com/lithammer/shortuuid/v3"
+	"github.com/piprate/json-gold/ld"
+)
+
+// RDF constants, from github.com/piprate/json-gold/
+const (
+	RDFSyntaxNS string = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	RDFSchemaNS string = "http://www.w3.org/2000/01/rdf-schema#"
+	XSDNS       string = "http://www.w3.org/2001/XMLSchema#"
+
+	XSDAnyType string = XSDNS + "anyType"
+	XSDBoolean string = XSDNS + "boolean"
+	XSDDouble  string = XSDNS + "double"
+	XSDInteger string = XSDNS + "integer"
+	XSDFloat   string = XSDNS + "float"
+	XSDDecimal string = XSDNS + "decimal"
+	XSDAnyURI  string = XSDNS + "anyURI"
+	XSDString  string = XSDNS + "string"
+
+	RDFType         string = RDFSyntaxNS + "type"
+	RDFFirst        string = RDFSyntaxNS + "first"
+	RDFRest         string = RDFSyntaxNS + "rest"
+	RDFNil          string = RDFSyntaxNS + "nil"
+	RDFPlainLiteral string = RDFSyntaxNS + "PlainLiteral"
+	RDFXMLLiteral   string = RDFSyntaxNS + "XMLLiteral"
+	RDFJSONLiteral  string = RDFSyntaxNS + "JSON"
+	RDFObject       string = RDFSyntaxNS + "object"
+	RDFLangString   string = RDFSyntaxNS + "langString"
+	RDFList         string = RDFSyntaxNS + "List"
 )
 
 type ErrNodeExists string
@@ -54,6 +81,11 @@ func (b BasicLiteral) GetValue() string    { return b.Value }
 func (b BasicLiteral) GetType() string     { return b.Type }
 func (b BasicLiteral) GetLanguage() string { return b.Language }
 
+// NewStringLiteral returns a new string literal with no language
+func NewStringLiteral(value string) BasicLiteral {
+	return BasicLiteral{Value: value, Type: XSDString}
+}
+
 // A BlankNode is an IDNode and Node.
 type BlankNode interface {
 	GetID() string
@@ -64,6 +96,11 @@ type BasicBlankNode string
 
 func (b BasicBlankNode) GetID() string    { return string(b) }
 func (b BasicBlankNode) GetValue() string { return string(b) }
+
+// NewBasicBlankNode generates a blank node using a uuid
+func NewBasicBlankNode() BasicBlankNode {
+	return BasicBlankNode("_b:" + shortuuid.New())
+}
 
 // An IRI is an IDNode and Node
 type IRI interface {
@@ -99,51 +136,45 @@ type Triple struct {
 	Object Node
 }
 
+func (t Triple) ToNQuad() *ld.Quad {
+	ret := &ld.Quad{}
+	if iri, ok := t.Subject.(IRI); ok {
+		ret.Subject = ld.NewIRI(iri.GetIRI())
+	} else {
+		ret.Subject = ld.NewBlankNode(t.Subject.(BlankNode).GetID())
+	}
+	ret.Predicate = ld.NewIRI(t.Predicate.(IRI).GetIRI())
+	if iri, ok := t.Object.(IRI); ok {
+		ret.Object = ld.NewIRI(iri.GetIRI())
+	} else if b, ok := t.Object.(BlankNode); ok {
+		ret.Object = ld.NewBlankNode(b.GetID())
+	} else {
+		l := t.Object.(Literal)
+		ret.Object = ld.NewLiteral(l.GetValue(), l.GetType(), l.GetLanguage())
+	}
+	return ret
+}
+
+func ToRDFDataset(t []Triple) *ld.RDFDataset {
+	ret := ld.NewRDFDataset()
+	triples := make([]*ld.Quad, 0, len(t))
+	for _, x := range t {
+		triples = append(triples, x.ToNQuad())
+	}
+	ret.Graphs["@default"] = triples
+	return ret
+}
+
 type Graph interface {
 
 	// AddTriple adds a triple to the graph. Returns true if triple was
 	// inserted. Returns false if triple already exists
 	AddTriple(Triple) bool
+	Add(IDNode, IRI, Node) bool
 
 	// Remove the given triple. Returns true if triple is removed
 	RemoveTriple(Triple) bool
-}
+	Remove(IDNode, IRI, Node) bool
 
-type GraphNode struct {
-	Node
-	ID string
-}
-
-type GraphEdge struct {
-	From, To string
-	Label    string
-}
-
-func ToDOT(graphName string, nodes []GraphNode, edges []GraphEdge, out io.Writer) error {
-	if _, err := fmt.Fprintf(out, "digraph %s {\n", graphName); err != nil {
-		return err
-	}
-	if _, err := fmt.Fprintf(out, "rankdir=\"LR\";\n"); err != nil {
-		return err
-	}
-	for _, node := range nodes {
-		if _, err := fmt.Fprintf(out, "  %s [label=\"%s\"];\n", node.ID, node.GetValue()); err != nil {
-			return err
-		}
-	}
-	for _, e := range edges {
-		if len(e.Label) > 0 {
-			if _, err := fmt.Fprintf(out, "  %s -> %s [label=\"%s\"];\n", e.From, e.To, e.Label); err != nil {
-				return err
-			}
-		} else {
-			if _, err := fmt.Fprintf(out, "  %s -> %s;\n", e.From, e.To); err != nil {
-				return err
-			}
-		}
-	}
-	if _, err := fmt.Fprintf(out, "}\n"); err != nil {
-		return err
-	}
-	return nil
+	GetTriples() []Triple
 }
