@@ -31,6 +31,7 @@ func init() {
 	ingestCmd.AddCommand(ingestCSVCmd)
 	ingestCSVCmd.Flags().String("schema", "", "Schema id to use")
 	ingestCSVCmd.Flags().String("profile", "", "CSV profile")
+	ingestCSVCmd.Flags().String("id", "http://example.org/data", "Base ID to use for ingested nodes")
 	ingestCSVCmd.Flags().Int("skip", 1, "Number of rows to skip (default 1)")
 	ingestCSVCmd.MarkFlagRequired("schema")
 }
@@ -109,7 +110,8 @@ var ingestCSVCmd = &cobra.Command{
 			if err != nil {
 				failErr(err)
 			}
-			data, err := csvingest.Ingest(schema.ObjectType, row, profile, resolved)
+			ID, _ := cmd.Flags().GetString("id")
+			data, err := csvingest.Ingest(ID, row, profile, resolved)
 			if err != nil {
 				failErr(err)
 			}

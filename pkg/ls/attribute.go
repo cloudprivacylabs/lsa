@@ -85,6 +85,11 @@ func (attribute *Attribute) GetPath() []*Attribute {
 	return append(attribute.parent.GetPath(), attribute)
 }
 
+// GetTargetType returns the target types of the attribute
+func (attribute *Attribute) GetTargetType() []string {
+	return LayerTerms.TargetType.ElementValuesFromExpanded(attribute.Values[LayerTerms.TargetType.GetTerm()])
+}
+
 // ComposeOptions composes the options of this composite attribute and makes it into a new
 // object attribute
 func (attribute *Attribute) ComposeOptions(layer *Layer) error {

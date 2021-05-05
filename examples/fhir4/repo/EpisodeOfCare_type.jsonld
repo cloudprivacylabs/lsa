@@ -4,14 +4,20 @@
     "@type": [
       "http://layeredschemas.org/v1.0/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Layer/objectType": [
-      {
-        "@value": "http://hl7.org/fhir/EpisodeOfCare"
-      }
-    ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis",
+        "@id": "http://hl7.org/fhir/EpisodeOfCare.implicitRules",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/targetType": [
+          {
+            "@id": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
         ],
@@ -22,330 +28,113 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role",
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*._status",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._version",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._version.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*.userSelected",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "boolean"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*.id",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*.system",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._userSelected",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._userSelected.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*.code",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*.display",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*.version",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._display",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._display.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._system",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._system.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._code",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._code.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.text",
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*._status.id",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
+                        "@id": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period.start",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role._text",
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period._start",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role._text.id",
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period._start.id",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
+                        "http://layeredschemas.org/v1.0/targetType": [
                           {
-                            "@value": "string"
+                            "@id": "string"
                           }
                         ]
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.id",
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period.end",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period._end",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period._end.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
                       }
                     ]
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.rank",
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.id",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
-                "http://layeredschemas.org/v1.0/attr/type": [
+                "http://layeredschemas.org/v1.0/targetType": [
                   {
-                    "@value": "number"
+                    "@id": "string"
                   }
                 ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*._rank",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*._rank.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare.language",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare._language",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare._language.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare.id",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/type": [
-          {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare._status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare._status.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
               }
             ]
           }
@@ -374,6 +163,17 @@
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.type.*.coding.*.display",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      },
+                      {
                         "@id": "http://hl7.org/fhir/EpisodeOfCare.type.*.coding.*._system",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Object"
@@ -384,11 +184,22 @@
                             "@type": [
                               "http://layeredschemas.org/v1.0/Value"
                             ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
+                            "http://layeredschemas.org/v1.0/targetType": [
                               {
-                                "@value": "string"
+                                "@id": "string"
                               }
                             ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.type.*.coding.*.system",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
                           }
                         ]
                       },
@@ -397,9 +208,9 @@
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
+                        "http://layeredschemas.org/v1.0/targetType": [
                           {
-                            "@value": "string"
+                            "@id": "string"
                           }
                         ]
                       },
@@ -414,22 +225,22 @@
                             "@type": [
                               "http://layeredschemas.org/v1.0/Value"
                             ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
+                            "http://layeredschemas.org/v1.0/targetType": [
                               {
-                                "@value": "string"
+                                "@id": "string"
                               }
                             ]
                           }
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.type.*.coding.*.code",
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.type.*.coding.*.id",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
+                        "http://layeredschemas.org/v1.0/targetType": [
                           {
-                            "@value": "string"
+                            "@id": "string"
                           }
                         ]
                       },
@@ -444,52 +255,11 @@
                             "@type": [
                               "http://layeredschemas.org/v1.0/Value"
                             ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
+                            "http://layeredschemas.org/v1.0/targetType": [
                               {
-                                "@value": "string"
+                                "@id": "string"
                               }
                             ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.type.*.coding.*._version",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.type.*.coding.*._version.id",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.type.*.coding.*.system",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.type.*.coding.*.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
                           }
                         ]
                       },
@@ -504,22 +274,11 @@
                             "@type": [
                               "http://layeredschemas.org/v1.0/Value"
                             ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
+                            "http://layeredschemas.org/v1.0/targetType": [
                               {
-                                "@value": "string"
+                                "@id": "string"
                               }
                             ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.type.*.coding.*.display",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
                           }
                         ]
                       },
@@ -528,9 +287,39 @@
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
+                        "http://layeredschemas.org/v1.0/targetType": [
                           {
-                            "@value": "boolean"
+                            "@id": "boolean"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.type.*.coding.*._version",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.type.*.coding.*._version.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/targetType": [
+                              {
+                                "@id": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.type.*.coding.*.code",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
                           }
                         ]
                       }
@@ -543,9 +332,9 @@
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
-                "http://layeredschemas.org/v1.0/attr/type": [
+                "http://layeredschemas.org/v1.0/targetType": [
                   {
-                    "@value": "string"
+                    "@id": "string"
                   }
                 ]
               },
@@ -560,9 +349,9 @@
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
+                        "@id": "string"
                       }
                     ]
                   }
@@ -573,9 +362,9 @@
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
-                "http://layeredschemas.org/v1.0/attr/type": [
+                "http://layeredschemas.org/v1.0/targetType": [
                   {
-                    "@value": "string"
+                    "@id": "string"
                   }
                 ]
               }
@@ -584,609 +373,13 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta._lastUpdated",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.meta._lastUpdated.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._display.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*.display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._userSelected.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._version.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*.userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "boolean"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*.version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta._source",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.meta._source.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.lastUpdated",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.source",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.versionId",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta._versionId",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.meta._versionId.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.profile",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*.display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._userSelected.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._version.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._display.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*.version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*.userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "boolean"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.text._status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.text._status.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.text.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare.period",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.period.end",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.period._end",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.period._end.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.period.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.period.start",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EpisodeOfCare.period._start",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.period._start.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare.implicitRules",
+        "@id": "http://hl7.org/fhir/EpisodeOfCare.language",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
-        "http://layeredschemas.org/v1.0/attr/type": [
+        "http://layeredschemas.org/v1.0/targetType": [
           {
-            "@value": "string"
+            "@id": "string"
           }
         ]
       },
@@ -1201,6 +394,25 @@
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*._value",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*._value.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
               {
                 "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type",
                 "@type": [
@@ -1218,9 +430,9 @@
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
+                        "http://layeredschemas.org/v1.0/targetType": [
                           {
-                            "@value": "string"
+                            "@id": "string"
                           }
                         ]
                       }
@@ -1231,9 +443,9 @@
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
+                        "@id": "string"
                       }
                     ]
                   },
@@ -1249,84 +461,13 @@
                         ],
                         "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*.userSelected",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "boolean"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*._version",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*._version.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*.code",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
                             "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*.system",
                             "@type": [
                               "http://layeredschemas.org/v1.0/Value"
                             ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
+                            "http://layeredschemas.org/v1.0/targetType": [
                               {
-                                "@value": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*._system",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*._system.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
-                                  {
-                                    "@value": "string"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*.display",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
-                              {
-                                "@value": "string"
+                                "@id": "string"
                               }
                             ]
                           },
@@ -1341,33 +482,71 @@
                                 "@type": [
                                   "http://layeredschemas.org/v1.0/Value"
                                 ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
+                                "http://layeredschemas.org/v1.0/targetType": [
                                   {
-                                    "@value": "string"
+                                    "@id": "string"
                                   }
                                 ]
                               }
                             ]
                           },
                           {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*.id",
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*._system",
                             "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
+                              "http://layeredschemas.org/v1.0/Object"
                             ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
-                                "@value": "string"
+                                "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*._system.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/targetType": [
+                                  {
+                                    "@id": "string"
+                                  }
+                                ]
                               }
                             ]
                           },
                           {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*.version",
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*._version",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*._version.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/targetType": [
+                                  {
+                                    "@id": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*.code",
                             "@type": [
                               "http://layeredschemas.org/v1.0/Value"
                             ],
-                            "http://layeredschemas.org/v1.0/attr/type": [
+                            "http://layeredschemas.org/v1.0/targetType": [
                               {
-                                "@value": "string"
+                                "@id": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*.display",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/targetType": [
+                              {
+                                "@id": "string"
                               }
                             ]
                           },
@@ -1382,11 +561,22 @@
                                 "@type": [
                                   "http://layeredschemas.org/v1.0/Value"
                                 ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
+                                "http://layeredschemas.org/v1.0/targetType": [
                                   {
-                                    "@value": "string"
+                                    "@id": "string"
                                   }
                                 ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*.userSelected",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/targetType": [
+                              {
+                                "@id": "boolean"
                               }
                             ]
                           },
@@ -1401,11 +591,33 @@
                                 "@type": [
                                   "http://layeredschemas.org/v1.0/Value"
                                 ],
-                                "http://layeredschemas.org/v1.0/attr/type": [
+                                "http://layeredschemas.org/v1.0/targetType": [
                                   {
-                                    "@value": "string"
+                                    "@id": "string"
                                   }
                                 ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/targetType": [
+                              {
+                                "@id": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.type.coding.*.version",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/targetType": [
+                              {
+                                "@id": "string"
                               }
                             ]
                           }
@@ -1418,22 +630,11 @@
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
+                        "@id": "string"
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
                   }
                 ]
               },
@@ -1448,9 +649,9 @@
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
+                        "@id": "string"
                       }
                     ]
                   },
@@ -1459,9 +660,9 @@
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
+                        "@id": "string"
                       }
                     ]
                   },
@@ -1476,9 +677,9 @@
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
+                        "http://layeredschemas.org/v1.0/targetType": [
                           {
-                            "@value": "string"
+                            "@id": "string"
                           }
                         ]
                       }
@@ -1489,9 +690,9 @@
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
+                        "@id": "string"
                       }
                     ]
                   },
@@ -1506,9 +707,9 @@
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
+                        "http://layeredschemas.org/v1.0/targetType": [
                           {
-                            "@value": "string"
+                            "@id": "string"
                           }
                         ]
                       }
@@ -1517,13 +718,35 @@
                 ]
               },
               {
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.value",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ]
+              },
+              {
                 "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.system",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
-                "http://layeredschemas.org/v1.0/attr/type": [
+                "http://layeredschemas.org/v1.0/targetType": [
                   {
-                    "@value": "string"
+                    "@id": "string"
                   }
                 ]
               },
@@ -1538,22 +761,11 @@
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
+                        "@id": "string"
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*.value",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
                   }
                 ]
               },
@@ -1568,32 +780,411 @@
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
+                        "@id": "string"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._code",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._code.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/targetType": [
+                                  {
+                                    "@id": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*.system",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/targetType": [
+                              {
+                                "@id": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._system",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._system.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/targetType": [
+                                  {
+                                    "@id": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._version",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._version.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/targetType": [
+                                  {
+                                    "@id": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*.id",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/targetType": [
+                              {
+                                "@id": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._userSelected",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._userSelected.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/targetType": [
+                                  {
+                                    "@id": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*.code",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/targetType": [
+                              {
+                                "@id": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*.display",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/targetType": [
+                              {
+                                "@id": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._display",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*._display.id",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/targetType": [
+                                  {
+                                    "@id": "string"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*.userSelected",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/targetType": [
+                              {
+                                "@id": "boolean"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.coding.*.version",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/targetType": [
+                              {
+                                "@id": "string"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role.text",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role._text",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.role._text.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*._value",
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.rank",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "number"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*._rank",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.identifier.*._value.id",
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*._rank.id",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
+                        "@id": "string"
                       }
                     ]
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.diagnosis.*.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EpisodeOfCare._status",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare._status.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/targetType": [
+              {
+                "@id": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EpisodeOfCare.period",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.period.end",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/targetType": [
+              {
+                "@id": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.period._end",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.period._end.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.period.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/targetType": [
+              {
+                "@id": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.period.start",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/targetType": [
+              {
+                "@id": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.period._start",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.period._start.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EpisodeOfCare._language",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare._language.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/targetType": [
+              {
+                "@id": "string"
               }
             ]
           }
@@ -1610,137 +1201,546 @@
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
-            "http://layeredschemas.org/v1.0/attr/type": [
+            "http://layeredschemas.org/v1.0/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ]
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory",
+        "@id": "http://hl7.org/fhir/EpisodeOfCare.text",
         "@type": [
-          "http://layeredschemas.org/v1.0/Array"
+          "http://layeredschemas.org/v1.0/Object"
         ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.text.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/targetType": [
+              {
+                "@id": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.text._status",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*._status",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*._status.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period.start",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period._start",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period._start.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period.end",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period._end",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period._end.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.period.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/EpisodeOfCare.statusHistory.*.id",
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.text._status.id",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
-                "http://layeredschemas.org/v1.0/attr/type": [
+                "http://layeredschemas.org/v1.0/targetType": [
                   {
-                    "@value": "string"
+                    "@id": "string"
                   }
                 ]
               }
             ]
           }
         ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.profile",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.source",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/targetType": [
+              {
+                "@id": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/targetType": [
+              {
+                "@id": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta._source",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.meta._source.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*.code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._system.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._version.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*.system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*.display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._userSelected.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*.version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._code.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*._display.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.tag.*.userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "boolean"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta._versionId",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.meta._versionId.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*.version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._code.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._display.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*.userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "boolean"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._version.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._system.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*.code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*.display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*._userSelected.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.security.*.system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.lastUpdated",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/targetType": [
+              {
+                "@id": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta.versionId",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/targetType": [
+              {
+                "@id": "string"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EpisodeOfCare.meta._lastUpdated",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/EpisodeOfCare.meta._lastUpdated.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/EpisodeOfCare.id",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/targetType": [
+          {
+            "@id": "string"
+          }
+        ]
+      }
+    ],
+    "http://layeredschemas.org/v1.0/targetType": [
+      {
+        "@id": "http://hl7.org/fhir/EpisodeOfCare"
       }
     ]
   }

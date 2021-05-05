@@ -26,8 +26,7 @@ const TermSchemaType = LS + "/Schema"
 const TermOverlayType = LS + "/Overlay"
 
 var LayerTerms = struct {
-	ObjectType    terms.ValueTerm
-	ObjectVersion terms.ValueTerm
+	TargetType    terms.IDSetTerm
 	Attributes    terms.ObjectSetTerm
 	AttributeList terms.ObjectListTerm
 	Reference     terms.IDTerm
@@ -35,8 +34,7 @@ var LayerTerms = struct {
 	AllOf         terms.ObjectListTerm
 	OneOf         terms.ObjectListTerm
 }{
-	ObjectType:    terms.ValueTerm(LS + "/Layer/objectType"),
-	ObjectVersion: terms.ValueTerm(LS + "/Layer/objectVersion"),
+	TargetType:    terms.IDSetTerm(LS + "/targetType"),
 	Attributes:    terms.ObjectSetTerm(LS + "/Object/attributes"),
 	AttributeList: terms.ObjectListTerm(LS + "/Object/attributeList"),
 
@@ -58,10 +56,9 @@ var LayerTerms = struct {
 
 // Layer can be a Schema or an Overlay
 type Layer struct {
-	ID            string
-	Type          string
-	ObjectType    string
-	ObjectVersion string
+	ID         string
+	Type       string
+	TargetType []string
 	// Root is an object attribute
 	Root *Attribute
 
@@ -71,7 +68,7 @@ type Layer struct {
 func (layer *Layer) Clone() *Layer {
 	ret := &Layer{ID: layer.ID,
 		Type:       layer.Type,
-		ObjectType: layer.ObjectType,
+		TargetType: layer.TargetType,
 		Root:       layer.Root.Clone(nil),
 		Index:      make(map[string]*Attribute),
 	}
@@ -121,8 +118,7 @@ func (layer *Layer) UnmarshalExpanded(in interface{}) error {
 	layer.Root.Type = NewObjectType(layer.Root, false)
 
 	m := arr[0].(map[string]interface{})
-	layer.ObjectType = LayerTerms.ObjectType.GetExpandedString(m)
-	layer.ObjectVersion = LayerTerms.ObjectVersion.GetExpandedString(m)
+	layer.TargetType = LayerTerms.TargetType.ElementValuesFromExpanded(m[LayerTerms.TargetType.GetTerm()])
 	layer.Index = make(map[string]*Attribute)
 	layer.Type = GetNodeType(arr[0])
 	if layer.Type != TermSchemaType && layer.Type != TermOverlayType {
@@ -152,8 +148,7 @@ func (layer *Layer) UnmarshalExpanded(in interface{}) error {
 		case "@type":
 		case string(LayerTerms.Attributes),
 			string(LayerTerms.AttributeList),
-			string(LayerTerms.ObjectType),
-			string(LayerTerms.ObjectVersion):
+			string(LayerTerms.TargetType):
 		default:
 			layer.Root.Values[k] = v
 		}
@@ -168,11 +163,8 @@ func (layer *Layer) MarshalExpanded() interface{} {
 		ret["@id"] = layer.ID
 	}
 	ret["@type"] = []interface{}{layer.Type}
-	if len(layer.ObjectType) > 0 {
-		LayerTerms.ObjectType.PutExpanded(ret, layer.ObjectType)
-	}
-	if len(layer.ObjectVersion) > 0 {
-		LayerTerms.ObjectVersion.PutExpanded(ret, layer.ObjectVersion)
+	if len(layer.TargetType) > 0 {
+		ret[LayerTerms.TargetType.GetTerm()] = LayerTerms.TargetType.MakeExpandedContainerFromValues(layer.TargetType)
 	}
 	for k, v := range layer.Root.Values {
 		ret[k] = v

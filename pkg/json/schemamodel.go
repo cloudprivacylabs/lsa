@@ -64,7 +64,7 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, out *ls.At
 		ls.AttributeAnnotations.Format.PutExpanded(out.Values, attr.format)
 	}
 	if len(attr.typ) > 0 {
-		ls.AttributeAnnotations.Type.PutExpanded(out.Values, attr.typ)
+		out.Values[ls.LayerTerms.TargetType.GetTerm()] = ls.LayerTerms.TargetType.MakeExpandedContainerFromValues([]string{attr.typ})
 	}
 	if len(attr.key) > 0 {
 		ls.AttributeAnnotations.Name.PutExpanded(out.Values, attr.key)

@@ -59,9 +59,14 @@ var composeCmd = &cobra.Command{
 					failErr(err)
 				}
 			} else {
-				obj = repo.GetSchemaManifest(arg)
-				if obj == nil {
-					obj = repo.GetLayer(arg)
+				manifest := repo.GetSchemaManifest(arg)
+				if manifest == nil {
+					layer := repo.GetLayer(arg)
+					if layer != nil {
+						obj = layer
+					}
+				} else {
+					obj = manifest
 				}
 				if obj == nil {
 					fail("Not found: " + arg)

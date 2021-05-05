@@ -4,12 +4,56 @@
     "@type": [
       "http://layeredschemas.org/v1.0/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Layer/objectType": [
-      {
-        "@value": "http://hl7.org/fhir/QuestionnaireResponse_Item"
-      }
-    ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
+      {
+        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.linkId",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/targetType": [
+          {
+            "@id": "string"
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item._definition",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item._definition.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/targetType": [
+              {
+                "@id": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item._text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item._text.id",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/targetType": [
+              {
+                "@id": "string"
+              }
+            ]
+          }
+        ]
+      },
       {
         "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item._linkId",
         "@type": [
@@ -21,9 +65,9 @@
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
-            "http://layeredschemas.org/v1.0/attr/type": [
+            "http://layeredschemas.org/v1.0/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ]
           }
@@ -41,71 +85,41 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueDate",
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueDateTime",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueTime",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueDateTime",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueDate.id",
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueDateTime.id",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueBoolean",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "boolean"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueDecimal",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "number"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueUri",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueUri.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
+                        "@id": "string"
                       }
                     ]
                   }
@@ -122,66 +136,9 @@
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueBoolean",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueBoolean.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueDecimal",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueDecimal.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueTime",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueTime.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
+                        "@id": "string"
                       }
                     ]
                   }
@@ -204,41 +161,11 @@
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
+                        "http://layeredschemas.org/v1.0/targetType": [
                           {
-                            "@value": "string"
+                            "@id": "string"
                           }
                         ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._language",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._language.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment.creation",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
                       }
                     ]
                   },
@@ -253,58 +180,9 @@
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
+                        "http://layeredschemas.org/v1.0/targetType": [
                           {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._contentType",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._contentType.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment.url",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._creation",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._creation.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
+                            "@id": "string"
                           }
                         ]
                       }
@@ -315,102 +193,9 @@
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment.data",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment.language",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._hash",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._hash.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment.contentType",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment.title",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._size",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._size.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
+                        "@id": "string"
                       }
                     ]
                   },
@@ -425,11 +210,104 @@
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
+                        "http://layeredschemas.org/v1.0/targetType": [
                           {
-                            "@value": "string"
+                            "@id": "string"
                           }
                         ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment.url",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._language",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._language.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._creation",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._creation.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment.creation",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment.language",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment.data",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
                       }
                     ]
                   },
@@ -438,229 +316,109 @@
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "number"
+                        "@id": "number"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment.title",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._contentType",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._contentType.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._size",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._size.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment.contentType",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._hash",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueAttachment._hash.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueTime",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._unit",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._unit.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity.value",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "number"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._value",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._value.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._comparator.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity.unit",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueDateTime",
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueBoolean",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueDateTime.id",
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueBoolean.id",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
+                        "@id": "string"
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueInteger",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueInteger.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueString",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
                   }
                 ]
               },
@@ -669,9 +427,9 @@
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
-                "http://layeredschemas.org/v1.0/attr/type": [
+                "http://layeredschemas.org/v1.0/targetType": [
                   {
-                    "@value": "number"
+                    "@id": "number"
                   }
                 ]
               },
@@ -682,62 +440,13 @@
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding._version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding._version.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding._code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
-                          {
-                            "@value": "string"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
                     "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding.id",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding.version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
+                        "@id": "string"
                       }
                     ]
                   },
@@ -752,9 +461,69 @@
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
+                        "http://layeredschemas.org/v1.0/targetType": [
                           {
-                            "@value": "string"
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding._userSelected",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding._userSelected.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding.display",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding.version",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding._code.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
                           }
                         ]
                       }
@@ -771,39 +540,28 @@
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
+                        "http://layeredschemas.org/v1.0/targetType": [
                           {
-                            "@value": "string"
+                            "@id": "string"
                           }
                         ]
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding._userSelected",
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding._version",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding._userSelected.id",
+                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding._version.id",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/type": [
+                        "http://layeredschemas.org/v1.0/targetType": [
                           {
-                            "@value": "string"
+                            "@id": "string"
                           }
                         ]
                       }
@@ -814,20 +572,9 @@
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding.display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
-                      {
-                        "@value": "string"
+                        "@id": "string"
                       }
                     ]
                   },
@@ -836,33 +583,22 @@
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/type": [
+                    "http://layeredschemas.org/v1.0/targetType": [
                       {
-                        "@value": "boolean"
+                        "@id": "boolean"
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueDate",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
+                  },
                   {
-                    "@value": "string"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueDateTime",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/type": [
-                  {
-                    "@value": "string"
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueCoding.system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
                   }
                 ]
               },
@@ -871,30 +607,319 @@
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
-                "http://layeredschemas.org/v1.0/attr/type": [
+                "http://layeredschemas.org/v1.0/targetType": [
                   {
-                    "@value": "string"
+                    "@id": "string"
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item._text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item._text.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
+              },
               {
-                "@value": "string"
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._comparator.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._code.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity.value",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "number"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._unit",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._unit.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._system.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity.code",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity.unit",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._value",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity._value.id",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/targetType": [
+                          {
+                            "@id": "string"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueQuantity.system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueUri",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueUri.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueBoolean",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "boolean"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueTime",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueTime.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.id",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueDecimal",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueDecimal.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueString",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueDate",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueInteger",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueInteger.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*.valueDecimal",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/targetType": [
+                  {
+                    "@id": "number"
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueDate",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.answer.*._valueDate.id",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/targetType": [
+                      {
+                        "@id": "string"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -905,28 +930,9 @@
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
-        "http://layeredschemas.org/v1.0/attr/type": [
+        "http://layeredschemas.org/v1.0/targetType": [
           {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item._definition",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item._definition.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/type": [
-              {
-                "@value": "string"
-              }
-            ]
+            "@id": "string"
           }
         ]
       },
@@ -935,20 +941,9 @@
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
-        "http://layeredschemas.org/v1.0/attr/type": [
+        "http://layeredschemas.org/v1.0/targetType": [
           {
-            "@value": "string"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item.linkId",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/type": [
-          {
-            "@value": "string"
+            "@id": "string"
           }
         ]
       },
@@ -957,11 +952,16 @@
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
-        "http://layeredschemas.org/v1.0/attr/type": [
+        "http://layeredschemas.org/v1.0/targetType": [
           {
-            "@value": "string"
+            "@id": "string"
           }
         ]
+      }
+    ],
+    "http://layeredschemas.org/v1.0/targetType": [
+      {
+        "@id": "http://hl7.org/fhir/QuestionnaireResponse_Item"
       }
     ]
   }

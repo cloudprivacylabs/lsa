@@ -4,11 +4,6 @@
     "@type": [
       "http://layeredschemas.org/v1.0/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Layer/objectType": [
-      {
-        "@value": "http://hl7.org/fhir/Bundle"
-      }
-    ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
         "@id": "http://hl7.org/fhir/Bundle.identifier",
@@ -85,21 +80,6 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Bundle.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "Bundle"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "@id": "http://hl7.org/fhir/Bundle.entry",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
@@ -110,35 +90,6 @@
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Bundle.entry.*.search",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Bundle.entry.*.search.mode",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "match"
-                          },
-                          {
-                            "@value": "include"
-                          },
-                          {
-                            "@value": "outcome"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
               {
                 "@id": "http://hl7.org/fhir/Bundle.entry.*.request",
                 "@type": [
@@ -176,10 +127,59 @@
                     ]
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Bundle.entry.*.search",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Bundle.entry.*.search.mode",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "match"
+                          },
+                          {
+                            "@value": "include"
+                          },
+                          {
+                            "@value": "outcome"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
         ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Bundle.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "Bundle"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "http://layeredschemas.org/v1.0/targetType": [
+      {
+        "@id": "http://hl7.org/fhir/Bundle"
       }
     ]
   }

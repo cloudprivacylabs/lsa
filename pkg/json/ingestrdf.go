@@ -92,7 +92,9 @@ func (g *GraphIngester) Ingest(output rdf.Graph, baseID string, input interface{
 		return ErrNotAnObject
 	}
 	// Object type
-	output.Add(rootNode, rdf.BasicIRI(rdf.RDFType), rdf.NewStringLiteral(g.schema.ObjectType))
+	for _, x := range g.schema.TargetType {
+		output.Add(rootNode, rdf.BasicIRI(rdf.RDFType), rdf.BasicIRI(x))
+	}
 	triples, err := g.ingestAttributes(baseID, m, g.schema.Root.GetAttributes())
 	if err != nil {
 		return err

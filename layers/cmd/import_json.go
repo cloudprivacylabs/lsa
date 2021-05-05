@@ -163,7 +163,7 @@ are Go templates, you can reference entity names and references using {{.name}} 
 				if len(layer.Type) == 0 {
 					fail("Layer type not specified")
 				}
-				layer.ObjectType = exec(req.objectTypet, req.Entities[i])
+				layer.TargetType = []string{exec(req.objectTypet, req.Entities[i])}
 				data, err := json.MarshalIndent(layer.MarshalExpanded(), "", "  ")
 				if err != nil {
 					failErr(err)
@@ -174,7 +174,7 @@ are Go templates, you can reference entity names and references using {{.name}} 
 			if len(req.Schema) > 0 {
 				sch := ls.SchemaManifest{
 					ID:         exec(req.schemaIDt, req.Entities[i]),
-					ObjectType: exec(req.objectTypet, req.Entities[i]),
+					TargetType: []string{exec(req.objectTypet, req.Entities[i])},
 					Schema:     baseID,
 					Overlays:   layerIDs,
 				}

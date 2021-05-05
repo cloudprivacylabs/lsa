@@ -1,7 +1,7 @@
 {
     "@context": {
         "@version": 1.1,
-        "ls": "http://layeredschemas.org/v1.0/",
+        "ls": "http://layeredschemas.org/",
         "Value": {
             "@id": "ls:Value",
             "@context": {}
@@ -57,11 +57,9 @@
         "Overlay": {
             "@id": "ls:Overlay",
             "@context": {
-                "objectType": {
-                    "@id": "ls:Layer/objectType"
-                },
-                "objectVersion": {
-                    "@id": "ls:Layer/objectVersion"
+                "targetType": {
+                    "@id": "ls:targetType",
+                    "@type": "@id"
                 },
                 "attributes": {
                     "@id": "ls:Object/attributes",
@@ -76,11 +74,9 @@
         "Schema": {
             "@id": "ls:Schema",
             "@context": {
-                "objectType": {
-                    "@id": "ls:Layer/objectType"
-                },
-                "objectVersion": {
-                    "@id": "ls:Layer/objectVersion"
+                "targetType": {
+                    "@id": "ls:targetType",
+                    "@type": "@id"
                 },
                 "attributes": {
                     "@id": "ls:Object/attributes",
@@ -99,11 +95,9 @@
                 "publishedAt": {
                     "@id": "ls:SchemaManifest/publishedAt"
                 },
-                "objectType": {
-                    "@id": "ls:Layer/objectType"
-                },
-                "objectVersion": {
-                    "@id": "ls:Layer/objectVersion"
+                "targetType": {
+                    "@id": "ls:targetType",
+                    "@type": "@id"
                 },
                 "bundle": {
                     "@id": "ls:SchemaManifest/bundle",
@@ -134,8 +128,9 @@
         "encoding": {
             "@id": "ls:attr/encoding"
         },
-        "type": {
-            "@id": "ls:attr/type"
+        "targetType": {
+            "@id": "ls:targetType",
+            "@type": "@id"
         },
         "format": {
             "@id": "ls:attr/format"

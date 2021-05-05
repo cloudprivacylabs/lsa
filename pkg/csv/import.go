@@ -46,7 +46,7 @@ func Import(spec ImportSpec, input [][]string) (layers []*ls.Layer, err error) {
 	}
 	for _, layer := range spec.Layers {
 		newLayer := ls.NewLayer()
-		newLayer.ObjectType = spec.ObjectType
+		newLayer.TargetType = []string{spec.ObjectType}
 		layers = append(layers, newLayer)
 
 		for _, row := range input {

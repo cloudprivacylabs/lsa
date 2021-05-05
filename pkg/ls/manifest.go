@@ -24,14 +24,13 @@ const TermSchemaManifestType = LS + "/SchemaManifest"
 
 // SchemaManifest contains the schema metadata and layer pointers
 type SchemaManifest struct {
-	ID            string
-	PublishedAt   string
-	Bundle        string
-	ObjectType    string
-	ObjectVersion string
-	Schema        string
-	Overlays      []string
-	Values        map[string]interface{}
+	ID          string
+	PublishedAt string
+	Bundle      string
+	TargetType  []string
+	Schema      string
+	Overlays    []string
+	Values      map[string]interface{}
 }
 
 var SchemaManifestTerms = struct {
@@ -81,10 +80,8 @@ func (schema *SchemaManifest) UnmarshalExpanded(in interface{}) error {
 			schema.ID = GetNodeID(m)
 		case string(SchemaManifestTerms.PublishedAt):
 			schema.PublishedAt = SchemaManifestTerms.PublishedAt.StringFromExpanded(v)
-		case string(LayerTerms.ObjectType):
-			schema.ObjectType = LayerTerms.ObjectType.StringFromExpanded(v)
-		case string(LayerTerms.ObjectVersion):
-			schema.ObjectVersion = LayerTerms.ObjectVersion.StringFromExpanded(v)
+		case string(LayerTerms.TargetType):
+			schema.TargetType = LayerTerms.TargetType.ElementValuesFromExpanded(v)
 		case string(SchemaManifestTerms.Bundle):
 			schema.Bundle = SchemaManifestTerms.Bundle.StringFromExpanded(v)
 		case string(SchemaManifestTerms.Schema):
@@ -98,8 +95,8 @@ func (schema *SchemaManifest) UnmarshalExpanded(in interface{}) error {
 		}
 	}
 
-	if len(schema.ObjectType) == 0 {
-		return ErrInvalidInput("Empty object type in schema manifest")
+	if len(schema.TargetType) == 0 {
+		return ErrInvalidInput("Empty target type in schema manifest")
 	}
 	if len(schema.Schema) == 0 {
 		return ErrInvalidInput("Empty schema base in schema manifest")
@@ -118,8 +115,7 @@ func (schema *SchemaManifest) MarshalExpanded() interface{} {
 		ret[k] = v
 	}
 	SchemaManifestTerms.PublishedAt.PutExpanded(ret, schema.PublishedAt)
-	LayerTerms.ObjectType.PutExpanded(ret, schema.ObjectType)
-	LayerTerms.ObjectVersion.PutExpanded(ret, schema.ObjectVersion)
+	ret[LayerTerms.TargetType.GetTerm()] = LayerTerms.TargetType.MakeExpandedContainerFromValues(schema.TargetType)
 	SchemaManifestTerms.Bundle.PutExpanded(ret, schema.Bundle)
 	SchemaManifestTerms.Schema.PutExpanded(ret, schema.Schema)
 	if len(schema.Overlays) != 0 {

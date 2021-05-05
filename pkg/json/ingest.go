@@ -73,6 +73,7 @@ func Ingest(baseID string, input interface{}, schema *ls.Layer) (ls.DocumentNode
 		return nil, ErrNotAnObject
 	}
 	output := ls.NewObjectNode(baseID, "", nil)
+	output.SetType(schema.TargetType)
 	err := mergeAttributes(baseID, m, schema.Root.GetAttributes(), output)
 	if err != nil {
 		return nil, err

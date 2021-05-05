@@ -1,0 +1,27 @@
+{
+     "@context": [
+         "http://layeredschemas.org/ls.jsonld",
+         { 
+            "dpv": "http://www.w3.org/ns/dpv#",
+             "hasPersonalDataCategory": {
+               "@id":"dpv:hasPersonalDataCategory",
+               "@type":"@id"
+             }
+        }
+     ],
+    "@id": "http://example.org/Person/dpv",
+    "@type": "Overlay",
+    "targetType": ["http://example.org/Person","dpv:DataSubject"],
+    "attributes": [
+        {
+           "@id": "http://example.org/Person/firstName",
+           "@type": "Value",
+           "hasPersonalDataCategory": [ "dpv:Name", "dpv:Identifying" ]
+        },
+        {
+           "@id": "http://example.org/Person/lastName",
+           "@type": "Value",
+           "hasPersonalDataCategory": [ "dpv:Name", "dpv:Identifying" ]
+        }
+    ]
+}

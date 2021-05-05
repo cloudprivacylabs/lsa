@@ -4,11 +4,6 @@
     "@type": [
       "http://layeredschemas.org/v1.0/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Layer/objectType": [
-      {
-        "@value": "http://hl7.org/fhir/DeviceRequest"
-      }
-    ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
         "@id": "http://hl7.org/fhir/DeviceRequest.groupIdentifier",
@@ -46,19 +41,65 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming",
+        "@id": "http://hl7.org/fhir/DeviceRequest.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "DeviceRequest"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceRequest.text",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat",
+            "@id": "http://hl7.org/fhir/DeviceRequest.text.status",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceRequest.identifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.periodUnit",
+                "@id": "http://hl7.org/fhir/DeviceRequest.identifier.*.use",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -66,44 +107,85 @@
                   {
                     "@list": [
                       {
-                        "@value": "s"
+                        "@value": "usual"
                       },
                       {
-                        "@value": "min"
+                        "@value": "official"
                       },
                       {
-                        "@value": "h"
+                        "@value": "temp"
                       },
                       {
-                        "@value": "d"
+                        "@value": "secondary"
                       },
                       {
-                        "@value": "wk"
-                      },
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceRequest.parameter",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueQuantity",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueQuantity.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
-                        "@value": "mo"
-                      },
-                      {
-                        "@value": "a"
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange",
+                "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueRange",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.low",
+                    "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueRange.low",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.low.comparator",
+                        "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueRange.low.comparator",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -129,13 +211,13 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.high",
+                    "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueRange.high",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.high.comparator",
+                        "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueRange.high.comparator",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -161,7 +243,23 @@
                     ]
                   }
                 ]
-              },
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
                 "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.when",
                 "@type": [
@@ -293,6 +391,39 @@
                 ]
               },
               {
+                "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.periodUnit",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "s"
+                      },
+                      {
+                        "@value": "min"
+                      },
+                      {
+                        "@value": "h"
+                      },
+                      {
+                        "@value": "d"
+                      },
+                      {
+                        "@value": "wk"
+                      },
+                      {
+                        "@value": "mo"
+                      },
+                      {
+                        "@value": "a"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
                 "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsDuration",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
@@ -323,68 +454,21 @@
                     ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceRequest.parameter",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueQuantity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueQuantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
               },
               {
-                "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueRange",
+                "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueRange.low",
+                    "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.low",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueRange.low.comparator",
+                        "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.low.comparator",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -410,13 +494,13 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueRange.high",
+                    "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.high",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/DeviceRequest.parameter.*.valueRange.high.comparator",
+                        "@id": "http://hl7.org/fhir/DeviceRequest.occurrenceTiming.repeat.boundsRange.high.comparator",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -446,95 +530,11 @@
             ]
           }
         ]
-      },
+      }
+    ],
+    "http://layeredschemas.org/v1.0/targetType": [
       {
-        "@id": "http://hl7.org/fhir/DeviceRequest.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DeviceRequest.text.status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceRequest.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "DeviceRequest"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DeviceRequest.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/DeviceRequest.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        "@id": "http://hl7.org/fhir/DeviceRequest"
       }
     ]
   }

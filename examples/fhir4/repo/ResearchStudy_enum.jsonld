@@ -4,81 +4,47 @@
     "@type": [
       "http://layeredschemas.org/v1.0/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Layer/objectType": [
-      {
-        "@value": "http://hl7.org/fhir/ResearchStudy"
-      }
-    ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/ResearchStudy.text",
+        "@id": "http://hl7.org/fhir/ResearchStudy.status",
         "@type": [
-          "http://layeredschemas.org/v1.0/Object"
+          "http://layeredschemas.org/v1.0/Value"
         ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
-            "@id": "http://hl7.org/fhir/ResearchStudy.text.status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "@list": [
               {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ResearchStudy.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+                "@value": "active"
+              },
               {
-                "@id": "http://hl7.org/fhir/ResearchStudy.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
+                "@value": "administratively-completed"
+              },
+              {
+                "@value": "approved"
+              },
+              {
+                "@value": "closed-to-accrual"
+              },
+              {
+                "@value": "closed-to-accrual-and-intervention"
+              },
+              {
+                "@value": "completed"
+              },
+              {
+                "@value": "disapproved"
+              },
+              {
+                "@value": "in-review"
+              },
+              {
+                "@value": "temporarily-closed-to-accrual"
+              },
+              {
+                "@value": "temporarily-closed-to-accrual-and-intervention"
+              },
+              {
+                "@value": "withdrawn"
               }
             ]
           }
@@ -136,6 +102,38 @@
         ]
       },
       {
+        "@id": "http://hl7.org/fhir/ResearchStudy.text",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ResearchStudy.text.status",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "@id": "http://hl7.org/fhir/ResearchStudy.resourceType",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
@@ -145,51 +143,6 @@
             "@list": [
               {
                 "@value": "ResearchStudy"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ResearchStudy.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "administratively-completed"
-              },
-              {
-                "@value": "approved"
-              },
-              {
-                "@value": "closed-to-accrual"
-              },
-              {
-                "@value": "closed-to-accrual-and-intervention"
-              },
-              {
-                "@value": "completed"
-              },
-              {
-                "@value": "disapproved"
-              },
-              {
-                "@value": "in-review"
-              },
-              {
-                "@value": "temporarily-closed-to-accrual"
-              },
-              {
-                "@value": "temporarily-closed-to-accrual-and-intervention"
-              },
-              {
-                "@value": "withdrawn"
               }
             ]
           }
@@ -284,6 +237,53 @@
             ]
           }
         ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/ResearchStudy.identifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/ResearchStudy.identifier.*.use",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "http://layeredschemas.org/v1.0/targetType": [
+      {
+        "@id": "http://hl7.org/fhir/ResearchStudy"
       }
     ]
   }

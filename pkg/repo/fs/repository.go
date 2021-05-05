@@ -94,7 +94,7 @@ func (repo *Repository) GetLayer(id string) *ls.Layer {
 
 func (repo *Repository) GetSchemaManifestByObjectType(t string) *ls.SchemaManifest {
 	for _, x := range repo.index {
-		if x.ObjectType == t && x.Type == ls.TermSchemaManifestType {
+		if x.hasType(t) && x.Type == ls.TermSchemaManifestType {
 			return x.unmarshaled.(*ls.SchemaManifest)
 		}
 	}
@@ -112,7 +112,7 @@ func (repo *Repository) GetComposedSchema(id string) (*ls.Layer, error) {
 
 func (repo *Repository) GetComposedSchemaByObjectType(t string) (*ls.Layer, error) {
 	for i, x := range repo.index {
-		if x.ObjectType == t && x.Type == ls.TermSchemaManifestType {
+		if x.hasType(t) && x.Type == ls.TermSchemaManifestType {
 			return repo.compose(i)
 		}
 	}
@@ -150,11 +150,20 @@ func (repo *Repository) compose(index int) (*ls.Layer, error) {
 type IndexEntry struct {
 	Type       string      `json:"type"`
 	ID         string      `json:"id"`
-	ObjectType string      `json:"objectType,omitempty"`
+	TargetType []string    `json:"targetType,omitempty"`
 	Payload    interface{} `json:"payload"`
 
 	unmarshaled interface{}
 	composed    *ls.Layer
+}
+
+func (i IndexEntry) hasType(t string) bool {
+	for _, x := range i.TargetType {
+		if x == t {
+			return true
+		}
+	}
+	return false
 }
 
 // Load loads the index under the directory. If buildIndexIfStale
@@ -262,7 +271,7 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, error) {
 				entry := IndexEntry{
 					Type:       ls.TermSchemaManifestType,
 					ID:         manifest.ID,
-					ObjectType: manifest.ObjectType,
+					TargetType: manifest.TargetType,
 					Payload:    expanded,
 				}
 				ret = append(ret, entry)
@@ -270,7 +279,7 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, error) {
 				entry := IndexEntry{
 					Type:       layer.Type,
 					ID:         layer.ID,
-					ObjectType: layer.ObjectType,
+					TargetType: layer.TargetType,
 					Payload:    expanded,
 				}
 				ret = append(ret, entry)

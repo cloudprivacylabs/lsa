@@ -91,12 +91,12 @@ func (e ErrValidation) Error() string {
 }
 
 type ErrIncompatible struct {
-	Source string
-	Target string
+	Source []string
+	Target []string
 }
 
 func (e ErrIncompatible) Error() string {
-	return fmt.Sprintf("Incompatible composition. target: %s, source: %s", e.Target, e.Source)
+	return fmt.Sprintf("Incompatible composition. target: %v, source: %v", e.Target, e.Source)
 }
 
 type ErrNotACompositeType string

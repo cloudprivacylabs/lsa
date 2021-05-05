@@ -4,14 +4,9 @@
     "@type": [
       "http://layeredschemas.org/v1.0/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Layer/objectType": [
-      {
-        "@value": "http://hl7.org/fhir/Subscription"
-      }
-    ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/Subscription.resourceType",
+        "@id": "http://hl7.org/fhir/Subscription.status",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
@@ -19,7 +14,16 @@
           {
             "@list": [
               {
-                "@value": "Subscription"
+                "@value": "requested"
+              },
+              {
+                "@value": "active"
+              },
+              {
+                "@value": "error"
+              },
+              {
+                "@value": "off"
               }
             ]
           }
@@ -58,42 +62,7 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Subscription.channel",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Subscription.channel.type",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "rest-hook"
-                  },
-                  {
-                    "@value": "websocket"
-                  },
-                  {
-                    "@value": "email"
-                  },
-                  {
-                    "@value": "sms"
-                  },
-                  {
-                    "@value": "message"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Subscription.status",
+        "@id": "http://hl7.org/fhir/Subscription.resourceType",
         "@type": [
           "http://layeredschemas.org/v1.0/Value"
         ],
@@ -101,16 +70,7 @@
           {
             "@list": [
               {
-                "@value": "requested"
-              },
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "error"
-              },
-              {
-                "@value": "off"
+                "@value": "Subscription"
               }
             ]
           }
@@ -190,6 +150,46 @@
             ]
           }
         ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Subscription.channel",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Subscription.channel.type",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "rest-hook"
+                  },
+                  {
+                    "@value": "websocket"
+                  },
+                  {
+                    "@value": "email"
+                  },
+                  {
+                    "@value": "sms"
+                  },
+                  {
+                    "@value": "message"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "http://layeredschemas.org/v1.0/targetType": [
+      {
+        "@id": "http://hl7.org/fhir/Subscription"
       }
     ]
   }

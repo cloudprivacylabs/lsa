@@ -4,36 +4,7 @@
     "@type": [
       "http://layeredschemas.org/v1.0/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Layer/objectType": [
-      {
-        "@value": "http://hl7.org/fhir/Practitioner"
-      }
-    ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
-      {
-        "@id": "http://hl7.org/fhir/Practitioner.gender",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "male"
-              },
-              {
-                "@value": "female"
-              },
-              {
-                "@value": "other"
-              },
-              {
-                "@value": "unknown"
-              }
-            ]
-          }
-        ]
-      },
       {
         "@id": "http://hl7.org/fhir/Practitioner.address",
         "@type": [
@@ -45,27 +16,6 @@
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Practitioner.address.*.type",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "postal"
-                      },
-                      {
-                        "@value": "physical"
-                      },
-                      {
-                        "@value": "both"
-                      }
-                    ]
-                  }
-                ]
-              },
               {
                 "@id": "http://hl7.org/fhir/Practitioner.address.*.use",
                 "@type": [
@@ -92,13 +42,34 @@
                     ]
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Practitioner.address.*.type",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "postal"
+                      },
+                      {
+                        "@value": "physical"
+                      },
+                      {
+                        "@value": "both"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Practitioner.qualification",
+        "@id": "http://hl7.org/fhir/Practitioner.name",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
         ],
@@ -109,46 +80,52 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Practitioner.qualification.*.identifier",
+                "@id": "http://hl7.org/fhir/Practitioner.name.*.use",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
+                  "http://layeredschemas.org/v1.0/Value"
                 ],
-                "http://layeredschemas.org/v1.0/Array/items": [
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
                   {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                    "@list": [
                       {
-                        "@id": "http://hl7.org/fhir/Practitioner.qualification.*.identifier.*.use",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "usual"
-                              },
-                              {
-                                "@value": "official"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "secondary"
-                              },
-                              {
-                                "@value": "old"
-                              }
-                            ]
-                          }
-                        ]
+                        "@value": "usual"
+                      },
+                      {
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "nickname"
+                      },
+                      {
+                        "@value": "anonymous"
+                      },
+                      {
+                        "@value": "old"
+                      },
+                      {
+                        "@value": "maiden"
                       }
                     ]
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Practitioner.resourceType",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Value"
+        ],
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          {
+            "@list": [
+              {
+                "@value": "Practitioner"
               }
             ]
           }
@@ -230,39 +207,31 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Practitioner.text",
+        "@id": "http://hl7.org/fhir/Practitioner.gender",
         "@type": [
-          "http://layeredschemas.org/v1.0/Object"
+          "http://layeredschemas.org/v1.0/Value"
         ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
-            "@id": "http://hl7.org/fhir/Practitioner.text.status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "@list": [
               {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
+                "@value": "male"
+              },
+              {
+                "@value": "female"
+              },
+              {
+                "@value": "other"
+              },
+              {
+                "@value": "unknown"
               }
             ]
           }
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Practitioner.name",
+        "@id": "http://hl7.org/fhir/Practitioner.qualification",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
         ],
@@ -273,33 +242,42 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Practitioner.name.*.use",
+                "@id": "http://hl7.org/fhir/Practitioner.qualification.*.identifier",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "http://layeredschemas.org/v1.0/Array"
                 ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "http://layeredschemas.org/v1.0/Array/items": [
                   {
-                    "@list": [
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "nickname"
-                      },
-                      {
-                        "@value": "anonymous"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "maiden"
+                        "@id": "http://hl7.org/fhir/Practitioner.qualification.*.identifier.*.use",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "usual"
+                              },
+                              {
+                                "@value": "official"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "secondary"
+                              },
+                              {
+                                "@value": "old"
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
@@ -352,19 +330,41 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Practitioner.resourceType",
+        "@id": "http://hl7.org/fhir/Practitioner.text",
         "@type": [
-          "http://layeredschemas.org/v1.0/Value"
+          "http://layeredschemas.org/v1.0/Object"
         ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/Practitioner.text.status",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "@value": "Practitioner"
+                "@list": [
+                  {
+                    "@value": "generated"
+                  },
+                  {
+                    "@value": "extensions"
+                  },
+                  {
+                    "@value": "additional"
+                  },
+                  {
+                    "@value": "empty"
+                  }
+                ]
               }
             ]
           }
         ]
+      }
+    ],
+    "http://layeredschemas.org/v1.0/targetType": [
+      {
+        "@id": "http://hl7.org/fhir/Practitioner"
       }
     ]
   }

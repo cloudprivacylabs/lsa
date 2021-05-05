@@ -4,11 +4,6 @@
     "@type": [
       "http://layeredschemas.org/v1.0/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Layer/objectType": [
-      {
-        "@value": "http://hl7.org/fhir/StructureMap_Rule"
-      }
-    ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
         "@id": "http://hl7.org/fhir/StructureMap_Rule.source",
@@ -22,107 +17,19 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDataRequirement",
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueSampledData",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDataRequirement.dateFilter",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDataRequirement.dateFilter.*.valueDuration",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDataRequirement.dateFilter.*.valueDuration.comparator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDataRequirement.sort",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDataRequirement.sort.*.direction",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "ascending"
-                                  },
-                                  {
-                                    "@value": "descending"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.condition",
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueSampledData.origin",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.condition.language",
+                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueSampledData.origin.comparator",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -130,427 +37,16 @@
                           {
                             "@list": [
                               {
-                                "@value": "text/cql"
+                                "@value": "\u003c"
                               },
                               {
-                                "@value": "text/fhirpath"
+                                "@value": "\u003c="
                               },
                               {
-                                "@value": "application/x-fhir-query"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.type",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "named-event"
-                          },
-                          {
-                            "@value": "periodic"
-                          },
-                          {
-                            "@value": "data-changed"
-                          },
-                          {
-                            "@value": "data-added"
-                          },
-                          {
-                            "@value": "data-modified"
-                          },
-                          {
-                            "@value": "data-removed"
-                          },
-                          {
-                            "@value": "data-accessed"
-                          },
-                          {
-                            "@value": "data-access-ended"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.data",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.data.*.sort",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Array"
-                            ],
-                            "http://layeredschemas.org/v1.0/Array/items": [
-                              {
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Object"
-                                ],
-                                "http://layeredschemas.org/v1.0/Object/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.data.*.sort.*.direction",
-                                    "@type": [
-                                      "http://layeredschemas.org/v1.0/Value"
-                                    ],
-                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "ascending"
-                                          },
-                                          {
-                                            "@value": "descending"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.data.*.dateFilter",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Array"
-                            ],
-                            "http://layeredschemas.org/v1.0/Array/items": [
-                              {
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Object"
-                                ],
-                                "http://layeredschemas.org/v1.0/Object/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.data.*.dateFilter.*.valueDuration",
-                                    "@type": [
-                                      "http://layeredschemas.org/v1.0/Object"
-                                    ],
-                                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                                      {
-                                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.data.*.dateFilter.*.valueDuration.comparator",
-                                        "@type": [
-                                          "http://layeredschemas.org/v1.0/Value"
-                                        ],
-                                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                          {
-                                            "@list": [
-                                              {
-                                                "@value": "\u003c"
-                                              },
-                                              {
-                                                "@value": "\u003c="
-                                              },
-                                              {
-                                                "@value": "\u003e="
-                                              },
-                                              {
-                                                "@value": "\u003e"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.when",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Array"
-                            ],
-                            "http://layeredschemas.org/v1.0/Array/items": [
-                              {
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "MORN"
-                                      },
-                                      {
-                                        "@value": "MORN.early"
-                                      },
-                                      {
-                                        "@value": "MORN.late"
-                                      },
-                                      {
-                                        "@value": "NOON"
-                                      },
-                                      {
-                                        "@value": "AFT"
-                                      },
-                                      {
-                                        "@value": "AFT.early"
-                                      },
-                                      {
-                                        "@value": "AFT.late"
-                                      },
-                                      {
-                                        "@value": "EVE"
-                                      },
-                                      {
-                                        "@value": "EVE.early"
-                                      },
-                                      {
-                                        "@value": "EVE.late"
-                                      },
-                                      {
-                                        "@value": "NIGHT"
-                                      },
-                                      {
-                                        "@value": "PHS"
-                                      },
-                                      {
-                                        "@value": "HS"
-                                      },
-                                      {
-                                        "@value": "WAKE"
-                                      },
-                                      {
-                                        "@value": "C"
-                                      },
-                                      {
-                                        "@value": "CM"
-                                      },
-                                      {
-                                        "@value": "CD"
-                                      },
-                                      {
-                                        "@value": "CV"
-                                      },
-                                      {
-                                        "@value": "AC"
-                                      },
-                                      {
-                                        "@value": "ACM"
-                                      },
-                                      {
-                                        "@value": "ACD"
-                                      },
-                                      {
-                                        "@value": "ACV"
-                                      },
-                                      {
-                                        "@value": "PC"
-                                      },
-                                      {
-                                        "@value": "PCM"
-                                      },
-                                      {
-                                        "@value": "PCD"
-                                      },
-                                      {
-                                        "@value": "PCV"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.durationUnit",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "s"
-                                  },
-                                  {
-                                    "@value": "min"
-                                  },
-                                  {
-                                    "@value": "h"
-                                  },
-                                  {
-                                    "@value": "d"
-                                  },
-                                  {
-                                    "@value": "wk"
-                                  },
-                                  {
-                                    "@value": "mo"
-                                  },
-                                  {
-                                    "@value": "a"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.boundsRange",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.boundsRange.low",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Object"
-                                ],
-                                "http://layeredschemas.org/v1.0/Object/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.boundsRange.low.comparator",
-                                    "@type": [
-                                      "http://layeredschemas.org/v1.0/Value"
-                                    ],
-                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "\u003c"
-                                          },
-                                          {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
+                                "@value": "\u003e="
                               },
                               {
-                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.boundsRange.high",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Object"
-                                ],
-                                "http://layeredschemas.org/v1.0/Object/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.boundsRange.high.comparator",
-                                    "@type": [
-                                      "http://layeredschemas.org/v1.0/Value"
-                                    ],
-                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "\u003c"
-                                          },
-                                          {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.boundsDuration",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.boundsDuration.comparator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.periodUnit",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "s"
-                                  },
-                                  {
-                                    "@value": "min"
-                                  },
-                                  {
-                                    "@value": "h"
-                                  },
-                                  {
-                                    "@value": "d"
-                                  },
-                                  {
-                                    "@value": "wk"
-                                  },
-                                  {
-                                    "@value": "mo"
-                                  },
-                                  {
-                                    "@value": "a"
-                                  }
-                                ]
+                                "@value": "\u003e"
                               }
                             ]
                           }
@@ -561,79 +57,129 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContactDetail",
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueCount",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContactDetail.telecom",
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueCount.comparator",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
+                      "http://layeredschemas.org/v1.0/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
                       {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                        "@list": [
                           {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContactDetail.telecom.*.system",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "phone"
-                                  },
-                                  {
-                                    "@value": "fax"
-                                  },
-                                  {
-                                    "@value": "email"
-                                  },
-                                  {
-                                    "@value": "pager"
-                                  },
-                                  {
-                                    "@value": "url"
-                                  },
-                                  {
-                                    "@value": "sms"
-                                  },
-                                  {
-                                    "@value": "other"
-                                  }
-                                ]
-                              }
-                            ]
+                            "@value": "\u003c"
                           },
                           {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContactDetail.telecom.*.use",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueExpression",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueExpression.language",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "text/cql"
+                          },
+                          {
+                            "@value": "text/fhirpath"
+                          },
+                          {
+                            "@value": "application/x-fhir-query"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRange",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRange.low",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRange.low.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
                               {
-                                "@list": [
-                                  {
-                                    "@value": "home"
-                                  },
-                                  {
-                                    "@value": "work"
-                                  },
-                                  {
-                                    "@value": "temp"
-                                  },
-                                  {
-                                    "@value": "old"
-                                  },
-                                  {
-                                    "@value": "mobile"
-                                  }
-                                ]
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRange.high",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRange.high.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
                               }
                             ]
                           }
@@ -756,670 +302,6 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueCount",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueCount.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueSampledData",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueSampledData.origin",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueSampledData.origin.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.listMode",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "first"
-                      },
-                      {
-                        "@value": "not_first"
-                      },
-                      {
-                        "@value": "last"
-                      },
-                      {
-                        "@value": "not_last"
-                      },
-                      {
-                        "@value": "only_one"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRelatedArtifact",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRelatedArtifact.type",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "documentation"
-                          },
-                          {
-                            "@value": "justification"
-                          },
-                          {
-                            "@value": "citation"
-                          },
-                          {
-                            "@value": "predecessor"
-                          },
-                          {
-                            "@value": "successor"
-                          },
-                          {
-                            "@value": "derived-from"
-                          },
-                          {
-                            "@value": "depends-on"
-                          },
-                          {
-                            "@value": "composed-of"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContributor",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContributor.type",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "author"
-                          },
-                          {
-                            "@value": "editor"
-                          },
-                          {
-                            "@value": "reviewer"
-                          },
-                          {
-                            "@value": "endorser"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContributor.contact",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContributor.contact.*.telecom",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Array"
-                            ],
-                            "http://layeredschemas.org/v1.0/Array/items": [
-                              {
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Object"
-                                ],
-                                "http://layeredschemas.org/v1.0/Object/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContributor.contact.*.telecom.*.system",
-                                    "@type": [
-                                      "http://layeredschemas.org/v1.0/Value"
-                                    ],
-                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "phone"
-                                          },
-                                          {
-                                            "@value": "fax"
-                                          },
-                                          {
-                                            "@value": "email"
-                                          },
-                                          {
-                                            "@value": "pager"
-                                          },
-                                          {
-                                            "@value": "url"
-                                          },
-                                          {
-                                            "@value": "sms"
-                                          },
-                                          {
-                                            "@value": "other"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContributor.contact.*.telecom.*.use",
-                                    "@type": [
-                                      "http://layeredschemas.org/v1.0/Value"
-                                    ],
-                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "home"
-                                          },
-                                          {
-                                            "@value": "work"
-                                          },
-                                          {
-                                            "@value": "temp"
-                                          },
-                                          {
-                                            "@value": "old"
-                                          },
-                                          {
-                                            "@value": "mobile"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRatio",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRatio.numerator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRatio.numerator.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRatio.denominator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRatio.denominator.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueAge",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueAge.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueQuantity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueQuantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContactPoint",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContactPoint.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "phone"
-                          },
-                          {
-                            "@value": "fax"
-                          },
-                          {
-                            "@value": "email"
-                          },
-                          {
-                            "@value": "pager"
-                          },
-                          {
-                            "@value": "url"
-                          },
-                          {
-                            "@value": "sms"
-                          },
-                          {
-                            "@value": "other"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContactPoint.use",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "home"
-                          },
-                          {
-                            "@value": "work"
-                          },
-                          {
-                            "@value": "temp"
-                          },
-                          {
-                            "@value": "old"
-                          },
-                          {
-                            "@value": "mobile"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRange",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRange.low",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRange.low.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRange.high",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRange.high.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueAddress",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueAddress.use",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "home"
-                          },
-                          {
-                            "@value": "work"
-                          },
-                          {
-                            "@value": "temp"
-                          },
-                          {
-                            "@value": "old"
-                          },
-                          {
-                            "@value": "billing"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueAddress.type",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "postal"
-                          },
-                          {
-                            "@value": "physical"
-                          },
-                          {
-                            "@value": "both"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueIdentifier",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueIdentifier.use",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "usual"
-                          },
-                          {
-                            "@value": "official"
-                          },
-                          {
-                            "@value": "temp"
-                          },
-                          {
-                            "@value": "secondary"
-                          },
-                          {
-                            "@value": "old"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDuration",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDuration.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
                 "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
@@ -1431,39 +313,6 @@
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming.repeat.durationUnit",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "s"
-                              },
-                              {
-                                "@value": "min"
-                              },
-                              {
-                                "@value": "h"
-                              },
-                              {
-                                "@value": "d"
-                              },
-                              {
-                                "@value": "wk"
-                              },
-                              {
-                                "@value": "mo"
-                              },
-                              {
-                                "@value": "a"
-                              }
-                            ]
-                          }
-                        ]
-                      },
                       {
                         "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming.repeat.when",
                         "@type": [
@@ -1562,43 +411,76 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming.repeat.boundsRange",
+                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming.repeat.durationUnit",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "s"
+                              },
+                              {
+                                "@value": "min"
+                              },
+                              {
+                                "@value": "h"
+                              },
+                              {
+                                "@value": "d"
+                              },
+                              {
+                                "@value": "wk"
+                              },
+                              {
+                                "@value": "mo"
+                              },
+                              {
+                                "@value": "a"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming.repeat.boundsDuration",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Object"
                         ],
                         "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming.repeat.boundsRange.high",
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming.repeat.boundsDuration.comparator",
                             "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
+                              "http://layeredschemas.org/v1.0/Value"
                             ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
                               {
-                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming.repeat.boundsRange.high.comparator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                "@list": [
                                   {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
                                   }
                                 ]
                               }
                             ]
-                          },
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming.repeat.boundsRange",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
                             "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming.repeat.boundsRange.low",
                             "@type": [
@@ -1630,34 +512,34 @@
                                 ]
                               }
                             ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming.repeat.boundsDuration",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          },
                           {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming.repeat.boundsDuration.comparator",
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming.repeat.boundsRange.high",
                             "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
+                              "http://layeredschemas.org/v1.0/Object"
                             ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
                               {
-                                "@list": [
+                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTiming.repeat.boundsRange.high.comparator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
                                   {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
                                   }
                                 ]
                               }
@@ -1703,11 +585,111 @@
                 ]
               },
               {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContactPoint",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContactPoint.system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "phone"
+                          },
+                          {
+                            "@value": "fax"
+                          },
+                          {
+                            "@value": "email"
+                          },
+                          {
+                            "@value": "pager"
+                          },
+                          {
+                            "@value": "url"
+                          },
+                          {
+                            "@value": "sms"
+                          },
+                          {
+                            "@value": "other"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContactPoint.use",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "home"
+                          },
+                          {
+                            "@value": "work"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "old"
+                          },
+                          {
+                            "@value": "mobile"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
                 "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.maxDosePerAdministration",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.maxDosePerAdministration.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
                   {
                     "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate",
                     "@type": [
@@ -1719,6 +701,38 @@
                           "http://layeredschemas.org/v1.0/Object"
                         ],
                         "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.doseQuantity",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.doseQuantity.comparator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
                           {
                             "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.doseRange",
                             "@type": [
@@ -1765,6 +779,78 @@
                                 "http://layeredschemas.org/v1.0/Object/attributes": [
                                   {
                                     "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.doseRange.high.comparator",
+                                    "@type": [
+                                      "http://layeredschemas.org/v1.0/Value"
+                                    ],
+                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.rateRatio",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.rateRatio.numerator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.rateRatio.numerator.comparator",
+                                    "@type": [
+                                      "http://layeredschemas.org/v1.0/Value"
+                                    ],
+                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.rateRatio.denominator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.rateRatio.denominator.comparator",
                                     "@type": [
                                       "http://layeredschemas.org/v1.0/Value"
                                     ],
@@ -1869,110 +955,6 @@
                                 "http://layeredschemas.org/v1.0/Object/attributes": [
                                   {
                                     "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.rateRange.high.comparator",
-                                    "@type": [
-                                      "http://layeredschemas.org/v1.0/Value"
-                                    ],
-                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "\u003c"
-                                          },
-                                          {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.doseQuantity",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.doseQuantity.comparator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.rateRatio",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.rateRatio.numerator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Object"
-                                ],
-                                "http://layeredschemas.org/v1.0/Object/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.rateRatio.numerator.comparator",
-                                    "@type": [
-                                      "http://layeredschemas.org/v1.0/Value"
-                                    ],
-                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "\u003c"
-                                          },
-                                          {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.rateRatio.denominator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Object"
-                                ],
-                                "http://layeredschemas.org/v1.0/Object/attributes": [
-                                  {
-                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.doseAndRate.*.rateRatio.denominator.comparator",
                                     "@type": [
                                       "http://layeredschemas.org/v1.0/Value"
                                     ],
@@ -2108,38 +1090,6 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.maxDosePerAdministration",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.maxDosePerAdministration.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
                     "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.timing",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
@@ -2153,39 +1103,6 @@
                         "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
                             "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.timing.repeat.periodUnit",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "s"
-                                  },
-                                  {
-                                    "@value": "min"
-                                  },
-                                  {
-                                    "@value": "h"
-                                  },
-                                  {
-                                    "@value": "d"
-                                  },
-                                  {
-                                    "@value": "wk"
-                                  },
-                                  {
-                                    "@value": "mo"
-                                  },
-                                  {
-                                    "@value": "a"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.timing.repeat.durationUnit",
                             "@type": [
                               "http://layeredschemas.org/v1.0/Value"
                             ],
@@ -2290,32 +1207,33 @@
                             ]
                           },
                           {
-                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.timing.repeat.boundsDuration",
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.timing.repeat.durationUnit",
                             "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
+                              "http://layeredschemas.org/v1.0/Value"
                             ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
                               {
-                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.timing.repeat.boundsDuration.comparator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                "@list": [
                                   {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
+                                    "@value": "s"
+                                  },
+                                  {
+                                    "@value": "min"
+                                  },
+                                  {
+                                    "@value": "h"
+                                  },
+                                  {
+                                    "@value": "d"
+                                  },
+                                  {
+                                    "@value": "wk"
+                                  },
+                                  {
+                                    "@value": "mo"
+                                  },
+                                  {
+                                    "@value": "a"
                                   }
                                 ]
                               }
@@ -2417,6 +1335,352 @@
                                 ]
                               }
                             ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.timing.repeat.boundsDuration",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDosage.timing.repeat.boundsDuration.comparator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueQuantity",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueQuantity.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContactDetail",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContactDetail.telecom",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContactDetail.telecom.*.system",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "phone"
+                                  },
+                                  {
+                                    "@value": "fax"
+                                  },
+                                  {
+                                    "@value": "email"
+                                  },
+                                  {
+                                    "@value": "pager"
+                                  },
+                                  {
+                                    "@value": "url"
+                                  },
+                                  {
+                                    "@value": "sms"
+                                  },
+                                  {
+                                    "@value": "other"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContactDetail.telecom.*.use",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "home"
+                                  },
+                                  {
+                                    "@value": "work"
+                                  },
+                                  {
+                                    "@value": "temp"
+                                  },
+                                  {
+                                    "@value": "old"
+                                  },
+                                  {
+                                    "@value": "mobile"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueIdentifier",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueIdentifier.use",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "usual"
+                          },
+                          {
+                            "@value": "official"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDataRequirement",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDataRequirement.sort",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDataRequirement.sort.*.direction",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "ascending"
+                                  },
+                                  {
+                                    "@value": "descending"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDataRequirement.dateFilter",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDataRequirement.dateFilter.*.valueDuration",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDataRequirement.dateFilter.*.valueDuration.comparator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDuration",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueDuration.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRelatedArtifact",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRelatedArtifact.type",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "documentation"
+                          },
+                          {
+                            "@value": "justification"
+                          },
+                          {
+                            "@value": "citation"
+                          },
+                          {
+                            "@value": "predecessor"
+                          },
+                          {
+                            "@value": "successor"
+                          },
+                          {
+                            "@value": "derived-from"
+                          },
+                          {
+                            "@value": "depends-on"
+                          },
+                          {
+                            "@value": "composed-of"
                           }
                         ]
                       }
@@ -2457,13 +1721,13 @@
                 ]
               },
               {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueExpression",
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContributor",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueExpression.language",
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContributor.type",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
@@ -2471,13 +1735,106 @@
                       {
                         "@list": [
                           {
-                            "@value": "text/cql"
+                            "@value": "author"
                           },
                           {
-                            "@value": "text/fhirpath"
+                            "@value": "editor"
                           },
                           {
-                            "@value": "application/x-fhir-query"
+                            "@value": "reviewer"
+                          },
+                          {
+                            "@value": "endorser"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContributor.contact",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContributor.contact.*.telecom",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Array"
+                            ],
+                            "http://layeredschemas.org/v1.0/Array/items": [
+                              {
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContributor.contact.*.telecom.*.system",
+                                    "@type": [
+                                      "http://layeredschemas.org/v1.0/Value"
+                                    ],
+                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@value": "phone"
+                                          },
+                                          {
+                                            "@value": "fax"
+                                          },
+                                          {
+                                            "@value": "email"
+                                          },
+                                          {
+                                            "@value": "pager"
+                                          },
+                                          {
+                                            "@value": "url"
+                                          },
+                                          {
+                                            "@value": "sms"
+                                          },
+                                          {
+                                            "@value": "other"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueContributor.contact.*.telecom.*.use",
+                                    "@type": [
+                                      "http://layeredschemas.org/v1.0/Value"
+                                    ],
+                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@value": "home"
+                                          },
+                                          {
+                                            "@value": "work"
+                                          },
+                                          {
+                                            "@value": "temp"
+                                          },
+                                          {
+                                            "@value": "old"
+                                          },
+                                          {
+                                            "@value": "mobile"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
                           }
                         ]
                       }
@@ -2525,6 +1882,644 @@
                     ]
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueAddress",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueAddress.use",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "home"
+                          },
+                          {
+                            "@value": "work"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "old"
+                          },
+                          {
+                            "@value": "billing"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueAddress.type",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "postal"
+                          },
+                          {
+                            "@value": "physical"
+                          },
+                          {
+                            "@value": "both"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.listMode",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "first"
+                      },
+                      {
+                        "@value": "not_first"
+                      },
+                      {
+                        "@value": "last"
+                      },
+                      {
+                        "@value": "not_last"
+                      },
+                      {
+                        "@value": "only_one"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueAge",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueAge.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.condition",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.condition.language",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "text/cql"
+                              },
+                              {
+                                "@value": "text/fhirpath"
+                              },
+                              {
+                                "@value": "application/x-fhir-query"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.boundsRange",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.boundsRange.low",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.boundsRange.low.comparator",
+                                    "@type": [
+                                      "http://layeredschemas.org/v1.0/Value"
+                                    ],
+                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.boundsRange.high",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.boundsRange.high.comparator",
+                                    "@type": [
+                                      "http://layeredschemas.org/v1.0/Value"
+                                    ],
+                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.periodUnit",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "s"
+                                  },
+                                  {
+                                    "@value": "min"
+                                  },
+                                  {
+                                    "@value": "h"
+                                  },
+                                  {
+                                    "@value": "d"
+                                  },
+                                  {
+                                    "@value": "wk"
+                                  },
+                                  {
+                                    "@value": "mo"
+                                  },
+                                  {
+                                    "@value": "a"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.durationUnit",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "s"
+                                  },
+                                  {
+                                    "@value": "min"
+                                  },
+                                  {
+                                    "@value": "h"
+                                  },
+                                  {
+                                    "@value": "d"
+                                  },
+                                  {
+                                    "@value": "wk"
+                                  },
+                                  {
+                                    "@value": "mo"
+                                  },
+                                  {
+                                    "@value": "a"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.when",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Array"
+                            ],
+                            "http://layeredschemas.org/v1.0/Array/items": [
+                              {
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "MORN"
+                                      },
+                                      {
+                                        "@value": "MORN.early"
+                                      },
+                                      {
+                                        "@value": "MORN.late"
+                                      },
+                                      {
+                                        "@value": "NOON"
+                                      },
+                                      {
+                                        "@value": "AFT"
+                                      },
+                                      {
+                                        "@value": "AFT.early"
+                                      },
+                                      {
+                                        "@value": "AFT.late"
+                                      },
+                                      {
+                                        "@value": "EVE"
+                                      },
+                                      {
+                                        "@value": "EVE.early"
+                                      },
+                                      {
+                                        "@value": "EVE.late"
+                                      },
+                                      {
+                                        "@value": "NIGHT"
+                                      },
+                                      {
+                                        "@value": "PHS"
+                                      },
+                                      {
+                                        "@value": "HS"
+                                      },
+                                      {
+                                        "@value": "WAKE"
+                                      },
+                                      {
+                                        "@value": "C"
+                                      },
+                                      {
+                                        "@value": "CM"
+                                      },
+                                      {
+                                        "@value": "CD"
+                                      },
+                                      {
+                                        "@value": "CV"
+                                      },
+                                      {
+                                        "@value": "AC"
+                                      },
+                                      {
+                                        "@value": "ACM"
+                                      },
+                                      {
+                                        "@value": "ACD"
+                                      },
+                                      {
+                                        "@value": "ACV"
+                                      },
+                                      {
+                                        "@value": "PC"
+                                      },
+                                      {
+                                        "@value": "PCM"
+                                      },
+                                      {
+                                        "@value": "PCD"
+                                      },
+                                      {
+                                        "@value": "PCV"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.boundsDuration",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.timingTiming.repeat.boundsDuration.comparator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.data",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.data.*.sort",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Array"
+                            ],
+                            "http://layeredschemas.org/v1.0/Array/items": [
+                              {
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.data.*.sort.*.direction",
+                                    "@type": [
+                                      "http://layeredschemas.org/v1.0/Value"
+                                    ],
+                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@value": "ascending"
+                                          },
+                                          {
+                                            "@value": "descending"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.data.*.dateFilter",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Array"
+                            ],
+                            "http://layeredschemas.org/v1.0/Array/items": [
+                              {
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Object"
+                                ],
+                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.data.*.dateFilter.*.valueDuration",
+                                    "@type": [
+                                      "http://layeredschemas.org/v1.0/Object"
+                                    ],
+                                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.data.*.dateFilter.*.valueDuration.comparator",
+                                        "@type": [
+                                          "http://layeredschemas.org/v1.0/Value"
+                                        ],
+                                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                          {
+                                            "@list": [
+                                              {
+                                                "@value": "\u003c"
+                                              },
+                                              {
+                                                "@value": "\u003c="
+                                              },
+                                              {
+                                                "@value": "\u003e="
+                                              },
+                                              {
+                                                "@value": "\u003e"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueTriggerDefinition.type",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "named-event"
+                          },
+                          {
+                            "@value": "periodic"
+                          },
+                          {
+                            "@value": "data-changed"
+                          },
+                          {
+                            "@value": "data-added"
+                          },
+                          {
+                            "@value": "data-modified"
+                          },
+                          {
+                            "@value": "data-removed"
+                          },
+                          {
+                            "@value": "data-accessed"
+                          },
+                          {
+                            "@value": "data-access-ended"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRatio",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRatio.numerator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRatio.numerator.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRatio.denominator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/StructureMap_Rule.source.*.defaultValueRatio.denominator.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -2541,24 +2536,6 @@
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Rule.target.*.contextType",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "type"
-                      },
-                      {
-                        "@value": "variable"
-                      }
-                    ]
-                  }
-                ]
-              },
               {
                 "@id": "http://hl7.org/fhir/StructureMap_Rule.target.*.listMode",
                 "@type": [
@@ -2652,10 +2629,33 @@
                     ]
                   }
                 ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Rule.target.*.contextType",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "type"
+                      },
+                      {
+                        "@value": "variable"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
         ]
+      }
+    ],
+    "http://layeredschemas.org/v1.0/targetType": [
+      {
+        "@id": "http://hl7.org/fhir/StructureMap_Rule"
       }
     ]
   }

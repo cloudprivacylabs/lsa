@@ -18,7 +18,7 @@ import (
 )
 
 // LS is the namespace for layeres schemas ontology
-const LS = "http://layeredschemas.org/v1.0"
+const LS = "http://layeredschemas.org"
 
 // EnumerationTerm is the term definition for enumeration with a custom validator
 type EnumerationTerm struct {
@@ -59,7 +59,6 @@ var AttributeAnnotations = struct {
 	Privacy     terms.ValueSetTerm
 	Information terms.ValueSetTerm
 	Encoding    terms.ValueTerm
-	Type        terms.ValueTerm
 	Format      terms.ValueTerm
 	Pattern     terms.ValueTerm
 	Label       terms.ValueTerm
@@ -73,7 +72,6 @@ var AttributeAnnotations = struct {
 	Privacy:     terms.ValueSetTerm(LS + "/attr/privacyClassification"),
 	Information: terms.ValueSetTerm(LS + "/attr/information"),
 	Encoding:    terms.ValueTerm(LS + "/attr/encoding"),
-	Type:        terms.ValueTerm(LS + "/attr/type"),
 	Format:      terms.ValueTerm(LS + "/attr/format"),
 	Pattern:     terms.ValueTerm(LS + "/attr/pattern"),
 	Label:       terms.ValueTerm(LS + "/attr/label"),
@@ -109,7 +107,6 @@ var Terms = terms.NewVocabulary(LayerTerms.Attributes,
 	AttributeAnnotations.Privacy,
 	AttributeAnnotations.Information,
 	AttributeAnnotations.Encoding,
-	AttributeAnnotations.Type,
 	AttributeAnnotations.Format,
 	AttributeAnnotations.Pattern,
 	AttributeAnnotations.Label,
@@ -117,8 +114,7 @@ var Terms = terms.NewVocabulary(LayerTerms.Attributes,
 	AttributeAnnotations.Required,
 
 	SchemaManifestTerms.PublishedAt,
-	LayerTerms.ObjectType,
-	LayerTerms.ObjectVersion,
+	LayerTerms.TargetType,
 	SchemaManifestTerms.Bundle,
 	SchemaManifestTerms.Schema,
 	SchemaManifestTerms.Overlays)

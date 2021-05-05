@@ -4,26 +4,374 @@
     "@type": [
       "http://layeredschemas.org/v1.0/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Layer/objectType": [
-      {
-        "@value": "http://hl7.org/fhir/Extension"
-      }
-    ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/Extension.valueRange",
+        "@id": "http://hl7.org/fhir/Extension.valueHumanName",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Extension.valueRange.low",
+            "@id": "http://hl7.org/fhir/Extension.valueHumanName.use",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "usual"
+                  },
+                  {
+                    "@value": "official"
+                  },
+                  {
+                    "@value": "temp"
+                  },
+                  {
+                    "@value": "nickname"
+                  },
+                  {
+                    "@value": "anonymous"
+                  },
+                  {
+                    "@value": "old"
+                  },
+                  {
+                    "@value": "maiden"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueExpression",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueExpression.language",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "text/cql"
+                  },
+                  {
+                    "@value": "text/fhirpath"
+                  },
+                  {
+                    "@value": "application/x-fhir-query"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueDosage",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueDosage.timing",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Extension.valueRange.low.comparator",
+                "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.durationUnit",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "s"
+                          },
+                          {
+                            "@value": "min"
+                          },
+                          {
+                            "@value": "h"
+                          },
+                          {
+                            "@value": "d"
+                          },
+                          {
+                            "@value": "wk"
+                          },
+                          {
+                            "@value": "mo"
+                          },
+                          {
+                            "@value": "a"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.low",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.low.comparator",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.high",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.high.comparator",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsDuration",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsDuration.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.periodUnit",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "s"
+                          },
+                          {
+                            "@value": "min"
+                          },
+                          {
+                            "@value": "h"
+                          },
+                          {
+                            "@value": "d"
+                          },
+                          {
+                            "@value": "wk"
+                          },
+                          {
+                            "@value": "mo"
+                          },
+                          {
+                            "@value": "a"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.when",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "MORN"
+                              },
+                              {
+                                "@value": "MORN.early"
+                              },
+                              {
+                                "@value": "MORN.late"
+                              },
+                              {
+                                "@value": "NOON"
+                              },
+                              {
+                                "@value": "AFT"
+                              },
+                              {
+                                "@value": "AFT.early"
+                              },
+                              {
+                                "@value": "AFT.late"
+                              },
+                              {
+                                "@value": "EVE"
+                              },
+                              {
+                                "@value": "EVE.early"
+                              },
+                              {
+                                "@value": "EVE.late"
+                              },
+                              {
+                                "@value": "NIGHT"
+                              },
+                              {
+                                "@value": "PHS"
+                              },
+                              {
+                                "@value": "HS"
+                              },
+                              {
+                                "@value": "WAKE"
+                              },
+                              {
+                                "@value": "C"
+                              },
+                              {
+                                "@value": "CM"
+                              },
+                              {
+                                "@value": "CD"
+                              },
+                              {
+                                "@value": "CV"
+                              },
+                              {
+                                "@value": "AC"
+                              },
+                              {
+                                "@value": "ACM"
+                              },
+                              {
+                                "@value": "ACD"
+                              },
+                              {
+                                "@value": "ACV"
+                              },
+                              {
+                                "@value": "PC"
+                              },
+                              {
+                                "@value": "PCM"
+                              },
+                              {
+                                "@value": "PCD"
+                              },
+                              {
+                                "@value": "PCV"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerLifetime",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerLifetime.comparator",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -49,53 +397,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Extension.valueRange.high",
+            "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerAdministration",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Extension.valueRange.high.comparator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueDosage",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerLifetime",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerLifetime.comparator",
+                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerAdministration.comparator",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -132,30 +440,70 @@
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseQuantity",
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseQuantity.comparator",
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.numerator",
                         "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
+                          "http://layeredschemas.org/v1.0/Object"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@list": [
+                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.numerator.comparator",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
                               {
-                                "@value": "\u003c"
-                              },
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.denominator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.denominator.comparator",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
                               {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
                               }
                             ]
                           }
@@ -268,115 +616,11 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.numerator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.numerator.comparator",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.denominator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRatio.denominator.comparator",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
                     "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange.high",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange.high.comparator",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
                       {
                         "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange.low",
                         "@type": [
@@ -408,99 +652,49 @@
                             ]
                           }
                         ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueDosage.timing",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.periodUnit",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      },
                       {
-                        "@list": [
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange.high",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@value": "s"
-                          },
-                          {
-                            "@value": "min"
-                          },
-                          {
-                            "@value": "h"
-                          },
-                          {
-                            "@value": "d"
-                          },
-                          {
-                            "@value": "wk"
-                          },
-                          {
-                            "@value": "mo"
-                          },
-                          {
-                            "@value": "a"
+                            "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.rateRange.high.comparator",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
                           }
                         ]
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.durationUnit",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "s"
-                          },
-                          {
-                            "@value": "min"
-                          },
-                          {
-                            "@value": "h"
-                          },
-                          {
-                            "@value": "d"
-                          },
-                          {
-                            "@value": "wk"
-                          },
-                          {
-                            "@value": "mo"
-                          },
-                          {
-                            "@value": "a"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsDuration",
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseQuantity",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsDuration.comparator",
+                        "@id": "http://hl7.org/fhir/Extension.valueDosage.doseAndRate.*.doseQuantity.comparator",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -524,9 +718,673 @@
                         ]
                       }
                     ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.numerator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.numerator.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.denominator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.denominator.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueDataRequirement",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.dateFilter",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.dateFilter.*.valueDuration",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.dateFilter.*.valueDuration.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.sort",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.sort.*.direction",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "ascending"
+                          },
+                          {
+                            "@value": "descending"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueContactDetail",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueContactDetail.telecom",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueContactDetail.telecom.*.use",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "home"
+                          },
+                          {
+                            "@value": "work"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "old"
+                          },
+                          {
+                            "@value": "mobile"
+                          }
+                        ]
+                      }
+                    ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.when",
+                    "@id": "http://hl7.org/fhir/Extension.valueContactDetail.telecom.*.system",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "phone"
+                          },
+                          {
+                            "@value": "fax"
+                          },
+                          {
+                            "@value": "email"
+                          },
+                          {
+                            "@value": "pager"
+                          },
+                          {
+                            "@value": "url"
+                          },
+                          {
+                            "@value": "sms"
+                          },
+                          {
+                            "@value": "other"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueContributor",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueContributor.type",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "author"
+                  },
+                  {
+                    "@value": "editor"
+                  },
+                  {
+                    "@value": "reviewer"
+                  },
+                  {
+                    "@value": "endorser"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueContributor.contact",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueContributor.contact.*.telecom",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueContributor.contact.*.telecom.*.system",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "phone"
+                                  },
+                                  {
+                                    "@value": "fax"
+                                  },
+                                  {
+                                    "@value": "email"
+                                  },
+                                  {
+                                    "@value": "pager"
+                                  },
+                                  {
+                                    "@value": "url"
+                                  },
+                                  {
+                                    "@value": "sms"
+                                  },
+                                  {
+                                    "@value": "other"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueContributor.contact.*.telecom.*.use",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "home"
+                                  },
+                                  {
+                                    "@value": "work"
+                                  },
+                                  {
+                                    "@value": "temp"
+                                  },
+                                  {
+                                    "@value": "old"
+                                  },
+                                  {
+                                    "@value": "mobile"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueQuantity",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueQuantity.comparator",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "\u003c"
+                  },
+                  {
+                    "@value": "\u003c="
+                  },
+                  {
+                    "@value": "\u003e="
+                  },
+                  {
+                    "@value": "\u003e"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueUsageContext",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange.low",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange.low.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange.high",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange.high.comparator",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "\u003c"
+                          },
+                          {
+                            "@value": "\u003c="
+                          },
+                          {
+                            "@value": "\u003e="
+                          },
+                          {
+                            "@value": "\u003e"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueQuantity",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueQuantity.comparator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.type",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "named-event"
+                  },
+                  {
+                    "@value": "periodic"
+                  },
+                  {
+                    "@value": "data-changed"
+                  },
+                  {
+                    "@value": "data-added"
+                  },
+                  {
+                    "@value": "data-modified"
+                  },
+                  {
+                    "@value": "data-removed"
+                  },
+                  {
+                    "@value": "data-accessed"
+                  },
+                  {
+                    "@value": "data-access-ended"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.dateFilter",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.dateFilter.*.valueDuration",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.dateFilter.*.valueDuration.comparator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.sort",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Array"
+                    ],
+                    "http://layeredschemas.org/v1.0/Array/items": [
+                      {
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.sort.*.direction",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "ascending"
+                                  },
+                                  {
+                                    "@value": "descending"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.when",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Array"
                     ],
@@ -623,19 +1481,117 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange",
+                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsDuration",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.low",
+                        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsDuration.comparator",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.durationUnit",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "s"
+                          },
+                          {
+                            "@value": "min"
+                          },
+                          {
+                            "@value": "h"
+                          },
+                          {
+                            "@value": "d"
+                          },
+                          {
+                            "@value": "wk"
+                          },
+                          {
+                            "@value": "mo"
+                          },
+                          {
+                            "@value": "a"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.periodUnit",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "s"
+                          },
+                          {
+                            "@value": "min"
+                          },
+                          {
+                            "@value": "h"
+                          },
+                          {
+                            "@value": "d"
+                          },
+                          {
+                            "@value": "wk"
+                          },
+                          {
+                            "@value": "mo"
+                          },
+                          {
+                            "@value": "a"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.low",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Object"
                         ],
                         "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.low.comparator",
+                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.low.comparator",
                             "@type": [
                               "http://layeredschemas.org/v1.0/Value"
                             ],
@@ -661,13 +1617,13 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.high",
+                        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.high",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Object"
                         ],
                         "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/Extension.valueDosage.timing.repeat.boundsRange.high.comparator",
+                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.high.comparator",
                             "@type": [
                               "http://layeredschemas.org/v1.0/Value"
                             ],
@@ -699,85 +1655,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod",
+            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.condition",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.numerator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.numerator.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.denominator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerPeriod.denominator.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerAdministration",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueDosage.maxDosePerAdministration.comparator",
+                "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.condition.language",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -785,16 +1669,13 @@
                   {
                     "@list": [
                       {
-                        "@value": "\u003c"
+                        "@value": "text/cql"
                       },
                       {
-                        "@value": "\u003c="
+                        "@value": "text/fhirpath"
                       },
                       {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
+                        "@value": "application/x-fhir-query"
                       }
                     ]
                   }
@@ -805,13 +1686,13 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Extension.valueQuantity",
+        "@id": "http://hl7.org/fhir/Extension.valueCount",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Extension.valueQuantity.comparator",
+            "@id": "http://hl7.org/fhir/Extension.valueCount.comparator",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -861,548 +1742,6 @@
                   },
                   {
                     "@value": "\u003e"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueIdentifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueIdentifier.use",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "usual"
-                  },
-                  {
-                    "@value": "official"
-                  },
-                  {
-                    "@value": "temp"
-                  },
-                  {
-                    "@value": "secondary"
-                  },
-                  {
-                    "@value": "old"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueRelatedArtifact",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueRelatedArtifact.type",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "documentation"
-                  },
-                  {
-                    "@value": "justification"
-                  },
-                  {
-                    "@value": "citation"
-                  },
-                  {
-                    "@value": "predecessor"
-                  },
-                  {
-                    "@value": "successor"
-                  },
-                  {
-                    "@value": "derived-from"
-                  },
-                  {
-                    "@value": "depends-on"
-                  },
-                  {
-                    "@value": "composed-of"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueUsageContext",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueQuantity",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueQuantity.comparator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange.low",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange.low.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange.high",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueUsageContext.valueRange.high.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueContactPoint",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueContactPoint.use",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "home"
-                  },
-                  {
-                    "@value": "work"
-                  },
-                  {
-                    "@value": "temp"
-                  },
-                  {
-                    "@value": "old"
-                  },
-                  {
-                    "@value": "mobile"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueContactPoint.system",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "phone"
-                  },
-                  {
-                    "@value": "fax"
-                  },
-                  {
-                    "@value": "email"
-                  },
-                  {
-                    "@value": "pager"
-                  },
-                  {
-                    "@value": "url"
-                  },
-                  {
-                    "@value": "sms"
-                  },
-                  {
-                    "@value": "other"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueTiming",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.periodUnit",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "s"
-                      },
-                      {
-                        "@value": "min"
-                      },
-                      {
-                        "@value": "h"
-                      },
-                      {
-                        "@value": "d"
-                      },
-                      {
-                        "@value": "wk"
-                      },
-                      {
-                        "@value": "mo"
-                      },
-                      {
-                        "@value": "a"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsDuration",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsDuration.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.durationUnit",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "s"
-                      },
-                      {
-                        "@value": "min"
-                      },
-                      {
-                        "@value": "h"
-                      },
-                      {
-                        "@value": "d"
-                      },
-                      {
-                        "@value": "wk"
-                      },
-                      {
-                        "@value": "mo"
-                      },
-                      {
-                        "@value": "a"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.low",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.low.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.high",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.high.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.when",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "MORN"
-                          },
-                          {
-                            "@value": "MORN.early"
-                          },
-                          {
-                            "@value": "MORN.late"
-                          },
-                          {
-                            "@value": "NOON"
-                          },
-                          {
-                            "@value": "AFT"
-                          },
-                          {
-                            "@value": "AFT.early"
-                          },
-                          {
-                            "@value": "AFT.late"
-                          },
-                          {
-                            "@value": "EVE"
-                          },
-                          {
-                            "@value": "EVE.early"
-                          },
-                          {
-                            "@value": "EVE.late"
-                          },
-                          {
-                            "@value": "NIGHT"
-                          },
-                          {
-                            "@value": "PHS"
-                          },
-                          {
-                            "@value": "HS"
-                          },
-                          {
-                            "@value": "WAKE"
-                          },
-                          {
-                            "@value": "C"
-                          },
-                          {
-                            "@value": "CM"
-                          },
-                          {
-                            "@value": "CD"
-                          },
-                          {
-                            "@value": "CV"
-                          },
-                          {
-                            "@value": "AC"
-                          },
-                          {
-                            "@value": "ACM"
-                          },
-                          {
-                            "@value": "ACD"
-                          },
-                          {
-                            "@value": "ACV"
-                          },
-                          {
-                            "@value": "PC"
-                          },
-                          {
-                            "@value": "PCM"
-                          },
-                          {
-                            "@value": "PCD"
-                          },
-                          {
-                            "@value": "PCV"
-                          }
-                        ]
-                      }
-                    ]
                   }
                 ]
               }
@@ -1579,264 +1918,13 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Extension.valueContributor",
+        "@id": "http://hl7.org/fhir/Extension.valueAge",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Extension.valueContributor.contact",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueContributor.contact.*.telecom",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueContributor.contact.*.telecom.*.system",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "phone"
-                                  },
-                                  {
-                                    "@value": "fax"
-                                  },
-                                  {
-                                    "@value": "email"
-                                  },
-                                  {
-                                    "@value": "pager"
-                                  },
-                                  {
-                                    "@value": "url"
-                                  },
-                                  {
-                                    "@value": "sms"
-                                  },
-                                  {
-                                    "@value": "other"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueContributor.contact.*.telecom.*.use",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "home"
-                                  },
-                                  {
-                                    "@value": "work"
-                                  },
-                                  {
-                                    "@value": "temp"
-                                  },
-                                  {
-                                    "@value": "old"
-                                  },
-                                  {
-                                    "@value": "mobile"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueContributor.type",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "author"
-                  },
-                  {
-                    "@value": "editor"
-                  },
-                  {
-                    "@value": "reviewer"
-                  },
-                  {
-                    "@value": "endorser"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueHumanName",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueHumanName.use",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "usual"
-                  },
-                  {
-                    "@value": "official"
-                  },
-                  {
-                    "@value": "temp"
-                  },
-                  {
-                    "@value": "nickname"
-                  },
-                  {
-                    "@value": "anonymous"
-                  },
-                  {
-                    "@value": "old"
-                  },
-                  {
-                    "@value": "maiden"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueDataRequirement",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.sort",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.sort.*.direction",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "ascending"
-                          },
-                          {
-                            "@value": "descending"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.dateFilter",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.dateFilter.*.valueDuration",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueDataRequirement.dateFilter.*.valueDuration.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueCount",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueCount.comparator",
+            "@id": "http://hl7.org/fhir/Extension.valueAge.comparator",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -1862,108 +1950,13 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition",
+        "@id": "http://hl7.org/fhir/Extension.valueRelatedArtifact",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.dateFilter",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.dateFilter.*.valueDuration",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.dateFilter.*.valueDuration.comparator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.sort",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.data.*.sort.*.direction",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "ascending"
-                                  },
-                                  {
-                                    "@value": "descending"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.type",
+            "@id": "http://hl7.org/fhir/Extension.valueRelatedArtifact.type",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -1971,115 +1964,129 @@
               {
                 "@list": [
                   {
-                    "@value": "named-event"
+                    "@value": "documentation"
                   },
                   {
-                    "@value": "periodic"
+                    "@value": "justification"
                   },
                   {
-                    "@value": "data-changed"
+                    "@value": "citation"
                   },
                   {
-                    "@value": "data-added"
+                    "@value": "predecessor"
                   },
                   {
-                    "@value": "data-modified"
+                    "@value": "successor"
                   },
                   {
-                    "@value": "data-removed"
+                    "@value": "derived-from"
                   },
                   {
-                    "@value": "data-accessed"
+                    "@value": "depends-on"
                   },
                   {
-                    "@value": "data-access-ended"
+                    "@value": "composed-of"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueContactPoint",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueContactPoint.system",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Value"
+            ],
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
+              {
+                "@list": [
+                  {
+                    "@value": "phone"
+                  },
+                  {
+                    "@value": "fax"
+                  },
+                  {
+                    "@value": "email"
+                  },
+                  {
+                    "@value": "pager"
+                  },
+                  {
+                    "@value": "url"
+                  },
+                  {
+                    "@value": "sms"
+                  },
+                  {
+                    "@value": "other"
                   }
                 ]
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.condition",
+            "@id": "http://hl7.org/fhir/Extension.valueContactPoint.use",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "http://layeredschemas.org/v1.0/Value"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "http://layeredschemas.org/v1.0/attr/enumeration": [
               {
-                "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.condition.language",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "@list": [
                   {
-                    "@list": [
-                      {
-                        "@value": "text/cql"
-                      },
-                      {
-                        "@value": "text/fhirpath"
-                      },
-                      {
-                        "@value": "application/x-fhir-query"
-                      }
-                    ]
+                    "@value": "home"
+                  },
+                  {
+                    "@value": "work"
+                  },
+                  {
+                    "@value": "temp"
+                  },
+                  {
+                    "@value": "old"
+                  },
+                  {
+                    "@value": "mobile"
                   }
                 ]
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueTiming",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming",
+            "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat",
             "@type": [
               "http://layeredschemas.org/v1.0/Object"
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat",
+                "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.periodUnit",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "s"
-                          },
-                          {
-                            "@value": "min"
-                          },
-                          {
-                            "@value": "h"
-                          },
-                          {
-                            "@value": "d"
-                          },
-                          {
-                            "@value": "wk"
-                          },
-                          {
-                            "@value": "mo"
-                          },
-                          {
-                            "@value": "a"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsDuration",
+                    "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.low",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsDuration.comparator",
+                        "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.low.comparator",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -2105,84 +2112,13 @@
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange",
+                    "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.high",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.low",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.low.comparator",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.high",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.boundsRange.high.comparator",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.when",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
+                        "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsRange.high.comparator",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -2190,147 +2126,33 @@
                           {
                             "@list": [
                               {
-                                "@value": "MORN"
+                                "@value": "\u003c"
                               },
                               {
-                                "@value": "MORN.early"
+                                "@value": "\u003c="
                               },
                               {
-                                "@value": "MORN.late"
+                                "@value": "\u003e="
                               },
                               {
-                                "@value": "NOON"
-                              },
-                              {
-                                "@value": "AFT"
-                              },
-                              {
-                                "@value": "AFT.early"
-                              },
-                              {
-                                "@value": "AFT.late"
-                              },
-                              {
-                                "@value": "EVE"
-                              },
-                              {
-                                "@value": "EVE.early"
-                              },
-                              {
-                                "@value": "EVE.late"
-                              },
-                              {
-                                "@value": "NIGHT"
-                              },
-                              {
-                                "@value": "PHS"
-                              },
-                              {
-                                "@value": "HS"
-                              },
-                              {
-                                "@value": "WAKE"
-                              },
-                              {
-                                "@value": "C"
-                              },
-                              {
-                                "@value": "CM"
-                              },
-                              {
-                                "@value": "CD"
-                              },
-                              {
-                                "@value": "CV"
-                              },
-                              {
-                                "@value": "AC"
-                              },
-                              {
-                                "@value": "ACM"
-                              },
-                              {
-                                "@value": "ACD"
-                              },
-                              {
-                                "@value": "ACV"
-                              },
-                              {
-                                "@value": "PC"
-                              },
-                              {
-                                "@value": "PCM"
-                              },
-                              {
-                                "@value": "PCD"
-                              },
-                              {
-                                "@value": "PCV"
+                                "@value": "\u003e"
                               }
                             ]
                           }
                         ]
                       }
                     ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Extension.valueTriggerDefinition.timingTiming.repeat.durationUnit",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "s"
-                          },
-                          {
-                            "@value": "min"
-                          },
-                          {
-                            "@value": "h"
-                          },
-                          {
-                            "@value": "d"
-                          },
-                          {
-                            "@value": "wk"
-                          },
-                          {
-                            "@value": "mo"
-                          },
-                          {
-                            "@value": "a"
-                          }
-                        ]
-                      }
-                    ]
                   }
                 ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Extension.valueContactDetail",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueContactDetail.telecom",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
+              },
               {
+                "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsDuration",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueContactDetail.telecom.*.system",
+                    "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.boundsDuration.comparator",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
@@ -2338,32 +2160,30 @@
                       {
                         "@list": [
                           {
-                            "@value": "phone"
+                            "@value": "\u003c"
                           },
                           {
-                            "@value": "fax"
+                            "@value": "\u003c="
                           },
                           {
-                            "@value": "email"
+                            "@value": "\u003e="
                           },
                           {
-                            "@value": "pager"
-                          },
-                          {
-                            "@value": "url"
-                          },
-                          {
-                            "@value": "sms"
-                          },
-                          {
-                            "@value": "other"
+                            "@value": "\u003e"
                           }
                         ]
                       }
                     ]
-                  },
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.when",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Array"
+                ],
+                "http://layeredschemas.org/v1.0/Array/items": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension.valueContactDetail.telecom.*.use",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Value"
                     ],
@@ -2371,21 +2191,150 @@
                       {
                         "@list": [
                           {
-                            "@value": "home"
+                            "@value": "MORN"
                           },
                           {
-                            "@value": "work"
+                            "@value": "MORN.early"
                           },
                           {
-                            "@value": "temp"
+                            "@value": "MORN.late"
                           },
                           {
-                            "@value": "old"
+                            "@value": "NOON"
                           },
                           {
-                            "@value": "mobile"
+                            "@value": "AFT"
+                          },
+                          {
+                            "@value": "AFT.early"
+                          },
+                          {
+                            "@value": "AFT.late"
+                          },
+                          {
+                            "@value": "EVE"
+                          },
+                          {
+                            "@value": "EVE.early"
+                          },
+                          {
+                            "@value": "EVE.late"
+                          },
+                          {
+                            "@value": "NIGHT"
+                          },
+                          {
+                            "@value": "PHS"
+                          },
+                          {
+                            "@value": "HS"
+                          },
+                          {
+                            "@value": "WAKE"
+                          },
+                          {
+                            "@value": "C"
+                          },
+                          {
+                            "@value": "CM"
+                          },
+                          {
+                            "@value": "CD"
+                          },
+                          {
+                            "@value": "CV"
+                          },
+                          {
+                            "@value": "AC"
+                          },
+                          {
+                            "@value": "ACM"
+                          },
+                          {
+                            "@value": "ACD"
+                          },
+                          {
+                            "@value": "ACV"
+                          },
+                          {
+                            "@value": "PC"
+                          },
+                          {
+                            "@value": "PCM"
+                          },
+                          {
+                            "@value": "PCD"
+                          },
+                          {
+                            "@value": "PCV"
                           }
                         ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.periodUnit",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "s"
+                      },
+                      {
+                        "@value": "min"
+                      },
+                      {
+                        "@value": "h"
+                      },
+                      {
+                        "@value": "d"
+                      },
+                      {
+                        "@value": "wk"
+                      },
+                      {
+                        "@value": "mo"
+                      },
+                      {
+                        "@value": "a"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueTiming.repeat.durationUnit",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "s"
+                      },
+                      {
+                        "@value": "min"
+                      },
+                      {
+                        "@value": "h"
+                      },
+                      {
+                        "@value": "d"
+                      },
+                      {
+                        "@value": "wk"
+                      },
+                      {
+                        "@value": "mo"
+                      },
+                      {
+                        "@value": "a"
                       }
                     ]
                   }
@@ -2396,13 +2345,85 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/Extension.valueExpression",
+        "@id": "http://hl7.org/fhir/Extension.valueRange",
         "@type": [
           "http://layeredschemas.org/v1.0/Object"
         ],
         "http://layeredschemas.org/v1.0/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Extension.valueExpression.language",
+            "@id": "http://hl7.org/fhir/Extension.valueRange.low",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueRange.low.comparator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueRange.high",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Extension.valueRange.high.comparator",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Extension.valueIdentifier",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Object"
+        ],
+        "http://layeredschemas.org/v1.0/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Extension.valueIdentifier.use",
             "@type": [
               "http://layeredschemas.org/v1.0/Value"
             ],
@@ -2410,13 +2431,19 @@
               {
                 "@list": [
                   {
-                    "@value": "text/cql"
+                    "@value": "usual"
                   },
                   {
-                    "@value": "text/fhirpath"
+                    "@value": "official"
                   },
                   {
-                    "@value": "application/x-fhir-query"
+                    "@value": "temp"
+                  },
+                  {
+                    "@value": "secondary"
+                  },
+                  {
+                    "@value": "old"
                   }
                 ]
               }
@@ -2455,38 +2482,11 @@
             ]
           }
         ]
-      },
+      }
+    ],
+    "http://layeredschemas.org/v1.0/targetType": [
       {
-        "@id": "http://hl7.org/fhir/Extension.valueAge",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Extension.valueAge.comparator",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "\u003c"
-                  },
-                  {
-                    "@value": "\u003c="
-                  },
-                  {
-                    "@value": "\u003e="
-                  },
-                  {
-                    "@value": "\u003e"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        "@id": "http://hl7.org/fhir/Extension"
       }
     ]
   }

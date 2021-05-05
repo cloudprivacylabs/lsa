@@ -35,6 +35,7 @@ type DocumentNode interface {
 type BasicDocumentNode struct {
 	ID         string
 	Name       string
+	Type       []string
 	SchemaNode *Attribute
 }
 
@@ -42,6 +43,8 @@ func (node *BasicDocumentNode) GetID() string             { return node.ID }
 func (node *BasicDocumentNode) GetName() string           { return node.Name }
 func (node *BasicDocumentNode) SetName(name string)       { node.Name = name }
 func (node *BasicDocumentNode) GetSchemaNode() *Attribute { return node.SchemaNode }
+func (node *BasicDocumentNode) GetType() []string         { return node.Type }
+func (node *BasicDocumentNode) SetType(t []string)        { node.Type = t }
 
 // ValueNode represent simple values in a document
 type ValueNode struct {
@@ -55,13 +58,17 @@ func (v *ValueNode) Iterate(f func(DocumentNode) bool) bool {
 }
 
 func NewValueNode(ID, name string, schemaNode *Attribute, value interface{}) *ValueNode {
-	return &ValueNode{BasicDocumentNode: BasicDocumentNode{
+	ret := &ValueNode{BasicDocumentNode: BasicDocumentNode{
 		ID:         ID,
 		Name:       name,
 		SchemaNode: schemaNode,
 	},
 		Value: value,
 	}
+	if schemaNode != nil {
+		ret.Type = schemaNode.GetTargetType()
+	}
+	return ret
 }
 
 // ObjectNode represents objects containing key-value pairs
@@ -84,10 +91,14 @@ func (object *ObjectNode) Iterate(f func(DocumentNode) bool) bool {
 }
 
 func NewObjectNode(ID, name string, schemaNode *Attribute) *ObjectNode {
-	return &ObjectNode{BasicDocumentNode: BasicDocumentNode{
+	ret := &ObjectNode{BasicDocumentNode: BasicDocumentNode{
 		ID:         ID,
 		Name:       name,
 		SchemaNode: schemaNode}}
+	if schemaNode != nil {
+		ret.Type = schemaNode.GetTargetType()
+	}
+	return ret
 }
 
 // ArrayNode represents objects containing an ordered list of element
@@ -110,10 +121,14 @@ func (array *ArrayNode) Iterate(f func(DocumentNode) bool) bool {
 }
 
 func NewArrayNode(ID, name string, schemaNode *Attribute) *ArrayNode {
-	return &ArrayNode{BasicDocumentNode: BasicDocumentNode{
+	ret := &ArrayNode{BasicDocumentNode: BasicDocumentNode{
 		ID:         ID,
 		Name:       name,
 		SchemaNode: schemaNode}}
+	if schemaNode != nil {
+		ret.Type = schemaNode.GetTargetType()
+	}
+	return ret
 }
 
 // NullNode is a node whose value is null. It can be an object, array, value, etc.
@@ -127,11 +142,15 @@ func (node *NullNode) Iterate(f func(DocumentNode) bool) bool {
 }
 
 func NewNullNode(ID, name string, schemaNode *Attribute) *NullNode {
-	return &NullNode{BasicDocumentNode: BasicDocumentNode{
+	ret := &NullNode{BasicDocumentNode: BasicDocumentNode{
 		ID:         ID,
 		Name:       name,
 		SchemaNode: schemaNode,
 	}}
+	if schemaNode != nil {
+		ret.Type = schemaNode.GetTargetType()
+	}
+	return ret
 }
 
 // DataModelToMap marshals the datamodel to a
@@ -159,17 +178,27 @@ func DataModelToMap(root DocumentNode, embedSchema bool) interface{} {
 			}
 		}
 	}
+	setType := func(t []string) {
+		if result == nil {
+			return
+		}
+		if len(t) > 0 {
+			result["@type"] = LayerTerms.TargetType.MakeExpandedContainerFromValues(t)
+		}
+	}
 	switch node := root.(type) {
 	case *NullNode:
 		m := map[string]interface{}{}
 		DocTerms.Value.PutExpanded(m, nil)
 		result = m
+		setType(node.Type)
 		embed()
 
 	case *ValueNode:
 		m := map[string]interface{}{}
 		DocTerms.Value.PutExpanded(m, node.Value)
 		result = m
+		setType(node.Type)
 		embed()
 
 	case *ObjectNode:
@@ -180,6 +209,7 @@ func DataModelToMap(root DocumentNode, embedSchema bool) interface{} {
 		result = map[string]interface{}{
 			DocTerms.Attributes.GetTerm(): []interface{}{children},
 		}
+		setType(node.Type)
 		embed()
 
 	case *ArrayNode:
@@ -189,6 +219,7 @@ func DataModelToMap(root DocumentNode, embedSchema bool) interface{} {
 		}
 		result = map[string]interface{}{
 			DocTerms.ArrayElements.GetTerm(): DocTerms.ArrayElements.MakeExpandedContainer(el)}
+		setType(node.Type)
 		embed()
 	}
 	return result

@@ -1,0 +1,17 @@
+Person schema:
+layers compose --repo contact/repo/ http://example.org/Person/schema|layers compact >/tmp/out
+layers compose --repo contact/repo/ http://example.org/Person/schema|layers rdf dot >x && dotty x
+
+Person BIT schema:
+layers compose --repo contact/repo/ http://example.org/Person_bit/schema|layers compact >/tmp/out
+layers compose --repo contact/repo/ http://example.org/Person_bit/schema|layers rdf dot >x && dotty x
+
+Person ingest:
+layers ingest json --repo contact/repo --schema http://example.org/Person/schema contact/person_sample.json|layers compact >/tmp/out
+layers ingest json --repo contact/repo --schema http://example.org/Person_bit/schema contact/person_sample.json|layers compact >/tmp/out
+
+Person2 ingest:
+layers ingest json --repo contact/repo --schema http://example.org/Person2/schema contact/person_sample2.json|layers compact >/tmp/out
+
+Bundle ingest:
+layers ingest json --repo fhir4/repo/ --schema http://hl7.org/fhir/Bundle/schema fhir4/simplebundle.json |layers compact >/tmp/out

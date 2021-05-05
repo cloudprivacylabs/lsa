@@ -33,9 +33,23 @@ func (layer *Layer) Compose(options ComposeOptions, vocab terms.Vocabulary, sour
 	if source.Type != TermOverlayType {
 		return ErrInvalidComposition("Composition source is not an overlay")
 	}
-	if len(layer.ObjectType) > 0 && len(source.ObjectType) > 0 {
-		if layer.ObjectType != source.ObjectType {
-			return ErrIncompatible{Target: layer.ObjectType, Source: source.ObjectType}
+	if len(layer.TargetType) > 0 && len(source.TargetType) > 0 {
+		compatible := false
+		for _, t := range source.TargetType {
+			found := false
+			for _, x := range layer.TargetType {
+				if x == t {
+					found = true
+					break
+				}
+			}
+			if found {
+				compatible = true
+				break
+			}
+		}
+		if !compatible {
+			return ErrIncompatible{Target: layer.TargetType, Source: source.TargetType}
 		}
 	}
 	err := ComposeTerms(vocab, layer.Root.Values, source.Root.Values)

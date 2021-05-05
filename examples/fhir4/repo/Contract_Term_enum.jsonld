@@ -4,37 +4,74 @@
     "@type": [
       "http://layeredschemas.org/v1.0/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Layer/objectType": [
-      {
-        "@value": "http://hl7.org/fhir/Contract_Term"
-      }
-    ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/Contract_Term.action",
+        "@id": "http://hl7.org/fhir/Contract_Term.offer",
         "@type": [
-          "http://layeredschemas.org/v1.0/Array"
+          "http://layeredschemas.org/v1.0/Object"
         ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+        "http://layeredschemas.org/v1.0/Object/attributes": [
           {
+            "@id": "http://hl7.org/fhir/Contract_Term.offer.identifier",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "http://layeredschemas.org/v1.0/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "http://layeredschemas.org/v1.0/Array/items": [
               {
-                "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Object"
                 ],
                 "http://layeredschemas.org/v1.0/Object/attributes": [
                   {
-                    "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat",
+                    "@id": "http://hl7.org/fhir/Contract_Term.offer.identifier.*.use",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Value"
+                    ],
+                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                      {
+                        "@list": [
+                          {
+                            "@value": "usual"
+                          },
+                          {
+                            "@value": "official"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Contract_Term.offer.answer",
+            "@type": [
+              "http://layeredschemas.org/v1.0/Array"
+            ],
+            "http://layeredschemas.org/v1.0/Array/items": [
+              {
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Contract_Term.offer.answer.*.valueQuantity",
                     "@type": [
                       "http://layeredschemas.org/v1.0/Object"
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
-                        "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.durationUnit",
+                        "@id": "http://hl7.org/fhir/Contract_Term.offer.answer.*.valueQuantity.comparator",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Value"
                         ],
@@ -42,259 +79,16 @@
                           {
                             "@list": [
                               {
-                                "@value": "s"
+                                "@value": "\u003c"
                               },
                               {
-                                "@value": "min"
+                                "@value": "\u003c="
                               },
                               {
-                                "@value": "h"
+                                "@value": "\u003e="
                               },
                               {
-                                "@value": "d"
-                              },
-                              {
-                                "@value": "wk"
-                              },
-                              {
-                                "@value": "mo"
-                              },
-                              {
-                                "@value": "a"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.boundsRange",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.boundsRange.low",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.boundsRange.low.comparator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.boundsRange.high",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.boundsRange.high.comparator",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                  {
-                                    "@list": [
-                                      {
-                                        "@value": "\u003c"
-                                      },
-                                      {
-                                        "@value": "\u003c="
-                                      },
-                                      {
-                                        "@value": "\u003e="
-                                      },
-                                      {
-                                        "@value": "\u003e"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.periodUnit",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "s"
-                              },
-                              {
-                                "@value": "min"
-                              },
-                              {
-                                "@value": "h"
-                              },
-                              {
-                                "@value": "d"
-                              },
-                              {
-                                "@value": "wk"
-                              },
-                              {
-                                "@value": "mo"
-                              },
-                              {
-                                "@value": "a"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.boundsDuration",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
-                        ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
-                          {
-                            "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.boundsDuration.comparator",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.when",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
-                              {
-                                "@list": [
-                                  {
-                                    "@value": "MORN"
-                                  },
-                                  {
-                                    "@value": "MORN.early"
-                                  },
-                                  {
-                                    "@value": "MORN.late"
-                                  },
-                                  {
-                                    "@value": "NOON"
-                                  },
-                                  {
-                                    "@value": "AFT"
-                                  },
-                                  {
-                                    "@value": "AFT.early"
-                                  },
-                                  {
-                                    "@value": "AFT.late"
-                                  },
-                                  {
-                                    "@value": "EVE"
-                                  },
-                                  {
-                                    "@value": "EVE.early"
-                                  },
-                                  {
-                                    "@value": "EVE.late"
-                                  },
-                                  {
-                                    "@value": "NIGHT"
-                                  },
-                                  {
-                                    "@value": "PHS"
-                                  },
-                                  {
-                                    "@value": "HS"
-                                  },
-                                  {
-                                    "@value": "WAKE"
-                                  },
-                                  {
-                                    "@value": "C"
-                                  },
-                                  {
-                                    "@value": "CM"
-                                  },
-                                  {
-                                    "@value": "CD"
-                                  },
-                                  {
-                                    "@value": "CV"
-                                  },
-                                  {
-                                    "@value": "AC"
-                                  },
-                                  {
-                                    "@value": "ACM"
-                                  },
-                                  {
-                                    "@value": "ACD"
-                                  },
-                                  {
-                                    "@value": "ACV"
-                                  },
-                                  {
-                                    "@value": "PC"
-                                  },
-                                  {
-                                    "@value": "PCM"
-                                  },
-                                  {
-                                    "@value": "PCD"
-                                  },
-                                  {
-                                    "@value": "PCV"
-                                  }
-                                ]
+                                "@value": "\u003e"
                               }
                             ]
                           }
@@ -413,6 +207,38 @@
                     ],
                     "http://layeredschemas.org/v1.0/Object/attributes": [
                       {
+                        "@id": "http://hl7.org/fhir/Contract_Term.asset.*.valuedItem.*.quantity",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Contract_Term.asset.*.valuedItem.*.quantity.comparator",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
                         "@id": "http://hl7.org/fhir/Contract_Term.asset.*.valuedItem.*.identifier",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Object"
@@ -446,15 +272,281 @@
                             ]
                           }
                         ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@id": "http://hl7.org/fhir/Contract_Term.action",
+        "@type": [
+          "http://layeredschemas.org/v1.0/Array"
+        ],
+        "http://layeredschemas.org/v1.0/Array/items": [
+          {
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
+              {
+                "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Object"
+                ],
+                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  {
+                    "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat",
+                    "@type": [
+                      "http://layeredschemas.org/v1.0/Object"
+                    ],
+                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      {
+                        "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.periodUnit",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "s"
+                              },
+                              {
+                                "@value": "min"
+                              },
+                              {
+                                "@value": "h"
+                              },
+                              {
+                                "@value": "d"
+                              },
+                              {
+                                "@value": "wk"
+                              },
+                              {
+                                "@value": "mo"
+                              },
+                              {
+                                "@value": "a"
+                              }
+                            ]
+                          }
+                        ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/Contract_Term.asset.*.valuedItem.*.quantity",
+                        "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.durationUnit",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Value"
+                        ],
+                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                          {
+                            "@list": [
+                              {
+                                "@value": "s"
+                              },
+                              {
+                                "@value": "min"
+                              },
+                              {
+                                "@value": "h"
+                              },
+                              {
+                                "@value": "d"
+                              },
+                              {
+                                "@value": "wk"
+                              },
+                              {
+                                "@value": "mo"
+                              },
+                              {
+                                "@value": "a"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.when",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Array"
+                        ],
+                        "http://layeredschemas.org/v1.0/Array/items": [
+                          {
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Value"
+                            ],
+                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                              {
+                                "@list": [
+                                  {
+                                    "@value": "MORN"
+                                  },
+                                  {
+                                    "@value": "MORN.early"
+                                  },
+                                  {
+                                    "@value": "MORN.late"
+                                  },
+                                  {
+                                    "@value": "NOON"
+                                  },
+                                  {
+                                    "@value": "AFT"
+                                  },
+                                  {
+                                    "@value": "AFT.early"
+                                  },
+                                  {
+                                    "@value": "AFT.late"
+                                  },
+                                  {
+                                    "@value": "EVE"
+                                  },
+                                  {
+                                    "@value": "EVE.early"
+                                  },
+                                  {
+                                    "@value": "EVE.late"
+                                  },
+                                  {
+                                    "@value": "NIGHT"
+                                  },
+                                  {
+                                    "@value": "PHS"
+                                  },
+                                  {
+                                    "@value": "HS"
+                                  },
+                                  {
+                                    "@value": "WAKE"
+                                  },
+                                  {
+                                    "@value": "C"
+                                  },
+                                  {
+                                    "@value": "CM"
+                                  },
+                                  {
+                                    "@value": "CD"
+                                  },
+                                  {
+                                    "@value": "CV"
+                                  },
+                                  {
+                                    "@value": "AC"
+                                  },
+                                  {
+                                    "@value": "ACM"
+                                  },
+                                  {
+                                    "@value": "ACD"
+                                  },
+                                  {
+                                    "@value": "ACV"
+                                  },
+                                  {
+                                    "@value": "PC"
+                                  },
+                                  {
+                                    "@value": "PCM"
+                                  },
+                                  {
+                                    "@value": "PCD"
+                                  },
+                                  {
+                                    "@value": "PCV"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.boundsRange",
                         "@type": [
                           "http://layeredschemas.org/v1.0/Object"
                         ],
                         "http://layeredschemas.org/v1.0/Object/attributes": [
                           {
-                            "@id": "http://hl7.org/fhir/Contract_Term.asset.*.valuedItem.*.quantity.comparator",
+                            "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.boundsRange.low",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.boundsRange.low.comparator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.boundsRange.high",
+                            "@type": [
+                              "http://layeredschemas.org/v1.0/Object"
+                            ],
+                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                              {
+                                "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.boundsRange.high.comparator",
+                                "@type": [
+                                  "http://layeredschemas.org/v1.0/Value"
+                                ],
+                                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.boundsDuration",
+                        "@type": [
+                          "http://layeredschemas.org/v1.0/Object"
+                        ],
+                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                          {
+                            "@id": "http://hl7.org/fhir/Contract_Term.action.*.occurrenceTiming.repeat.boundsDuration.comparator",
                             "@type": [
                               "http://layeredschemas.org/v1.0/Value"
                             ],
@@ -486,103 +578,11 @@
             ]
           }
         ]
-      },
+      }
+    ],
+    "http://layeredschemas.org/v1.0/targetType": [
       {
-        "@id": "http://hl7.org/fhir/Contract_Term.offer",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Contract_Term.offer.answer",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Contract_Term.offer.answer.*.valueQuantity",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/Contract_Term.offer.answer.*.valueQuantity.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Contract_Term.offer.identifier",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/Contract_Term.offer.identifier.*.use",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "usual"
-                          },
-                          {
-                            "@value": "official"
-                          },
-                          {
-                            "@value": "temp"
-                          },
-                          {
-                            "@value": "secondary"
-                          },
-                          {
-                            "@value": "old"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        "@id": "http://hl7.org/fhir/Contract_Term"
       }
     ]
   }

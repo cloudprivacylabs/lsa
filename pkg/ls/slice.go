@@ -26,8 +26,7 @@ import (
 func (layer *Layer) Slice(filter func(string, *Attribute) bool) *Layer {
 	newLayer := NewLayer()
 	newLayer.Type = layer.Type
-	newLayer.ObjectType = layer.ObjectType
-	newLayer.ObjectVersion = layer.ObjectVersion
+	newLayer.TargetType = layer.TargetType
 	root := layer.Root.Slice(filter, nil, newLayer)
 	if root != nil {
 		newLayer.Root = root

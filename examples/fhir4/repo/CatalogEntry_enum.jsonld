@@ -4,49 +4,26 @@
     "@type": [
       "http://layeredschemas.org/v1.0/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Layer/objectType": [
-      {
-        "@value": "http://hl7.org/fhir/CatalogEntry"
-      }
-    ],
     "http://layeredschemas.org/v1.0/Object/attributes": [
       {
-        "@id": "http://hl7.org/fhir/CatalogEntry.identifier",
+        "@id": "http://hl7.org/fhir/CatalogEntry.status",
         "@type": [
-          "http://layeredschemas.org/v1.0/Array"
+          "http://layeredschemas.org/v1.0/Value"
         ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+        "http://layeredschemas.org/v1.0/attr/enumeration": [
           {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "@list": [
               {
-                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
+                "@value": "draft"
+              },
+              {
+                "@value": "active"
+              },
+              {
+                "@value": "retired"
+              },
+              {
+                "@value": "unknown"
               }
             ]
           }
@@ -68,24 +45,33 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/CatalogEntry.status",
+        "@id": "http://hl7.org/fhir/CatalogEntry.relatedEntry",
         "@type": [
-          "http://layeredschemas.org/v1.0/Value"
+          "http://layeredschemas.org/v1.0/Array"
         ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+        "http://layeredschemas.org/v1.0/Array/items": [
           {
-            "@list": [
+            "@type": [
+              "http://layeredschemas.org/v1.0/Object"
+            ],
+            "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@value": "draft"
-              },
-              {
-                "@value": "active"
-              },
-              {
-                "@value": "retired"
-              },
-              {
-                "@value": "unknown"
+                "@id": "http://hl7.org/fhir/CatalogEntry.relatedEntry.*.relationtype",
+                "@type": [
+                  "http://layeredschemas.org/v1.0/Value"
+                ],
+                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                  {
+                    "@list": [
+                      {
+                        "@value": "triggers"
+                      },
+                      {
+                        "@value": "is-replaced-by"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -166,7 +152,7 @@
         ]
       },
       {
-        "@id": "http://hl7.org/fhir/CatalogEntry.relatedEntry",
+        "@id": "http://hl7.org/fhir/CatalogEntry.identifier",
         "@type": [
           "http://layeredschemas.org/v1.0/Array"
         ],
@@ -177,7 +163,7 @@
             ],
             "http://layeredschemas.org/v1.0/Object/attributes": [
               {
-                "@id": "http://hl7.org/fhir/CatalogEntry.relatedEntry.*.relationtype",
+                "@id": "http://hl7.org/fhir/CatalogEntry.identifier.*.use",
                 "@type": [
                   "http://layeredschemas.org/v1.0/Value"
                 ],
@@ -185,10 +171,19 @@
                   {
                     "@list": [
                       {
-                        "@value": "triggers"
+                        "@value": "usual"
                       },
                       {
-                        "@value": "is-replaced-by"
+                        "@value": "official"
+                      },
+                      {
+                        "@value": "temp"
+                      },
+                      {
+                        "@value": "secondary"
+                      },
+                      {
+                        "@value": "old"
                       }
                     ]
                   }
@@ -197,6 +192,11 @@
             ]
           }
         ]
+      }
+    ],
+    "http://layeredschemas.org/v1.0/targetType": [
+      {
+        "@id": "http://hl7.org/fhir/CatalogEntry"
       }
     ]
   }

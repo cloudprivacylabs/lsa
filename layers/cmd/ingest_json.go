@@ -32,6 +32,7 @@ func init() {
 	ingestCmd.AddCommand(ingestJSONCmd)
 	ingestJSONCmd.Flags().String("schema", "", "Schema id to use")
 	ingestJSONCmd.MarkFlagRequired("schema")
+	ingestJSONCmd.Flags().String("id", "http://example.org/data", "Base ID to use for ingested nodes")
 	ingestJSONCmd.Flags().String("format", "json", "Output format, json, rdf, or dot")
 }
 
@@ -56,6 +57,7 @@ var ingestJSONCmd = &cobra.Command{
 			failErr(err)
 		}
 
+		ID, _ := cmd.Flags().GetString("id")
 		schemaId, _ := cmd.Flags().GetString("schema")
 		compiler := ls.Compiler{Resolver: func(x string) (string, error) {
 			if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
@@ -73,7 +75,7 @@ var ingestJSONCmd = &cobra.Command{
 		format, _ := cmd.Flags().GetString("format")
 		switch format {
 		case "json":
-			ingested, err := jsoningest.Ingest(resolved.ObjectType, input, resolved)
+			ingested, err := jsoningest.Ingest(ID, input, resolved)
 			if err != nil {
 				failErr(err)
 			}
@@ -83,7 +85,7 @@ var ingestJSONCmd = &cobra.Command{
 		case "rdf", "dot":
 			ingester := jsoningest.NewGraphIngester(resolved)
 			output := mrdf.NewGraph()
-			if err := ingester.Ingest(output, resolved.ObjectType, input); err != nil {
+			if err := ingester.Ingest(output, ID, input); err != nil {
 				failErr(err)
 			}
 			if format == "rdf" {
