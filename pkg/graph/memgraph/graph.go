@@ -12,6 +12,13 @@ type Graph struct {
 	edges indexedList
 }
 
+func NewGraph() *Graph {
+	return &Graph{
+		nodes: newIndexedList(),
+		edges: newIndexedList(),
+	}
+}
+
 func (g *Graph) newId() string { return shortuuid.New() }
 
 func (g *Graph) GetNodes() graph.NodeIterator { return &listNodeIterator{at: g.nodes.list.Front()} }

@@ -37,6 +37,30 @@ func (n *Node) NodeID() string { return n.id }
 
 func (n *Node) Properties() map[string]interface{} { return n.properties }
 
+func (n *Node) AllOutgoingEdges() graph.EdgeIterator {
+	return &listEdgeIterator{at: n.outgoing.Front()}
+}
+
+func (n *Node) OutgoingEdgesByLabel(label string) graph.EdgeIterator {
+	l := n.outgoingLabels[label]
+	if l != nil {
+		return newMapEdgeIterator(l)
+	}
+	return emptyEdgeIterator{}
+}
+
+func (n *Node) AllIncomingEdges() graph.EdgeIterator {
+	return &listEdgeIterator{at: n.incoming.Front()}
+}
+
+func (n *Node) IncomingEdgesByLabel(label string) graph.EdgeIterator {
+	l := n.incomingLabels[label]
+	if l != nil {
+		return newMapEdgeIterator(l)
+	}
+	return emptyEdgeIterator{}
+}
+
 type listNodeIterator struct {
 	at *list.Element
 }

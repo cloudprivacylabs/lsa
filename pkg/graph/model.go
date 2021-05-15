@@ -19,11 +19,11 @@ type Node interface {
 	// Unique node ID
 	NodeID() string
 
-	// AllOutgoingEdges() EdgeIterator
-	// OutgoingEdgesByLabel(string) EdgeIterator
+	AllOutgoingEdges() EdgeIterator
+	OutgoingEdgesByLabel(string) EdgeIterator
 
-	// AllIncomingEdges() EdgeIterator
-	// IncomingEdgesByLabel(string) EdgeIterator
+	AllIncomingEdges() EdgeIterator
+	IncomingEdgesByLabel(string) EdgeIterator
 	Properties() map[string]interface{}
 }
 

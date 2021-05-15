@@ -58,6 +58,11 @@ func (e *Edge) StartNode() graph.Node { return e.start }
 
 func (e *Edge) EndNode() graph.Node { return e.end }
 
+type emptyEdgeIterator struct{}
+
+func (emptyEdgeIterator) Next() graph.Edge   { return nil }
+func (emptyEdgeIterator) Rest() []graph.Edge { return nil }
+
 type listEdgeIterator struct {
 	at *list.Element
 }
@@ -75,6 +80,36 @@ func (l *listEdgeIterator) Rest() []graph.Edge {
 	ret := make([]graph.Edge, 0)
 	for ; l.at != nil; l.at = l.at.Next() {
 		ret = append(ret, l.at.Value.(*Edge))
+	}
+	return ret
+}
+
+type arrayEdgeIterator struct {
+	edges []*Edge
+	i     int
+}
+
+func (l *arrayEdgeIterator) Next() graph.Edge {
+	if l.i >= len(l.edges) {
+		return nil
+	}
+	ret := l.edges[l.i]
+	l.i++
+	return ret
+}
+
+func (l *arrayEdgeIterator) Rest() []graph.Edge {
+	ret := make([]graph.Edge, 0, len(l.edges)-l.i)
+	for ; l.i < len(l.edges); l.i++ {
+		ret = append(ret, l.edges[l.i])
+	}
+	return ret
+}
+
+func newMapEdgeIterator(m map[*list.Element]struct{}) *arrayEdgeIterator {
+	ret := &arrayEdgeIterator{edges: make([]*Edge, 0, len(m))}
+	for k := range m {
+		ret.edges = append(ret.edges, k.Value.(*Edge))
 	}
 	return ret
 }
