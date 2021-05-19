@@ -1,95 +1,140 @@
 package layers
 
-type Attribute interface {
-	GetID() string
+import ()
 
-	GetTypes() []string
-	HasType(string) bool
-	AddTypes(...string)
-	RemoveTypes(...string)
+const LS = "https://layeredschemas.org/"
 
-	Clone() Attribute
+var AttributeTypes = struct {
+	Value       string
+	Object      string
+	Array       string
+	Reference   string
+	Composite   string
+	Polymorphic string
+}{
+	Value:       LS + "Value",
+	Object:      LS + "Object",
+	Array:       LS + "Array",
+	Reference:   LS + "Reference",
+	Composite:   LS + "Composite",
+	Polymorphic: LS + "Polymorphic",
 }
 
-type BaseAttribute struct {
-	ID string
+var TypeTerms = struct {
+	Attributes    string
+	AttributeList string
+	Reference     string
+	ArrayItems    string
+	AllOf         string
+	OneOf         string
+}{
+	Attributes:    LS + "Object#attributes",
+	AttributeList: LS + "Object#attributeList",
+	Reference:     LS + "Reference#reference",
+	ArrayItems:    LS + "Array#items",
+	AllOf:         LS + "Composite#allOf",
+	OneOf:         LS + "Polymorphic#oneOf",
+}
 
+type Attribute struct {
 	types    []string
 	typesMap map[string]struct{}
+
+	Properties map[string]interface{}
 }
 
-func (a *BaseAttribute) GetTypes() []string {
-	return a.types
+// Return all recognized attribute types. This is mainly used for
+// validation, to ensure there is only one attribute type
+func getAttributeTypes(types []string) []string {
+	ret := make([]string, 0)
+	for _, x := range types {
+		if x == AttributeTypes.Value ||
+			x == AttributeTypes.Object ||
+			x == AttributeTypes.Array ||
+			x == AttributeTypes.Reference ||
+			x == AttributeTypes.Composite ||
+			x == AttributeTypes.Polymorphic {
+			ret = append(ret, x)
+		}
+	}
+	return ret
 }
 
-func (a *BaseAttribute) HasType(t string) bool {
-	_, ok := a.typesMap[t]
-	return ok
-}
+func (a *Attribute) GetTypes() []string { return a.types }
 
-func (a *BaseAttribute) AddTypes(t ...string) {
+func (a *Attribute) AddTypes(t ...string) {
+	if a.typesMap == nil {
+		a.typesMap = make(map[string]struct{})
+	}
 	for _, x := range t {
-		if _, ok := a.typesMap[x]; !ok {
+		if _, exists := a.typesMap[x]; !exists {
+			a.types = append(a.types, x)
 			a.typesMap[x] = struct{}{}
+		}
+	}
+}
+
+func (a *Attribute) RemoveTypes(t ...string) {
+	if a.typesMap == nil {
+		return
+	}
+	for _, x := range t {
+		delete(a.typesMap, x)
+	}
+	if len(a.typesMap) != len(a.types) {
+		a.types = make([]string, 0, len(a.typesMap))
+		for x := range a.typesMap {
 			a.types = append(a.types, x)
 		}
 	}
 }
 
-func (a *BaseAttribute) RemoveTypes(t ...string) {
-	for _, x := range t {
-		delete(a.typesMap, x)
+func (a *Attribute) SetTypes(t ...string) {
+	a.types = make([]string, 0, len(t))
+	a.typesMap = make(map[string]struct{})
+	a.AddTypes(t...)
+}
+
+func (a *Attribute) HasType(t string) bool {
+	if a.typesMap == nil {
+		return false
 	}
-	a.types = make([]string, 0, len(a.typesMap))
-	for x := range x.typesMap {
-		a.types = append(a.types, x)
-	}
+	_, exists := a.typesMap[t]
+	return exists
 }
 
 type ValueAttribute struct {
-	BaseAttribute
-}
-
-func (v *ValueAttribute) Clone() Attribute {
-	return &ValueAttribute{BaseAttribute: *v.BaseAttribute.Clone()}
+	Attribute
 }
 
 type ReferenceAttribute struct {
-	BaseAttribute
-	Reference string
+	Attribute
 }
 
-func (v *ReferenceAttribute) Clone() Attribute {
-	return &ReferenceAttribute{BaseAttribute: *v.BaseAttribute.Clone(),
-		Reference: v.Reference,
+func (r *ReferenceAttribute) SetReference(ref string) {
+	r.Properties[TypeTerms.Reference] = ref
+}
+
+func (r *ReferenceAttribute) GetReference() string {
+	x, ok := r.Properties[TypeTerms.Reference]
+	if !ok {
+		return ""
 	}
+	return x.(string)
 }
 
 type ArrayAttribute struct {
-	BaseAttribute
-}
-
-func (v *ArrayAttribute) Clone() Attribute {
-	return &ArrayAttribute{BaseAttribute: *v.BaseAttribute.Clone()}
+	Attribute
 }
 
 type PolymorphicAttribute struct {
-	BaseAttribute
-}
-
-func (v *PolymorphicAttribute) Clone() Attribute {
-	return &PolymorphicAttribute{BaseAttribute: *v.BaseAttribute.Clone()}
+	Attribute
 }
 
 type CompositeAttribute struct {
-	BaseAttribute
-	Options []Attribute
+	Attribute
 }
 
 type ObjectAttribute struct {
-	BaseAttribute
-
-	ordered      bool
-	attributes   []Attribute
-	attributeMap map[string]Attribute
+	Attribute
 }
