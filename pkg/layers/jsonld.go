@@ -2,6 +2,7 @@ package layers
 
 import (
 	"github.com/bserdar/digraph"
+	"github.com/piprate/json-gold/ld"
 )
 
 // GetKeyValue returns the value of the key in the node. The node must
@@ -114,6 +115,7 @@ func UnmarshalExpandedAttribute(target *digraph.Graph, in interface{}) (*digraph
 	// Process the nested attribute nodes
 	for k, val := range m {
 		switch k {
+		case "@id", "@type":
 		case TypeTerms.Attributes, TypeTerms.AttributeList:
 			attribute.AddTypes(AttributeTypes.Object)
 			// m must be an array of attributes
@@ -136,24 +138,16 @@ func UnmarshalExpandedAttribute(target *digraph.Graph, in interface{}) (*digraph
 		case TypeTerms.Reference:
 			attribute.AddTypes(AttributeTypes.Reference)
 			// There can be at most one reference
-			obj, ok := val.(map[string]interface{})
-			if !ok {
-				return nil, MakeErrInvalidInput(id, "Reference must be {@id:id}")
-			}
-			oid, ok := obj["@id"]
-			if !ok {
-				return nil, MakeErrInvalidInput(id, "Reference does not have @id")
-			}
-			idstr, ok := oid.(string)
-			if !ok {
-				return nil, MakeErrInvalidInput(id, "Invalid reference")
+			oid := GetNodeID(val)
+			if len(oid) == 0 {
+				return nil, MakeErrInvalidInput(id)
 			}
 			if payload != nil {
 				return nil, ErrMultipleTypes(id)
 			}
 			payload = func() interface{} {
 				ret := &ReferenceAttribute{Attribute: attribute}
-				ret.SetReference(idstr)
+				ret.SetReference(oid)
 				return ret
 			}
 
@@ -201,6 +195,16 @@ func UnmarshalExpandedAttribute(target *digraph.Graph, in interface{}) (*digraph
 			} else {
 				payload = func() interface{} { return &PolymorphicAttribute{Attribute: attribute} }
 			}
+
+		default:
+			// Use RDF
+			n, err := JsonLdToGraph(target, val)
+			if err != nil {
+				return nil, err
+			}
+			if n != nil {
+				target.NewEdge(node, n, k, nil)
+			}
 		}
 	}
 	if payload == nil {
@@ -226,4 +230,94 @@ func UnmarshalExpandedAttribute(target *digraph.Graph, in interface{}) (*digraph
 	}
 	node.Payload = payload()
 	return node, nil
+}
+
+func JsonLdToGraph(target *digraph.Graph, input interface{}) (*digraph.Node, error) {
+	if input == nil {
+		return nil, nil
+	}
+	arr, ok := input.([]interface{})
+	if !ok {
+		return jsonLdToGraph(target, input)
+	}
+	switch len(arr) {
+	case 0:
+		return nil, nil
+	case 1:
+		return jsonLdToGraph(target, arr[0])
+	default:
+		newNode := target.NewNode(nil, nil)
+		for _, x := range arr {
+			n, err := jsonLdToGraph(target, x)
+			if err != nil {
+				return nil, err
+			}
+			target.NewEdge(newNode, n, nil, nil)
+		}
+		return newNode, nil
+	}
+	return nil, nil
+}
+
+func jsonLdToGraph(target *digraph.Graph, input interface{}) (*digraph.Node, error) {
+	// The input must be a map or a nonempty array
+	// A value or ID produces a single node
+	if ld.IsValue(input) {
+		return target.NewNode(GetNodeValue(input), nil), nil
+	}
+
+	if m, ok := input.(map[string]interface{}); ok {
+		if len(m) == 1 {
+			if id, ok := m["@id"]; ok {
+				return target.NewNode(id, nil), nil
+			}
+		}
+	}
+
+	// A graph containing multiple nodes, use RDF
+	rdf, err := ld.NewJsonLdProcessor().ToRDF(input, nil)
+	if err != nil {
+		return nil, err
+	}
+	quads := rdf.(*ld.RDFDataset).GetQuads("@default")
+	nodes := make(map[string]*digraph.Node)
+	for _, quad := range quads {
+		// There must be a node for the subject
+		value := quad.Subject.GetValue()
+		subjectNode, exists := nodes[value]
+		if !exists {
+			subjectNode = target.NewNode(value, nil)
+			nodes[value] = subjectNode
+		}
+
+		// If the object is a Literal, create a new node for it
+		var objectNode *digraph.Node
+		lit, ok := quad.Object.(*ld.Literal)
+		if ok {
+			objectNode = target.NewNode(lit.GetValue(), nil)
+		} else {
+			value := quad.Object.GetValue()
+			objectNode, exists = nodes[value]
+			if !exists {
+				objectNode = target.NewNode(value, nil)
+				nodes[value] = objectNode
+			}
+		}
+
+		target.NewEdge(subjectNode, objectNode, quad.Predicate.GetValue(), nil)
+	}
+	// The graph must have a root, that is, a node with no incoming edges
+	var root *digraph.Node
+	for _, node := range nodes {
+		if !node.AllIncomingEdges().HasNext() {
+			if root != nil {
+				return nil, ErrInvalidJsonLdGraph
+			}
+			root = node
+		}
+	}
+	if root == nil {
+		return nil, ErrInvalidJsonLdGraph
+	}
+	return root, nil
 }

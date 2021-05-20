@@ -1,6 +1,7 @@
 package layers
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -38,3 +39,5 @@ type ErrMultipleTypes string
 func (e ErrMultipleTypes) Error() string {
 	return fmt.Sprintf("Multiple types declared for attribute: %s", string(e))
 }
+
+var ErrInvalidJsonLdGraph = errors.New("Invalid JsonLd graph")
