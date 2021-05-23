@@ -46,3 +46,33 @@ func (l *Layer) GetTargetTypes() []string {
 	}
 	return nil
 }
+
+// ForEachAttribute calls f with each attribute node, depth first. If
+// f returns false, iteration stops
+func (l *Layer) ForEachAttribute(f func(*digraph.Node) bool) {
+	var forEachAttribute func(*digraph.Node, func(*digraph.Node) bool) bool
+	forEachAttribute = func(root *digraph.Node, f func(*digraph.Node) bool) bool {
+		payload, _ := root.Payload.(*SchemaNode)
+		if payload.HasType(AttributeTypes.Attribute) {
+			if !f(root) {
+				return false
+			}
+		}
+		for outgoing := root.AllOutgoingEdges(); outgoing.HasNext(); {
+			edge := outgoing.Next()
+			if !IsAttributeTreeEdge(edge) {
+				continue
+			}
+			next := edge.To()
+			np, _ := next.Payload.(*SchemaNode)
+			if np.HasType(AttributeTypes.Attribute) {
+				if !forEachAttribute(next, f) {
+					return false
+				}
+			}
+		}
+		return true
+	}
+
+	forEachAttribute(l.RootNode, f)
+}

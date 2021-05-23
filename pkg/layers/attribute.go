@@ -61,6 +61,17 @@ var TypeTerms = struct {
 	OneOf:         LS + "Polymorphic#oneOf",
 }
 
+// IsAttributeTreeEdge returns true if the edge is an edge between two
+// attribute nodes
+func IsAttributeTreeEdge(edge *digraph.Edge) bool {
+	l := edge.Label()
+	return l == TypeTerms.Attributes ||
+		l == TypeTerms.AttributeList ||
+		l == TypeTerms.ArrayItems ||
+		l == TypeTerms.AllOf ||
+		l == TypeTerms.OneOf
+}
+
 // SchemaNode is the payload associated with all the nodes of a
 // schema. The attribute nodes have types Attribute plus the specific
 // type of the attribute. Other nodes will have their own types
@@ -80,8 +91,6 @@ func NewSchemaNode(types ...string) *SchemaNode {
 	return &ret
 }
 
-func (a *SchemaNode) GetProperties() map[string]interface{} { return a.Properties }
-
 // GetAttributeTypes returns all recognized attribute types. This is
 // mainly used for validation, to ensure there is only one attribute
 // type
@@ -100,7 +109,12 @@ func GetAttributeTypes(types []string) []string {
 	return ret
 }
 
-func (a *SchemaNode) GetTypes() []string { return a.types }
+func (a *SchemaNode) GetTypes() []string {
+	if a == nil {
+		return nil
+	}
+	return a.types
+}
 
 func (a *SchemaNode) AddTypes(t ...string) {
 	if a.typesMap == nil {
@@ -136,7 +150,7 @@ func (a *SchemaNode) SetTypes(t ...string) {
 }
 
 func (a *SchemaNode) HasType(t string) bool {
-	if a.typesMap == nil {
+	if a == nil || a.typesMap == nil {
 		return false
 	}
 	_, exists := a.typesMap[t]

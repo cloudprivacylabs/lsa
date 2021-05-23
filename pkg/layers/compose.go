@@ -42,31 +42,34 @@ func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
 		}
 	}
 
-	for nodes := source.Graph.AllNodes(); nodes.HasNext(); {
-		node := nodes.Next()
-		snode, _ := node.Payload.(*SchemaNode)
-		if snode == nil {
-			continue
-		}
-		if !snode.HasType(AttributeTypes.Attribute) {
-			continue
-		}
-		// This is an attribute node
+	merged := make(map[*digraph.Node]struct{})
+	source.ForEachAttribute(func(sourceNode *digraph.Node) bool {
+		snode, _ := sourceNode.Payload.(*SchemaNode)
 		// If node exists in target, merge
 		targetNodes := layer.Graph.AllNodesWithLabel(node.Label()).All()
 		switch len(targetNodes) {
 		case 1:
 			// Target node exists. Merge if paths match
 			if pathsMatch(targetNodes[0], node, node) {
+				if err := mergeNodes(targetNodes[0], node, merged); err != nil {
+					return err
+				}
 			}
 		case 0:
 			// Target node does not exist. Add if options==Union
+			if options.Union {
+
+			}
 		default:
 			return ErrDuplicateAttributeID(fmt.Sprint(node.Label()))
 		}
-
-	}
+	})
 	return nil
+}
+
+// Merge source into target.
+func mergeNodes(target, source *digraph.Node, merged map[*digraph.Node]struct{}) error {
+
 }
 
 // pathsMatch returns true if the attribute predecessors of source matches target's
