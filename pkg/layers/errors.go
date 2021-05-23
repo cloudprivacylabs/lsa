@@ -41,3 +41,7 @@ func (e ErrMultipleTypes) Error() string {
 }
 
 var ErrInvalidJsonLdGraph = errors.New("Invalid JsonLd graph")
+var ErrAttributeWithoutID = errors.New("Attribute without id")
+var ErrNotALayer = errors.New("Not a layer")
+var ErrCompositionSourceNotOverlay = errors.New("Composition source is not an overlay")
+var ErrIncompatibleComposition = errors.New("Incompatible composition of layers")

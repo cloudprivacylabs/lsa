@@ -1,9 +1,15 @@
 package layers
 
-import ()
+import (
+	"github.com/bserdar/digraph"
+)
 
-const LS = "https://layeredschemas.org/"
+// IRI is used for jsonld @id types
+type IRI string
 
+// AttributeTypes defines the terms describing attribute types. Each
+// attribute must have one of the attribute types plus the Attribute
+// type, marking the object as an attribute.
 var AttributeTypes = struct {
 	Value       string
 	Object      string
@@ -11,6 +17,7 @@ var AttributeTypes = struct {
 	Reference   string
 	Composite   string
 	Polymorphic string
+	Attribute   string
 }{
 	Value:       LS + "Value",
 	Object:      LS + "Object",
@@ -18,15 +25,33 @@ var AttributeTypes = struct {
 	Reference:   LS + "Reference",
 	Composite:   LS + "Composite",
 	Polymorphic: LS + "Polymorphic",
+	Attribute:   LS + "Attribute",
 }
 
+var AnnotationTerms = struct {
+	Literal string
+	IRI     string
+}{
+	Literal: LS + "Literal",
+	IRI:     LS + "IRI",
+}
+
+// TypeTerms includes type specific terms recognized by the schema
+// compiler. These are terms used to define elements of an attribute.
 var TypeTerms = struct {
-	Attributes    string
+	// Unordered named attributes (json object)
+	Attributes string
+	// Ordered named attributes (json object, xml elements)
 	AttributeList string
-	Reference     string
-	ArrayItems    string
-	AllOf         string
-	OneOf         string
+	// Reference to another schema. This will be resolved to another
+	// schema during compilation
+	Reference string
+	// ArrayItems contains the definition for the items of the array
+	ArrayItems string
+	// All components of a composite attribute
+	AllOf string
+	// All options of a polymorphic attribute
+	OneOf string
 }{
 	Attributes:    LS + "Object#attributes",
 	AttributeList: LS + "Object#attributeList",
@@ -36,16 +61,31 @@ var TypeTerms = struct {
 	OneOf:         LS + "Polymorphic#oneOf",
 }
 
-type Attribute struct {
+// SchemaNode is the payload associated with all the nodes of a
+// schema. The attribute nodes have types Attribute plus the specific
+// type of the attribute. Other nodes will have their own types
+// marking them as literal or IRI, or something else. Annotations
+// cannot have Attribute or one of the attribute types
+type SchemaNode struct {
 	types    []string
 	typesMap map[string]struct{}
 
 	Properties map[string]interface{}
 }
 
-// Return all recognized attribute types. This is mainly used for
-// validation, to ensure there is only one attribute type
-func getAttributeTypes(types []string) []string {
+// NewSchemaNode returns a new schema node with the given types
+func NewSchemaNode(types ...string) *SchemaNode {
+	ret := SchemaNode{Properties: make(map[string]interface{})}
+	ret.AddTypes(types...)
+	return &ret
+}
+
+func (a *SchemaNode) GetProperties() map[string]interface{} { return a.Properties }
+
+// GetAttributeTypes returns all recognized attribute types. This is
+// mainly used for validation, to ensure there is only one attribute
+// type
+func GetAttributeTypes(types []string) []string {
 	ret := make([]string, 0)
 	for _, x := range types {
 		if x == AttributeTypes.Value ||
@@ -60,9 +100,9 @@ func getAttributeTypes(types []string) []string {
 	return ret
 }
 
-func (a *Attribute) GetTypes() []string { return a.types }
+func (a *SchemaNode) GetTypes() []string { return a.types }
 
-func (a *Attribute) AddTypes(t ...string) {
+func (a *SchemaNode) AddTypes(t ...string) {
 	if a.typesMap == nil {
 		a.typesMap = make(map[string]struct{})
 	}
@@ -74,7 +114,7 @@ func (a *Attribute) AddTypes(t ...string) {
 	}
 }
 
-func (a *Attribute) RemoveTypes(t ...string) {
+func (a *SchemaNode) RemoveTypes(t ...string) {
 	if a.typesMap == nil {
 		return
 	}
@@ -89,13 +129,13 @@ func (a *Attribute) RemoveTypes(t ...string) {
 	}
 }
 
-func (a *Attribute) SetTypes(t ...string) {
+func (a *SchemaNode) SetTypes(t ...string) {
 	a.types = make([]string, 0, len(t))
 	a.typesMap = make(map[string]struct{})
 	a.AddTypes(t...)
 }
 
-func (a *Attribute) HasType(t string) bool {
+func (a *SchemaNode) HasType(t string) bool {
 	if a.typesMap == nil {
 		return false
 	}
@@ -103,38 +143,19 @@ func (a *Attribute) HasType(t string) bool {
 	return exists
 }
 
-type ValueAttribute struct {
-	Attribute
-}
-
-type ReferenceAttribute struct {
-	Attribute
-}
-
-func (r *ReferenceAttribute) SetReference(ref string) {
-	r.Properties[TypeTerms.Reference] = ref
-}
-
-func (r *ReferenceAttribute) GetReference() string {
-	x, ok := r.Properties[TypeTerms.Reference]
-	if !ok {
-		return ""
+// GetParentAttributes returns the immediate parents of node that are
+// attributes
+func GetParentAttributes(node *digraph.Node) []*digraph.Node {
+	ret := make([]*digraph.Node, 0)
+	for parents := node.AllIncomingEdges(); parents.HasNext(); {
+		parent := parents.Next()
+		nd, _ := parent.From().Payload.(*SchemaNode)
+		if nd == nil {
+			continue
+		}
+		if nd.HasType(AttributeTypes.Attribute) {
+			ret = append(ret, parent.From())
+		}
 	}
-	return x.(string)
-}
-
-type ArrayAttribute struct {
-	Attribute
-}
-
-type PolymorphicAttribute struct {
-	Attribute
-}
-
-type CompositeAttribute struct {
-	Attribute
-}
-
-type ObjectAttribute struct {
-	Attribute
+	return ret
 }
