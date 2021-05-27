@@ -43,9 +43,9 @@ type objectSchema struct {
 	properties map[string]schemaProperty
 }
 
-func (a arraySchema) itr(entityId string, name []string, out *ls.Attribute, layer *ls.Layer) {
-	elem := ls.NewAttribute(nil)
-	schemaAttrs(entityId, append(name, "*"), a.items, elem, layer)
+func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer) *digraph.Node {
+	elem := schemaAttrs(entityId, append(name, "*"), a.items, layer)
+	layer.NewNode(
 	out.Type = &ls.ArrayType{elem}
 }
 

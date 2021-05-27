@@ -29,6 +29,10 @@ type Layer struct {
 	RootNode *digraph.Node
 }
 
+func NewLayer() *Layer {
+	return &Layer{Graph: digraph.New()}
+}
+
 // Clone returns a copy of the layer
 func (l *Layer) Clone() *Layer {
 	ret := &Layer{Graph: digraph.New()}
