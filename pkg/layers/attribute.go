@@ -1,3 +1,16 @@
+// Copyright 2021 Cloud Privacy Labs, LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 package layers
 
 import (
@@ -70,6 +83,12 @@ func IsAttributeTreeEdge(edge *digraph.Edge) bool {
 		l == TypeTerms.ArrayItems ||
 		l == TypeTerms.AllOf ||
 		l == TypeTerms.OneOf
+}
+
+// IsAttributeNode returns true if the node has Attribute type
+func IsAttributeNode(node *digraph.Node) bool {
+	payload, _ := node.Payload.(*SchemaNode)
+	return payload != nil && payload.HasType(AttributeTypes.Attribute)
 }
 
 // SchemaNode is the payload associated with all the nodes of a
@@ -157,19 +176,44 @@ func (a *SchemaNode) HasType(t string) bool {
 	return exists
 }
 
-// GetParentAttributes returns the immediate parents of node that are
-// attributes
-func GetParentAttributes(node *digraph.Node) []*digraph.Node {
-	ret := make([]*digraph.Node, 0)
+// Clone returns a copy of the node data
+func (a *SchemaNode) Clone() *SchemaNode {
+	ret := NewSchemaNode(a.GetTypes()...)
+	ret.Properties = copyIntf(a.Properties).(map[string]interface{})
+	return ret
+}
+
+// GetParentAttribute returns the first immediate parent of the node that is
+// an attribute and reached by an attribute edge.
+func GetParentAttribute(node *digraph.Node) *digraph.Node {
 	for parents := node.AllIncomingEdges(); parents.HasNext(); {
 		parent := parents.Next()
+		if !IsAttributeTreeEdge(parent) {
+			continue
+		}
 		nd, _ := parent.From().Payload.(*SchemaNode)
 		if nd == nil {
 			continue
 		}
 		if nd.HasType(AttributeTypes.Attribute) {
-			ret = append(ret, parent.From())
+			return parent.From()
 		}
 	}
+	return nil
+}
+
+// SchemaEdge is the payload for schema edges.
+type SchemaEdge struct {
+	Properties map[string]interface{}
+}
+
+// NewSchemaEdge returns a new initialized schema edge
+func NewSchemaEdge() *SchemaEdge {
+	return &SchemaEdge{Properties: make(map[string]interface{})}
+}
+
+func (e *SchemaEdge) Clone() *SchemaEdge {
+	ret := NewSchemaEdge()
+	ret.Properties = copyIntf(e.Properties).(map[string]interface{})
 	return ret
 }

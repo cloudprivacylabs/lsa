@@ -1,3 +1,16 @@
+// Copyright 2021 Cloud Privacy Labs, LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 package layers
 
 import (
@@ -34,10 +47,22 @@ func (e ErrDuplicateAttributeID) Error() string {
 	return fmt.Sprintf("Duplicate attribute id: %s", string(e))
 }
 
+type ErrDuplicateNodeID string
+
+func (e ErrDuplicateNodeID) Error() string {
+	return fmt.Sprintf("Duplicate node id: %v", string(e))
+}
+
 type ErrMultipleTypes string
 
 func (e ErrMultipleTypes) Error() string {
 	return fmt.Sprintf("Multiple types declared for attribute: %s", string(e))
+}
+
+type ErrNotFound string
+
+func (e ErrNotFound) Error() string {
+	return fmt.Sprintf("Not found: %s", string(e))
 }
 
 var ErrInvalidJsonLdGraph = errors.New("Invalid JsonLd graph")
@@ -45,3 +70,4 @@ var ErrAttributeWithoutID = errors.New("Attribute without id")
 var ErrNotALayer = errors.New("Not a layer")
 var ErrCompositionSourceNotOverlay = errors.New("Composition source is not an overlay")
 var ErrIncompatibleComposition = errors.New("Incompatible composition of layers")
+var ErrInvalidComposition = errors.New("Invalid composition")
