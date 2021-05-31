@@ -20,18 +20,17 @@ import (
 	"io/ioutil"
 	"text/template"
 
+	"github.com/bserdar/digraph"
 	"github.com/spf13/cobra"
 
 	jsonsch "github.com/cloudprivacylabs/lsa/pkg/json"
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
+	"github.com/cloudprivacylabs/lsa/pkg/layers"
 )
 
 func init() {
 	importCmd.AddCommand(importJSONCmd)
 }
-
-const LayersContextURL = "http://schemas.cloudprivacylabs.com/layers.jsonld"
-const SchemaContextURL = "http://schemas.cloudprivacylabs.com/schema.jsonld"
 
 var importJSONCmd = &cobra.Command{
 	Use:   "json",
@@ -141,30 +140,49 @@ are Go templates, you can reference entity names and references using {{.name}} 
 				for _, x := range ovl.termst {
 					inclterms[exec(x, req.Entities[i])] = struct{}{}
 				}
-				layer := item.Layer.Slice(func(term string, attribute *ls.Attribute) bool {
-					if len(term) == 0 && ovl.IncludeEmpty {
-						return true
-					}
-					_, ok := inclterms[term]
-					return ok
-				})
-				layer.ID = exec(ovl.idt, req.Entities[i])
-				if ovl.Type == "Overlay" || ovl.Type == ls.TermOverlayType {
-					layer.Type = ls.TermOverlayType
-					layerIDs = append(layerIDs, layer.ID)
+				var layerType string
+				if ovl.Type == "Overlay" || ovl.Type == layers.OverlayTerm {
+					layerType = layers.OverlayTerm
 				}
-				if ovl.Type == "Schema" || ovl.Type == ls.TermSchemaType {
-					layer.Type = ls.TermSchemaType
+				if ovl.Type == "Schema" || ovl.Type == layers.SchemaTerm {
+					layerType = layers.SchemaTerm
+				}
+				if len(layerType) == 0 {
+					fail("Layer type unspecified")
+				}
+
+				layer := item.Layer.Slice(layerType, func(layer *layers.Layer, node *digraph.Node) *digraph.Node {
+					properties := make(map[string]interface{})
+					payload := node.Payload.(*layers.SchemaNode)
+					for k, v := range payload.Properties {
+						if _, ok := inclterms[k]; ok {
+							properties[k] = v
+						}
+					}
+					if ovl.IncludeEmpty || len(properties) > 0 {
+						newNode := layer.NewNode(node.Label(), payload.GetTypes()...)
+						newNode.Payload.(*layers.SchemaNode).Properties = properties
+						return newNode
+					}
+					return nil
+				})
+				layer.SetID(exec(ovl.idt, req.Entities[i]))
+				if ovl.Type == "Overlay" || ovl.Type == layers.OverlayTerm {
+					layer.RootNode.Payload.(*layers.SchemaNode).AddTypes(layers.OverlayTerm)
+					layerIDs = append(layerIDs, layer.GetID())
+				}
+				if ovl.Type == "Schema" || ovl.Type == layers.SchemaTerm {
+					layer.RootNode.Payload.(*layers.SchemaNode).AddTypes(layers.SchemaTerm)
 					if baseID != "" {
 						fail("Multiple schemas")
 					}
-					baseID = layer.ID
+					baseID = layer.GetID()
 				}
-				if len(layer.Type) == 0 {
+				if len(layer.GetLayerType()) == 0 {
 					fail("Layer type not specified")
 				}
-				layer.TargetType = []string{exec(req.objectTypet, req.Entities[i])}
-				data, err := json.MarshalIndent(layer.MarshalExpanded(), "", "  ")
+				layer.RootNode.Payload.(*layers.SchemaNode).Properties[layers.TargetType] = exec(req.objectTypet, req.Entities[i])
+				data, err := json.MarshalIndent(jsonld.MarshalLayer(layer), "", "  ")
 				if err != nil {
 					failErr(err)
 				}
@@ -172,13 +190,13 @@ are Go templates, you can reference entity names and references using {{.name}} 
 			}
 
 			if len(req.Schema) > 0 {
-				sch := ls.SchemaManifest{
+				sch := layers.SchemaManifest{
 					ID:         exec(req.schemaIDt, req.Entities[i]),
-					TargetType: []string{exec(req.objectTypet, req.Entities[i])},
+					TargetType: exec(req.objectTypet, req.Entities[i]),
 					Schema:     baseID,
 					Overlays:   layerIDs,
 				}
-				data, _ := json.MarshalIndent(sch.MarshalExpanded(), "", "  ")
+				data, _ := json.MarshalIndent(jsonld.MarshalSchemaManifest(&sch), "", "  ")
 				ioutil.WriteFile(exec(req.schemat, req.Entities[i]), data, 0664)
 			}
 		}

@@ -20,60 +20,6 @@ import (
 // IRI is used for jsonld @id types
 type IRI string
 
-// AttributeTypes defines the terms describing attribute types. Each
-// attribute must have one of the attribute types plus the Attribute
-// type, marking the object as an attribute.
-var AttributeTypes = struct {
-	Value       string
-	Object      string
-	Array       string
-	Reference   string
-	Composite   string
-	Polymorphic string
-	Attribute   string
-}{
-	Value:       LS + "Value",
-	Object:      LS + "Object",
-	Array:       LS + "Array",
-	Reference:   LS + "Reference",
-	Composite:   LS + "Composite",
-	Polymorphic: LS + "Polymorphic",
-	Attribute:   LS + "Attribute",
-}
-
-var AnnotationTerms = struct {
-	Literal string
-	IRI     string
-}{
-	Literal: LS + "Literal",
-	IRI:     LS + "IRI",
-}
-
-// TypeTerms includes type specific terms recognized by the schema
-// compiler. These are terms used to define elements of an attribute.
-var TypeTerms = struct {
-	// Unordered named attributes (json object)
-	Attributes string
-	// Ordered named attributes (json object, xml elements)
-	AttributeList string
-	// Reference to another schema. This will be resolved to another
-	// schema during compilation
-	Reference string
-	// ArrayItems contains the definition for the items of the array
-	ArrayItems string
-	// All components of a composite attribute
-	AllOf string
-	// All options of a polymorphic attribute
-	OneOf string
-}{
-	Attributes:    LS + "Object#attributes",
-	AttributeList: LS + "Object#attributeList",
-	Reference:     LS + "Reference#reference",
-	ArrayItems:    LS + "Array#items",
-	AllOf:         LS + "Composite#allOf",
-	OneOf:         LS + "Polymorphic#oneOf",
-}
-
 // IsAttributeTreeEdge returns true if the edge is an edge between two
 // attribute nodes
 func IsAttributeTreeEdge(edge *digraph.Edge) bool {
@@ -101,11 +47,14 @@ type SchemaNode struct {
 	typesMap map[string]struct{}
 
 	Properties map[string]interface{}
+	Compiled   map[string]interface{}
 }
 
 // NewSchemaNode returns a new schema node with the given types
 func NewSchemaNode(types ...string) *SchemaNode {
-	ret := SchemaNode{Properties: make(map[string]interface{})}
+	ret := SchemaNode{Properties: make(map[string]interface{}),
+		Compiled: make(map[string]interface{}),
+	}
 	ret.AddTypes(types...)
 	return &ret
 }
@@ -205,11 +154,14 @@ func GetParentAttribute(node *digraph.Node) *digraph.Node {
 // SchemaEdge is the payload for schema edges.
 type SchemaEdge struct {
 	Properties map[string]interface{}
+	Compiled   map[string]interface{}
 }
 
 // NewSchemaEdge returns a new initialized schema edge
 func NewSchemaEdge() *SchemaEdge {
-	return &SchemaEdge{Properties: make(map[string]interface{})}
+	return &SchemaEdge{Properties: make(map[string]interface{}),
+		Compiled: make(map[string]interface{}),
+	}
 }
 
 func (e *SchemaEdge) Clone() *SchemaEdge {

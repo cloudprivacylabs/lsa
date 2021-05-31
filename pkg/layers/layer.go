@@ -17,20 +17,15 @@ import (
 	"github.com/bserdar/digraph"
 )
 
-const LS = "https://layeredschemas.org/"
-
-const SchemaTerm = LS + "Schema"
-const OverlayTerm = LS + "Overlay"
-
-const TargetType = LS + "targetType"
-
 type Layer struct {
 	*digraph.Graph
 	RootNode *digraph.Node
 }
 
 func NewLayer() *Layer {
-	return &Layer{Graph: digraph.New()}
+	ret := &Layer{Graph: digraph.New()}
+	ret.RootNode = ret.NewNode(nil)
+	return ret
 }
 
 // Clone returns a copy of the layer
@@ -61,6 +56,11 @@ func (l *Layer) Clone() *Layer {
 // GetID returns the ID of the layer, which is the ID of the root node
 func (l *Layer) GetID() string {
 	return l.RootNode.Label().(string)
+}
+
+// SetID sets the ID of the layer, which is the ID of the root node
+func (l *Layer) SetID(ID string) {
+	l.RootNode.SetLabel(ID)
 }
 
 // GetLayerType returns the layer type, SchemaTerm or OverlayTerm.

@@ -13,60 +13,60 @@
 // limitations under the License.
 package cmd
 
-import (
-	"encoding/json"
-	"fmt"
+// import (
+// 	"encoding/json"
+// 	"fmt"
 
-	"github.com/piprate/json-gold/ld"
-	"github.com/spf13/cobra"
-)
+// 	"github.com/piprate/json-gold/ld"
+// 	"github.com/spf13/cobra"
+// )
 
-func init() {
-	rootCmd.AddCommand(rdfCmd)
-	rdfCmd.AddCommand(nquadsCmd)
-	rdfCmd.AddCommand(parseNquadsCmd)
-}
+// func init() {
+// 	rootCmd.AddCommand(rdfCmd)
+// 	rdfCmd.AddCommand(nquadsCmd)
+// 	rdfCmd.AddCommand(parseNquadsCmd)
+// }
 
-var rdfCmd = &cobra.Command{
-	Use:   "rdf",
-	Short: "Export/Import RDF",
-}
+// var rdfCmd = &cobra.Command{
+// 	Use:   "rdf",
+// 	Short: "Export/Import RDF",
+// }
 
-var nquadsCmd = &cobra.Command{
-	Use:   "nquads",
-	Short: "Return nquads from a JSON-LD document",
-	Args:  cobra.MaximumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		var input interface{}
-		if err := readJSONFileOrStdin(args, &input); err != nil {
-			failErr(err)
-		}
-		options := ld.NewJsonLdOptions("")
-		options.Format = "application/n-quads"
-		proc := ld.NewJsonLdProcessor()
-		ret, err := proc.ToRDF(input, options)
-		if err != nil {
-			failErr(err)
-		}
-		fmt.Println(ret)
-	},
-}
+// var nquadsCmd = &cobra.Command{
+// 	Use:   "nquads",
+// 	Short: "Return nquads from a JSON-LD document",
+// 	Args:  cobra.MaximumNArgs(1),
+// 	Run: func(cmd *cobra.Command, args []string) {
+// 		var input interface{}
+// 		if err := readJSONFileOrStdin(args, &input); err != nil {
+// 			failErr(err)
+// 		}
+// 		options := ld.NewJsonLdOptions("")
+// 		options.Format = "application/n-quads"
+// 		proc := ld.NewJsonLdProcessor()
+// 		ret, err := proc.ToRDF(input, options)
+// 		if err != nil {
+// 			failErr(err)
+// 		}
+// 		fmt.Println(ret)
+// 	},
+// }
 
-var parseNquadsCmd = &cobra.Command{
-	Use:   "parsenquads",
-	Short: "Parse nquads and output JSON-LD document",
-	Args:  cobra.MaximumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		data, err := readFileOrStdin(args)
-		if err != nil {
-			failErr(err)
-		}
-		proc := ld.NewJsonLdProcessor()
-		jsonld, err := proc.FromRDF(string(data), nil)
-		if err != nil {
-			failErr(err)
-		}
-		data, _ = json.MarshalIndent(jsonld, "", "  ")
-		fmt.Println(string(data))
-	},
-}
+// var parseNquadsCmd = &cobra.Command{
+// 	Use:   "parsenquads",
+// 	Short: "Parse nquads and output JSON-LD document",
+// 	Args:  cobra.MaximumNArgs(1),
+// 	Run: func(cmd *cobra.Command, args []string) {
+// 		data, err := readFileOrStdin(args)
+// 		if err != nil {
+// 			failErr(err)
+// 		}
+// 		proc := ld.NewJsonLdProcessor()
+// 		jsonld, err := proc.FromRDF(string(data), nil)
+// 		if err != nil {
+// 			failErr(err)
+// 		}
+// 		data, _ = json.MarshalIndent(jsonld, "", "  ")
+// 		fmt.Println(string(data))
+// 	},
+// }

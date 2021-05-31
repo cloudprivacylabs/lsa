@@ -15,6 +15,7 @@ package layers
 
 import (
 	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/pkg/term"
 )
 
 type Compiler struct {
@@ -58,7 +59,42 @@ func (compiler *Compiler) Compile(ref string) (*Layer, error) {
 	if err := compiler.resolveCompositions(schema); err != nil {
 		return nil, err
 	}
+	compiler.compileTerms(schema)
 	return schema, nil
+}
+
+func (compiler *Compiler) compileTerms(layer *Layer) error {
+	compile := func(propertiesMap, compiledMap map[string]interface{}, key string, value interface{}) error {
+		value, compiled, err := term.GetCompiler(term.GetTermMeta(key)).Compile(value)
+		if err != nil {
+			return err
+		}
+		propertiesMap[key] = value
+		if compiled != nil {
+			compiledMap[key] = compiled
+		}
+		return nil
+	}
+
+	for nodes := layer.AllNodes(); nodes.HasNext(); {
+		node := nodes.Next()
+		nodeData := node.Payload.(*SchemaNode)
+		for k, v := range nodeData.Properties {
+			if err := compile(nodeData.Properties, nodeData.Compiled, k, v); err != nil {
+				return err
+			}
+			for edges := node.AllOutgoingEdges(); edges.HasNext(); {
+				edge := edges.Next()
+				edgeData := edge.Payload.(*SchemaEdge)
+				for k, v := range edgeData.Properties {
+					if err := compile(edgeData.Properties, edgeData.Compiled, k, v); err != nil {
+						return err
+					}
+				}
+			}
+		}
+	}
+	return nil
 }
 
 func (compiler *Compiler) resolveReferences(layer *Layer) error {

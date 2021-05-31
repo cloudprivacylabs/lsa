@@ -1,7 +1,7 @@
 {
     "@context": {
         "@version": 1.1,
-        "ls": "https://layeredschemas.org/",
+        "ls": "https://lschema.org/",
         "Value": {
             "@id": "ls:Value",
             "@context": {}
@@ -92,61 +92,42 @@
         "SchemaManifest": {
             "@id": "ls:SchemaManifest",
             "@context": {
-                "publishedAt": {
-                    "@id": "ls:SchemaManifest/publishedAt"
-                },
                 "targetType": {
                     "@id": "ls:targetType",
                     "@type": "@id"
                 },
                 "bundle": {
-                    "@id": "ls:SchemaManifest/bundle",
+                    "@id": "ls:SchemaManifest#bundle",
                     "@type": "@id"
                 },
                 "schema": {
-                    "@id": "ls:SchemaManifest/schema",
+                    "@id": "ls:SchemaManifest#schema",
                     "@type": "@id"
                 },
                 "overlays": {
-                    "@id": "ls:SchemaManifest/overlays",
+                    "@id": "ls:SchemaManifest#overlays",
                     "@type": "@id",
                     "@container": "@list"
                 }
             }
         },
-            
-        "name": {
-            "@id": "ls:attr/name"
+
+        "description": {
+           "@id": "ls:description"
         },
-        "privacyClassification": {
-            "@id": "ls:attr/privacyClassification",
-            "@container": "@set"
+
+        "validation#required": {
+            "@id": "ls:validation#required"
         },
-        "information": {
-            "@id": "ls:attr/information"
+        "validation#pattern": {
+            "@id": "ls:validation#pattern"
         },
-        "encoding": {
-            "@id": "ls:attr/encoding"
+        "validation#format": {
+            "@id": "ls:validation#format"
         },
-        "targetType": {
-            "@id": "ls:targetType",
-            "@type": "@id"
-        },
-        "format": {
-            "@id": "ls:attr/format"
-        },
-        "pattern": {
-            "@id": "ls:attr/pattern"
-        },
-        "label": {
-            "@id": "ls:attr/label"
-        },
-        "enumeration": {
-            "@id": "ls:attr/enumeration",
-            "@container": "@list"
-        },
-        "required": {
-            "@id": "ls:attr/required"
+        "validation#enumeration": {
+            "#id": "ls:validation#enumeration"
         }
+          
     }
 }

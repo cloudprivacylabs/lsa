@@ -17,7 +17,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/pkg/layers"
+	"github.com/cloudprivacylabs/lsa/pkg/validators"
 )
 
 type schemaProperty struct {
@@ -27,7 +29,7 @@ type schemaProperty struct {
 	array       *arraySchema
 	oneOf       []schemaProperty
 	allOf       []schemaProperty
-	typ         string
+	typ         []string
 	format      string
 	enum        []interface{}
 	required    bool
@@ -43,83 +45,96 @@ type objectSchema struct {
 	properties map[string]schemaProperty
 }
 
-func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer) *digraph.Node {
-	elem := schemaAttrs(entityId, append(name, "*"), a.items, layer)
-	layer.NewNode(
-	out.Type = &ls.ArrayType{elem}
+func (a arraySchema) itr(entityId string, name []string, layer *layers.Layer) *digraph.Node {
+	return schemaAttrs(entityId, append(name, "*"), a.items, layer)
 }
 
-func (obj objectSchema) itr(entityId string, name []string, out *ls.ObjectType, layer *ls.Layer) {
+func (obj objectSchema) itr(entityId string, name []string, layer *layers.Layer) []*digraph.Node {
+	ret := make([]*digraph.Node, 0, len(obj.properties))
 	for k, v := range obj.properties {
-		attr := ls.NewAttribute(nil)
 		nm := append(name, k)
-		schemaAttrs(entityId, nm, v, attr, layer)
-		attr.ID = entityId + "." + strings.Join(nm, ".")
-		out.Add(attr, layer)
+		ret = append(ret, schemaAttrs(entityId, nm, v, layer))
 	}
+	return ret
 }
 
-func schemaAttrs(entityId string, name []string, attr schemaProperty, out *ls.Attribute, layer *ls.Layer) {
+func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *layers.Layer) *digraph.Node {
+	id := entityId + "#" + strings.Join(name, ".")
+	newNode := layer.NewNode(id)
+	nodeData := newNode.Payload.(*layers.SchemaNode)
 	if len(attr.format) > 0 {
-		ls.AttributeAnnotations.Format.PutExpanded(out.Values, attr.format)
+		nodeData.Properties[validators.FormatTerm] = attr.format
+	}
+	if len(attr.pattern) > 0 {
+		nodeData.Properties[validators.PatternTerm] = attr.pattern
+	}
+	if len(attr.description) > 0 {
+		nodeData.Properties[layers.DescriptionTerm] = attr.description
+	}
+	if attr.required {
+		nodeData.Properties[validators.RequiredTerm] = true
 	}
 	if len(attr.typ) > 0 {
-		out.Values[ls.LayerTerms.TargetType.GetTerm()] = ls.LayerTerms.TargetType.MakeExpandedContainerFromValues([]string{attr.typ})
+		arr := make([]interface{}, 0, len(attr.typ))
+		for _, x := range attr.typ {
+			arr = append(arr, x)
+		}
+		nodeData.Properties[layers.TargetType] = arr
 	}
 	if len(attr.key) > 0 {
-		ls.AttributeAnnotations.Name.PutExpanded(out.Values, attr.key)
+		nodeData.Properties[layers.AttributeNameTerm] = attr.key
 	}
 	if len(attr.enum) > 0 {
 		elements := make([]interface{}, 0, len(attr.enum))
 		for _, v := range attr.enum {
-			elements = append(elements, map[string]interface{}{"@value": v})
+			elements = append(elements, v)
 		}
-		out.Values[ls.AttributeAnnotations.Enumeration.GetTerm()] = []interface{}{map[string]interface{}{"@list": elements}}
+		nodeData.Properties[validators.EnumTerm] = elements
 	}
-	if len(attr.pattern) > 0 {
-		ls.AttributeAnnotations.Pattern.PutExpanded(out.Values, attr.pattern)
-	}
-	if len(attr.description) > 0 {
-		out.Values[ls.AttributeAnnotations.Information.GetTerm()] = []interface{}{map[string]interface{}{"@value": attr.description}}
-	}
-	if attr.required {
-		ls.AttributeAnnotations.Required.PutExpanded(out.Values, true)
-	}
+
 	if len(attr.reference) > 0 {
-		out.Type = &ls.ReferenceType{attr.reference}
-		return
+		nodeData.AddTypes(layers.AttributeTypes.Reference)
+		return newNode
 	}
+
 	if attr.object != nil {
-		attrs := ls.NewObjectType(nil, false)
-		attr.object.itr(entityId, name, attrs, layer)
-		out.Type = attrs
-		return
+		nodeData.AddTypes(layers.AttributeTypes.Object)
+		attrs := attr.object.itr(entityId, name, layer)
+		for _, x := range attrs {
+			layer.NewEdge(newNode, x, layers.TypeTerms.AttributeList, nil)
+		}
+		return newNode
 	}
 	if attr.array != nil {
-		attr.array.itr(entityId, name, out, layer)
-		return
+		nodeData.AddTypes(layers.AttributeTypes.Array)
+		n := attr.array.itr(entityId, name, layer)
+		layer.NewEdge(newNode, n, layers.TypeTerms.ArrayItems, nil)
+		return newNode
 	}
-	buildChoices := func(arr []schemaProperty) []*ls.Attribute {
-		elements := make([]*ls.Attribute, 0, len(arr))
+
+	buildChoices := func(arr []schemaProperty) []*digraph.Node {
+		elements := make([]*digraph.Node, 0, len(arr))
 		for i, x := range arr {
-			out := ls.NewAttribute(nil)
 			newName := append(name, fmt.Sprint(i))
-			schemaAttrs(entityId, newName, x, out, layer)
-			if out.ID == "" {
-				out.ID = entityId + "." + strings.Join(newName, ".")
-			}
-			elements = append(elements, out)
+			node := schemaAttrs(entityId, newName, x, layer)
+			elements = append(elements, node)
 		}
 		return elements
 	}
 	if len(attr.oneOf) > 0 {
-		out.Type = &ls.PolymorphicType{buildChoices(attr.oneOf)}
-		return
+		nodeData.AddTypes(layers.AttributeTypes.Polymorphic)
+		for _, x := range buildChoices(attr.oneOf) {
+			layer.NewEdge(newNode, x, layers.TypeTerms.OneOf, nil)
+		}
+		return newNode
 	}
 	if len(attr.allOf) > 0 {
-		out.Type = &ls.CompositeType{buildChoices(attr.allOf)}
+		nodeData.AddTypes(layers.AttributeTypes.Composite)
+		for _, x := range buildChoices(attr.oneOf) {
+			layer.NewEdge(newNode, x, layers.TypeTerms.AllOf, nil)
+		}
+		return newNode
 	}
-	if out.Type == nil {
-		out.Type = &ls.ValueType{}
-	}
+	nodeData.AddTypes(layers.AttributeTypes.Value)
+	return newNode
 }

@@ -115,7 +115,10 @@ func Import(entities []CompiledEntity) ([]ImportedEntity, error) {
 		imported := ImportedEntity{}
 		imported.Entity = ctx.entities[i]
 		imported.Layer = layers.NewLayer()
-		s.object.itr(ctx.currentEntity.ID, nil, imported.Layer)
+		nodes := s.object.itr(ctx.currentEntity.ID, nil, imported.Layer)
+		for _, node := range nodes {
+			imported.Layer.NewEdge(imported.Layer.RootNode, node, layers.TypeTerms.Attributes, nil)
+		}
 
 		ret = append(ret, imported)
 	}
@@ -194,7 +197,7 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 		// TODO: additionalItems, etc
 	default:
 		if len(sch.Types) > 0 {
-			target.typ = sch.Types[0]
+			target.typ = sch.Types
 		}
 		target.format = sch.FormatName
 		if len(sch.Enum) > 0 {

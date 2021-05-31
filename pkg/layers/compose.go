@@ -17,6 +17,7 @@ import (
 	"fmt"
 
 	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/pkg/term"
 )
 
 type ComposeOptions struct {
@@ -146,54 +147,7 @@ func mergeGraphs(targetGraph *digraph.Graph, targetNode, sourceNode *digraph.Nod
 }
 
 func mergeProperty(property string, existingValue, newValue interface{}, options ComposeOptions) (interface{}, error) {
-	return SetUnion(existingValue, newValue), nil
-}
-
-func SetUnion(v1, v2 interface{}) interface{} {
-	if v1 == nil {
-		return v2
-	}
-	if v2 == nil {
-		return v1
-	}
-	switch e := v1.(type) {
-	case []interface{}:
-		values := make(map[interface{}]struct{})
-		for _, k := range e {
-			values[k] = struct{}{}
-		}
-		ret := e
-		if n, ok := v2.([]interface{}); ok {
-			for _, item := range n {
-				if _, exists := values[item]; !exists {
-					values[item] = struct{}{}
-					ret = append(ret, item)
-				}
-			}
-			return ret
-		}
-		if _, exists := values[v2]; !exists {
-			return append(e, v2)
-		}
-		return e
-	default:
-		ret := []interface{}{e}
-		if n, ok := v2.([]interface{}); ok {
-			for _, item := range n {
-				if item != e {
-					ret = append(ret, item)
-				}
-			}
-			if len(ret) == 1 {
-				return ret[0]
-			}
-			return ret
-		}
-		if e != v2 {
-			return []interface{}{e, v2}
-		}
-		return e
-	}
+	return term.GetComposer(term.GetTermMeta(property)).Compose(existingValue, newValue)
 }
 
 // pathsMatch returns true if the attribute predecessors of source matches target's

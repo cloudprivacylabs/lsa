@@ -11,28 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package terms
+package layers
 
-// A Vocabulary is a map of Terms
-type Vocabulary map[string]Term
-
-// NewVocabulary creates a new vocabulary with the given terms
-func NewVocabulary(terms ...Term) Vocabulary {
-	ret := Vocabulary{}
-	ret.Add(terms...)
-	return ret
-}
-
-// Add terms to a vocabulary
-func (v Vocabulary) Add(terms ...Term) {
-	for _, t := range terms {
-		v[t.GetTerm()] = t
-	}
-}
-
-// AddVocabulary adds terms of the source vocabulary to v
-func (v Vocabulary) AddVocabulary(src Vocabulary) {
-	for k, x := range src {
-		v[k] = x
-	}
+// SchemaManifest contains the minimal information to define a schema variant with an optional bundle
+type SchemaManifest struct {
+	ID         string   `json:"id"`
+	TargetType string   `json:"targetType"`
+	Bundle     string   `json:"bundle,omitempty"`
+	Schema     string   `json:"schema"`
+	Overlays   []string `json:"overlays,omitempty"`
 }

@@ -13,42 +13,42 @@
 // limitations under the License.
 package cmd
 
-import (
-	"os"
+// import (
+// 	"os"
 
-	"github.com/piprate/json-gold/ld"
-	"github.com/spf13/cobra"
+// 	"github.com/piprate/json-gold/ld"
+// 	"github.com/spf13/cobra"
 
-	"github.com/cloudprivacylabs/lsa/pkg/rdf"
-	"github.com/cloudprivacylabs/lsa/pkg/rdf/mrdf"
-)
+// 	"github.com/cloudprivacylabs/lsa/pkg/rdf"
+// 	"github.com/cloudprivacylabs/lsa/pkg/rdf/mrdf"
+// )
 
-func init() {
-	rdfCmd.AddCommand(dotCmd)
-}
+// func init() {
+// 	rdfCmd.AddCommand(dotCmd)
+// }
 
-var dotCmd = &cobra.Command{
-	Use:   "dot",
-	Short: "DOT graph from a JSON-LD document",
-	Args:  cobra.MaximumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		var input interface{}
-		if err := readJSONFileOrStdin(args, &input); err != nil {
-			failErr(err)
-		}
-		options := ld.NewJsonLdOptions("")
-		//		options.Format = "application/n-quads"
-		proc := ld.NewJsonLdProcessor()
-		triples, err := proc.ToRDF(input, options)
-		if err != nil {
-			failErr(err)
-		}
+// var dotCmd = &cobra.Command{
+// 	Use:   "dot",
+// 	Short: "DOT graph from a JSON-LD document",
+// 	Args:  cobra.MaximumNArgs(1),
+// 	Run: func(cmd *cobra.Command, args []string) {
+// 		var input interface{}
+// 		if err := readJSONFileOrStdin(args, &input); err != nil {
+// 			failErr(err)
+// 		}
+// 		options := ld.NewJsonLdOptions("")
+// 		//		options.Format = "application/n-quads"
+// 		proc := ld.NewJsonLdProcessor()
+// 		triples, err := proc.ToRDF(input, options)
+// 		if err != nil {
+// 			failErr(err)
+// 		}
 
-		g := mrdf.NewGraph()
-		if err := g.AddQuads(triples.(*ld.RDFDataset).GetQuads("@default")); err != nil {
-			failErr(err)
-		}
-		nodes, edges := g.ToDOT()
-		rdf.ToDOT("G", nodes, edges, os.Stdout)
-	},
-}
+// 		g := mrdf.NewGraph()
+// 		if err := g.AddQuads(triples.(*ld.RDFDataset).GetQuads("@default")); err != nil {
+// 			failErr(err)
+// 		}
+// 		nodes, edges := g.ToDOT()
+// 		rdf.ToDOT("G", nodes, edges, os.Stdout)
+// 	},
+// }
