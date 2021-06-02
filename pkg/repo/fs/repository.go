@@ -20,8 +20,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/terms"
+	"github.com/cloudprivacylabs/lsa/pkg/layers"
 	"github.com/piprate/json-gold/ld"
 )
 

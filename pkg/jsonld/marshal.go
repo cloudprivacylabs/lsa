@@ -14,6 +14,7 @@
 package jsonld
 
 import (
+	"encoding/json"
 	"strings"
 
 	"github.com/bserdar/digraph"
@@ -26,7 +27,7 @@ type inputNode struct {
 	id        string
 	processed bool
 	types     map[string]struct{}
-	graphNode *digraph.Node
+	graphNode *layers.SchemaNode
 }
 
 // UnmarshalLayer unmarshals a schem ar overlay
@@ -55,7 +56,8 @@ func UnmarshalLayer(in interface{}) (*layers.Layer, error) {
 			for _, t := range GetNodeTypes(inode.node) {
 				inode.types[t] = struct{}{}
 			}
-			inode.graphNode = target.NewNode(id, layers.NewSchemaNode())
+			inode.graphNode = layers.NewSchemaNode(id)
+			target.AddNode(inode.graphNode)
 		}
 	}
 
@@ -85,11 +87,7 @@ func UnmarshalLayer(in interface{}) (*layers.Layer, error) {
 	}
 	// Deal with annotations
 	for _, node := range inputNodes {
-		schNode, ok := node.graphNode.Payload.(*layers.SchemaNode)
-		if !ok {
-			continue
-		}
-		if !schNode.HasType(layers.AttributeTypes.Attribute) {
+		if !node.graphNode.HasType(layers.AttributeTypes.Attribute) {
 			continue
 		}
 		// This is an attribute node
@@ -104,8 +102,8 @@ func unmarshalAttributeNode(target *digraph.Graph, inode *inputNode, allNodes ma
 		return nil
 	}
 	inode.processed = true
-	attribute := layers.NewSchemaNode(layers.AttributeTypes.Attribute)
-	inode.graphNode.Payload = attribute
+	attribute := inode.graphNode
+	attribute.AddTypes(layers.AttributeTypes.Attribute)
 	// Process the nested attribute nodes
 	for k, val := range inode.node {
 		switch k {
@@ -135,7 +133,7 @@ func unmarshalAttributeNode(target *digraph.Graph, inode *inputNode, allNodes ma
 				if err := unmarshalAttributeNode(target, attrNode, allNodes); err != nil {
 					return err
 				}
-				target.NewEdge(inode.graphNode, attrNode.graphNode, k, nil)
+				target.AddEdge(inode.graphNode, attrNode.graphNode, layers.NewSchemaEdge(k))
 			}
 
 		case layers.TypeTerms.Reference:
@@ -162,7 +160,7 @@ func unmarshalAttributeNode(target *digraph.Graph, inode *inputNode, allNodes ma
 				if err := unmarshalAttributeNode(target, itemsNode, allNodes); err != nil {
 					return err
 				}
-				target.NewEdge(inode.graphNode, itemsNode.graphNode, k, nil)
+				target.AddEdge(inode.graphNode, itemsNode.graphNode, layers.NewSchemaEdge(k))
 			default:
 				return layers.MakeErrInvalidInput(inode.id, "Multiple array items")
 			}
@@ -186,7 +184,7 @@ func unmarshalAttributeNode(target *digraph.Graph, inode *inputNode, allNodes ma
 				if err := unmarshalAttributeNode(target, nnode, allNodes); err != nil {
 					return err
 				}
-				target.NewEdge(inode.graphNode, nnode.graphNode, k, nil)
+				target.AddEdge(inode.graphNode, nnode.graphNode, layers.NewSchemaEdge(k))
 			}
 		}
 	}
@@ -221,16 +219,15 @@ func unmarshalAnnotations(target *digraph.Graph, node *inputNode, allNodes map[s
 			if !ok {
 				break
 			}
-			payload := node.graphNode.Payload.(*layers.SchemaNode)
 			setValue := func(v interface{}) {
-				value := payload.Properties[key]
+				value := node.graphNode.Properties[key]
 				if value == nil {
-					payload.Properties[key] = v
+					node.graphNode.Properties[key] = v
 				} else if a, ok := value.([]interface{}); ok {
 					a = append(a, v)
-					payload.Properties[key] = a
+					node.graphNode.Properties[key] = a
 				} else {
-					payload.Properties[key] = []interface{}{value, v}
+					node.graphNode.Properties[key] = []interface{}{value, v}
 				}
 			}
 			// If list, descend to its elements
@@ -251,7 +248,7 @@ func unmarshalAnnotations(target *digraph.Graph, node *inputNode, allNodes map[s
 							if referencedNode == nil {
 								setValue(layers.IRI(id))
 							} else {
-								target.NewEdge(node.graphNode, referencedNode.graphNode, key, nil)
+								target.AddEdge(node.graphNode, referencedNode.graphNode, layers.NewSchemaEdge(key))
 							}
 						}
 					}
@@ -266,76 +263,106 @@ func MarshalLayer(layer *layers.Layer) interface{} {
 	return []interface{}{marshalNode(layer.RootNode)}
 }
 
-func marshalNode(node *digraph.Node) interface{} {
+func marshalNode(node *layers.SchemaNode) interface{} {
 	m := make(map[string]interface{})
 	if node.Label() != nil {
 		m["@id"] = node.Label().(string)
 	}
-	payload, _ := node.Payload.(*layers.SchemaNode)
-	if payload != nil {
-		t := payload.GetTypes()
-		if len(t) > 0 {
-			m["@type"] = t
-		}
+	t := node.GetTypes()
+	if len(t) > 0 {
+		m["@type"] = t
+	}
 
-		for k, v := range payload.Properties {
-			switch val := v.(type) {
-			case layers.IRI:
-				m[k] = []interface{}{map[string]interface{}{"@id": string(val)}}
-			case []interface{}:
-				arr := make([]interface{}, 0)
-				for _, elem := range val {
-					switch t := elem.(type) {
-					case layers.IRI:
-						arr = append(arr, map[string]interface{}{"@id": string(t)})
-					default:
-						arr = append(arr, map[string]interface{}{"@value": t})
-					}
+	for k, v := range node.Properties {
+		switch val := v.(type) {
+		case layers.IRI:
+			m[k] = []interface{}{map[string]interface{}{"@id": string(val)}}
+		case []interface{}:
+			arr := make([]interface{}, 0)
+			for _, elem := range val {
+				switch t := elem.(type) {
+				case layers.IRI:
+					arr = append(arr, map[string]interface{}{"@id": string(t)})
+				default:
+					arr = append(arr, map[string]interface{}{"@value": t})
 				}
-				m[k] = arr
-			default:
-				m[k] = []interface{}{map[string]interface{}{"@value": val}}
 			}
+			m[k] = arr
+		default:
+			m[k] = []interface{}{map[string]interface{}{"@value": val}}
 		}
+	}
 
-		edges := node.AllOutgoingEdges()
-		for edges.HasNext() {
-			edge := edges.Next()
-			switch edge.Label() {
-			case layers.TypeTerms.AttributeList, layers.TypeTerms.Attributes, layers.TypeTerms.ArrayItems:
-				existing := m[edge.Label().(string)]
-				if existing == nil {
-					existing = []interface{}{}
-				}
-				if arr, ok := existing.([]interface{}); ok {
-					arr = append(arr, marshalNode(edge.To()))
-					m[edge.Label().(string)] = arr
-				}
+	edges := node.AllOutgoingEdges()
+	for edges.HasNext() {
+		edge := edges.Next().(*layers.SchemaEdge)
+		switch edge.Label() {
+		case layers.TypeTerms.AttributeList, layers.TypeTerms.Attributes, layers.TypeTerms.ArrayItems:
+			existing := m[edge.Label().(string)]
+			if existing == nil {
+				existing = []interface{}{}
+			}
+			if arr, ok := existing.([]interface{}); ok {
+				arr = append(arr, marshalNode(edge.To().(*layers.SchemaNode)))
+				m[edge.Label().(string)] = arr
+			}
 
-			case layers.TypeTerms.AllOf, layers.TypeTerms.OneOf:
-				existing := m[edge.Label().(string)]
-				if existing == nil {
-					existing = []interface{}{}
+		case layers.TypeTerms.AllOf, layers.TypeTerms.OneOf:
+			existing := m[edge.Label().(string)]
+			if existing == nil {
+				existing = []interface{}{}
+			}
+			if arr, ok := existing.([]interface{}); ok {
+				if len(arr) == 0 {
+					arr = []interface{}{map[string]interface{}{"@list": []interface{}{}}}
 				}
-				if arr, ok := existing.([]interface{}); ok {
-					if len(arr) == 0 {
-						arr = []interface{}{map[string]interface{}{"@list": []interface{}{}}}
-					}
-					if len(arr) == 1 {
-						m, ok := arr[0].(map[string]interface{})
-						if ok {
-							elements := m["@list"]
-							if elements == nil {
-								elements = []interface{}{}
-								m["@list"] = elements
-							}
-							elements = append(elements.([]interface{}), marshalNode(edge.To()))
+				if len(arr) == 1 {
+					m, ok := arr[0].(map[string]interface{})
+					if ok {
+						elements := m["@list"]
+						if elements == nil {
+							elements = []interface{}{}
 							m["@list"] = elements
 						}
+						elements = append(elements.([]interface{}), marshalNode(edge.To().(*layers.SchemaNode)))
+						m["@list"] = elements
 					}
 				}
 			}
 		}
 	}
 	return m
+}
+
+type SchemaManifest struct {
+	ID         string   `json:"@id"`
+	TargetType string   `json:"https://lschema.org/targetType"`
+	Bundle     string   `json:"https://lschema.org/SchemaManifest#bundle,omitempty"`
+	Schema     string   `json:"https://lschema.org/SchemaManifest#schema"`
+	Overlays   []string `json:"https://lschema.org/SchemaManifest#overlays,omitempty"`
+}
+
+// Unmarshals the given jsonld document into a schema manifest
+func UnmarshalSchemaManifest(in interface{}) (*layers.SchemaManifest, error) {
+	var m SchemaManifest
+	proc := ld.NewJsonLdProcessor()
+	compacted, err := proc.Compact(in, map[string]interface{}{}, nil)
+	if err != nil {
+		return nil, err
+	}
+	d, _ := json.Marshal(compacted)
+	err = json.Unmarshal(d, &m)
+	if err != nil {
+		return nil, err
+	}
+	return (*layers.SchemaManifest)(&m), nil
+}
+
+// MarshalSchemaNanifest returns a compact jsonld document for the manifest
+func MarshalSchemaManifest(manifest *layers.SchemaManifest) interface{} {
+	m := (*SchemaManifest)(manifest)
+	d, _ := json.Marshal(m)
+	var v interface{}
+	json.Unmarshal(d, &v)
+	return v
 }

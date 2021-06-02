@@ -57,9 +57,12 @@ func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
 	}
 
 	var err error
-	processedSourceNodes := make(map[*digraph.Node]struct{})
+	processedSourceNodes := make(map[*SchemaNode]struct{})
 	// Process attributes depth-first
-	source.ForEachAttribute(func(sourceNode *digraph.Node) bool {
+	source.ForEachAttribute(func(sourceNode *SchemaNode) bool {
+		if sourceNode == nil {
+			return true
+		}
 		if _, processed := processedSourceNodes[sourceNode]; processed {
 			return true
 		}
@@ -68,8 +71,8 @@ func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
 		switch len(targetNodes) {
 		case 1:
 			// Target node exists. Merge if paths match
-			if pathsMatch(targetNodes[0], sourceNode, sourceNode) {
-				if err = mergeNodes(layer.Graph, targetNodes[0], sourceNode, options, processedSourceNodes); err != nil {
+			if pathsMatch(targetNodes[0].(*SchemaNode), sourceNode, sourceNode) {
+				if err = mergeNodes(layer.Graph, targetNodes[0].(*SchemaNode), sourceNode, options, processedSourceNodes); err != nil {
 					return false
 				}
 			}
@@ -89,20 +92,18 @@ func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
 }
 
 // Merge source into target.
-func mergeNodes(targetGraph *digraph.Graph, target, source *digraph.Node, options ComposeOptions, processedSourceNodes map[*digraph.Node]struct{}) error {
+func mergeNodes(targetGraph *digraph.Graph, target, source *SchemaNode, options ComposeOptions, processedSourceNodes map[*SchemaNode]struct{}) error {
 	if _, processed := processedSourceNodes[source]; processed {
 		return nil
 	}
 	processedSourceNodes[source] = struct{}{}
-	sourcePayload, _ := source.Payload.(*SchemaNode)
-	targetPayload, _ := target.Payload.(*SchemaNode)
-	if sourcePayload == nil || targetPayload == nil {
+	if source == nil || target == nil {
 		return nil
 	}
 	// Merge properties
-	for k, v := range sourcePayload.Properties {
+	for k, v := range source.Properties {
 		var err error
-		targetPayload.Properties[k], err = mergeProperty(k, targetPayload.Properties[k], v, options)
+		target.Properties[k], err = mergeProperty(k, target.Properties[k], v, options)
 		if err != nil {
 			return err
 		}
@@ -110,36 +111,41 @@ func mergeNodes(targetGraph *digraph.Graph, target, source *digraph.Node, option
 	// Merge graphs
 
 	// Map of source node -> target node, so that we know the target node created for each source node
-	nodeMap := map[*digraph.Node]*digraph.Node{}
+	nodeMap := map[*SchemaNode]*SchemaNode{}
 	return mergeGraphs(targetGraph, target, source, nodeMap)
 }
 
-func mergeGraphs(targetGraph *digraph.Graph, targetNode, sourceNode *digraph.Node, nodeMap map[*digraph.Node]*digraph.Node) error {
+func mergeGraphs(targetGraph *digraph.Graph, targetNode, sourceNode *SchemaNode, nodeMap map[*SchemaNode]*SchemaNode) error {
 	// If the source node is already seen, return
 	if _, processed := nodeMap[sourceNode]; processed {
 		return nil
 	}
 	for edges := sourceNode.AllOutgoingEdges(); edges.HasNext(); {
-		edge := edges.Next()
+		edge := edges.Next().(*SchemaEdge)
 		// Skip all attribute nodes, as they will be processed later
 		if IsAttributeTreeEdge(edge) {
 			continue
 		}
-		var targetNodes []*digraph.Node
+		var targetNodes []digraph.Node
 		if edge.To().Label() != nil {
 			targetNodes = targetGraph.AllNodesWithLabel(edge.To().Label()).All()
 			if len(targetNodes) > 1 {
 				return ErrDuplicateNodeID(fmt.Sprint(edge.To().Label()))
 			}
 			if len(targetNodes) == 0 {
-				targetNodes = []*digraph.Node{targetGraph.NewNode(edge.To().Label(), edge.To().Payload)}
+				newNode := edge.To().(*SchemaNode).Clone()
+				targetGraph.AddNode(newNode)
+				targetNodes = []digraph.Node{newNode}
 			}
 		} else {
-			targetNodes = []*digraph.Node{targetGraph.NewNode(nil, edge.To().Payload)}
+			newNode := edge.To().(*SchemaNode).Clone()
+			newNode.SetLabel(nil)
+			targetGraph.AddNode(newNode)
+			targetNodes = []digraph.Node{newNode}
 		}
-		nodeMap[edge.To()] = targetNodes[0]
-		targetGraph.NewEdge(targetNode, targetNodes[0], edge.Label(), edge.Payload)
-		if err := mergeGraphs(targetGraph, targetNodes[0], edge.To(), nodeMap); err != nil {
+		nodeMap[edge.To().(*SchemaNode)] = targetNodes[0].(*SchemaNode)
+		targetGraph.AddEdge(targetNode, targetNodes[0], edge.Clone())
+		if err := mergeGraphs(targetGraph, targetNodes[0].(*SchemaNode), edge.To().(*SchemaNode), nodeMap); err != nil {
 			return err
 		}
 	}
@@ -151,24 +157,24 @@ func mergeProperty(property string, existingValue, newValue interface{}, options
 }
 
 // pathsMatch returns true if the attribute predecessors of source matches target's
-func pathsMatch(target, source, initialSource *digraph.Node) bool {
+func pathsMatch(target, source, initialSource *SchemaNode) bool {
 	if source.Label() != target.Label() {
 		return false
 	}
-	sourceParent := GetParentAttribute(source)
+	sourceParent := source.GetParentAttribute()
 	// If sourceParents reached the top level, stop
 	if sourceParent == nil {
 		return true
 	}
-	payload := sourceParent.Payload.(*SchemaNode)
+	payload := sourceParent
 	if payload.HasType(SchemaTerm) || payload.HasType(OverlayTerm) {
 		return true
 	}
-	targetParent := GetParentAttribute(target)
+	targetParent := target.GetParentAttribute()
 	if targetParent == nil {
 		return false
 	}
-	payload = targetParent.Payload.(*SchemaNode)
+	payload = targetParent
 	if payload.HasType(SchemaTerm) || payload.HasType(OverlayTerm) {
 		return false
 	}

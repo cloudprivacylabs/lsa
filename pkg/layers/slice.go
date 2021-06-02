@@ -17,18 +17,46 @@ import (
 	"github.com/bserdar/digraph"
 )
 
-func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, *digraph.Node) *digraph.Node) *Layer {
+// GetSliceByTermsFunc is used in the Slice function to select nodes by
+// the properties it contains.
+func GetSliceByTermsFunc(includeTerms []string) func(*Layer, *SchemaNode) *SchemaNode {
+	incl := make(map[string]struct{})
+	for _, x := range includeTerms {
+		incl[x] = struct{}{}
+	}
+	return func(layer *Layer, node *SchemaNode) *SchemaNode {
+		properties := make(map[string]interface{})
+		for k, v := range node.Properties {
+			if _, ok := incl[k]; ok {
+				properties[k] = v
+			}
+		}
+		if len(properties) > 0 {
+			newNode := node.Clone()
+			newNode.Properties = properties
+			return newNode
+		}
+		return nil
+	}
+}
+
+// IncludeAllNodesInSlliceFunc includes all the nodes in the slice
+var IncludeAllNodesInSliceFunc = func(layer *Layer, node *SchemaNode) *SchemaNode {
+	return node.Clone()
+}
+
+func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, *SchemaNode) *SchemaNode) *Layer {
 	ret := &Layer{Graph: digraph.New()}
-	ret.RootNode = slice(ret, layer.RootNode, nodeFilter, map[*digraph.Node]struct{}{})
+	ret.RootNode = slice(ret, layer.RootNode, nodeFilter, map[*SchemaNode]struct{}{})
 	if ret.RootNode == nil {
 		ret.RootNode = ret.NewNode(layer.RootNode.Label())
 	}
-	ret.RootNode.Payload.(*SchemaNode).RemoveTypes(SchemaTerm, OverlayTerm)
-	ret.RootNode.Payload.(*SchemaNode).AddTypes(layerType)
+	ret.RootNode.RemoveTypes(SchemaTerm, OverlayTerm)
+	ret.RootNode.AddTypes(layerType)
 	return ret
 }
 
-func slice(targetLayer *Layer, source *digraph.Node, nodeFilter func(*Layer, *digraph.Node) *digraph.Node, ctx map[*digraph.Node]struct{}) *digraph.Node {
+func slice(targetLayer *Layer, source *SchemaNode, nodeFilter func(*Layer, *SchemaNode) *SchemaNode, ctx map[*SchemaNode]struct{}) *SchemaNode {
 	// Avoid loops
 	if _, seen := ctx[source]; seen {
 		return nil
@@ -42,15 +70,15 @@ func slice(targetLayer *Layer, source *digraph.Node, nodeFilter func(*Layer, *di
 	targetNode := nodeFilter(targetLayer, source)
 
 	for edges := source.AllOutgoingEdges(); edges.HasNext(); {
-		edge := edges.Next()
-		newTo := slice(targetLayer, edge.To(), nodeFilter, ctx)
+		edge := edges.Next().(*SchemaEdge)
+		newTo := slice(targetLayer, edge.To().(*SchemaNode), nodeFilter, ctx)
 		if newTo != nil {
 			// If targetNode was filtered out, it has to be included now
 			if targetNode == nil {
-				targetNode = targetLayer.NewNode(source.Label(), source.Payload.(*SchemaNode).GetTypes()...)
+				targetNode = targetLayer.NewNode(source.Label(), source.GetTypes()...)
 			}
 			// Add the edge
-			targetLayer.NewEdge(targetNode, newTo, edge.Label(), edge.Payload)
+			targetLayer.AddEdge(targetNode, newTo, edge.Clone())
 		}
 	}
 	return targetNode

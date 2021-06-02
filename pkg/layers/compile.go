@@ -77,17 +77,15 @@ func (compiler *Compiler) compileTerms(layer *Layer) error {
 	}
 
 	for nodes := layer.AllNodes(); nodes.HasNext(); {
-		node := nodes.Next()
-		nodeData := node.Payload.(*SchemaNode)
-		for k, v := range nodeData.Properties {
-			if err := compile(nodeData.Properties, nodeData.Compiled, k, v); err != nil {
+		node := nodes.Next().(*SchemaNode)
+		for k, v := range node.Properties {
+			if err := compile(node.Properties, node.Compiled, k, v); err != nil {
 				return err
 			}
 			for edges := node.AllOutgoingEdges(); edges.HasNext(); {
-				edge := edges.Next()
-				edgeData := edge.Payload.(*SchemaEdge)
-				for k, v := range edgeData.Properties {
-					if err := compile(edgeData.Properties, edgeData.Compiled, k, v); err != nil {
+				edge := edges.Next().(*SchemaEdge)
+				for k, v := range edge.Properties {
+					if err := compile(edge.Properties, edge.Compiled, k, v); err != nil {
 						return err
 					}
 				}
@@ -98,12 +96,11 @@ func (compiler *Compiler) compileTerms(layer *Layer) error {
 }
 
 func (compiler *Compiler) resolveReferences(layer *Layer) error {
-	toRemove := make([]*digraph.Node, 0)
+	toRemove := make([]digraph.Node, 0)
 	for nodes := layer.AllNodes(); nodes.HasNext(); {
-		node := nodes.Next()
-		payload := node.Payload.(*SchemaNode)
-		if payload.HasType(AttributeTypes.Reference) {
-			ref := payload.Properties[TypeTerms.Reference]
+		node := nodes.Next().(*SchemaNode)
+		if node.HasType(AttributeTypes.Reference) {
+			ref := node.Properties[TypeTerms.Reference]
 			referencedLayer, err := compiler.Compile(string(ref.(IRI)))
 			if err != nil {
 				return err
@@ -111,18 +108,18 @@ func (compiler *Compiler) resolveReferences(layer *Layer) error {
 
 			// Attach all incoming edges to the layer's root
 			for incoming := node.AllIncomingEdges(); incoming.HasNext(); {
-				edge := incoming.Next()
-				layer.NewEdge(edge.From(), referencedLayer.RootNode, edge.Label(), edge.Payload)
+				edge := incoming.Next().(*SchemaEdge)
+				layer.AddEdge(edge.From(), referencedLayer.RootNode, edge.Clone())
 			}
 			// Reattach all outgoing edges
 			for outgoing := node.AllOutgoingEdges(); outgoing.HasNext(); {
-				edge := outgoing.Next()
-				layer.NewEdge(referencedLayer.RootNode, edge.To(), edge.Label(), edge.Payload)
+				edge := outgoing.Next().(*SchemaEdge)
+				layer.AddEdge(referencedLayer.RootNode, edge.To(), edge.Clone())
 			}
 			// Copy over properties
-			for k, v := range payload.Properties {
+			for k, v := range node.Properties {
 				if k != TypeTerms.Reference {
-					referencedLayer.RootNode.Payload.(*SchemaNode).Properties[k] = v
+					referencedLayer.RootNode.Properties[k] = v
 				}
 			}
 			// Remove the reference node
@@ -137,9 +134,8 @@ func (compiler *Compiler) resolveReferences(layer *Layer) error {
 
 func (compiler *Compiler) resolveCompositions(layer *Layer) error {
 	for nodes := layer.AllNodes(); nodes.HasNext(); {
-		compositeNode := nodes.Next()
-		payload := compositeNode.Payload.(*SchemaNode)
-		if payload.HasType(AttributeTypes.Composite) {
+		compositeNode := nodes.Next().(*SchemaNode)
+		if compositeNode.HasType(AttributeTypes.Composite) {
 			if err := compiler.resolveComposition(layer, compositeNode); err != nil {
 				return err
 			}
@@ -148,14 +144,14 @@ func (compiler *Compiler) resolveCompositions(layer *Layer) error {
 	return nil
 }
 
-func (compiler Compiler) resolveComposition(layer *Layer, compositeNode *digraph.Node) error {
+func (compiler Compiler) resolveComposition(layer *Layer, compositeNode *SchemaNode) error {
 	type removable interface{ Remove() }
 	toDelete := make([]removable, 0)
 	// At the end of this process, composite node will be converted into an object node
 	for edges := compositeNode.AllOutgoingEdgesWithLabel(TypeTerms.AllOf); edges.HasNext(); {
-		allOfEdge := edges.Next()
+		allOfEdge := edges.Next().(*SchemaEdge)
 	top:
-		componentPayload := allOfEdge.To().Payload.(*SchemaNode)
+		componentPayload := allOfEdge.To().(*SchemaNode)
 		if componentPayload.HasType(AttributeTypes.Object) {
 			// link all the nodes to the main node
 			for edges := allOfEdge.To().AllOutgoingEdges(); edges.HasNext(); {
@@ -167,10 +163,10 @@ func (compiler Compiler) resolveComposition(layer *Layer, compositeNode *digraph
 			componentPayload.HasType(AttributeTypes.Array) ||
 			componentPayload.HasType(AttributeTypes.Polymorphic) {
 			// This node becomes an attribute of the main node.
-			layer.NewEdge(compositeNode, allOfEdge.To(), TypeTerms.AttributeList, allOfEdge.Payload)
+			layer.AddEdge(compositeNode, allOfEdge.To(), allOfEdge.Clone())
 			toDelete = append(toDelete, allOfEdge)
 		} else if componentPayload.HasType(AttributeTypes.Composite) {
-			if err := compiler.resolveComposition(layer, allOfEdge.To()); err != nil {
+			if err := compiler.resolveComposition(layer, allOfEdge.To().(*SchemaNode)); err != nil {
 				return err
 			}
 			goto top
@@ -179,7 +175,7 @@ func (compiler Compiler) resolveComposition(layer *Layer, compositeNode *digraph
 		}
 	}
 	// Convert the node to an object
-	payload := compositeNode.Payload.(*SchemaNode)
+	payload := compositeNode
 	payload.RemoveTypes(AttributeTypes.Composite)
 	payload.AddTypes(AttributeTypes.Object)
 	return nil

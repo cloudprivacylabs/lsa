@@ -43,6 +43,15 @@ type CompiledEntity struct {
 	Schema *jsonschema.Schema
 }
 
+// CompileAndImport compiles the given entities and imports them as layers
+func CompileAndImport(entities []Entity) ([]ImportedEntity, error) {
+	compiled, err := Compile(entities)
+	if err != nil {
+		return nil, err
+	}
+	return Import(compiled)
+}
+
 // Compile all entities as a single unit.
 func Compile(entities []Entity) ([]CompiledEntity, error) {
 	compiler := jsonschema.NewCompiler()
@@ -117,7 +126,7 @@ func Import(entities []CompiledEntity) ([]ImportedEntity, error) {
 		imported.Layer = layers.NewLayer()
 		nodes := s.object.itr(ctx.currentEntity.ID, nil, imported.Layer)
 		for _, node := range nodes {
-			imported.Layer.NewEdge(imported.Layer.RootNode, node, layers.TypeTerms.Attributes, nil)
+			imported.Layer.AddEdge(imported.Layer.RootNode, node, layers.NewSchemaEdge(layers.TypeTerms.Attributes))
 		}
 
 		ret = append(ret, imported)
