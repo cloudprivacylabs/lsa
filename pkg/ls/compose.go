@@ -11,12 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package layers
+package ls
 
 import (
 	"fmt"
 
-	"github.com/bserdar/digraph"
 	"github.com/cloudprivacylabs/lsa/pkg/term"
 )
 
@@ -37,21 +36,8 @@ func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
 	layerTypes := layer.GetTargetTypes()
 	sourceTypes := source.GetTargetTypes()
 	if len(layerTypes) > 0 && len(sourceTypes) > 0 {
-		compatible := false
-		for _, t := range sourceTypes {
-			found := false
-			for _, x := range layerTypes {
-				if x == t {
-					found = true
-					break
-				}
-			}
-			if found {
-				compatible = true
-				break
-			}
-		}
-		if !compatible {
+		intersection := StringSetIntersection(layerTypes, sourceTypes)
+		if len(intersection) == 0 {
 			return ErrIncompatibleComposition
 		}
 	}
@@ -60,9 +46,6 @@ func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
 	processedSourceNodes := make(map[*SchemaNode]struct{})
 	// Process attributes depth-first
 	source.ForEachAttribute(func(sourceNode *SchemaNode) bool {
-		if sourceNode == nil {
-			return true
-		}
 		if _, processed := processedSourceNodes[sourceNode]; processed {
 			return true
 		}
@@ -72,7 +55,7 @@ func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
 		case 1:
 			// Target node exists. Merge if paths match
 			if pathsMatch(targetNodes[0].(*SchemaNode), sourceNode, sourceNode) {
-				if err = mergeNodes(layer.Graph, targetNodes[0].(*SchemaNode), sourceNode, options, processedSourceNodes); err != nil {
+				if err = mergeNodes(layer, targetNodes[0].(*SchemaNode), sourceNode, options, processedSourceNodes); err != nil {
 					return false
 				}
 			}
@@ -92,7 +75,7 @@ func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
 }
 
 // Merge source into target.
-func mergeNodes(targetGraph *digraph.Graph, target, source *SchemaNode, options ComposeOptions, processedSourceNodes map[*SchemaNode]struct{}) error {
+func mergeNodes(targetLayer *Layer, target, source *SchemaNode, options ComposeOptions, processedSourceNodes map[*SchemaNode]struct{}) error {
 	if _, processed := processedSourceNodes[source]; processed {
 		return nil
 	}
@@ -112,10 +95,10 @@ func mergeNodes(targetGraph *digraph.Graph, target, source *SchemaNode, options 
 
 	// Map of source node -> target node, so that we know the target node created for each source node
 	nodeMap := map[*SchemaNode]*SchemaNode{}
-	return mergeGraphs(targetGraph, target, source, nodeMap)
+	return mergeGraphs(targetLayer, target, source, nodeMap)
 }
 
-func mergeGraphs(targetGraph *digraph.Graph, targetNode, sourceNode *SchemaNode, nodeMap map[*SchemaNode]*SchemaNode) error {
+func mergeGraphs(targetLayer *Layer, targetNode, sourceNode *SchemaNode, nodeMap map[*SchemaNode]*SchemaNode) error {
 	// If the source node is already seen, return
 	if _, processed := nodeMap[sourceNode]; processed {
 		return nil
@@ -123,7 +106,7 @@ func mergeGraphs(targetGraph *digraph.Graph, targetNode, sourceNode *SchemaNode,
 	for edges := sourceNode.AllOutgoingEdges(); edges.HasNext(); {
 		edge := edges.Next().(*SchemaEdge)
 		// Skip all attribute nodes, as they will be processed later
-		if IsAttributeTreeEdge(edge) {
+		if edge.IsAttributeTreeEdge() {
 			continue
 		}
 		var targetNodes []digraph.Node
@@ -158,7 +141,7 @@ func mergeProperty(property string, existingValue, newValue interface{}, options
 
 // pathsMatch returns true if the attribute predecessors of source matches target's
 func pathsMatch(target, source, initialSource *SchemaNode) bool {
-	if source.Label() != target.Label() {
+	if source.GetID() != target.GetID() {
 		return false
 	}
 	sourceParent := source.GetParentAttribute()
@@ -166,16 +149,14 @@ func pathsMatch(target, source, initialSource *SchemaNode) bool {
 	if sourceParent == nil {
 		return true
 	}
-	payload := sourceParent
-	if payload.HasType(SchemaTerm) || payload.HasType(OverlayTerm) {
+	if sourceParent.HasType(SchemaTerm) || sourceParent.HasType(OverlayTerm) {
 		return true
 	}
 	targetParent := target.GetParentAttribute()
 	if targetParent == nil {
 		return false
 	}
-	payload = targetParent
-	if payload.HasType(SchemaTerm) || payload.HasType(OverlayTerm) {
+	if targetParent.HasType(SchemaTerm) || targetParent.HasType(OverlayTerm) {
 		return false
 	}
 	// Loop?

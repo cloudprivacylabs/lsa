@@ -11,13 +11,23 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package layers
+package ls
 
-// SchemaManifest contains the minimal information to define a schema variant with an optional bundle
-type SchemaManifest struct {
-	ID         string   `json:"id"`
-	TargetType string   `json:"targetType"`
-	Bundle     string   `json:"bundle,omitempty"`
-	Schema     string   `json:"schema"`
-	Overlays   []string `json:"overlays,omitempty"`
+// Recursively copy in
+func copyIntf(in interface{}) interface{} {
+	if arr, ok := in.([]interface{}); ok {
+		ret := make([]interface{}, 0, len(arr))
+		for _, x := range arr {
+			ret = append(ret, copyIntf(x))
+		}
+		return ret
+	}
+	if m, ok := in.(map[string]interface{}); ok {
+		ret := make(map[string]interface{}, len(m))
+		for k, v := range m {
+			ret[k] = copyIntf(v)
+		}
+		return ret
+	}
+	return in
 }

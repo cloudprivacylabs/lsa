@@ -11,11 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package layers
+package ls
 
-import (
-	"github.com/bserdar/digraph"
-)
+import ()
 
 // GetSliceByTermsFunc is used in the Slice function to select nodes by
 // the properties it contains.
@@ -46,59 +44,44 @@ var IncludeAllNodesInSliceFunc = func(layer *Layer, node *SchemaNode) *SchemaNod
 }
 
 func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, *SchemaNode) *SchemaNode) *Layer {
-	ret := &Layer{Graph: digraph.New()}
-	ret.RootNode = slice(ret, layer.RootNode, nodeFilter, map[*SchemaNode]struct{}{})
-	if ret.RootNode == nil {
-		ret.RootNode = ret.NewNode(layer.RootNode.Label())
+	ret := NewLayer("", layerType)
+	rootNode := ret.GetRoot()
+	for targets := layer.GetRoot().AllOutgoingEdges(); targets.HasNext(); {
+		edge := targets.Next().(*SchemaEdge)
+		if edge.IsAttributeTreeEdge() {
+			newNode := slice(ret, layer.GetRoot(), nodeFilter, map[*SchemaNode]struct{}{})
+			if newNode != nil {
+				rootNode.Connect(newNode, edge.GetLabel())
+			}
+		}
 	}
-	ret.RootNode.RemoveTypes(SchemaTerm, OverlayTerm)
-	ret.RootNode.AddTypes(layerType)
 	return ret
 }
 
-func slice(targetLayer *Layer, source *SchemaNode, nodeFilter func(*Layer, *SchemaNode) *SchemaNode, ctx map[*SchemaNode]struct{}) *SchemaNode {
+func slice(targetLayer *Layer, sourceNode *SchemaNode, nodeFilter func(*Layer, *SchemaNode) *SchemaNode, ctx map[*SchemaNode]struct{}) *SchemaNode {
 	// Avoid loops
-	if _, seen := ctx[source]; seen {
+	if _, seen := ctx[sourceNode]; seen {
 		return nil
 	}
-	ctx[source] = struct{}{}
+	ctx[sourceNode] = struct{}{}
 	defer func() {
-		delete(ctx, source)
+		delete(ctx, sourceNode)
 	}()
 
 	// Try to filter first. This may return nil
-	targetNode := nodeFilter(targetLayer, source)
+	targetNode := nodeFilter(targetLayer, sourceNode)
 
-	for edges := source.AllOutgoingEdges(); edges.HasNext(); {
+	for edges := sourceNode.AllOutgoingEdges(); edges.HasNext(); {
 		edge := edges.Next().(*SchemaEdge)
 		newTo := slice(targetLayer, edge.To().(*SchemaNode), nodeFilter, ctx)
 		if newTo != nil {
 			// If targetNode was filtered out, it has to be included now
 			if targetNode == nil {
-				targetNode = targetLayer.NewNode(source.Label(), source.GetTypes()...)
+				targetNode = targetLayer.NewNode(sourceNode.GetID(), sourceNode.GetTypes()...)
 			}
 			// Add the edge
 			targetLayer.AddEdge(targetNode, newTo, edge.Clone())
 		}
 	}
 	return targetNode
-}
-
-// Recursively copy in
-func copyIntf(in interface{}) interface{} {
-	if arr, ok := in.([]interface{}); ok {
-		ret := make([]interface{}, 0, len(arr))
-		for _, x := range arr {
-			ret = append(ret, copyIntf(x))
-		}
-		return ret
-	}
-	if m, ok := in.(map[string]interface{}); ok {
-		ret := make(map[string]interface{}, len(m))
-		for k, v := range m {
-			ret[k] = copyIntf(v)
-		}
-		return ret
-	}
-	return in
 }

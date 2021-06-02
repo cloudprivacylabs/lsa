@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package layers
+package ls
 
 const LS = "https://lschema.org/"
 
@@ -74,4 +74,22 @@ var TypeTerms = struct {
 	ArrayItems:    LS + "Array#items",
 	AllOf:         LS + "Composite#allOf",
 	OneOf:         LS + "Polymorphic#oneOf",
+}
+
+// FilterAttributeTypes returns all recognized attribute types from
+// the given types array. This is mainly used for validation, to
+// ensure there is only one attribute type
+func FilterAttributeTypes(types []string) []string {
+	ret := make([]string, 0)
+	for _, x := range types {
+		if x == AttributeTypes.Value ||
+			x == AttributeTypes.Object ||
+			x == AttributeTypes.Array ||
+			x == AttributeTypes.Reference ||
+			x == AttributeTypes.Composite ||
+			x == AttributeTypes.Polymorphic {
+			ret = append(ret, x)
+		}
+	}
+	return ret
 }
