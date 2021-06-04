@@ -33,6 +33,8 @@ func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
 	if source.GetLayerType() != OverlayTerm {
 		return ErrCompositionSourceNotOverlay
 	}
+	// Check if target types are compatible. If they are non-empty, then
+	// intersection must be non-empty
 	layerTypes := layer.GetTargetTypes()
 	sourceTypes := source.GetTargetTypes()
 	if len(layerTypes) > 0 && len(sourceTypes) > 0 {
@@ -43,8 +45,9 @@ func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
 	}
 
 	var err error
+	// Process attributes of the source layer depth-first
+	// Compose the source attribute nodes with the target attribute nodes, ignoring any nodes attached to them
 	processedSourceNodes := make(map[*SchemaNode]struct{})
-	// Process attributes depth-first
 	source.ForEachAttribute(func(sourceNode *SchemaNode) bool {
 		if _, processed := processedSourceNodes[sourceNode]; processed {
 			return true
@@ -55,15 +58,23 @@ func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
 		case 1:
 			// Target node exists. Merge if paths match
 			if pathsMatch(targetNodes[0].(*SchemaNode), sourceNode, sourceNode) {
-				if err = mergeNodes(layer, targetNodes[0].(*SchemaNode), sourceNode, options, processedSourceNodes); err != nil {
+				if err = mergeNodes(layer, targetNodes[0].(*SchemaNode), sourceNode, processedSourceNodes); err != nil {
 					return false
 				}
 			}
-		case 0:
-			// Target node does not exist. Add if options==Union
-			if options.Union {
 
+		case 0:
+			// Target node does not exist.
+			// Parent node must exist, because this is a depth-first algorithm
+			parent, edge := sourceNode.GetParentAttribute()
+			if parent == nil {
+				err = ErrInvalidComposition
+				return false
 			}
+			// Add the same node to this layer
+			newNode := sourceNode.Clone()
+			layer.AddEdge(parent, newNode, edge.Clone())
+
 		default:
 			err = ErrDuplicateAttributeID(fmt.Sprint(sourceNode.Label()))
 			return false
@@ -71,11 +82,29 @@ func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
 		processedSourceNodes[sourceNode] = struct{}{}
 		return true
 	})
+	if err != nil {
+		return err
+	}
+	// Copy all non-attribute nodes of source to target
+	nodeMap := make(map[*SchemaNode]*SchemaNode)
+	seen := make(map[*SchemaNode]struct{})
+	source.ForEachAttribute(func(sourceNode *SchemaNode) bool {
+		targetNodes := layer.AllNodesWithLabel(sourceNode.Label()).All()
+		if len(targetNodes) != 1 {
+			// This should not really happen
+			panic("Cannot find node even after adding")
+		}
+		mergeNonattributeGraph(layer, targetNodes[0].(*SchemaNode), sourceNode, seen, nodeMap)
+		return true
+	})
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 // Merge source into target.
-func mergeNodes(targetLayer *Layer, target, source *SchemaNode, options ComposeOptions, processedSourceNodes map[*SchemaNode]struct{}) error {
+func mergeNodes(targetLayer *Layer, target, source *SchemaNode, processedSourceNodes map[*SchemaNode]struct{}) error {
 	if _, processed := processedSourceNodes[source]; processed {
 		return nil
 	}
@@ -83,60 +112,50 @@ func mergeNodes(targetLayer *Layer, target, source *SchemaNode, options ComposeO
 	if source == nil || target == nil {
 		return nil
 	}
-	// Merge properties
-	for k, v := range source.Properties {
-		var err error
-		target.Properties[k], err = mergeProperty(k, target.Properties[k], v, options)
-		if err != nil {
-			return err
-		}
-	}
-	// Merge graphs
 
-	// Map of source node -> target node, so that we know the target node created for each source node
-	nodeMap := map[*SchemaNode]*SchemaNode{}
-	return mergeGraphs(targetLayer, target, source, nodeMap)
-}
-
-func mergeGraphs(targetLayer *Layer, targetNode, sourceNode *SchemaNode, nodeMap map[*SchemaNode]*SchemaNode) error {
-	// If the source node is already seen, return
-	if _, processed := nodeMap[sourceNode]; processed {
-		return nil
-	}
-	for edges := sourceNode.AllOutgoingEdges(); edges.HasNext(); {
-		edge := edges.Next().(*SchemaEdge)
-		// Skip all attribute nodes, as they will be processed later
-		if edge.IsAttributeTreeEdge() {
-			continue
-		}
-		var targetNodes []digraph.Node
-		if edge.To().Label() != nil {
-			targetNodes = targetGraph.AllNodesWithLabel(edge.To().Label()).All()
-			if len(targetNodes) > 1 {
-				return ErrDuplicateNodeID(fmt.Sprint(edge.To().Label()))
-			}
-			if len(targetNodes) == 0 {
-				newNode := edge.To().(*SchemaNode).Clone()
-				targetGraph.AddNode(newNode)
-				targetNodes = []digraph.Node{newNode}
-			}
-		} else {
-			newNode := edge.To().(*SchemaNode).Clone()
-			newNode.SetLabel(nil)
-			targetGraph.AddNode(newNode)
-			targetNodes = []digraph.Node{newNode}
-		}
-		nodeMap[edge.To().(*SchemaNode)] = targetNodes[0].(*SchemaNode)
-		targetGraph.AddEdge(targetNode, targetNodes[0], edge.Clone())
-		if err := mergeGraphs(targetGraph, targetNodes[0].(*SchemaNode), edge.To().(*SchemaNode), nodeMap); err != nil {
-			return err
-		}
+	if err := ComposeProperties(target.Properties, source.Properties); err != nil {
+		return err
 	}
 	return nil
 }
 
-func mergeProperty(property string, existingValue, newValue interface{}, options ComposeOptions) (interface{}, error) {
-	return term.GetComposer(term.GetTermMeta(property)).Compose(existingValue, newValue)
+func mergeNonattributeGraph(targetLayer *Layer, targetNode, sourceNode *SchemaNode, seen map[*SchemaNode]struct{}, nodeMap map[*SchemaNode]*SchemaNode) {
+	// If the source node is already seen, return
+	if _, processed := seen[sourceNode]; processed {
+		return
+	}
+	for edges := sourceNode.AllOutgoingEdges(); edges.HasNext(); {
+		edge := edges.Next().(*SchemaEdge)
+		// Skip all attribute nodes
+		if edge.IsAttributeTreeEdge() {
+			continue
+		}
+
+		toNode := edge.To().(*SchemaNode)
+		seen[toNode] = struct{}{}
+		// If edge.to is not in target, add it
+		targetTo, exists := nodeMap[toNode]
+		if !exists {
+			targetTo = toNode.Clone()
+			nodeMap[toNode] = targetTo
+		}
+		// Connect the nodes
+		targetLayer.AddEdge(targetNode, targetTo, edge.Clone())
+		mergeNonattributeGraph(targetLayer, targetTo, toNode, seen, nodeMap)
+	}
+}
+
+// ComposeProperties will combine the properties in source to
+// target. The target properties will be modified directly
+func ComposeProperties(target, source map[string]interface{}) error {
+	for k, v := range source {
+		newValue, _ := target[k]
+		newValue, err := term.GetComposer(term.GetTermMeta(k)).Compose(v, newValue)
+		if err != nil {
+			return ErrTerm{Term: k, Err: err}
+		}
+	}
+	return nil
 }
 
 // pathsMatch returns true if the attribute predecessors of source matches target's
@@ -144,7 +163,7 @@ func pathsMatch(target, source, initialSource *SchemaNode) bool {
 	if source.GetID() != target.GetID() {
 		return false
 	}
-	sourceParent := source.GetParentAttribute()
+	sourceParent, _ := source.GetParentAttribute()
 	// If sourceParents reached the top level, stop
 	if sourceParent == nil {
 		return true
@@ -152,7 +171,7 @@ func pathsMatch(target, source, initialSource *SchemaNode) bool {
 	if sourceParent.HasType(SchemaTerm) || sourceParent.HasType(OverlayTerm) {
 		return true
 	}
-	targetParent := target.GetParentAttribute()
+	targetParent, _ := target.GetParentAttribute()
 	if targetParent == nil {
 		return false
 	}

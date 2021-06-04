@@ -14,7 +14,7 @@
 package jsonld
 
 import (
-	"github.com/cloudprivacylabs/lsa/pkg/layers"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 // GetKeyValue returns the value of the key in the node. The node must
@@ -110,11 +110,11 @@ func GetFlattenedNodeIndex(nodes []interface{}) (map[string]interface{}, error) 
 	for _, node := range nodes {
 		id := GetNodeID(node)
 		if len(id) == 0 {
-			return nil, layers.ErrAttributeWithoutID
+			return nil, ls.ErrAttributeWithoutID
 		}
 		_, exists := ret[id]
 		if exists {
-			return nil, layers.ErrDuplicateAttributeID(id)
+			return nil, ls.ErrDuplicateAttributeID(id)
 		}
 		ret[id] = node
 	}

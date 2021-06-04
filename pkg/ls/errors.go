@@ -70,4 +70,18 @@ var ErrAttributeWithoutID = errors.New("Attribute without id")
 var ErrNotALayer = errors.New("Not a layer")
 var ErrCompositionSourceNotOverlay = errors.New("Composition source is not an overlay")
 var ErrIncompatibleComposition = errors.New("Incompatible composition of layers")
+
 var ErrInvalidComposition = errors.New("Invalid composition")
+
+type ErrTerm struct {
+	Term string
+	Err  error
+}
+
+func (e ErrTerm) Error() string {
+	return fmt.Sprintf("Term error '%s': %v", e.Term, e.Err)
+}
+
+func (e ErrTerm) Unwrap() error {
+	return e.Err
+}

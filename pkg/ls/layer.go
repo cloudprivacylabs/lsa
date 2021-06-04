@@ -131,7 +131,7 @@ func (a *SchemaNode) Clone() *SchemaNode {
 
 // GetParentAttribute returns the first immediate parent of the node that is
 // an attribute and reached by an attribute edge.
-func (a *SchemaNode) GetParentAttribute() *SchemaNode {
+func (a *SchemaNode) GetParentAttribute() (*SchemaNode, *SchemaEdge) {
 	for parents := a.AllIncomingEdges(); parents.HasNext(); {
 		parent := parents.Next().(*SchemaEdge)
 		if !parent.IsAttributeTreeEdge() {
@@ -142,10 +142,10 @@ func (a *SchemaNode) GetParentAttribute() *SchemaNode {
 			continue
 		}
 		if nd.HasType(AttributeTypes.Attribute) {
-			return nd
+			return nd, parent
 		}
 	}
-	return nil
+	return nil, nil
 }
 
 // SchemaEdge is a labeled graph edge between two schema nodes

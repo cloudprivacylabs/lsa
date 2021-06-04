@@ -17,13 +17,14 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/cloudprivacylabs/lsa/pkg/layers"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 func TestUnmarshalJsonld(t *testing.T) {
 	var input interface{}
 	err := json.Unmarshal([]byte(`{
-"@context": "../../schemas/ls.jsonld",
+"@context": ["../../schemas/ls.jsonld",
+  {"@vocab":"http://test#"}],
 "@type":"Schema",
 "attributes": [
  {
@@ -33,7 +34,7 @@ func TestUnmarshalJsonld(t *testing.T) {
  {
   "@id":  "attr2",
   "@type": "Value",
-  "privacyClassification": [
+  "flag": [
     {
       "@value": "flg1"
     }
@@ -55,34 +56,35 @@ func TestUnmarshalJsonld(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	n := layer.Graph.AllNodesWithLabel("attr1").All()[0]
-	v, ok := n.Payload.(*layers.SchemaNode)
+	n := layer.AllNodesWithLabel("attr1").All()[0]
+	v, ok := n.(*ls.SchemaNode)
 	if !ok {
 		t.Errorf("Not a value")
 	}
-	if !v.HasType(layers.AttributeTypes.Value) {
+	if !v.HasType(ls.AttributeTypes.Value) {
 		t.Errorf("Not a value")
 	}
-	n = layer.Graph.AllNodesWithLabel("attr3").All()[0]
-	ref := n.Payload.(*layers.SchemaNode)
-	if ref.Properties[layers.TypeTerms.Reference] != layers.IRI("ref1") {
+	n = layer.AllNodesWithLabel("attr3").All()[0]
+	ref := n.(*ls.SchemaNode)
+	if ref.Properties[ls.TypeTerms.Reference] != ls.IRI("ref1") {
 		t.Errorf("Wrong ref: %v", ref.Properties)
 	}
-	edges := layer.RootNode.AllOutgoingEdgesWithLabel(layers.TypeTerms.Attributes).All()
+	edges := layer.GetRoot().AllOutgoingEdgesWithLabel(ls.TypeTerms.Attributes).All()
 	if len(edges) != 3 {
 		t.Errorf("Expected 3 got %d", len(edges))
 	}
 
-	n2 := layer.Graph.AllNodesWithLabel("attr2").All()[0]
-	if n2.Payload.(*layers.SchemaNode).Properties["https://layeredschemas.org/attr/privacyClassification"] != "flg1" {
-		t.Errorf("Wrong label: %v", n2.Payload)
+	n2 := layer.AllNodesWithLabel("attr2").All()[0]
+	if n2.(*ls.SchemaNode).Properties["http://test#flag"] != "flg1" {
+		t.Errorf("Wrong label: %v", n2)
 	}
 }
 
 func TestMarshalJsonld(t *testing.T) {
 	var input interface{}
 	err := json.Unmarshal([]byte(`{
-"@context": "../../schemas/ls.jsonld",
+"@context": ["../../schemas/ls.jsonld",
+  {"@vocab":"http://test#"}],
 "@type":"Schema",
 "attributes": [
  {
@@ -92,7 +94,7 @@ func TestMarshalJsonld(t *testing.T) {
  {
   "@id":  "attr2",
   "@type": "Value",
-  "privacyClassification": [
+  "flag": [
     {
       "@value": "flg1"
     }
@@ -121,25 +123,25 @@ func TestMarshalJsonld(t *testing.T) {
 {
 "@id": "_:b0",
 "@type": [
-"https://layeredschemas.org/Attribute",
-"https://layeredschemas.org/Schema",
-"https://layeredschemas.org/Object"
+"https://lschema.org/Attribute",
+"https://lschema.org/Schema",
+"https://lschema.org/Object"
 ],
-"https://layeredschemas.org/Object#attributes": [
+"https://lschema.org/Object#attributes": [
 {
 "@id": "attr1",
 "@type": [
-"https://layeredschemas.org/Attribute",
-"https://layeredschemas.org/Value"
+"https://lschema.org/Value",
+"https://lschema.org/Attribute"
 ]
 },
 {
 "@id": "attr2",
 "@type": [
-"https://layeredschemas.org/Attribute",
-"https://layeredschemas.org/Value"
+"https://lschema.org/Value",
+"https://lschema.org/Attribute"
 ],
-"https://layeredschemas.org/attr/privacyClassification": [
+"http://test#flag": [
 {
 "@value": "flg1"
 }
@@ -148,10 +150,10 @@ func TestMarshalJsonld(t *testing.T) {
 {
 "@id": "attr3",
 "@type": [
-"https://layeredschemas.org/Attribute",
-"https://layeredschemas.org/Reference"
+"https://lschema.org/Reference",
+"https://lschema.org/Attribute"
 ],
-"https://layeredschemas.org/Reference#reference": [
+"https://lschema.org/Reference#reference": [
 {
 "@id": "ref1"
 }
