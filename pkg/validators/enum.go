@@ -1,7 +1,7 @@
 package validators
 
 import (
-	"github.com/cloudprivacylabs/lsa/pkg/layers"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-const EnumTerm = layers.LS + "validation#enumeration"
+const EnumTerm = ls.LS + "validation#enumeration"

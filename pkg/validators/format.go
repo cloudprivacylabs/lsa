@@ -1,7 +1,7 @@
 package validators
 
 import (
-	"github.com/cloudprivacylabs/lsa/pkg/layers"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-const FormatTerm = layers.LS + "validation#format"
+const FormatTerm = ls.LS + "validation#format"

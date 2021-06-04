@@ -1,7 +1,7 @@
 package validators
 
 import (
-	"github.com/cloudprivacylabs/lsa/pkg/layers"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-const RequiredTerm = layers.LS + "validation#required"
+const RequiredTerm = ls.LS + "validation#required"

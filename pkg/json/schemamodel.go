@@ -17,7 +17,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cloudprivacylabs/lsa/pkg/layers"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/validators"
 )
 
@@ -44,12 +44,12 @@ type objectSchema struct {
 	properties map[string]schemaProperty
 }
 
-func (a arraySchema) itr(entityId string, name []string, layer *layers.Layer) *layers.SchemaNode {
+func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer) *ls.SchemaNode {
 	return schemaAttrs(entityId, append(name, "*"), a.items, layer)
 }
 
-func (obj objectSchema) itr(entityId string, name []string, layer *layers.Layer) []*layers.SchemaNode {
-	ret := make([]*layers.SchemaNode, 0, len(obj.properties))
+func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer) []*ls.SchemaNode {
+	ret := make([]*ls.SchemaNode, 0, len(obj.properties))
 	for k, v := range obj.properties {
 		nm := append(name, k)
 		ret = append(ret, schemaAttrs(entityId, nm, v, layer))
@@ -57,10 +57,9 @@ func (obj objectSchema) itr(entityId string, name []string, layer *layers.Layer)
 	return ret
 }
 
-func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *layers.Layer) *layers.SchemaNode {
+func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer) *ls.SchemaNode {
 	id := entityId + "#" + strings.Join(name, ".")
-	newNode := layers.NewSchemaNode(id)
-	layer.AddNode(newNode)
+	newNode := layer.NewNode(id)
 	if len(attr.format) > 0 {
 		newNode.Properties[validators.FormatTerm] = attr.format
 	}
@@ -68,7 +67,7 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *lay
 		newNode.Properties[validators.PatternTerm] = attr.pattern
 	}
 	if len(attr.description) > 0 {
-		newNode.Properties[layers.DescriptionTerm] = attr.description
+		newNode.Properties[ls.DescriptionTerm] = attr.description
 	}
 	if attr.required {
 		newNode.Properties[validators.RequiredTerm] = true
@@ -78,10 +77,10 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *lay
 		for _, x := range attr.typ {
 			arr = append(arr, x)
 		}
-		newNode.Properties[layers.TargetType] = arr
+		newNode.Properties[ls.TargetType] = arr
 	}
 	if len(attr.key) > 0 {
-		newNode.Properties[layers.AttributeNameTerm] = attr.key
+		newNode.Properties[ls.AttributeNameTerm] = attr.key
 	}
 	if len(attr.enum) > 0 {
 		elements := make([]interface{}, 0, len(attr.enum))
@@ -92,27 +91,27 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *lay
 	}
 
 	if len(attr.reference) > 0 {
-		newNode.AddTypes(layers.AttributeTypes.Reference)
+		newNode.AddTypes(ls.AttributeTypes.Reference)
 		return newNode
 	}
 
 	if attr.object != nil {
-		newNode.AddTypes(layers.AttributeTypes.Object)
+		newNode.AddTypes(ls.AttributeTypes.Object)
 		attrs := attr.object.itr(entityId, name, layer)
 		for _, x := range attrs {
-			layer.AddEdge(newNode, x, layers.NewSchemaEdge(layers.TypeTerms.AttributeList))
+			newNode.Connect(x, ls.TypeTerms.AttributeList)
 		}
 		return newNode
 	}
 	if attr.array != nil {
-		newNode.AddTypes(layers.AttributeTypes.Array)
+		newNode.AddTypes(ls.AttributeTypes.Array)
 		n := attr.array.itr(entityId, name, layer)
-		layer.AddEdge(newNode, n, layers.NewSchemaEdge(layers.TypeTerms.ArrayItems))
+		newNode.Connect(n, ls.TypeTerms.ArrayItems)
 		return newNode
 	}
 
-	buildChoices := func(arr []schemaProperty) []*layers.SchemaNode {
-		elements := make([]*layers.SchemaNode, 0, len(arr))
+	buildChoices := func(arr []schemaProperty) []*ls.SchemaNode {
+		elements := make([]*ls.SchemaNode, 0, len(arr))
 		for i, x := range arr {
 			newName := append(name, fmt.Sprint(i))
 			node := schemaAttrs(entityId, newName, x, layer)
@@ -121,19 +120,19 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *lay
 		return elements
 	}
 	if len(attr.oneOf) > 0 {
-		newNode.AddTypes(layers.AttributeTypes.Polymorphic)
+		newNode.AddTypes(ls.AttributeTypes.Polymorphic)
 		for _, x := range buildChoices(attr.oneOf) {
-			layer.AddEdge(newNode, x, layers.NewSchemaEdge(layers.TypeTerms.OneOf))
+			newNode.Connect(x, ls.TypeTerms.OneOf)
 		}
 		return newNode
 	}
 	if len(attr.allOf) > 0 {
-		newNode.AddTypes(layers.AttributeTypes.Composite)
+		newNode.AddTypes(ls.AttributeTypes.Composite)
 		for _, x := range buildChoices(attr.oneOf) {
-			layer.AddEdge(newNode, x, layers.NewSchemaEdge(layers.TypeTerms.AllOf))
+			newNode.Connect(x, ls.TypeTerms.AllOf)
 		}
 		return newNode
 	}
-	newNode.AddTypes(layers.AttributeTypes.Value)
+	newNode.AddTypes(ls.AttributeTypes.Value)
 	return newNode
 }

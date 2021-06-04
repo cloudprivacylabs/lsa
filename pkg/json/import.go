@@ -18,7 +18,7 @@ import (
 
 	"github.com/santhosh-tekuri/jsonschema"
 
-	"github.com/cloudprivacylabs/lsa/pkg/layers"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 type ErrCyclicSchema struct {
@@ -99,7 +99,7 @@ func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
 type ImportedEntity struct {
 	Entity CompiledEntity
 
-	Layer *layers.Layer `json:"-"`
+	Layer *ls.Layer `json:"-"`
 }
 
 // Import a JSON schema
@@ -123,10 +123,10 @@ func Import(entities []CompiledEntity) ([]ImportedEntity, error) {
 
 		imported := ImportedEntity{}
 		imported.Entity = ctx.entities[i]
-		imported.Layer = layers.NewLayer()
+		imported.Layer = ls.NewLayer(ctx.currentEntity.ID)
 		nodes := s.object.itr(ctx.currentEntity.ID, nil, imported.Layer)
 		for _, node := range nodes {
-			imported.Layer.AddEdge(imported.Layer.RootNode, node, layers.NewSchemaEdge(layers.TypeTerms.Attributes))
+			imported.Layer.GetRoot().Connect(node, ls.TypeTerms.Attributes)
 		}
 
 		ret = append(ret, imported)
