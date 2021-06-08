@@ -13,14 +13,14 @@
 // limitations under the License.
 package json
 
-// import (
-// 	"encoding/json"
-// 	"testing"
+import (
+	"encoding/json"
+	"testing"
 
-// 	"github.com/piprate/json-gold/ld"
+	"github.com/piprate/json-gold/ld"
 
-// 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-// )
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
+)
 
 // func expand(t *testing.T, in string) []interface{} {
 // 	proc := ld.NewJsonLdProcessor()

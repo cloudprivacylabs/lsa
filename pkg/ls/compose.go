@@ -15,8 +15,6 @@ package ls
 
 import (
 	"fmt"
-
-	"github.com/cloudprivacylabs/lsa/pkg/term"
 )
 
 type ComposeOptions struct {
@@ -150,7 +148,7 @@ func mergeNonattributeGraph(targetLayer *Layer, targetNode, sourceNode *SchemaNo
 func ComposeProperties(target, source map[string]interface{}) error {
 	for k, v := range source {
 		newValue, _ := target[k]
-		newValue, err := term.GetComposer(term.GetTermMeta(k)).Compose(v, newValue)
+		newValue, err := GetComposerForTerm(k).Compose(v, newValue)
 		if err != nil {
 			return ErrTerm{Term: k, Err: err}
 		}

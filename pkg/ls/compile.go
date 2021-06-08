@@ -13,9 +13,7 @@
 // limitations under the License.
 package ls
 
-import (
-	"github.com/cloudprivacylabs/lsa/pkg/term"
-)
+import ()
 
 type Compiler struct {
 	// Resolver resolves an ID and returns a strong reference
@@ -63,29 +61,34 @@ func (compiler *Compiler) Compile(ref string) (*Layer, error) {
 }
 
 func (compiler *Compiler) compileTerms(layer *Layer) error {
-	compile := func(propertiesMap, compiledMap map[string]interface{}, key string, value interface{}) error {
-		value, compiled, err := term.GetCompiler(term.GetTermMeta(key)).Compile(value)
-		if err != nil {
-			return err
-		}
-		propertiesMap[key] = value
-		if compiled != nil {
-			compiledMap[key] = compiled
-		}
-		return nil
-	}
-
 	for nodes := layer.AllNodes(); nodes.HasNext(); {
 		node := nodes.Next().(*SchemaNode)
-		for k, v := range node.Properties {
-			if err := compile(node.Properties, node.Compiled, k, v); err != nil {
+		// Compile all non-attribute nodes
+		if !node.IsAttributeNode() {
+			if err := GetNodeCompiler(node.GetID()).CompileNode(node); err != nil {
 				return err
+			}
+		}
+		for k, v := range node.Properties {
+			result, err := GetTermCompiler(k).CompileTerm(k, v)
+			if err != nil {
+				return err
+			}
+			if result != nil {
+				node.Compiled[k] = result
 			}
 			for edges := node.AllOutgoingEdges(); edges.HasNext(); {
 				edge := edges.Next().(*SchemaEdge)
+				if err := GetEdgeCompiler(edge.GetLabel()).CompileEdge(edge); err != nil {
+					return err
+				}
 				for k, v := range edge.Properties {
-					if err := compile(edge.Properties, edge.Compiled, k, v); err != nil {
+					result, err := GetTermCompiler(k).CompileTerm(k, v)
+					if err != nil {
 						return err
+					}
+					if result != nil {
+						edge.Compiled[k] = result
 					}
 				}
 			}

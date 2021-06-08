@@ -16,7 +16,7 @@ package json
 import (
 	"fmt"
 
-	"github.com/santhosh-tekuri/jsonschema"
+	"github.com/santhosh-tekuri/jsonschema/v3"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
@@ -177,18 +177,12 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 		}
 
 	case len(sch.Properties) > 0:
-		target.object = &objectSchema{properties: make(map[string]schemaProperty)}
+		target.object = &objectSchema{properties: make(map[string]schemaProperty), required: sch.Required}
 		for k, v := range sch.Properties {
 			val := schemaProperty{key: k}
 			err := importSchema(ctx, &val, v)
 			if err != nil {
 				return err
-			}
-			for _, r := range sch.Required {
-				if k == r {
-					val.required = true
-					break
-				}
 			}
 			target.object.properties[k] = val
 		}
@@ -208,7 +202,7 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 		if len(sch.Types) > 0 {
 			target.typ = sch.Types
 		}
-		target.format = sch.FormatName
+		target.format = sch.Format
 		if len(sch.Enum) > 0 {
 			target.enum = sch.Enum
 		}

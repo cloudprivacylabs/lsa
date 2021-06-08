@@ -15,6 +15,7 @@ package ls
 
 import (
 	"github.com/bserdar/digraph"
+	"golang.org/x/text/encoding"
 )
 
 // IRI is used as property values
@@ -256,6 +257,19 @@ func (l *Layer) SetLayerType(t string) {
 	}
 	l.root.RemoveTypes(SchemaTerm, OverlayTerm)
 	l.root.AddTypes(t)
+}
+
+// GetEncoding returns the encoding that should be used to
+// ingest/export data using this layer. The encoding information is
+// taken from the root node characterEncoding annotation. If missing,
+// the default encoding is used, which does not perform any character
+// translation
+func (l *Layer) GetEncoding() (encoding.Encoding, error) {
+	enc, _ := l.root.Properties[CharacterEncodingTerm].(string)
+	if len(enc) == 0 {
+		return encoding.Nop, nil
+	}
+	return UnknownEncodingIndex.Encoding(enc)
 }
 
 // NewNode creates a new node for the layer with the given ID and types

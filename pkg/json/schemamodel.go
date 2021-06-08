@@ -31,7 +31,6 @@ type schemaProperty struct {
 	typ         []string
 	format      string
 	enum        []interface{}
-	required    bool
 	pattern     string
 	description string
 }
@@ -42,6 +41,15 @@ type arraySchema struct {
 
 type objectSchema struct {
 	properties map[string]schemaProperty
+	required   []string
+}
+
+func (obj objectSchema) getRequired() []interface{} {
+	required := make([]interface{}, 0, len(obj.required))
+	for _, x := range obj.required {
+		required = append(required, x)
+	}
+	return required
 }
 
 func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer) *ls.SchemaNode {
@@ -61,16 +69,13 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 	id := entityId + "#" + strings.Join(name, ".")
 	newNode := layer.NewNode(id)
 	if len(attr.format) > 0 {
-		newNode.Properties[validators.FormatTerm] = attr.format
+		newNode.Properties[validators.JsonFormatTerm] = attr.format
 	}
 	if len(attr.pattern) > 0 {
 		newNode.Properties[validators.PatternTerm] = attr.pattern
 	}
 	if len(attr.description) > 0 {
 		newNode.Properties[ls.DescriptionTerm] = attr.description
-	}
-	if attr.required {
-		newNode.Properties[validators.RequiredTerm] = true
 	}
 	if len(attr.typ) > 0 {
 		arr := make([]interface{}, 0, len(attr.typ))
@@ -100,6 +105,10 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 		attrs := attr.object.itr(entityId, name, layer)
 		for _, x := range attrs {
 			newNode.Connect(x, ls.TypeTerms.AttributeList)
+		}
+		required := attr.object.getRequired()
+		if len(required) > 0 {
+			newNode.Properties[validators.RequiredTerm] = required
 		}
 		return newNode
 	}
