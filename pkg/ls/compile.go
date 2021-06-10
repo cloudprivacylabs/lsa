@@ -60,6 +60,27 @@ func (compiler *Compiler) Compile(ref string) (*Layer, error) {
 	return schema, nil
 }
 
+// CompileLayer compiles the schema by resolving all references and
+// computing all compositions. Compilation process directly modifies
+// the schema
+func (compiler *Compiler) CompileSchema(schema *Layer) error {
+	if compiler.compiledSchemas == nil {
+		compiler.compiledSchemas = make(map[string]*Layer)
+	}
+	id := schema.GetID()
+	// Put the compiled schema here, so if there are loops, we can refer to the
+	// same object
+	compiler.compiledSchemas[id] = schema
+	if err := compiler.resolveReferences(schema); err != nil {
+		return err
+	}
+	if err := compiler.resolveCompositions(schema); err != nil {
+		return err
+	}
+	compiler.compileTerms(schema)
+	return nil
+}
+
 func (compiler *Compiler) compileTerms(layer *Layer) error {
 	for nodes := layer.AllNodes(); nodes.HasNext(); {
 		node := nodes.Next().(*SchemaNode)

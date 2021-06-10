@@ -66,6 +66,20 @@ var ingestJSONCmd = &cobra.Command{
 					failErr(err)
 				}
 			}
+
+			compiler := ls.Compiler{Resolver: func(x string) (string, error) {
+				if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
+					return manifest.ID, nil
+				}
+				return x, nil
+			},
+				Loader: repo.LoadAndCompose,
+			}
+			resolved, err := compiler.Compile(schemaId)
+			if err != nil {
+				failErr(err)
+			}
+
 		}
 
 		var input map[string]interface{}
@@ -81,32 +95,13 @@ var ingestJSONCmd = &cobra.Command{
 		if err := readJSONFileOrStdin(args, &input); err != nil {
 			failErr(err)
 		}
+		ingester := json.Ingester{
+			Schema:  layer,
+			KeyTerm: x,
+		}
 
-		// 		ID, _ := cmd.Flags().GetString("id")
-		// 		schemaId, _ := cmd.Flags().GetString("schema")
-		// 		compiler := ls.Compiler{Resolver: func(x string) (string, error) {
-		// 			if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
-		// 				return manifest.ID, nil
-		// 			}
-		// 			return x, nil
-		// 		},
-		// 			Loader: repo.LoadAndCompose,
-		// 		}
-		// 		resolved, err := compiler.Compile(schemaId)
-		// 		if err != nil {
-		// 			failErr(err)
-		// 		}
+		target := digraph.New()
+		root, err := ingester.Ingest(target, input)
 
-		// 		format, _ := cmd.Flags().GetString("format")
-		// 		switch format {
-		// 		case "json":
-		// 			ingested, err := jsoningest.Ingest(ID, input, resolved)
-		// 			if err != nil {
-		// 				failErr(err)
-		// 			}
-		// 			out, _ := json.MarshalIndent(ls.DataModelToMap(ingested, true), "", "  ")
-		// 			fmt.Println(string(out))
-
-		// 		}
 	},
 }
