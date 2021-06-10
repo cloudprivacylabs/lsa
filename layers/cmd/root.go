@@ -16,11 +16,14 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+
+	"golang.org/x/text/encoding"
 
 	"github.com/spf13/cobra"
 )
@@ -41,7 +44,7 @@ func Execute() error {
 func init() {
 }
 
-func readURL(input string) ([]byte, error) {
+func readURL(input string, enc ...encoding.Encoding) ([]byte, error) {
 	var data []byte
 	urlInput, err := url.Parse(input)
 	if err != nil {
@@ -66,11 +69,14 @@ func readURL(input string) ([]byte, error) {
 			return nil, err
 		}
 	}
+	if len(enc) == 1 {
+		return enc[0].NewDecoder().Bytes(data)
+	}
 	return data, nil
 }
 
-func readJSON(input string, output interface{}) error {
-	data, err := readURL(input)
+func readJSON(input string, output interface{}, enc ...encoding.Encoding) error {
+	data, err := readURL(input, enc...)
 	if err != nil {
 		return err
 	}
@@ -78,12 +84,17 @@ func readJSON(input string, output interface{}) error {
 }
 
 // reads input[0] if it exists, otherwise reads from stdin
-func readJSONFileOrStdin(input []string, output interface{}) error {
+func readJSONFileOrStdin(input []string, output interface{}, enc ...encoding.Encoding) error {
 	if len(input) == 0 {
-		dec := json.NewDecoder(os.Stdin)
+		var rd io.Reader
+		rd = os.Stdin
+		if len(enc) == 1 {
+			rd = enc[0].NewDecoder().Reader(os.Stdin)
+		}
+		dec := json.NewDecoder(rd)
 		return dec.Decode(output)
 	}
-	return readJSON(input[0], output)
+	return readJSON(input[0], output, enc...)
 }
 
 func readFileOrStdin(input []string) ([]byte, error) {

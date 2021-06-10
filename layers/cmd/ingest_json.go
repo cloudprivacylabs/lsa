@@ -48,7 +48,7 @@ var ingestJSONCmd = &cobra.Command{
 				failErr(err)
 			}
 		}
-		schemaName, _ := cmd.Flas().GetString("schema")
+		schemaName, _ := cmd.Flags().GetString("schema")
 		if len(schemaName) > 0 {
 			if repo != nil {
 				layer, err := repo.GetComposedSchema(schemaName)
@@ -69,6 +69,15 @@ var ingestJSONCmd = &cobra.Command{
 		}
 
 		var input map[string]interface{}
+		if layer != nil {
+			enc, err := layer.GetEncoding()
+			if err != nil {
+				failErr(err)
+			}
+			if err := readJSONFileOrStdin(args, &input, enc); err != nil {
+				failErr(err)
+			}
+		}
 		if err := readJSONFileOrStdin(args, &input); err != nil {
 			failErr(err)
 		}
