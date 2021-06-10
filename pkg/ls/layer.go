@@ -18,9 +18,6 @@ import (
 	"golang.org/x/text/encoding"
 )
 
-// IRI is used as property values
-type IRI string
-
 // A Layer is either a schema or an overlay. It keeps the definition
 // of a layer as a directed labeled property graph.
 type Layer struct {
@@ -40,7 +37,7 @@ type SchemaNode struct {
 	// The types of the schema node
 	types []string
 
-	// Properties associated with the node. These are assumed to be JSON-types and IRI
+	// Properties associated with the node. These are assumed to be JSON-types
 	Properties map[string]interface{}
 	// These can be set during compilation. They are shallow-cloned
 	Compiled map[string]interface{}
@@ -184,11 +181,11 @@ func (edge *SchemaEdge) IsAttributeTreeEdge() bool {
 		return false
 	}
 	l := edge.Label()
-	return l == TypeTerms.Attributes ||
-		l == TypeTerms.AttributeList ||
-		l == TypeTerms.ArrayItems ||
-		l == TypeTerms.AllOf ||
-		l == TypeTerms.OneOf
+	return l == LayerTerms.Attributes ||
+		l == LayerTerms.AttributeList ||
+		l == LayerTerms.ArrayItems ||
+		l == LayerTerms.AllOf ||
+		l == LayerTerms.OneOf
 }
 
 // Clone returns a copy of the schema edge

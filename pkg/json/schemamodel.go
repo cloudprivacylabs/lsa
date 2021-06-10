@@ -104,7 +104,7 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 		newNode.AddTypes(ls.AttributeTypes.Object)
 		attrs := attr.object.itr(entityId, name, layer)
 		for _, x := range attrs {
-			newNode.Connect(x, ls.TypeTerms.AttributeList)
+			newNode.Connect(x, ls.LayerTerms.AttributeList)
 		}
 		required := attr.object.getRequired()
 		if len(required) > 0 {
@@ -115,7 +115,7 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 	if attr.array != nil {
 		newNode.AddTypes(ls.AttributeTypes.Array)
 		n := attr.array.itr(entityId, name, layer)
-		newNode.Connect(n, ls.TypeTerms.ArrayItems)
+		newNode.Connect(n, ls.LayerTerms.ArrayItems)
 		return newNode
 	}
 
@@ -131,14 +131,14 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 	if len(attr.oneOf) > 0 {
 		newNode.AddTypes(ls.AttributeTypes.Polymorphic)
 		for _, x := range buildChoices(attr.oneOf) {
-			newNode.Connect(x, ls.TypeTerms.OneOf)
+			newNode.Connect(x, ls.LayerTerms.OneOf)
 		}
 		return newNode
 	}
 	if len(attr.allOf) > 0 {
 		newNode.AddTypes(ls.AttributeTypes.Composite)
 		for _, x := range buildChoices(attr.oneOf) {
-			newNode.Connect(x, ls.TypeTerms.AllOf)
+			newNode.Connect(x, ls.LayerTerms.AllOf)
 		}
 		return newNode
 	}

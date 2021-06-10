@@ -24,8 +24,24 @@ func (validator RequiredValidator) Validate(docNode ls.DocumentNode, schemaNode 
 		return nil
 	}
 	required := schemaNode.Properties[RequiredTerm].([]interface{})
-	for _, x := range required {
+	if len(required) > 0 {
+		names := make(map[string]struct{})
+		for nodes := docNode.AllOutgoingEdgesWithLabel(ls.DataEdgeTerms.ObjectAttributes).Targets(); nodes.HasNext(); {
+			node := nodes.Next().(ls.DocumentNode)
+			name, _ := node.GetProperty(ls.AttributeNameTerm)
+			if str, ok := name.(string); ok {
+				names[str] = struct{}{}
+			}
+		}
+		for _, x := range required {
+			if str, ok := x.(string); ok {
+				if _, ok := names[str]; !ok {
+					return ls.ErrValidation{Validator: RequiredTerm, Msg: "Missing required attribute: %s" + str}
+				}
+			}
+		}
 	}
+	return nil
 }
 
 // Compile the required properties array

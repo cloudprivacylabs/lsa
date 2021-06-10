@@ -91,23 +91,33 @@ func (ingester *Ingester) Ingest(target *digraph.Graph, input interface{}) (ls.D
 }
 
 func (ingester *Ingester) ingest(target *digraph.Graph, input interface{}, path []interface{}, schemaNode *ls.SchemaNode) (ls.DocumentNode, error) {
+
+	validate := func(newNode ls.DocumentNode, err error) (ls.DocumentNode, error) {
+		if schemaNode != nil {
+			if err := schemaNode.Validate(newNode); err != nil {
+				return nil, err
+			}
+		}
+		return newNode, nil
+	}
+
 	if schemaNode != nil && schemaNode.HasType(ls.AttributeTypes.Polymorphic) {
-		return ingester.ingestPolymorphicNode(target, input, path, schemaNode)
+		return validate(ingester.ingestPolymorphicNode(target, input, path, schemaNode))
 	}
 	if m, ok := input.(map[string]interface{}); ok {
-		return ingester.ingestObject(target, m, path, schemaNode)
+		return validate(ingester.ingestObject(target, m, path, schemaNode))
 	}
 	if a, ok := input.([]interface{}); ok {
-		return ingester.ingestArray(target, a, path, schemaNode)
+		return validate(ingester.ingestArray(target, a, path, schemaNode))
 	}
-	return ingester.ingestValue(target, input, path, schemaNode)
+	return validate(ingester.ingestValue(target, input, path, schemaNode))
 }
 
 func (ingester *Ingester) ingestPolymorphicNode(target *digraph.Graph, input interface{}, path []interface{}, schemaNode *ls.SchemaNode) (ls.DocumentNode, error) {
 	// Polymorphic node. Try each option
 	var selectedOption *ls.SchemaNode
 	var newChild ls.DocumentNode
-	for nodes := schemaNode.AllOutgoingEdgesWithLabel(ls.TypeTerms.OneOf).Targets(); nodes.HasNext(); {
+	for nodes := schemaNode.AllOutgoingEdgesWithLabel(ls.LayerTerms.OneOf).Targets(); nodes.HasNext(); {
 		optionNode := nodes.Next().(*ls.SchemaNode)
 		childNode, err := ingester.ingest(target, input, path, optionNode)
 		if err == nil {
@@ -145,12 +155,12 @@ func (ingester *Ingester) ingestObject(target *digraph.Graph, input map[string]i
 			nextNodes[key] = node
 			return nil
 		}
-		for nodes := schemaNode.AllOutgoingEdgesWithLabel(ls.TypeTerms.Attributes).Targets(); nodes.HasNext(); {
+		for nodes := schemaNode.AllOutgoingEdgesWithLabel(ls.LayerTerms.Attributes).Targets(); nodes.HasNext(); {
 			if err := addNextNode(nodes.Next().(*ls.SchemaNode)); err != nil {
 				return nil, err
 			}
 		}
-		for nodes := schemaNode.AllOutgoingEdgesWithLabel(ls.TypeTerms.AttributeList).Targets(); nodes.HasNext(); {
+		for nodes := schemaNode.AllOutgoingEdgesWithLabel(ls.LayerTerms.AttributeList).Targets(); nodes.HasNext(); {
 			if err := addNextNode(nodes.Next().(*ls.SchemaNode)); err != nil {
 				return nil, err
 			}
@@ -166,7 +176,8 @@ func (ingester *Ingester) ingestObject(target *digraph.Graph, input map[string]i
 		if err != nil {
 			return nil, ErrDataIngestion{Key: key, Err: err}
 		}
-		ingester.connect(newNode, childNode, ls.TypeTerms.Attributes)
+		childNode.SetProperty(ls.AttributeNameTerm, key)
+		ingester.connect(newNode, childNode, ls.DataEdgeTerms.ObjectAttributes)
 	}
 	return newNode, nil
 }
@@ -177,7 +188,7 @@ func (ingester *Ingester) ingestArray(target *digraph.Graph, input []interface{}
 		if !schemaNode.HasType(ls.AttributeTypes.Array) {
 			return nil, ErrSchemaValidation("A JSON array is not expected here")
 		}
-		n := schemaNode.NextNode(ls.TypeTerms.ArrayItems)
+		n := schemaNode.NextNode(ls.LayerTerms.ArrayItems)
 		if n != nil {
 			elements = n.(*ls.SchemaNode)
 		}
@@ -191,7 +202,8 @@ func (ingester *Ingester) ingestArray(target *digraph.Graph, input []interface{}
 		if err != nil {
 			return nil, ErrDataIngestion{Key: fmt.Sprint(index), Err: err}
 		}
-		ingester.connect(newNode, childNode, ls.TypeTerms.ArrayItems)
+		childNode.SetProperty(ls.AttributeIndexTerm, index)
+		ingester.connect(newNode, childNode, ls.DataEdgeTerms.ArrayElements)
 	}
 	return newNode, nil
 }

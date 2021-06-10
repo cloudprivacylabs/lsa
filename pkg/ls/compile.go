@@ -102,8 +102,8 @@ func (compiler *Compiler) resolveReferences(layer *Layer) error {
 	for nodes := layer.AllNodes(); nodes.HasNext(); {
 		node := nodes.Next().(*SchemaNode)
 		if node.HasType(AttributeTypes.Reference) {
-			ref := node.Properties[TypeTerms.Reference]
-			referencedLayer, err := compiler.Compile(string(ref.(IRI)))
+			ref := node.Properties[LayerTerms.Reference]
+			referencedLayer, err := compiler.Compile(ref.(string))
 			if err != nil {
 				return err
 			}
@@ -120,7 +120,7 @@ func (compiler *Compiler) resolveReferences(layer *Layer) error {
 			}
 			// Copy over properties
 			for k, v := range node.Properties {
-				if k != TypeTerms.Reference {
+				if k != LayerTerms.Reference {
 					referencedLayer.GetRoot().Properties[k] = v
 				}
 			}
@@ -150,7 +150,7 @@ func (compiler Compiler) resolveComposition(layer *Layer, compositeNode *SchemaN
 	type removable interface{ Remove() }
 	toDelete := make([]removable, 0)
 	// At the end of this process, composite node will be converted into an object node
-	for edges := compositeNode.AllOutgoingEdgesWithLabel(TypeTerms.AllOf); edges.HasNext(); {
+	for edges := compositeNode.AllOutgoingEdgesWithLabel(LayerTerms.AllOf); edges.HasNext(); {
 		allOfEdge := edges.Next().(*SchemaEdge)
 	top:
 		component := allOfEdge.To().(*SchemaNode)
@@ -173,7 +173,7 @@ func (compiler Compiler) resolveComposition(layer *Layer, compositeNode *SchemaN
 			component.HasType(AttributeTypes.Array) ||
 			component.HasType(AttributeTypes.Polymorphic):
 			// This node becomes an attribute of the main node.
-			allOfEdge.SetLabel(TypeTerms.AttributeList)
+			allOfEdge.SetLabel(LayerTerms.AttributeList)
 
 		case component.HasType(AttributeTypes.Composite):
 			if err := compiler.resolveComposition(layer, component); err != nil {

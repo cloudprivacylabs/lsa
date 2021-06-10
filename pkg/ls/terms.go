@@ -21,6 +21,9 @@ const SchemaTerm = LS + "Schema"
 // OverlayTerm is the layer type for overlays
 const OverlayTerm = LS + "Overlay"
 
+// SchemaManifestTerm is the schema manifest type
+const SchemaManifestTerm = LS + "SchemaManifest"
+
 // TargetType is the term specifying the data type for the attribute defined
 const TargetType = LS + "targetType"
 
@@ -29,6 +32,9 @@ const DescriptionTerm = LS + "description"
 
 // AttributeNameTerm represents the name of an attribute
 const AttributeNameTerm = LS + "attributeName"
+
+// AttributeIndexTerm represents the index of an array element
+const AttributeIndexTerm = LS + "attributeIndex"
 
 // AttributeTypes defines the terms describing attribute types. Each
 // attribute must have one of the attribute types plus the Attribute
@@ -51,9 +57,9 @@ var AttributeTypes = struct {
 	Attribute:   LS + "Attribute",
 }
 
-// TypeTerms includes type specific terms recognized by the schema
+// LayerTerms includes type specific terms recognized by the schema
 // compiler. These are terms used to define elements of an attribute.
-var TypeTerms = struct {
+var LayerTerms = struct {
 	// Unordered named attributes (json object)
 	Attributes string
 	// Ordered named attributes (json object, xml elements)
@@ -74,6 +80,16 @@ var TypeTerms = struct {
 	ArrayItems:    LS + "Array#items",
 	AllOf:         LS + "Composite#allOf",
 	OneOf:         LS + "Polymorphic#oneOf",
+}
+
+var DataEdgeTerms = struct {
+	// Edge label linking attribute nodes to an object node
+	ObjectAttributes string
+	// Edge label linking array element nodes to an array node
+	ArrayElements string
+}{
+	ObjectAttributes: LS + "data/object#attributes",
+	ArrayElements:    LS + "data/array#elements",
 }
 
 // FilterAttributeTypes returns all recognized attribute types from
@@ -127,7 +143,14 @@ var termMetadata = map[string]interface{}{
 	},
 	AttributeNameTerm: struct {
 		CompositionType
-	}{},
+	}{
+		ErrorComposition,
+	},
+	AttributeIndexTerm: struct {
+		CompositionType
+	}{
+		ErrorComposition,
+	},
 
 	AttributeTypes.Value: struct {
 		CompositionType
@@ -165,39 +188,47 @@ var termMetadata = map[string]interface{}{
 		OverrideComposition,
 	},
 
-	TypeTerms.Attributes: struct {
+	LayerTerms.Attributes: struct {
 		CompositionType
 	}{
 		ErrorComposition,
 	},
-	TypeTerms.AttributeList: struct {
+	LayerTerms.AttributeList: struct {
 		CompositionType
 	}{
 		ErrorComposition,
 	},
-	TypeTerms.Reference: struct {
+	LayerTerms.Reference: struct {
 		CompositionType
 	}{
 		ErrorComposition,
 	},
-	TypeTerms.ArrayItems: struct {
+	LayerTerms.ArrayItems: struct {
 		CompositionType
 	}{
 		ErrorComposition,
 	},
-	TypeTerms.AllOf: struct {
+	LayerTerms.AllOf: struct {
 		CompositionType
 	}{
 		ErrorComposition,
 	},
-	TypeTerms.OneOf: struct {
+	LayerTerms.OneOf: struct {
 		CompositionType
 	}{
 		ErrorComposition,
 	},
 
-	CharacterEncodingTerm: struct{}{},
-	InstanceOfTerm:        struct{}{},
+	CharacterEncodingTerm: struct {
+		CompositionType
+	}{
+		OverrideComposition,
+	},
+	InstanceOfTerm: struct {
+		CompositionType
+	}{
+		ErrorComposition,
+	},
 }
 
 // GetTermMetadata returns metadata about a term
@@ -211,202 +242,4 @@ func RegisterTermMetadata(term string, md interface{}) {
 		panic("Duplicate term: " + term)
 	}
 	termMetadata[term] = md
-}
-
-// NodeCompiler interface represents term compilation algorithm when the term is a node
-type NodeCompiler interface {
-	// CompileNode gets a node and compiles the associated term on that
-	// node. It should store the compiled state into node.Compiled with
-	// the an opaque key
-	CompileNode(*SchemaNode) error
-}
-
-// EdgeCompiler interface represents term compilation algorithm when the term is an edge
-type EdgeCompiler interface {
-	// CompileEdge gets an edge and compiles the associated term on that
-	// edge. It should store tje compiled state into edge.Compiled with
-	// an opaque key
-	CompileEdge(*SchemaEdge) error
-}
-
-// TermCompiler interface represents term compilation algorithm
-type TermCompiler interface {
-	// CompileTerm gets a term and its value, and returns an object that
-	// will be placed in the Compiled map of the node or the edge.
-	CompileTerm(string, interface{}) (interface{}, error)
-}
-
-type emptyCompiler struct{}
-
-// CompileNode returns the value unmodified
-func (emptyCompiler) CompileNode(*SchemaNode) error                        { return nil }
-func (emptyCompiler) CompileEdge(*SchemaEdge) error                        { return nil }
-func (emptyCompiler) CompileTerm(string, interface{}) (interface{}, error) { return nil, nil }
-
-// GetNodeCompiler return a compiler that will compile the value
-func GetNodeCompiler(term string) NodeCompiler {
-	md := GetTermMetadata(term)
-	if md == nil {
-		return emptyCompiler{}
-	}
-	c, ok := md.(NodeCompiler)
-	if ok {
-		return c
-	}
-	return emptyCompiler{}
-}
-
-// GetEdgeCompiler return a compiler that will compile the value
-func GetEdgeCompiler(term string) EdgeCompiler {
-	md := GetTermMetadata(term)
-	if md == nil {
-		return emptyCompiler{}
-	}
-	c, ok := md.(EdgeCompiler)
-	if ok {
-		return c
-	}
-	return emptyCompiler{}
-}
-
-// GetTermCompiler return a compiler that will compile the value
-func GetTermCompiler(term string) TermCompiler {
-	md := GetTermMetadata(term)
-	if md == nil {
-		return emptyCompiler{}
-	}
-	c, ok := md.(TermCompiler)
-	if ok {
-		return c
-	}
-	return emptyCompiler{}
-}
-
-// Composer interface represents term composition algorithm
-type Composer interface {
-	Compose(interface{}, interface{}) (interface{}, error)
-}
-
-// CompositionType determines the composition semantics for the term
-type CompositionType string
-
-const (
-	// SetComposition means when two terms are composed, set-union of the values are taken
-	SetComposition CompositionType = "set"
-	// ListComposition means when two terms are composed, their values are appended
-	ListComposition CompositionType = "list"
-	// OverrideComposition means when two terms are composed, the new one replaces the old one
-	OverrideComposition CompositionType = "override"
-	// NoComposition means when two terms are composed, the original remains
-	NoComposition CompositionType = "nocompose"
-	// ErrorComposition means if two terms are composed and they are different, composition fails
-	ErrorComposition CompositionType = "error"
-)
-
-// GetComposerForTerm returns a term composer
-func GetComposerForTerm(term string) Composer {
-	md := GetTermMetadata(term)
-	if md == nil {
-		return SetComposition
-	}
-	c, ok := md.(Composer)
-	if ok {
-		return c
-	}
-	return SetComposition
-}
-
-// Compose target and src based on the composition type
-func (c CompositionType) Compose(target, src interface{}) (interface{}, error) {
-	switch c {
-	case SetComposition:
-		return SetUnion(target, src), nil
-	case OverrideComposition:
-		if src == nil {
-			return target, nil
-		}
-		return src, nil
-	case ListComposition:
-		return ListAppend(target, src), nil
-	case NoComposition:
-		return target, nil
-	case ErrorComposition:
-		if target != src && src != nil {
-			return nil, ErrInvalidComposition
-		}
-		return target, nil
-	}
-	return SetUnion(target, src), nil
-}
-
-// SetUnion computes the set union of properties v1 and v2
-func SetUnion(v1, v2 interface{}) interface{} {
-	if v1 == nil {
-		return v2
-	}
-	if v2 == nil {
-		return v1
-	}
-	switch e := v1.(type) {
-	case []interface{}:
-		values := make(map[interface{}]struct{})
-		for _, k := range e {
-			values[k] = struct{}{}
-		}
-		ret := e
-		if n, ok := v2.([]interface{}); ok {
-			for _, item := range n {
-				if _, exists := values[item]; !exists {
-					values[item] = struct{}{}
-					ret = append(ret, item)
-				}
-			}
-			return ret
-		}
-		if _, exists := values[v2]; !exists {
-			return append(e, v2)
-		}
-		return e
-	default:
-		ret := []interface{}{e}
-		if n, ok := v2.([]interface{}); ok {
-			for _, item := range n {
-				if item != e {
-					ret = append(ret, item)
-				}
-			}
-			if len(ret) == 1 {
-				return ret[0]
-			}
-			return ret
-		}
-		if e != v2 {
-			return []interface{}{e, v2}
-		}
-		return e
-	}
-}
-
-// ListAppend appends v2 and v1
-func ListAppend(v1, v2 interface{}) interface{} {
-	if v1 == nil {
-		return v2
-	}
-	if v2 == nil {
-		return v1
-	}
-	switch e := v1.(type) {
-	case []interface{}:
-		ret := e
-		if n, ok := v2.([]interface{}); ok {
-			return append(ret, n...)
-		}
-		return append(e, v2)
-	default:
-		ret := []interface{}{e}
-		if n, ok := v2.([]interface{}); ok {
-			return append(ret, n...)
-		}
-		return []interface{}{e, v2}
-	}
 }

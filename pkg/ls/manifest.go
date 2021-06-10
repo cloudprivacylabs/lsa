@@ -15,9 +15,10 @@ package ls
 
 // SchemaManifest contains the minimal information to define a schema variant with an optional bundle
 type SchemaManifest struct {
-	ID         string   `json:"id"`
-	TargetType string   `json:"targetType"`
-	Bundle     string   `json:"bundle,omitempty"`
-	Schema     string   `json:"schema"`
-	Overlays   []string `json:"overlays,omitempty"`
+	ID         string
+	Type       string
+	TargetType string
+	Bundle     string
+	Schema     string
+	Overlays   []string
 }

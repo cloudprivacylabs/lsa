@@ -15,6 +15,7 @@ package jsonld
 
 import (
 	"encoding/json"
+	"errors"
 	"strings"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -111,7 +112,7 @@ func unmarshalAttributeNode(target *ls.Layer, inode *inputNode, allNodes map[str
 					}
 				}
 			}
-		case ls.TypeTerms.Attributes, ls.TypeTerms.AttributeList:
+		case ls.LayerTerms.Attributes, ls.LayerTerms.AttributeList:
 			attribute.AddTypes(ls.AttributeTypes.Object)
 			// m must be an array of attributes
 			attrArray, ok := val.([]interface{})
@@ -130,16 +131,16 @@ func unmarshalAttributeNode(target *ls.Layer, inode *inputNode, allNodes map[str
 				target.AddEdge(inode.graphNode, attrNode.graphNode, ls.NewSchemaEdge(k))
 			}
 
-		case ls.TypeTerms.Reference:
+		case ls.LayerTerms.Reference:
 			attribute.AddTypes(ls.AttributeTypes.Reference)
 			// There can be at most one reference
 			oid := GetNodeID(val)
 			if len(oid) == 0 {
 				return ls.MakeErrInvalidInput(inode.id)
 			}
-			attribute.Properties[ls.TypeTerms.Reference] = ls.IRI(oid)
+			attribute.Properties[ls.LayerTerms.Reference] = oid
 
-		case ls.TypeTerms.ArrayItems:
+		case ls.LayerTerms.ArrayItems:
 			attribute.AddTypes(ls.AttributeTypes.Array)
 			// m must be an array of 1
 			itemsArr, _ := val.([]interface{})
@@ -159,8 +160,8 @@ func unmarshalAttributeNode(target *ls.Layer, inode *inputNode, allNodes map[str
 				return ls.MakeErrInvalidInput(inode.id, "Multiple array items")
 			}
 
-		case ls.TypeTerms.AllOf, ls.TypeTerms.OneOf:
-			if k == ls.TypeTerms.AllOf {
+		case ls.LayerTerms.AllOf, ls.LayerTerms.OneOf:
+			if k == ls.LayerTerms.AllOf {
 				attribute.AddTypes(ls.AttributeTypes.Composite)
 			} else {
 				attribute.AddTypes(ls.AttributeTypes.Polymorphic)
@@ -198,12 +199,12 @@ func unmarshalAnnotations(target *ls.Layer, node *inputNode, allNodes map[string
 	for key, value := range node.node {
 		switch key {
 		case "@id", "@type",
-			ls.TypeTerms.Attributes,
-			ls.TypeTerms.AttributeList,
-			ls.TypeTerms.Reference,
-			ls.TypeTerms.ArrayItems,
-			ls.TypeTerms.AllOf,
-			ls.TypeTerms.OneOf:
+			ls.LayerTerms.Attributes,
+			ls.LayerTerms.AttributeList,
+			ls.LayerTerms.Reference,
+			ls.LayerTerms.ArrayItems,
+			ls.LayerTerms.AllOf,
+			ls.LayerTerms.OneOf:
 		default:
 			if strings.HasPrefix(key, "@") {
 				break
@@ -240,7 +241,7 @@ func unmarshalAnnotations(target *ls.Layer, node *inputNode, allNodes map[string
 							// Is this a link?
 							referencedNode := allNodes[id]
 							if referencedNode == nil {
-								setValue(ls.IRI(id))
+								setValue(id)
 							} else {
 								target.AddEdge(node.graphNode, referencedNode.graphNode, ls.NewSchemaEdge(key))
 							}
@@ -268,22 +269,19 @@ func marshalNode(node *ls.SchemaNode) interface{} {
 	}
 
 	for k, v := range node.Properties {
-		switch val := v.(type) {
-		case ls.IRI:
-			m[k] = []interface{}{map[string]interface{}{"@id": string(val)}}
-		case []interface{}:
-			arr := make([]interface{}, 0)
-			for _, elem := range val {
-				switch t := elem.(type) {
-				case ls.IRI:
-					arr = append(arr, map[string]interface{}{"@id": string(t)})
-				default:
-					arr = append(arr, map[string]interface{}{"@value": t})
+		if k == ls.LayerTerms.Reference {
+			m[k] = []interface{}{map[string]interface{}{"@id": v}}
+		} else {
+			switch val := v.(type) {
+			case []interface{}:
+				arr := make([]interface{}, 0)
+				for _, elem := range val {
+					arr = append(arr, map[string]interface{}{"@value": elem})
 				}
+				m[k] = arr
+			default:
+				m[k] = []interface{}{map[string]interface{}{"@value": val}}
 			}
-			m[k] = arr
-		default:
-			m[k] = []interface{}{map[string]interface{}{"@value": val}}
 		}
 	}
 
@@ -291,7 +289,7 @@ func marshalNode(node *ls.SchemaNode) interface{} {
 	for edges.HasNext() {
 		edge := edges.Next().(*ls.SchemaEdge)
 		switch edge.Label() {
-		case ls.TypeTerms.AttributeList, ls.TypeTerms.Attributes, ls.TypeTerms.ArrayItems:
+		case ls.LayerTerms.AttributeList, ls.LayerTerms.Attributes, ls.LayerTerms.ArrayItems:
 			existing := m[edge.Label().(string)]
 			if existing == nil {
 				existing = []interface{}{}
@@ -301,7 +299,7 @@ func marshalNode(node *ls.SchemaNode) interface{} {
 				m[edge.Label().(string)] = arr
 			}
 
-		case ls.TypeTerms.AllOf, ls.TypeTerms.OneOf:
+		case ls.LayerTerms.AllOf, ls.LayerTerms.OneOf:
 			existing := m[edge.Label().(string)]
 			if existing == nil {
 				existing = []interface{}{}
@@ -330,11 +328,14 @@ func marshalNode(node *ls.SchemaNode) interface{} {
 
 type SchemaManifest struct {
 	ID         string   `json:"@id"`
+	Type       string   `json:"@type"`
 	TargetType string   `json:"https://lschema.org/targetType"`
 	Bundle     string   `json:"https://lschema.org/SchemaManifest#bundle,omitempty"`
 	Schema     string   `json:"https://lschema.org/SchemaManifest#schema"`
 	Overlays   []string `json:"https://lschema.org/SchemaManifest#overlays,omitempty"`
 }
+
+var ErrNotASchemaManifest = errors.New("Not a schema manifest")
 
 // Unmarshals the given jsonld document into a schema manifest
 func UnmarshalSchemaManifest(in interface{}) (*ls.SchemaManifest, error) {
@@ -349,12 +350,16 @@ func UnmarshalSchemaManifest(in interface{}) (*ls.SchemaManifest, error) {
 	if err != nil {
 		return nil, err
 	}
+	if m.Type != ls.SchemaManifestTerm {
+		return nil, ErrNotASchemaManifest
+	}
 	return (*ls.SchemaManifest)(&m), nil
 }
 
 // MarshalSchemaNanifest returns a compact jsonld document for the manifest
 func MarshalSchemaManifest(manifest *ls.SchemaManifest) interface{} {
 	m := (*SchemaManifest)(manifest)
+	m.Type = ls.SchemaManifestTerm
 	d, _ := json.Marshal(m)
 	var v interface{}
 	json.Unmarshal(d, &v)

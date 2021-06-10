@@ -14,16 +14,18 @@
 package cmd
 
 import (
-	//	"encoding/json"
-	//	"fmt"
-	//	"os"
+	"encoding/json"
+	"fmt"
 
 	"github.com/spf13/cobra"
+
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
 
 func init() {
 	rootCmd.AddCommand(composeCmd)
-	composeCmd.Flags().String("format", "jsonld", "Output format (jsonld, jsonschema)")
 	composeCmd.Flags().StringP("output", "o", "", "Output file")
 	composeCmd.Flags().String("repo", "", "Schema repository directory. If a repository is given, all layers are resolved using that repository. Otherwise, all layers are read as files.")
 }
@@ -35,86 +37,43 @@ var composeCmd = &cobra.Command{
 
 	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		// var repo *fs.Repository
-		// repoDir, _ := cmd.Flags().GetString("repo")
-		// if len(repoDir) > 0 {
-		// 	repo = fs.New(repoDir, ls.Terms, func(fname string, err error) {
-		// 		fmt.Printf("%s: %s\n", fname, err)
-		// 	})
-		// 	if err := repo.Load(true); err != nil {
-		// 		failErr(err)
-		// 	}
-		// }
-
-		// var output *layers.Layer
-		// var err error
-		// for _, arg := range args {
-		// 	var obj interface{}
-		// 	if repo == nil {
-		// 		obj, err = fs.ReadRepositoryObject(arg)
-		// 		if err != nil {
-		// 			failErr(err)
-		// 		}
-		// 	} else {
-		// 		manifest := repo.GetSchemaManifest(arg)
-		// 		if manifest == nil {
-		// 			layer := repo.GetLayer(arg)
-		// 			if layer != nil {
-		// 				obj = layer
-		// 			}
-		// 		} else {
-		// 			obj = manifest
-		// 		}
-		// 		if obj == nil {
-		// 			fail("Not found: " + arg)
-		// 		}
-		// 	}
-
-		// 			switch t := obj.(type) {
-		// 			case *ls.Layer:
-		// 				if output == nil {
-		// 					output = t
-		// 				} else {
-		// 					if err := output.Compose(ls.ComposeOptions{}, ls.Terms, t); err != nil {
-		// 						failErr(err)
-		// 					}
-		// 				}
-		// 			case *ls.SchemaManifest:
-		// 				var err error
-		// 				output, err = repo.GetComposedSchema(t.ID)
-		// 				if err != nil {
-		// 					failErr(err)
-		// 				}
-		// 			}
-		// 		}
-
-		// 		var data []byte
-		// 		format, _ := cmd.Flags().GetString("format")
-		// 		switch format {
-		// 		case "jsonld":
-		// 			data, _ = json.MarshalIndent(output.MarshalExpanded(), "", "  ")
-		// 		case "jsonschema":
-		// 			// ctx := terms.DefaultJSONOutputContext()
-		// 			// out, err := terms.OutputJSONSchema(ctx, output)
-		// 			// if err != nil {
-		// 			// 	failErr(err)
-		// 			// }
-		// 			// for _, warn := range ctx.Warnings {
-		// 			// 	log.Print(warn)
-		// 			// }
-		// 			// data, _ = json.MarshalIndent(out, "", "  ")
-		// 		}
-
-		// 		outputFlag, _ := cmd.Flags().GetString("output")
-		// 		if len(outputFlag) == 0 {
-		// 			fmt.Println(string(data))
-		// 		} else {
-		// 			outFile, err := os.Create(outputFlag)
-		// 			if err != nil {
-		// 				failErr(err)
-		// 			}
-		// 			defer outFile.Close()
-		// 			fmt.Fprintln(outFile, string(data))
-		//		}
+		repoDir, _ := cmd.Flags().GetString("repo")
+		var output *ls.Layer
+		if len(repoDir) == 0 {
+			inputs, err := readJSONMultiple(args)
+			if err != nil {
+				failErr(err)
+			}
+			for i, input := range inputs {
+				layer, err := jsonld.UnmarshalLayer(input)
+				if err != nil {
+					fail(fmt.Sprintf("Cannot unmarshal %s: %v", args[i], err))
+				}
+				if output == nil {
+					output = layer
+				} else {
+					if err := output.Compose(layer); err != nil {
+						fail(fmt.Sprintf("Cannot compose %s: %s", args[i], err))
+					}
+				}
+			}
+		} else {
+			repo := fs.New(repoDir, func(msg string, err error) {
+				fmt.Println("%s: %v", msg, err)
+			})
+			if err := repo.Load(true); err != nil {
+				failErr(err)
+			}
+			var err error
+			output, err = repo.GetComposedSchema(args[0])
+			if err != nil {
+				failErr(err)
+			}
+		}
+		if output != nil {
+			out := jsonld.MarshalLayer(output)
+			d, _ := json.MarshalIndent(out, "", "  ")
+			fmt.Println(string(d))
+		}
 	},
 }

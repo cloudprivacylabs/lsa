@@ -21,7 +21,7 @@ import (
 
 	jsonsch "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
-	"github.com/cloudprivacylabs/lsa/pkg/layers"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 func init() {
@@ -100,7 +100,7 @@ are Go templates, you can reference entity names and references using {{.name}} 
 				if err != nil {
 					failErr(err)
 				}
-				if layer.GetLayerType() == layers.SchemaTerm {
+				if layer.GetLayerType() == ls.SchemaTerm {
 					if baseID != "" {
 						fail("Multiple schemas")
 					}
@@ -116,7 +116,7 @@ are Go templates, you can reference entity names and references using {{.name}} 
 			}
 
 			if len(req.Schema) > 0 {
-				sch := layers.SchemaManifest{
+				sch := ls.SchemaManifest{
 					ID:         execTemplate(req.SchemaID, tdata),
 					TargetType: execTemplate(req.ObjectType, tdata),
 					Schema:     baseID,

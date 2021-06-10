@@ -17,17 +17,9 @@ import (
 	"fmt"
 )
 
-type ComposeOptions struct {
-	// While composing an object with layer1 and layer2, if layer2 has
-	// attributes missing in layer1, then add those attributes to the
-	// result. By default, the result will only have attributes of
-	// layer1
-	Union bool
-}
-
 // Compose schema layers. Directly modifies the target. The source
 // must be an overlay.
-func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
+func (layer *Layer) Compose(source *Layer) error {
 	if source.GetLayerType() != OverlayTerm {
 		return ErrCompositionSourceNotOverlay
 	}
@@ -51,31 +43,38 @@ func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
 			return true
 		}
 		// If node exists in target, merge
-		targetNodes := layer.AllNodesWithLabel(sourceNode.Label()).All()
-		switch len(targetNodes) {
-		case 1:
-			// Target node exists. Merge if paths match
-			if pathsMatch(targetNodes[0].(*SchemaNode), sourceNode, sourceNode) {
-				if err = mergeNodes(layer, targetNodes[0].(*SchemaNode), sourceNode, processedSourceNodes); err != nil {
-					return false
-				}
-			}
-
-		case 0:
-			// Target node does not exist.
-			// Parent node must exist, because this is a depth-first algorithm
-			parent, edge := sourceNode.GetParentAttribute()
-			if parent == nil {
-				err = ErrInvalidComposition
+		// If this is the root node, match directly
+		if sourceNode == source.GetRoot() {
+			if err = mergeNodes(layer, layer.GetRoot(), sourceNode, processedSourceNodes); err != nil {
 				return false
 			}
-			// Add the same node to this layer
-			newNode := sourceNode.Clone()
-			layer.AddEdge(parent, newNode, edge.Clone())
+		} else {
+			targetNodes := layer.AllNodesWithLabel(sourceNode.Label()).All()
+			switch len(targetNodes) {
+			case 1:
+				// Target node exists. Merge if paths match
+				if pathsMatch(targetNodes[0].(*SchemaNode), sourceNode, sourceNode) {
+					if err = mergeNodes(layer, targetNodes[0].(*SchemaNode), sourceNode, processedSourceNodes); err != nil {
+						return false
+					}
+				}
 
-		default:
-			err = ErrDuplicateAttributeID(fmt.Sprint(sourceNode.Label()))
-			return false
+			case 0:
+				// Target node does not exist.
+				// Parent node must exist, because this is a depth-first algorithm
+				parent, edge := sourceNode.GetParentAttribute()
+				if parent == nil {
+					err = ErrInvalidComposition
+					return false
+				}
+				// Add the same node to this layer
+				newNode := sourceNode.Clone()
+				layer.AddEdge(parent, newNode, edge.Clone())
+
+			default:
+				err = ErrDuplicateAttributeID(fmt.Sprint(sourceNode.Label()))
+				return false
+			}
 		}
 		processedSourceNodes[sourceNode] = struct{}{}
 		return true
@@ -87,12 +86,16 @@ func (layer *Layer) Compose(options ComposeOptions, source *Layer) error {
 	nodeMap := make(map[*SchemaNode]*SchemaNode)
 	seen := make(map[*SchemaNode]struct{})
 	source.ForEachAttribute(func(sourceNode *SchemaNode) bool {
-		targetNodes := layer.AllNodesWithLabel(sourceNode.Label()).All()
-		if len(targetNodes) != 1 {
-			// This should not really happen
-			panic("Cannot find node even after adding")
+		if sourceNode == source.GetRoot() {
+			mergeNonattributeGraph(layer, layer.GetRoot(), sourceNode, seen, nodeMap)
+		} else {
+			targetNodes := layer.AllNodesWithLabel(sourceNode.Label()).All()
+			if len(targetNodes) != 1 {
+				// This should not really happen
+				panic("Cannot find node even after adding")
+			}
+			mergeNonattributeGraph(layer, targetNodes[0].(*SchemaNode), sourceNode, seen, nodeMap)
 		}
-		mergeNonattributeGraph(layer, targetNodes[0].(*SchemaNode), sourceNode, seen, nodeMap)
 		return true
 	})
 	if err != nil {
@@ -152,6 +155,7 @@ func ComposeProperties(target, source map[string]interface{}) error {
 		if err != nil {
 			return ErrTerm{Term: k, Err: err}
 		}
+		target[k] = newValue
 	}
 	return nil
 }

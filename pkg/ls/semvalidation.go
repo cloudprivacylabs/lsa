@@ -28,6 +28,26 @@ func GetAttributeValidator(term string) Validator {
 	return nopValidator{}
 }
 
+// ValidateDocumentNode runs the validators for the document node
+func ValidateDocumentNode(node DocumentNode) error {
+	// Get the schema
+	schemaNode, _ := node.NextNode(InstanceOfTerm).(*SchemaNode)
+	if schemaNode == nil {
+		return nil
+	}
+	return schemaNode.Validate(node)
+}
+
+// Validate the document node based on the validators of the schema
+func (node *SchemaNode) Validate(docNode DocumentNode) error {
+	for key := range node.Properties {
+		if err := GetAttributeValidator(key).Validate(docNode, node); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // ErrValidatorCompile is returned for validator compilation errors
 type ErrValidatorCompile struct {
 	Validator string

@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/cloudprivacylabs/lsa/pkg/layers"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 type SliceByTermsSpec struct {
@@ -37,18 +37,18 @@ func execTemplate(tmpl string, data interface{}) string {
 	return out.String()
 }
 
-func (spec SliceByTermsSpec) Slice(sourceLayer *layers.Layer, targetType string, templateData interface{}) (*layers.Layer, error) {
-	var layer *layers.Layer
+func (spec SliceByTermsSpec) Slice(sourceLayer *ls.Layer, targetType string, templateData interface{}) (*ls.Layer, error) {
+	var layer *ls.Layer
 	id := execTemplate(spec.ID, templateData)
 	switch spec.Type {
-	case "Overlay", layers.OverlayTerm:
-		layer = sourceLayer.Slice(layers.OverlayTerm, layers.GetSliceByTermsFunc(spec.Terms))
-	case "Schema", layers.SchemaTerm:
-		layer = sourceLayer.Slice(layers.SchemaTerm, layers.IncludeAllNodesInSliceFunc)
+	case "Overlay", ls.OverlayTerm:
+		layer = sourceLayer.Slice(ls.OverlayTerm, ls.GetSliceByTermsFunc(spec.Terms))
+	case "Schema", ls.SchemaTerm:
+		layer = sourceLayer.Slice(ls.SchemaTerm, ls.IncludeAllNodesInSliceFunc)
 	default:
 		return nil, fmt.Errorf("Layer type unspecified")
 	}
 	layer.SetID(id)
-	layer.RootNode.Properties[layers.TargetType] = targetType
+	layer.GetRoot().Properties[ls.TargetType] = targetType
 	return layer, nil
 }

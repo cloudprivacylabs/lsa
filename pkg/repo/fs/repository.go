@@ -20,8 +20,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/cloudprivacylabs/lsa/pkg/layers"
-	"github.com/piprate/json-gold/ld"
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 type ErrNotFound string
@@ -36,124 +36,18 @@ type Repository struct {
 	logger func(string, error)
 	root   string
 	index  []IndexEntry
-	vocab  terms.Vocabulary
 }
 
 // New returns a new file repository under the given directory.
-func New(root string, vocab terms.Vocabulary, errorLogger func(string, error)) *Repository {
-	return &Repository{root: root, vocab: vocab, logger: errorLogger}
-}
-
-// LoadAndCompose loads the layer or schema manifest with the given
-// ID. If the loaded object is a schema manifest, computes the
-// composite schema and returns it.
-func (repo *Repository) LoadAndCompose(id string) (*ls.Layer, error) {
-	layer := repo.GetLayer(id)
-	if layer != nil {
-		return layer, nil
-	}
-	return repo.GetComposedSchema(id)
-}
-
-func (repo *Repository) GetSchemaManifest(id string) *ls.SchemaManifest {
-	for _, x := range repo.index {
-		if x.ID == id && x.Type == ls.TermSchemaManifestType {
-			return x.unmarshaled.(*ls.SchemaManifest)
-		}
-	}
-	return nil
-}
-
-func (repo *Repository) GetSchema(id string) *ls.Layer {
-	for _, x := range repo.index {
-		if x.ID == id && x.Type == ls.TermSchemaType {
-			return x.unmarshaled.(*ls.Layer)
-		}
-	}
-	return nil
-}
-
-func (repo *Repository) GetOverlay(id string) *ls.Layer {
-	for _, x := range repo.index {
-		if x.ID == id && x.Type == ls.TermOverlayType {
-			return x.unmarshaled.(*ls.Layer)
-		}
-	}
-	return nil
-}
-
-func (repo *Repository) GetLayer(id string) *ls.Layer {
-	for _, x := range repo.index {
-		if x.ID == id && (x.Type == ls.TermOverlayType || x.Type == ls.TermSchemaType) {
-			return x.unmarshaled.(*ls.Layer)
-		}
-	}
-	return nil
-}
-
-func (repo *Repository) GetSchemaManifestByObjectType(t string) *ls.SchemaManifest {
-	for _, x := range repo.index {
-		if x.hasType(t) && x.Type == ls.TermSchemaManifestType {
-			return x.unmarshaled.(*ls.SchemaManifest)
-		}
-	}
-	return nil
-}
-
-func (repo *Repository) GetComposedSchema(id string) (*ls.Layer, error) {
-	for i, x := range repo.index {
-		if x.ID == id && x.Type == ls.TermSchemaManifestType {
-			return repo.compose(i)
-		}
-	}
-	return nil, nil
-}
-
-func (repo *Repository) GetComposedSchemaByObjectType(t string) (*ls.Layer, error) {
-	for i, x := range repo.index {
-		if x.hasType(t) && x.Type == ls.TermSchemaManifestType {
-			return repo.compose(i)
-		}
-	}
-	return nil, nil
-}
-
-func (repo *Repository) compose(index int) (*ls.Layer, error) {
-	if repo.index[index].composed != nil {
-		return repo.index[index].composed, nil
-	}
-	layers := make([]*ls.Layer, 0)
-	m := repo.index[index].unmarshaled.(*ls.SchemaManifest)
-	if len(m.Schema) > 0 {
-		sch := repo.GetSchema(m.Schema)
-		if sch == nil {
-			return nil, ErrNotFound(m.Schema)
-		}
-		layers = append(layers, sch)
-	}
-	for _, x := range m.Overlays {
-		ovl := repo.GetLayer(x)
-		if ovl == nil {
-			return nil, ErrNotFound(x)
-		}
-		layers = append(layers, ovl)
-	}
-	result, err := ls.Compose(ls.ComposeOptions{}, repo.vocab, layers...)
-	if err != nil {
-		return nil, err
-	}
-	repo.index[index].composed = result
-	return result, nil
+func New(root string, errorLogger func(string, error)) *Repository {
+	return &Repository{root: root, logger: errorLogger}
 }
 
 type IndexEntry struct {
-	Type       string      `json:"type"`
-	ID         string      `json:"id"`
-	TargetType []string    `json:"targetType,omitempty"`
-	Payload    interface{} `json:"payload"`
-
-	unmarshaled interface{}
-	composed    *ls.Layer
+	Type       string   `json:"type"`
+	ID         string   `json:"id"`
+	TargetType []string `json:"targetType,omitempty"`
+	File       string   `json:"file"`
 }
 
 func (i IndexEntry) hasType(t string) bool {
@@ -168,28 +62,24 @@ func (i IndexEntry) hasType(t string) bool {
 // Load loads the index under the directory. If buildIndexIfStale
 // is true, build the index if necessary
 func (repo *Repository) Load(buildIndexIfStale bool) error {
-	if buildIndexIfStale {
-		if repo.IsIndexStale() {
+	data, err := ioutil.ReadFile(filepath.Join(repo.root, indexFile))
+	if err != nil {
+		if buildIndexIfStale {
 			if err := repo.UpdateIndex(); err != nil {
 				return err
 			}
 		}
 	}
-	data, err := ioutil.ReadFile(filepath.Join(repo.root, indexFile))
-	if err != nil {
-		return err
-	}
 	if err := json.Unmarshal(data, &repo.index); err != nil {
-		return err
-	}
-	for i, x := range repo.index {
-		switch x.Type {
-		case ls.TermSchemaManifestType:
-			if repo.index[i].unmarshaled, err = ls.SchemaManifestFromLD(x.Payload); err != nil {
+		if buildIndexIfStale {
+			if err := repo.UpdateIndex(); err != nil {
 				return err
 			}
-		case ls.TermSchemaType, ls.TermOverlayType:
-			if repo.index[i].unmarshaled, err = ls.LayerFromLD(x.Payload); err != nil {
+		}
+	}
+	if buildIndexIfStale {
+		if repo.IsIndexStale() {
+			if err := repo.UpdateIndex(); err != nil {
 				return err
 			}
 		}
@@ -208,12 +98,20 @@ func (repo *Repository) IsIndexStale() bool {
 	if err != nil {
 		return true
 	}
+	names := make(map[string]struct{})
 	for _, entry := range entries {
 		if !entry.IsDir() && entry.Name() != indexFile {
+			names[entry.Name()] = struct{}{}
 			info, _ := entry.Info()
 			if info != nil && info.ModTime().After(t) {
 				return true
 			}
+		}
+	}
+	// Any file deleted?
+	for _, index := range repo.index {
+		if _, exists := names[index.File]; !exists {
+			return true
 		}
 	}
 	return false
@@ -242,7 +140,6 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, error) {
 	if err != nil {
 		return nil, err
 	}
-	proc := ld.NewJsonLdProcessor()
 	ret := make([]IndexEntry, 0)
 	for _, entry := range entries {
 		if !entry.IsDir() && entry.Name() != indexFile {
@@ -256,38 +153,195 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, error) {
 				repo.logError(fname, err)
 				continue
 			}
-			expanded, err := proc.Expand(obj, nil)
-			if err != nil {
-				repo.logError(fname, err)
-				continue
+			var typeName string
+			if arr, ok := obj.([]interface{}); ok {
+				if len(arr) == 1 {
+					if m, ok := arr[0].(map[string]interface{}); ok {
+						typeName = m["@type"].(string)
+					}
+				}
+			} else if m, ok := obj.(map[string]interface{}); ok {
+				typeName = m["@type"].(string)
 			}
-			obj, err = ParseRepositoryObject(expanded)
-			if err != nil {
-				repo.logError(fname, err)
-				continue
-			}
-			if manifest, ok := obj.(*ls.SchemaManifest); ok {
+			switch typeName {
+			case ls.SchemaTerm, ls.OverlayTerm:
+				layer, err := jsonld.UnmarshalLayer(obj)
+				if err != nil {
+					repo.logError(fname, err)
+					continue
+				}
 				entry := IndexEntry{
-					Type:       ls.TermSchemaManifestType,
+					Type:       typeName,
+					ID:         layer.GetID(),
+					TargetType: layer.GetTargetTypes(),
+					File:       entry.Name(),
+				}
+				ret = append(ret, entry)
+			case ls.SchemaManifestTerm:
+				manifest, err := jsonld.UnmarshalSchemaManifest(obj)
+				if err != nil {
+					repo.logError(fname, err)
+					continue
+				}
+				entry := IndexEntry{
+					Type:       ls.SchemaManifestTerm,
 					ID:         manifest.ID,
-					TargetType: manifest.TargetType,
-					Payload:    expanded,
+					TargetType: []string{manifest.TargetType},
+					File:       entry.Name(),
 				}
 				ret = append(ret, entry)
-			} else if layer, ok := obj.(*ls.Layer); ok {
-				entry := IndexEntry{
-					Type:       layer.Type,
-					ID:         layer.ID,
-					TargetType: layer.TargetType,
-					Payload:    expanded,
-				}
-				ret = append(ret, entry)
-			} else {
-				repo.logError(fname, fmt.Errorf("Cannot read object"))
 			}
 		}
 	}
 	return ret, nil
+}
+
+// LoadAndCompose loads the layer or schema manifest with the given
+// ID. If the loaded object is a schema manifest, computes the
+// composite schema and returns it.
+func (repo *Repository) LoadAndCompose(id string) (*ls.Layer, error) {
+	layer := repo.GetLayer(id)
+	if layer != nil {
+		return layer, nil
+	}
+	return repo.GetComposedSchema(id)
+}
+
+func (repo *Repository) GetSchemaManifest(id string) *ls.SchemaManifest {
+	for _, x := range repo.index {
+		if x.ID == id && x.Type == ls.SchemaManifestTerm {
+			return repo.mustLoadSchemaManifest(x.File)
+		}
+	}
+	return nil
+}
+
+func (repo *Repository) GetSchema(id string) *ls.Layer {
+	for _, x := range repo.index {
+		if x.ID == id && x.Type == ls.SchemaTerm {
+			return repo.loadLayer(x.File)
+		}
+	}
+	return nil
+}
+
+func (repo *Repository) GetOverlay(id string) *ls.Layer {
+	for _, x := range repo.index {
+		if x.ID == id && x.Type == ls.OverlayTerm {
+			return repo.loadLayer(x.File)
+		}
+	}
+	return nil
+}
+
+func (repo *Repository) GetLayer(id string) *ls.Layer {
+	for _, x := range repo.index {
+		if x.ID == id && (x.Type == ls.OverlayTerm || x.Type == ls.SchemaTerm) {
+			return repo.loadLayer(x.File)
+		}
+	}
+	return nil
+}
+
+func (repo *Repository) GetSchemaManifestByObjectType(t string) *ls.SchemaManifest {
+	for _, x := range repo.index {
+		if x.hasType(t) && x.Type == ls.SchemaManifestTerm {
+			return repo.mustLoadSchemaManifest(x.File)
+		}
+	}
+	return nil
+}
+
+func (repo *Repository) readJson(file string) (interface{}, error) {
+	data, err := ioutil.ReadFile(file)
+	if err != nil {
+		return nil, err
+	}
+	var v interface{}
+	if err := json.Unmarshal(data, &v); err != nil {
+		return nil, err
+	}
+	return v, nil
+}
+
+func (repo *Repository) mustLoadSchemaManifest(file string) *ls.SchemaManifest {
+	ret, err := repo.loadSchemaManifest(file)
+	if err != nil {
+		panic("Cannot load manifest:" + err.Error())
+	}
+	return ret
+}
+
+func (repo *Repository) loadSchemaManifest(file string) (*ls.SchemaManifest, error) {
+	data, err := repo.readJson(file)
+	if err != nil {
+		return nil, err
+	}
+	ret, err := jsonld.UnmarshalSchemaManifest(data)
+	if err != nil {
+		return nil, err
+	}
+	return ret, nil
+}
+
+func (repo *Repository) loadLayer(file string) *ls.Layer {
+	data, err := repo.readJson(file)
+	if err != nil {
+		panic("Cannot read " + file)
+	}
+	ret, err := jsonld.UnmarshalLayer(data)
+	if err != nil {
+		panic("Cannot parse layer: " + err.Error())
+	}
+	return ret
+}
+
+func (repo *Repository) GetComposedSchema(id string) (*ls.Layer, error) {
+	for _, x := range repo.index {
+		if x.ID == id && x.Type == ls.SchemaManifestTerm {
+			return repo.compose(x)
+		}
+	}
+	return nil, nil
+}
+
+func (repo *Repository) GetComposedSchemaByObjectType(t string) (*ls.Layer, error) {
+	for _, x := range repo.index {
+		if x.hasType(t) && x.Type == ls.SchemaManifestTerm {
+			return repo.compose(x)
+		}
+	}
+	return nil, nil
+}
+
+func (repo *Repository) compose(index IndexEntry) (*ls.Layer, error) {
+	m, err := repo.loadSchemaManifest(index.File)
+	if err != nil {
+		return nil, err
+	}
+	var result *ls.Layer
+	if len(m.Schema) > 0 {
+		sch := repo.GetSchema(m.Schema)
+		if sch == nil {
+			return nil, ErrNotFound(m.Schema)
+		}
+		result = sch
+	}
+	for _, x := range m.Overlays {
+		ovl := repo.GetLayer(x)
+		if ovl == nil {
+			return nil, ErrNotFound(x)
+		}
+		if result == nil {
+			result = ovl
+		} else {
+			err := result.Compose(ovl)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+	return result, nil
 }
 
 func (repo *Repository) logError(fname string, err error) {
