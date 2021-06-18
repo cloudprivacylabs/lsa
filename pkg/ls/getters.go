@@ -11,11 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package jsonld
-
-import (
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
-)
+package ls
 
 // GetKeyValue returns the value of the key in the node. The node must
 // be a map
@@ -110,11 +106,11 @@ func GetFlattenedNodeIndex(nodes []interface{}) (map[string]interface{}, error) 
 	for _, node := range nodes {
 		id := GetNodeID(node)
 		if len(id) == 0 {
-			return nil, ls.ErrAttributeWithoutID
+			return nil, ErrAttributeWithoutID
 		}
 		_, exists := ret[id]
 		if exists {
-			return nil, ls.ErrDuplicateAttributeID(id)
+			return nil, ErrDuplicateAttributeID(id)
 		}
 		ret[id] = node
 	}
