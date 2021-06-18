@@ -15,6 +15,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -26,6 +27,8 @@ import (
 	"golang.org/x/text/encoding"
 
 	"github.com/spf13/cobra"
+
+	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
 
 var (
@@ -144,4 +147,35 @@ func unroll(in interface{}, depth int) interface{} {
 		return ret
 	}
 	return in
+}
+
+func getRepo(repodir string) (*fs.Repository, error) {
+	repo := fs.New(repodir)
+	if err := repo.Load(); err != nil {
+		if errors.Is(err, fs.ErrNoIndex) || errors.Is(err, fs.ErrBadIndex) {
+			warnings, err := repo.UpdateIndex()
+			if len(warnings) > 0 {
+				for _, x := range warnings {
+					fmt.Println(x)
+				}
+			}
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			return nil, err
+		}
+	}
+	if repo.IsIndexStale() {
+		warnings, err := repo.UpdateIndex()
+		if len(warnings) > 0 {
+			for _, x := range warnings {
+				fmt.Println(x)
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	return repo, nil
 }

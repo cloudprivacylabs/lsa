@@ -19,11 +19,11 @@ func init() {
 }
 
 // Validate checks if value is nil. If value is nil and it is required, returns an error
-func (validator RequiredValidator) Validate(docNode ls.DocumentNode, schemaNode *ls.SchemaNode) error {
+func (validator RequiredValidator) Validate(docNode ls.DocumentNode, schemaNode ls.LayerNode) error {
 	if docNode == nil {
 		return nil
 	}
-	required := schemaNode.Properties[RequiredTerm].([]interface{})
+	required := schemaNode.GetPropertyMap()[RequiredTerm].([]interface{})
 	if len(required) > 0 {
 		names := make(map[string]struct{})
 		for nodes := docNode.AllOutgoingEdgesWithLabel(ls.DataEdgeTerms.ObjectAttributes).Targets(); nodes.HasNext(); {

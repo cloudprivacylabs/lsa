@@ -36,6 +36,9 @@ const AttributeNameTerm = LS + "attributeName"
 // AttributeIndexTerm represents the index of an array element
 const AttributeIndexTerm = LS + "attributeIndex"
 
+// LayerRootTerm is an edge term that connects layer node to the root node of the schema
+const LayerRootTerm = LS + "layer"
+
 // AttributeTypes defines the terms describing attribute types. Each
 // attribute must have one of the attribute types plus the Attribute
 // type, marking the object as an attribute.
@@ -117,6 +120,10 @@ const CharacterEncodingTerm = LS + "characterEncoding"
 // InstanceOfTerm is an edge term that is used to connect values with
 // their schema specifications
 const InstanceOfTerm = LS + "data#instanceOf"
+
+const BundleTerm = LS + "SchemaManifest#bundle"
+const SchemaBaseTerm = LS + "SchemaManifest#schema"
+const OverlaysTerm = LS + "SchemaManifest#overlays"
 
 // All registered terms and their associated metadata
 var termMetadata = map[string]interface{}{
@@ -225,6 +232,17 @@ var termMetadata = map[string]interface{}{
 		OverrideComposition,
 	},
 	InstanceOfTerm: struct {
+		CompositionType
+	}{
+		ErrorComposition,
+	},
+
+	DataEdgeTerms.ObjectAttributes: struct {
+		CompositionType
+	}{
+		ErrorComposition,
+	},
+	DataEdgeTerms.ArrayElements: struct {
 		CompositionType
 	}{
 		ErrorComposition,

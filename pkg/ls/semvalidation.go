@@ -8,12 +8,12 @@ import (
 // schema. The Validate function is called with the document node that
 // needs to be validated, and the associated schema node.
 type Validator interface {
-	Validate(DocumentNode, *SchemaNode) error
+	Validate(DocumentNode, LayerNode) error
 }
 
 type nopValidator struct{}
 
-func (nopValidator) Validate(DocumentNode, *SchemaNode) error { return nil }
+func (nopValidator) Validate(DocumentNode, LayerNode) error { return nil }
 
 // GetAttributeValidator returns a validator implementation for the given validation term
 func GetAttributeValidator(term string) Validator {
@@ -31,17 +31,17 @@ func GetAttributeValidator(term string) Validator {
 // ValidateDocumentNode runs the validators for the document node
 func ValidateDocumentNode(node DocumentNode) error {
 	// Get the schema
-	schemaNode, _ := node.NextNode(InstanceOfTerm).(*SchemaNode)
+	schemaNode, _ := node.NextNode(InstanceOfTerm).(LayerNode)
+	return ValidateDocumentNodeBySchema(node, schemaNode)
+}
+
+// ValidateDocumentNodeBySchema runs the validators for the document node
+func ValidateDocumentNodeBySchema(node DocumentNode, schemaNode LayerNode) error {
 	if schemaNode == nil {
 		return nil
 	}
-	return schemaNode.Validate(node)
-}
-
-// Validate the document node based on the validators of the schema
-func (node *SchemaNode) Validate(docNode DocumentNode) error {
-	for key := range node.Properties {
-		if err := GetAttributeValidator(key).Validate(docNode, node); err != nil {
+	for key := range schemaNode.GetPropertyMap() {
+		if err := GetAttributeValidator(key).Validate(node, schemaNode); err != nil {
 			return err
 		}
 	}

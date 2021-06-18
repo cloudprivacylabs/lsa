@@ -32,7 +32,7 @@ func copyIntf(in interface{}) interface{} {
 	return in
 }
 
-func copyCompiled(target, source map[string]interface{}) {
+func copyCompiled(target, source map[interface{}]interface{}) {
 	for k, v := range source {
 		target[k] = v
 	}

@@ -38,7 +38,7 @@ func (validator EnumValidator) ValidateValue(value interface{}, options []interf
 }
 
 // Validate validates the node value if it is non-nil
-func (validator EnumValidator) Validate(docNode ls.DocumentNode, schemaNode *ls.SchemaNode) error {
+func (validator EnumValidator) Validate(docNode ls.DocumentNode, schemaNode ls.LayerNode) error {
 	if docNode == nil {
 		return nil
 	}
@@ -46,7 +46,7 @@ func (validator EnumValidator) Validate(docNode ls.DocumentNode, schemaNode *ls.
 	if value == nil {
 		return nil
 	}
-	options, _ := schemaNode.Properties[EnumTerm].([]interface{})
+	options, _ := schemaNode.GetPropertyMap()[EnumTerm].([]interface{})
 	if options == nil {
 		return ls.ErrInvalidValidator{Validator: EnumTerm, Msg: "Invalid enum options"}
 	}

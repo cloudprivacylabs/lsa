@@ -16,100 +16,145 @@ package ls
 import ()
 
 type Compiler struct {
-	// Resolver resolves an ID and returns a strong reference
+	// Resolver resolves an ID and returns a strong reference. If
+	// resolver func is nil, references are directly sent to loader func
 	Resolver func(string) (string, error)
-	// Loader loads a layer using strong reference
+	// Loader loads a layer using a strong reference. This cannot be nil
 	Loader func(string) (*Layer, error)
-
-	compiledSchemas map[string]*Layer
 }
 
-// Compile compiles the schema by resolving all references and
-// computing all compositions. Compilation process directly modifies
-// the schema
-func (compiler *Compiler) Compile(ref string) (*Layer, error) {
-	if compiler.compiledSchemas == nil {
-		compiler.compiledSchemas = make(map[string]*Layer)
+type compilerContext struct {
+	targetLayer   *Layer
+	loadedSchemas map[string]*Layer
+	compiled      map[string]LayerNode
+}
+
+func (compiler Compiler) loadSchema(ctx *compilerContext, ref string) (*Layer, error) {
+	var err error
+	if compiler.Resolver != nil {
+		ref, err = compiler.Resolver(ref)
+		if err != nil {
+			return nil, err
+		}
 	}
-	id, err := compiler.Resolver(ref)
+	layer := ctx.loadedSchemas[ref]
+	if layer != nil {
+		return layer, nil
+	}
+	layer, err = compiler.Loader(ref)
 	if err != nil {
 		return nil, err
 	}
-	ret := compiler.compiledSchemas[id]
-	if ret != nil {
-		return ret, nil
+	ctx.loadedSchemas[ref] = layer
+	return layer, nil
+}
+
+// Compile compiles the schema by resolving all references and
+// building all compositions.
+func (compiler Compiler) Compile(ref string) (*Layer, error) {
+	ctx := &compilerContext{
+		loadedSchemas: make(map[string]*Layer),
+		compiled:      make(map[string]LayerNode),
 	}
-	schema, err := compiler.Loader(id)
+	_, err := compiler.compile(ctx, ref, true)
+	if err != nil {
+		return nil, err
+	}
+	return ctx.targetLayer, nil
+}
+
+// CompileSchema compiles the loaded schema
+func (compiler Compiler) CompileSchema(schema *Layer) (*Layer, error) {
+	ctx := &compilerContext{
+		loadedSchemas: map[string]*Layer{schema.GetID(): schema},
+		compiled:      make(map[string]LayerNode),
+	}
+	_, err := compiler.compile(ctx, schema.GetID(), true)
+	if err != nil {
+		return nil, err
+	}
+	return ctx.targetLayer, nil
+}
+
+func (compiler Compiler) compile(ctx *compilerContext, ref string, topLevel bool) (LayerNode, error) {
+	var err error
+	// Resolve weak references
+	if compiler.Resolver != nil {
+		ref, err = compiler.Resolver(ref)
+		if err != nil {
+			return nil, err
+		}
+	}
+	// If compiled already, return the compiled node
+	if c := ctx.compiled[ref]; c != nil {
+		return c, nil
+	}
+
+	// Load the schema
+	schema, err := compiler.loadSchema(ctx, ref)
 	if err != nil {
 		return nil, err
 	}
 	if schema == nil {
 		return nil, ErrNotFound(ref)
 	}
-	schema = schema.Clone()
-	// Put the compiled schema here, so if there are loops, we can refer to the
-	// same object
-	compiler.compiledSchemas[id] = schema
-	if err := compiler.resolveReferences(schema); err != nil {
+
+	// Here, scheme is loaded but not compiled
+	// If this is the top-leve, we set the target layer as this schema
+	var compileRoot LayerNode
+	if topLevel {
+		ctx.targetLayer = schema.Clone()
+		compileRoot = ctx.targetLayer.GetObjectInfoNode()
+	} else {
+		c := schema.Clone()
+		compileRoot = c.GetObjectInfoNode()
+		ctx.targetLayer.Import(c.Graph)
+	}
+	if compileRoot == nil {
+		return nil, nil
+	}
+	ctx.compiled[ref] = compileRoot
+	if err := compiler.resolveReferences(ctx, compileRoot); err != nil {
 		return nil, err
 	}
-	if err := compiler.resolveCompositions(schema); err != nil {
+	if err := compiler.resolveCompositions(compileRoot); err != nil {
 		return nil, err
 	}
-	compiler.compileTerms(schema)
-	return schema, nil
+	if topLevel {
+		compiler.compileTerms(ctx.targetLayer)
+	}
+	return compileRoot, nil
 }
 
-// CompileLayer compiles the schema by resolving all references and
-// computing all compositions. Compilation process directly modifies
-// the schema
-func (compiler *Compiler) CompileSchema(schema *Layer) error {
-	if compiler.compiledSchemas == nil {
-		compiler.compiledSchemas = make(map[string]*Layer)
-	}
-	id := schema.GetID()
-	// Put the compiled schema here, so if there are loops, we can refer to the
-	// same object
-	compiler.compiledSchemas[id] = schema
-	if err := compiler.resolveReferences(schema); err != nil {
-		return err
-	}
-	if err := compiler.resolveCompositions(schema); err != nil {
-		return err
-	}
-	compiler.compileTerms(schema)
-	return nil
-}
-
-func (compiler *Compiler) compileTerms(layer *Layer) error {
+func (compiler Compiler) compileTerms(layer *Layer) error {
 	for nodes := layer.AllNodes(); nodes.HasNext(); {
-		node := nodes.Next().(*SchemaNode)
+		node := nodes.Next().(LayerNode)
 		// Compile all non-attribute nodes
 		if !node.IsAttributeNode() {
 			if err := GetNodeCompiler(node.GetID()).CompileNode(node); err != nil {
 				return err
 			}
 		}
-		for k, v := range node.Properties {
+		for k, v := range node.GetPropertyMap() {
 			result, err := GetTermCompiler(k).CompileTerm(k, v)
 			if err != nil {
 				return err
 			}
 			if result != nil {
-				node.Compiled[k] = result
+				node.GetCompiledDataMap()[k] = result
 			}
 			for edges := node.AllOutgoingEdges(); edges.HasNext(); {
-				edge := edges.Next().(*SchemaEdge)
+				edge := edges.Next().(LayerEdge)
 				if err := GetEdgeCompiler(edge.GetLabel()).CompileEdge(edge); err != nil {
 					return err
 				}
-				for k, v := range edge.Properties {
+				for k, v := range edge.GetPropertyMap() {
 					result, err := GetTermCompiler(k).CompileTerm(k, v)
 					if err != nil {
 						return err
 					}
 					if result != nil {
-						edge.Compiled[k] = result
+						edge.GetCompiledDataMap()[k] = result
 					}
 				}
 			}
@@ -118,77 +163,96 @@ func (compiler *Compiler) compileTerms(layer *Layer) error {
 	return nil
 }
 
-func (compiler *Compiler) resolveReferences(layer *Layer) error {
-	toRemove := make([]*SchemaNode, 0)
-	for nodes := layer.AllNodes(); nodes.HasNext(); {
-		node := nodes.Next().(*SchemaNode)
-		if node.HasType(AttributeTypes.Reference) {
-			ref := node.Properties[LayerTerms.Reference]
-			referencedLayer, err := compiler.Compile(ref.(string))
-			if err != nil {
-				return err
-			}
+func (compiler Compiler) resolveReferences(ctx *compilerContext, root LayerNode) error {
+	// Collect all reference nodes
+	references := make([]LayerNode, 0)
+	ForEachAttributeNode(root, func(n LayerNode) bool {
+		if n.HasType(AttributeTypes.Reference) {
+			references = append(references, n)
+		}
+		return true
+	})
+	// Resolve each reference
+	for _, node := range references {
+		if err := compiler.resolveReference(ctx, node); err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
-			// Attach all incoming edges to the layer's root
-			for incoming := node.AllIncomingEdges(); incoming.HasNext(); {
-				edge := incoming.Next().(*SchemaEdge)
-				layer.AddEdge(edge.From(), referencedLayer.GetRoot(), edge.Clone())
-			}
-			// Reattach all outgoing edges
-			for outgoing := node.AllOutgoingEdges(); outgoing.HasNext(); {
-				edge := outgoing.Next().(*SchemaEdge)
-				layer.AddEdge(referencedLayer.GetRoot(), edge.To(), edge.Clone())
-			}
-			// Copy over properties
-			for k, v := range node.Properties {
-				if k != LayerTerms.Reference {
-					referencedLayer.GetRoot().Properties[k] = v
+func (compiler Compiler) resolveReference(ctx *compilerContext, node LayerNode) error {
+	properties := node.GetPropertyMap()
+	ref := properties[LayerTerms.Reference].(string)
+	// already compiled, or being compiled?
+	compiled := ctx.compiled[ref]
+	if compiled == nil {
+		var err error
+		compiled, err = compiler.compile(ctx, ref, false)
+		if err != nil {
+			return err
+		}
+	}
+	// Here, compiled is already imported into the target graph
+
+	// This is no longer a reference node
+	node.RemoveTypes(AttributeTypes.Reference)
+	node.AddTypes(compiled.GetTypes()...)
+	// Compose the properties of the compiled root node with the referenced node
+	if err := ComposeProperties(properties, node.GetPropertyMap()); err != nil {
+		return err
+	}
+	// Attach the node to all the children of the compiled node
+	for edges := compiled.AllOutgoingEdges(); edges.HasNext(); {
+		edge := edges.Next().(LayerEdge)
+		ctx.targetLayer.AddEdge(node, edge.To(), edge.Clone())
+	}
+	return nil
+}
+
+func (compiler Compiler) resolveCompositions(root LayerNode) error {
+	// Process all composition nodes
+	completed := map[LayerNode]struct{}{}
+	var err error
+	ForEachAttributeNode(root, func(n LayerNode) bool {
+		if n.HasType(AttributeTypes.Composite) {
+			if _, processed := completed[n]; !processed {
+				if x := compiler.resolveComposition(n, completed); x != nil {
+					err = x
+					return false
 				}
 			}
-			// Remove the reference node
-			toRemove = append(toRemove, node)
 		}
-	}
-	for _, x := range toRemove {
-		x.Remove()
-	}
-	return nil
+		return true
+	})
+	return err
 }
 
-func (compiler *Compiler) resolveCompositions(layer *Layer) error {
-	for nodes := layer.AllNodes(); nodes.HasNext(); {
-		compositeNode := nodes.Next().(*SchemaNode)
-		if compositeNode.HasType(AttributeTypes.Composite) {
-			if err := compiler.resolveComposition(layer, compositeNode); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-func (compiler Compiler) resolveComposition(layer *Layer, compositeNode *SchemaNode) error {
-	type removable interface{ Remove() }
-	toDelete := make([]removable, 0)
+func (compiler Compiler) resolveComposition(compositeNode LayerNode, completed map[LayerNode]struct{}) error {
+	completed[compositeNode] = struct{}{}
 	// At the end of this process, composite node will be converted into an object node
 	for edges := compositeNode.AllOutgoingEdgesWithLabel(LayerTerms.AllOf); edges.HasNext(); {
-		allOfEdge := edges.Next().(*SchemaEdge)
+		allOfEdge := edges.Next().(LayerEdge)
 	top:
-		component := allOfEdge.To().(*SchemaNode)
+		component := allOfEdge.To().(LayerNode)
 		switch {
 		case component.HasType(AttributeTypes.Object):
-			// link all the nodes to the main node
+			//  Input:
+			//    compositeNode ---> component --> attributes
+			//  Output:
+			//    compositeNode --> attributes
 			for edges := component.AllOutgoingEdges(); edges.HasNext(); {
 				edge := edges.Next()
 				edge.SetFrom(compositeNode)
 			}
 			// Copy all properties of the component node to the composite node
-			if err := ComposeProperties(compositeNode.Properties, component.Properties); err != nil {
+			if err := ComposeProperties(compositeNode.GetPropertyMap(), component.GetPropertyMap()); err != nil {
 				return err
 			}
+			// Copy all types
+			compositeNode.AddTypes(component.GetTypes()...)
 			// Copy compiled items
-			copyCompiled(compositeNode.Compiled, component.Compiled)
-			toDelete = append(toDelete, component)
+			copyCompiled(compositeNode.GetCompiledDataMap(), component.GetCompiledDataMap())
 
 		case component.HasType(AttributeTypes.Value) ||
 			component.HasType(AttributeTypes.Array) ||
@@ -197,7 +261,7 @@ func (compiler Compiler) resolveComposition(layer *Layer, compositeNode *SchemaN
 			allOfEdge.SetLabel(LayerTerms.AttributeList)
 
 		case component.HasType(AttributeTypes.Composite):
-			if err := compiler.resolveComposition(layer, component); err != nil {
+			if err := compiler.resolveComposition(component, completed); err != nil {
 				return err
 			}
 			goto top

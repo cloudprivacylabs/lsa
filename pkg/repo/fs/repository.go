@@ -15,6 +15,7 @@ package fs
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -33,14 +34,13 @@ const indexFile = "index.ls"
 // Repository implements a filesystem based schema repository under a
 // given directory
 type Repository struct {
-	logger func(string, error)
-	root   string
-	index  []IndexEntry
+	root  string
+	index []IndexEntry
 }
 
 // New returns a new file repository under the given directory.
-func New(root string, errorLogger func(string, error)) *Repository {
-	return &Repository{root: root, logger: errorLogger}
+func New(root string) *Repository {
+	return &Repository{root: root}
 }
 
 type IndexEntry struct {
@@ -59,30 +59,17 @@ func (i IndexEntry) hasType(t string) bool {
 	return false
 }
 
-// Load loads the index under the directory. If buildIndexIfStale
-// is true, build the index if necessary
-func (repo *Repository) Load(buildIndexIfStale bool) error {
+var ErrBadIndex = errors.New("Bad index file")
+var ErrNoIndex = errors.New("No index file")
+
+// Load loads the index under the directory.
+func (repo *Repository) Load() error {
 	data, err := ioutil.ReadFile(filepath.Join(repo.root, indexFile))
 	if err != nil {
-		if buildIndexIfStale {
-			if err := repo.UpdateIndex(); err != nil {
-				return err
-			}
-		}
+		return ErrNoIndex
 	}
 	if err := json.Unmarshal(data, &repo.index); err != nil {
-		if buildIndexIfStale {
-			if err := repo.UpdateIndex(); err != nil {
-				return err
-			}
-		}
-	}
-	if buildIndexIfStale {
-		if repo.IsIndexStale() {
-			if err := repo.UpdateIndex(); err != nil {
-				return err
-			}
-		}
+		return ErrBadIndex
 	}
 	return nil
 }
@@ -106,6 +93,16 @@ func (repo *Repository) IsIndexStale() bool {
 			if info != nil && info.ModTime().After(t) {
 				return true
 			}
+			found := false
+			for _, x := range repo.index {
+				if x.File == entry.Name() {
+					found = true
+					break
+				}
+			}
+			if !found {
+				return true
+			}
 		}
 	}
 	// Any file deleted?
@@ -118,27 +115,28 @@ func (repo *Repository) IsIndexStale() bool {
 }
 
 // UpdateIndex builds and updates the index file
-func (repo *Repository) UpdateIndex() error {
-	index, err := repo.BuildIndex()
+func (repo *Repository) UpdateIndex() ([]string, error) {
+	index, warnings, err := repo.BuildIndex()
 	if err != nil {
-		return err
+		return warnings, err
 	}
 	output := filepath.Join(repo.root, indexFile)
 	f, err := os.Create(output)
 	if err != nil {
-		return err
+		return warnings, err
 	}
 	defer f.Close()
 	enc := json.NewEncoder(f)
-	return enc.Encode(index)
+	return warnings, enc.Encode(index)
 }
 
 // BuildIndex reads and parses all jsonld files and returns the index
 // entries
-func (repo *Repository) BuildIndex() ([]IndexEntry, error) {
+func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
+	warnings := make([]string, 0)
 	entries, err := os.ReadDir(repo.root)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	ret := make([]IndexEntry, 0)
 	for _, entry := range entries {
@@ -146,11 +144,11 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, error) {
 			fname := filepath.Join(repo.root, entry.Name())
 			data, err := ioutil.ReadFile(fname)
 			if err != nil {
-				return nil, fmt.Errorf("%s: %w", fname, err)
+				return nil, warnings, fmt.Errorf("%s: %w", fname, err)
 			}
 			var obj interface{}
 			if err := json.Unmarshal(data, &obj); err != nil {
-				repo.logError(fname, err)
+				warnings = append(warnings, fmt.Sprintf("Cannot load %s: %v", fname, err))
 				continue
 			}
 			var typeName string
@@ -164,23 +162,23 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, error) {
 				typeName = m["@type"].(string)
 			}
 			switch typeName {
-			case ls.SchemaTerm, ls.OverlayTerm:
+			case ls.SchemaTerm, ls.OverlayTerm, "Schema", "Overlay":
 				layer, err := jsonld.UnmarshalLayer(obj)
 				if err != nil {
-					repo.logError(fname, err)
+					warnings = append(warnings, fmt.Sprintf("Cannot parse %s: %v", fname, err))
 					continue
 				}
 				entry := IndexEntry{
-					Type:       typeName,
+					Type:       layer.GetLayerType(),
 					ID:         layer.GetID(),
 					TargetType: layer.GetTargetTypes(),
 					File:       entry.Name(),
 				}
 				ret = append(ret, entry)
-			case ls.SchemaManifestTerm:
+			case ls.SchemaManifestTerm, "SchemaManifest":
 				manifest, err := jsonld.UnmarshalSchemaManifest(obj)
 				if err != nil {
-					repo.logError(fname, err)
+					warnings = append(warnings, fmt.Sprintf("Cannot parse %s: %v", fname, err))
 					continue
 				}
 				entry := IndexEntry{
@@ -193,7 +191,7 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, error) {
 			}
 		}
 	}
-	return ret, nil
+	return ret, warnings, nil
 }
 
 // LoadAndCompose loads the layer or schema manifest with the given
@@ -253,7 +251,7 @@ func (repo *Repository) GetSchemaManifestByObjectType(t string) *ls.SchemaManife
 }
 
 func (repo *Repository) readJson(file string) (interface{}, error) {
-	data, err := ioutil.ReadFile(file)
+	data, err := ioutil.ReadFile(filepath.Join(repo.root, file))
 	if err != nil {
 		return nil, err
 	}
@@ -342,10 +340,4 @@ func (repo *Repository) compose(index IndexEntry) (*ls.Layer, error) {
 		}
 	}
 	return result, nil
-}
-
-func (repo *Repository) logError(fname string, err error) {
-	if repo.logger != nil {
-		repo.logger(fname, err)
-	}
 }

@@ -14,7 +14,6 @@
 package jsonld
 
 import (
-	"encoding/json"
 	"errors"
 	"strings"
 
@@ -25,8 +24,9 @@ import (
 type inputNode struct {
 	node      map[string]interface{}
 	id        string
+	types     []string
 	processed bool
-	graphNode *ls.SchemaNode
+	graphNode ls.LayerNode
 }
 
 // UnmarshalLayer unmarshals a schem ar overlay
@@ -42,50 +42,65 @@ func UnmarshalLayer(in interface{}) (*ls.Layer, error) {
 		return nil, ls.MakeErrInvalidInput("", "Cannot parse layer")
 	}
 
-	target := ls.NewLayer("")
 	inputNodes := make(map[string]*inputNode)
-	var layerNode *inputNode
 	for _, node := range nodes {
 		m, ok := node.(map[string]interface{})
 		if !ok {
 			continue
 		}
-		types := GetNodeTypes(m)
-		id := GetNodeID(m)
-		rootNode := false
-		for _, t := range types {
+		inode := inputNode{node: m}
+		inode.types = GetNodeTypes(m)
+		inode.id = GetNodeID(m)
+		inputNodes[inode.id] = &inode
+	}
+
+	// Find the root node: there must be one node with overlay or schema type
+	var rootNode *inputNode
+	for _, v := range inputNodes {
+		for _, t := range v.types {
 			if t == ls.SchemaTerm || t == ls.OverlayTerm {
-				if len(target.GetLayerType()) > 0 {
-					return nil, ls.MakeErrInvalidInput("", "Not a valid layer")
+				if rootNode != nil {
+					return nil, ls.MakeErrInvalidInput("Multiple root nodes")
 				}
-				target.SetLayerType(t)
-				target.SetID(id)
-				rootNode = true
-			}
-		}
-		if len(id) > 0 {
-			inode := inputNode{node: m, id: id}
-			inputNodes[id] = &inode
-			if rootNode {
-				inode.graphNode = target.GetRoot()
-				layerNode = &inode
-			} else {
-				inode.graphNode = target.NewNode(id, types...)
+				rootNode = v
 			}
 		}
 	}
+	if rootNode == nil {
+		return nil, ls.MakeErrInvalidInput("No schema or overlay type node")
+	}
+	// The root node must connect to the layer node
+	layerRoot := inputNodes[GetNodeID(rootNode.node[ls.LayerRootTerm])]
+	target := ls.NewLayer()
+	rootNode.graphNode = target.GetLayerInfoNode()
+	rootNode.graphNode.SetTypes(rootNode.types...)
+	rootNode.graphNode.SetID(rootNode.id)
+	if layerRoot != nil {
+		if ld.IsURL(layerRoot.id) {
+			layerRoot.graphNode = target.NewNode(layerRoot.id)
+		} else {
+			layerRoot.graphNode = target.NewNode("")
+		}
+		target.GetLayerInfoNode().Connect(layerRoot.graphNode, ls.LayerRootTerm)
+	}
+	unmarshalAnnotations(target, rootNode, inputNodes)
+
 	if len(target.GetLayerType()) == 0 {
 		return nil, ls.ErrNotALayer
 	}
 
-	// Unmarshal all accessible nodes starting from the layer node
-	if err := unmarshalAttributeNode(target, layerNode, inputNodes); err != nil {
-		return nil, err
+	if layerRoot != nil {
+		// Unmarshal all accessible nodes starting from the layer node
+		if err := unmarshalAttributeNode(target, layerRoot, inputNodes); err != nil {
+			return nil, err
+		}
 	}
 	// Deal with annotations
 	for _, node := range inputNodes {
-		if !node.graphNode.HasType(ls.AttributeTypes.Attribute) {
-			continue
+		if node.graphNode != nil {
+			if !node.graphNode.HasType(ls.AttributeTypes.Attribute) {
+				continue
+			}
 		}
 		// This is an attribute node
 		unmarshalAnnotations(target, node, inputNodes)
@@ -98,6 +113,9 @@ func unmarshalAttributeNode(target *ls.Layer, inode *inputNode, allNodes map[str
 		return nil
 	}
 	inode.processed = true
+	if inode.graphNode == nil {
+		inode.graphNode = target.NewNode(inode.id)
+	}
 	attribute := inode.graphNode
 	attribute.AddTypes(ls.AttributeTypes.Attribute)
 	// Process the nested attribute nodes
@@ -128,7 +146,7 @@ func unmarshalAttributeNode(target *ls.Layer, inode *inputNode, allNodes map[str
 				if err := unmarshalAttributeNode(target, attrNode, allNodes); err != nil {
 					return err
 				}
-				target.AddEdge(inode.graphNode, attrNode.graphNode, ls.NewSchemaEdge(k))
+				target.AddEdge(inode.graphNode, attrNode.graphNode, ls.NewLayerEdge(k))
 			}
 
 		case ls.LayerTerms.Reference:
@@ -138,7 +156,7 @@ func unmarshalAttributeNode(target *ls.Layer, inode *inputNode, allNodes map[str
 			if len(oid) == 0 {
 				return ls.MakeErrInvalidInput(inode.id)
 			}
-			attribute.Properties[ls.LayerTerms.Reference] = oid
+			attribute.GetPropertyMap()[ls.LayerTerms.Reference] = oid
 
 		case ls.LayerTerms.ArrayItems:
 			attribute.AddTypes(ls.AttributeTypes.Array)
@@ -155,7 +173,7 @@ func unmarshalAttributeNode(target *ls.Layer, inode *inputNode, allNodes map[str
 				if err := unmarshalAttributeNode(target, itemsNode, allNodes); err != nil {
 					return err
 				}
-				target.AddEdge(inode.graphNode, itemsNode.graphNode, ls.NewSchemaEdge(k))
+				target.AddEdge(inode.graphNode, itemsNode.graphNode, ls.NewLayerEdge(k))
 			default:
 				return ls.MakeErrInvalidInput(inode.id, "Multiple array items")
 			}
@@ -179,7 +197,7 @@ func unmarshalAttributeNode(target *ls.Layer, inode *inputNode, allNodes map[str
 				if err := unmarshalAttributeNode(target, nnode, allNodes); err != nil {
 					return err
 				}
-				target.AddEdge(inode.graphNode, nnode.graphNode, ls.NewSchemaEdge(k))
+				target.AddEdge(inode.graphNode, nnode.graphNode, ls.NewLayerEdge(k))
 			}
 		}
 	}
@@ -204,7 +222,8 @@ func unmarshalAnnotations(target *ls.Layer, node *inputNode, allNodes map[string
 			ls.LayerTerms.Reference,
 			ls.LayerTerms.ArrayItems,
 			ls.LayerTerms.AllOf,
-			ls.LayerTerms.OneOf:
+			ls.LayerTerms.OneOf,
+			ls.LayerRootTerm:
 		default:
 			if strings.HasPrefix(key, "@") {
 				break
@@ -215,14 +234,14 @@ func unmarshalAnnotations(target *ls.Layer, node *inputNode, allNodes map[string
 				break
 			}
 			setValue := func(v interface{}) {
-				value := node.graphNode.Properties[key]
+				value := node.graphNode.GetPropertyMap()[key]
 				if value == nil {
-					node.graphNode.Properties[key] = v
+					node.graphNode.GetPropertyMap()[key] = v
 				} else if a, ok := value.([]interface{}); ok {
 					a = append(a, v)
-					node.graphNode.Properties[key] = a
+					node.graphNode.GetPropertyMap()[key] = a
 				} else {
-					node.graphNode.Properties[key] = []interface{}{value, v}
+					node.graphNode.GetPropertyMap()[key] = []interface{}{value, v}
 				}
 			}
 			// If list, descend to its elements
@@ -243,7 +262,7 @@ func unmarshalAnnotations(target *ls.Layer, node *inputNode, allNodes map[string
 							if referencedNode == nil {
 								setValue(id)
 							} else {
-								target.AddEdge(node.graphNode, referencedNode.graphNode, ls.NewSchemaEdge(key))
+								target.AddEdge(node.graphNode, referencedNode.graphNode, ls.NewLayerEdge(key))
 							}
 						}
 					}
@@ -253,22 +272,25 @@ func unmarshalAnnotations(target *ls.Layer, node *inputNode, allNodes map[string
 	}
 }
 
-// Marshals the layer into a flattened jsonld document
+// Marshals the layer into an expanded jsonld document
 func MarshalLayer(layer *ls.Layer) interface{} {
-	return []interface{}{marshalNode(layer.GetRoot())}
+	return []interface{}{marshalNode(layer.GetLayerInfoNode())}
 }
 
-func marshalNode(node *ls.SchemaNode) interface{} {
+func marshalNode(node ls.LayerNode) interface{} {
 	m := make(map[string]interface{})
 	if node.Label() != nil {
-		m["@id"] = node.Label().(string)
+		s := node.Label().(string)
+		if len(s) > 0 {
+			m["@id"] = s
+		}
 	}
 	t := node.GetTypes()
 	if len(t) > 0 {
 		m["@type"] = t
 	}
 
-	for k, v := range node.Properties {
+	for k, v := range node.GetPropertyMap() {
 		if k == ls.LayerTerms.Reference {
 			m[k] = []interface{}{map[string]interface{}{"@id": v}}
 		} else {
@@ -287,81 +309,89 @@ func marshalNode(node *ls.SchemaNode) interface{} {
 
 	edges := node.AllOutgoingEdges()
 	for edges.HasNext() {
-		edge := edges.Next().(*ls.SchemaEdge)
+		edge := edges.Next().(ls.LayerEdge)
+		toNode := marshalNode(edge.To().(ls.LayerNode))
+		existing := m[edge.Label().(string)]
 		switch edge.Label() {
-		case ls.LayerTerms.AttributeList, ls.LayerTerms.Attributes, ls.LayerTerms.ArrayItems:
-			existing := m[edge.Label().(string)]
+		case ls.LayerTerms.AttributeList, ls.LayerTerms.AllOf, ls.LayerTerms.OneOf:
 			if existing == nil {
-				existing = []interface{}{}
-			}
-			if arr, ok := existing.([]interface{}); ok {
-				arr = append(arr, marshalNode(edge.To().(*ls.SchemaNode)))
-				m[edge.Label().(string)] = arr
+				m[edge.Label().(string)] = []interface{}{map[string]interface{}{"@list": []interface{}{toNode}}}
+			} else {
+				listMap := existing.([]interface{})[0].(map[string]interface{})
+				listMap["@list"] = append(listMap["@list"].([]interface{}), toNode)
 			}
 
-		case ls.LayerTerms.AllOf, ls.LayerTerms.OneOf:
-			existing := m[edge.Label().(string)]
+		case ls.LayerTerms.Attributes:
 			if existing == nil {
-				existing = []interface{}{}
+				m[ls.LayerTerms.Attributes] = []interface{}{toNode}
+			} else {
+				m[ls.LayerTerms.Attributes] = append(m[ls.LayerTerms.Attributes].([]interface{}), toNode)
 			}
-			if arr, ok := existing.([]interface{}); ok {
-				if len(arr) == 0 {
-					arr = []interface{}{map[string]interface{}{"@list": []interface{}{}}}
-				}
-				if len(arr) == 1 {
-					m, ok := arr[0].(map[string]interface{})
-					if ok {
-						elements := m["@list"]
-						if elements == nil {
-							elements = []interface{}{}
-							m["@list"] = elements
-						}
-						elements = append(elements.([]interface{}), marshalNode(edge.To().(*ls.SchemaNode)))
-						m["@list"] = elements
-					}
-				}
+
+		case ls.LayerTerms.ArrayItems:
+			m[ls.LayerTerms.ArrayItems] = []interface{}{toNode}
+
+		default:
+			if existing == nil {
+				m[edge.Label().(string)] = []interface{}{toNode}
+			} else {
+				m[edge.Label().(string)] = append(m[edge.Label().(string)].([]interface{}), toNode)
 			}
 		}
 	}
 	return m
 }
 
-type SchemaManifest struct {
-	ID         string   `json:"@id"`
-	Type       string   `json:"@type"`
-	TargetType string   `json:"https://lschema.org/targetType"`
-	Bundle     string   `json:"https://lschema.org/SchemaManifest#bundle,omitempty"`
-	Schema     string   `json:"https://lschema.org/SchemaManifest#schema"`
-	Overlays   []string `json:"https://lschema.org/SchemaManifest#overlays,omitempty"`
-}
-
 var ErrNotASchemaManifest = errors.New("Not a schema manifest")
 
 // Unmarshals the given jsonld document into a schema manifest
 func UnmarshalSchemaManifest(in interface{}) (*ls.SchemaManifest, error) {
-	var m SchemaManifest
 	proc := ld.NewJsonLdProcessor()
 	compacted, err := proc.Compact(in, map[string]interface{}{}, nil)
 	if err != nil {
 		return nil, err
 	}
-	d, _ := json.Marshal(compacted)
-	err = json.Unmarshal(d, &m)
-	if err != nil {
-		return nil, err
+	ret := ls.SchemaManifest{}
+	for k, v := range compacted {
+		switch k {
+		case "@id":
+			ret.ID = v.(string)
+		case "@type":
+			ret.Type = v.(string)
+		case ls.TargetType:
+			ret.TargetType = GetNodeID(v)
+		case ls.BundleTerm:
+			ret.Bundle = GetNodeID(v)
+		case ls.SchemaBaseTerm:
+			ret.Schema = GetNodeID(v)
+		case ls.OverlaysTerm:
+			for _, x := range GetListElements(v) {
+				ret.Overlays = append(ret.Overlays, GetNodeID(x))
+			}
+		}
 	}
-	if m.Type != ls.SchemaManifestTerm {
+	if ret.Type != ls.SchemaManifestTerm {
 		return nil, ErrNotASchemaManifest
 	}
-	return (*ls.SchemaManifest)(&m), nil
+	return &ret, nil
 }
 
 // MarshalSchemaNanifest returns a compact jsonld document for the manifest
 func MarshalSchemaManifest(manifest *ls.SchemaManifest) interface{} {
-	m := (*SchemaManifest)(manifest)
-	m.Type = ls.SchemaManifestTerm
-	d, _ := json.Marshal(m)
-	var v interface{}
-	json.Unmarshal(d, &v)
-	return v
+	m := make(map[string]interface{})
+	m["@id"] = manifest.ID
+	m["@type"] = ls.SchemaManifestTerm
+	m[ls.TargetType] = map[string]interface{}{"@id": manifest.TargetType}
+	if len(manifest.Bundle) > 0 {
+		m[ls.BundleTerm] = map[string]interface{}{"@id": manifest.Bundle}
+	}
+	m[ls.SchemaTerm] = map[string]interface{}{"@id": manifest.Schema}
+	if len(manifest.Overlays) > 0 {
+		arr := make([]interface{}, 0, len(manifest.Overlays))
+		for _, x := range manifest.Overlays {
+			arr = append(arr, x)
+		}
+		m[ls.OverlaysTerm] = map[string]interface{}{"@list": arr}
+	}
+	return m
 }

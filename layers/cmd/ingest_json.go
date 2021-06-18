@@ -14,13 +14,15 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 
+	"github.com/bserdar/digraph"
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/pkg/dot"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
@@ -28,7 +30,7 @@ import (
 func init() {
 	ingestCmd.AddCommand(ingestJSONCmd)
 	ingestJSONCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
-	ingestJSONCmd.Flags().String("id", "http://example.org/data", "Base ID to use for ingested nodes")
+	ingestJSONCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
 	ingestJSONCmd.Flags().String("format", "json", "Output format, json, rdf, or dot")
 }
 
@@ -40,18 +42,32 @@ var ingestJSONCmd = &cobra.Command{
 		var layer *ls.Layer
 		repoDir, _ := cmd.Flags().GetString("repo")
 		var repo *fs.Repository
-		if len(repoDir) != 0 {
-			repo = fs.New(repoDir, func(msg string, err error) {
-				fmt.Println("%s: %v", msg, err)
-			})
-			if err := repo.Load(true); err != nil {
+		if len(repoDir) > 0 {
+			var err error
+			repo, err = getRepo(repoDir)
+			if err != nil {
 				failErr(err)
 			}
 		}
 		schemaName, _ := cmd.Flags().GetString("schema")
 		if len(schemaName) > 0 {
 			if repo != nil {
-				layer, err := repo.GetComposedSchema(schemaName)
+				var err error
+				layer, err = repo.GetComposedSchema(schemaName)
+				if err != nil {
+					failErr(err)
+				}
+				compiler := ls.Compiler{Resolver: func(x string) (string, error) {
+					if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
+						return manifest.ID, nil
+					}
+					return x, nil
+				},
+					Loader: func(x string) (*ls.Layer, error) {
+						return repo.LoadAndCompose(x)
+					},
+				}
+				layer, err = compiler.Compile(schemaName)
 				if err != nil {
 					failErr(err)
 				}
@@ -65,19 +81,26 @@ var ingestJSONCmd = &cobra.Command{
 				if err != nil {
 					failErr(err)
 				}
-			}
-
-			compiler := ls.Compiler{Resolver: func(x string) (string, error) {
-				if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
-					return manifest.ID, nil
+				compiler := ls.Compiler{Resolver: func(x string) (string, error) {
+					if x == schemaName {
+						return x, nil
+					}
+					if x == layer.GetID() {
+						return x, nil
+					}
+					return "", fmt.Errorf("Not found")
+				},
+					Loader: func(x string) (*ls.Layer, error) {
+						if x == schemaName || x == layer.GetID() {
+							return layer, nil
+						}
+						return nil, fmt.Errorf("Not found")
+					},
 				}
-				return x, nil
-			},
-				Loader: repo.LoadAndCompose,
-			}
-			resolved, err := compiler.Compile(schemaId)
-			if err != nil {
-				failErr(err)
+				layer, err = compiler.Compile(schemaName)
+				if err != nil {
+					failErr(err)
+				}
 			}
 
 		}
@@ -95,13 +118,18 @@ var ingestJSONCmd = &cobra.Command{
 		if err := readJSONFileOrStdin(args, &input); err != nil {
 			failErr(err)
 		}
-		ingester := json.Ingester{
+		ingester := jsoningest.Ingester{
 			Schema:  layer,
-			KeyTerm: x,
+			KeyTerm: ls.AttributeNameTerm,
 		}
 
+		baseID, _ := cmd.Flags().GetString("id")
 		target := digraph.New()
-		root, err := ingester.Ingest(target, input)
-
+		_, err := ingester.Ingest(target, baseID, input)
+		if err != nil {
+			failErr(err)
+		}
+		renderer := dot.Renderer{Options: dot.DefaultOptions()}
+		renderer.Render(target, "g", os.Stdout)
 	},
 }

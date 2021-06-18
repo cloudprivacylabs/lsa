@@ -37,44 +37,37 @@ func (layer *Layer) Compose(source *Layer) error {
 	var err error
 	// Process attributes of the source layer depth-first
 	// Compose the source attribute nodes with the target attribute nodes, ignoring any nodes attached to them
-	processedSourceNodes := make(map[*SchemaNode]struct{})
-	source.ForEachAttribute(func(sourceNode *SchemaNode) bool {
+	processedSourceNodes := make(map[LayerNode]struct{})
+	source.ForEachAttribute(func(sourceNode LayerNode) bool {
 		if _, processed := processedSourceNodes[sourceNode]; processed {
 			return true
 		}
 		// If node exists in target, merge
-		// If this is the root node, match directly
-		if sourceNode == source.GetRoot() {
-			if err = mergeNodes(layer, layer.GetRoot(), sourceNode, processedSourceNodes); err != nil {
-				return false
-			}
-		} else {
-			targetNodes := layer.AllNodesWithLabel(sourceNode.Label()).All()
-			switch len(targetNodes) {
-			case 1:
-				// Target node exists. Merge if paths match
-				if pathsMatch(targetNodes[0].(*SchemaNode), sourceNode, sourceNode) {
-					if err = mergeNodes(layer, targetNodes[0].(*SchemaNode), sourceNode, processedSourceNodes); err != nil {
-						return false
-					}
-				}
-
-			case 0:
-				// Target node does not exist.
-				// Parent node must exist, because this is a depth-first algorithm
-				parent, edge := sourceNode.GetParentAttribute()
-				if parent == nil {
-					err = ErrInvalidComposition
+		targetNodes := layer.AllNodesWithLabel(sourceNode.Label()).All()
+		switch len(targetNodes) {
+		case 1:
+			// Target node exists. Merge if paths match
+			if pathsMatch(targetNodes[0].(LayerNode), sourceNode, sourceNode) {
+				if err = mergeNodes(layer, targetNodes[0].(LayerNode), sourceNode, processedSourceNodes); err != nil {
 					return false
 				}
-				// Add the same node to this layer
-				newNode := sourceNode.Clone()
-				layer.AddEdge(parent, newNode, edge.Clone())
+			}
 
-			default:
-				err = ErrDuplicateAttributeID(fmt.Sprint(sourceNode.Label()))
+		case 0:
+			// Target node does not exist.
+			// Parent node must exist, because this is a depth-first algorithm
+			parent, edge := GetParentAttribute(sourceNode)
+			if parent == nil {
+				err = ErrInvalidComposition
 				return false
 			}
+			// Add the same node to this layer
+			newNode := sourceNode.Clone()
+			layer.AddEdge(parent, newNode, edge.Clone())
+
+		default:
+			err = ErrDuplicateAttributeID(fmt.Sprint(sourceNode.Label()))
+			return false
 		}
 		processedSourceNodes[sourceNode] = struct{}{}
 		return true
@@ -83,19 +76,15 @@ func (layer *Layer) Compose(source *Layer) error {
 		return err
 	}
 	// Copy all non-attribute nodes of source to target
-	nodeMap := make(map[*SchemaNode]*SchemaNode)
-	seen := make(map[*SchemaNode]struct{})
-	source.ForEachAttribute(func(sourceNode *SchemaNode) bool {
-		if sourceNode == source.GetRoot() {
-			mergeNonattributeGraph(layer, layer.GetRoot(), sourceNode, seen, nodeMap)
-		} else {
-			targetNodes := layer.AllNodesWithLabel(sourceNode.Label()).All()
-			if len(targetNodes) != 1 {
-				// This should not really happen
-				panic("Cannot find node even after adding")
-			}
-			mergeNonattributeGraph(layer, targetNodes[0].(*SchemaNode), sourceNode, seen, nodeMap)
+	nodeMap := make(map[LayerNode]LayerNode)
+	seen := make(map[LayerNode]struct{})
+	source.ForEachAttribute(func(sourceNode LayerNode) bool {
+		targetNodes := layer.AllNodesWithLabel(sourceNode.Label()).All()
+		if len(targetNodes) != 1 {
+			// This should not really happen
+			panic("Cannot find node even after adding")
 		}
+		mergeNonattributeGraph(layer, targetNodes[0].(LayerNode), sourceNode, seen, nodeMap)
 		return true
 	})
 	if err != nil {
@@ -105,7 +94,7 @@ func (layer *Layer) Compose(source *Layer) error {
 }
 
 // Merge source into target.
-func mergeNodes(targetLayer *Layer, target, source *SchemaNode, processedSourceNodes map[*SchemaNode]struct{}) error {
+func mergeNodes(targetLayer *Layer, target, source LayerNode, processedSourceNodes map[LayerNode]struct{}) error {
 	if _, processed := processedSourceNodes[source]; processed {
 		return nil
 	}
@@ -114,25 +103,25 @@ func mergeNodes(targetLayer *Layer, target, source *SchemaNode, processedSourceN
 		return nil
 	}
 
-	if err := ComposeProperties(target.Properties, source.Properties); err != nil {
+	if err := ComposeProperties(target.GetPropertyMap(), source.GetPropertyMap()); err != nil {
 		return err
 	}
 	return nil
 }
 
-func mergeNonattributeGraph(targetLayer *Layer, targetNode, sourceNode *SchemaNode, seen map[*SchemaNode]struct{}, nodeMap map[*SchemaNode]*SchemaNode) {
+func mergeNonattributeGraph(targetLayer *Layer, targetNode, sourceNode LayerNode, seen map[LayerNode]struct{}, nodeMap map[LayerNode]LayerNode) {
 	// If the source node is already seen, return
 	if _, processed := seen[sourceNode]; processed {
 		return
 	}
 	for edges := sourceNode.AllOutgoingEdges(); edges.HasNext(); {
-		edge := edges.Next().(*SchemaEdge)
+		edge := edges.Next().(LayerEdge)
 		// Skip all attribute nodes
 		if edge.IsAttributeTreeEdge() {
 			continue
 		}
 
-		toNode := edge.To().(*SchemaNode)
+		toNode := edge.To().(LayerNode)
 		seen[toNode] = struct{}{}
 		// If edge.to is not in target, add it
 		targetTo, exists := nodeMap[toNode]
@@ -161,11 +150,11 @@ func ComposeProperties(target, source map[string]interface{}) error {
 }
 
 // pathsMatch returns true if the attribute predecessors of source matches target's
-func pathsMatch(target, source, initialSource *SchemaNode) bool {
+func pathsMatch(target, source, initialSource LayerNode) bool {
 	if source.GetID() != target.GetID() {
 		return false
 	}
-	sourceParent, _ := source.GetParentAttribute()
+	sourceParent, _ := GetParentAttribute(source)
 	// If sourceParents reached the top level, stop
 	if sourceParent == nil {
 		return true
@@ -173,7 +162,7 @@ func pathsMatch(target, source, initialSource *SchemaNode) bool {
 	if sourceParent.HasType(SchemaTerm) || sourceParent.HasType(OverlayTerm) {
 		return true
 	}
-	targetParent, _ := target.GetParentAttribute()
+	targetParent, _ := GetParentAttribute(target)
 	if targetParent == nil {
 		return false
 	}

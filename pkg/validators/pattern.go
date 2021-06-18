@@ -22,7 +22,7 @@ func init() {
 }
 
 // Validate validates the node value if it is non-nil
-func (validator PatternValidator) Validate(docNode ls.DocumentNode, schemaNode *ls.SchemaNode) error {
+func (validator PatternValidator) Validate(docNode ls.DocumentNode, schemaNode ls.LayerNode) error {
 	if docNode == nil {
 		return nil
 	}
@@ -30,7 +30,7 @@ func (validator PatternValidator) Validate(docNode ls.DocumentNode, schemaNode *
 	if value == nil {
 		return nil
 	}
-	pattern := schemaNode.Compiled[PatternTerm].(*regexp.Regexp)
+	pattern := schemaNode.GetCompiledDataMap()[PatternTerm].(*regexp.Regexp)
 	if pattern.MatchString(fmt.Sprint(value)) {
 		return nil
 	}

@@ -13,7 +13,11 @@
 // limitations under the License.
 package ls
 
-// Composer interface represents term composition algorithm
+// Composer interface represents term composition algorithm. During
+// layer composition, any term metadata that implements Composer
+// interface will be composed using the customized implementation. If
+// the term does not implement the Composer interface, Setcomposition
+// will be used
 type Composer interface {
 	Compose(interface{}, interface{}) (interface{}, error)
 }

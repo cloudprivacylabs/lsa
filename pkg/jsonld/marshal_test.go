@@ -15,155 +15,113 @@ package jsonld
 
 import (
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"os"
 	"testing"
-
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-func TestUnmarshalJsonld(t *testing.T) {
-	var input interface{}
-	err := json.Unmarshal([]byte(`{
-"@context": ["../../schemas/ls.jsonld",
-  {"@vocab":"http://test#"}],
-"@type":"Schema",
-"attributes": [
- {
-  "@id": "attr1",
-  "@type": "Value"
- },
- {
-  "@id":  "attr2",
-  "@type": "Value",
-  "flag": [
-    {
-      "@value": "flg1"
-    }
-  ]
- },
- {
-  "@id": "attr3",
-  "@type": "Reference",
-  "reference": "ref1"
- }
-]
-}`), &input)
+type testCase struct {
+	Name      string      `json:"name"`
+	Input     interface{} `json:"input"`
+	Marshaled interface{} `json:"marshaled"`
+}
+
+func toMap(in interface{}) interface{} {
+	data, _ := json.Marshal(in)
+	var v interface{}
+	json.Unmarshal(data, &v)
+	return v
+}
+
+func deepEqual(i1, i2 interface{}) error {
+	var deepEqualArray func([]interface{}, []interface{}) error
+	var deepEqualMap func(map[string]interface{}, map[string]interface{}) error
+	var deepEqualValue func(interface{}, interface{}) error
+
+	deepEqualArray = func(a1, a2 []interface{}) error {
+		if len(a1) != len(a2) {
+			return fmt.Errorf("Different lengths: %v %v", a1, a2)
+		}
+		for i := range a1 {
+			if err := deepEqual(a1[i], a2[i]); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
+	deepEqualMap = func(m1, m2 map[string]interface{}) error {
+		if len(m1) != len(m2) {
+			return fmt.Errorf("Different lengths: %v %v", m1, m2)
+		}
+		for k, v := range m1 {
+			val, exists := m2[k]
+			if !exists {
+				return fmt.Errorf("Missing key %s", k)
+			}
+			if err := deepEqual(v, val); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
+	deepEqualValue = func(v1, v2 interface{}) error {
+		if a1, ok := i1.([]interface{}); ok {
+			a2, ok := i2.([]interface{})
+			if ok {
+				return deepEqualArray(a1, a2)
+			}
+			return fmt.Errorf("1 array 2 not: %v %T %v %T", a1, a1, a2, a2)
+		}
+		if m1, ok := i1.(map[string]interface{}); ok {
+			m2, ok := i2.(map[string]interface{})
+			if ok {
+				return deepEqualMap(m1, m2)
+			}
+			return fmt.Errorf("1 map 2 not: %v %T %v %T", m1, m1, m2, m2)
+		}
+		if v1 != v2 {
+			return fmt.Errorf("Wrong value %v %T %v %T", v1, v1, v2, v2)
+		}
+		return nil
+	}
+
+	return deepEqualValue(i1, i2)
+}
+
+func (tc testCase) Run(t *testing.T) {
+	t.Logf("Running %s", tc.Name)
+	layer, err := UnmarshalLayer(tc.Input)
+	if err != nil {
+		t.Errorf("%s: Cannot unmarshal layer: %v", tc.Name, err)
+		return
+	}
+	marshaled := MarshalLayer(layer)
+	if err := deepEqual(toMap(marshaled), toMap(tc.Marshaled)); err != nil {
+		expected, _ := json.MarshalIndent(toMap(tc.Marshaled), "", "  ")
+		got, _ := json.MarshalIndent(toMap(marshaled), "", "  ")
+		t.Errorf("%v %s: Expected:\n%s\nGot:\n%s\n", err, tc.Name, string(expected), string(got))
+	}
+}
+
+func TestCases(t *testing.T) {
+	d, err := ioutil.ReadFile("testdata/testcases.json")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	var cases []testCase
+	err = json.Unmarshal(d, &cases)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	layer, err := UnmarshalLayer(input)
-	if err != nil {
-		t.Error(err)
-	}
-	n := layer.AllNodesWithLabel("attr1").All()[0]
-	v, ok := n.(*ls.SchemaNode)
-	if !ok {
-		t.Errorf("Not a value")
-	}
-	if !v.HasType(ls.AttributeTypes.Value) {
-		t.Errorf("Not a value")
-	}
-	n = layer.AllNodesWithLabel("attr3").All()[0]
-	ref := n.(*ls.SchemaNode)
-	if ref.Properties[ls.TypeTerms.Reference] != ls.IRI("ref1") {
-		t.Errorf("Wrong ref: %v", ref.Properties)
-	}
-	edges := layer.GetRoot().AllOutgoingEdgesWithLabel(ls.TypeTerms.Attributes).All()
-	if len(edges) != 3 {
-		t.Errorf("Expected 3 got %d", len(edges))
-	}
-
-	n2 := layer.AllNodesWithLabel("attr2").All()[0]
-	if n2.(*ls.SchemaNode).Properties["http://test#flag"] != "flg1" {
-		t.Errorf("Wrong label: %v", n2)
-	}
-}
-
-func TestMarshalJsonld(t *testing.T) {
-	var input interface{}
-	err := json.Unmarshal([]byte(`{
-"@context": ["../../schemas/ls.jsonld",
-  {"@vocab":"http://test#"}],
-"@type":"Schema",
-"attributes": [
- {
-  "@id": "attr1",
-  "@type": "Value"
- },
- {
-  "@id":  "attr2",
-  "@type": "Value",
-  "flag": [
-    {
-      "@value": "flg1"
-    }
-  ]
- },
- {
-  "@id": "attr3",
-  "@type": "Reference",
-  "reference": "ref1"
- }
-]
-}`), &input)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	layer, err := UnmarshalLayer(input)
-	if err != nil {
-		t.Error(err)
-	}
-	out := MarshalLayer(layer)
-	x, _ := json.MarshalIndent(out, "", "")
-	t.Log(string(x))
-	expected := `[
-{
-"@id": "_:b0",
-"@type": [
-"https://lschema.org/Attribute",
-"https://lschema.org/Schema",
-"https://lschema.org/Object"
-],
-"https://lschema.org/Object#attributes": [
-{
-"@id": "attr1",
-"@type": [
-"https://lschema.org/Value",
-"https://lschema.org/Attribute"
-]
-},
-{
-"@id": "attr2",
-"@type": [
-"https://lschema.org/Value",
-"https://lschema.org/Attribute"
-],
-"http://test#flag": [
-{
-"@value": "flg1"
-}
-]
-},
-{
-"@id": "attr3",
-"@type": [
-"https://lschema.org/Reference",
-"https://lschema.org/Attribute"
-],
-"https://lschema.org/Reference#reference": [
-{
-"@id": "ref1"
-}
-]
-}
-]
-}
-]`
-
-	if string(x) != expected {
-		t.Errorf("Got %s Expected: %s", string(x), expected)
+	for _, c := range cases {
+		if run := os.Getenv("CASE"); run == "" || run == c.Name {
+			c.Run(t)
+		}
 	}
 }

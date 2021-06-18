@@ -52,12 +52,12 @@ func (obj objectSchema) getRequired() []interface{} {
 	return required
 }
 
-func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer) *ls.SchemaNode {
+func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer) ls.LayerNode {
 	return schemaAttrs(entityId, append(name, "*"), a.items, layer)
 }
 
-func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer) []*ls.SchemaNode {
-	ret := make([]*ls.SchemaNode, 0, len(obj.properties))
+func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer) []ls.LayerNode {
+	ret := make([]ls.LayerNode, 0, len(obj.properties))
 	for k, v := range obj.properties {
 		nm := append(name, k)
 		ret = append(ret, schemaAttrs(entityId, nm, v, layer))
@@ -65,34 +65,34 @@ func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer) []*
 	return ret
 }
 
-func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer) *ls.SchemaNode {
+func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer) ls.LayerNode {
 	id := entityId + "#" + strings.Join(name, ".")
 	newNode := layer.NewNode(id)
 	if len(attr.format) > 0 {
-		newNode.Properties[validators.JsonFormatTerm] = attr.format
+		newNode.GetPropertyMap()[validators.JsonFormatTerm] = attr.format
 	}
 	if len(attr.pattern) > 0 {
-		newNode.Properties[validators.PatternTerm] = attr.pattern
+		newNode.GetPropertyMap()[validators.PatternTerm] = attr.pattern
 	}
 	if len(attr.description) > 0 {
-		newNode.Properties[ls.DescriptionTerm] = attr.description
+		newNode.GetPropertyMap()[ls.DescriptionTerm] = attr.description
 	}
 	if len(attr.typ) > 0 {
 		arr := make([]interface{}, 0, len(attr.typ))
 		for _, x := range attr.typ {
 			arr = append(arr, x)
 		}
-		newNode.Properties[ls.TargetType] = arr
+		newNode.GetPropertyMap()[ls.TargetType] = arr
 	}
 	if len(attr.key) > 0 {
-		newNode.Properties[ls.AttributeNameTerm] = attr.key
+		newNode.GetPropertyMap()[ls.AttributeNameTerm] = attr.key
 	}
 	if len(attr.enum) > 0 {
 		elements := make([]interface{}, 0, len(attr.enum))
 		for _, v := range attr.enum {
 			elements = append(elements, v)
 		}
-		newNode.Properties[validators.EnumTerm] = elements
+		newNode.GetPropertyMap()[validators.EnumTerm] = elements
 	}
 
 	if len(attr.reference) > 0 {
@@ -108,7 +108,7 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 		}
 		required := attr.object.getRequired()
 		if len(required) > 0 {
-			newNode.Properties[validators.RequiredTerm] = required
+			newNode.GetPropertyMap()[validators.RequiredTerm] = required
 		}
 		return newNode
 	}
@@ -119,8 +119,8 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 		return newNode
 	}
 
-	buildChoices := func(arr []schemaProperty) []*ls.SchemaNode {
-		elements := make([]*ls.SchemaNode, 0, len(arr))
+	buildChoices := func(arr []schemaProperty) []ls.LayerNode {
+		elements := make([]ls.LayerNode, 0, len(arr))
 		for i, x := range arr {
 			newName := append(name, fmt.Sprint(i))
 			node := schemaAttrs(entityId, newName, x, layer)

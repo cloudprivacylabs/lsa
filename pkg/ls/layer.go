@@ -20,228 +20,66 @@ import (
 
 // A Layer is either a schema or an overlay. It keeps the definition
 // of a layer as a directed labeled property graph.
+//
+// The root node of the layer keeps layer identifying information. The
+// root node is connected to the schema node which contains the actual
+// object defined by the layer.
 type Layer struct {
 	*digraph.Graph
-	root *SchemaNode
+	layerInfo LayerNode
 }
 
-// SchemaNode is either an attribute node or an annotation attached to
-// an attribute. The attribute nodes have types Attribute plus the
-// specific type of the attribute. Other nodes will have their own
-// types marking them as literal or IRI, or something
-// else. Annotations cannot have Attribute or one of the attribute
-// types
-type SchemaNode struct {
-	digraph.NodeHeader
-
-	// The types of the schema node
-	types []string
-
-	// Properties associated with the node. These are assumed to be JSON-types
-	Properties map[string]interface{}
-	// These can be set during compilation. They are shallow-cloned
-	Compiled map[string]interface{}
-}
-
-// NewSchemaNode returns a new schema node with the given types
-func NewSchemaNode(ID string, types ...string) *SchemaNode {
-	ret := SchemaNode{Properties: make(map[string]interface{}),
-		Compiled: make(map[string]interface{}),
-	}
-	ret.AddTypes(types...)
-	ret.SetLabel(ID)
-	return &ret
-}
-
-// GetID returns the node ID
-func (a *SchemaNode) GetID() string {
-	l := a.NodeHeader.Label()
-	if l == nil {
-		return ""
-	}
-	return l.(string)
-}
-
-// SetID sets the node ID
-func (a *SchemaNode) SetID(ID string) {
-	a.SetLabel(ID)
-}
-
-// GetTypes returns the types of the node
-func (a *SchemaNode) GetTypes() []string {
-	if a == nil {
-		return nil
-	}
-	return a.types
-}
-
-// AddTypes adds new types to the schema node. The result is the
-// set-union of the existing types and the given types
-func (a *SchemaNode) AddTypes(t ...string) {
-	a.types = StringSetUnion(a.types, t)
-}
-
-// RemoveTypes removes the given set of types from the node.
-func (a *SchemaNode) RemoveTypes(t ...string) {
-	a.types = StringSetSubtract(a.types, t)
-}
-
-// SetTypes sets the types of the node
-func (a *SchemaNode) SetTypes(t ...string) {
-	a.types = make([]string, 0, len(t))
-	a.AddTypes(t...)
-}
-
-// HasType returns true if the node has the given type
-func (a *SchemaNode) HasType(t string) bool {
-	if a == nil {
-		return false
-	}
-	for _, x := range a.types {
-		if t == x {
-			return true
-		}
-	}
-	return false
-}
-
-// Connect this node with the target node using an edge with the given label
-func (a *SchemaNode) Connect(target *SchemaNode, edgeLabel string) *SchemaEdge {
-	edge := NewSchemaEdge(edgeLabel)
-	a.GetGraph().AddEdge(a, target, edge)
-	return edge
-}
-
-// IsAttributeNode returns true if the node has Attribute type
-func (a *SchemaNode) IsAttributeNode() bool {
-	return a != nil && a.HasType(AttributeTypes.Attribute)
-}
-
-// Clone returns a copy of the node data. The returned node has the
-// same label, types, and properties. The Compiled map is directly
-// assigned to the new node
-func (a *SchemaNode) Clone() *SchemaNode {
-	ret := NewSchemaNode(a.GetID(), a.GetTypes()...)
-	ret.Properties = copyIntf(a.Properties).(map[string]interface{})
-	ret.Compiled = a.Compiled
-	return ret
-}
-
-// GetParentAttribute returns the first immediate parent of the node that is
-// an attribute and reached by an attribute edge.
-func (a *SchemaNode) GetParentAttribute() (*SchemaNode, *SchemaEdge) {
-	for parents := a.AllIncomingEdges(); parents.HasNext(); {
-		parent := parents.Next().(*SchemaEdge)
-		if !parent.IsAttributeTreeEdge() {
-			continue
-		}
-		nd, _ := parent.From().(*SchemaNode)
-		if nd == nil {
-			continue
-		}
-		if nd.HasType(AttributeTypes.Attribute) {
-			return nd, parent
-		}
-	}
-	return nil, nil
-}
-
-// SchemaEdge is a labeled graph edge between two schema nodes
-type SchemaEdge struct {
-	digraph.EdgeHeader
-	Properties map[string]interface{}
-	Compiled   map[string]interface{}
-}
-
-// NewSchemaEdge returns a new initialized schema edge
-func NewSchemaEdge(label string) *SchemaEdge {
-	ret := &SchemaEdge{Properties: make(map[string]interface{}),
-		Compiled: make(map[string]interface{}),
-	}
-	ret.SetLabel(label)
-	return ret
-}
-
-// GetLabel returns the edge label
-func (edge *SchemaEdge) GetLabel() string {
-	if edge == nil {
-		return ""
-	}
-	l := edge.Label()
-	if l == nil {
-		return ""
-	}
-	return l.(string)
-}
-
-// IsAttributeTreeEdge returns true if the edge is an edge between two
-// attribute nodes
-func (edge *SchemaEdge) IsAttributeTreeEdge() bool {
-	if edge == nil {
-		return false
-	}
-	l := edge.Label()
-	return l == LayerTerms.Attributes ||
-		l == LayerTerms.AttributeList ||
-		l == LayerTerms.ArrayItems ||
-		l == LayerTerms.AllOf ||
-		l == LayerTerms.OneOf
-}
-
-// Clone returns a copy of the schema edge
-func (e *SchemaEdge) Clone() *SchemaEdge {
-	ret := NewSchemaEdge(e.GetLabel())
-	ret.Properties = copyIntf(e.Properties).(map[string]interface{})
-	return ret
-}
-
-// NewLayer returns a new empty layer with the given ID and type
-func NewLayer(ID string, typ ...string) *Layer {
+// NewLayer returns a new empty layer
+func NewLayer() *Layer {
 	ret := &Layer{Graph: digraph.New()}
-	ret.root = ret.NewNode(ID, typ...)
-	ret.root.AddTypes(AttributeTypes.Attribute)
+	ret.layerInfo = NewLayerNode("")
+	ret.AddNode(ret.layerInfo)
 	return ret
 }
 
 // Clone returns a copy of the layer
 func (l *Layer) Clone() *Layer {
 	ret := &Layer{Graph: digraph.New()}
-	nodeMap := make(map[*SchemaNode]*SchemaNode)
-	for nodes := l.AllNodes(); nodes.HasNext(); {
-		oldNode := nodes.Next().(*SchemaNode)
-		newNode := oldNode.Clone()
-		nodeMap[oldNode] = newNode
-	}
-	ret.root = nodeMap[l.root]
-	for nodes := l.AllNodes(); nodes.HasNext(); {
-		node := nodes.Next().(*SchemaNode)
-		for edges := node.AllOutgoingEdges(); edges.HasNext(); {
-			edge := edges.Next().(*SchemaEdge)
-			ret.AddEdge(nodeMap[edge.From().(*SchemaNode)], nodeMap[edge.To().(*SchemaNode)], edge.Clone())
-		}
+	nodeMap := digraph.Copy(ret.Graph, l.Graph, func(node digraph.Node) digraph.Node {
+		return node.(LayerNode).Clone()
+	},
+		func(edge digraph.Edge) digraph.Edge {
+			return edge.(LayerEdge).Clone()
+		})
+	if x := nodeMap[l.layerInfo]; x != nil {
+		ret.layerInfo = x.(LayerNode)
 	}
 	return ret
 }
 
-// GetRoot returns the root node of the schema
-func (l *Layer) GetRoot() *SchemaNode { return l.root }
+// GetLayerInfoNode returns the root node of the schema
+func (l *Layer) GetLayerInfoNode() LayerNode { return l.layerInfo }
 
-// GetID returns the ID of the layer, which is the ID of the root node
-func (l *Layer) GetID() string {
-	return l.root.Label().(string)
+// GetObjectInfoNode returns the root node of the object defined by the schema
+func (l *Layer) GetObjectInfoNode() LayerNode {
+	x := l.layerInfo.NextNode(LayerRootTerm)
+	if x == nil {
+		return nil
+	}
+	return x.(LayerNode)
 }
 
-// SetID sets the ID of the layer, which is the ID of the root node
+// GetID returns the ID of the layer
+func (l *Layer) GetID() string {
+	return l.layerInfo.Label().(string)
+}
+
+// SetID sets the ID of the layer
 func (l *Layer) SetID(ID string) {
-	l.root.SetLabel(ID)
+	l.layerInfo.SetLabel(ID)
 }
 
 // GetLayerType returns the layer type, SchemaTerm or OverlayTerm.
 func (l *Layer) GetLayerType() string {
-	if l.root.HasType(SchemaTerm) {
+	if l.layerInfo.HasType(SchemaTerm) {
 		return SchemaTerm
 	}
-	if l.root.HasType(OverlayTerm) {
+	if l.layerInfo.HasType(OverlayTerm) {
 		return OverlayTerm
 	}
 	return ""
@@ -252,34 +90,39 @@ func (l *Layer) SetLayerType(t string) {
 	if t != SchemaTerm && t != OverlayTerm {
 		panic("Invalid layer type:" + t)
 	}
-	l.root.RemoveTypes(SchemaTerm, OverlayTerm)
-	l.root.AddTypes(t)
+	l.layerInfo.RemoveTypes(SchemaTerm, OverlayTerm)
+	l.layerInfo.AddTypes(t)
 }
 
 // GetEncoding returns the encoding that should be used to
 // ingest/export data using this layer. The encoding information is
-// taken from the root node characterEncoding annotation. If missing,
+// taken from the schema root node characterEncoding annotation. If missing,
 // the default encoding is used, which does not perform any character
 // translation
 func (l *Layer) GetEncoding() (encoding.Encoding, error) {
-	enc, _ := l.root.Properties[CharacterEncodingTerm].(string)
-	if len(enc) == 0 {
-		return encoding.Nop, nil
+	oi := l.GetObjectInfoNode()
+	var enc string
+	if oi != nil {
+		enc, _ = oi.GetPropertyMap()[CharacterEncodingTerm].(string)
+		if len(enc) == 0 {
+			return encoding.Nop, nil
+		}
 	}
 	return UnknownEncodingIndex.Encoding(enc)
 }
 
-// NewNode creates a new node for the layer with the given ID and types
-func (l *Layer) NewNode(ID string, types ...string) *SchemaNode {
-	ret := NewSchemaNode(ID, types...)
+// NewNode creates a new node for the layer with the given ID and
+// types, and adds the node to the layer
+func (l *Layer) NewNode(ID string, types ...string) LayerNode {
+	ret := NewLayerNode(ID, types...)
 	l.AddNode(ret)
 	return ret
 }
 
-// GetTargetTypes returns the value of the targetType field
+// GetTargetTypes returns the value of the targetType field from the
+// layer information node
 func (l *Layer) GetTargetTypes() []string {
-	schNode := l.root
-	v := schNode.Properties[TargetType]
+	v := l.layerInfo.GetPropertyMap()[TargetType]
 	if arr, ok := v.([]interface{}); ok {
 		ret := make([]string, len(arr))
 		for _, x := range arr {
@@ -293,30 +136,54 @@ func (l *Layer) GetTargetTypes() []string {
 	return nil
 }
 
+// SetTargetTypes sets the target types of the layer
+func (l *Layer) SetTargetTypes(t ...string) {
+	arr := make([]interface{}, 0, len(t))
+	for _, x := range t {
+		arr = append(arr, x)
+	}
+	l.layerInfo.GetPropertyMap()[TargetType] = arr
+}
+
 // ForEachAttribute calls f with each attribute node, depth first. If
 // f returns false, iteration stops
-func (l *Layer) ForEachAttribute(f func(*SchemaNode) bool) {
-	var forEachAttribute func(*SchemaNode, func(*SchemaNode) bool) bool
-	forEachAttribute = func(root *SchemaNode, f func(*SchemaNode) bool) bool {
-		if root.IsAttributeNode() {
-			if !f(root) {
+func (l *Layer) ForEachAttribute(f func(LayerNode) bool) bool {
+	oi := l.GetObjectInfoNode()
+	if oi != nil {
+		return ForEachAttributeNode(oi, f)
+	}
+	return true
+}
+
+// ForEachAttributeNode calls f with each attribute node, depth
+// first. If f returns false, iteration stops. This function avoids loops
+func ForEachAttributeNode(root LayerNode, f func(LayerNode) bool) bool {
+	return forEachAttributeNode(root, f, map[LayerNode]struct{}{})
+}
+
+func forEachAttributeNode(root LayerNode, f func(LayerNode) bool, loop map[LayerNode]struct{}) bool {
+	if _, exists := loop[root]; exists {
+		return true
+	}
+	loop[root] = struct{}{}
+	defer delete(loop, root)
+
+	if root.IsAttributeNode() {
+		if !f(root) {
+			return false
+		}
+	}
+	for outgoing := root.AllOutgoingEdges(); outgoing.HasNext(); {
+		edge := outgoing.Next().(LayerEdge)
+		if !edge.IsAttributeTreeEdge() {
+			continue
+		}
+		next := edge.To().(LayerNode)
+		if next.HasType(AttributeTypes.Attribute) {
+			if !forEachAttributeNode(next, f, loop) {
 				return false
 			}
 		}
-		for outgoing := root.AllOutgoingEdges(); outgoing.HasNext(); {
-			edge := outgoing.Next().(*SchemaEdge)
-			if !edge.IsAttributeTreeEdge() {
-				continue
-			}
-			next := edge.To().(*SchemaNode)
-			if next.HasType(AttributeTypes.Attribute) {
-				if !forEachAttribute(next, f) {
-					return false
-				}
-			}
-		}
-		return true
 	}
-
-	forEachAttribute(l.root, f)
+	return true
 }

@@ -123,10 +123,12 @@ func Import(entities []CompiledEntity) ([]ImportedEntity, error) {
 
 		imported := ImportedEntity{}
 		imported.Entity = ctx.entities[i]
-		imported.Layer = ls.NewLayer(ctx.currentEntity.ID)
+		imported.Layer = ls.NewLayer()
+		imported.Layer.SetID(ctx.currentEntity.ID)
+		imported.Layer.GetLayerInfoNode().Connect(imported.Layer.NewNode(ctx.currentEntity.ID), ls.LayerRootTerm)
 		nodes := s.object.itr(ctx.currentEntity.ID, nil, imported.Layer)
 		for _, node := range nodes {
-			imported.Layer.GetRoot().Connect(node, ls.LayerTerms.Attributes)
+			imported.Layer.GetObjectInfoNode().Connect(node, ls.LayerTerms.Attributes)
 		}
 
 		ret = append(ret, imported)

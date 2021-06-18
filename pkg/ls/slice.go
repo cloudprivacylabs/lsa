@@ -17,48 +17,61 @@ import ()
 
 // GetSliceByTermsFunc is used in the Slice function to select nodes by
 // the properties it contains.
-func GetSliceByTermsFunc(includeTerms []string) func(*Layer, *SchemaNode) *SchemaNode {
+func GetSliceByTermsFunc(includeTerms []string) func(*Layer, LayerNode) LayerNode {
 	incl := make(map[string]struct{})
 	for _, x := range includeTerms {
 		incl[x] = struct{}{}
 	}
-	return func(layer *Layer, node *SchemaNode) *SchemaNode {
+	return func(layer *Layer, node LayerNode) LayerNode {
 		properties := make(map[string]interface{})
-		for k, v := range node.Properties {
+		for k, v := range node.GetPropertyMap() {
 			if _, ok := incl[k]; ok {
 				properties[k] = v
 			}
 		}
 		if len(properties) > 0 {
-			newNode := node.Clone()
-			newNode.Properties = properties
+			newNode := node.Clone().(*schemaNode)
+			newNode.properties = properties
 			return newNode
 		}
 		return nil
 	}
 }
 
-// IncludeAllNodesInSlliceFunc includes all the nodes in the slice
-var IncludeAllNodesInSliceFunc = func(layer *Layer, node *SchemaNode) *SchemaNode {
+// IncludeAllNodesInSliceFunc includes all the nodes in the slice
+var IncludeAllNodesInSliceFunc = func(layer *Layer, node LayerNode) LayerNode {
 	return node.Clone()
 }
 
-func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, *SchemaNode) *SchemaNode) *Layer {
-	ret := NewLayer("", layerType)
-	rootNode := ret.GetRoot()
-	for targets := layer.GetRoot().AllOutgoingEdges(); targets.HasNext(); {
-		edge := targets.Next().(*SchemaEdge)
-		if edge.IsAttributeTreeEdge() {
-			newNode := slice(ret, layer.GetRoot(), nodeFilter, map[*SchemaNode]struct{}{})
-			if newNode != nil {
-				rootNode.Connect(newNode, edge.GetLabel())
+func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, LayerNode) LayerNode) *Layer {
+	ret := NewLayer()
+	ret.SetLayerType(layerType)
+	rootNode := NewLayerNode("")
+	sourceRoot := layer.GetObjectInfoNode()
+	if sourceRoot != nil {
+		rootNode.SetID(sourceRoot.GetID())
+		rootNode.SetTypes(sourceRoot.GetTypes()...)
+	}
+	hasNodes := false
+	if sourceRoot != nil {
+		for targets := sourceRoot.AllOutgoingEdges(); targets.HasNext(); {
+			edge := targets.Next().(LayerEdge)
+			if edge.IsAttributeTreeEdge() {
+				newNode := slice(ret, rootNode, nodeFilter, map[LayerNode]struct{}{})
+				if newNode != nil {
+					rootNode.Connect(newNode, edge.GetLabel())
+					hasNodes = true
+				}
 			}
 		}
+	}
+	if hasNodes {
+		ret.GetLayerInfoNode().Connect(rootNode, LayerRootTerm)
 	}
 	return ret
 }
 
-func slice(targetLayer *Layer, sourceNode *SchemaNode, nodeFilter func(*Layer, *SchemaNode) *SchemaNode, ctx map[*SchemaNode]struct{}) *SchemaNode {
+func slice(targetLayer *Layer, sourceNode LayerNode, nodeFilter func(*Layer, LayerNode) LayerNode, ctx map[LayerNode]struct{}) LayerNode {
 	// Avoid loops
 	if _, seen := ctx[sourceNode]; seen {
 		return nil
@@ -72,8 +85,8 @@ func slice(targetLayer *Layer, sourceNode *SchemaNode, nodeFilter func(*Layer, *
 	targetNode := nodeFilter(targetLayer, sourceNode)
 
 	for edges := sourceNode.AllOutgoingEdges(); edges.HasNext(); {
-		edge := edges.Next().(*SchemaEdge)
-		newTo := slice(targetLayer, edge.To().(*SchemaNode), nodeFilter, ctx)
+		edge := edges.Next().(LayerEdge)
+		newTo := slice(targetLayer, edge.To().(LayerNode), nodeFilter, ctx)
 		if newTo != nil {
 			// If targetNode was filtered out, it has to be included now
 			if targetNode == nil {

@@ -21,7 +21,6 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
 
 func init() {
@@ -58,13 +57,10 @@ var composeCmd = &cobra.Command{
 				}
 			}
 		} else {
-			repo := fs.New(repoDir, func(msg string, err error) {
-				fmt.Println("%s: %v", msg, err)
-			})
-			if err := repo.Load(true); err != nil {
+			repo, err := getRepo(repoDir)
+			if err != nil {
 				failErr(err)
 			}
-			var err error
 			output, err = repo.GetComposedSchema(args[0])
 			if err != nil {
 				failErr(err)

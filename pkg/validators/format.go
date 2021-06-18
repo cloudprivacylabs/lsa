@@ -33,7 +33,7 @@ func (validator JsonFormatValidator) ValidateValue(value interface{}, format str
 }
 
 // Validate validates the node value if it is non-nil
-func (validator JsonFormatValidator) Validate(docNode ls.DocumentNode, schemaNode *ls.SchemaNode) error {
+func (validator JsonFormatValidator) Validate(docNode ls.DocumentNode, schemaNode ls.LayerNode) error {
 	if docNode == nil {
 		return nil
 	}
@@ -41,7 +41,7 @@ func (validator JsonFormatValidator) Validate(docNode ls.DocumentNode, schemaNod
 	if value == nil {
 		return nil
 	}
-	return validator.ValidateValue(value, schemaNode.Compiled[JsonFormatTerm].(string))
+	return validator.ValidateValue(value, schemaNode.GetCompiledDataMap()[JsonFormatTerm].(string))
 }
 
 func (validator JsonFormatValidator) CompileTerm(_ string, value interface{}) (interface{}, error) {
