@@ -21,7 +21,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -163,7 +162,7 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 			}
 			switch typeName {
 			case ls.SchemaTerm, ls.OverlayTerm, "Schema", "Overlay":
-				layer, err := jsonld.UnmarshalLayer(obj)
+				layer, err := ls.UnmarshalLayer(obj)
 				if err != nil {
 					warnings = append(warnings, fmt.Sprintf("Cannot parse %s: %v", fname, err))
 					continue
@@ -176,7 +175,7 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 				}
 				ret = append(ret, entry)
 			case ls.SchemaManifestTerm, "SchemaManifest":
-				manifest, err := jsonld.UnmarshalSchemaManifest(obj)
+				manifest, err := ls.UnmarshalSchemaManifest(obj)
 				if err != nil {
 					warnings = append(warnings, fmt.Sprintf("Cannot parse %s: %v", fname, err))
 					continue
@@ -275,7 +274,7 @@ func (repo *Repository) loadSchemaManifest(file string) (*ls.SchemaManifest, err
 	if err != nil {
 		return nil, err
 	}
-	ret, err := jsonld.UnmarshalSchemaManifest(data)
+	ret, err := ls.UnmarshalSchemaManifest(data)
 	if err != nil {
 		return nil, err
 	}
@@ -287,7 +286,7 @@ func (repo *Repository) loadLayer(file string) *ls.Layer {
 	if err != nil {
 		panic("Cannot read " + file)
 	}
-	ret, err := jsonld.UnmarshalLayer(data)
+	ret, err := ls.UnmarshalLayer(data)
 	if err != nil {
 		panic("Cannot parse layer: " + err.Error())
 	}

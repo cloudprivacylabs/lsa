@@ -127,6 +127,7 @@ func mergeNonattributeGraph(targetLayer *Layer, targetNode, sourceNode LayerNode
 		targetTo, exists := nodeMap[toNode]
 		if !exists {
 			targetTo = toNode.Clone()
+			targetLayer.AddNode(targetTo)
 			nodeMap[toNode] = targetTo
 		}
 		// Connect the nodes
@@ -140,7 +141,7 @@ func mergeNonattributeGraph(targetLayer *Layer, targetNode, sourceNode LayerNode
 func ComposeProperties(target, source map[string]interface{}) error {
 	for k, v := range source {
 		newValue, _ := target[k]
-		newValue, err := GetComposerForTerm(k).Compose(v, newValue)
+		newValue, err := GetComposerForTerm(k).Compose(newValue, v)
 		if err != nil {
 			return ErrTerm{Term: k, Err: err}
 		}

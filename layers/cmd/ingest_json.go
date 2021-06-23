@@ -22,7 +22,6 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/pkg/dot"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
-	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
@@ -77,7 +76,7 @@ var ingestJSONCmd = &cobra.Command{
 				if err != nil {
 					failErr(err)
 				}
-				layer, err = jsonld.UnmarshalLayer(v)
+				layer, err = ls.UnmarshalLayer(v)
 				if err != nil {
 					failErr(err)
 				}

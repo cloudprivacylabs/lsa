@@ -20,7 +20,6 @@ import (
 	"github.com/spf13/cobra"
 
 	jsonsch "github.com/cloudprivacylabs/lsa/pkg/json"
-	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -108,7 +107,7 @@ are Go templates, you can reference entity names and references using {{.name}} 
 				} else {
 					layerIDs = append(layerIDs, layer.GetID())
 				}
-				data, err := json.MarshalIndent(jsonld.MarshalLayer(layer), "", "  ")
+				data, err := json.MarshalIndent(ls.MarshalLayer(layer), "", "  ")
 				if err != nil {
 					failErr(err)
 				}
@@ -122,7 +121,7 @@ are Go templates, you can reference entity names and references using {{.name}} 
 					Schema:     baseID,
 					Overlays:   layerIDs,
 				}
-				data, _ := json.MarshalIndent(jsonld.MarshalSchemaManifest(&sch), "", "  ")
+				data, _ := json.MarshalIndent(ls.MarshalSchemaManifest(&sch), "", "  ")
 				ioutil.WriteFile(execTemplate(req.Schema, tdata), data, 0664)
 			}
 		}

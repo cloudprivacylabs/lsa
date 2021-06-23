@@ -82,6 +82,13 @@ func UnmarshalLayer(in interface{}) (*Layer, error) {
 		}
 		target.GetLayerInfoNode().Connect(layerRoot.graphNode, LayerRootTerm)
 	}
+
+	for _, node := range inputNodes {
+		if node.graphNode == nil {
+			node.graphNode = target.NewNode(node.id)
+		}
+	}
+
 	unmarshalAnnotations(target, rootNode, inputNodes)
 
 	if len(target.GetLayerType()) == 0 {
@@ -112,9 +119,6 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 		return nil
 	}
 	inode.processed = true
-	if inode.graphNode == nil {
-		inode.graphNode = target.NewNode(inode.id)
-	}
 	attribute := inode.graphNode
 	attribute.AddTypes(AttributeTypes.Attribute)
 	// Process the nested attribute nodes
@@ -186,7 +190,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 			// m must be a list
 			elements := GetListElements(val)
 			if elements == nil {
-				return MakeErrInvalidInput(inode.id)
+				return MakeErrInvalidInput(inode.id, "@list expected")
 			}
 			for _, element := range elements {
 				nnode := allNodes[GetNodeID(element)]

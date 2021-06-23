@@ -8,18 +8,14 @@ import (
 )
 
 // PatternTerm validates agains a regex
-const PatternTerm = ls.LS + "validation#pattern"
+var PatternTerm = ls.NewTerm(ls.LS+"validation#pattern", false, false, ls.OverrideComposition, struct {
+	PatternValidator
+}{
+	PatternValidator{},
+})
 
 // PatternValidator validates a string value agains a regex
 type PatternValidator struct{}
-
-func init() {
-	ls.RegisterTermMetadata(PatternTerm, struct {
-		PatternValidator
-	}{
-		PatternValidator{},
-	})
-}
 
 // Validate validates the node value if it is non-nil
 func (validator PatternValidator) Validate(docNode ls.DocumentNode, schemaNode ls.LayerNode) error {

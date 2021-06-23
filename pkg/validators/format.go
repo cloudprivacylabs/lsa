@@ -7,18 +7,14 @@ import (
 )
 
 // JsonFormatTerm validates if the value matches one of the json format implementations
-const JsonFormatTerm = ls.LS + "validation#json/format"
+var JsonFormatTerm = ls.NewTerm(ls.LS+"validation#json/format", false, false, ls.OverrideComposition, struct {
+	JsonFormatValidator
+}{
+	JsonFormatValidator{},
+})
 
 // JsonFormatValidator checks if the input value matches a given format
 type JsonFormatValidator struct{}
-
-func init() {
-	ls.RegisterTermMetadata(JsonFormatTerm, struct {
-		JsonFormatValidator
-	}{
-		JsonFormatValidator{},
-	})
-}
 
 // ValidateValue checks if the value matches the format
 func (validator JsonFormatValidator) ValidateValue(value interface{}, format string) error {

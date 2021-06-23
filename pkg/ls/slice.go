@@ -13,8 +13,6 @@
 // limitations under the License.
 package ls
 
-import ()
-
 // GetSliceByTermsFunc is used in the Slice function to select nodes by
 // the properties it contains.
 func GetSliceByTermsFunc(includeTerms []string) func(*Layer, LayerNode) LayerNode {
@@ -47,6 +45,7 @@ func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, LayerNode) L
 	ret := NewLayer()
 	ret.SetLayerType(layerType)
 	rootNode := NewLayerNode("")
+	ret.AddNode(rootNode)
 	sourceRoot := layer.GetObjectInfoNode()
 	if sourceRoot != nil {
 		rootNode.SetID(sourceRoot.GetID())
@@ -57,7 +56,7 @@ func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, LayerNode) L
 		for targets := sourceRoot.AllOutgoingEdges(); targets.HasNext(); {
 			edge := targets.Next().(LayerEdge)
 			if edge.IsAttributeTreeEdge() {
-				newNode := slice(ret, rootNode, nodeFilter, map[LayerNode]struct{}{})
+				newNode := slice(ret, edge.To().(LayerNode), nodeFilter, map[LayerNode]struct{}{})
 				if newNode != nil {
 					rootNode.Connect(newNode, edge.GetLabel())
 					hasNodes = true
@@ -93,8 +92,14 @@ func slice(targetLayer *Layer, sourceNode LayerNode, nodeFilter func(*Layer, Lay
 				targetNode = targetLayer.NewNode(sourceNode.GetID(), sourceNode.GetTypes()...)
 			}
 			// Add the edge
+			if targetNode.GetGraph() == nil {
+				targetLayer.AddNode(targetNode)
+			}
 			targetLayer.AddEdge(targetNode, newTo, edge.Clone())
 		}
+	}
+	if targetNode != nil && targetNode.GetGraph() == nil {
+		targetLayer.AddNode(targetNode)
 	}
 	return targetNode
 }

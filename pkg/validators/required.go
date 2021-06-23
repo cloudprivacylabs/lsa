@@ -5,18 +5,14 @@ import (
 )
 
 // RequiredTerm validates if a required properties exist
-const RequiredTerm = ls.LS + "validation#required"
+var RequiredTerm = ls.NewTerm(ls.LS+"validation#required", false, false, ls.OverrideComposition, struct {
+	RequiredValidator
+}{
+	RequiredValidator{},
+})
 
 // RequiredValidator validates if a required value exists
 type RequiredValidator struct{}
-
-func init() {
-	ls.RegisterTermMetadata(RequiredTerm, struct {
-		RequiredValidator
-	}{
-		RequiredValidator{},
-	})
-}
 
 // Validate checks if value is nil. If value is nil and it is required, returns an error
 func (validator RequiredValidator) Validate(docNode ls.DocumentNode, schemaNode ls.LayerNode) error {

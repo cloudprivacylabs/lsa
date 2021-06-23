@@ -7,18 +7,14 @@ import (
 )
 
 // EnumTerm is used for enumeration validator
-const EnumTerm = ls.LS + "validation#enumeration"
+var EnumTerm = ls.NewTerm(ls.LS+"validation#enumeration", false, false, ls.OverrideComposition, struct {
+	EnumValidator
+}{
+	EnumValidator{},
+})
 
 // EnumValidator checks if a value is equal to one of the given options.
 type EnumValidator struct{}
-
-func init() {
-	ls.RegisterTermMetadata(EnumTerm, struct {
-		EnumValidator
-	}{
-		EnumValidator{},
-	})
-}
 
 // ValidateValue checks if the value is the same as one of the
 // options.

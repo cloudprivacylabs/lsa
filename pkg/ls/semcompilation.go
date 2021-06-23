@@ -28,7 +28,7 @@ type NodeCompiler interface {
 }
 
 // EdgeCompiler interface represents term compilation algorithm when
-// the term is an edge/
+// the term is an edge
 //
 // During schema compilation, if the term metadata for the edge label
 // implements EdgeCompiler, this method is called.

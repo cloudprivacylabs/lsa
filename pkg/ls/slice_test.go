@@ -18,32 +18,34 @@ import (
 	"testing"
 )
 
-type marshalTestCase struct {
-	Name      string      `json:"name"`
-	Input     interface{} `json:"input"`
-	Marshaled interface{} `json:"marshaled"`
+type sliceTestCase struct {
+	Name     string      `json:"name"`
+	Schema   interface{} `json:"schema"`
+	Terms    []string    `json:"terms"`
+	Expected interface{} `json:"expected"`
 }
 
-func (tc marshalTestCase) getName() string { return tc.Name }
+func (tc sliceTestCase) getName() string { return tc.Name }
 
-func (tc marshalTestCase) run(t *testing.T) {
+func (tc sliceTestCase) run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
-	layer, err := UnmarshalLayer(tc.Input)
+	sch, err := UnmarshalLayer(tc.Schema)
 	if err != nil {
 		t.Errorf("%s: Cannot unmarshal layer: %v", tc.Name, err)
 		return
 	}
-	marshaled := MarshalLayer(layer)
-	if err := deepEqual(toMap(marshaled), toMap(tc.Marshaled)); err != nil {
-		expected, _ := json.MarshalIndent(toMap(tc.Marshaled), "", "  ")
+	slice := sch.Slice(OverlayTerm, GetSliceByTermsFunc(tc.Terms))
+	marshaled := MarshalLayer(slice)
+	if err := deepEqual(toMap(marshaled), toMap(tc.Expected)); err != nil {
+		expected, _ := json.MarshalIndent(toMap(tc.Expected), "", "  ")
 		got, _ := json.MarshalIndent(toMap(marshaled), "", "  ")
 		t.Errorf("%v %s: Expected:\n%s\nGot:\n%s\n", err, tc.Name, string(expected), string(got))
 	}
 }
 
-func TestMarshaling(t *testing.T) {
-	runTestsFromFile(t, "testdata/marshalcases.json", func(in json.RawMessage) (testCase, error) {
-		var c marshalTestCase
+func TestSlice(t *testing.T) {
+	runTestsFromFile(t, "testdata/slicecases.json", func(in json.RawMessage) (testCase, error) {
+		var c sliceTestCase
 		err := json.Unmarshal(in, &c)
 		return c, err
 	})

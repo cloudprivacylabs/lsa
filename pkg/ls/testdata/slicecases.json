@@ -1,0 +1,60 @@
+[
+    {
+        "name": "basicSlice",
+        "schema": {
+            "@context": {
+                "ls":"https://lschema.org/"
+            },
+            "@type":"ls:Schema",
+            "@id": "http://testSchema",
+            "https://lschema.org/layer": {
+                "@type": ["https://lschema.org/Object",
+                          "https://lschema.org/targetType"],
+                "ls:Object#attributes": [
+                    {
+                        "@id":  "attr1",
+                        "@type": "ls:Value",
+                        "http://someKey" : [
+                            {"@value": "someValue"}
+                        ]
+                    },
+                    {
+                        "@id":  "attr2" ,
+                        "@type": "ls:Value",
+                        "http://privacy": [
+                            {
+                                "@value": "flg1"
+                            }
+                        ]
+                    },
+                    {
+                        "@id":"attr3",
+                        "@type": "ls:Value",
+                        "http://privacy": [
+                            {"@value": "flg2"},
+                            {"@value": "flg3"}
+                        ]
+                    }
+                ]
+            }
+        },
+        "terms": [ "http://someKey" ],
+        "expected": [{
+            "@type":["https://lschema.org/Overlay"],
+            "https://lschema.org/layer": [{
+                "@type": ["https://lschema.org/Attribute",
+                          "https://lschema.org/Object",
+                          "https://lschema.org/targetType"],
+                "https://lschema.org/Object#attributes": [
+                    {
+                        "@id":  "attr1",
+                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
+                        "http://someKey" : [
+                            {"@value": "someValue"}
+                        ]
+                    }
+                ]
+            }]
+        }]
+    }   
+]

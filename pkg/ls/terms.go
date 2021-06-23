@@ -15,29 +15,31 @@ package ls
 
 const LS = "https://lschema.org/"
 
-// SchemaTerm is the layer type for schemas
-const SchemaTerm = LS + "Schema"
+var (
+	// SchemaTerm is the layer type for schemas
+	SchemaTerm = NewTerm(LS+"Schema", false, false, NoComposition, nil)
 
-// OverlayTerm is the layer type for overlays
-const OverlayTerm = LS + "Overlay"
+	// OverlayTerm is the layer type for overlays
+	OverlayTerm = NewTerm(LS+"Overlay", false, false, NoComposition, nil)
 
-// SchemaManifestTerm is the schema manifest type
-const SchemaManifestTerm = LS + "SchemaManifest"
+	// SchemaManifestTerm is the schema manifest type
+	SchemaManifestTerm = NewTerm(LS+"SchemaManifest", false, false, NoComposition, nil)
 
-// TargetType is the term specifying the data type for the attribute defined
-const TargetType = LS + "targetType"
+	// TargetType is the term specifying the data type for the attribute defined
+	TargetType = NewTerm(LS+"targetType", false, false, SetComposition, nil)
 
-// DescriptionTerm is used for comments/descriptions
-const DescriptionTerm = LS + "description"
+	// DescriptionTerm is used for comments/descriptions
+	DescriptionTerm = NewTerm(LS+"description", false, false, SetComposition, nil)
 
-// AttributeNameTerm represents the name of an attribute
-const AttributeNameTerm = LS + "attributeName"
+	// AttributeNameTerm represents the name of an attribute
+	AttributeNameTerm = NewTerm(LS+"attributeName", false, false, ErrorComposition, nil)
 
-// AttributeIndexTerm represents the index of an array element
-const AttributeIndexTerm = LS + "attributeIndex"
+	// AttributeIndexTerm represents the index of an array element
+	AttributeIndexTerm = NewTerm(LS+"attributeIndex", false, false, ErrorComposition, nil)
 
-// LayerRootTerm is an edge term that connects layer node to the root node of the schema
-const LayerRootTerm = LS + "layer"
+	// LayerRootTerm is an edge term that connects layer node to the root node of the schema
+	LayerRootTerm = NewTerm(LS+"layer", false, false, ErrorComposition, nil)
+)
 
 // AttributeTypes defines the terms describing attribute types. Each
 // attribute must have one of the attribute types plus the Attribute
@@ -51,13 +53,13 @@ var AttributeTypes = struct {
 	Polymorphic string
 	Attribute   string
 }{
-	Value:       LS + "Value",
-	Object:      LS + "Object",
-	Array:       LS + "Array",
-	Reference:   LS + "Reference",
-	Composite:   LS + "Composite",
-	Polymorphic: LS + "Polymorphic",
-	Attribute:   LS + "Attribute",
+	Value:       NewTerm(LS+"Value", false, false, OverrideComposition, nil),
+	Object:      NewTerm(LS+"Object", false, false, OverrideComposition, nil),
+	Array:       NewTerm(LS+"Array", false, false, OverrideComposition, nil),
+	Reference:   NewTerm(LS+"Reference", false, false, OverrideComposition, nil),
+	Composite:   NewTerm(LS+"Composite", false, false, OverrideComposition, nil),
+	Polymorphic: NewTerm(LS+"Polymorphic", false, false, OverrideComposition, nil),
+	Attribute:   NewTerm(LS+"Attribute", false, false, OverrideComposition, nil),
 }
 
 // LayerTerms includes type specific terms recognized by the schema
@@ -77,12 +79,12 @@ var LayerTerms = struct {
 	// All options of a polymorphic attribute
 	OneOf string
 }{
-	Attributes:    LS + "Object#attributes",
-	AttributeList: LS + "Object#attributeList",
-	Reference:     LS + "Reference#reference",
-	ArrayItems:    LS + "Array#items",
-	AllOf:         LS + "Composite#allOf",
-	OneOf:         LS + "Polymorphic#oneOf",
+	Attributes:    NewTerm(LS+"Object#attributes", false, false, ErrorComposition, nil),
+	AttributeList: NewTerm(LS+"Object#attributeList", false, false, ErrorComposition, nil),
+	Reference:     NewTerm(LS+"Reference#reference", false, false, ErrorComposition, nil),
+	ArrayItems:    NewTerm(LS+"Array#items", false, false, ErrorComposition, nil),
+	AllOf:         NewTerm(LS+"Composite#allOf", false, false, ErrorComposition, nil),
+	OneOf:         NewTerm(LS+"Polymorphic#oneOf", false, false, ErrorComposition, nil),
 }
 
 var DataEdgeTerms = struct {
@@ -91,8 +93,8 @@ var DataEdgeTerms = struct {
 	// Edge label linking array element nodes to an array node
 	ArrayElements string
 }{
-	ObjectAttributes: LS + "data/object#attributes",
-	ArrayElements:    LS + "data/array#elements",
+	ObjectAttributes: NewTerm(LS+"data/object#attributes", false, false, ErrorComposition, nil),
+	ArrayElements:    NewTerm(LS+"data/array#elements", false, false, ErrorComposition, nil),
 }
 
 // FilterAttributeTypes returns all recognized attribute types from
@@ -113,151 +115,39 @@ func FilterAttributeTypes(types []string) []string {
 	return ret
 }
 
-// CharacterEncodingTerm is used to specify a character encoding for
-// the data processed with the layer
-const CharacterEncodingTerm = LS + "characterEncoding"
+var (
+	// CharacterEncodingTerm is used to specify a character encoding for
+	// the data processed with the layer
+	CharacterEncodingTerm = NewTerm(LS+"characterEncoding", false, false, OverrideComposition, nil)
 
-// InstanceOfTerm is an edge term that is used to connect values with
-// their schema specifications
-const InstanceOfTerm = LS + "data#instanceOf"
+	// InstanceOfTerm is an edge term that is used to connect values with
+	// their schema specifications
+	InstanceOfTerm = NewTerm(LS+"data#instanceOf", false, false, ErrorComposition, nil)
 
-const BundleTerm = LS + "SchemaManifest#bundle"
-const SchemaBaseTerm = LS + "SchemaManifest#schema"
-const OverlaysTerm = LS + "SchemaManifest#overlays"
+	BundleTerm     = NewTerm(LS+"SchemaManifest#bundle", false, false, ErrorComposition, nil)
+	SchemaBaseTerm = NewTerm(LS+"SchemaManifest#schema", true, false, ErrorComposition, nil)
+	OverlaysTerm   = NewTerm(LS+"SchemaManifest#overlays", true, true, ErrorComposition, nil)
+)
 
-// All registered terms and their associated metadata
-var termMetadata = map[string]interface{}{
-	SchemaTerm: struct {
-		CompositionType
-	}{
-		NoComposition,
-	},
-	OverlayTerm: struct {
-		CompositionType
-	}{
-		NoComposition,
-	},
-	TargetType: struct {
-		CompositionType
-	}{
-		SetComposition,
-	},
+var registeredTerms = map[string]TermSemantics{}
 
-	DescriptionTerm: struct {
-		CompositionType
-	}{
-		SetComposition,
-	},
-	AttributeNameTerm: struct {
-		CompositionType
-	}{
-		ErrorComposition,
-	},
-	AttributeIndexTerm: struct {
-		CompositionType
-	}{
-		ErrorComposition,
-	},
+func RegisterTerm(t TermSemantics) {
+	_, ok := registeredTerms[t.Term]
+	if ok {
+		panic("Duplicate term :" + t.Term)
+	}
+	registeredTerms[t.Term] = t
+}
 
-	AttributeTypes.Value: struct {
-		CompositionType
-	}{
-		OverrideComposition,
-	},
-	AttributeTypes.Object: struct {
-		CompositionType
-	}{
-		OverrideComposition,
-	},
-	AttributeTypes.Array: struct {
-		CompositionType
-	}{
-		OverrideComposition,
-	},
-	AttributeTypes.Reference: struct {
-		CompositionType
-	}{
-		OverrideComposition,
-	},
-	AttributeTypes.Composite: struct {
-		CompositionType
-	}{
-		OverrideComposition,
-	},
-	AttributeTypes.Polymorphic: struct {
-		CompositionType
-	}{
-		OverrideComposition,
-	},
-	AttributeTypes.Attribute: struct {
-		CompositionType
-	}{
-		OverrideComposition,
-	},
-
-	LayerTerms.Attributes: struct {
-		CompositionType
-	}{
-		ErrorComposition,
-	},
-	LayerTerms.AttributeList: struct {
-		CompositionType
-	}{
-		ErrorComposition,
-	},
-	LayerTerms.Reference: struct {
-		CompositionType
-	}{
-		ErrorComposition,
-	},
-	LayerTerms.ArrayItems: struct {
-		CompositionType
-	}{
-		ErrorComposition,
-	},
-	LayerTerms.AllOf: struct {
-		CompositionType
-	}{
-		ErrorComposition,
-	},
-	LayerTerms.OneOf: struct {
-		CompositionType
-	}{
-		ErrorComposition,
-	},
-
-	CharacterEncodingTerm: struct {
-		CompositionType
-	}{
-		OverrideComposition,
-	},
-	InstanceOfTerm: struct {
-		CompositionType
-	}{
-		ErrorComposition,
-	},
-
-	DataEdgeTerms.ObjectAttributes: struct {
-		CompositionType
-	}{
-		ErrorComposition,
-	},
-	DataEdgeTerms.ArrayElements: struct {
-		CompositionType
-	}{
-		ErrorComposition,
-	},
+func GetTermInfo(term string) TermSemantics {
+	t, ok := registeredTerms[term]
+	if !ok {
+		return TermSemantics{Term: term, Composition: SetComposition}
+	}
+	return t
 }
 
 // GetTermMetadata returns metadata about a term
 func GetTermMetadata(term string) interface{} {
-	return termMetadata[term]
-}
-
-// RegisterTermMetadata registers metadata for a term
-func RegisterTermMetadata(term string, md interface{}) {
-	if _, ok := termMetadata[term]; ok {
-		panic("Duplicate term: " + term)
-	}
-	termMetadata[term] = md
+	return GetTermInfo(term).Metadata
 }
