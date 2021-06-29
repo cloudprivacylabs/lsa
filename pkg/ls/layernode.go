@@ -56,7 +56,7 @@ type LayerNode interface {
 	// GetPropertyMap returns the name/value pairs of the node. The
 	// values are either string or []string. When cloned, the new node
 	// receives a deep copy of the map
-	GetPropertyMap() map[string]interface{}
+	GetPropertyMap() map[string]*PropertyValue
 
 	// Returns the compiled data map. This map is used to store
 	// compilation information related to the node, and its contents are
@@ -78,19 +78,19 @@ type schemaNode struct {
 	types []string
 
 	// Properties associated with the node. These are assumed to be JSON-types
-	properties map[string]interface{}
+	properties map[string]*PropertyValue
 	// These can be set during compilation. They are shallow-cloned
 	compiled map[interface{}]interface{}
 }
 
 func (a *schemaNode) GetCompiledDataMap() map[interface{}]interface{} { return a.compiled }
 
-func (a *schemaNode) GetPropertyMap() map[string]interface{} { return a.properties }
+func (a *schemaNode) GetPropertyMap() map[string]*PropertyValue { return a.properties }
 
 // NewLayerNode returns a new schema node with the given types
 func NewLayerNode(ID string, types ...string) LayerNode {
 	ret := schemaNode{
-		properties: make(map[string]interface{}),
+		properties: make(map[string]*PropertyValue),
 		compiled:   make(map[interface{}]interface{}),
 	}
 	ret.AddTypes(types...)
@@ -167,7 +167,7 @@ func (a *schemaNode) IsAttributeNode() bool {
 // assigned to the new node
 func (a *schemaNode) Clone() LayerNode {
 	ret := NewLayerNode(a.GetID(), a.GetTypes()...).(*schemaNode)
-	ret.properties = copyIntf(a.properties).(map[string]interface{})
+	ret.properties = CopyPropertyMap(a.properties)
 	ret.compiled = a.compiled
 	return ret
 }

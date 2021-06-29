@@ -44,14 +44,6 @@ type objectSchema struct {
 	required   []string
 }
 
-func (obj objectSchema) getRequired() []interface{} {
-	required := make([]interface{}, 0, len(obj.required))
-	for _, x := range obj.required {
-		required = append(required, x)
-	}
-	return required
-}
-
 func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer) ls.LayerNode {
 	return schemaAttrs(entityId, append(name, "*"), a.items, layer)
 }
@@ -69,30 +61,26 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 	id := entityId + "#" + strings.Join(name, ".")
 	newNode := layer.NewNode(id)
 	if len(attr.format) > 0 {
-		newNode.GetPropertyMap()[validators.JsonFormatTerm] = attr.format
+		newNode.GetPropertyMap()[validators.JsonFormatTerm] = ls.StringPropertyValue(attr.format)
 	}
 	if len(attr.pattern) > 0 {
-		newNode.GetPropertyMap()[validators.PatternTerm] = attr.pattern
+		newNode.GetPropertyMap()[validators.PatternTerm] = ls.StringPropertyValue(attr.pattern)
 	}
 	if len(attr.description) > 0 {
-		newNode.GetPropertyMap()[ls.DescriptionTerm] = attr.description
+		newNode.GetPropertyMap()[ls.DescriptionTerm] = ls.StringPropertyValue(attr.description)
 	}
 	if len(attr.typ) > 0 {
-		arr := make([]interface{}, 0, len(attr.typ))
-		for _, x := range attr.typ {
-			arr = append(arr, x)
-		}
-		newNode.GetPropertyMap()[ls.TargetType] = arr
+		newNode.GetPropertyMap()[ls.TargetType] = ls.StringSlicePropertyValue(attr.typ)
 	}
 	if len(attr.key) > 0 {
-		newNode.GetPropertyMap()[ls.AttributeNameTerm] = attr.key
+		newNode.GetPropertyMap()[ls.AttributeNameTerm] = ls.StringPropertyValue(attr.key)
 	}
 	if len(attr.enum) > 0 {
-		elements := make([]interface{}, 0, len(attr.enum))
+		elements := make([]string, 0, len(attr.enum))
 		for _, v := range attr.enum {
-			elements = append(elements, v)
+			elements = append(elements, fmt.Sprint(v))
 		}
-		newNode.GetPropertyMap()[validators.EnumTerm] = elements
+		newNode.GetPropertyMap()[validators.EnumTerm] = ls.StringSlicePropertyValue(elements)
 	}
 
 	if len(attr.reference) > 0 {
@@ -106,9 +94,8 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 		for _, x := range attrs {
 			newNode.Connect(x, ls.LayerTerms.AttributeList)
 		}
-		required := attr.object.getRequired()
-		if len(required) > 0 {
-			newNode.GetPropertyMap()[validators.RequiredTerm] = required
+		if len(attr.object.required) > 0 {
+			newNode.GetPropertyMap()[validators.RequiredTerm] = ls.StringSlicePropertyValue(attr.object.required)
 		}
 		return newNode
 	}

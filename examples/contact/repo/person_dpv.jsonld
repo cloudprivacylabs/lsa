@@ -11,17 +11,20 @@
      ],
     "@id": "http://example.org/Person/dpv",
     "@type": "Overlay",
-    "targetType": ["http://example.org/Person","dpv:DataSubject"],
-    "attributes": [
-        {
-           "@id": "http://example.org/Person/firstName",
-           "@type": "Value",
-           "hasPersonalDataCategory": [ "dpv:Name", "dpv:Identifying" ]
-        },
-        {
-           "@id": "http://example.org/Person/lastName",
-           "@type": "Value",
-           "hasPersonalDataCategory": [ "dpv:Name", "dpv:Identifying" ]
-        }
-    ]
+    "targetType": "http://example.org/Person",
+    "layer": {
+        "@type": [ "dpv:DataSubject"],
+        "attributes": [
+            {
+                "@id": "http://example.org/Person/firstName",
+                "@type": "Value",
+                "hasPersonalDataCategory": [ "dpv:Name", "dpv:Identifying" ]
+            },
+            {
+                "@id": "http://example.org/Person/lastName",
+                "@type": "Value",
+                "hasPersonalDataCategory": [ "dpv:Name", "dpv:Identifying" ]
+            }
+        ]
+    }
 }

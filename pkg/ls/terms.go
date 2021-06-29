@@ -101,7 +101,7 @@ var DataEdgeTerms = struct {
 // the given types array. This is mainly used for validation, to
 // ensure there is only one attribute type
 func FilterAttributeTypes(types []string) []string {
-	ret := make([]string, 0)
+	ret := make([]string, 0, len(types))
 	for _, x := range types {
 		if x == AttributeTypes.Value ||
 			x == AttributeTypes.Object ||
@@ -109,6 +109,24 @@ func FilterAttributeTypes(types []string) []string {
 			x == AttributeTypes.Reference ||
 			x == AttributeTypes.Composite ||
 			x == AttributeTypes.Polymorphic {
+			ret = append(ret, x)
+		}
+	}
+	return ret
+}
+
+// FilterNonLayerTypes returns the types that are not attribute or
+// layer related
+func FilterNonLayerTypes(types []string) []string {
+	ret := make([]string, 0, len(types))
+	for _, x := range types {
+		if x != AttributeTypes.Value &&
+			x != AttributeTypes.Object &&
+			x != AttributeTypes.Array &&
+			x != AttributeTypes.Reference &&
+			x != AttributeTypes.Composite &&
+			x != AttributeTypes.Polymorphic &&
+			x != AttributeTypes.Attribute {
 			ret = append(ret, x)
 		}
 	}

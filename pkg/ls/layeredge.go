@@ -27,7 +27,7 @@ type LayerEdge interface {
 	// unconnected to any nodes
 	Clone() LayerEdge
 
-	GetPropertyMap() map[string]interface{}
+	GetPropertyMap() map[string]*PropertyValue
 
 	GetCompiledDataMap() map[interface{}]interface{}
 }
@@ -35,18 +35,18 @@ type LayerEdge interface {
 // schemaEdge is a labeled graph edge between two schema nodes
 type schemaEdge struct {
 	digraph.EdgeHeader
-	properties map[string]interface{}
+	properties map[string]*PropertyValue
 	compiled   map[interface{}]interface{}
 }
 
 func (edge *schemaEdge) GetCompiledDataMap() map[interface{}]interface{} { return edge.compiled }
 
-func (edge *schemaEdge) GetPropertyMap() map[string]interface{} { return edge.properties }
+func (edge *schemaEdge) GetPropertyMap() map[string]*PropertyValue { return edge.properties }
 
 // NewLayerEdge returns a new initialized schema edge
 func NewLayerEdge(label string) LayerEdge {
 	ret := &schemaEdge{
-		properties: make(map[string]interface{}),
+		properties: make(map[string]*PropertyValue),
 		compiled:   make(map[interface{}]interface{}),
 	}
 	ret.SetLabel(label)
@@ -82,6 +82,6 @@ func (edge *schemaEdge) IsAttributeTreeEdge() bool {
 // Clone returns a copy of the schema edge
 func (e *schemaEdge) Clone() LayerEdge {
 	ret := NewLayerEdge(e.GetLabel()).(*schemaEdge)
-	ret.properties = copyIntf(e.properties).(map[string]interface{})
+	ret.properties = CopyPropertyMap(e.properties)
 	return ret
 }

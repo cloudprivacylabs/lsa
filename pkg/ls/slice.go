@@ -21,7 +21,7 @@ func GetSliceByTermsFunc(includeTerms []string) func(*Layer, LayerNode) LayerNod
 		incl[x] = struct{}{}
 	}
 	return func(layer *Layer, node LayerNode) LayerNode {
-		properties := make(map[string]interface{})
+		properties := make(map[string]*PropertyValue)
 		for k, v := range node.GetPropertyMap() {
 			if _, ok := incl[k]; ok {
 				properties[k] = v

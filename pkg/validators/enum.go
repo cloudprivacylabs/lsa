@@ -42,9 +42,12 @@ func (validator EnumValidator) Validate(docNode ls.DocumentNode, schemaNode ls.L
 	if value == nil {
 		return nil
 	}
-	options, _ := schemaNode.GetPropertyMap()[EnumTerm].([]interface{})
+	options := schemaNode.GetPropertyMap()[EnumTerm]
 	if options == nil {
 		return ls.ErrInvalidValidator{Validator: EnumTerm, Msg: "Invalid enum options"}
 	}
-	return validator.ValidateValue(value, options)
+	if options.IsString() {
+		return validator.ValidateValue(value, []interface{}{options.AsString()})
+	}
+	return validator.ValidateValue(value, options.AsInterfaceSlice())
 }

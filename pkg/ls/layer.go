@@ -103,7 +103,7 @@ func (l *Layer) GetEncoding() (encoding.Encoding, error) {
 	oi := l.GetObjectInfoNode()
 	var enc string
 	if oi != nil {
-		enc, _ = oi.GetPropertyMap()[CharacterEncodingTerm].(string)
+		enc = oi.GetPropertyMap()[CharacterEncodingTerm].AsString()
 		if len(enc) == 0 {
 			return encoding.Nop, nil
 		}
@@ -119,30 +119,25 @@ func (l *Layer) NewNode(ID string, types ...string) LayerNode {
 	return ret
 }
 
-// GetTargetTypes returns the value of the targetType field from the
+// GetTargetType returns the value of the targetType field from the
 // layer information node
-func (l *Layer) GetTargetTypes() []string {
+func (l *Layer) GetTargetType() string {
 	v := l.layerInfo.GetPropertyMap()[TargetType]
-	if arr, ok := v.([]interface{}); ok {
-		ret := make([]string, len(arr))
-		for _, x := range arr {
-			ret = append(ret, x.(string))
-		}
-		return ret
+	if v == nil {
+		return ""
 	}
-	if str, ok := v.(string); ok {
-		return []string{str}
-	}
-	return nil
+	return v.AsString()
 }
 
-// SetTargetTypes sets the target types of the layer
-func (l *Layer) SetTargetTypes(t ...string) {
-	arr := make([]interface{}, 0, len(t))
-	for _, x := range t {
-		arr = append(arr, x)
+// SetTargetType sets the targe types of the layer
+func (l *Layer) SetTargetType(t string) {
+	if oldT := l.GetTargetType(); len(oldT) > 0 {
+		if oin := l.GetObjectInfoNode(); oin != nil {
+			oin.RemoveTypes(oldT)
+			oin.AddTypes(t)
+		}
 	}
-	l.layerInfo.GetPropertyMap()[TargetType] = arr
+	l.layerInfo.GetPropertyMap()[TargetType] = StringPropertyValue(t)
 }
 
 // ForEachAttribute calls f with each attribute node, depth first. If

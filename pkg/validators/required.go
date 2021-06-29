@@ -19,7 +19,7 @@ func (validator RequiredValidator) Validate(docNode ls.DocumentNode, schemaNode 
 	if docNode == nil {
 		return nil
 	}
-	required := schemaNode.GetPropertyMap()[RequiredTerm].([]interface{})
+	required := schemaNode.GetPropertyMap()[RequiredTerm].AsStringSlice()
 	if len(required) > 0 {
 		names := make(map[string]struct{})
 		for nodes := docNode.AllOutgoingEdgesWithLabel(ls.DataEdgeTerms.ObjectAttributes).Targets(); nodes.HasNext(); {
@@ -29,11 +29,9 @@ func (validator RequiredValidator) Validate(docNode ls.DocumentNode, schemaNode 
 				names[str] = struct{}{}
 			}
 		}
-		for _, x := range required {
-			if str, ok := x.(string); ok {
-				if _, ok := names[str]; !ok {
-					return ls.ErrValidation{Validator: RequiredTerm, Msg: "Missing required attribute: %s" + str}
-				}
+		for _, str := range required {
+			if _, ok := names[str]; !ok {
+				return ls.ErrValidation{Validator: RequiredTerm, Msg: "Missing required attribute: %s" + str}
 			}
 		}
 	}

@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "$id": "http://layeredschemas.org/ls.schema.json",
+    "definitions": {
+        "Value": {
+            "type": "object",
+            "properties": {
+                "@id": {
+                    "type": "string"
+                }
+            },
+            "required": ["@id"]
+        },
+        
+        "Object": {
+            "type": "object",
+            "properties": {
+                "@type": {
+                    "const": "Object"
+                },
+                "attributes": {
+                            "type": "object",
+                            "properties": {
+                                "@id": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [ "@id" ],
+                            "additionalProperties": {
+                                "$ref": "#/definitions/Attribute"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "@type": {
+                            "const": "Object"
+                        },
+                        "attributeList": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Attribute"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

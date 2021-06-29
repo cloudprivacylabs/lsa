@@ -183,7 +183,7 @@ func (compiler Compiler) resolveReferences(ctx *compilerContext, root LayerNode)
 
 func (compiler Compiler) resolveReference(ctx *compilerContext, node LayerNode) error {
 	properties := node.GetPropertyMap()
-	ref := properties[LayerTerms.Reference].(string)
+	ref := properties[LayerTerms.Reference].AsString()
 	// already compiled, or being compiled?
 	compiled := ctx.compiled[ref]
 	if compiled == nil {

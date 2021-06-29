@@ -23,13 +23,11 @@ func (layer *Layer) Compose(source *Layer) error {
 	if source.GetLayerType() != OverlayTerm {
 		return ErrCompositionSourceNotOverlay
 	}
-	// Check if target types are compatible. If they are non-empty, then
-	// intersection must be non-empty
-	layerTypes := layer.GetTargetTypes()
-	sourceTypes := source.GetTargetTypes()
-	if len(layerTypes) > 0 && len(sourceTypes) > 0 {
-		intersection := StringSetIntersection(layerTypes, sourceTypes)
-		if len(intersection) == 0 {
+	// Check if target types are compatible. If they are non-empty, they must be the same
+	layerType := layer.GetTargetType()
+	sourceType := source.GetTargetType()
+	if len(layerType) > 0 && len(sourceType) > 0 {
+		if layerType != sourceType {
 			return ErrIncompatibleComposition
 		}
 	}
@@ -138,7 +136,7 @@ func mergeNonattributeGraph(targetLayer *Layer, targetNode, sourceNode LayerNode
 
 // ComposeProperties will combine the properties in source to
 // target. The target properties will be modified directly
-func ComposeProperties(target, source map[string]interface{}) error {
+func ComposeProperties(target, source map[string]*PropertyValue) error {
 	for k, v := range source {
 		newValue, _ := target[k]
 		newValue, err := GetComposerForTerm(k).Compose(newValue, v)

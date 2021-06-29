@@ -15,6 +15,7 @@ package ls
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/piprate/json-gold/ld"
@@ -70,6 +71,7 @@ func UnmarshalLayer(in interface{}) (*Layer, error) {
 	}
 	// The root node must connect to the layer node
 	layerRoot := inputNodes[GetNodeID(rootNode.node[LayerRootTerm])]
+	targetType := GetNodeID(rootNode.node[TargetType])
 	target := NewLayer()
 	rootNode.graphNode = target.GetLayerInfoNode()
 	rootNode.graphNode.SetTypes(rootNode.types...)
@@ -110,6 +112,9 @@ func UnmarshalLayer(in interface{}) (*Layer, error) {
 		}
 		// This is an attribute node
 		unmarshalAnnotations(target, node, inputNodes)
+	}
+	if len(targetType) > 0 {
+		target.SetTargetType(targetType)
 	}
 	return target, nil
 }
@@ -159,7 +164,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 			if len(oid) == 0 {
 				return MakeErrInvalidInput(inode.id)
 			}
-			attribute.GetPropertyMap()[LayerTerms.Reference] = oid
+			attribute.GetPropertyMap()[LayerTerms.Reference] = StringPropertyValue(oid)
 
 		case LayerTerms.ArrayItems:
 			attribute.AddTypes(AttributeTypes.Array)
@@ -236,15 +241,14 @@ func unmarshalAnnotations(target *Layer, node *inputNode, allNodes map[string]*i
 			if !ok {
 				break
 			}
-			setValue := func(v interface{}) {
+			setValue := func(v string) {
 				value := node.graphNode.GetPropertyMap()[key]
 				if value == nil {
-					node.graphNode.GetPropertyMap()[key] = v
-				} else if a, ok := value.([]interface{}); ok {
-					a = append(a, v)
-					node.graphNode.GetPropertyMap()[key] = a
+					node.graphNode.GetPropertyMap()[key] = StringPropertyValue(v)
+				} else if value.IsStringSlice() {
+					node.graphNode.GetPropertyMap()[key] = StringSlicePropertyValue(append(value.AsStringSlice(), v))
 				} else {
-					node.graphNode.GetPropertyMap()[key] = []interface{}{value, v}
+					node.graphNode.GetPropertyMap()[key] = StringSlicePropertyValue([]string{value.AsString(), v})
 				}
 			}
 			// If list, descend to its elements
@@ -257,7 +261,7 @@ func unmarshalAnnotations(target *Layer, node *inputNode, allNodes map[string]*i
 				// This is a value or an @id
 				if len(m) == 1 {
 					if v := m["@value"]; v != nil {
-						setValue(v)
+						setValue(fmt.Sprint(v))
 					} else if v := m["@id"]; v != nil {
 						if id, ok := v.(string); ok {
 							// Is this a link?
@@ -295,17 +299,16 @@ func marshalNode(node LayerNode) interface{} {
 
 	for k, v := range node.GetPropertyMap() {
 		if k == LayerTerms.Reference {
-			m[k] = []interface{}{map[string]interface{}{"@id": v}}
+			m[k] = []interface{}{map[string]interface{}{"@id": v.AsString()}}
 		} else {
-			switch val := v.(type) {
-			case []interface{}:
+			if v.IsString() {
+				m[k] = []interface{}{map[string]interface{}{"@value": v.AsString()}}
+			} else if v.IsStringSlice() {
 				arr := make([]interface{}, 0)
-				for _, elem := range val {
+				for _, elem := range v.AsStringSlice() {
 					arr = append(arr, map[string]interface{}{"@value": elem})
 				}
 				m[k] = arr
-			default:
-				m[k] = []interface{}{map[string]interface{}{"@value": val}}
 			}
 		}
 	}

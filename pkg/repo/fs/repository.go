@@ -43,19 +43,14 @@ func New(root string) *Repository {
 }
 
 type IndexEntry struct {
-	Type       string   `json:"type"`
-	ID         string   `json:"id"`
-	TargetType []string `json:"targetType,omitempty"`
-	File       string   `json:"file"`
+	Type       string `json:"type"`
+	ID         string `json:"id"`
+	TargetType string `json:"targetType,omitempty"`
+	File       string `json:"file"`
 }
 
 func (i IndexEntry) hasType(t string) bool {
-	for _, x := range i.TargetType {
-		if x == t {
-			return true
-		}
-	}
-	return false
+	return i.TargetType == t
 }
 
 var ErrBadIndex = errors.New("Bad index file")
@@ -170,7 +165,7 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 				entry := IndexEntry{
 					Type:       layer.GetLayerType(),
 					ID:         layer.GetID(),
-					TargetType: layer.GetTargetTypes(),
+					TargetType: layer.GetTargetType(),
 					File:       entry.Name(),
 				}
 				ret = append(ret, entry)
@@ -183,7 +178,7 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 				entry := IndexEntry{
 					Type:       ls.SchemaManifestTerm,
 					ID:         manifest.ID,
-					TargetType: []string{manifest.TargetType},
+					TargetType: manifest.TargetType,
 					File:       entry.Name(),
 				}
 				ret = append(ret, entry)

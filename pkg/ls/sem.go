@@ -44,6 +44,6 @@ func NewTerm(term string, isID, isList bool, comp CompositionType, md interface{
 	return term
 }
 
-func (t TermSemantics) Compose(target, src interface{}) (interface{}, error) {
+func (t TermSemantics) Compose(target, src *PropertyValue) (*PropertyValue, error) {
 	return t.Composition.Compose(target, src)
 }

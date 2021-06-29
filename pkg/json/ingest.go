@@ -146,7 +146,7 @@ func (ingester *Ingester) ingestObject(target *digraph.Graph, input map[string]i
 		}
 
 		addNextNode := func(node ls.LayerNode) error {
-			key, _ := node.GetPropertyMap()[ingester.KeyTerm].(string)
+			key := node.GetPropertyMap()[ingester.KeyTerm].AsString()
 			if len(key) == 0 {
 				return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema", ingester.KeyTerm))
 			}

@@ -19,7 +19,7 @@ package ls
 // the term does not implement the Composer interface, Setcomposition
 // will be used
 type Composer interface {
-	Compose(interface{}, interface{}) (interface{}, error)
+	Compose(v1, v2 *PropertyValue) (*PropertyValue, error)
 }
 
 // CompositionType determines the composition semantics for the term
@@ -52,7 +52,7 @@ func GetComposerForTerm(term string) Composer {
 }
 
 // Compose target and src based on the composition type
-func (c CompositionType) Compose(target, src interface{}) (interface{}, error) {
+func (c CompositionType) Compose(target, src *PropertyValue) (*PropertyValue, error) {
 	switch c {
 	case SetComposition:
 		return SetUnion(target, src), nil
@@ -75,73 +75,74 @@ func (c CompositionType) Compose(target, src interface{}) (interface{}, error) {
 }
 
 // SetUnion computes the set union of properties v1 and v2
-func SetUnion(v1, v2 interface{}) interface{} {
+func SetUnion(v1, v2 *PropertyValue) *PropertyValue {
 	if v1 == nil {
 		return v2
 	}
 	if v2 == nil {
 		return v1
 	}
-	switch e := v1.(type) {
-	case []interface{}:
-		values := make(map[interface{}]struct{})
-		for _, k := range e {
+	if v1.IsStringSlice() {
+		slc := v1.AsStringSlice()
+		values := make(map[string]struct{}, len(slc))
+		ret := make([]string, 0, len(slc))
+		for _, k := range slc {
 			values[k] = struct{}{}
+			ret = append(ret, k)
 		}
-		ret := e
-		if n, ok := v2.([]interface{}); ok {
-			for _, item := range n {
+		if v2.IsStringSlice() {
+			for _, item := range v2.AsStringSlice() {
 				if _, exists := values[item]; !exists {
 					values[item] = struct{}{}
 					ret = append(ret, item)
 				}
 			}
-			return ret
+			return StringSlicePropertyValue(ret)
 		}
-		if _, exists := values[v2]; !exists {
-			return append(e, v2)
+		if _, exists := values[v2.AsString()]; !exists {
+			ret = append(ret, v2.AsString())
 		}
-		return e
-	default:
-		ret := []interface{}{e}
-		if n, ok := v2.([]interface{}); ok {
-			for _, item := range n {
-				if item != e {
-					ret = append(ret, item)
-				}
-			}
-			if len(ret) == 1 {
-				return ret[0]
-			}
-			return ret
-		}
-		if e != v2 {
-			return []interface{}{e, v2}
-		}
-		return e
+		return StringSlicePropertyValue(ret)
 	}
+	ret := []string{v1.AsString()}
+	if v2.IsStringSlice() {
+		for _, item := range v2.AsStringSlice() {
+			if item != ret[0] {
+				ret = append(ret, item)
+			}
+		}
+		if len(ret) == 1 {
+			return StringPropertyValue(ret[0])
+		}
+		return StringSlicePropertyValue(ret)
+	}
+	if ret[0] != v2.AsString() {
+		ret = append(ret, v2.AsString())
+	}
+	if len(ret) == 1 {
+		return StringPropertyValue(ret[0])
+	}
+	return StringSlicePropertyValue(ret)
 }
 
 // ListAppend appends v2 and v1
-func ListAppend(v1, v2 interface{}) interface{} {
+func ListAppend(v1, v2 *PropertyValue) *PropertyValue {
 	if v1 == nil {
 		return v2
 	}
 	if v2 == nil {
 		return v1
 	}
-	switch e := v1.(type) {
-	case []interface{}:
-		ret := e
-		if n, ok := v2.([]interface{}); ok {
-			return append(ret, n...)
+	if v1.IsStringSlice() {
+		ret := v1.AsStringSlice()
+		if v2.IsStringSlice() {
+			return StringSlicePropertyValue(append(ret, v2.AsStringSlice()...))
 		}
-		return append(e, v2)
-	default:
-		ret := []interface{}{e}
-		if n, ok := v2.([]interface{}); ok {
-			return append(ret, n...)
-		}
-		return []interface{}{e, v2}
+		return StringSlicePropertyValue(append(ret, v2.AsString()))
 	}
+	ret := []string{v1.AsString()}
+	if v2.IsStringSlice() {
+		return StringSlicePropertyValue(append(ret, v2.AsStringSlice()...))
+	}
+	return StringSlicePropertyValue(append(ret, v2.AsString()))
 }
