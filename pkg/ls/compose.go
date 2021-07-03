@@ -59,10 +59,20 @@ func (layer *Layer) Compose(source *Layer) error {
 				err = ErrInvalidComposition
 				return false
 			}
-			// Add the same node to this layer
-			newNode := sourceNode.Clone()
-			layer.AddEdge(parent, newNode, edge.Clone())
-
+			parentInLayer := layer.AllNodesWithLabel(parent.Label()).All()
+			switch len(parentInLayer) {
+			case 0:
+				err = ErrInvalidComposition
+				return false
+			case 1:
+				// Add the same node to this layer
+				newNode := sourceNode.Clone()
+				layer.AddNode(newNode)
+				layer.AddEdge(parentInLayer[0], newNode, edge.Clone())
+			default:
+				err = ErrDuplicateAttributeID(fmt.Sprint(sourceNode.Label()))
+				return false
+			}
 		default:
 			err = ErrDuplicateAttributeID(fmt.Sprint(sourceNode.Label()))
 			return false

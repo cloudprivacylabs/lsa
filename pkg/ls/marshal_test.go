@@ -15,6 +15,7 @@ package ls
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"testing"
 )
 
@@ -47,4 +48,22 @@ func TestMarshaling(t *testing.T) {
 		err := json.Unmarshal(in, &c)
 		return c, err
 	})
+}
+
+//  marshal_test.go:66: Invalid input: http://hl7.org/fhir/InsurancePlan#contact.* - Cannot follow link in attribute list:
+func TestCannotFollowLinkError(t *testing.T) {
+	d, err := ioutil.ReadFile("testdata/marshal_error_test1.json")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	var intf interface{}
+	if err := json.Unmarshal(d, &intf); err != nil {
+		t.Error(err)
+		return
+	}
+	_, err = UnmarshalLayer(intf)
+	if err != nil {
+		t.Error(err)
+	}
 }

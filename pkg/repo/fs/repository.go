@@ -145,18 +145,30 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 				warnings = append(warnings, fmt.Sprintf("Cannot load %s: %v", fname, err))
 				continue
 			}
-			var typeName string
+			var typeNames []string
 			if arr, ok := obj.([]interface{}); ok {
 				if len(arr) == 1 {
 					if m, ok := arr[0].(map[string]interface{}); ok {
-						typeName = m["@type"].(string)
+						typeNames = ls.GetNodeTypes(m)
 					}
 				}
 			} else if m, ok := obj.(map[string]interface{}); ok {
-				typeName = m["@type"].(string)
+				if s, ok := m["@type"].(string); ok {
+					typeNames = []string{s}
+				} else {
+					typeNames = ls.GetNodeTypes(m)
+				}
 			}
-			switch typeName {
-			case ls.SchemaTerm, ls.OverlayTerm, "Schema", "Overlay":
+			hasType := func(t string) bool {
+				for _, x := range typeNames {
+					if x == t {
+						return true
+					}
+				}
+				return false
+			}
+			switch {
+			case hasType(ls.SchemaTerm), hasType(ls.OverlayTerm), hasType("Schema"), hasType("Overlay"):
 				layer, err := ls.UnmarshalLayer(obj)
 				if err != nil {
 					warnings = append(warnings, fmt.Sprintf("Cannot parse %s: %v", fname, err))
@@ -169,7 +181,7 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 					File:       entry.Name(),
 				}
 				ret = append(ret, entry)
-			case ls.SchemaManifestTerm, "SchemaManifest":
+			case hasType(ls.SchemaManifestTerm), hasType("SchemaManifest"):
 				manifest, err := ls.UnmarshalSchemaManifest(obj)
 				if err != nil {
 					warnings = append(warnings, fmt.Sprintf("Cannot parse %s: %v", fname, err))

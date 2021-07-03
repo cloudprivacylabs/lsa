@@ -15,6 +15,7 @@ package json
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/santhosh-tekuri/jsonschema/v3"
 
@@ -26,7 +27,11 @@ type ErrCyclicSchema struct {
 }
 
 func (e ErrCyclicSchema) Error() string {
-	return fmt.Sprintf("%v", e.Loop)
+	items := make([]string, 0)
+	for _, x := range e.Loop {
+		items = append(items, x.Ptr)
+	}
+	return "Cycle:" + strings.Join(items, " ")
 }
 
 // Entity gives an entity name to a location in a schema

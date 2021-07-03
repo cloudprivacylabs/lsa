@@ -140,16 +140,26 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 			}
 		case LayerTerms.Attributes, LayerTerms.AttributeList:
 			attribute.AddTypes(AttributeTypes.Object)
-			// m must be an array of attributes
+			// m must be an array of attributes. It can be under a @list
 			attrArray, ok := val.([]interface{})
 			if !ok {
 				return MakeErrInvalidInput(inode.id, "Array of attributes expected here")
 			}
+			if len(attrArray) == 1 {
+				if m, ok := attrArray[0].(map[string]interface{}); ok {
+					if l, ok := m["@list"]; ok {
+						if a, ok := l.([]interface{}); ok {
+							attrArray = a
+						}
+					}
+				}
+			}
 			for _, attr := range attrArray {
 				// This must be a link
-				attrNode := allNodes[GetNodeID(attr)]
+				follow := GetNodeID(attr)
+				attrNode := allNodes[follow]
 				if attrNode == nil {
-					return MakeErrInvalidInput(inode.id, "Cannot follow link in attribute list")
+					return MakeErrInvalidInput(inode.id, "Cannot follow link in attribute list:"+follow)
 				}
 				if err := unmarshalAttributeNode(target, attrNode, allNodes); err != nil {
 					return err
@@ -391,11 +401,11 @@ func MarshalSchemaManifest(manifest *SchemaManifest) interface{} {
 	if len(manifest.Bundle) > 0 {
 		m[BundleTerm] = map[string]interface{}{"@id": manifest.Bundle}
 	}
-	m[SchemaTerm] = map[string]interface{}{"@id": manifest.Schema}
+	m[SchemaBaseTerm] = map[string]interface{}{"@id": manifest.Schema}
 	if len(manifest.Overlays) > 0 {
 		arr := make([]interface{}, 0, len(manifest.Overlays))
 		for _, x := range manifest.Overlays {
-			arr = append(arr, x)
+			arr = append(arr, map[string]interface{}{"@id": x})
 		}
 		m[OverlaysTerm] = map[string]interface{}{"@list": arr}
 	}

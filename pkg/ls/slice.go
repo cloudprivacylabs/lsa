@@ -13,21 +13,27 @@
 // limitations under the License.
 package ls
 
-// GetSliceByTermsFunc is used in the Slice function to select nodes by
-// the properties it contains.
-func GetSliceByTermsFunc(includeTerms []string) func(*Layer, LayerNode) LayerNode {
+// GetSliceByTermsFunc is used in the Slice function to select nodes
+// by the properties it contains. If includeAttributeNodes is true,
+// attributes nodes are included unconditionally even though the node
+// does not contain any of the terms.
+func GetSliceByTermsFunc(includeTerms []string, includeAttributeNodes bool) func(*Layer, LayerNode) LayerNode {
 	incl := make(map[string]struct{})
 	for _, x := range includeTerms {
 		incl[x] = struct{}{}
 	}
 	return func(layer *Layer, node LayerNode) LayerNode {
+		includeNode := false
+		if includeAttributeNodes && node.IsAttributeNode() {
+			includeNode = true
+		}
 		properties := make(map[string]*PropertyValue)
 		for k, v := range node.GetPropertyMap() {
 			if _, ok := incl[k]; ok {
 				properties[k] = v
 			}
 		}
-		if len(properties) > 0 {
+		if len(properties) > 0 || includeNode {
 			newNode := node.Clone().(*schemaNode)
 			newNode.properties = properties
 			return newNode
