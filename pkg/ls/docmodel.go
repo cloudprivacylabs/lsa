@@ -23,21 +23,21 @@ type DocumentNode interface {
 
 	SetValue(interface{})
 	GetValue() interface{}
-	GetProperty(key string) (interface{}, bool)
-	SetProperty(key string, value interface{})
-	GetProperties() map[string]interface{}
+	GetProperty(key string) (*PropertyValue, bool)
+	SetProperty(key string, value *PropertyValue)
+	GetProperties() map[string]*PropertyValue
 }
 
 // BasicDocumentNode is derived from BasicNode. It uses @value property to store the node value
 type BasicDocumentNode struct {
 	digraph.NodeHeader
 	Value      interface{}
-	Properties map[string]interface{}
+	Properties map[string]*PropertyValue
 }
 
 // NewBasicDocumentNode returns an initialized basic document node with the given ID
 func NewBasicDocumentNode(ID string) *BasicDocumentNode {
-	ret := &BasicDocumentNode{Properties: make(map[string]interface{})}
+	ret := &BasicDocumentNode{Properties: make(map[string]*PropertyValue)}
 	ret.SetLabel(ID)
 	return ret
 }
@@ -52,13 +52,13 @@ func (node *BasicDocumentNode) GetValue() interface{} {
 	return node.Value
 }
 
-func (node *BasicDocumentNode) GetProperty(key string) (interface{}, bool) {
+func (node *BasicDocumentNode) GetProperty(key string) (*PropertyValue, bool) {
 	p, ok := node.Properties[key]
 	return p, ok
 }
 
-func (node *BasicDocumentNode) SetProperty(key string, value interface{}) {
+func (node *BasicDocumentNode) SetProperty(key string, value *PropertyValue) {
 	node.Properties[key] = value
 }
 
-func (node *BasicDocumentNode) GetProperties() map[string]interface{} { return node.Properties }
+func (node *BasicDocumentNode) GetProperties() map[string]*PropertyValue { return node.Properties }

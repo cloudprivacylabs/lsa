@@ -88,10 +88,37 @@ func (ingester *Ingester) Ingest(target *digraph.Graph, baseID string, input int
 	if ingester.Schema != nil {
 		root = ingester.Schema.GetObjectInfoNode()
 	}
-	return ingester.ingest(target, input, path, root)
+	schemaNodeMap := make(map[ls.DocumentNode]ls.LayerNode)
+	dn, err := ingester.ingest(target, input, path, root, schemaNodeMap)
+	importedSchemaNodes := make(map[ls.LayerNode]ls.LayerNode)
+	for docNode, schemaNode := range schemaNodeMap {
+		newNode, ok := importedSchemaNodes[schemaNode]
+		if !ok {
+			newNode = schemaNode.Clone()
+			target.AddNode(newNode)
+			importedSchemaNodes[schemaNode] = newNode
+		}
+		ingester.connect(docNode, newNode, ls.InstanceOfTerm)
+	}
+	if ingester.Schema != nil {
+		for nodes := ingester.Schema.AllNodes(); nodes.HasNext(); {
+			schemaNode := nodes.Next().(ls.LayerNode)
+			importedNode := importedSchemaNodes[schemaNode]
+			if importedNode != nil {
+				for edges := schemaNode.AllOutgoingEdges(); edges.HasNext(); {
+					schemaEdge := edges.Next().(ls.LayerEdge)
+					importedToNode := importedSchemaNodes[schemaEdge.To().(ls.LayerNode)]
+					if importedToNode != nil {
+						target.AddEdge(importedNode, importedToNode, schemaEdge.Clone())
+					}
+				}
+			}
+		}
+	}
+	return dn, err
 }
 
-func (ingester *Ingester) ingest(target *digraph.Graph, input interface{}, path []interface{}, schemaNode ls.LayerNode) (ls.DocumentNode, error) {
+func (ingester *Ingester) ingest(target *digraph.Graph, input interface{}, path []interface{}, schemaNode ls.LayerNode, nodeMap map[ls.DocumentNode]ls.LayerNode) (ls.DocumentNode, error) {
 
 	validate := func(newNode ls.DocumentNode, err error) (ls.DocumentNode, error) {
 		if schemaNode != nil {
@@ -103,24 +130,24 @@ func (ingester *Ingester) ingest(target *digraph.Graph, input interface{}, path 
 	}
 
 	if schemaNode != nil && schemaNode.HasType(ls.AttributeTypes.Polymorphic) {
-		return validate(ingester.ingestPolymorphicNode(target, input, path, schemaNode))
+		return validate(ingester.ingestPolymorphicNode(target, input, path, schemaNode, nodeMap))
 	}
 	if m, ok := input.(map[string]interface{}); ok {
-		return validate(ingester.ingestObject(target, m, path, schemaNode))
+		return validate(ingester.ingestObject(target, m, path, schemaNode, nodeMap))
 	}
 	if a, ok := input.([]interface{}); ok {
-		return validate(ingester.ingestArray(target, a, path, schemaNode))
+		return validate(ingester.ingestArray(target, a, path, schemaNode, nodeMap))
 	}
-	return validate(ingester.ingestValue(target, input, path, schemaNode))
+	return validate(ingester.ingestValue(target, input, path, schemaNode, nodeMap))
 }
 
-func (ingester *Ingester) ingestPolymorphicNode(target *digraph.Graph, input interface{}, path []interface{}, schemaNode ls.LayerNode) (ls.DocumentNode, error) {
+func (ingester *Ingester) ingestPolymorphicNode(target *digraph.Graph, input interface{}, path []interface{}, schemaNode ls.LayerNode, nodeMap map[ls.DocumentNode]ls.LayerNode) (ls.DocumentNode, error) {
 	// Polymorphic node. Try each option
 	var selectedOption ls.LayerNode
 	var newChild ls.DocumentNode
 	for nodes := schemaNode.AllOutgoingEdgesWithLabel(ls.LayerTerms.OneOf).Targets(); nodes.HasNext(); {
 		optionNode := nodes.Next().(ls.LayerNode)
-		childNode, err := ingester.ingest(target, input, path, optionNode)
+		childNode, err := ingester.ingest(target, input, path, optionNode, nodeMap)
 		if err == nil {
 			if selectedOption != nil {
 				return nil, ErrSchemaValidation("Multiple options of the polymorphic node matched:" + schemaNode.GetID())
@@ -132,11 +159,11 @@ func (ingester *Ingester) ingestPolymorphicNode(target *digraph.Graph, input int
 	if selectedOption == nil {
 		return nil, ErrSchemaValidation("None of the options of the polymorphic node matched:" + schemaNode.GetID())
 	}
-	ingester.connect(newChild, selectedOption, ls.InstanceOfTerm)
+	nodeMap[newChild] = selectedOption
 	return newChild, nil
 }
 
-func (ingester *Ingester) ingestObject(target *digraph.Graph, input map[string]interface{}, path []interface{}, schemaNode ls.LayerNode) (ls.DocumentNode, error) {
+func (ingester *Ingester) ingestObject(target *digraph.Graph, input map[string]interface{}, path []interface{}, schemaNode ls.LayerNode, nodeMap map[ls.DocumentNode]ls.LayerNode) (ls.DocumentNode, error) {
 	// An object node
 	nextNodes := make(map[string]ls.LayerNode)
 	// There is a schema node for this node. It must be an object
@@ -170,21 +197,21 @@ func (ingester *Ingester) ingestObject(target *digraph.Graph, input map[string]i
 	newNode := ingester.newNode(ingester.generateID(input, path, schemaNode))
 	target.AddNode(newNode)
 	if schemaNode != nil {
-		ingester.connect(newNode, schemaNode, ls.InstanceOfTerm)
+		nodeMap[newNode] = schemaNode
 	}
 
 	for key, value := range input {
-		childNode, err := ingester.ingest(target, value, append(path, key), nextNodes[key])
+		childNode, err := ingester.ingest(target, value, append(path, key), nextNodes[key], nodeMap)
 		if err != nil {
 			return nil, ErrDataIngestion{Key: key, Err: err}
 		}
-		childNode.SetProperty(ls.AttributeNameTerm, key)
+		childNode.SetProperty(ls.AttributeNameTerm, ls.StringPropertyValue(key))
 		ingester.connect(newNode, childNode, ls.DataEdgeTerms.ObjectAttributes)
 	}
 	return newNode, nil
 }
 
-func (ingester *Ingester) ingestArray(target *digraph.Graph, input []interface{}, path []interface{}, schemaNode ls.LayerNode) (ls.DocumentNode, error) {
+func (ingester *Ingester) ingestArray(target *digraph.Graph, input []interface{}, path []interface{}, schemaNode ls.LayerNode, nodeMap map[ls.DocumentNode]ls.LayerNode) (ls.DocumentNode, error) {
 	var elements ls.LayerNode
 	if schemaNode != nil {
 		if !schemaNode.HasType(ls.AttributeTypes.Array) {
@@ -198,20 +225,20 @@ func (ingester *Ingester) ingestArray(target *digraph.Graph, input []interface{}
 	newNode := ingester.newNode(ingester.generateID(input, path, schemaNode))
 	target.AddNode(newNode)
 	if schemaNode != nil {
-		ingester.connect(newNode, schemaNode, ls.InstanceOfTerm)
+		nodeMap[newNode] = schemaNode
 	}
 	for index := range input {
-		childNode, err := ingester.ingest(target, input[index], append(path, index), elements)
+		childNode, err := ingester.ingest(target, input[index], append(path, index), elements, nodeMap)
 		if err != nil {
 			return nil, ErrDataIngestion{Key: fmt.Sprint(index), Err: err}
 		}
-		childNode.SetProperty(ls.AttributeIndexTerm, index)
+		childNode.SetProperty(ls.AttributeIndexTerm, ls.StringPropertyValue(fmt.Sprint(index)))
 		ingester.connect(newNode, childNode, ls.DataEdgeTerms.ArrayElements)
 	}
 	return newNode, nil
 }
 
-func (ingester *Ingester) ingestValue(target *digraph.Graph, input interface{}, path []interface{}, schemaNode ls.LayerNode) (ls.DocumentNode, error) {
+func (ingester *Ingester) ingestValue(target *digraph.Graph, input interface{}, path []interface{}, schemaNode ls.LayerNode, nodeMap map[ls.DocumentNode]ls.LayerNode) (ls.DocumentNode, error) {
 	if schemaNode != nil {
 		if !schemaNode.HasType(ls.AttributeTypes.Value) {
 			return nil, ErrSchemaValidation("A JSON value is not expected here")
@@ -220,7 +247,7 @@ func (ingester *Ingester) ingestValue(target *digraph.Graph, input interface{}, 
 	newNode := ingester.newNode(ingester.generateID(input, path, schemaNode))
 	target.AddNode(newNode)
 	if schemaNode != nil {
-		ingester.connect(newNode, schemaNode, ls.InstanceOfTerm)
+		nodeMap[newNode] = schemaNode
 	}
 	newNode.SetValue(input)
 	return newNode, nil

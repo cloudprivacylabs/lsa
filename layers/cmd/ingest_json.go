@@ -14,6 +14,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -30,7 +31,7 @@ func init() {
 	ingestCmd.AddCommand(ingestJSONCmd)
 	ingestJSONCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
 	ingestJSONCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
-	ingestJSONCmd.Flags().String("format", "json", "Output format, json, rdf, or dot")
+	ingestJSONCmd.Flags().String("format", "json", "Output format, json(ld), rdf, or dot")
 }
 
 var ingestJSONCmd = &cobra.Command{
@@ -128,7 +129,19 @@ var ingestJSONCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		renderer := dot.Renderer{Options: dot.DefaultOptions()}
-		renderer.Render(target, "g", os.Stdout)
+		outFormat, _ := cmd.Flags().GetString("format")
+		switch outFormat {
+		case "dot":
+			renderer := dot.Renderer{Options: dot.DefaultOptions()}
+			renderer.Render(target, "g", os.Stdout)
+		case "json", "jsonld":
+			renderer := jsoningest.LDRenderer{}
+			out := renderer.Render(target)
+			x, _ := json.MarshalIndent(out, "", "  ")
+			fmt.Println(string(x))
+		case "rdf":
+		default:
+			fail("unknown output format")
+		}
 	},
 }

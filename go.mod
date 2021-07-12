@@ -3,7 +3,7 @@ module github.com/cloudprivacylabs/lsa
 go 1.16
 
 require (
-	github.com/bserdar/digraph v1.0.4
+	github.com/bserdar/digraph v1.0.5
 	github.com/lithammer/shortuuid/v3 v3.0.6
 	github.com/piprate/json-gold v0.4.0
 	github.com/santhosh-tekuri/jsonschema/v3 v3.0.1

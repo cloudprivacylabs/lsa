@@ -42,6 +42,14 @@ type Entity struct {
 	SchemaName string `json:"schema"`
 }
 
+// GetEntityName returns the ID if name is empty
+func (e Entity) GetEntityName() string {
+	if len(e.Name) == 0 {
+		return e.ID
+	}
+	return e.Name
+}
+
 // CompiledEntity contains the JSON schema for the entity
 type CompiledEntity struct {
 	Entity
@@ -61,11 +69,16 @@ func CompileAndImport(entities []Entity) ([]ImportedEntity, error) {
 func Compile(entities []Entity) ([]CompiledEntity, error) {
 	compiler := jsonschema.NewCompiler()
 	compiler.ExtractAnnotations = true
+	return CompileWith(compiler, entities)
+}
+
+// CompileWith compiles all entities as a single unit using the given compiler
+func CompileWith(compiler *jsonschema.Compiler, entities []Entity) ([]CompiledEntity, error) {
 	ret := make([]CompiledEntity, 0, len(entities))
 	for _, e := range entities {
 		sch, err := compiler.Compile(e.Ref)
 		if err != nil {
-			return nil, fmt.Errorf("During %s: %w", e.Name, err)
+			return nil, fmt.Errorf("During %s: %w", e.GetEntityName(), err)
 		}
 		ret = append(ret, CompiledEntity{Entity: e, Schema: sch})
 	}
@@ -123,12 +136,13 @@ func Import(entities []CompiledEntity) ([]ImportedEntity, error) {
 			return nil, err
 		}
 		if s.object == nil {
-			return nil, fmt.Errorf("%s base schema is not an object", ctx.currentEntity.Name)
+			return nil, fmt.Errorf("%s base schema is not an object", ctx.currentEntity.GetEntityName())
 		}
 
 		imported := ImportedEntity{}
 		imported.Entity = ctx.entities[i]
 		imported.Layer = ls.NewLayer()
+		imported.Layer.SetLayerType(ls.SchemaTerm)
 		imported.Layer.SetID(ctx.currentEntity.ID)
 		imported.Layer.GetLayerInfoNode().Connect(imported.Layer.NewNode(ctx.currentEntity.ID), ls.LayerRootTerm)
 		nodes := s.object.itr(ctx.currentEntity.ID, nil, imported.Layer)

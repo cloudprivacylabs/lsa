@@ -22,3 +22,6 @@ type SchemaManifest struct {
 	Schema     string
 	Overlays   []string
 }
+
+// GetID returns the schema manifest ID
+func (m *SchemaManifest) GetID() string { return m.ID }

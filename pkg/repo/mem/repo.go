@@ -15,10 +15,17 @@ package mem
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
+
+type ErrNotFound string
+
+func (e ErrNotFound) Error() string { return "Not found: " + string(e) }
+
+var ErrEmptyManifest = errors.New("Empty manifest")
 
 // Repository is an in-memory schema repository. It keeps all parsed
 // schemas and schema manifests
@@ -58,24 +65,31 @@ func (repo *Repository) AddLayer(layer *ls.Layer) {
 	repo.layers[layer.GetID()] = layer
 }
 
-// ParseAddObject parses the given layer or schema manifest and adds it to the repository
-func (repo *Repository) ParseAddObject(in []byte) error {
+// ParseAddObject parses the given layer or schema manifest and adds
+// it to the repository. Returns the parsed object
+func (repo *Repository) ParseAddObject(in []byte) (interface{}, error) {
 	var m interface{}
 	err := json.Unmarshal(in, &m)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	layer, err1 := ls.UnmarshalLayer(m)
 	if err1 != nil {
 		manifest, err2 := ls.UnmarshalSchemaManifest(m)
 		if err2 != nil {
-			return fmt.Errorf("Unrecognized object: %+v %+v", err1, err2)
+			return nil, fmt.Errorf("Unrecognized object: %+v %+v", err1, err2)
 		}
 		repo.AddSchemaManifest(manifest)
-		return nil
+		return manifest, nil
 	}
 	repo.AddLayer(layer)
-	return nil
+	return layer, nil
+}
+
+// RemoveObject removes the object(s) with the given id
+func (repo *Repository) RemoveObject(ID string) {
+	delete(repo.schemaManifests, ID)
+	delete(repo.layers, ID)
 }
 
 // AddSchemaManifest adds a new manifest to the repo. If there is one
@@ -120,4 +134,38 @@ func (repo *Repository) GetSchemaManifestByObjectType(t string) *ls.SchemaManife
 		}
 	}
 	return nil
+}
+
+// GetComposedSchema returns a composed layer from the schema manifest
+func (repo *Repository) GetComposedSchema(id string) (*ls.Layer, error) {
+	m := repo.GetSchemaManifest(id)
+	if m == nil {
+		return nil, ErrNotFound(id)
+	}
+	var result *ls.Layer
+	if len(m.Schema) > 0 {
+		sch := repo.GetSchema(m.Schema)
+		if sch == nil {
+			return nil, ErrNotFound(m.Schema)
+		}
+		result = sch.Clone()
+	}
+	for _, x := range m.Overlays {
+		ovl := repo.GetLayer(x)
+		if ovl == nil {
+			return nil, ErrNotFound(x)
+		}
+		if result == nil {
+			result = ovl.Clone()
+		} else {
+			err := result.Compose(ovl)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+	if result == nil {
+		return nil, ErrEmptyManifest
+	}
+	return result, nil
 }

@@ -76,6 +76,9 @@ func UnmarshalLayer(in interface{}) (*Layer, error) {
 	rootNode.graphNode = target.GetLayerInfoNode()
 	rootNode.graphNode.SetTypes(rootNode.types...)
 	rootNode.graphNode.SetID(rootNode.id)
+	if len(rootNode.graphNode.GetID()) == 0 || rootNode.graphNode.GetID() == "./" || strings.HasPrefix(rootNode.graphNode.GetID(), "_") {
+		return nil, MakeErrInvalidInput("No layer @id")
+	}
 	if layerRoot != nil {
 		if ld.IsURL(layerRoot.id) {
 			layerRoot.graphNode = target.NewNode(layerRoot.id)
@@ -388,6 +391,9 @@ func UnmarshalSchemaManifest(in interface{}) (*SchemaManifest, error) {
 	}
 	if ret.Type != SchemaManifestTerm {
 		return nil, ErrNotASchemaManifest
+	}
+	if len(ret.ID) == 0 || ret.ID == "./" || strings.HasPrefix(ret.ID, "_") {
+		return nil, MakeErrInvalidInput("No schema manifest  @id")
 	}
 	return &ret, nil
 }

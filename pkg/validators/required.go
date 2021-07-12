@@ -25,8 +25,8 @@ func (validator RequiredValidator) Validate(docNode ls.DocumentNode, schemaNode 
 		for nodes := docNode.AllOutgoingEdgesWithLabel(ls.DataEdgeTerms.ObjectAttributes).Targets(); nodes.HasNext(); {
 			node := nodes.Next().(ls.DocumentNode)
 			name, _ := node.GetProperty(ls.AttributeNameTerm)
-			if str, ok := name.(string); ok {
-				names[str] = struct{}{}
+			if name.IsString() {
+				names[name.AsString()] = struct{}{}
 			}
 		}
 		for _, str := range required {

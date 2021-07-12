@@ -30,7 +30,10 @@ func StringSlicePropertyValue(s []string) *PropertyValue {
 }
 
 // AsString returns the value as string
-func (p PropertyValue) AsString() string {
+func (p *PropertyValue) AsString() string {
+	if p == nil {
+		return ""
+	}
 	if s, ok := p.value.(string); ok {
 		return s
 	}
@@ -38,7 +41,10 @@ func (p PropertyValue) AsString() string {
 }
 
 // AsStringSlice returns the value as string slice
-func (p PropertyValue) AsStringSlice() []string {
+func (p *PropertyValue) AsStringSlice() []string {
+	if p == nil {
+		return nil
+	}
 	if s, ok := p.value.([]string); ok {
 		return s
 	}
@@ -46,7 +52,7 @@ func (p PropertyValue) AsStringSlice() []string {
 }
 
 // AsInterfaceSlice returns an interface slice of the underlying value if it is a []string
-func (p PropertyValue) AsInterfaceSlice() []interface{} {
+func (p *PropertyValue) AsInterfaceSlice() []interface{} {
 	if !p.IsStringSlice() {
 		return nil
 	}
@@ -59,13 +65,19 @@ func (p PropertyValue) AsInterfaceSlice() []interface{} {
 }
 
 // IsString returns true if the underlying value is a string
-func (p PropertyValue) IsString() bool {
+func (p *PropertyValue) IsString() bool {
+	if p == nil {
+		return false
+	}
 	_, ok := p.value.(string)
 	return ok
 }
 
 // IsStringSlice returns true if the underlying value is a string slice
-func (p PropertyValue) IsStringSlice() bool {
+func (p *PropertyValue) IsStringSlice() bool {
+	if p == nil {
+		return false
+	}
 	_, ok := p.value.([]string)
 	return ok
 }
