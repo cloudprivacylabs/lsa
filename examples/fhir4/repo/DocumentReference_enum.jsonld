@@ -2,28 +2,26 @@
   {
     "@id": "http://hl7.org/fhir/DocumentReference/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/DocumentReference.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+        "@id": "http://hl7.org/fhir/DocumentReference",
+        "https://lschema.org/Object#attributes": [
           {
+            "@id": "http://hl7.org/fhir/DocumentReference#masterIdentifier",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Object#attributeList": [
               {
-                "@id": "http://hl7.org/fhir/DocumentReference.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "@list": [
                   {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/DocumentReference#masterIdentifier.use",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
                       {
                         "@value": "usual"
                       },
@@ -44,49 +42,13 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DocumentReference.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+          },
           {
-            "@id": "http://hl7.org/fhir/DocumentReference.text.status",
+            "@id": "http://hl7.org/fhir/DocumentReference#status",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Value"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DocumentReference.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "current"
               },
@@ -97,54 +59,126 @@
                 "@value": "entered-in-error"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DocumentReference.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          },
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/DocumentReference#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "DocumentReference"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DocumentReference.relatesTo",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/DocumentReference#relatesTo",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/DocumentReference.relatesTo.*.code",
+                "@id": "http://hl7.org/fhir/DocumentReference#relatesTo.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "https://lschema.org/Object#attributeList": [
                   {
                     "@list": [
                       {
-                        "@value": "replaces"
+                        "@id": "http://hl7.org/fhir/DocumentReference#relatesTo.*.code",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "replaces"
+                          },
+                          {
+                            "@value": "transforms"
+                          },
+                          {
+                            "@value": "signs"
+                          },
+                          {
+                            "@value": "appends"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DocumentReference#identifier",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/DocumentReference#identifier.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/DocumentReference#identifier.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "usual"
+                          },
+                          {
+                            "@value": "official"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/DocumentReference#text",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/DocumentReference#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
+                      {
+                        "@value": "generated"
                       },
                       {
-                        "@value": "transforms"
+                        "@value": "extensions"
                       },
                       {
-                        "@value": "signs"
+                        "@value": "additional"
                       },
                       {
-                        "@value": "appends"
+                        "@value": "empty"
                       }
                     ]
                   }
@@ -153,46 +187,11 @@
             ]
           }
         ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/DocumentReference.masterIdentifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/DocumentReference.masterIdentifier.use",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "usual"
-                  },
-                  {
-                    "@value": "official"
-                  },
-                  {
-                    "@value": "temp"
-                  },
-                  {
-                    "@value": "secondary"
-                  },
-                  {
-                    "@value": "old"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/DocumentReference"
+        "@value": "http://hl7.org/fhir/DocumentReference"
       }
     ]
   }

@@ -14,11 +14,8 @@
 package cmd
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
-	"text/template"
 
 	"github.com/spf13/cobra"
 
@@ -30,11 +27,8 @@ func init() {
 	importCmd.AddCommand(importJSONCmd)
 }
 
-const LayersContextURL = "http://schemas.cloudprivacylabs.com/layers.jsonld"
-const SchemaContextURL = "http://schemas.cloudprivacylabs.com/schema.jsonld"
-
 var importJSONCmd = &cobra.Command{
-	Use:   "json",
+	Use:   "jsonschema",
 	Short: "Import a JSON schema and slice into its layers",
 	Long: `Input a JSON file of the format:
 
@@ -71,26 +65,12 @@ are Go templates, you can reference entity names and references using {{.name}} 
 			failErr(err)
 		}
 
-		type overlay struct {
-			Type         string   `json:"type"`
-			Terms        []string `json:"terms"`
-			termst       []*template.Template
-			File         string `json:"file"`
-			filet        *template.Template
-			ID           string `json:"@id"`
-			idt          *template.Template
-			IncludeEmpty bool `json:"includeEmpty"`
-		}
-
 		type request struct {
-			Entities    []jsonsch.Entity `json:"entities"`
-			SchemaID    string           `json:"schemaId"`
-			schemaIDt   *template.Template
-			Schema      string `json:"schemaManifest"`
-			schemat     *template.Template
-			ObjectType  string `json:"objectType"`
-			objectTypet *template.Template
-			Layers      []overlay `json:"layers"`
+			Entities   []jsonsch.Entity   `json:"entities"`
+			SchemaID   string             `json:"schemaId"`
+			Schema     string             `json:"schemaManifest"`
+			ObjectType string             `json:"objectType"`
+			Layers     []SliceByTermsSpec `json:"layers"`
 		}
 
 		var req request
@@ -101,85 +81,48 @@ are Go templates, you can reference entity names and references using {{.name}} 
 			return
 		}
 
-		req.schemaIDt = template.Must(template.New("schemaID").Parse(req.SchemaID))
-		req.schemat = template.Must(template.New("schema").Parse(req.Schema))
-		req.objectTypet = template.Must(template.New("objectType").Parse(req.ObjectType))
-		for i := range req.Layers {
-			for _, x := range req.Layers[i].Terms {
-				req.Layers[i].termst = append(req.Layers[i].termst, template.Must(template.New(fmt.Sprintf("terms-%d", i)).Parse(x)))
-			}
-			req.Layers[i].filet = template.Must(template.New(fmt.Sprintf("file-%d", i)).Parse(req.Layers[i].File))
-			req.Layers[i].idt = template.Must(template.New(fmt.Sprintf("id-%d", i)).Parse(req.Layers[i].ID))
-		}
-
-		exec := func(t *template.Template, entity jsonsch.Entity) string {
-			tdata := map[string]interface{}{"name": entity.Name, "ref": entity.Ref}
-			out := bytes.Buffer{}
-			if err := t.Execute(&out, tdata); err != nil {
-				panic(fmt.Errorf("During %s: %w", entity.Name, err))
-			}
-			return out.String()
-		}
 		for i := range req.Entities {
-			req.Entities[i].SchemaName = exec(req.schemaIDt, req.Entities[i])
+			req.Entities[i].SchemaName = execTemplate(req.SchemaID, map[string]interface{}{"name": req.Entities[i].Name, "ref": req.Entities[i].Ref})
 		}
 
-		compiled, err := jsonsch.Compile(req.Entities)
-		if err != nil {
-			failErr(err)
-		}
-		results, err := jsonsch.Import(compiled)
+		results, err := jsonsch.CompileAndImport(req.Entities)
 		if err != nil {
 			failErr(err)
 		}
 
-		for i, item := range results {
+		for _, item := range results {
 			layerIDs := make([]string, 0)
 			baseID := ""
+			tdata := map[string]interface{}{"name": item.Entity.Name, "ref": item.Entity.Ref}
 			for _, ovl := range req.Layers {
-				inclterms := make(map[string]struct{})
-				for _, x := range ovl.termst {
-					inclterms[exec(x, req.Entities[i])] = struct{}{}
-				}
-				layer := item.Layer.Slice(func(term string, attribute *ls.Attribute) bool {
-					if len(term) == 0 && ovl.IncludeEmpty {
-						return true
-					}
-					_, ok := inclterms[term]
-					return ok
-				})
-				layer.ID = exec(ovl.idt, req.Entities[i])
-				if ovl.Type == "Overlay" || ovl.Type == ls.TermOverlayType {
-					layer.Type = ls.TermOverlayType
-					layerIDs = append(layerIDs, layer.ID)
-				}
-				if ovl.Type == "Schema" || ovl.Type == ls.TermSchemaType {
-					layer.Type = ls.TermSchemaType
-					if baseID != "" {
-						fail("Multiple schemas")
-					}
-					baseID = layer.ID
-				}
-				if len(layer.Type) == 0 {
-					fail("Layer type not specified")
-				}
-				layer.TargetType = []string{exec(req.objectTypet, req.Entities[i])}
-				data, err := json.MarshalIndent(layer.MarshalExpanded(), "", "  ")
+				layer, err := ovl.Slice(item.Layer, execTemplate(req.ObjectType, tdata), tdata)
 				if err != nil {
 					failErr(err)
 				}
-				ioutil.WriteFile(exec(ovl.filet, req.Entities[i]), data, 0664)
+				if layer.GetLayerType() == ls.SchemaTerm {
+					if baseID != "" {
+						fail("Multiple schemas")
+					}
+					baseID = layer.GetID()
+				} else {
+					layerIDs = append(layerIDs, layer.GetID())
+				}
+				data, err := json.MarshalIndent(ls.MarshalLayer(layer), "", "  ")
+				if err != nil {
+					failErr(err)
+				}
+				ioutil.WriteFile(execTemplate(ovl.File, tdata), data, 0664)
 			}
 
 			if len(req.Schema) > 0 {
 				sch := ls.SchemaManifest{
-					ID:         exec(req.schemaIDt, req.Entities[i]),
-					TargetType: []string{exec(req.objectTypet, req.Entities[i])},
+					ID:         execTemplate(req.SchemaID, tdata),
+					TargetType: execTemplate(req.ObjectType, tdata),
 					Schema:     baseID,
 					Overlays:   layerIDs,
 				}
-				data, _ := json.MarshalIndent(sch.MarshalExpanded(), "", "  ")
-				ioutil.WriteFile(exec(req.schemat, req.Entities[i]), data, 0664)
+				data, _ := json.MarshalIndent(ls.MarshalSchemaManifest(&sch), "", "  ")
+				ioutil.WriteFile(execTemplate(req.Schema, tdata), data, 0664)
 			}
 		}
 	},

@@ -2,100 +2,320 @@
   {
     "@id": "http://hl7.org/fhir/Patient/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/Patient.gender",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+        "@id": "http://hl7.org/fhir/Patient",
+        "https://lschema.org/Object#attributes": [
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/Patient#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
-                "@value": "male"
-              },
-              {
-                "@value": "female"
-              },
-              {
-                "@value": "other"
-              },
-              {
-                "@value": "unknown"
+                "@value": "Patient"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Patient.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/Patient#identifier",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Patient.identifier.*.use",
+                "@id": "http://hl7.org/fhir/Patient#identifier.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "https://lschema.org/Object#attributeList": [
                   {
                     "@list": [
                       {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
+                        "@id": "http://hl7.org/fhir/Patient#identifier.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "usual"
+                          },
+                          {
+                            "@value": "official"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Patient.contact",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/Patient#contact",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Patient.contact.*.address",
+                "@id": "http://hl7.org/fhir/Patient#contact.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@id": "http://hl7.org/fhir/Patient.contact.*.address.use",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "@list": [
                       {
-                        "@list": [
+                        "@id": "http://hl7.org/fhir/Patient#contact.*.telecom",
+                        "@type": [
+                          "https://lschema.org/Array"
+                        ],
+                        "https://lschema.org/Array#items": [
+                          {
+                            "@id": "http://hl7.org/fhir/Patient#contact.*.telecom.*",
+                            "@type": [
+                              "https://lschema.org/Object"
+                            ],
+                            "https://lschema.org/Object#attributeList": [
+                              {
+                                "@list": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/Patient#contact.*.telecom.*.system",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/validation#enumeration": [
+                                      {
+                                        "@value": "phone"
+                                      },
+                                      {
+                                        "@value": "fax"
+                                      },
+                                      {
+                                        "@value": "email"
+                                      },
+                                      {
+                                        "@value": "pager"
+                                      },
+                                      {
+                                        "@value": "url"
+                                      },
+                                      {
+                                        "@value": "sms"
+                                      },
+                                      {
+                                        "@value": "other"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "@id": "http://hl7.org/fhir/Patient#contact.*.telecom.*.use",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/validation#enumeration": [
+                                      {
+                                        "@value": "home"
+                                      },
+                                      {
+                                        "@value": "work"
+                                      },
+                                      {
+                                        "@value": "temp"
+                                      },
+                                      {
+                                        "@value": "old"
+                                      },
+                                      {
+                                        "@value": "mobile"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Patient#contact.*.gender",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "male"
+                          },
+                          {
+                            "@value": "female"
+                          },
+                          {
+                            "@value": "other"
+                          },
+                          {
+                            "@value": "unknown"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Patient#contact.*.address",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/Patient#contact.*.address.type",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "postal"
+                                  },
+                                  {
+                                    "@value": "physical"
+                                  },
+                                  {
+                                    "@value": "both"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/Patient#contact.*.address.use",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "home"
+                                  },
+                                  {
+                                    "@value": "work"
+                                  },
+                                  {
+                                    "@value": "temp"
+                                  },
+                                  {
+                                    "@value": "old"
+                                  },
+                                  {
+                                    "@value": "billing"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Patient#contact.*.name",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/Patient#contact.*.name.use",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "usual"
+                                  },
+                                  {
+                                    "@value": "official"
+                                  },
+                                  {
+                                    "@value": "temp"
+                                  },
+                                  {
+                                    "@value": "nickname"
+                                  },
+                                  {
+                                    "@value": "anonymous"
+                                  },
+                                  {
+                                    "@value": "old"
+                                  },
+                                  {
+                                    "@value": "maiden"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Patient#telecom",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Patient#telecom.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/Patient#telecom.*.system",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "phone"
+                          },
+                          {
+                            "@value": "fax"
+                          },
+                          {
+                            "@value": "email"
+                          },
+                          {
+                            "@value": "pager"
+                          },
+                          {
+                            "@value": "url"
+                          },
+                          {
+                            "@value": "sms"
+                          },
+                          {
+                            "@value": "other"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Patient#telecom.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
                           {
                             "@value": "home"
                           },
@@ -109,124 +329,108 @@
                             "@value": "old"
                           },
                           {
-                            "@value": "billing"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/Patient.contact.*.address.type",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "postal"
-                          },
-                          {
-                            "@value": "physical"
-                          },
-                          {
-                            "@value": "both"
+                            "@value": "mobile"
                           }
                         ]
                       }
                     ]
                   }
                 ]
-              },
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Patient#link",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Patient.contact.*.telecom",
+                "@id": "http://hl7.org/fhir/Patient#link.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/Array/items": [
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                    "@list": [
                       {
-                        "@id": "http://hl7.org/fhir/Patient.contact.*.telecom.*.use",
+                        "@id": "http://hl7.org/fhir/Patient#link.*.type",
                         "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
+                          "https://lschema.org/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                        "https://lschema.org/validation#enumeration": [
                           {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
+                            "@value": "replaced-by"
+                          },
+                          {
+                            "@value": "replaces"
+                          },
+                          {
+                            "@value": "refer"
+                          },
+                          {
+                            "@value": "seealso"
                           }
                         ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Patient#text",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/Patient#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
+                      {
+                        "@value": "generated"
                       },
                       {
-                        "@id": "http://hl7.org/fhir/Patient.contact.*.telecom.*.system",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
+                        "@value": "extensions"
+                      },
+                      {
+                        "@value": "additional"
+                      },
+                      {
+                        "@value": "empty"
                       }
                     ]
                   }
                 ]
-              },
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Patient#name",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Patient.contact.*.name",
+                "@id": "http://hl7.org/fhir/Patient#name.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@id": "http://hl7.org/fhir/Patient.contact.*.name.use",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "@list": [
                       {
-                        "@list": [
+                        "@id": "http://hl7.org/fhir/Patient#name.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
                           {
                             "@value": "usual"
                           },
@@ -253,298 +457,82 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Patient#gender",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "male"
               },
               {
-                "@id": "http://hl7.org/fhir/Patient.contact.*.gender",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "male"
-                      },
-                      {
-                        "@value": "female"
-                      },
-                      {
-                        "@value": "other"
-                      },
-                      {
-                        "@value": "unknown"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Patient.telecom",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Patient.telecom.*.system",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "phone"
-                      },
-                      {
-                        "@value": "fax"
-                      },
-                      {
-                        "@value": "email"
-                      },
-                      {
-                        "@value": "pager"
-                      },
-                      {
-                        "@value": "url"
-                      },
-                      {
-                        "@value": "sms"
-                      },
-                      {
-                        "@value": "other"
-                      }
-                    ]
-                  }
-                ]
+                "@value": "female"
               },
               {
-                "@id": "http://hl7.org/fhir/Patient.telecom.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "home"
-                      },
-                      {
-                        "@value": "work"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "mobile"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Patient.link",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Patient.link.*.type",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "replaced-by"
-                      },
-                      {
-                        "@value": "replaces"
-                      },
-                      {
-                        "@value": "refer"
-                      },
-                      {
-                        "@value": "seealso"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Patient.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Patient.text.status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Patient.name",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Patient.name.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "nickname"
-                      },
-                      {
-                        "@value": "anonymous"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "maiden"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Patient.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "Patient"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Patient.address",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Patient.address.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "home"
-                      },
-                      {
-                        "@value": "work"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "billing"
-                      }
-                    ]
-                  }
-                ]
+                "@value": "other"
               },
               {
-                "@id": "http://hl7.org/fhir/Patient.address.*.type",
+                "@value": "unknown"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Patient#address",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Patient#address.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "https://lschema.org/Object#attributeList": [
                   {
                     "@list": [
                       {
-                        "@value": "postal"
+                        "@id": "http://hl7.org/fhir/Patient#address.*.type",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "postal"
+                          },
+                          {
+                            "@value": "physical"
+                          },
+                          {
+                            "@value": "both"
+                          }
+                        ]
                       },
                       {
-                        "@value": "physical"
-                      },
-                      {
-                        "@value": "both"
+                        "@id": "http://hl7.org/fhir/Patient#address.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "home"
+                          },
+                          {
+                            "@value": "work"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "old"
+                          },
+                          {
+                            "@value": "billing"
+                          }
+                        ]
                       }
                     ]
                   }
@@ -555,9 +543,9 @@
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/Patient"
+        "@value": "http://hl7.org/fhir/Patient"
       }
     ]
   }

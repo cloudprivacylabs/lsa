@@ -47,19 +47,24 @@ func GetNodeID(node interface{}) string {
 	return GetStringValue("@id", node)
 }
 
-// GetNodeType returns the node @type. The argument must be a map
-func GetNodeType(node interface{}) string {
+// GetNodeTypes returns the node @type. The argument must be a map
+func GetNodeTypes(node interface{}) []string {
 	m, ok := node.(map[string]interface{})
 	if !ok {
-		return ""
+		return nil
 	}
 	arr, ok := m["@type"].([]interface{})
 	if ok {
-		if len(arr) == 1 {
-			return arr[0].(string)
+		ret := make([]string, 0, len(arr))
+		for _, x := range arr {
+			s, _ := x.(string)
+			if len(s) > 0 {
+				ret = append(ret, s)
+			}
 		}
+		return ret
 	}
-	return ""
+	return nil
 }
 
 // GetNodeValue returns the node @value. The argument must be a map
@@ -69,7 +74,8 @@ func GetNodeValue(node interface{}) interface{} {
 }
 
 // GetListElements returns the elements of a @list node. The input can
-// be a [{"@list":elements}] or {@list:elements}
+// be a [{"@list":elements}] or {@list:elements}. If the input cannot
+// be interpreted as a list, returns nil
 func GetListElements(node interface{}) []interface{} {
 	var m map[string]interface{}
 	if arr, ok := node.([]interface{}); ok {
@@ -80,9 +86,47 @@ func GetListElements(node interface{}) []interface{} {
 	if m == nil {
 		m, _ = node.(map[string]interface{})
 	}
-	if m == nil {
+	if len(m) == 0 {
+		return []interface{}{}
+	}
+	lst, ok := m["@list"]
+	if !ok {
 		return nil
 	}
-	elements, _ := m["@list"].([]interface{})
+	elements, ok := lst.([]interface{})
+	if !ok {
+		return nil
+	}
 	return elements
+}
+
+// GetFlattenedNodeIndex returns a map of node objects from a flattened graph
+func GetFlattenedNodeIndex(nodes []interface{}) (map[string]interface{}, error) {
+	ret := make(map[string]interface{}, len(nodes))
+	for _, node := range nodes {
+		id := GetNodeID(node)
+		if len(id) == 0 {
+			return nil, ErrAttributeWithoutID
+		}
+		_, exists := ret[id]
+		if exists {
+			return nil, ErrDuplicateAttributeID(id)
+		}
+		ret[id] = node
+	}
+	return ret, nil
+}
+
+// If in is a @list, returns its elements
+func DescendToListElements(in []interface{}) []interface{} {
+	if len(in) == 1 {
+		if m, ok := in[0].(map[string]interface{}); ok {
+			if l, ok := m["@list"]; ok {
+				if a, ok := l.([]interface{}); ok {
+					return a
+				}
+			}
+		}
+	}
+	return in
 }

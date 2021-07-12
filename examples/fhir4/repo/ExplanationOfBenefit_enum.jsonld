@@ -2,197 +2,229 @@
   {
     "@id": "http://hl7.org/fhir/ExplanationOfBenefit/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+        "@id": "http://hl7.org/fhir/ExplanationOfBenefit",
+        "https://lschema.org/Object#attributes": [
           {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#payment",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Object#attributeList": [
               {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "@list": [
                   {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit#payment.identifier",
+                    "@type": [
+                      "https://lschema.org/Object"
+                    ],
+                    "https://lschema.org/Object#attributeList": [
                       {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
+                        "@list": [
+                          {
+                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#payment.identifier.use",
+                            "@type": [
+                              "https://lschema.org/Value"
+                            ],
+                            "https://lschema.org/validation#enumeration": [
+                              {
+                                "@value": "usual"
+                              },
+                              {
+                                "@value": "official"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "secondary"
+                              },
+                              {
+                                "@value": "old"
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#resourceType",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Value"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/validation#enumeration": [
               {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.locationAddress",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.locationAddress.use",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "home"
-                          },
-                          {
-                            "@value": "work"
-                          },
-                          {
-                            "@value": "temp"
-                          },
-                          {
-                            "@value": "old"
-                          },
-                          {
-                            "@value": "billing"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.locationAddress.type",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "postal"
-                          },
-                          {
-                            "@value": "physical"
-                          },
-                          {
-                            "@value": "both"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
+                "@value": "ExplanationOfBenefit"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.quantity",
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.quantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "@list": [
                       {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.detail",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.detail.*.subDetail",
+                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*.locationAddress",
                         "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
+                          "https://lschema.org/Object"
                         ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
+                        "https://lschema.org/Object#attributeList": [
                           {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                            "@list": [
                               {
-                                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.detail.*.subDetail.*.quantity",
+                                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*.locationAddress.type",
                                 "@type": [
-                                  "http://layeredschemas.org/v1.0/Object"
+                                  "https://lschema.org/Value"
                                 ],
-                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                "https://lschema.org/validation#enumeration": [
                                   {
-                                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.detail.*.subDetail.*.quantity.comparator",
+                                    "@value": "postal"
+                                  },
+                                  {
+                                    "@value": "physical"
+                                  },
+                                  {
+                                    "@value": "both"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*.locationAddress.use",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "home"
+                                  },
+                                  {
+                                    "@value": "work"
+                                  },
+                                  {
+                                    "@value": "temp"
+                                  },
+                                  {
+                                    "@value": "old"
+                                  },
+                                  {
+                                    "@value": "billing"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*.detail",
+                        "@type": [
+                          "https://lschema.org/Array"
+                        ],
+                        "https://lschema.org/Array#items": [
+                          {
+                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*.detail.*",
+                            "@type": [
+                              "https://lschema.org/Object"
+                            ],
+                            "https://lschema.org/Object#attributeList": [
+                              {
+                                "@list": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*.detail.*.subDetail",
                                     "@type": [
-                                      "http://layeredschemas.org/v1.0/Value"
+                                      "https://lschema.org/Array"
                                     ],
-                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                    "https://lschema.org/Array#items": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*.detail.*.subDetail.*",
+                                        "@type": [
+                                          "https://lschema.org/Object"
+                                        ],
+                                        "https://lschema.org/Object#attributeList": [
+                                          {
+                                            "@list": [
+                                              {
+                                                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*.detail.*.subDetail.*.quantity",
+                                                "@type": [
+                                                  "https://lschema.org/Object"
+                                                ],
+                                                "https://lschema.org/Object#attributeList": [
+                                                  {
+                                                    "@list": [
+                                                      {
+                                                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*.detail.*.subDetail.*.quantity.comparator",
+                                                        "@type": [
+                                                          "https://lschema.org/Value"
+                                                        ],
+                                                        "https://lschema.org/validation#enumeration": [
+                                                          {
+                                                            "@value": "\u003c"
+                                                          },
+                                                          {
+                                                            "@value": "\u003c="
+                                                          },
+                                                          {
+                                                            "@value": "\u003e="
+                                                          },
+                                                          {
+                                                            "@value": "\u003e"
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*.detail.*.quantity",
+                                    "@type": [
+                                      "https://lschema.org/Object"
+                                    ],
+                                    "https://lschema.org/Object#attributeList": [
                                       {
                                         "@list": [
                                           {
-                                            "@value": "\u003c"
-                                          },
-                                          {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
+                                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*.detail.*.quantity.comparator",
+                                            "@type": [
+                                              "https://lschema.org/Value"
+                                            ],
+                                            "https://lschema.org/validation#enumeration": [
+                                              {
+                                                "@value": "\u003c"
+                                              },
+                                              {
+                                                "@value": "\u003c="
+                                              },
+                                              {
+                                                "@value": "\u003e="
+                                              },
+                                              {
+                                                "@value": "\u003e"
+                                              }
+                                            ]
                                           }
                                         ]
                                       }
@@ -205,19 +237,19 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.detail.*.quantity",
+                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*.quantity",
                         "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
+                          "https://lschema.org/Object"
                         ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                        "https://lschema.org/Object#attributeList": [
                           {
-                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.item.*.detail.*.quantity.comparator",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                            "@list": [
                               {
-                                "@list": [
+                                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*.quantity.comparator",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
                                   {
                                     "@value": "\u003c"
                                   },
@@ -241,68 +273,166 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.processNote",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#processNote",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.processNote.*.type",
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#processNote.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "https://lschema.org/Object#attributeList": [
                   {
                     "@list": [
                       {
-                        "@value": "display"
-                      },
-                      {
-                        "@value": "print"
-                      },
-                      {
-                        "@value": "printoper"
+                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit#processNote.*.type",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "display"
+                          },
+                          {
+                            "@value": "print"
+                          },
+                          {
+                            "@value": "printoper"
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          },
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#accident",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
               {
-                "@value": "ExplanationOfBenefit"
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit#accident.locationAddress",
+                    "@type": [
+                      "https://lschema.org/Object"
+                    ],
+                    "https://lschema.org/Object#attributeList": [
+                      {
+                        "@list": [
+                          {
+                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#accident.locationAddress.type",
+                            "@type": [
+                              "https://lschema.org/Value"
+                            ],
+                            "https://lschema.org/validation#enumeration": [
+                              {
+                                "@value": "postal"
+                              },
+                              {
+                                "@value": "physical"
+                              },
+                              {
+                                "@value": "both"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#accident.locationAddress.use",
+                            "@type": [
+                              "https://lschema.org/Value"
+                            ],
+                            "https://lschema.org/validation#enumeration": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "billing"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          },
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#supportingInfo",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#supportingInfo.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit#supportingInfo.*.valueQuantity",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#supportingInfo.*.valueQuantity.comparator",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#status",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "active"
               },
@@ -316,34 +446,267 @@
                 "@value": "entered-in-error"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.related",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#text",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Object#attributeList": [
               {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.related.*.reference",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "@list": [
                   {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.related.*.reference.use",
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit#text.status",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
+                      "https://lschema.org/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "https://lschema.org/validation#enumeration": [
                       {
-                        "@list": [
+                        "@value": "generated"
+                      },
+                      {
+                        "@value": "extensions"
+                      },
+                      {
+                        "@value": "additional"
+                      },
+                      {
+                        "@value": "empty"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem.*.detail",
+                        "@type": [
+                          "https://lschema.org/Array"
+                        ],
+                        "https://lschema.org/Array#items": [
+                          {
+                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem.*.detail.*",
+                            "@type": [
+                              "https://lschema.org/Object"
+                            ],
+                            "https://lschema.org/Object#attributeList": [
+                              {
+                                "@list": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem.*.detail.*.quantity",
+                                    "@type": [
+                                      "https://lschema.org/Object"
+                                    ],
+                                    "https://lschema.org/Object#attributeList": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem.*.detail.*.quantity.comparator",
+                                            "@type": [
+                                              "https://lschema.org/Value"
+                                            ],
+                                            "https://lschema.org/validation#enumeration": [
+                                              {
+                                                "@value": "\u003c"
+                                              },
+                                              {
+                                                "@value": "\u003c="
+                                              },
+                                              {
+                                                "@value": "\u003e="
+                                              },
+                                              {
+                                                "@value": "\u003e"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem.*.detail.*.subDetail",
+                                    "@type": [
+                                      "https://lschema.org/Array"
+                                    ],
+                                    "https://lschema.org/Array#items": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem.*.detail.*.subDetail.*",
+                                        "@type": [
+                                          "https://lschema.org/Object"
+                                        ],
+                                        "https://lschema.org/Object#attributeList": [
+                                          {
+                                            "@list": [
+                                              {
+                                                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem.*.detail.*.subDetail.*.quantity",
+                                                "@type": [
+                                                  "https://lschema.org/Object"
+                                                ],
+                                                "https://lschema.org/Object#attributeList": [
+                                                  {
+                                                    "@list": [
+                                                      {
+                                                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem.*.detail.*.subDetail.*.quantity.comparator",
+                                                        "@type": [
+                                                          "https://lschema.org/Value"
+                                                        ],
+                                                        "https://lschema.org/validation#enumeration": [
+                                                          {
+                                                            "@value": "\u003c"
+                                                          },
+                                                          {
+                                                            "@value": "\u003c="
+                                                          },
+                                                          {
+                                                            "@value": "\u003e="
+                                                          },
+                                                          {
+                                                            "@value": "\u003e"
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem.*.locationAddress",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem.*.locationAddress.type",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "postal"
+                                  },
+                                  {
+                                    "@value": "physical"
+                                  },
+                                  {
+                                    "@value": "both"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem.*.locationAddress.use",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "home"
+                                  },
+                                  {
+                                    "@value": "work"
+                                  },
+                                  {
+                                    "@value": "temp"
+                                  },
+                                  {
+                                    "@value": "old"
+                                  },
+                                  {
+                                    "@value": "billing"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem.*.quantity",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem.*.quantity.comparator",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#identifier",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#identifier.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit#identifier.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
                           {
                             "@value": "usual"
                           },
@@ -366,383 +729,55 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#related",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.quantity",
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#related.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.quantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "@list": [
                       {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.quantity",
+                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit#related.*.reference",
                         "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
+                          "https://lschema.org/Object"
                         ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                        "https://lschema.org/Object#attributeList": [
                           {
-                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.quantity.comparator",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                            "@list": [
                               {
-                                "@list": [
-                                  {
-                                    "@value": "\u003c"
-                                  },
-                                  {
-                                    "@value": "\u003c="
-                                  },
-                                  {
-                                    "@value": "\u003e="
-                                  },
-                                  {
-                                    "@value": "\u003e"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.subDetail",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
-                        ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
-                          {
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.subDetail.*.quantity",
+                                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#related.*.reference.use",
                                 "@type": [
-                                  "http://layeredschemas.org/v1.0/Object"
+                                  "https://lschema.org/Value"
                                 ],
-                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                "https://lschema.org/validation#enumeration": [
                                   {
-                                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.detail.*.subDetail.*.quantity.comparator",
-                                    "@type": [
-                                      "http://layeredschemas.org/v1.0/Value"
-                                    ],
-                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                                      {
-                                        "@list": [
-                                          {
-                                            "@value": "\u003c"
-                                          },
-                                          {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
-                                          }
-                                        ]
-                                      }
-                                    ]
+                                    "@value": "usual"
+                                  },
+                                  {
+                                    "@value": "official"
+                                  },
+                                  {
+                                    "@value": "temp"
+                                  },
+                                  {
+                                    "@value": "secondary"
+                                  },
+                                  {
+                                    "@value": "old"
                                   }
                                 ]
                               }
                             ]
                           }
                         ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.locationAddress",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.locationAddress.type",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "postal"
-                          },
-                          {
-                            "@value": "physical"
-                          },
-                          {
-                            "@value": "both"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.addItem.*.locationAddress.use",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "home"
-                          },
-                          {
-                            "@value": "work"
-                          },
-                          {
-                            "@value": "temp"
-                          },
-                          {
-                            "@value": "old"
-                          },
-                          {
-                            "@value": "billing"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.text.status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.supportingInfo",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.supportingInfo.*.valueQuantity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit.supportingInfo.*.valueQuantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.accident",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.accident.locationAddress",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.accident.locationAddress.type",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "postal"
-                      },
-                      {
-                        "@value": "physical"
-                      },
-                      {
-                        "@value": "both"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.accident.locationAddress.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "home"
-                      },
-                      {
-                        "@value": "work"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "billing"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit.payment",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit.payment.identifier",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit.payment.identifier.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
                       }
                     ]
                   }
@@ -753,9 +788,9 @@
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/ExplanationOfBenefit"
+        "@value": "http://hl7.org/fhir/ExplanationOfBenefit"
       }
     ]
   }

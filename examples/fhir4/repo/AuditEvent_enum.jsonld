@@ -2,17 +2,125 @@
   {
     "@id": "http://hl7.org/fhir/AuditEvent/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/AuditEvent.action",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+        "@id": "http://hl7.org/fhir/AuditEvent",
+        "https://lschema.org/Object#attributes": [
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/AuditEvent#text",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
+                      {
+                        "@value": "generated"
+                      },
+                      {
+                        "@value": "extensions"
+                      },
+                      {
+                        "@value": "additional"
+                      },
+                      {
+                        "@value": "empty"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#agent",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent#agent.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/AuditEvent#agent.*.network",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/AuditEvent#agent.*.network.type",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "1"
+                                  },
+                                  {
+                                    "@value": "2"
+                                  },
+                                  {
+                                    "@value": "3"
+                                  },
+                                  {
+                                    "@value": "4"
+                                  },
+                                  {
+                                    "@value": "5"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#outcome",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "0"
+              },
+              {
+                "@value": "4"
+              },
+              {
+                "@value": "8"
+              },
+              {
+                "@value": "12"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#action",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "C"
               },
@@ -29,123 +137,13 @@
                 "@value": "E"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+          },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent.text.status",
+            "@id": "http://hl7.org/fhir/AuditEvent#resourceType",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Value"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent.outcome",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "0"
-              },
-              {
-                "@value": "4"
-              },
-              {
-                "@value": "8"
-              },
-              {
-                "@value": "12"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent.agent",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent.agent.*.network",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent.agent.*.network.type",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "1"
-                          },
-                          {
-                            "@value": "2"
-                          },
-                          {
-                            "@value": "3"
-                          },
-                          {
-                            "@value": "4"
-                          },
-                          {
-                            "@value": "5"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/AuditEvent.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "AuditEvent"
               }
@@ -154,9 +152,9 @@
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/AuditEvent"
+        "@value": "http://hl7.org/fhir/AuditEvent"
       }
     ]
   }

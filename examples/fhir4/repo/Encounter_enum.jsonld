@@ -2,102 +2,58 @@
   {
     "@id": "http://hl7.org/fhir/Encounter/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/Encounter.hospitalization",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "@id": "http://hl7.org/fhir/Encounter",
+        "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/Encounter.hospitalization.preAdmissionIdentifier",
+            "@id": "http://hl7.org/fhir/Encounter#location",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Encounter.hospitalization.preAdmissionIdentifier.use",
+                "@id": "http://hl7.org/fhir/Encounter#location.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "https://lschema.org/Object#attributeList": [
                   {
                     "@list": [
                       {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
+                        "@id": "http://hl7.org/fhir/Encounter#location.*.status",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "planned"
+                          },
+                          {
+                            "@value": "active"
+                          },
+                          {
+                            "@value": "reserved"
+                          },
+                          {
+                            "@value": "completed"
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Encounter.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/Encounter#status",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Value"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Encounter.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Encounter.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "planned"
               },
@@ -126,185 +82,233 @@
                 "@value": "unknown"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Encounter.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+          },
           {
-            "@id": "http://hl7.org/fhir/Encounter.text.status",
+            "@id": "http://hl7.org/fhir/Encounter#resourceType",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Value"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Encounter.location",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Encounter.location.*.status",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "planned"
-                      },
-                      {
-                        "@value": "active"
-                      },
-                      {
-                        "@value": "reserved"
-                      },
-                      {
-                        "@value": "completed"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Encounter.length",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Encounter.length.comparator",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "\u003c"
-                  },
-                  {
-                    "@value": "\u003c="
-                  },
-                  {
-                    "@value": "\u003e="
-                  },
-                  {
-                    "@value": "\u003e"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Encounter.statusHistory",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Encounter.statusHistory.*.status",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "planned"
-                      },
-                      {
-                        "@value": "arrived"
-                      },
-                      {
-                        "@value": "triaged"
-                      },
-                      {
-                        "@value": "in-progress"
-                      },
-                      {
-                        "@value": "onleave"
-                      },
-                      {
-                        "@value": "finished"
-                      },
-                      {
-                        "@value": "cancelled"
-                      },
-                      {
-                        "@value": "entered-in-error"
-                      },
-                      {
-                        "@value": "unknown"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Encounter.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "Encounter"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Encounter#identifier",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Encounter#identifier.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/Encounter#identifier.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "usual"
+                          },
+                          {
+                            "@value": "official"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Encounter#hospitalization",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/Encounter#hospitalization.preAdmissionIdentifier",
+                    "@type": [
+                      "https://lschema.org/Object"
+                    ],
+                    "https://lschema.org/Object#attributeList": [
+                      {
+                        "@list": [
+                          {
+                            "@id": "http://hl7.org/fhir/Encounter#hospitalization.preAdmissionIdentifier.use",
+                            "@type": [
+                              "https://lschema.org/Value"
+                            ],
+                            "https://lschema.org/validation#enumeration": [
+                              {
+                                "@value": "usual"
+                              },
+                              {
+                                "@value": "official"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "secondary"
+                              },
+                              {
+                                "@value": "old"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Encounter#statusHistory",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Encounter#statusHistory.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/Encounter#statusHistory.*.status",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "planned"
+                          },
+                          {
+                            "@value": "arrived"
+                          },
+                          {
+                            "@value": "triaged"
+                          },
+                          {
+                            "@value": "in-progress"
+                          },
+                          {
+                            "@value": "onleave"
+                          },
+                          {
+                            "@value": "finished"
+                          },
+                          {
+                            "@value": "cancelled"
+                          },
+                          {
+                            "@value": "entered-in-error"
+                          },
+                          {
+                            "@value": "unknown"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Encounter#length",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/Encounter#length.comparator",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
+                      {
+                        "@value": "\u003c"
+                      },
+                      {
+                        "@value": "\u003c="
+                      },
+                      {
+                        "@value": "\u003e="
+                      },
+                      {
+                        "@value": "\u003e"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Encounter#text",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/Encounter#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
+                      {
+                        "@value": "generated"
+                      },
+                      {
+                        "@value": "extensions"
+                      },
+                      {
+                        "@value": "additional"
+                      },
+                      {
+                        "@value": "empty"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/Encounter"
+        "@value": "http://hl7.org/fhir/Encounter"
       }
     ]
   }

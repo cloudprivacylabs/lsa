@@ -2,193 +2,191 @@
   {
     "@id": "http://hl7.org/fhir/OperationOutcome/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/OperationOutcome.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+        "@id": "http://hl7.org/fhir/OperationOutcome",
+        "https://lschema.org/Object#attributes": [
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/OperationOutcome#text",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/OperationOutcome#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
+                      {
+                        "@value": "generated"
+                      },
+                      {
+                        "@value": "extensions"
+                      },
+                      {
+                        "@value": "additional"
+                      },
+                      {
+                        "@value": "empty"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OperationOutcome#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "OperationOutcome"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/OperationOutcome.issue",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/OperationOutcome#issue",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.severity",
+                "@id": "http://hl7.org/fhir/OperationOutcome#issue.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "https://lschema.org/Object#attributeList": [
                   {
                     "@list": [
                       {
-                        "@value": "fatal"
+                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.code",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "invalid"
+                          },
+                          {
+                            "@value": "structure"
+                          },
+                          {
+                            "@value": "required"
+                          },
+                          {
+                            "@value": "value"
+                          },
+                          {
+                            "@value": "invariant"
+                          },
+                          {
+                            "@value": "security"
+                          },
+                          {
+                            "@value": "login"
+                          },
+                          {
+                            "@value": "unknown"
+                          },
+                          {
+                            "@value": "expired"
+                          },
+                          {
+                            "@value": "forbidden"
+                          },
+                          {
+                            "@value": "suppressed"
+                          },
+                          {
+                            "@value": "processing"
+                          },
+                          {
+                            "@value": "not-supported"
+                          },
+                          {
+                            "@value": "duplicate"
+                          },
+                          {
+                            "@value": "multiple-matches"
+                          },
+                          {
+                            "@value": "not-found"
+                          },
+                          {
+                            "@value": "deleted"
+                          },
+                          {
+                            "@value": "too-long"
+                          },
+                          {
+                            "@value": "code-invalid"
+                          },
+                          {
+                            "@value": "extension"
+                          },
+                          {
+                            "@value": "too-costly"
+                          },
+                          {
+                            "@value": "business-rule"
+                          },
+                          {
+                            "@value": "conflict"
+                          },
+                          {
+                            "@value": "transient"
+                          },
+                          {
+                            "@value": "lock-error"
+                          },
+                          {
+                            "@value": "no-store"
+                          },
+                          {
+                            "@value": "exception"
+                          },
+                          {
+                            "@value": "timeout"
+                          },
+                          {
+                            "@value": "incomplete"
+                          },
+                          {
+                            "@value": "throttled"
+                          },
+                          {
+                            "@value": "informational"
+                          }
+                        ]
                       },
                       {
-                        "@value": "error"
-                      },
-                      {
-                        "@value": "warning"
-                      },
-                      {
-                        "@value": "information"
+                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.severity",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "fatal"
+                          },
+                          {
+                            "@value": "error"
+                          },
+                          {
+                            "@value": "warning"
+                          },
+                          {
+                            "@value": "information"
+                          }
+                        ]
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.code",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "invalid"
-                      },
-                      {
-                        "@value": "structure"
-                      },
-                      {
-                        "@value": "required"
-                      },
-                      {
-                        "@value": "value"
-                      },
-                      {
-                        "@value": "invariant"
-                      },
-                      {
-                        "@value": "security"
-                      },
-                      {
-                        "@value": "login"
-                      },
-                      {
-                        "@value": "unknown"
-                      },
-                      {
-                        "@value": "expired"
-                      },
-                      {
-                        "@value": "forbidden"
-                      },
-                      {
-                        "@value": "suppressed"
-                      },
-                      {
-                        "@value": "processing"
-                      },
-                      {
-                        "@value": "not-supported"
-                      },
-                      {
-                        "@value": "duplicate"
-                      },
-                      {
-                        "@value": "multiple-matches"
-                      },
-                      {
-                        "@value": "not-found"
-                      },
-                      {
-                        "@value": "deleted"
-                      },
-                      {
-                        "@value": "too-long"
-                      },
-                      {
-                        "@value": "code-invalid"
-                      },
-                      {
-                        "@value": "extension"
-                      },
-                      {
-                        "@value": "too-costly"
-                      },
-                      {
-                        "@value": "business-rule"
-                      },
-                      {
-                        "@value": "conflict"
-                      },
-                      {
-                        "@value": "transient"
-                      },
-                      {
-                        "@value": "lock-error"
-                      },
-                      {
-                        "@value": "no-store"
-                      },
-                      {
-                        "@value": "exception"
-                      },
-                      {
-                        "@value": "timeout"
-                      },
-                      {
-                        "@value": "incomplete"
-                      },
-                      {
-                        "@value": "throttled"
-                      },
-                      {
-                        "@value": "informational"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/OperationOutcome.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome.text.status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
                   }
                 ]
               }
@@ -197,9 +195,9 @@
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/OperationOutcome"
+        "@value": "http://hl7.org/fhir/OperationOutcome"
       }
     ]
   }

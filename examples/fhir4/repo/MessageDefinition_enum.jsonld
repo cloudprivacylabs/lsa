@@ -2,32 +2,221 @@
   {
     "@id": "http://hl7.org/fhir/MessageDefinition/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/MessageDefinition.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+        "@id": "http://hl7.org/fhir/MessageDefinition",
+        "https://lschema.org/Object#attributes": [
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/MessageDefinition#useContext",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
               {
-                "@value": "MessageDefinition"
+                "@id": "http://hl7.org/fhir/MessageDefinition#useContext.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageDefinition#useContext.*.valueQuantity",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/MessageDefinition#useContext.*.valueQuantity.comparator",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/MessageDefinition#useContext.*.valueRange",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/MessageDefinition#useContext.*.valueRange.low",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/MessageDefinition#useContext.*.valueRange.low.comparator",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/validation#enumeration": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/MessageDefinition#useContext.*.valueRange.high",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/MessageDefinition#useContext.*.valueRange.high.comparator",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/validation#enumeration": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageDefinition.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          },
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/MessageDefinition#text",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageDefinition#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
+                      {
+                        "@value": "generated"
+                      },
+                      {
+                        "@value": "extensions"
+                      },
+                      {
+                        "@value": "additional"
+                      },
+                      {
+                        "@value": "empty"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageDefinition#identifier",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/MessageDefinition#identifier.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageDefinition#identifier.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "usual"
+                          },
+                          {
+                            "@value": "official"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageDefinition#status",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "draft"
               },
@@ -41,49 +230,105 @@
                 "@value": "unknown"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageDefinition.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+          },
           {
-            "@id": "http://hl7.org/fhir/MessageDefinition.text.status",
+            "@id": "http://hl7.org/fhir/MessageDefinition#contact",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "https://lschema.org/Array#items": [
               {
-                "@list": [
+                "@id": "http://hl7.org/fhir/MessageDefinition#contact.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/MessageDefinition#contact.*.telecom",
+                        "@type": [
+                          "https://lschema.org/Array"
+                        ],
+                        "https://lschema.org/Array#items": [
+                          {
+                            "@id": "http://hl7.org/fhir/MessageDefinition#contact.*.telecom.*",
+                            "@type": [
+                              "https://lschema.org/Object"
+                            ],
+                            "https://lschema.org/Object#attributeList": [
+                              {
+                                "@list": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/MessageDefinition#contact.*.telecom.*.system",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/validation#enumeration": [
+                                      {
+                                        "@value": "phone"
+                                      },
+                                      {
+                                        "@value": "fax"
+                                      },
+                                      {
+                                        "@value": "email"
+                                      },
+                                      {
+                                        "@value": "pager"
+                                      },
+                                      {
+                                        "@value": "url"
+                                      },
+                                      {
+                                        "@value": "sms"
+                                      },
+                                      {
+                                        "@value": "other"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "@id": "http://hl7.org/fhir/MessageDefinition#contact.*.telecom.*.use",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/validation#enumeration": [
+                                      {
+                                        "@value": "home"
+                                      },
+                                      {
+                                        "@value": "work"
+                                      },
+                                      {
+                                        "@value": "temp"
+                                      },
+                                      {
+                                        "@value": "old"
+                                      },
+                                      {
+                                        "@value": "mobile"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageDefinition.category",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          },
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/MessageDefinition#category",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "consequence"
               },
@@ -94,136 +339,24 @@
                 "@value": "notification"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageDefinition.useContext",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/MessageDefinition#resourceType",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Value"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/validation#enumeration": [
               {
-                "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueQuantity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueQuantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange.low",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange.low.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange.high",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageDefinition.useContext.*.valueRange.high.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "@value": "MessageDefinition"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageDefinition.responseRequired",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          },
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/MessageDefinition#responseRequired",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "always"
               },
@@ -239,143 +372,11 @@
             ]
           }
         ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageDefinition.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageDefinition.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageDefinition.contact",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageDefinition.contact.*.telecom",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/MessageDefinition.contact.*.telecom.*.use",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/MessageDefinition.contact.*.telecom.*.system",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/MessageDefinition"
+        "@value": "http://hl7.org/fhir/MessageDefinition"
       }
     ]
   }

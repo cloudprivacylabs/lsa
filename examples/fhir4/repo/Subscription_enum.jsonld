@@ -2,17 +2,133 @@
   {
     "@id": "http://hl7.org/fhir/Subscription/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/Subscription.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+        "@id": "http://hl7.org/fhir/Subscription",
+        "https://lschema.org/Object#attributes": [
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/Subscription#text",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/Subscription#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
+                      {
+                        "@value": "generated"
+                      },
+                      {
+                        "@value": "extensions"
+                      },
+                      {
+                        "@value": "additional"
+                      },
+                      {
+                        "@value": "empty"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Subscription#contact",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Subscription#contact.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/Subscription#contact.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "home"
+                          },
+                          {
+                            "@value": "work"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "old"
+                          },
+                          {
+                            "@value": "mobile"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Subscription#contact.*.system",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "phone"
+                          },
+                          {
+                            "@value": "fax"
+                          },
+                          {
+                            "@value": "email"
+                          },
+                          {
+                            "@value": "pager"
+                          },
+                          {
+                            "@value": "url"
+                          },
+                          {
+                            "@value": "sms"
+                          },
+                          {
+                            "@value": "other"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Subscription#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "Subscription"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Subscription#status",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "requested"
               },
@@ -26,159 +142,37 @@
                 "@value": "off"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Subscription.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+          },
           {
-            "@id": "http://hl7.org/fhir/Subscription.text.status",
+            "@id": "http://hl7.org/fhir/Subscription#channel",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "https://lschema.org/Object#attributeList": [
               {
                 "@list": [
                   {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Subscription.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "Subscription"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Subscription.contact",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Subscription.contact.*.system",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/Subscription#channel.type",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
                       {
-                        "@value": "phone"
+                        "@value": "rest-hook"
                       },
                       {
-                        "@value": "fax"
+                        "@value": "websocket"
                       },
                       {
                         "@value": "email"
                       },
                       {
-                        "@value": "pager"
-                      },
-                      {
-                        "@value": "url"
-                      },
-                      {
                         "@value": "sms"
                       },
                       {
-                        "@value": "other"
+                        "@value": "message"
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/Subscription.contact.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "home"
-                      },
-                      {
-                        "@value": "work"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "mobile"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Subscription.channel",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Subscription.channel.type",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
-              {
-                "@list": [
-                  {
-                    "@value": "rest-hook"
-                  },
-                  {
-                    "@value": "websocket"
-                  },
-                  {
-                    "@value": "email"
-                  },
-                  {
-                    "@value": "sms"
-                  },
-                  {
-                    "@value": "message"
                   }
                 ]
               }
@@ -187,9 +181,9 @@
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/Subscription"
+        "@value": "http://hl7.org/fhir/Subscription"
       }
     ]
   }

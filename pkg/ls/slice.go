@@ -13,120 +13,99 @@
 // limitations under the License.
 package ls
 
-import (
-	"github.com/piprate/json-gold/ld"
-)
-
-// Slice a layer based on the filter func. The filter func decides
-// whether to include the term in the new slice. The filter function
-// will be called once for the empty term, and if the attribute is to
-// be included in the slice, filter should return true.
-//
-// The returned layer is of the same type and objectType as the source
-func (layer *Layer) Slice(filter func(string, *Attribute) bool) *Layer {
-	newLayer := NewLayer()
-	newLayer.Type = layer.Type
-	newLayer.TargetType = layer.TargetType
-	root := layer.Root.Slice(filter, nil, newLayer)
-	if root != nil {
-		newLayer.Root = root
+// GetSliceByTermsFunc is used in the Slice function to select nodes
+// by the properties it contains. If includeAttributeNodes is true,
+// attributes nodes are included unconditionally even though the node
+// does not contain any of the terms.
+func GetSliceByTermsFunc(includeTerms []string, includeAttributeNodes bool) func(*Layer, LayerNode) LayerNode {
+	incl := make(map[string]struct{})
+	for _, x := range includeTerms {
+		incl[x] = struct{}{}
 	}
-	return newLayer
-}
-
-// Slice creates a copy of the attributes object by including terms
-// selected by the filter function. All attribute nodes are processed,
-// thus the filter function may return false for a node A and then
-// true for a descendant of A, which causes A to be included. If the
-// slice is empty, returns nil. This will call filter once with empty
-// term, and f should return if the attribute should be included or
-// not.
-//
-// parent is the parent of the new attributes in the sliced layer
-func (attributes *ObjectType) Slice(filter func(string, *Attribute) bool, parent *Attribute, newLayer *Layer) *ObjectType {
-	ret := NewObjectType(parent, attributes.listContainer)
-	for _, attr := range attributes.attributes {
-		newAttr := attr.Slice(filter, parent, newLayer)
-		if newAttr != nil {
-			ret.Add(newAttr, newLayer)
+	return func(layer *Layer, node LayerNode) LayerNode {
+		includeNode := false
+		if includeAttributeNodes && node.IsAttributeNode() {
+			includeNode = true
 		}
-	}
-	if ret.Len() > 0 {
-		return ret
-	}
-	return nil
-}
-
-// Slice creates a copy of the attribute if either filter selects this
-// attribute, or any term in this attribute, or any attributes under
-// this attribute. This will call filter once with empty term, and f
-// should return if the attribute should be included or not.
-//
-// parent is the parent of the new attribute in the sliced layer
-func (attribute *Attribute) Slice(filter func(string, *Attribute) bool, parent *Attribute, newLayer *Layer) *Attribute {
-	newAttr := NewAttribute(parent)
-	newAttr.ID = attribute.ID
-	full := filter("", attribute)
-
-	// Any term in attribute selected?
-	for k, v := range attribute.Values {
-		if filter(k, attribute) {
-			newAttr.Values[k] = ld.CloneDocument(v)
-			full = true
-		}
-	}
-
-	fillOptions := func(options []*Attribute) []*Attribute {
-		ret := make([]*Attribute, 0, len(options))
-		for _, x := range options {
-			attr := x.Slice(filter, attribute, newLayer)
-			if attr != nil {
-				ret = append(ret, attr)
+		properties := make(map[string]*PropertyValue)
+		for k, v := range node.GetPropertyMap() {
+			if _, ok := incl[k]; ok {
+				properties[k] = v
 			}
 		}
-		return ret
-	}
-	switch t := attribute.Type.(type) {
-	case *ObjectType:
-		n := t.Slice(filter, newAttr, newLayer)
-		if n != nil {
-			newAttr.Type = n
-			full = true
-		} else {
-			newAttr.Type = NewObjectType(newAttr, t.listContainer)
+		if len(properties) > 0 || includeNode {
+			newNode := node.Clone().(*schemaNode)
+			newNode.properties = properties
+			return newNode
 		}
-
-	case *ValueType, *ReferenceType:
-		newAttr.Type = attribute.Type
-	case *ArrayType:
-		n := t.Attribute.Slice(filter, newAttr, newLayer)
-		if n != nil {
-			newAttr.Type = &ArrayType{n}
-			full = true
-		} else {
-			newAttr.Type = NewArrayType(newAttr)
-		}
-	case *CompositeType:
-		o := fillOptions(t.Options)
-		if len(o) > 0 {
-			newAttr.Type = &CompositeType{o}
-			full = true
-		} else {
-			newAttr.Type = &CompositeType{}
-		}
-	case *PolymorphicType:
-		o := fillOptions(t.Options)
-		if len(o) > 0 {
-			newAttr.Type = &PolymorphicType{o}
-			full = true
-		} else {
-			newAttr.Type = &PolymorphicType{}
-		}
-	}
-
-	if !full {
 		return nil
 	}
+}
 
-	return newAttr
+// IncludeAllNodesInSliceFunc includes all the nodes in the slice
+var IncludeAllNodesInSliceFunc = func(layer *Layer, node LayerNode) LayerNode {
+	return node.Clone()
+}
+
+func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, LayerNode) LayerNode) *Layer {
+	ret := NewLayer()
+	ret.SetLayerType(layerType)
+	rootNode := NewLayerNode("")
+	ret.AddNode(rootNode)
+	sourceRoot := layer.GetObjectInfoNode()
+	if sourceRoot != nil {
+		rootNode.SetID(sourceRoot.GetID())
+		rootNode.SetTypes(sourceRoot.GetTypes()...)
+	}
+	hasNodes := false
+	if sourceRoot != nil {
+		for targets := sourceRoot.AllOutgoingEdges(); targets.HasNext(); {
+			edge := targets.Next().(LayerEdge)
+			if edge.IsAttributeTreeEdge() {
+				newNode := slice(ret, edge.To().(LayerNode), nodeFilter, map[LayerNode]struct{}{})
+				if newNode != nil {
+					rootNode.Connect(newNode, edge.GetLabel())
+					hasNodes = true
+				}
+			}
+		}
+	}
+	if hasNodes {
+		ret.GetLayerInfoNode().Connect(rootNode, LayerRootTerm)
+	}
+	return ret
+}
+
+func slice(targetLayer *Layer, sourceNode LayerNode, nodeFilter func(*Layer, LayerNode) LayerNode, ctx map[LayerNode]struct{}) LayerNode {
+	// Avoid loops
+	if _, seen := ctx[sourceNode]; seen {
+		return nil
+	}
+	ctx[sourceNode] = struct{}{}
+	defer func() {
+		delete(ctx, sourceNode)
+	}()
+
+	// Try to filter first. This may return nil
+	targetNode := nodeFilter(targetLayer, sourceNode)
+
+	for edges := sourceNode.AllOutgoingEdges(); edges.HasNext(); {
+		edge := edges.Next().(LayerEdge)
+		newTo := slice(targetLayer, edge.To().(LayerNode), nodeFilter, ctx)
+		if newTo != nil {
+			// If targetNode was filtered out, it has to be included now
+			if targetNode == nil {
+				targetNode = targetLayer.NewNode(sourceNode.GetID(), sourceNode.GetTypes()...)
+			}
+			// Add the edge
+			if targetNode.GetGraph() == nil {
+				targetLayer.AddNode(targetNode)
+			}
+			targetLayer.AddEdge(targetNode, newTo, edge.Clone())
+		}
+	}
+	if targetNode != nil && targetNode.GetGraph() == nil {
+		targetLayer.AddNode(targetNode)
+	}
+	return targetNode
 }

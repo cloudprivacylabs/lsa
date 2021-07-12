@@ -2,17 +2,18 @@
   {
     "@id": "http://hl7.org/fhir/Consent_Provision/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/Consent_Provision.type",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+        "@id": "http://hl7.org/fhir/Consent_Provision",
+        "https://lschema.org/Object#attributes": [
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/Consent_Provision#type",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "deny"
               },
@@ -20,39 +21,40 @@
                 "@value": "permit"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Consent_Provision.data",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/Consent_Provision#data",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Consent_Provision.data.*.meaning",
+                "@id": "http://hl7.org/fhir/Consent_Provision#data.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "https://lschema.org/Object#attributeList": [
                   {
                     "@list": [
                       {
-                        "@value": "instance"
-                      },
-                      {
-                        "@value": "related"
-                      },
-                      {
-                        "@value": "dependents"
-                      },
-                      {
-                        "@value": "authoredby"
+                        "@id": "http://hl7.org/fhir/Consent_Provision#data.*.meaning",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "instance"
+                          },
+                          {
+                            "@value": "related"
+                          },
+                          {
+                            "@value": "dependents"
+                          },
+                          {
+                            "@value": "authoredby"
+                          }
+                        ]
                       }
                     ]
                   }
@@ -63,9 +65,9 @@
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/Consent_Provision"
+        "@value": "http://hl7.org/fhir/Consent_Provision"
       }
     ]
   }

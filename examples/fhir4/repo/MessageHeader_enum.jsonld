@@ -2,154 +2,155 @@
   {
     "@id": "http://hl7.org/fhir/MessageHeader/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/MessageHeader.source",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "@id": "http://hl7.org/fhir/MessageHeader",
+        "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.source.contact",
+            "@id": "http://hl7.org/fhir/MessageHeader#response",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.system",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "phone"
-                      },
-                      {
-                        "@value": "fax"
-                      },
-                      {
-                        "@value": "email"
-                      },
-                      {
-                        "@value": "pager"
-                      },
-                      {
-                        "@value": "url"
-                      },
-                      {
-                        "@value": "sms"
-                      },
-                      {
-                        "@value": "other"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader.source.contact.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "home"
-                      },
-                      {
-                        "@value": "work"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "old"
-                      },
-                      {
-                        "@value": "mobile"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.response",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader.response.code",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "https://lschema.org/Object#attributeList": [
               {
                 "@list": [
                   {
-                    "@value": "ok"
-                  },
-                  {
-                    "@value": "transient-error"
-                  },
-                  {
-                    "@value": "fatal-error"
+                    "@id": "http://hl7.org/fhir/MessageHeader#response.code",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
+                      {
+                        "@value": "ok"
+                      },
+                      {
+                        "@value": "transient-error"
+                      },
+                      {
+                        "@value": "fatal-error"
+                      }
+                    ]
                   }
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          },
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/MessageHeader#text",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
+                      {
+                        "@value": "generated"
+                      },
+                      {
+                        "@value": "extensions"
+                      },
+                      {
+                        "@value": "additional"
+                      },
+                      {
+                        "@value": "empty"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "MessageHeader"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MessageHeader.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+          },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader.text.status",
+            "@id": "http://hl7.org/fhir/MessageHeader#source",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "https://lschema.org/Object#attributeList": [
               {
                 "@list": [
                   {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
+                    "@id": "http://hl7.org/fhir/MessageHeader#source.contact",
+                    "@type": [
+                      "https://lschema.org/Object"
+                    ],
+                    "https://lschema.org/Object#attributeList": [
+                      {
+                        "@list": [
+                          {
+                            "@id": "http://hl7.org/fhir/MessageHeader#source.contact.system",
+                            "@type": [
+                              "https://lschema.org/Value"
+                            ],
+                            "https://lschema.org/validation#enumeration": [
+                              {
+                                "@value": "phone"
+                              },
+                              {
+                                "@value": "fax"
+                              },
+                              {
+                                "@value": "email"
+                              },
+                              {
+                                "@value": "pager"
+                              },
+                              {
+                                "@value": "url"
+                              },
+                              {
+                                "@value": "sms"
+                              },
+                              {
+                                "@value": "other"
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/MessageHeader#source.contact.use",
+                            "@type": [
+                              "https://lschema.org/Value"
+                            ],
+                            "https://lschema.org/validation#enumeration": [
+                              {
+                                "@value": "home"
+                              },
+                              {
+                                "@value": "work"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "old"
+                              },
+                              {
+                                "@value": "mobile"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
@@ -158,9 +159,9 @@
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/MessageHeader"
+        "@value": "http://hl7.org/fhir/MessageHeader"
       }
     ]
   }

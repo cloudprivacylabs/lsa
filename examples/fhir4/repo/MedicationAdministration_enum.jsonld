@@ -2,40 +2,37 @@
   {
     "@id": "http://hl7.org/fhir/MedicationAdministration/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/MedicationAdministration.dosage",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "@id": "http://hl7.org/fhir/MedicationAdministration",
+        "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.dose",
+            "@id": "http://hl7.org/fhir/MedicationAdministration#text",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Object#attributeList": [
               {
-                "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.dose.comparator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "@list": [
                   {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/MedicationAdministration#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
                       {
-                        "@value": "\u003c"
+                        "@value": "generated"
                       },
                       {
-                        "@value": "\u003c="
+                        "@value": "extensions"
                       },
                       {
-                        "@value": "\u003e="
+                        "@value": "additional"
                       },
                       {
-                        "@value": "\u003e"
+                        "@value": "empty"
                       }
                     ]
                   }
@@ -44,193 +41,206 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.rateQuantity",
+            "@id": "http://hl7.org/fhir/MedicationAdministration#resourceType",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Value"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.rateQuantity.comparator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "\u003c"
-                      },
-                      {
-                        "@value": "\u003c="
-                      },
-                      {
-                        "@value": "\u003e="
-                      },
-                      {
-                        "@value": "\u003e"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.rateRatio",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.rateRatio.numerator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.rateRatio.numerator.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.rateRatio.denominator",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/MedicationAdministration.dosage.rateRatio.denominator.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MedicationAdministration.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationAdministration.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MedicationAdministration.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "MedicationAdministration"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MedicationAdministration.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+          },
           {
-            "@id": "http://hl7.org/fhir/MedicationAdministration.text.status",
+            "@id": "http://hl7.org/fhir/MedicationAdministration#dosage",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "https://lschema.org/Object#attributeList": [
               {
                 "@list": [
                   {
-                    "@value": "generated"
+                    "@id": "http://hl7.org/fhir/MedicationAdministration#dosage.rateQuantity",
+                    "@type": [
+                      "https://lschema.org/Object"
+                    ],
+                    "https://lschema.org/Object#attributeList": [
+                      {
+                        "@list": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationAdministration#dosage.rateQuantity.comparator",
+                            "@type": [
+                              "https://lschema.org/Value"
+                            ],
+                            "https://lschema.org/validation#enumeration": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
                   },
                   {
-                    "@value": "extensions"
+                    "@id": "http://hl7.org/fhir/MedicationAdministration#dosage.rateRatio",
+                    "@type": [
+                      "https://lschema.org/Object"
+                    ],
+                    "https://lschema.org/Object#attributeList": [
+                      {
+                        "@list": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationAdministration#dosage.rateRatio.numerator",
+                            "@type": [
+                              "https://lschema.org/Object"
+                            ],
+                            "https://lschema.org/Object#attributeList": [
+                              {
+                                "@list": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/MedicationAdministration#dosage.rateRatio.numerator.comparator",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/validation#enumeration": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationAdministration#dosage.rateRatio.denominator",
+                            "@type": [
+                              "https://lschema.org/Object"
+                            ],
+                            "https://lschema.org/Object#attributeList": [
+                              {
+                                "@list": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/MedicationAdministration#dosage.rateRatio.denominator.comparator",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/validation#enumeration": [
+                                      {
+                                        "@value": "\u003c"
+                                      },
+                                      {
+                                        "@value": "\u003c="
+                                      },
+                                      {
+                                        "@value": "\u003e="
+                                      },
+                                      {
+                                        "@value": "\u003e"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
                   },
                   {
-                    "@value": "additional"
-                  },
+                    "@id": "http://hl7.org/fhir/MedicationAdministration#dosage.dose",
+                    "@type": [
+                      "https://lschema.org/Object"
+                    ],
+                    "https://lschema.org/Object#attributeList": [
+                      {
+                        "@list": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationAdministration#dosage.dose.comparator",
+                            "@type": [
+                              "https://lschema.org/Value"
+                            ],
+                            "https://lschema.org/validation#enumeration": [
+                              {
+                                "@value": "\u003c"
+                              },
+                              {
+                                "@value": "\u003c="
+                              },
+                              {
+                                "@value": "\u003e="
+                              },
+                              {
+                                "@value": "\u003e"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#identifier",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationAdministration#identifier.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@value": "empty"
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/MedicationAdministration#identifier.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "usual"
+                          },
+                          {
+                            "@value": "official"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
@@ -239,9 +249,9 @@
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/MedicationAdministration"
+        "@value": "http://hl7.org/fhir/MedicationAdministration"
       }
     ]
   }

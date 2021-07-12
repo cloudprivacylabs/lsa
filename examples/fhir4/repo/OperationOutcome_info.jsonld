@@ -2,741 +2,572 @@
   {
     "@id": "http://hl7.org/fhir/OperationOutcome/info",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/OperationOutcome.language",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
+        "@id": "http://hl7.org/fhir/OperationOutcome",
+        "https://lschema.org/Object#attributes": [
           {
-            "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/OperationOutcome._language",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome._language.id",
+            "@id": "http://hl7.org/fhir/OperationOutcome#meta",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/attr/information": [
+            "https://lschema.org/Object#attributeList": [
               {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/OperationOutcome.implicitRules",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "String of characters used to identify a name or a resource"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/OperationOutcome._implicitRules",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome._implicitRules.id",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/OperationOutcome.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "This is a OperationOutcome resource"
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/OperationOutcome.issue",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.location",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
+                "@list": [
                   {
+                    "@id": "http://hl7.org/fhir/OperationOutcome#meta.lastUpdated",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
+                      "https://lschema.org/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
+                    "https://lschema.org/description": [
                       {
-                        "@value": "A sequence of Unicode characters"
+                        "@value": "An instant in time - known at least to the second"
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*._code",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                  },
                   {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.issue.*._code.id",
+                    "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
+                      "https://lschema.org/Array"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
+                    "https://lschema.org/Array#items": [
                       {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.severity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "Indicates whether the issue indicates a variation from successful processing."
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Array"
-                    ],
-                    "http://layeredschemas.org/v1.0/Array/items": [
-                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*",
                         "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
+                          "https://lschema.org/Object"
                         ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                        "https://lschema.org/Object#attributeList": [
                           {
-                            "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*.version",
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*._system",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*._system.id",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/description": [
+                                          {
+                                            "@value": "A sequence of Unicode characters"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*.display",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*.id",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*.version",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*.code",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*._code",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*._code.id",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/description": [
+                                          {
+                                            "@value": "A sequence of Unicode characters"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*._version",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*._version.id",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/description": [
+                                          {
+                                            "@value": "A sequence of Unicode characters"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*._display",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*._display.id",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/description": [
+                                          {
+                                            "@value": "A sequence of Unicode characters"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*._userSelected",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*._userSelected.id",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/description": [
+                                          {
+                                            "@value": "A sequence of Unicode characters"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*.system",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "String of characters used to identify a name or a resource"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.tag.*.userSelected",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "Value of \"true\" or \"false\""
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/OperationOutcome#meta.profile",
+                    "@type": [
+                      "https://lschema.org/Array"
+                    ],
+                    "https://lschema.org/Array#items": [
+                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#meta.profile.*",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/description": [
+                          {
+                            "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/OperationOutcome#meta.security",
+                    "@type": [
+                      "https://lschema.org/Array"
+                    ],
+                    "https://lschema.org/Array#items": [
+                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*.code",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*._code",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*._code.id",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/description": [
+                                          {
+                                            "@value": "A sequence of Unicode characters"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*.version",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*._display",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*._display.id",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/description": [
+                                          {
+                                            "@value": "A sequence of Unicode characters"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*._userSelected",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*._userSelected.id",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/description": [
+                                          {
+                                            "@value": "A sequence of Unicode characters"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*.system",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "String of characters used to identify a name or a resource"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*.id",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*.userSelected",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "Value of \"true\" or \"false\""
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*.display",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*._version",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*._version.id",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/description": [
+                                          {
+                                            "@value": "A sequence of Unicode characters"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*._system",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/OperationOutcome#meta.security.*._system.id",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/description": [
+                                          {
+                                            "@value": "A sequence of Unicode characters"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/OperationOutcome#meta._versionId",
+                    "@type": [
+                      "https://lschema.org/Object"
+                    ],
+                    "https://lschema.org/Object#attributeList": [
+                      {
+                        "@list": [
+                          {
+                            "@id": "http://hl7.org/fhir/OperationOutcome#meta._versionId.id",
                             "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
+                              "https://lschema.org/Value"
                             ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
+                            "https://lschema.org/description": [
                               {
                                 "@value": "A sequence of Unicode characters"
                               }
                             ]
-                          },
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/OperationOutcome#meta._lastUpdated",
+                    "@type": [
+                      "https://lschema.org/Object"
+                    ],
+                    "https://lschema.org/Object#attributeList": [
+                      {
+                        "@list": [
                           {
-                            "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*._display",
+                            "@id": "http://hl7.org/fhir/OperationOutcome#meta._lastUpdated.id",
                             "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
+                              "https://lschema.org/Value"
                             ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*._display.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*.display",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
+                            "https://lschema.org/description": [
                               {
                                 "@value": "A sequence of Unicode characters"
                               }
                             ]
-                          },
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/OperationOutcome#meta._source",
+                    "@type": [
+                      "https://lschema.org/Object"
+                    ],
+                    "https://lschema.org/Object#attributeList": [
+                      {
+                        "@list": [
                           {
-                            "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*.system",
+                            "@id": "http://hl7.org/fhir/OperationOutcome#meta._source.id",
                             "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
+                              "https://lschema.org/Value"
                             ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "String of characters used to identify a name or a resource"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*._code",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*._code.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*.userSelected",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "Value of \"true\" or \"false\""
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*.code",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
-                              {
-                                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*.id",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/information": [
+                            "https://lschema.org/description": [
                               {
                                 "@value": "A sequence of Unicode characters"
                               }
                             ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*._system",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*._system.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*._userSelected",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*._userSelected.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*._version",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
-                            ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
-                              {
-                                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.coding.*._version.id",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Value"
-                                ],
-                                "http://layeredschemas.org/v1.0/attr/information": [
-                                  {
-                                    "@value": "A sequence of Unicode characters"
-                                  }
-                                ]
-                              }
-                            ]
                           }
                         ]
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.text",
+                    "@id": "http://hl7.org/fhir/OperationOutcome#meta.versionId",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
+                      "https://lschema.org/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
+                    "https://lschema.org/description": [
+                      {
+                        "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
+                      }
+                    ]
+                  },
+                  {
+                    "@id": "http://hl7.org/fhir/OperationOutcome#meta.id",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/description": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details._text",
+                    "@id": "http://hl7.org/fhir/OperationOutcome#meta.source",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
+                      "https://lschema.org/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details._text.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.details.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*._severity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.issue.*._severity.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*._diagnostics",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.issue.*._diagnostics.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*._location",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/OperationOutcome.issue.*._location.*.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.expression",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.diagnostics",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*.code",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "Describes the type of the issue. The system that creates an OperationOutcome SHALL choose the most applicable code from the IssueType value set, and may additional provide its own code for the error in the details element."
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.issue.*._expression",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/OperationOutcome.issue.*._expression.*.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/OperationOutcome.id",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/information": [
-          {
-            "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/OperationOutcome.meta",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome.meta.profile",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome.meta.source",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome.meta._lastUpdated",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.meta._lastUpdated.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome.meta.security",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Array"
-            ],
-            "http://layeredschemas.org/v1.0/Array/items": [
-              {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*._code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*._display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*._display.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*._userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*._userSelected.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*._version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*._version.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*.id",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*._system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
+                    "https://lschema.org/description": [
                       {
                         "@value": "String of characters used to identify a name or a resource"
                       }
                     ]
-                  },
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OperationOutcome#_implicitRules",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
                   {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*.code",
+                    "@id": "http://hl7.org/fhir/OperationOutcome#_implicitRules.id",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
+                      "https://lschema.org/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*.display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*.userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "Value of \"true\" or \"false\""
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.security.*.version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
+                    "https://lschema.org/description": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
@@ -747,174 +578,66 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag",
+            "@id": "http://hl7.org/fhir/OperationOutcome#text",
             "@type": [
-              "http://layeredschemas.org/v1.0/Array"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/Array/items": [
+            "https://lschema.org/Object#attributeList": [
               {
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "@list": [
                   {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*._version",
+                    "@id": "http://hl7.org/fhir/OperationOutcome#text.div",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
+                      "https://lschema.org/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                    "https://lschema.org/description": [
                       {
-                        "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*._version.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
+                        "@value": "xhtml - escaped html (see specfication)"
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*._system",
+                    "@id": "http://hl7.org/fhir/OperationOutcome#text.id",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
+                      "https://lschema.org/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*._system.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*._code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*._code.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*._display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*._display.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*._userSelected",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*._userSelected.id",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/information": [
-                          {
-                            "@value": "A sequence of Unicode characters"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*.code",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*.display",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
+                    "https://lschema.org/description": [
                       {
                         "@value": "A sequence of Unicode characters"
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*.id",
+                    "@id": "http://hl7.org/fhir/OperationOutcome#text.status",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
+                      "https://lschema.org/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
+                    "https://lschema.org/description": [
                       {
-                        "@value": "A sequence of Unicode characters"
+                        "@value": "The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data."
                       }
                     ]
                   },
                   {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*.userSelected",
+                    "@id": "http://hl7.org/fhir/OperationOutcome#text._status",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
+                      "https://lschema.org/Object"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
+                    "https://lschema.org/Object#attributeList": [
                       {
-                        "@value": "Value of \"true\" or \"false\""
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*.system",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "String of characters used to identify a name or a resource"
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/OperationOutcome.meta.tag.*.version",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/information": [
-                      {
-                        "@value": "A sequence of Unicode characters"
+                        "@list": [
+                          {
+                            "@id": "http://hl7.org/fhir/OperationOutcome#text._status.id",
+                            "@type": [
+                              "https://lschema.org/Value"
+                            ],
+                            "https://lschema.org/description": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
@@ -923,142 +646,569 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OperationOutcome.meta._versionId",
+            "@id": "http://hl7.org/fhir/OperationOutcome#resourceType",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Value"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/description": [
               {
-                "@id": "http://hl7.org/fhir/OperationOutcome.meta._versionId.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
+                "@value": "This is a OperationOutcome resource"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OperationOutcome.meta._source",
+            "@id": "http://hl7.org/fhir/OperationOutcome#language",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Value"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/description": [
               {
-                "@id": "http://hl7.org/fhir/OperationOutcome.meta._source.id",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/information": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ]
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OperationOutcome.meta.lastUpdated",
+            "@id": "http://hl7.org/fhir/OperationOutcome#id",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Value"
             ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "An instant in time - known at least to the second"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome.meta.versionId",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
+            "https://lschema.org/description": [
               {
                 "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OperationOutcome.meta.id",
+            "@id": "http://hl7.org/fhir/OperationOutcome#issue",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/attr/information": [
+            "https://lschema.org/Array#items": [
               {
-                "@value": "A sequence of Unicode characters"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/OperationOutcome.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome.text.status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Value"
-            ],
-            "http://layeredschemas.org/v1.0/attr/information": [
-              {
-                "@value": "The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data."
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome.text._status",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome.text._status.id",
+                "@id": "http://hl7.org/fhir/OperationOutcome#issue.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/attr/information": [
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@value": "A sequence of Unicode characters"
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.text",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details._text",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details._text.id",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/description": [
+                                          {
+                                            "@value": "A sequence of Unicode characters"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.id",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding",
+                                "@type": [
+                                  "https://lschema.org/Array"
+                                ],
+                                "https://lschema.org/Array#items": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*",
+                                    "@type": [
+                                      "https://lschema.org/Object"
+                                    ],
+                                    "https://lschema.org/Object#attributeList": [
+                                      {
+                                        "@list": [
+                                          {
+                                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*.id",
+                                            "@type": [
+                                              "https://lschema.org/Value"
+                                            ],
+                                            "https://lschema.org/description": [
+                                              {
+                                                "@value": "A sequence of Unicode characters"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*.code",
+                                            "@type": [
+                                              "https://lschema.org/Value"
+                                            ],
+                                            "https://lschema.org/description": [
+                                              {
+                                                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*._code",
+                                            "@type": [
+                                              "https://lschema.org/Object"
+                                            ],
+                                            "https://lschema.org/Object#attributeList": [
+                                              {
+                                                "@list": [
+                                                  {
+                                                    "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*._code.id",
+                                                    "@type": [
+                                                      "https://lschema.org/Value"
+                                                    ],
+                                                    "https://lschema.org/description": [
+                                                      {
+                                                        "@value": "A sequence of Unicode characters"
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*._display",
+                                            "@type": [
+                                              "https://lschema.org/Object"
+                                            ],
+                                            "https://lschema.org/Object#attributeList": [
+                                              {
+                                                "@list": [
+                                                  {
+                                                    "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*._display.id",
+                                                    "@type": [
+                                                      "https://lschema.org/Value"
+                                                    ],
+                                                    "https://lschema.org/description": [
+                                                      {
+                                                        "@value": "A sequence of Unicode characters"
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*.system",
+                                            "@type": [
+                                              "https://lschema.org/Value"
+                                            ],
+                                            "https://lschema.org/description": [
+                                              {
+                                                "@value": "String of characters used to identify a name or a resource"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*.version",
+                                            "@type": [
+                                              "https://lschema.org/Value"
+                                            ],
+                                            "https://lschema.org/description": [
+                                              {
+                                                "@value": "A sequence of Unicode characters"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*._system",
+                                            "@type": [
+                                              "https://lschema.org/Object"
+                                            ],
+                                            "https://lschema.org/Object#attributeList": [
+                                              {
+                                                "@list": [
+                                                  {
+                                                    "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*._system.id",
+                                                    "@type": [
+                                                      "https://lschema.org/Value"
+                                                    ],
+                                                    "https://lschema.org/description": [
+                                                      {
+                                                        "@value": "A sequence of Unicode characters"
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*.display",
+                                            "@type": [
+                                              "https://lschema.org/Value"
+                                            ],
+                                            "https://lschema.org/description": [
+                                              {
+                                                "@value": "A sequence of Unicode characters"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*._userSelected",
+                                            "@type": [
+                                              "https://lschema.org/Object"
+                                            ],
+                                            "https://lschema.org/Object#attributeList": [
+                                              {
+                                                "@list": [
+                                                  {
+                                                    "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*._userSelected.id",
+                                                    "@type": [
+                                                      "https://lschema.org/Value"
+                                                    ],
+                                                    "https://lschema.org/description": [
+                                                      {
+                                                        "@value": "A sequence of Unicode characters"
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*.userSelected",
+                                            "@type": [
+                                              "https://lschema.org/Value"
+                                            ],
+                                            "https://lschema.org/description": [
+                                              {
+                                                "@value": "Value of \"true\" or \"false\""
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*._version",
+                                            "@type": [
+                                              "https://lschema.org/Object"
+                                            ],
+                                            "https://lschema.org/Object#attributeList": [
+                                              {
+                                                "@list": [
+                                                  {
+                                                    "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.details.coding.*._version.id",
+                                                    "@type": [
+                                                      "https://lschema.org/Value"
+                                                    ],
+                                                    "https://lschema.org/description": [
+                                                      {
+                                                        "@value": "A sequence of Unicode characters"
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.code",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/description": [
+                          {
+                            "@value": "Describes the type of the issue. The system that creates an OperationOutcome SHALL choose the most applicable code from the IssueType value set, and may additional provide its own code for the error in the details element."
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*._severity",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#issue.*._severity.id",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.diagnostics",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/description": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*._code",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#issue.*._code.id",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*._diagnostics",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/OperationOutcome#issue.*._diagnostics.id",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/description": [
+                                  {
+                                    "@value": "A sequence of Unicode characters"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*._expression",
+                        "@type": [
+                          "https://lschema.org/Array"
+                        ],
+                        "https://lschema.org/Array#items": [
+                          {
+                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*._expression.*",
+                            "@type": [
+                              "https://lschema.org/Object"
+                            ],
+                            "https://lschema.org/Object#attributeList": [
+                              {
+                                "@list": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/OperationOutcome#issue.*._expression.*.id",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/description": [
+                                      {
+                                        "@value": "A sequence of Unicode characters"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.expression",
+                        "@type": [
+                          "https://lschema.org/Array"
+                        ],
+                        "https://lschema.org/Array#items": [
+                          {
+                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.expression.*",
+                            "@type": [
+                              "https://lschema.org/Value"
+                            ],
+                            "https://lschema.org/description": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.severity",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/description": [
+                          {
+                            "@value": "Indicates whether the issue indicates a variation from successful processing."
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.id",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/description": [
+                          {
+                            "@value": "A sequence of Unicode characters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.location",
+                        "@type": [
+                          "https://lschema.org/Array"
+                        ],
+                        "https://lschema.org/Array#items": [
+                          {
+                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*.location.*",
+                            "@type": [
+                              "https://lschema.org/Value"
+                            ],
+                            "https://lschema.org/description": [
+                              {
+                                "@value": "A sequence of Unicode characters"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/OperationOutcome#issue.*._location",
+                        "@type": [
+                          "https://lschema.org/Array"
+                        ],
+                        "https://lschema.org/Array#items": [
+                          {
+                            "@id": "http://hl7.org/fhir/OperationOutcome#issue.*._location.*",
+                            "@type": [
+                              "https://lschema.org/Object"
+                            ],
+                            "https://lschema.org/Object#attributeList": [
+                              {
+                                "@list": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/OperationOutcome#issue.*._location.*.id",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/description": [
+                                      {
+                                        "@value": "A sequence of Unicode characters"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OperationOutcome.text.div",
+            "@id": "http://hl7.org/fhir/OperationOutcome#implicitRules",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Value"
             ],
-            "http://layeredschemas.org/v1.0/attr/information": [
+            "https://lschema.org/description": [
               {
-                "@value": "xhtml - escaped html (see specfication)"
+                "@value": "String of characters used to identify a name or a resource"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OperationOutcome.text.id",
+            "@id": "http://hl7.org/fhir/OperationOutcome#_language",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/attr/information": [
+            "https://lschema.org/Object#attributeList": [
               {
-                "@value": "A sequence of Unicode characters"
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/OperationOutcome#_language.id",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/description": [
+                      {
+                        "@value": "A sequence of Unicode characters"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/OperationOutcome"
+        "@value": "http://hl7.org/fhir/OperationOutcome"
       }
     ]
   }

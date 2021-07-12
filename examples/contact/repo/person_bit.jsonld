@@ -1,16 +1,18 @@
 {
-    "@context": "http://layeredschemas.org/ls.jsonld",
+    "@context": "https://layeredschemas.org/ls.json",
     "@id": "http://example.org/Person/bit",
     "@type": "Overlay",
     "targetType": "http://example.org/Person",
-    "attributes": {
-        "http://example.org/Person/firstName": {
-            "@type": "Value",
-            "privacyClassification": "http://example.org#BIT"
-        },
-        "http://example.org/Person/lastName": {
-            "@type": "Value",
-            "privacyClassification":"http://example.org#BIT"
+    "layer": {
+        "attributes": {
+            "http://example.org/Person/firstName": {
+                "@type": "Value",
+                "http://example.org/privacyClassification": "http://example.org#BIT"
+            },
+            "http://example.org/Person/lastName": {
+                "@type": "Value",
+                "http://example.org/privacyClassification":"http://example.org#BIT"
+            }
         }
     }
 }

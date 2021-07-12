@@ -2,89 +2,91 @@
   {
     "@id": "http://hl7.org/fhir/ClinicalImpression/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/ClinicalImpression.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+        "@id": "http://hl7.org/fhir/ClinicalImpression",
+        "https://lschema.org/Object#attributes": [
           {
-            "@list": [
-              {
-                "@value": "ClinicalImpression"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ClinicalImpression.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ClinicalImpression.text.status",
+            "@id": "http://hl7.org/fhir/ClinicalImpression#identifier",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "https://lschema.org/Array#items": [
               {
-                "@list": [
+                "@id": "http://hl7.org/fhir/ClinicalImpression#identifier.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/ClinicalImpression#identifier.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "usual"
+                          },
+                          {
+                            "@value": "official"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ClinicalImpression.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/ClinicalImpression#resourceType",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Value"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/validation#enumeration": [
               {
-                "@id": "http://hl7.org/fhir/ClinicalImpression.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "@value": "ClinicalImpression"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClinicalImpression#text",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
                   {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/ClinicalImpression#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
                       {
-                        "@value": "usual"
+                        "@value": "generated"
                       },
                       {
-                        "@value": "official"
+                        "@value": "extensions"
                       },
                       {
-                        "@value": "temp"
+                        "@value": "additional"
                       },
                       {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
+                        "@value": "empty"
                       }
                     ]
                   }
@@ -95,9 +97,9 @@
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/ClinicalImpression"
+        "@value": "http://hl7.org/fhir/ClinicalImpression"
       }
     ]
   }

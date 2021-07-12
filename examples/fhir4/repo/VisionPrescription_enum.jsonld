@@ -2,114 +2,107 @@
   {
     "@id": "http://hl7.org/fhir/VisionPrescription/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/VisionPrescription.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "@id": "http://hl7.org/fhir/VisionPrescription",
+        "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/VisionPrescription.text.status",
+            "@id": "http://hl7.org/fhir/VisionPrescription#lensSpecification",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "https://lschema.org/Array#items": [
               {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/VisionPrescription.lensSpecification",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/VisionPrescription.lensSpecification.*.duration",
+                "@id": "http://hl7.org/fhir/VisionPrescription#lensSpecification.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@id": "http://hl7.org/fhir/VisionPrescription.lensSpecification.*.duration.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "@list": [
                       {
-                        "@list": [
+                        "@id": "http://hl7.org/fhir/VisionPrescription#lensSpecification.*.prism",
+                        "@type": [
+                          "https://lschema.org/Array"
+                        ],
+                        "https://lschema.org/Array#items": [
                           {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
+                            "@id": "http://hl7.org/fhir/VisionPrescription#lensSpecification.*.prism.*",
+                            "@type": [
+                              "https://lschema.org/Object"
+                            ],
+                            "https://lschema.org/Object#attributeList": [
+                              {
+                                "@list": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/VisionPrescription#lensSpecification.*.prism.*.base",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/validation#enumeration": [
+                                      {
+                                        "@value": "up"
+                                      },
+                                      {
+                                        "@value": "down"
+                                      },
+                                      {
+                                        "@value": "in"
+                                      },
+                                      {
+                                        "@value": "out"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
                           }
                         ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/VisionPrescription.lensSpecification.*.prism",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      },
                       {
-                        "@id": "http://hl7.org/fhir/VisionPrescription.lensSpecification.*.prism.*.base",
+                        "@id": "http://hl7.org/fhir/VisionPrescription#lensSpecification.*.eye",
                         "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
+                          "https://lschema.org/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "right"
+                          },
+                          {
+                            "@value": "left"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/VisionPrescription#lensSpecification.*.duration",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
                           {
                             "@list": [
                               {
-                                "@value": "up"
-                              },
-                              {
-                                "@value": "down"
-                              },
-                              {
-                                "@value": "in"
-                              },
-                              {
-                                "@value": "out"
+                                "@id": "http://hl7.org/fhir/VisionPrescription#lensSpecification.*.duration.comparator",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
                               }
                             ]
                           }
@@ -118,90 +111,101 @@
                     ]
                   }
                 ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/VisionPrescription.lensSpecification.*.eye",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "right"
-                      },
-                      {
-                        "@value": "left"
-                      }
-                    ]
-                  }
-                ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/VisionPrescription.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/VisionPrescription#identifier",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/VisionPrescription.identifier.*.use",
+                "@id": "http://hl7.org/fhir/VisionPrescription#identifier.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "https://lschema.org/Object#attributeList": [
                   {
                     "@list": [
                       {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
+                        "@id": "http://hl7.org/fhir/VisionPrescription#identifier.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "usual"
+                          },
+                          {
+                            "@value": "official"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/VisionPrescription.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          },
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/VisionPrescription#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "VisionPrescription"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/VisionPrescription#text",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/VisionPrescription#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
+                      {
+                        "@value": "generated"
+                      },
+                      {
+                        "@value": "extensions"
+                      },
+                      {
+                        "@value": "additional"
+                      },
+                      {
+                        "@value": "empty"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/VisionPrescription"
+        "@value": "http://hl7.org/fhir/VisionPrescription"
       }
     ]
   }

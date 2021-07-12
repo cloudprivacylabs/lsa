@@ -2,22 +2,24 @@
   {
     "@id": "http://hl7.org/fhir/CoverageEligibilityRequest/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/CoverageEligibilityRequest.purpose",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+        "@id": "http://hl7.org/fhir/CoverageEligibilityRequest",
+        "https://lschema.org/Object#attributes": [
           {
+            "@id": "http://hl7.org/fhir/CoverageEligibilityRequest#purpose",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "https://lschema.org/Array#items": [
               {
-                "@list": [
+                "@id": "http://hl7.org/fhir/CoverageEligibilityRequest#purpose.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/validation#enumeration": [
                   {
                     "@value": "auth-requirements"
                   },
@@ -33,102 +35,82 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CoverageEligibilityRequest.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/CoverageEligibilityRequest#text",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Object#attributeList": [
               {
-                "@id": "http://hl7.org/fhir/CoverageEligibilityRequest.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "@list": [
                   {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/CoverageEligibilityRequest#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
                       {
-                        "@value": "usual"
+                        "@value": "generated"
                       },
                       {
-                        "@value": "official"
+                        "@value": "extensions"
                       },
                       {
-                        "@value": "temp"
+                        "@value": "additional"
                       },
                       {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
+                        "@value": "empty"
                       }
                     ]
                   }
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CoverageEligibilityRequest.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          },
           {
-            "@list": [
-              {
-                "@value": "CoverageEligibilityRequest"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CoverageEligibilityRequest.item",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
+            "@id": "http://hl7.org/fhir/CoverageEligibilityRequest#item",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/CoverageEligibilityRequest.item.*.quantity",
+                "@id": "http://hl7.org/fhir/CoverageEligibilityRequest#item.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@id": "http://hl7.org/fhir/CoverageEligibilityRequest.item.*.quantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "@list": [
                       {
-                        "@list": [
+                        "@id": "http://hl7.org/fhir/CoverageEligibilityRequest#item.*.quantity",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
                           {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/CoverageEligibilityRequest#item.*.quantity.comparator",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
                           }
                         ]
                       }
@@ -137,45 +119,67 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/CoverageEligibilityRequest.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+          },
           {
-            "@id": "http://hl7.org/fhir/CoverageEligibilityRequest.text.status",
+            "@id": "http://hl7.org/fhir/CoverageEligibilityRequest#identifier",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "https://lschema.org/Array#items": [
               {
-                "@list": [
+                "@id": "http://hl7.org/fhir/CoverageEligibilityRequest#identifier.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/CoverageEligibilityRequest#identifier.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "usual"
+                          },
+                          {
+                            "@value": "official"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CoverageEligibilityRequest#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "CoverageEligibilityRequest"
               }
             ]
           }
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/CoverageEligibilityRequest"
+        "@value": "http://hl7.org/fhir/CoverageEligibilityRequest"
       }
     ]
   }

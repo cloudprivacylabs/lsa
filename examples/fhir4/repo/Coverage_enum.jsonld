@@ -2,134 +2,78 @@
   {
     "@id": "http://hl7.org/fhir/Coverage/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/Coverage.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+        "@id": "http://hl7.org/fhir/Coverage",
+        "https://lschema.org/Object#attributes": [
           {
-            "@list": [
-              {
-                "@value": "Coverage"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Coverage.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Coverage.text.status",
+            "@id": "http://hl7.org/fhir/Coverage#text",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "https://lschema.org/Object#attributeList": [
               {
                 "@list": [
                   {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Coverage.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/Coverage.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
+                    "@id": "http://hl7.org/fhir/Coverage#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
                       {
-                        "@value": "usual"
+                        "@value": "generated"
                       },
                       {
-                        "@value": "official"
+                        "@value": "extensions"
                       },
                       {
-                        "@value": "temp"
+                        "@value": "additional"
                       },
                       {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
+                        "@value": "empty"
                       }
                     ]
                   }
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/Coverage.costToBeneficiary",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/Coverage#identifier",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Coverage.costToBeneficiary.*.valueQuantity",
+                "@id": "http://hl7.org/fhir/Coverage#identifier.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@id": "http://hl7.org/fhir/Coverage.costToBeneficiary.*.valueQuantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "@list": [
                       {
-                        "@list": [
+                        "@id": "http://hl7.org/fhir/Coverage#identifier.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
                           {
-                            "@value": "\u003c"
+                            "@value": "usual"
                           },
                           {
-                            "@value": "\u003c="
+                            "@value": "official"
                           },
                           {
-                            "@value": "\u003e="
+                            "@value": "temp"
                           },
                           {
-                            "@value": "\u003e"
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
                           }
                         ]
                       }
@@ -138,13 +82,76 @@
                 ]
               }
             ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Coverage#costToBeneficiary",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Coverage#costToBeneficiary.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/Coverage#costToBeneficiary.*.valueQuantity",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/Coverage#costToBeneficiary.*.valueQuantity.comparator",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Coverage#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "Coverage"
+              }
+            ]
           }
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/Coverage"
+        "@value": "http://hl7.org/fhir/Coverage"
       }
     ]
   }

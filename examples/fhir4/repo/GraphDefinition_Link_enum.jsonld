@@ -2,68 +2,75 @@
   {
     "@id": "http://hl7.org/fhir/GraphDefinition_Link/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/GraphDefinition_Link.target",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+        "@id": "http://hl7.org/fhir/GraphDefinition_Link",
+        "https://lschema.org/Object#attributes": [
           {
+            "@id": "http://hl7.org/fhir/GraphDefinition_Link#target",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/GraphDefinition_Link.target.*.compartment",
+                "@id": "http://hl7.org/fhir/GraphDefinition_Link#target.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/Array/items": [
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                    "@list": [
                       {
-                        "@id": "http://hl7.org/fhir/GraphDefinition_Link.target.*.compartment.*.use",
+                        "@id": "http://hl7.org/fhir/GraphDefinition_Link#target.*.compartment",
                         "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
+                          "https://lschema.org/Array"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                        "https://lschema.org/Array#items": [
                           {
-                            "@list": [
+                            "@id": "http://hl7.org/fhir/GraphDefinition_Link#target.*.compartment.*",
+                            "@type": [
+                              "https://lschema.org/Object"
+                            ],
+                            "https://lschema.org/Object#attributeList": [
                               {
-                                "@value": "condition"
-                              },
-                              {
-                                "@value": "requirement"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/GraphDefinition_Link.target.*.compartment.*.rule",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "identical"
-                              },
-                              {
-                                "@value": "matching"
-                              },
-                              {
-                                "@value": "different"
-                              },
-                              {
-                                "@value": "custom"
+                                "@list": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/GraphDefinition_Link#target.*.compartment.*.rule",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/validation#enumeration": [
+                                      {
+                                        "@value": "identical"
+                                      },
+                                      {
+                                        "@value": "matching"
+                                      },
+                                      {
+                                        "@value": "different"
+                                      },
+                                      {
+                                        "@value": "custom"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "@id": "http://hl7.org/fhir/GraphDefinition_Link#target.*.compartment.*.use",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/validation#enumeration": [
+                                      {
+                                        "@value": "condition"
+                                      },
+                                      {
+                                        "@value": "requirement"
+                                      }
+                                    ]
+                                  }
+                                ]
                               }
                             ]
                           }
@@ -78,9 +85,9 @@
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/GraphDefinition_Link"
+        "@value": "http://hl7.org/fhir/GraphDefinition_Link"
       }
     ]
   }

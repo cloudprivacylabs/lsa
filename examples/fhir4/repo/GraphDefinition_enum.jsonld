@@ -2,17 +2,153 @@
   {
     "@id": "http://hl7.org/fhir/GraphDefinition/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/GraphDefinition.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+        "@id": "http://hl7.org/fhir/GraphDefinition",
+        "https://lschema.org/Object#attributes": [
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/GraphDefinition#contact",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/GraphDefinition#contact.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/GraphDefinition#contact.*.telecom",
+                        "@type": [
+                          "https://lschema.org/Array"
+                        ],
+                        "https://lschema.org/Array#items": [
+                          {
+                            "@id": "http://hl7.org/fhir/GraphDefinition#contact.*.telecom.*",
+                            "@type": [
+                              "https://lschema.org/Object"
+                            ],
+                            "https://lschema.org/Object#attributeList": [
+                              {
+                                "@list": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/GraphDefinition#contact.*.telecom.*.system",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/validation#enumeration": [
+                                      {
+                                        "@value": "phone"
+                                      },
+                                      {
+                                        "@value": "fax"
+                                      },
+                                      {
+                                        "@value": "email"
+                                      },
+                                      {
+                                        "@value": "pager"
+                                      },
+                                      {
+                                        "@value": "url"
+                                      },
+                                      {
+                                        "@value": "sms"
+                                      },
+                                      {
+                                        "@value": "other"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "@id": "http://hl7.org/fhir/GraphDefinition#contact.*.telecom.*.use",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/validation#enumeration": [
+                                      {
+                                        "@value": "home"
+                                      },
+                                      {
+                                        "@value": "work"
+                                      },
+                                      {
+                                        "@value": "temp"
+                                      },
+                                      {
+                                        "@value": "old"
+                                      },
+                                      {
+                                        "@value": "mobile"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/GraphDefinition#text",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/GraphDefinition#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
+                      {
+                        "@value": "generated"
+                      },
+                      {
+                        "@value": "extensions"
+                      },
+                      {
+                        "@value": "additional"
+                      },
+                      {
+                        "@value": "empty"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/GraphDefinition#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "GraphDefinition"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/GraphDefinition#status",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "draft"
               },
@@ -26,237 +162,124 @@
                 "@value": "unknown"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/GraphDefinition.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+          },
           {
-            "@id": "http://hl7.org/fhir/GraphDefinition.text.status",
+            "@id": "http://hl7.org/fhir/GraphDefinition#useContext",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "https://lschema.org/Array#items": [
               {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/GraphDefinition.useContext",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/GraphDefinition.useContext.*.valueQuantity",
+                "@id": "http://hl7.org/fhir/GraphDefinition#useContext.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@id": "http://hl7.org/fhir/GraphDefinition.useContext.*.valueQuantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "@list": [
                       {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/GraphDefinition.useContext.*.valueRange",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/GraphDefinition.useContext.*.valueRange.low",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/GraphDefinition.useContext.*.valueRange.low.comparator",
+                        "@id": "http://hl7.org/fhir/GraphDefinition#useContext.*.valueQuantity",
                         "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
+                          "https://lschema.org/Object"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                        "https://lschema.org/Object#attributeList": [
                           {
                             "@list": [
                               {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/GraphDefinition.useContext.*.valueRange.high",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/GraphDefinition.useContext.*.valueRange.high.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/GraphDefinition.contact",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/GraphDefinition.contact.*.telecom",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/GraphDefinition.contact.*.telecom.*.system",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
+                                "@id": "http://hl7.org/fhir/GraphDefinition#useContext.*.valueQuantity.comparator",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
                               }
                             ]
                           }
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/GraphDefinition.contact.*.telecom.*.use",
+                        "@id": "http://hl7.org/fhir/GraphDefinition#useContext.*.valueRange",
                         "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
+                          "https://lschema.org/Object"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                        "https://lschema.org/Object#attributeList": [
                           {
                             "@list": [
                               {
-                                "@value": "home"
+                                "@id": "http://hl7.org/fhir/GraphDefinition#useContext.*.valueRange.low",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/GraphDefinition#useContext.*.valueRange.low.comparator",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/validation#enumeration": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
                               },
                               {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
+                                "@id": "http://hl7.org/fhir/GraphDefinition#useContext.*.valueRange.high",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/GraphDefinition#useContext.*.valueRange.high.comparator",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/validation#enumeration": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
                               }
                             ]
                           }
@@ -269,26 +292,11 @@
             ]
           }
         ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/GraphDefinition.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "GraphDefinition"
-              }
-            ]
-          }
-        ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/GraphDefinition"
+        "@value": "http://hl7.org/fhir/GraphDefinition"
       }
     ]
   }

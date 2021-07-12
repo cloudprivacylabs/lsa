@@ -2,155 +2,119 @@
   {
     "@id": "http://hl7.org/fhir/MeasureReport/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/MeasureReport.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "@id": "http://hl7.org/fhir/MeasureReport",
+        "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/MeasureReport.text.status",
+            "@id": "http://hl7.org/fhir/MeasureReport#group",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "https://lschema.org/Array#items": [
               {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MeasureReport.type",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "individual"
-              },
-              {
-                "@value": "subject-list"
-              },
-              {
-                "@value": "summary"
-              },
-              {
-                "@value": "data-collection"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MeasureReport.group",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MeasureReport.group.*.measureScore",
+                "@id": "http://hl7.org/fhir/MeasureReport#group.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@id": "http://hl7.org/fhir/MeasureReport.group.*.measureScore.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "@list": [
                       {
-                        "@list": [
+                        "@id": "http://hl7.org/fhir/MeasureReport#group.*.measureScore",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
                           {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/MeasureReport#group.*.measureScore.comparator",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
                           }
                         ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/MeasureReport.group.*.stratifier",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                      },
                       {
-                        "@id": "http://hl7.org/fhir/MeasureReport.group.*.stratifier.*.stratum",
+                        "@id": "http://hl7.org/fhir/MeasureReport#group.*.stratifier",
                         "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
+                          "https://lschema.org/Array"
                         ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
+                        "https://lschema.org/Array#items": [
                           {
+                            "@id": "http://hl7.org/fhir/MeasureReport#group.*.stratifier.*",
                             "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
+                              "https://lschema.org/Object"
                             ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                            "https://lschema.org/Object#attributeList": [
                               {
-                                "@id": "http://hl7.org/fhir/MeasureReport.group.*.stratifier.*.stratum.*.measureScore",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Object"
-                                ],
-                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                "@list": [
                                   {
-                                    "@id": "http://hl7.org/fhir/MeasureReport.group.*.stratifier.*.stratum.*.measureScore.comparator",
+                                    "@id": "http://hl7.org/fhir/MeasureReport#group.*.stratifier.*.stratum",
                                     "@type": [
-                                      "http://layeredschemas.org/v1.0/Value"
+                                      "https://lschema.org/Array"
                                     ],
-                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                    "https://lschema.org/Array#items": [
                                       {
-                                        "@list": [
+                                        "@id": "http://hl7.org/fhir/MeasureReport#group.*.stratifier.*.stratum.*",
+                                        "@type": [
+                                          "https://lschema.org/Object"
+                                        ],
+                                        "https://lschema.org/Object#attributeList": [
                                           {
-                                            "@value": "\u003c"
-                                          },
-                                          {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
+                                            "@list": [
+                                              {
+                                                "@id": "http://hl7.org/fhir/MeasureReport#group.*.stratifier.*.stratum.*.measureScore",
+                                                "@type": [
+                                                  "https://lschema.org/Object"
+                                                ],
+                                                "https://lschema.org/Object#attributeList": [
+                                                  {
+                                                    "@list": [
+                                                      {
+                                                        "@id": "http://hl7.org/fhir/MeasureReport#group.*.stratifier.*.stratum.*.measureScore.comparator",
+                                                        "@type": [
+                                                          "https://lschema.org/Value"
+                                                        ],
+                                                        "https://lschema.org/validation#enumeration": [
+                                                          {
+                                                            "@value": "\u003c"
+                                                          },
+                                                          {
+                                                            "@value": "\u003c="
+                                                          },
+                                                          {
+                                                            "@value": "\u003e="
+                                                          },
+                                                          {
+                                                            "@value": "\u003e"
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
                                           }
                                         ]
                                       }
@@ -167,59 +131,13 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MeasureReport.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/MeasureReport#status",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Value"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/MeasureReport.identifier.*.use",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MeasureReport.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "complete"
               },
@@ -230,17 +148,108 @@
                 "@value": "error"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/MeasureReport.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          },
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/MeasureReport#text",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/MeasureReport#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
+                      {
+                        "@value": "generated"
+                      },
+                      {
+                        "@value": "extensions"
+                      },
+                      {
+                        "@value": "additional"
+                      },
+                      {
+                        "@value": "empty"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MeasureReport#type",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "individual"
+              },
+              {
+                "@value": "subject-list"
+              },
+              {
+                "@value": "summary"
+              },
+              {
+                "@value": "data-collection"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MeasureReport#identifier",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/MeasureReport#identifier.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/MeasureReport#identifier.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "usual"
+                          },
+                          {
+                            "@value": "official"
+                          },
+                          {
+                            "@value": "temp"
+                          },
+                          {
+                            "@value": "secondary"
+                          },
+                          {
+                            "@value": "old"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MeasureReport#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "MeasureReport"
               }
@@ -249,9 +258,9 @@
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/MeasureReport"
+        "@value": "http://hl7.org/fhir/MeasureReport"
       }
     ]
   }

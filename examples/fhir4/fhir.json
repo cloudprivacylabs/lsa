@@ -838,37 +838,36 @@
         {
             "@id": "http://hl7.org/fhir/{{.name}}/base",
             "terms": [
-                "http://layeredschemas.org/v1.0/attr/name",
-                "http://layeredschemas.org/v1.0/attr/required"
+                "https://lschema.org/attributeName",
+                "https://lschema.org/validation#required"
             ],
             "file": "repo/{{.name}}_base.jsonld",
-	          "includeEmpty": true,
             "type": "Schema"
         },
         {
             "@id": "http://hl7.org/fhir/{{.name}}/format",
             "terms": [
-                "http://layeredschemas.org/v1.0/attr/format",
-                "http://layeredschemas.org/v1.0/attr/pattern"
+                "https://lschema.org/validation#format",
+                "https://lschema.org/validation#pattern"
             ],
             "file": "repo/{{.name}}_format.jsonld",
             "type": "Overlay"
         },
         {
             "@id": "http://hl7.org/fhir/{{.name}}/type",
-            "terms": ["http://layeredschemas.org/v1.0/targetType"],
+            "terms": ["https://lschema.org/targetType"],
             "file": "repo/{{.name}}_type.jsonld",
             "type": "Overlay"
         },
         {
             "@id": "http://hl7.org/fhir/{{.name}}/enum",
-            "terms": ["http://layeredschemas.org/v1.0/attr/enumeration"],
+            "terms": ["https://lschema.org/validation#enumeration"],
             "file": "repo/{{.name}}_enum.jsonld",
             "type": "Overlay"
         },
         {
             "@id": "http://hl7.org/fhir/{{.name}}/info",
-            "terms": ["http://layeredschemas.org/v1.0/attr/information"],
+            "terms": ["https://lschema.org/description"],
             "file": "repo/{{.name}}_info.jsonld",
             "type": "Overlay"
         }

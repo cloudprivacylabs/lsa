@@ -14,7 +14,7 @@
 package cmd
 
 import (
-	"github.com/santhosh-tekuri/jsonschema"
+	"github.com/santhosh-tekuri/jsonschema/v3"
 	"github.com/spf13/cobra"
 )
 

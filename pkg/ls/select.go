@@ -11,11 +11,25 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package repo
+package ls
 
-// A Repository maintains the schema layers and bundles. The main
-// purpose of the schema repository is to resolve references, and this
-// interface does just that. Any additional functionality can be
-// represented via interface compositions
-type Repository interface {
+// PropertyValueEqualsPredicate checks if the property value is equal
+// to the given value.
+//
+// If property value is array and the operand is a value, then this
+// checks if the array contains the value
+type PropertyValueEqualsPredicate struct {
+	Value string
+}
+
+func (p PropertyValueEqualsPredicate) Evaluate(propertyValue *PropertyValue) bool {
+	if propertyValue.IsString() {
+		return propertyValue.AsString() == p.Value
+	}
+	for _, x := range propertyValue.AsStringSlice() {
+		if x == p.Value {
+			return true
+		}
+	}
+	return false
 }

@@ -2,156 +2,40 @@
   {
     "@id": "http://hl7.org/fhir/ClaimResponse/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/ClaimResponse.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "@id": "http://hl7.org/fhir/ClaimResponse",
+        "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/ClaimResponse.text.status",
+            "@id": "http://hl7.org/fhir/ClaimResponse#addItem",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "https://lschema.org/Array#items": [
               {
-                "@list": [
-                  {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ClaimResponse.payment",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ClaimResponse.payment.identifier",
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ClaimResponse.payment.identifier.use",
+                "@id": "http://hl7.org/fhir/ClaimResponse#addItem.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "https://lschema.org/Object#attributeList": [
                   {
                     "@list": [
                       {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ClaimResponse.processNote",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ClaimResponse.processNote.*.type",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "display"
-                      },
-                      {
-                        "@value": "print"
-                      },
-                      {
-                        "@value": "printoper"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ClaimResponse.addItem",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.detail",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
-                ],
-                "http://layeredschemas.org/v1.0/Array/items": [
-                  {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.detail.*.quantity",
+                        "@id": "http://hl7.org/fhir/ClaimResponse#addItem.*.quantity",
                         "@type": [
-                          "http://layeredschemas.org/v1.0/Object"
+                          "https://lschema.org/Object"
                         ],
-                        "http://layeredschemas.org/v1.0/Object/attributes": [
+                        "https://lschema.org/Object#attributeList": [
                           {
-                            "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.detail.*.quantity.comparator",
-                            "@type": [
-                              "http://layeredschemas.org/v1.0/Value"
-                            ],
-                            "http://layeredschemas.org/v1.0/attr/enumeration": [
+                            "@list": [
                               {
-                                "@list": [
+                                "@id": "http://hl7.org/fhir/ClaimResponse#addItem.*.quantity.comparator",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
                                   {
                                     "@value": "\u003c"
                                   },
@@ -171,41 +55,98 @@
                         ]
                       },
                       {
-                        "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.detail.*.subDetail",
+                        "@id": "http://hl7.org/fhir/ClaimResponse#addItem.*.detail",
                         "@type": [
-                          "http://layeredschemas.org/v1.0/Array"
+                          "https://lschema.org/Array"
                         ],
-                        "http://layeredschemas.org/v1.0/Array/items": [
+                        "https://lschema.org/Array#items": [
                           {
+                            "@id": "http://hl7.org/fhir/ClaimResponse#addItem.*.detail.*",
                             "@type": [
-                              "http://layeredschemas.org/v1.0/Object"
+                              "https://lschema.org/Object"
                             ],
-                            "http://layeredschemas.org/v1.0/Object/attributes": [
+                            "https://lschema.org/Object#attributeList": [
                               {
-                                "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.detail.*.subDetail.*.quantity",
-                                "@type": [
-                                  "http://layeredschemas.org/v1.0/Object"
-                                ],
-                                "http://layeredschemas.org/v1.0/Object/attributes": [
+                                "@list": [
                                   {
-                                    "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.detail.*.subDetail.*.quantity.comparator",
+                                    "@id": "http://hl7.org/fhir/ClaimResponse#addItem.*.detail.*.quantity",
                                     "@type": [
-                                      "http://layeredschemas.org/v1.0/Value"
+                                      "https://lschema.org/Object"
                                     ],
-                                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                                    "https://lschema.org/Object#attributeList": [
                                       {
                                         "@list": [
                                           {
-                                            "@value": "\u003c"
-                                          },
+                                            "@id": "http://hl7.org/fhir/ClaimResponse#addItem.*.detail.*.quantity.comparator",
+                                            "@type": [
+                                              "https://lschema.org/Value"
+                                            ],
+                                            "https://lschema.org/validation#enumeration": [
+                                              {
+                                                "@value": "\u003c"
+                                              },
+                                              {
+                                                "@value": "\u003c="
+                                              },
+                                              {
+                                                "@value": "\u003e="
+                                              },
+                                              {
+                                                "@value": "\u003e"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "@id": "http://hl7.org/fhir/ClaimResponse#addItem.*.detail.*.subDetail",
+                                    "@type": [
+                                      "https://lschema.org/Array"
+                                    ],
+                                    "https://lschema.org/Array#items": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/ClaimResponse#addItem.*.detail.*.subDetail.*",
+                                        "@type": [
+                                          "https://lschema.org/Object"
+                                        ],
+                                        "https://lschema.org/Object#attributeList": [
                                           {
-                                            "@value": "\u003c="
-                                          },
-                                          {
-                                            "@value": "\u003e="
-                                          },
-                                          {
-                                            "@value": "\u003e"
+                                            "@list": [
+                                              {
+                                                "@id": "http://hl7.org/fhir/ClaimResponse#addItem.*.detail.*.subDetail.*.quantity",
+                                                "@type": [
+                                                  "https://lschema.org/Object"
+                                                ],
+                                                "https://lschema.org/Object#attributeList": [
+                                                  {
+                                                    "@list": [
+                                                      {
+                                                        "@id": "http://hl7.org/fhir/ClaimResponse#addItem.*.detail.*.subDetail.*.quantity.comparator",
+                                                        "@type": [
+                                                          "https://lschema.org/Value"
+                                                        ],
+                                                        "https://lschema.org/validation#enumeration": [
+                                                          {
+                                                            "@value": "\u003c"
+                                                          },
+                                                          {
+                                                            "@value": "\u003c="
+                                                          },
+                                                          {
+                                                            "@value": "\u003e="
+                                                          },
+                                                          {
+                                                            "@value": "\u003e"
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
                                           }
                                         ]
                                       }
@@ -216,92 +157,110 @@
                             ]
                           }
                         ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/ClaimResponse#addItem.*.locationAddress",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/ClaimResponse#addItem.*.locationAddress.use",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "home"
+                                  },
+                                  {
+                                    "@value": "work"
+                                  },
+                                  {
+                                    "@value": "temp"
+                                  },
+                                  {
+                                    "@value": "old"
+                                  },
+                                  {
+                                    "@value": "billing"
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/ClaimResponse#addItem.*.locationAddress.type",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "postal"
+                                  },
+                                  {
+                                    "@value": "physical"
+                                  },
+                                  {
+                                    "@value": "both"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
                 ]
-              },
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
-                "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.locationAddress",
+                "@value": "ClaimResponse"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse#identifier",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ClaimResponse#identifier.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.locationAddress.use",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "@list": [
                       {
-                        "@list": [
+                        "@id": "http://hl7.org/fhir/ClaimResponse#identifier.*.use",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
                           {
-                            "@value": "home"
+                            "@value": "usual"
                           },
                           {
-                            "@value": "work"
+                            "@value": "official"
                           },
                           {
                             "@value": "temp"
                           },
                           {
+                            "@value": "secondary"
+                          },
+                          {
                             "@value": "old"
-                          },
-                          {
-                            "@value": "billing"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.locationAddress.type",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "postal"
-                          },
-                          {
-                            "@value": "physical"
-                          },
-                          {
-                            "@value": "both"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.quantity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/ClaimResponse.addItem.*.quantity.comparator",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
-                    ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
-                      {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
                           }
                         ]
                       }
@@ -310,57 +269,116 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ClaimResponse.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          },
           {
-            "@list": [
-              {
-                "@value": "ClaimResponse"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/ClaimResponse.identifier",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
+            "@id": "http://hl7.org/fhir/ClaimResponse#payment",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Object#attributeList": [
               {
-                "@id": "http://hl7.org/fhir/ClaimResponse.identifier.*.use",
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/ClaimResponse#payment.identifier",
+                    "@type": [
+                      "https://lschema.org/Object"
+                    ],
+                    "https://lschema.org/Object#attributeList": [
+                      {
+                        "@list": [
+                          {
+                            "@id": "http://hl7.org/fhir/ClaimResponse#payment.identifier.use",
+                            "@type": [
+                              "https://lschema.org/Value"
+                            ],
+                            "https://lschema.org/validation#enumeration": [
+                              {
+                                "@value": "usual"
+                              },
+                              {
+                                "@value": "official"
+                              },
+                              {
+                                "@value": "temp"
+                              },
+                              {
+                                "@value": "secondary"
+                              },
+                              {
+                                "@value": "old"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse#text",
+            "@type": [
+              "https://lschema.org/Object"
+            ],
+            "https://lschema.org/Object#attributeList": [
+              {
+                "@list": [
+                  {
+                    "@id": "http://hl7.org/fhir/ClaimResponse#text.status",
+                    "@type": [
+                      "https://lschema.org/Value"
+                    ],
+                    "https://lschema.org/validation#enumeration": [
+                      {
+                        "@value": "generated"
+                      },
+                      {
+                        "@value": "extensions"
+                      },
+                      {
+                        "@value": "additional"
+                      },
+                      {
+                        "@value": "empty"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse#processNote",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ClaimResponse#processNote.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
+                "https://lschema.org/Object#attributeList": [
                   {
                     "@list": [
                       {
-                        "@value": "usual"
-                      },
-                      {
-                        "@value": "official"
-                      },
-                      {
-                        "@value": "temp"
-                      },
-                      {
-                        "@value": "secondary"
-                      },
-                      {
-                        "@value": "old"
+                        "@id": "http://hl7.org/fhir/ClaimResponse#processNote.*.type",
+                        "@type": [
+                          "https://lschema.org/Value"
+                        ],
+                        "https://lschema.org/validation#enumeration": [
+                          {
+                            "@value": "display"
+                          },
+                          {
+                            "@value": "print"
+                          },
+                          {
+                            "@value": "printoper"
+                          }
+                        ]
                       }
                     ]
                   }
@@ -371,9 +389,9 @@
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/ClaimResponse"
+        "@value": "http://hl7.org/fhir/ClaimResponse"
       }
     ]
   }

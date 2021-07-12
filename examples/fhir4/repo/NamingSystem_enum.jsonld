@@ -2,49 +2,255 @@
   {
     "@id": "http://hl7.org/fhir/NamingSystem/enum",
     "@type": [
-      "http://layeredschemas.org/v1.0/Overlay"
+      "https://lschema.org/Overlay"
     ],
-    "http://layeredschemas.org/v1.0/Object/attributes": [
+    "https://lschema.org/layer": [
       {
-        "@id": "http://hl7.org/fhir/NamingSystem.text",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Object"
-        ],
-        "http://layeredschemas.org/v1.0/Object/attributes": [
+        "@id": "http://hl7.org/fhir/NamingSystem",
+        "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/NamingSystem.text.status",
+            "@id": "http://hl7.org/fhir/NamingSystem#useContext",
             "@type": [
-              "http://layeredschemas.org/v1.0/Value"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/attr/enumeration": [
+            "https://lschema.org/Array#items": [
               {
-                "@list": [
+                "@id": "http://hl7.org/fhir/NamingSystem#useContext.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@value": "generated"
-                  },
-                  {
-                    "@value": "extensions"
-                  },
-                  {
-                    "@value": "additional"
-                  },
-                  {
-                    "@value": "empty"
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem#useContext.*.valueQuantity",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/NamingSystem#useContext.*.valueQuantity.comparator",
+                                "@type": [
+                                  "https://lschema.org/Value"
+                                ],
+                                "https://lschema.org/validation#enumeration": [
+                                  {
+                                    "@value": "\u003c"
+                                  },
+                                  {
+                                    "@value": "\u003c="
+                                  },
+                                  {
+                                    "@value": "\u003e="
+                                  },
+                                  {
+                                    "@value": "\u003e"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem#useContext.*.valueRange",
+                        "@type": [
+                          "https://lschema.org/Object"
+                        ],
+                        "https://lschema.org/Object#attributeList": [
+                          {
+                            "@list": [
+                              {
+                                "@id": "http://hl7.org/fhir/NamingSystem#useContext.*.valueRange.low",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/NamingSystem#useContext.*.valueRange.low.comparator",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/validation#enumeration": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "@id": "http://hl7.org/fhir/NamingSystem#useContext.*.valueRange.high",
+                                "@type": [
+                                  "https://lschema.org/Object"
+                                ],
+                                "https://lschema.org/Object#attributeList": [
+                                  {
+                                    "@list": [
+                                      {
+                                        "@id": "http://hl7.org/fhir/NamingSystem#useContext.*.valueRange.high.comparator",
+                                        "@type": [
+                                          "https://lschema.org/Value"
+                                        ],
+                                        "https://lschema.org/validation#enumeration": [
+                                          {
+                                            "@value": "\u003c"
+                                          },
+                                          {
+                                            "@value": "\u003c="
+                                          },
+                                          {
+                                            "@value": "\u003e="
+                                          },
+                                          {
+                                            "@value": "\u003e"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem.status",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          },
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/NamingSystem#kind",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "codesystem"
+              },
+              {
+                "@value": "identifier"
+              },
+              {
+                "@value": "root"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem#contact",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/NamingSystem#contact.*",
+                "@type": [
+                  "https://lschema.org/Object"
+                ],
+                "https://lschema.org/Object#attributeList": [
+                  {
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/NamingSystem#contact.*.telecom",
+                        "@type": [
+                          "https://lschema.org/Array"
+                        ],
+                        "https://lschema.org/Array#items": [
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem#contact.*.telecom.*",
+                            "@type": [
+                              "https://lschema.org/Object"
+                            ],
+                            "https://lschema.org/Object#attributeList": [
+                              {
+                                "@list": [
+                                  {
+                                    "@id": "http://hl7.org/fhir/NamingSystem#contact.*.telecom.*.system",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/validation#enumeration": [
+                                      {
+                                        "@value": "phone"
+                                      },
+                                      {
+                                        "@value": "fax"
+                                      },
+                                      {
+                                        "@value": "email"
+                                      },
+                                      {
+                                        "@value": "pager"
+                                      },
+                                      {
+                                        "@value": "url"
+                                      },
+                                      {
+                                        "@value": "sms"
+                                      },
+                                      {
+                                        "@value": "other"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "@id": "http://hl7.org/fhir/NamingSystem#contact.*.telecom.*.use",
+                                    "@type": [
+                                      "https://lschema.org/Value"
+                                    ],
+                                    "https://lschema.org/validation#enumeration": [
+                                      {
+                                        "@value": "home"
+                                      },
+                                      {
+                                        "@value": "work"
+                                      },
+                                      {
+                                        "@value": "temp"
+                                      },
+                                      {
+                                        "@value": "old"
+                                      },
+                                      {
+                                        "@value": "mobile"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem#status",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "draft"
               },
@@ -58,88 +264,38 @@
                 "@value": "unknown"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem.contact",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/NamingSystem#uniqueId",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Array"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom",
+                "@id": "http://hl7.org/fhir/NamingSystem#uniqueId.*",
                 "@type": [
-                  "http://layeredschemas.org/v1.0/Array"
+                  "https://lschema.org/Object"
                 ],
-                "http://layeredschemas.org/v1.0/Array/items": [
+                "https://lschema.org/Object#attributeList": [
                   {
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
+                    "@list": [
                       {
-                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.system",
+                        "@id": "http://hl7.org/fhir/NamingSystem#uniqueId.*.type",
                         "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
+                          "https://lschema.org/Value"
                         ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                        "https://lschema.org/validation#enumeration": [
                           {
-                            "@list": [
-                              {
-                                "@value": "phone"
-                              },
-                              {
-                                "@value": "fax"
-                              },
-                              {
-                                "@value": "email"
-                              },
-                              {
-                                "@value": "pager"
-                              },
-                              {
-                                "@value": "url"
-                              },
-                              {
-                                "@value": "sms"
-                              },
-                              {
-                                "@value": "other"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.contact.*.telecom.*.use",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
+                            "@value": "oid"
+                          },
                           {
-                            "@list": [
-                              {
-                                "@value": "home"
-                              },
-                              {
-                                "@value": "work"
-                              },
-                              {
-                                "@value": "temp"
-                              },
-                              {
-                                "@value": "old"
-                              },
-                              {
-                                "@value": "mobile"
-                              }
-                            ]
+                            "@value": "uuid"
+                          },
+                          {
+                            "@value": "uri"
+                          },
+                          {
+                            "@value": "other"
                           }
                         ]
                       }
@@ -148,194 +304,43 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem.resourceType",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
+          },
           {
-            "@list": [
+            "@id": "http://hl7.org/fhir/NamingSystem#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/validation#enumeration": [
               {
                 "@value": "NamingSystem"
               }
             ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem.useContext",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
+          },
           {
+            "@id": "http://hl7.org/fhir/NamingSystem#text",
             "@type": [
-              "http://layeredschemas.org/v1.0/Object"
+              "https://lschema.org/Object"
             ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
+            "https://lschema.org/Object#attributeList": [
               {
-                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
+                "@list": [
                   {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueQuantity.comparator",
+                    "@id": "http://hl7.org/fhir/NamingSystem#text.status",
                     "@type": [
-                      "http://layeredschemas.org/v1.0/Value"
+                      "https://lschema.org/Value"
                     ],
-                    "http://layeredschemas.org/v1.0/attr/enumeration": [
+                    "https://lschema.org/validation#enumeration": [
                       {
-                        "@list": [
-                          {
-                            "@value": "\u003c"
-                          },
-                          {
-                            "@value": "\u003c="
-                          },
-                          {
-                            "@value": "\u003e="
-                          },
-                          {
-                            "@value": "\u003e"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Object"
-                ],
-                "http://layeredschemas.org/v1.0/Object/attributes": [
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.low.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high",
-                    "@type": [
-                      "http://layeredschemas.org/v1.0/Object"
-                    ],
-                    "http://layeredschemas.org/v1.0/Object/attributes": [
-                      {
-                        "@id": "http://hl7.org/fhir/NamingSystem.useContext.*.valueRange.high.comparator",
-                        "@type": [
-                          "http://layeredschemas.org/v1.0/Value"
-                        ],
-                        "http://layeredschemas.org/v1.0/attr/enumeration": [
-                          {
-                            "@list": [
-                              {
-                                "@value": "\u003c"
-                              },
-                              {
-                                "@value": "\u003c="
-                              },
-                              {
-                                "@value": "\u003e="
-                              },
-                              {
-                                "@value": "\u003e"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem.kind",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Value"
-        ],
-        "http://layeredschemas.org/v1.0/attr/enumeration": [
-          {
-            "@list": [
-              {
-                "@value": "codesystem"
-              },
-              {
-                "@value": "identifier"
-              },
-              {
-                "@value": "root"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@id": "http://hl7.org/fhir/NamingSystem.uniqueId",
-        "@type": [
-          "http://layeredschemas.org/v1.0/Array"
-        ],
-        "http://layeredschemas.org/v1.0/Array/items": [
-          {
-            "@type": [
-              "http://layeredschemas.org/v1.0/Object"
-            ],
-            "http://layeredschemas.org/v1.0/Object/attributes": [
-              {
-                "@id": "http://hl7.org/fhir/NamingSystem.uniqueId.*.type",
-                "@type": [
-                  "http://layeredschemas.org/v1.0/Value"
-                ],
-                "http://layeredschemas.org/v1.0/attr/enumeration": [
-                  {
-                    "@list": [
-                      {
-                        "@value": "oid"
+                        "@value": "generated"
                       },
                       {
-                        "@value": "uuid"
+                        "@value": "extensions"
                       },
                       {
-                        "@value": "uri"
+                        "@value": "additional"
                       },
                       {
-                        "@value": "other"
+                        "@value": "empty"
                       }
                     ]
                   }
@@ -346,9 +351,9 @@
         ]
       }
     ],
-    "http://layeredschemas.org/v1.0/targetType": [
+    "https://lschema.org/targetType": [
       {
-        "@id": "http://hl7.org/fhir/NamingSystem"
+        "@value": "http://hl7.org/fhir/NamingSystem"
       }
     ]
   }

@@ -1,0 +1,149 @@
+[
+    {
+        "name": "NoAttributes",
+        "input": {
+            "@context": {
+                "ls":"https://lschema.org/"
+            },
+            "@type":"ls:Schema",
+            "@id": "http://testschema"
+
+        },
+        "marshaled":[ {
+            "@id": "http://testschema",
+            "@type": [
+                "https://lschema.org/Schema"
+            ]
+        }]
+    },
+    {
+        "name": "EmptyAttributes",
+        "input": {
+            "@context": {
+                "ls":"https://lschema.org/"
+            },
+            "@type":"ls:Schema",
+            "@id": "http://testschema",
+            "ls:Object#attributes": [
+            ]
+        },
+        "marshaled":[ {
+            "@id": "http://testschema",
+            "@type": [
+                "https://lschema.org/Schema"
+            ]
+        }]
+    },
+    {
+        "name": "ValueAttribute",
+        "input": {
+            "@context": {
+                "ls":"https://lschema.org/"
+            },
+            "@type":"ls:Schema",
+            "@id": "http://testschema",
+            "https://lschema.org/layer": {
+                "@type": ["https://lschema.org/Object",
+                          "https://lschema.org/targetType"],
+                "ls:Object#attributes": [
+                    {
+                        "@id": "http://attr1",
+                        "@type": "ls:Value"
+                    }
+                ]
+            }
+        },
+        "marshaled":[ {
+            "@id": "http://testschema",
+            "@type": [
+                "https://lschema.org/Schema"
+            ],
+            "https://lschema.org/layer": [{
+                "@type": ["https://lschema.org/Attribute",
+                          "https://lschema.org/Object",
+                          "https://lschema.org/targetType"],
+                "https://lschema.org/Object#attributes": [
+                    {
+                        "@id": "http://attr1",
+                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"]
+                    }
+                ]
+            }]
+        }]
+    },
+    {
+        "name": "Nesting",
+        "input": {
+            "@context": {
+                "ls":"https://lschema.org/"
+            },
+            "@type":"ls:Schema",
+            "@id": "http://testschema",
+            "https://lschema.org/layer": {
+                "@type": ["https://lschema.org/Object",
+                          "https://lschema.org/targetType"],
+                "ls:Object#attributes": [
+                    {
+                        "@id": "http://attr1",
+                        "@type": "ls:Value"
+                    },
+                    {
+                        "@id": "http://attr2",
+                        "@type": "ls:Object",
+                        "ls:Object#attributes": [
+                            {
+                                "@id": "http://attr3",
+                                "@type": "ls:Value"
+                            },
+                            {
+                                "@id": "http://attr4",
+                                "@type": "ls:Array",
+                                "ls:Array#items": {
+                                    "@id": "http://attr5",
+                                    "@type": "ls:Value"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "marshaled":[ {
+            "@id": "http://testschema",
+            "@type": [
+                "https://lschema.org/Schema"
+            ],
+            "https://lschema.org/layer": [{
+                "@type": ["https://lschema.org/Attribute",
+                          "https://lschema.org/Object",
+                          "https://lschema.org/targetType"],
+                "https://lschema.org/Object#attributes": [
+                    {
+                        "@id": "http://attr1",
+                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"]
+                    },
+                    {
+                        "@id": "http://attr2",
+                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Object"],
+                        "https://lschema.org/Object#attributes": [
+                            {
+                                "@id": "http://attr3",
+                                "@type":  ["https://lschema.org/Attribute","https://lschema.org/Value"]
+                            },
+                            {
+                                "@id": "http://attr4",
+                                "@type":  ["https://lschema.org/Attribute","https://lschema.org/Array"],
+                                "https://lschema.org/Array#items": [
+                                    {
+                                        "@id": "http://attr5",
+                                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }]
+        }]
+    }
+]

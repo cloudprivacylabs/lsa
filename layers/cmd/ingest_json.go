@@ -18,22 +18,20 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/piprate/json-gold/ld"
+	"github.com/bserdar/digraph"
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/pkg/dot"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/rdf"
-	"github.com/cloudprivacylabs/lsa/pkg/rdf/mrdf"
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
 
 func init() {
 	ingestCmd.AddCommand(ingestJSONCmd)
-	ingestJSONCmd.Flags().String("schema", "", "Schema id to use")
-	ingestJSONCmd.MarkFlagRequired("schema")
-	ingestJSONCmd.Flags().String("id", "http://example.org/data", "Base ID to use for ingested nodes")
-	ingestJSONCmd.Flags().String("format", "json", "Output format, json, rdf, or dot")
+	ingestJSONCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
+	ingestJSONCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
+	ingestJSONCmd.Flags().String("format", "json", "Output format, json(ld), rdf, or dot")
 }
 
 var ingestJSONCmd = &cobra.Command{
@@ -41,62 +39,109 @@ var ingestJSONCmd = &cobra.Command{
 	Short: "Ingest a JSON document and enrich it with a schema",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		var layer *ls.Layer
 		repoDir, _ := cmd.Flags().GetString("repo")
-		if len(repoDir) == 0 {
-			fail("Specify a repository directory using --repo")
-		}
-		repo := fs.New(repoDir, ls.Terms, func(fname string, err error) {
-			fmt.Printf("%s: %s\n", fname, err)
-		})
-		if err := repo.Load(true); err != nil {
-			failErr(err)
-		}
-
-		var input map[string]interface{}
-		if err := readJSONFileOrStdin(args, &input); err != nil {
-			failErr(err)
-		}
-
-		ID, _ := cmd.Flags().GetString("id")
-		schemaId, _ := cmd.Flags().GetString("schema")
-		compiler := ls.Compiler{Resolver: func(x string) (string, error) {
-			if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
-				return manifest.ID, nil
-			}
-			return x, nil
-		},
-			Loader: repo.LoadAndCompose,
-		}
-		resolved, err := compiler.Compile(schemaId)
-		if err != nil {
-			failErr(err)
-		}
-
-		format, _ := cmd.Flags().GetString("format")
-		switch format {
-		case "json":
-			ingested, err := jsoningest.Ingest(ID, input, resolved)
+		var repo *fs.Repository
+		if len(repoDir) > 0 {
+			var err error
+			repo, err = getRepo(repoDir)
 			if err != nil {
 				failErr(err)
 			}
-			out, _ := json.MarshalIndent(ls.DataModelToMap(ingested, true), "", "  ")
-			fmt.Println(string(out))
+		}
+		schemaName, _ := cmd.Flags().GetString("schema")
+		if len(schemaName) > 0 {
+			if repo != nil {
+				var err error
+				layer, err = repo.GetComposedSchema(schemaName)
+				if err != nil {
+					failErr(err)
+				}
+				compiler := ls.Compiler{Resolver: func(x string) (string, error) {
+					if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
+						return manifest.ID, nil
+					}
+					return x, nil
+				},
+					Loader: func(x string) (*ls.Layer, error) {
+						return repo.LoadAndCompose(x)
+					},
+				}
+				layer, err = compiler.Compile(schemaName)
+				if err != nil {
+					failErr(err)
+				}
+			} else {
+				var v interface{}
+				err := readJSON(args[0], &v)
+				if err != nil {
+					failErr(err)
+				}
+				layer, err = ls.UnmarshalLayer(v)
+				if err != nil {
+					failErr(err)
+				}
+				compiler := ls.Compiler{Resolver: func(x string) (string, error) {
+					if x == schemaName {
+						return x, nil
+					}
+					if x == layer.GetID() {
+						return x, nil
+					}
+					return "", fmt.Errorf("Not found")
+				},
+					Loader: func(x string) (*ls.Layer, error) {
+						if x == schemaName || x == layer.GetID() {
+							return layer, nil
+						}
+						return nil, fmt.Errorf("Not found")
+					},
+				}
+				layer, err = compiler.Compile(schemaName)
+				if err != nil {
+					failErr(err)
+				}
+			}
 
-		case "rdf", "dot":
-			ingester := jsoningest.NewGraphIngester(resolved)
-			output := mrdf.NewGraph()
-			if err := ingester.Ingest(output, ID, input); err != nil {
+		}
+
+		var input map[string]interface{}
+		if layer != nil {
+			enc, err := layer.GetEncoding()
+			if err != nil {
 				failErr(err)
 			}
-			if format == "rdf" {
-				ds := rdf.ToRDFDataset(output.GetTriples())
-				ser := ld.NQuadRDFSerializer{}
-				v, _ := ser.Serialize(ds)
-				fmt.Println(v)
-			} else {
-				nodes, edges := output.ToDOT()
-				rdf.ToDOT("g", nodes, edges, os.Stdout)
+			if err := readJSONFileOrStdin(args, &input, enc); err != nil {
+				failErr(err)
 			}
+		}
+		if err := readJSONFileOrStdin(args, &input); err != nil {
+			failErr(err)
+		}
+		ingester := jsoningest.Ingester{
+			Schema:  layer,
+			KeyTerm: ls.AttributeNameTerm,
+		}
+
+		baseID, _ := cmd.Flags().GetString("id")
+		target := digraph.New()
+		_, err := ingester.Ingest(target, baseID, input)
+		if err != nil {
+			failErr(err)
+		}
+		outFormat, _ := cmd.Flags().GetString("format")
+		switch outFormat {
+		case "dot":
+			renderer := dot.Renderer{Options: dot.DefaultOptions()}
+			renderer.Render(target, "g", os.Stdout)
+		case "json", "jsonld":
+			renderer := jsoningest.LDRenderer{}
+			out := renderer.Render(target)
+			x, _ := json.MarshalIndent(out, "", "  ")
+			fmt.Println(string(x))
+		case "rdf":
+		default:
+			fail("unknown output format")
 		}
 	},
 }

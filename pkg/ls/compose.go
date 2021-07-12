@@ -14,258 +14,173 @@
 package ls
 
 import (
-	"github.com/piprate/json-gold/ld"
-
-	"github.com/cloudprivacylabs/lsa/pkg/terms"
+	"fmt"
 )
-
-type ComposeOptions struct {
-	// While composing an object with layer1 and layer2, if layer2 has
-	// attributes missing in layer1, then add those attributes to the
-	// result. By default, the result will only have attributes of
-	// layer1
-	Union bool
-}
 
 // Compose schema layers. Directly modifies the target. The source
 // must be an overlay.
-func (layer *Layer) Compose(options ComposeOptions, vocab terms.Vocabulary, source *Layer) error {
-	if source.Type != TermOverlayType {
-		return ErrInvalidComposition("Composition source is not an overlay")
+func (layer *Layer) Compose(source *Layer) error {
+	if source.GetLayerType() != OverlayTerm {
+		return ErrCompositionSourceNotOverlay
 	}
-	if len(layer.TargetType) > 0 && len(source.TargetType) > 0 {
-		compatible := false
-		for _, t := range source.TargetType {
-			found := false
-			for _, x := range layer.TargetType {
-				if x == t {
-					found = true
-					break
+	// Check if target types are compatible. If they are non-empty, they must be the same
+	layerType := layer.GetTargetType()
+	sourceType := source.GetTargetType()
+	if len(layerType) > 0 && len(sourceType) > 0 {
+		if layerType != sourceType {
+			return ErrIncompatibleComposition
+		}
+	}
+
+	var err error
+	// Process attributes of the source layer depth-first
+	// Compose the source attribute nodes with the target attribute nodes, ignoring any nodes attached to them
+	processedSourceNodes := make(map[LayerNode]struct{})
+	source.ForEachAttribute(func(sourceNode LayerNode) bool {
+		if _, processed := processedSourceNodes[sourceNode]; processed {
+			return true
+		}
+		// If node exists in target, merge
+		targetNodes := layer.AllNodesWithLabel(sourceNode.Label()).All()
+		switch len(targetNodes) {
+		case 1:
+			// Target node exists. Merge if paths match
+			if pathsMatch(targetNodes[0].(LayerNode), sourceNode, sourceNode) {
+				if err = mergeNodes(layer, targetNodes[0].(LayerNode), sourceNode, processedSourceNodes); err != nil {
+					return false
 				}
 			}
-			if found {
-				compatible = true
-				break
+
+		case 0:
+			// Target node does not exist.
+			// Parent node must exist, because this is a depth-first algorithm
+			parent, edge := GetParentAttribute(sourceNode)
+			if parent == nil {
+				err = ErrInvalidComposition
+				return false
 			}
+			parentInLayer := layer.AllNodesWithLabel(parent.Label()).All()
+			switch len(parentInLayer) {
+			case 0:
+				err = ErrInvalidComposition
+				return false
+			case 1:
+				// Add the same node to this layer
+				newNode := sourceNode.Clone()
+				layer.AddNode(newNode)
+				layer.AddEdge(parentInLayer[0], newNode, edge.Clone())
+			default:
+				err = ErrDuplicateAttributeID(fmt.Sprint(sourceNode.Label()))
+				return false
+			}
+		default:
+			err = ErrDuplicateAttributeID(fmt.Sprint(sourceNode.Label()))
+			return false
 		}
-		if !compatible {
-			return ErrIncompatible{Target: layer.TargetType, Source: source.TargetType}
-		}
-	}
-	err := ComposeTerms(vocab, layer.Root.Values, source.Root.Values)
+		processedSourceNodes[sourceNode] = struct{}{}
+		return true
+	})
 	if err != nil {
 		return err
 	}
-	// Process source attributes and compose
-	source.Root.GetAttributes().Iterate(func(srcAttribute *Attribute) bool {
-		// Is source in target?
-		targetAttribute, exists := layer.Index[srcAttribute.ID]
-		if !exists {
-			// The attribute does not exist. If options = Union, we add this attribute to target
-			if options.Union {
-				if err = layer.addAttribute(srcAttribute); err != nil {
-					return false
-				}
-			}
-		} else {
-			// Attribute exists in target. Do we have matching paths?
-			if attributePathMatch(targetAttribute.GetPath(), srcAttribute.GetPath()) {
-				err = targetAttribute.Compose(options, vocab, srcAttribute)
-				if err != nil {
-					return false
-				}
-			} else if options.Union {
-				if err = layer.addAttribute(srcAttribute); err != nil {
-					return false
-				}
-			}
+	// Copy all non-attribute nodes of source to target
+	nodeMap := make(map[LayerNode]LayerNode)
+	seen := make(map[LayerNode]struct{})
+	source.ForEachAttribute(func(sourceNode LayerNode) bool {
+		targetNodes := layer.AllNodesWithLabel(sourceNode.Label()).All()
+		if len(targetNodes) != 1 {
+			// This should not really happen
+			panic("Cannot find node even after adding")
 		}
+		mergeNonattributeGraph(layer, targetNodes[0].(LayerNode), sourceNode, seen, nodeMap)
 		return true
 	})
-	return err
-}
-
-func (layer *Layer) addAttribute(source *Attribute) error {
-	// Add the attribute and all necessary parents
-	srcParent := source.GetParent()
-	var tgtParent *Attribute
-	for {
-		if srcParent == nil {
-			tgtParent = layer.Root
-			break
-		} else {
-			// Does parent exist in the layer? If so, attach to that parent
-			target, exists := layer.Index[srcParent.ID]
-			if exists {
-				tgtParent = target
-				break
-			}
-			srcParent = srcParent.GetParent()
-		}
-	}
-	// Here, parent is non-nil
-	// If there is a parent, then the parent is either an object or array
-	newAttr := source.Clone(tgtParent)
-	switch tgt := tgtParent.Type.(type) {
-	case *ObjectType:
-		if err := tgt.Add(newAttr, layer); err != nil {
-			return err
-		}
-	case *PolymorphicType:
-		tgt.Options = append(tgt.Options, newAttr)
-	case *CompositeType:
-		tgt.Options = append(tgt.Options, newAttr)
-	default:
-		return ErrInvalidComposition(source.ID)
+	if err != nil {
+		return err
 	}
 	return nil
 }
 
-// Compose source into this attributes
-func (attribute *Attribute) Compose(options ComposeOptions, vocab terms.Vocabulary, source *Attribute) error {
-	switch t := attribute.Type.(type) {
-	case *ObjectType:
-		if _, ok := source.Type.(*ObjectType); !ok {
-			return ErrInvalidComposition(source.ID)
-		}
-	case *ReferenceType:
-		if sref, ok := source.Type.(*ReferenceType); ok {
-			attribute.Type = sref
-		} else {
-			return ErrInvalidComposition(source.ID)
-		}
-	case *ArrayType:
-		if sarr, ok := source.Type.(*ArrayType); ok {
-			if err := t.Compose(options, vocab, sarr.Attribute); err != nil {
-				return err
-			}
-		} else {
-			return ErrInvalidComposition(source.ID)
-		}
-	case *CompositeType:
-		if _, ok := source.Type.(*CompositeType); !ok {
-			return ErrInvalidComposition(source.ID)
-		}
-	case *PolymorphicType:
-		if _, ok := source.Type.(*PolymorphicType); !ok {
-			return ErrInvalidComposition(source.ID)
-		}
+// Merge source into target.
+func mergeNodes(targetLayer *Layer, target, source LayerNode, processedSourceNodes map[LayerNode]struct{}) error {
+	if _, processed := processedSourceNodes[source]; processed {
+		return nil
 	}
-	return ComposeTerms(vocab, attribute.Values, source.Values)
+	processedSourceNodes[source] = struct{}{}
+	if source == nil || target == nil {
+		return nil
+	}
+
+	if err := ComposeProperties(target.GetPropertyMap(), source.GetPropertyMap()); err != nil {
+		return err
+	}
+	return nil
 }
 
-// ComposeTerms composes the terms in target and source, and writes the result into target
-func ComposeTerms(vocab terms.Vocabulary, target, source map[string]interface{}) error {
-	for k, v := range source {
-		targetTerm, exists := target[k]
+func mergeNonattributeGraph(targetLayer *Layer, targetNode, sourceNode LayerNode, seen map[LayerNode]struct{}, nodeMap map[LayerNode]LayerNode) {
+	// If the source node is already seen, return
+	if _, processed := seen[sourceNode]; processed {
+		return
+	}
+	for edges := sourceNode.AllOutgoingEdges(); edges.HasNext(); {
+		edge := edges.Next().(LayerEdge)
+		// Skip all attribute nodes
+		if edge.IsAttributeTreeEdge() {
+			continue
+		}
+
+		toNode := edge.To().(LayerNode)
+		seen[toNode] = struct{}{}
+		// If edge.to is not in target, add it
+		targetTo, exists := nodeMap[toNode]
 		if !exists {
-			target[k] = ld.CloneDocument(v)
-		} else {
-			term := vocab[k]
-			if term == nil {
-				value, err := DefaultComposeTerm(targetTerm, v)
-				if err != nil {
-					return err
-				}
-				target[k] = value
-			} else if cmp, ok := term.(terms.Composable); ok {
-				value, err := cmp.Compose(targetTerm, v)
-				if err != nil {
-					return err
-				}
-				target[k] = value
-			} else {
-				return ErrInvalidComposition(k)
-			}
+			targetTo = toNode.Clone()
+			targetLayer.AddNode(targetTo)
+			nodeMap[toNode] = targetTo
 		}
+		// Connect the nodes
+		targetLayer.AddEdge(targetNode, targetTo, edge.Clone())
+		mergeNonattributeGraph(targetLayer, targetTo, toNode, seen, nodeMap)
+	}
+}
+
+// ComposeProperties will combine the properties in source to
+// target. The target properties will be modified directly
+func ComposeProperties(target, source map[string]*PropertyValue) error {
+	for k, v := range source {
+		newValue, _ := target[k]
+		newValue, err := GetComposerForTerm(k).Compose(newValue, v)
+		if err != nil {
+			return ErrTerm{Term: k, Err: err}
+		}
+		target[k] = newValue
 	}
 	return nil
 }
 
-// func composeTerm(options ComposeOptions, term string, t1, t2 interface{}) (interface{}, error) {
-// 	t := Terms[term]
-// 	if t != nil {
-// 		if t.Compose != nil {
-// 			return t.Compose(options, t1, t2)
-// 		}
-// 	}
-// 	return DefaultComposeTerm(options, t1, t2)
-// }
-
-// DefaultComposeTerm is the default term composition algorithm
-//
-// If t2 is nil, returns copy of t1
-// If t1 is nil, returns copy of t2
-// If t1 and t2 are lists, append t2 to t1
-// If t1 and t2 are sets, combine them
-func DefaultComposeTerm(t1, t2 interface{}) (interface{}, error) {
-	if t2 == nil {
-		if t1 == nil {
-			return nil, nil
-		}
-		return ld.CloneDocument(t1), nil
-	}
-	if t1 == nil {
-		return ld.CloneDocument(t2), nil
-	}
-
-	arr1, t1Arr := t1.([]interface{})
-	arr2, t2Arr := t2.([]interface{})
-	if !t1Arr || !t2Arr {
-		return nil, ErrInvalidObject("Expanded node not array")
-	}
-	arr1List := len(arr1) == 1 && ld.IsList(arr1[0])
-	arr2List := len(arr2) == 1 && ld.IsList(arr2[0])
-	if arr1List && arr2List {
-		l1 := arr1[0].(map[string]interface{})["@list"].([]interface{})
-		l1 = append(l1, arr2[0].(map[string]interface{})["@list"].([]interface{})...)
-		return []interface{}{map[string]interface{}{"@list": l1}}, nil
-	}
-	if (arr1List && !arr2List) || (!arr1List && arr2List) {
-		return nil, ErrIncompatibleComposition{Msg: "Composing a list node with a non-list node"}
-	}
-	// Both nodes are sets
-	return append(arr1, arr2...), nil
-}
-
-// // OverrideComposeTerm overrides t1 with t2
-// func OverrideComposeTerm(options ComposeOptions, t1, t2 interface{}) (interface{}, error) {
-// 	if t2 == nil {
-// 		return ld.CloneDocument(t1), nil
-// 	}
-// 	return ld.CloneDocument(t2), nil
-// }
-
-// Compose the layers to build another layer or schema. If the first
-// layer is a schema, the result is a schema. Otherwise, the result is
-// another overlay. A schema can only appear as the first element.
-func Compose(options ComposeOptions, vocab terms.Vocabulary, layers ...*Layer) (*Layer, error) {
-	var composed *Layer
-	for i, layer := range layers {
-		if i == 0 {
-			composed = layer.Clone()
-		} else {
-			if layer.Type == TermSchemaType {
-				return nil, ErrInvalidComposition("Schema must be the base element")
-			}
-			composed.Compose(options, vocab, layer)
-		}
-	}
-	return composed, nil
-}
-
-// Check if the suffix attribute has matching ascendants
-func attributePathMatch(path, suffix []*Attribute) bool {
-	attributeMatch := func(a, b *Attribute) bool {
-		return a.ID == b.ID && a.Type.GetType() == b.Type.GetType()
-	}
-	if len(suffix) > len(path) {
+// pathsMatch returns true if the attribute predecessors of source matches target's
+func pathsMatch(target, source, initialSource LayerNode) bool {
+	if source.GetID() != target.GetID() {
 		return false
 	}
-	for i := range suffix {
-		if !attributeMatch(path[len(path)-1-i], suffix[len(suffix)-1-i]) {
-			return false
-		}
+	sourceParent, _ := GetParentAttribute(source)
+	// If sourceParents reached the top level, stop
+	if sourceParent == nil {
+		return true
 	}
-	return true
+	if sourceParent.HasType(SchemaTerm) || sourceParent.HasType(OverlayTerm) {
+		return true
+	}
+	targetParent, _ := GetParentAttribute(target)
+	if targetParent == nil {
+		return false
+	}
+	if targetParent.HasType(SchemaTerm) || targetParent.HasType(OverlayTerm) {
+		return false
+	}
+	// Loop?
+	if sourceParent == initialSource {
+		return false
+	}
+	return pathsMatch(targetParent, sourceParent, initialSource)
 }

@@ -11,28 +11,29 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package terms
+package ls
 
-// A Vocabulary is a map of Terms
-type Vocabulary map[string]Term
-
-// NewVocabulary creates a new vocabulary with the given terms
-func NewVocabulary(terms ...Term) Vocabulary {
-	ret := Vocabulary{}
-	ret.Add(terms...)
-	return ret
-}
-
-// Add terms to a vocabulary
-func (v Vocabulary) Add(terms ...Term) {
-	for _, t := range terms {
-		v[t.GetTerm()] = t
+// Recursively copy in
+func copyIntf(in interface{}) interface{} {
+	if arr, ok := in.([]interface{}); ok {
+		ret := make([]interface{}, 0, len(arr))
+		for _, x := range arr {
+			ret = append(ret, copyIntf(x))
+		}
+		return ret
 	}
+	if m, ok := in.(map[string]interface{}); ok {
+		ret := make(map[string]interface{}, len(m))
+		for k, v := range m {
+			ret[k] = copyIntf(v)
+		}
+		return ret
+	}
+	return in
 }
 
-// AddVocabulary adds terms of the source vocabulary to v
-func (v Vocabulary) AddVocabulary(src Vocabulary) {
-	for k, x := range src {
-		v[k] = x
+func copyCompiled(target, source map[interface{}]interface{}) {
+	for k, v := range source {
+		target[k] = v
 	}
 }

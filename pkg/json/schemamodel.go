@@ -18,6 +18,7 @@ import (
 	"strings"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/validators"
 )
 
 type schemaProperty struct {
@@ -27,10 +28,9 @@ type schemaProperty struct {
 	array       *arraySchema
 	oneOf       []schemaProperty
 	allOf       []schemaProperty
-	typ         string
+	typ         []string
 	format      string
 	enum        []interface{}
-	required    bool
 	pattern     string
 	description string
 }
@@ -41,85 +41,94 @@ type arraySchema struct {
 
 type objectSchema struct {
 	properties map[string]schemaProperty
+	required   []string
 }
 
-func (a arraySchema) itr(entityId string, name []string, out *ls.Attribute, layer *ls.Layer) {
-	elem := ls.NewAttribute(nil)
-	schemaAttrs(entityId, append(name, "*"), a.items, elem, layer)
-	out.Type = &ls.ArrayType{elem}
+func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer) ls.LayerNode {
+	return schemaAttrs(entityId, append(name, "*"), a.items, layer)
 }
 
-func (obj objectSchema) itr(entityId string, name []string, out *ls.ObjectType, layer *ls.Layer) {
+func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer) []ls.LayerNode {
+	ret := make([]ls.LayerNode, 0, len(obj.properties))
 	for k, v := range obj.properties {
-		attr := ls.NewAttribute(nil)
 		nm := append(name, k)
-		schemaAttrs(entityId, nm, v, attr, layer)
-		attr.ID = entityId + "." + strings.Join(nm, ".")
-		out.Add(attr, layer)
+		ret = append(ret, schemaAttrs(entityId, nm, v, layer))
 	}
+	return ret
 }
 
-func schemaAttrs(entityId string, name []string, attr schemaProperty, out *ls.Attribute, layer *ls.Layer) {
+func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer) ls.LayerNode {
+	id := entityId + "#" + strings.Join(name, ".")
+	newNode := layer.NewNode(id)
 	if len(attr.format) > 0 {
-		ls.AttributeAnnotations.Format.PutExpanded(out.Values, attr.format)
-	}
-	if len(attr.typ) > 0 {
-		out.Values[ls.LayerTerms.TargetType.GetTerm()] = ls.LayerTerms.TargetType.MakeExpandedContainerFromValues([]string{attr.typ})
-	}
-	if len(attr.key) > 0 {
-		ls.AttributeAnnotations.Name.PutExpanded(out.Values, attr.key)
-	}
-	if len(attr.enum) > 0 {
-		elements := make([]interface{}, 0, len(attr.enum))
-		for _, v := range attr.enum {
-			elements = append(elements, map[string]interface{}{"@value": v})
-		}
-		out.Values[ls.AttributeAnnotations.Enumeration.GetTerm()] = []interface{}{map[string]interface{}{"@list": elements}}
+		newNode.GetPropertyMap()[validators.JsonFormatTerm] = ls.StringPropertyValue(attr.format)
 	}
 	if len(attr.pattern) > 0 {
-		ls.AttributeAnnotations.Pattern.PutExpanded(out.Values, attr.pattern)
+		newNode.GetPropertyMap()[validators.PatternTerm] = ls.StringPropertyValue(attr.pattern)
 	}
 	if len(attr.description) > 0 {
-		out.Values[ls.AttributeAnnotations.Information.GetTerm()] = []interface{}{map[string]interface{}{"@value": attr.description}}
+		newNode.GetPropertyMap()[ls.DescriptionTerm] = ls.StringPropertyValue(attr.description)
 	}
-	if attr.required {
-		ls.AttributeAnnotations.Required.PutExpanded(out.Values, true)
+	if len(attr.typ) > 0 {
+		newNode.GetPropertyMap()[ls.TargetType] = ls.StringSlicePropertyValue(attr.typ)
 	}
+	if len(attr.key) > 0 {
+		newNode.GetPropertyMap()[ls.AttributeNameTerm] = ls.StringPropertyValue(attr.key)
+	}
+	if len(attr.enum) > 0 {
+		elements := make([]string, 0, len(attr.enum))
+		for _, v := range attr.enum {
+			elements = append(elements, fmt.Sprint(v))
+		}
+		newNode.GetPropertyMap()[validators.EnumTerm] = ls.StringSlicePropertyValue(elements)
+	}
+
 	if len(attr.reference) > 0 {
-		out.Type = &ls.ReferenceType{attr.reference}
-		return
+		newNode.AddTypes(ls.AttributeTypes.Reference)
+		return newNode
 	}
+
 	if attr.object != nil {
-		attrs := ls.NewObjectType(nil, false)
-		attr.object.itr(entityId, name, attrs, layer)
-		out.Type = attrs
-		return
+		newNode.AddTypes(ls.AttributeTypes.Object)
+		attrs := attr.object.itr(entityId, name, layer)
+		for _, x := range attrs {
+			newNode.Connect(x, ls.LayerTerms.AttributeList)
+		}
+		if len(attr.object.required) > 0 {
+			newNode.GetPropertyMap()[validators.RequiredTerm] = ls.StringSlicePropertyValue(attr.object.required)
+		}
+		return newNode
 	}
 	if attr.array != nil {
-		attr.array.itr(entityId, name, out, layer)
-		return
+		newNode.AddTypes(ls.AttributeTypes.Array)
+		n := attr.array.itr(entityId, name, layer)
+		newNode.Connect(n, ls.LayerTerms.ArrayItems)
+		return newNode
 	}
-	buildChoices := func(arr []schemaProperty) []*ls.Attribute {
-		elements := make([]*ls.Attribute, 0, len(arr))
+
+	buildChoices := func(arr []schemaProperty) []ls.LayerNode {
+		elements := make([]ls.LayerNode, 0, len(arr))
 		for i, x := range arr {
-			out := ls.NewAttribute(nil)
 			newName := append(name, fmt.Sprint(i))
-			schemaAttrs(entityId, newName, x, out, layer)
-			if out.ID == "" {
-				out.ID = entityId + "." + strings.Join(newName, ".")
-			}
-			elements = append(elements, out)
+			node := schemaAttrs(entityId, newName, x, layer)
+			elements = append(elements, node)
 		}
 		return elements
 	}
 	if len(attr.oneOf) > 0 {
-		out.Type = &ls.PolymorphicType{buildChoices(attr.oneOf)}
-		return
+		newNode.AddTypes(ls.AttributeTypes.Polymorphic)
+		for _, x := range buildChoices(attr.oneOf) {
+			newNode.Connect(x, ls.LayerTerms.OneOf)
+		}
+		return newNode
 	}
 	if len(attr.allOf) > 0 {
-		out.Type = &ls.CompositeType{buildChoices(attr.allOf)}
+		newNode.AddTypes(ls.AttributeTypes.Composite)
+		for _, x := range buildChoices(attr.oneOf) {
+			newNode.Connect(x, ls.LayerTerms.AllOf)
+		}
+		return newNode
 	}
-	if out.Type == nil {
-		out.Type = &ls.ValueType{}
-	}
+	newNode.AddTypes(ls.AttributeTypes.Value)
+	return newNode
 }

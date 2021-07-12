@@ -15,8 +15,9 @@ package json
 
 import (
 	"fmt"
+	"strings"
 
-	"github.com/santhosh-tekuri/jsonschema"
+	"github.com/santhosh-tekuri/jsonschema/v3"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
@@ -26,7 +27,11 @@ type ErrCyclicSchema struct {
 }
 
 func (e ErrCyclicSchema) Error() string {
-	return fmt.Sprintf("%v", e.Loop)
+	items := make([]string, 0)
+	for _, x := range e.Loop {
+		items = append(items, x.Ptr)
+	}
+	return "Cycle:" + strings.Join(items, " ")
 }
 
 // Entity gives an entity name to a location in a schema
@@ -37,21 +42,43 @@ type Entity struct {
 	SchemaName string `json:"schema"`
 }
 
+// GetEntityName returns the ID if name is empty
+func (e Entity) GetEntityName() string {
+	if len(e.Name) == 0 {
+		return e.ID
+	}
+	return e.Name
+}
+
 // CompiledEntity contains the JSON schema for the entity
 type CompiledEntity struct {
 	Entity
 	Schema *jsonschema.Schema
 }
 
+// CompileAndImport compiles the given entities and imports them as layers
+func CompileAndImport(entities []Entity) ([]ImportedEntity, error) {
+	compiled, err := Compile(entities)
+	if err != nil {
+		return nil, err
+	}
+	return Import(compiled)
+}
+
 // Compile all entities as a single unit.
 func Compile(entities []Entity) ([]CompiledEntity, error) {
 	compiler := jsonschema.NewCompiler()
 	compiler.ExtractAnnotations = true
+	return CompileWith(compiler, entities)
+}
+
+// CompileWith compiles all entities as a single unit using the given compiler
+func CompileWith(compiler *jsonschema.Compiler, entities []Entity) ([]CompiledEntity, error) {
 	ret := make([]CompiledEntity, 0, len(entities))
 	for _, e := range entities {
 		sch, err := compiler.Compile(e.Ref)
 		if err != nil {
-			return nil, fmt.Errorf("During %s: %w", e.Name, err)
+			return nil, fmt.Errorf("During %s: %w", e.GetEntityName(), err)
 		}
 		ret = append(ret, CompiledEntity{Entity: e, Schema: sch})
 	}
@@ -109,13 +136,19 @@ func Import(entities []CompiledEntity) ([]ImportedEntity, error) {
 			return nil, err
 		}
 		if s.object == nil {
-			return nil, fmt.Errorf("%s base schema is not an object", ctx.currentEntity.Name)
+			return nil, fmt.Errorf("%s base schema is not an object", ctx.currentEntity.GetEntityName())
 		}
 
 		imported := ImportedEntity{}
 		imported.Entity = ctx.entities[i]
 		imported.Layer = ls.NewLayer()
-		s.object.itr(ctx.currentEntity.ID, nil, imported.Layer.Root.GetAttributes(), imported.Layer)
+		imported.Layer.SetLayerType(ls.SchemaTerm)
+		imported.Layer.SetID(ctx.currentEntity.ID)
+		imported.Layer.GetLayerInfoNode().Connect(imported.Layer.NewNode(ctx.currentEntity.ID), ls.LayerRootTerm)
+		nodes := s.object.itr(ctx.currentEntity.ID, nil, imported.Layer)
+		for _, node := range nodes {
+			imported.Layer.GetObjectInfoNode().Connect(node, ls.LayerTerms.Attributes)
+		}
 
 		ret = append(ret, imported)
 	}
@@ -165,18 +198,12 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 		}
 
 	case len(sch.Properties) > 0:
-		target.object = &objectSchema{properties: make(map[string]schemaProperty)}
+		target.object = &objectSchema{properties: make(map[string]schemaProperty), required: sch.Required}
 		for k, v := range sch.Properties {
 			val := schemaProperty{key: k}
 			err := importSchema(ctx, &val, v)
 			if err != nil {
 				return err
-			}
-			for _, r := range sch.Required {
-				if k == r {
-					val.required = true
-					break
-				}
 			}
 			target.object.properties[k] = val
 		}
@@ -194,9 +221,9 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 		// TODO: additionalItems, etc
 	default:
 		if len(sch.Types) > 0 {
-			target.typ = sch.Types[0]
+			target.typ = sch.Types
 		}
-		target.format = sch.FormatName
+		target.format = sch.Format
 		if len(sch.Enum) > 0 {
 			target.enum = sch.Enum
 		}

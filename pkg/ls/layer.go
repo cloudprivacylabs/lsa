@@ -14,161 +14,171 @@
 package ls
 
 import (
-	"github.com/piprate/json-gold/ld"
-
-	"github.com/cloudprivacylabs/lsa/pkg/terms"
+	"github.com/bserdar/digraph"
+	"golang.org/x/text/encoding"
 )
 
-// TermSchemaType is the object type for schema
-const TermSchemaType = LS + "/Schema"
-
-// TermOverlayType is the object type for layers
-const TermOverlayType = LS + "/Overlay"
-
-var LayerTerms = struct {
-	TargetType    terms.IDSetTerm
-	Attributes    terms.ObjectSetTerm
-	AttributeList terms.ObjectListTerm
-	Reference     terms.IDTerm
-	ArrayItems    terms.ObjectTerm
-	AllOf         terms.ObjectListTerm
-	OneOf         terms.ObjectListTerm
-}{
-	TargetType:    terms.IDSetTerm(LS + "/targetType"),
-	Attributes:    terms.ObjectSetTerm(LS + "/Object/attributes"),
-	AttributeList: terms.ObjectListTerm(LS + "/Object/attributeList"),
-
-	// Reference is an IRI that points to another object
-	Reference: terms.IDTerm(LS + "/Reference/reference"),
-
-	// ArrayItems defines the items of an array object. ArrayItems is an
-	// attribute that can contain all attribute related terms
-	ArrayItems: terms.ObjectTerm(LS + "/Array/items"),
-
-	// AllOf is a list that denotes composition. The resulting object is
-	// a composition of the elements of the list
-	AllOf: terms.ObjectListTerm(LS + "/Composite/allOf"),
-
-	// OneOf is a list that denotes polymorphism. The resulting object
-	// can be one of the objects listed.
-	OneOf: terms.ObjectListTerm(LS + "/Polymorphic/oneOf"),
-}
-
-// Layer can be a Schema or an Overlay
+// A Layer is either a schema or an overlay. It keeps the definition
+// of a layer as a directed labeled property graph.
+//
+// The root node of the layer keeps layer identifying information. The
+// root node is connected to the schema node which contains the actual
+// object defined by the layer.
 type Layer struct {
-	ID         string
-	Type       string
-	TargetType []string
-	// Root is an object attribute
-	Root *Attribute
-
-	Index map[string]*Attribute
+	*digraph.Graph
+	layerInfo LayerNode
 }
 
-func (layer *Layer) Clone() *Layer {
-	ret := &Layer{ID: layer.ID,
-		Type:       layer.Type,
-		TargetType: layer.TargetType,
-		Root:       layer.Root.Clone(nil),
-		Index:      make(map[string]*Attribute),
-	}
-	ret.Root.GetAttributes().Iterate(func(a *Attribute) bool {
-		if len(a.ID) > 0 {
-			ret.Index[a.ID] = a
-		}
-		return true
-	})
+// NewLayer returns a new empty layer
+func NewLayer() *Layer {
+	ret := &Layer{Graph: digraph.New()}
+	ret.layerInfo = NewLayerNode("")
+	ret.AddNode(ret.layerInfo)
 	return ret
 }
 
-// NewLayer returns an empty schema layer
-func NewLayer() *Layer {
-	root := NewAttribute(nil)
-	root.Type = NewObjectType(root, false)
-	return &Layer{Root: root,
-		Index: make(map[string]*Attribute),
+// Clone returns a copy of the layer
+func (l *Layer) Clone() *Layer {
+	ret := &Layer{Graph: digraph.New()}
+	nodeMap := digraph.Copy(ret.Graph, l.Graph, func(node digraph.Node) digraph.Node {
+		return node.(LayerNode).Clone()
+	},
+		func(edge digraph.Edge) digraph.Edge {
+			return edge.(LayerEdge).Clone()
+		})
+	if x := nodeMap[l.layerInfo]; x != nil {
+		ret.layerInfo = x.(LayerNode)
 	}
+	return ret
 }
 
-// LayerFromLD expands the jsonld input and creates a new schema layer
-func LayerFromLD(jsonldInput interface{}) (*Layer, error) {
-	proc := ld.NewJsonLdProcessor()
-	expanded, err := proc.Expand(jsonldInput, nil)
-	if err != nil {
-		return nil, err
-	}
-	ret := Layer{}
-	if err := ret.UnmarshalExpanded(expanded); err != nil {
-		return nil, err
-	}
+// GetLayerInfoNode returns the root node of the schema
+func (l *Layer) GetLayerInfoNode() LayerNode { return l.layerInfo }
 
-	return &ret, nil
+// GetObjectInfoNode returns the root node of the object defined by the schema
+func (l *Layer) GetObjectInfoNode() LayerNode {
+	x := l.layerInfo.NextNode(LayerRootTerm)
+	if x == nil {
+		return nil
+	}
+	return x.(LayerNode)
 }
 
-// UnmarshalExpanded unmarshals an expanded json-ld schema or overlay. The input
-// must be a []interface{}
-func (layer *Layer) UnmarshalExpanded(in interface{}) error {
-	arr, _ := in.([]interface{})
-	if len(arr) != 1 {
-		return ErrInvalidInput("Invalid layer")
-	}
-	layer.ID = ""
-	layer.Type = ""
-	layer.Root = NewAttribute(nil)
-	layer.Root.Type = NewObjectType(layer.Root, false)
+// GetID returns the ID of the layer
+func (l *Layer) GetID() string {
+	return l.layerInfo.Label().(string)
+}
 
-	m := arr[0].(map[string]interface{})
-	layer.TargetType = LayerTerms.TargetType.ElementValuesFromExpanded(m[LayerTerms.TargetType.GetTerm()])
-	layer.Index = make(map[string]*Attribute)
-	layer.Type = GetNodeType(arr[0])
-	if layer.Type != TermSchemaType && layer.Type != TermOverlayType {
-		return ErrInvalidLayerType(layer.Type)
+// SetID sets the ID of the layer
+func (l *Layer) SetID(ID string) {
+	l.layerInfo.SetLabel(ID)
+}
+
+// GetLayerType returns the layer type, SchemaTerm or OverlayTerm.
+func (l *Layer) GetLayerType() string {
+	if l.layerInfo.HasType(SchemaTerm) {
+		return SchemaTerm
 	}
-	if err := layer.Root.GetAttributes().UnmarshalExpanded(arr[0].(map[string]interface{}), nil); err != nil {
-		return err
+	if l.layerInfo.HasType(OverlayTerm) {
+		return OverlayTerm
 	}
-	var err error
-	layer.Root.GetAttributes().Iterate(func(a *Attribute) bool {
-		if len(a.ID) > 0 {
-			if _, ok := layer.Index[a.ID]; ok {
-				err = ErrDuplicateAttribute(a.ID)
+	return ""
+}
+
+// SetLayerType sets if the layer is a schema or an overlay
+func (l *Layer) SetLayerType(t string) {
+	if t != SchemaTerm && t != OverlayTerm {
+		panic("Invalid layer type:" + t)
+	}
+	l.layerInfo.RemoveTypes(SchemaTerm, OverlayTerm)
+	l.layerInfo.AddTypes(t)
+}
+
+// GetEncoding returns the encoding that should be used to
+// ingest/export data using this layer. The encoding information is
+// taken from the schema root node characterEncoding annotation. If missing,
+// the default encoding is used, which does not perform any character
+// translation
+func (l *Layer) GetEncoding() (encoding.Encoding, error) {
+	oi := l.GetObjectInfoNode()
+	var enc string
+	if oi != nil {
+		enc = oi.GetPropertyMap()[CharacterEncodingTerm].AsString()
+		if len(enc) == 0 {
+			return encoding.Nop, nil
+		}
+	}
+	return UnknownEncodingIndex.Encoding(enc)
+}
+
+// NewNode creates a new node for the layer with the given ID and
+// types, and adds the node to the layer
+func (l *Layer) NewNode(ID string, types ...string) LayerNode {
+	ret := NewLayerNode(ID, types...)
+	l.AddNode(ret)
+	return ret
+}
+
+// GetTargetType returns the value of the targetType field from the
+// layer information node
+func (l *Layer) GetTargetType() string {
+	v := l.layerInfo.GetPropertyMap()[TargetType]
+	if v == nil {
+		return ""
+	}
+	return v.AsString()
+}
+
+// SetTargetType sets the targe types of the layer
+func (l *Layer) SetTargetType(t string) {
+	if oldT := l.GetTargetType(); len(oldT) > 0 {
+		if oin := l.GetObjectInfoNode(); oin != nil {
+			oin.RemoveTypes(oldT)
+			oin.AddTypes(t)
+		}
+	}
+	l.layerInfo.GetPropertyMap()[TargetType] = StringPropertyValue(t)
+}
+
+// ForEachAttribute calls f with each attribute node, depth first. If
+// f returns false, iteration stops
+func (l *Layer) ForEachAttribute(f func(LayerNode) bool) bool {
+	oi := l.GetObjectInfoNode()
+	if oi != nil {
+		return ForEachAttributeNode(oi, f)
+	}
+	return true
+}
+
+// ForEachAttributeNode calls f with each attribute node, depth
+// first. If f returns false, iteration stops. This function avoids loops
+func ForEachAttributeNode(root LayerNode, f func(LayerNode) bool) bool {
+	return forEachAttributeNode(root, f, map[LayerNode]struct{}{})
+}
+
+func forEachAttributeNode(root LayerNode, f func(LayerNode) bool, loop map[LayerNode]struct{}) bool {
+	if _, exists := loop[root]; exists {
+		return true
+	}
+	loop[root] = struct{}{}
+	defer delete(loop, root)
+
+	if root.IsAttributeNode() {
+		if !f(root) {
+			return false
+		}
+	}
+	for outgoing := root.AllOutgoingEdges(); outgoing.HasNext(); {
+		edge := outgoing.Next().(LayerEdge)
+		if !edge.IsAttributeTreeEdge() {
+			continue
+		}
+		next := edge.To().(LayerNode)
+		if next.HasType(AttributeTypes.Attribute) {
+			if !forEachAttributeNode(next, f, loop) {
 				return false
 			}
-			layer.Index[a.ID] = a
-		}
-		return true
-	})
-	if err != nil {
-		return err
-	}
-	for k, v := range arr[0].(map[string]interface{}) {
-		switch k {
-		case "@id":
-			layer.ID = v.(string)
-		case "@type":
-		case string(LayerTerms.Attributes),
-			string(LayerTerms.AttributeList),
-			string(LayerTerms.TargetType):
-		default:
-			layer.Root.Values[k] = v
 		}
 	}
-	return nil
-}
-
-// MarshalExpanded returns marshaled layer in expanded json-ld format
-func (layer *Layer) MarshalExpanded() interface{} {
-	ret := map[string]interface{}{}
-	if len(layer.ID) > 0 {
-		ret["@id"] = layer.ID
-	}
-	ret["@type"] = []interface{}{layer.Type}
-	if len(layer.TargetType) > 0 {
-		ret[LayerTerms.TargetType.GetTerm()] = LayerTerms.TargetType.MakeExpandedContainerFromValues(layer.TargetType)
-	}
-	for k, v := range layer.Root.Values {
-		ret[k] = v
-	}
-	layer.Root.GetAttributes().MarshalExpanded(ret)
-	return []interface{}{ret}
+	return true
 }

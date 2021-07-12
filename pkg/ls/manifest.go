@@ -13,113 +13,15 @@
 // limitations under the License.
 package ls
 
-import (
-	"github.com/piprate/json-gold/ld"
-
-	"github.com/cloudprivacylabs/lsa/pkg/terms"
-)
-
-// TermSchemaManifestType is the object type for a schema manifest
-const TermSchemaManifestType = LS + "/SchemaManifest"
-
-// SchemaManifest contains the schema metadata and layer pointers
+// SchemaManifest contains the minimal information to define a schema variant with an optional bundle
 type SchemaManifest struct {
-	ID          string
-	PublishedAt string
-	Bundle      string
-	TargetType  []string
-	Schema      string
-	Overlays    []string
-	Values      map[string]interface{}
+	ID         string
+	Type       string
+	TargetType string
+	Bundle     string
+	Schema     string
+	Overlays   []string
 }
 
-var SchemaManifestTerms = struct {
-	PublishedAt terms.ValueTerm
-	Bundle      terms.IDTerm
-	Schema      terms.IDTerm
-	Overlays    terms.IDListTerm
-}{
-	PublishedAt: terms.ValueTerm(LS + "/SchemaManifest/publishedAt"),
-	Bundle:      terms.IDTerm(LS + "/SchemaManifest/bundle"),
-	Schema:      terms.IDTerm(LS + "/SchemaManifest/schema"),
-	Overlays:    terms.IDListTerm(LS + "/SchemaManifest/overlays"),
-}
-
-// SchemaManifestFromLD expands the jsonld input and creates a new
-// schema manifest
-func SchemaManifestFromLD(jsonldInput interface{}) (*SchemaManifest, error) {
-	proc := ld.NewJsonLdProcessor()
-	expanded, err := proc.Expand(jsonldInput, nil)
-	if err != nil {
-		return nil, err
-	}
-	ret := SchemaManifest{Values: make(map[string]interface{})}
-	if err := ret.UnmarshalExpanded(expanded); err != nil {
-		return nil, err
-	}
-	return &ret, nil
-}
-
-// UnmarshalExpanded uses the expanded input to populate the schema manifest
-func (schema *SchemaManifest) UnmarshalExpanded(in interface{}) error {
-	arr, _ := in.([]interface{})
-	if len(arr) != 1 {
-		return ErrInvalidInput("Invalid schema manifest")
-	}
-	m, _ := arr[0].(map[string]interface{})
-	if m == nil {
-		return ErrInvalidInput("Invalid schema manifest")
-	}
-	if t := GetNodeType(m); t != TermSchemaManifestType {
-		return ErrNotASchema(t)
-	}
-	for k, v := range m {
-		switch k {
-		case "@type":
-		case "@id":
-			schema.ID = GetNodeID(m)
-		case string(SchemaManifestTerms.PublishedAt):
-			schema.PublishedAt = SchemaManifestTerms.PublishedAt.StringFromExpanded(v)
-		case string(LayerTerms.TargetType):
-			schema.TargetType = LayerTerms.TargetType.ElementValuesFromExpanded(v)
-		case string(SchemaManifestTerms.Bundle):
-			schema.Bundle = SchemaManifestTerms.Bundle.StringFromExpanded(v)
-		case string(SchemaManifestTerms.Schema):
-			schema.Schema = SchemaManifestTerms.Schema.StringFromExpanded(v)
-		case string(SchemaManifestTerms.Overlays):
-			for _, el := range SchemaManifestTerms.Overlays.ElementValuesFromExpanded(v) {
-				schema.Overlays = append(schema.Overlays, el)
-			}
-		default:
-			schema.Values[k] = v
-		}
-	}
-
-	if len(schema.TargetType) == 0 {
-		return ErrInvalidInput("Empty target type in schema manifest")
-	}
-	if len(schema.Schema) == 0 {
-		return ErrInvalidInput("Empty schema base in schema manifest")
-	}
-	return nil
-}
-
-func (schema *SchemaManifest) MarshalExpanded() interface{} {
-	ret := map[string]interface{}{
-		"@type": []interface{}{TermSchemaManifestType},
-	}
-	if len(schema.ID) > 0 {
-		ret["@id"] = schema.ID
-	}
-	for k, v := range schema.Values {
-		ret[k] = v
-	}
-	SchemaManifestTerms.PublishedAt.PutExpanded(ret, schema.PublishedAt)
-	ret[LayerTerms.TargetType.GetTerm()] = LayerTerms.TargetType.MakeExpandedContainerFromValues(schema.TargetType)
-	SchemaManifestTerms.Bundle.PutExpanded(ret, schema.Bundle)
-	SchemaManifestTerms.Schema.PutExpanded(ret, schema.Schema)
-	if len(schema.Overlays) != 0 {
-		ret[SchemaManifestTerms.Overlays.GetTerm()] = SchemaManifestTerms.Overlays.MakeExpandedContainerFromValues(schema.Overlays)
-	}
-	return ret
-}
+// GetID returns the schema manifest ID
+func (m *SchemaManifest) GetID() string { return m.ID }

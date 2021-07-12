@@ -13,108 +13,162 @@
 // limitations under the License.
 package ls
 
-import (
-	"github.com/cloudprivacylabs/lsa/pkg/terms"
+const LS = "https://lschema.org/"
+
+var (
+	// SchemaTerm is the layer type for schemas
+	SchemaTerm = NewTerm(LS+"Schema", false, false, NoComposition, nil)
+
+	// OverlayTerm is the layer type for overlays
+	OverlayTerm = NewTerm(LS+"Overlay", false, false, NoComposition, nil)
+
+	// SchemaManifestTerm is the schema manifest type
+	SchemaManifestTerm = NewTerm(LS+"SchemaManifest", false, false, NoComposition, nil)
+
+	// TargetType is the term specifying the data type for the attribute defined
+	TargetType = NewTerm(LS+"targetType", false, false, SetComposition, nil)
+
+	// DescriptionTerm is used for comments/descriptions
+	DescriptionTerm = NewTerm(LS+"description", false, false, SetComposition, nil)
+
+	// AttributeNameTerm represents the name of an attribute
+	AttributeNameTerm = NewTerm(LS+"attributeName", false, false, ErrorComposition, nil)
+
+	// AttributeIndexTerm represents the index of an array element
+	AttributeIndexTerm = NewTerm(LS+"attributeIndex", false, false, ErrorComposition, nil)
+
+	// AttributeValueTerm represents the value of an attribute
+	AttributeValueTerm = NewTerm(LS+"attributeValue", false, false, ErrorComposition, nil)
+
+	// LayerRootTerm is an edge term that connects layer node to the root node of the schema
+	LayerRootTerm = NewTerm(LS+"layer", false, false, ErrorComposition, nil)
 )
 
-// LS is the namespace for layeres schemas ontology
-const LS = "http://layeredschemas.org"
-
-// EnumerationTerm is the term definition for enumeration with a custom validator
-type EnumerationTerm struct {
-	terms.ValueListTerm
+// AttributeTypes defines the terms describing attribute types. Each
+// attribute must have one of the attribute types plus the Attribute
+// type, marking the object as an attribute.
+var AttributeTypes = struct {
+	Value       string
+	Object      string
+	Array       string
+	Reference   string
+	Composite   string
+	Polymorphic string
+	Attribute   string
+}{
+	Value:       NewTerm(LS+"Value", false, false, OverrideComposition, nil),
+	Object:      NewTerm(LS+"Object", false, false, OverrideComposition, nil),
+	Array:       NewTerm(LS+"Array", false, false, OverrideComposition, nil),
+	Reference:   NewTerm(LS+"Reference", false, false, OverrideComposition, nil),
+	Composite:   NewTerm(LS+"Composite", false, false, OverrideComposition, nil),
+	Polymorphic: NewTerm(LS+"Polymorphic", false, false, OverrideComposition, nil),
+	Attribute:   NewTerm(LS+"Attribute", false, false, OverrideComposition, nil),
 }
 
-// Validate checks if the doc value is one of the schema values
-func (t EnumerationTerm) Validate(schemaTermValue, docValue interface{}) error {
-	if docValue == nil {
-		return nil
-	}
-	for _, el := range t.ElementValuesFromExpanded(schemaTermValue) {
-		if docValue == el {
-			return nil
+// LayerTerms includes type specific terms recognized by the schema
+// compiler. These are terms used to define elements of an attribute.
+var LayerTerms = struct {
+	// Unordered named attributes (json object)
+	Attributes string
+	// Ordered named attributes (json object, xml elements)
+	AttributeList string
+	// Reference to another schema. This will be resolved to another
+	// schema during compilation
+	Reference string
+	// ArrayItems contains the definition for the items of the array
+	ArrayItems string
+	// All components of a composite attribute
+	AllOf string
+	// All options of a polymorphic attribute
+	OneOf string
+}{
+	Attributes:    NewTerm(LS+"Object#attributes", false, false, ErrorComposition, nil),
+	AttributeList: NewTerm(LS+"Object#attributeList", false, false, ErrorComposition, nil),
+	Reference:     NewTerm(LS+"Reference#reference", false, false, ErrorComposition, nil),
+	ArrayItems:    NewTerm(LS+"Array#items", false, false, ErrorComposition, nil),
+	AllOf:         NewTerm(LS+"Composite#allOf", false, false, ErrorComposition, nil),
+	OneOf:         NewTerm(LS+"Polymorphic#oneOf", false, false, ErrorComposition, nil),
+}
+
+var DataEdgeTerms = struct {
+	// Edge label linking attribute nodes to an object node
+	ObjectAttributes string
+	// Edge label linking array element nodes to an array node
+	ArrayElements string
+}{
+	ObjectAttributes: NewTerm(LS+"data/object#attributes", false, false, ErrorComposition, nil),
+	ArrayElements:    NewTerm(LS+"data/array#elements", false, false, ErrorComposition, nil),
+}
+
+// FilterAttributeTypes returns all recognized attribute types from
+// the given types array. This is mainly used for validation, to
+// ensure there is only one attribute type
+func FilterAttributeTypes(types []string) []string {
+	ret := make([]string, 0, len(types))
+	for _, x := range types {
+		if x == AttributeTypes.Value ||
+			x == AttributeTypes.Object ||
+			x == AttributeTypes.Array ||
+			x == AttributeTypes.Reference ||
+			x == AttributeTypes.Composite ||
+			x == AttributeTypes.Polymorphic {
+			ret = append(ret, x)
 		}
 	}
-	return ErrValidation("Value not allowed by enumeration constraints")
+	return ret
 }
 
-// RequiredTerm is the term definition for boolean required flag with a custom validator
-type RequiredTerm struct {
-	terms.ValueTerm
-}
-
-// Validate checks if the doc value exists or not
-func (t RequiredTerm) Validate(schemaTermValue, docValue interface{}) error {
-	if required, _ := t.FromExpanded(schemaTermValue).(bool); required {
-		if docValue == nil {
-			return ErrValidation("Required value missing")
+// FilterNonLayerTypes returns the types that are not attribute or
+// layer related
+func FilterNonLayerTypes(types []string) []string {
+	ret := make([]string, 0, len(types))
+	for _, x := range types {
+		if x != AttributeTypes.Value &&
+			x != AttributeTypes.Object &&
+			x != AttributeTypes.Array &&
+			x != AttributeTypes.Reference &&
+			x != AttributeTypes.Composite &&
+			x != AttributeTypes.Polymorphic &&
+			x != AttributeTypes.Attribute {
+			ret = append(ret, x)
 		}
 	}
-	return nil
+	return ret
 }
 
-// AttributeAnnotations includes the terms used to annotation attributes
-var AttributeAnnotations = struct {
-	Name        terms.ValueTerm
-	Privacy     terms.ValueSetTerm
-	Information terms.ValueSetTerm
-	Encoding    terms.ValueTerm
-	Format      terms.ValueTerm
-	Pattern     terms.ValueTerm
-	Label       terms.ValueTerm
-	Enumeration EnumerationTerm
-	Required    RequiredTerm
-}{
-	// Name defines the name of the attribue at the ingestion
-	// stage or at the output stage. This can be a column name for
-	// tabular data, JSON key, or XML name
-	Name:        terms.ValueTerm(LS + "/attr/name"),
-	Privacy:     terms.ValueSetTerm(LS + "/attr/privacyClassification"),
-	Information: terms.ValueSetTerm(LS + "/attr/information"),
-	Encoding:    terms.ValueTerm(LS + "/attr/encoding"),
-	Format:      terms.ValueTerm(LS + "/attr/format"),
-	Pattern:     terms.ValueTerm(LS + "/attr/pattern"),
-	Label:       terms.ValueTerm(LS + "/attr/label"),
-	Enumeration: EnumerationTerm{LS + "/attr/enumeration"},
-	Required:    RequiredTerm{LS + "/attr/required"},
+var (
+	// CharacterEncodingTerm is used to specify a character encoding for
+	// the data processed with the layer
+	CharacterEncodingTerm = NewTerm(LS+"characterEncoding", false, false, OverrideComposition, nil)
+
+	// InstanceOfTerm is an edge term that is used to connect values with
+	// their schema specifications
+	InstanceOfTerm = NewTerm(LS+"data#instanceOf", false, false, ErrorComposition, nil)
+
+	BundleTerm     = NewTerm(LS+"SchemaManifest#bundle", false, false, ErrorComposition, nil)
+	SchemaBaseTerm = NewTerm(LS+"SchemaManifest#schema", true, false, ErrorComposition, nil)
+	OverlaysTerm   = NewTerm(LS+"SchemaManifest#overlays", true, true, ErrorComposition, nil)
+)
+
+var registeredTerms = map[string]TermSemantics{}
+
+func RegisterTerm(t TermSemantics) {
+	_, ok := registeredTerms[t.Term]
+	if ok {
+		panic("Duplicate term :" + t.Term)
+	}
+	registeredTerms[t.Term] = t
 }
 
-var DocTerms = struct {
-	// Value of the attribute from the input document
-	Value terms.ValueTerm
-	// Attributes, for the ingested document
-	Attributes terms.ObjectListTerm
-	// ArrayElements, for the ingested document
-	ArrayElements terms.ObjectListTerm
-	// A reference to the schema attribute
-	SchemaAttributeID terms.IDTerm
-}{
-	Value:             terms.ValueTerm(LS + "/doc/value"),
-	Attributes:        terms.ObjectListTerm(LS + "/doc/attributes"),
-	ArrayElements:     terms.ObjectListTerm(LS + "/doc/arrayElements"),
-	SchemaAttributeID: terms.IDTerm(LS + "/doc/attributeId"),
+func GetTermInfo(term string) TermSemantics {
+	t, ok := registeredTerms[term]
+	if !ok {
+		return TermSemantics{Term: term, Composition: SetComposition}
+	}
+	return t
 }
 
-// Terms contains the registered terms
-var Terms = terms.NewVocabulary(LayerTerms.Attributes,
-	LayerTerms.AttributeList,
-	LayerTerms.Reference,
-	LayerTerms.ArrayItems,
-	LayerTerms.AllOf,
-	LayerTerms.OneOf,
-
-	AttributeAnnotations.Name,
-	AttributeAnnotations.Privacy,
-	AttributeAnnotations.Information,
-	AttributeAnnotations.Encoding,
-	AttributeAnnotations.Format,
-	AttributeAnnotations.Pattern,
-	AttributeAnnotations.Label,
-	AttributeAnnotations.Enumeration,
-	AttributeAnnotations.Required,
-
-	SchemaManifestTerms.PublishedAt,
-	LayerTerms.TargetType,
-	SchemaManifestTerms.Bundle,
-	SchemaManifestTerms.Schema,
-	SchemaManifestTerms.Overlays)
+// GetTermMetadata returns metadata about a term
+func GetTermMetadata(term string) interface{} {
+	return GetTermInfo(term).Metadata
+}
