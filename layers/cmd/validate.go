@@ -18,7 +18,7 @@ import (
 )
 
 func init() {
-	validateCmd.Flags().StringP("schema", "s", "", "Schema")
+	validateCmd.PersistentFlags().StringP("schema", "s", "", "Schema")
 	validateCmd.MarkFlagRequired("schema")
 	rootCmd.AddCommand(validateCmd)
 }
