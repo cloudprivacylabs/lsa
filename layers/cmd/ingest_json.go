@@ -16,6 +16,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/bserdar/digraph"
@@ -32,6 +33,7 @@ func init() {
 	ingestJSONCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
 	ingestJSONCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
 	ingestJSONCmd.Flags().String("format", "json", "Output format, json(ld), rdf, or dot")
+	ingestJSONCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 }
 
 var ingestJSONCmd = &cobra.Command{
@@ -40,71 +42,91 @@ var ingestJSONCmd = &cobra.Command{
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		var layer *ls.Layer
-		repoDir, _ := cmd.Flags().GetString("repo")
-		var repo *fs.Repository
-		if len(repoDir) > 0 {
-			var err error
-			repo, err = getRepo(repoDir)
+		if compiledSchema, _ := cmd.Flags().GetString("compiledschema"); len(compiledSchema) > 0 {
+			sch, err := ioutil.ReadFile(compiledSchema)
+			if err != nil {
+				failErr(err)
+			}
+			var v interface{}
+			err = json.Unmarshal(sch, &v)
+			if err != nil {
+				failErr(err)
+			}
+			layer, err = ls.UnmarshalLayer(v)
+			if err != nil {
+				failErr(err)
+			}
+			compiler := ls.Compiler{}
+			layer, err = compiler.CompileSchema(layer)
 			if err != nil {
 				failErr(err)
 			}
 		}
-		schemaName, _ := cmd.Flags().GetString("schema")
-		if len(schemaName) > 0 {
-			if repo != nil {
+		if layer == nil {
+			repoDir, _ := cmd.Flags().GetString("repo")
+			var repo *fs.Repository
+			if len(repoDir) > 0 {
 				var err error
-				layer, err = repo.GetComposedSchema(schemaName)
-				if err != nil {
-					failErr(err)
-				}
-				compiler := ls.Compiler{Resolver: func(x string) (string, error) {
-					if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
-						return manifest.ID, nil
-					}
-					return x, nil
-				},
-					Loader: func(x string) (*ls.Layer, error) {
-						return repo.LoadAndCompose(x)
-					},
-				}
-				layer, err = compiler.Compile(schemaName)
-				if err != nil {
-					failErr(err)
-				}
-			} else {
-				var v interface{}
-				err := readJSON(args[0], &v)
-				if err != nil {
-					failErr(err)
-				}
-				layer, err = ls.UnmarshalLayer(v)
-				if err != nil {
-					failErr(err)
-				}
-				compiler := ls.Compiler{Resolver: func(x string) (string, error) {
-					if x == schemaName {
-						return x, nil
-					}
-					if x == layer.GetID() {
-						return x, nil
-					}
-					return "", fmt.Errorf("Not found")
-				},
-					Loader: func(x string) (*ls.Layer, error) {
-						if x == schemaName || x == layer.GetID() {
-							return layer, nil
-						}
-						return nil, fmt.Errorf("Not found")
-					},
-				}
-				layer, err = compiler.Compile(schemaName)
+				repo, err = getRepo(repoDir)
 				if err != nil {
 					failErr(err)
 				}
 			}
-
+			schemaName, _ := cmd.Flags().GetString("schema")
+			if len(schemaName) > 0 {
+				if repo != nil {
+					var err error
+					layer, err = repo.GetComposedSchema(schemaName)
+					if err != nil {
+						failErr(err)
+					}
+					compiler := ls.Compiler{Resolver: func(x string) (string, error) {
+						if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
+							return manifest.ID, nil
+						}
+						return x, nil
+					},
+						Loader: func(x string) (*ls.Layer, error) {
+							return repo.LoadAndCompose(x)
+						},
+					}
+					layer, err = compiler.Compile(schemaName)
+					if err != nil {
+						failErr(err)
+					}
+				} else {
+					var v interface{}
+					err := readJSON(args[0], &v)
+					if err != nil {
+						failErr(err)
+					}
+					layer, err = ls.UnmarshalLayer(v)
+					if err != nil {
+						failErr(err)
+					}
+					compiler := ls.Compiler{Resolver: func(x string) (string, error) {
+						if x == schemaName {
+							return x, nil
+						}
+						if x == layer.GetID() {
+							return x, nil
+						}
+						return "", fmt.Errorf("Not found")
+					},
+						Loader: func(x string) (*ls.Layer, error) {
+							if x == schemaName || x == layer.GetID() {
+								return layer, nil
+							}
+							return nil, fmt.Errorf("Not found")
+						},
+					}
+					layer, err = compiler.Compile(schemaName)
+					if err != nil {
+						failErr(err)
+					}
+				}
+			}
 		}
-
 		var input map[string]interface{}
 		if layer != nil {
 			enc, err := layer.GetEncoding()

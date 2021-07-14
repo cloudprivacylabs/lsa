@@ -73,6 +73,16 @@ var ErrIncompatibleComposition = errors.New("Incompatible composition of layers"
 
 var ErrInvalidComposition = errors.New("Invalid composition")
 
+var ErrInvalidPredicate = errors.New("Invalid predicate")
+
+type ErrUnknownOperator struct {
+	Operator string
+}
+
+func (e ErrUnknownOperator) Error() string {
+	return fmt.Sprintf("Unknown operator: %s", e.Operator)
+}
+
 type ErrTerm struct {
 	Term string
 	Err  error

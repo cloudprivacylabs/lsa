@@ -121,6 +121,9 @@ func (ingester *Ingester) Ingest(target *digraph.Graph, baseID string, input int
 func (ingester *Ingester) ingest(target *digraph.Graph, input interface{}, path []interface{}, schemaNode ls.LayerNode, nodeMap map[ls.DocumentNode]ls.LayerNode) (ls.DocumentNode, error) {
 
 	validate := func(newNode ls.DocumentNode, err error) (ls.DocumentNode, error) {
+		if err != nil {
+			return nil, err
+		}
 		if schemaNode != nil {
 			if err := ls.ValidateDocumentNodeBySchema(newNode, schemaNode); err != nil {
 				return nil, err
@@ -173,7 +176,7 @@ func (ingester *Ingester) ingestObject(target *digraph.Graph, input map[string]i
 		}
 
 		addNextNode := func(node ls.LayerNode) error {
-			key := node.GetPropertyMap()[ingester.KeyTerm].AsString()
+			key := node.GetProperties()[ingester.KeyTerm].AsString()
 			if len(key) == 0 {
 				return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema", ingester.KeyTerm))
 			}
@@ -204,6 +207,9 @@ func (ingester *Ingester) ingestObject(target *digraph.Graph, input map[string]i
 		childNode, err := ingester.ingest(target, value, append(path, key), nextNodes[key], nodeMap)
 		if err != nil {
 			return nil, ErrDataIngestion{Key: key, Err: err}
+		}
+		if childNode == nil {
+			fmt.Printf("Child is nil, target: %+v \n input: %v\n value: %+v, path: %v key: %v\n", target, input, value, path, key)
 		}
 		childNode.SetProperty(ls.AttributeNameTerm, ls.StringPropertyValue(key))
 		ingester.connect(newNode, childNode, ls.DataEdgeTerms.ObjectAttributes)

@@ -177,7 +177,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 			if len(oid) == 0 {
 				return MakeErrInvalidInput(inode.id)
 			}
-			attribute.GetPropertyMap()[LayerTerms.Reference] = StringPropertyValue(oid)
+			attribute.GetProperties()[LayerTerms.Reference] = StringPropertyValue(oid)
 
 		case LayerTerms.ArrayItems:
 			attribute.AddTypes(AttributeTypes.Array)
@@ -255,13 +255,13 @@ func unmarshalAnnotations(target *Layer, node *inputNode, allNodes map[string]*i
 				break
 			}
 			setValue := func(v string) {
-				value := node.graphNode.GetPropertyMap()[key]
+				value := node.graphNode.GetProperties()[key]
 				if value == nil {
-					node.graphNode.GetPropertyMap()[key] = StringPropertyValue(v)
+					node.graphNode.GetProperties()[key] = StringPropertyValue(v)
 				} else if value.IsStringSlice() {
-					node.graphNode.GetPropertyMap()[key] = StringSlicePropertyValue(append(value.AsStringSlice(), v))
+					node.graphNode.GetProperties()[key] = StringSlicePropertyValue(append(value.AsStringSlice(), v))
 				} else {
-					node.graphNode.GetPropertyMap()[key] = StringSlicePropertyValue([]string{value.AsString(), v})
+					node.graphNode.GetProperties()[key] = StringSlicePropertyValue([]string{value.AsString(), v})
 				}
 			}
 			// If list, descend to its elements
@@ -310,7 +310,7 @@ func marshalNode(node LayerNode) interface{} {
 		m["@type"] = t
 	}
 
-	for k, v := range node.GetPropertyMap() {
+	for k, v := range node.GetProperties() {
 		if k == LayerTerms.Reference {
 			m[k] = []interface{}{map[string]interface{}{"@id": v.AsString()}}
 		} else {

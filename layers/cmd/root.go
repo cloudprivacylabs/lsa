@@ -23,6 +23,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"runtime/pprof"
 
 	"golang.org/x/text/encoding"
 
@@ -36,6 +37,20 @@ var (
 		Use:   "layers",
 		Short: "Layered schema processing CLI",
 		Long:  `Use this CLI to compose, slice, process layered schemas.`,
+		PersistentPreRun: func(cmd *cobra.Command, _ []string) {
+			if f, _ := cmd.Flags().GetString("cpuprofile"); len(f) > 0 {
+				file, err := os.Create(f)
+				if err != nil {
+					panic(err)
+				}
+				pprof.StartCPUProfile(file)
+			}
+		},
+		PersistentPostRun: func(cmd *cobra.Command, _ []string) {
+			if f, _ := cmd.Flags().GetString("cpuprofile"); len(f) > 0 {
+				pprof.StopCPUProfile()
+			}
+		},
 	}
 )
 
@@ -45,6 +60,7 @@ func Execute() error {
 }
 
 func init() {
+	rootCmd.PersistentFlags().String("cpuprofile", "", "Write cpu profile to file")
 }
 
 func readURL(input string, enc ...encoding.Encoding) ([]byte, error) {

@@ -111,7 +111,25 @@ func (rd *LDRenderer) Render(input *digraph.Graph) interface{} {
 					labelStr = "http://www.w3.org/1999/02/22-rdf-syntax-ns#property"
 				}
 			}
-			onode.ldNode[labelStr] = map[string]interface{}{"@id": nodeIdMap[edge.To()].id}
+			existing, ok := onode.ldNode[labelStr]
+			if ls.GetTermInfo(labelStr).IsList {
+				if !ok {
+					onode.ldNode[labelStr] = map[string]interface{}{"@list": []interface{}{map[string]interface{}{"@id": nodeIdMap[edge.To()].id}}}
+				} else {
+					x := existing.(map[string]interface{})["@list"].([]interface{})
+					x = append(x, map[string]interface{}{"@id": nodeIdMap[edge.To()].id})
+					existing.(map[string]interface{})["@list"] = x
+				}
+			} else {
+				if !ok {
+					onode.ldNode[labelStr] = map[string]interface{}{"@id": nodeIdMap[edge.To()].id}
+				} else if arr, ok := existing.([]interface{}); ok {
+					arr = append(arr, map[string]interface{}{"@id": nodeIdMap[edge.To()].id})
+					onode.ldNode[labelStr] = arr
+				} else {
+					onode.ldNode[labelStr] = []interface{}{onode.ldNode[labelStr], map[string]interface{}{"@id": nodeIdMap[edge.To()].id}}
+				}
+			}
 		}
 	}
 	graph := make([]interface{}, 0, len(nodeIdMap))

@@ -40,7 +40,7 @@ func ValidateDocumentNodeBySchema(node DocumentNode, schemaNode LayerNode) error
 	if schemaNode == nil {
 		return nil
 	}
-	for key := range schemaNode.GetPropertyMap() {
+	for key := range schemaNode.GetProperties() {
 		if err := GetAttributeValidator(key).Validate(node, schemaNode); err != nil {
 			return err
 		}

@@ -15,6 +15,8 @@ package main
 
 import (
 	"github.com/cloudprivacylabs/lsa/layers/cmd"
+
+	_ "github.com/cloudprivacylabs/lsa/pkg/validators"
 )
 
 func main() {

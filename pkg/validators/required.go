@@ -19,7 +19,7 @@ func (validator RequiredValidator) Validate(docNode ls.DocumentNode, schemaNode 
 	if docNode == nil {
 		return nil
 	}
-	required := schemaNode.GetPropertyMap()[RequiredTerm].AsStringSlice()
+	required := schemaNode.GetProperties()[RequiredTerm].AsStringSlice()
 	if len(required) > 0 {
 		names := make(map[string]struct{})
 		for nodes := docNode.AllOutgoingEdgesWithLabel(ls.DataEdgeTerms.ObjectAttributes).Targets(); nodes.HasNext(); {
@@ -39,10 +39,9 @@ func (validator RequiredValidator) Validate(docNode ls.DocumentNode, schemaNode 
 }
 
 // Compile the required properties array
-func (validator RequiredValidator) CompileTerm(_ string, value interface{}) (interface{}, error) {
-	arr, ok := value.([]interface{})
-	if !ok {
+func (validator RequiredValidator) CompileTerm(_ string, value *ls.PropertyValue) (interface{}, error) {
+	if !value.IsStringSlice() {
 		return nil, ls.ErrValidatorCompile{Validator: RequiredTerm, Msg: "Array of required attributes expected"}
 	}
-	return arr, nil
+	return value.AsStringSlice(), nil
 }

@@ -53,10 +53,10 @@ type LayerNode interface {
 	// If this is an attribute node, returns true. If not, this is a semantic annotation nodex
 	IsAttributeNode() bool
 
-	// GetPropertyMap returns the name/value pairs of the node. The
+	// GetProperties returns the name/value pairs of the node. The
 	// values are either string or []string. When cloned, the new node
 	// receives a deep copy of the map
-	GetPropertyMap() map[string]*PropertyValue
+	GetProperties() map[string]*PropertyValue
 
 	// Returns the compiled data map. This map is used to store
 	// compilation information related to the node, and its contents are
@@ -85,7 +85,7 @@ type schemaNode struct {
 
 func (a *schemaNode) GetCompiledDataMap() map[interface{}]interface{} { return a.compiled }
 
-func (a *schemaNode) GetPropertyMap() map[string]*PropertyValue { return a.properties }
+func (a *schemaNode) GetProperties() map[string]*PropertyValue { return a.properties }
 
 // NewLayerNode returns a new schema node with the given types
 func NewLayerNode(ID string, types ...string) LayerNode {
@@ -123,6 +123,9 @@ func (a *schemaNode) GetTypes() []string {
 // AddTypes adds new types to the schema node. The result is the
 // set-union of the existing types and the given types
 func (a *schemaNode) AddTypes(t ...string) {
+	for i := range t {
+		t[i] = knownTerm(t[i])
+	}
 	a.types = StringSetUnion(a.types, t)
 }
 

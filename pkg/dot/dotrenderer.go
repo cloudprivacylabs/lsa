@@ -134,7 +134,7 @@ func SchemaNodeRenderer(ID string, node ls.LayerNode, options *Options) string {
 
 	io.WriteString(wr, "<TR>")
 	io.WriteString(wr, options.TD.String())
-	for k, v := range node.GetPropertyMap() {
+	for k, v := range node.GetProperties() {
 		io.WriteString(wr, fmt.Sprintf("%s=%v<br/>", k, v))
 	}
 	io.WriteString(wr, "</TD></TR></TABLE>>];\n")

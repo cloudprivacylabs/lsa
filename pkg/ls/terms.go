@@ -83,11 +83,11 @@ var LayerTerms = struct {
 	OneOf string
 }{
 	Attributes:    NewTerm(LS+"Object#attributes", false, false, ErrorComposition, nil),
-	AttributeList: NewTerm(LS+"Object#attributeList", false, false, ErrorComposition, nil),
+	AttributeList: NewTerm(LS+"Object#attributeList", false, true, ErrorComposition, nil),
 	Reference:     NewTerm(LS+"Reference#reference", false, false, ErrorComposition, nil),
 	ArrayItems:    NewTerm(LS+"Array#items", false, false, ErrorComposition, nil),
-	AllOf:         NewTerm(LS+"Composite#allOf", false, false, ErrorComposition, nil),
-	OneOf:         NewTerm(LS+"Polymorphic#oneOf", false, false, ErrorComposition, nil),
+	AllOf:         NewTerm(LS+"Composite#allOf", false, true, ErrorComposition, nil),
+	OneOf:         NewTerm(LS+"Polymorphic#oneOf", false, true, ErrorComposition, nil),
 }
 
 var DataEdgeTerms = struct {
@@ -152,6 +152,16 @@ var (
 
 var registeredTerms = map[string]TermSemantics{}
 
+// If a term is know, using this function avoids duplicate string
+// copies
+func knownTerm(s string) string {
+	x, ok := registeredTerms[s]
+	if ok {
+		return x.Term
+	}
+	return s
+}
+
 func RegisterTerm(t TermSemantics) {
 	_, ok := registeredTerms[t.Term]
 	if ok {
@@ -170,5 +180,6 @@ func GetTermInfo(term string) TermSemantics {
 
 // GetTermMetadata returns metadata about a term
 func GetTermMetadata(term string) interface{} {
-	return GetTermInfo(term).Metadata
+	t := GetTermInfo(term)
+	return t.Metadata
 }

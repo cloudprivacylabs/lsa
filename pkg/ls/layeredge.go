@@ -27,7 +27,7 @@ type LayerEdge interface {
 	// unconnected to any nodes
 	Clone() LayerEdge
 
-	GetPropertyMap() map[string]*PropertyValue
+	GetProperties() map[string]*PropertyValue
 
 	GetCompiledDataMap() map[interface{}]interface{}
 }
@@ -41,7 +41,7 @@ type schemaEdge struct {
 
 func (edge *schemaEdge) GetCompiledDataMap() map[interface{}]interface{} { return edge.compiled }
 
-func (edge *schemaEdge) GetPropertyMap() map[string]*PropertyValue { return edge.properties }
+func (edge *schemaEdge) GetProperties() map[string]*PropertyValue { return edge.properties }
 
 // NewLayerEdge returns a new initialized schema edge
 func NewLayerEdge(label string) LayerEdge {

@@ -34,7 +34,7 @@ func (tc sliceTestCase) run(t *testing.T) {
 		t.Errorf("%s: Cannot unmarshal layer: %v", tc.Name, err)
 		return
 	}
-	slice := sch.Slice(OverlayTerm, GetSliceByTermsFunc(tc.Terms))
+	slice := sch.Slice(OverlayTerm, GetSliceByTermsFunc(tc.Terms, false))
 	marshaled := MarshalLayer(slice)
 	if err := deepEqual(toMap(marshaled), toMap(tc.Expected)); err != nil {
 		expected, _ := json.MarshalIndent(toMap(tc.Expected), "", "  ")

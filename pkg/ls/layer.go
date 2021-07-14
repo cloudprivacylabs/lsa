@@ -103,7 +103,7 @@ func (l *Layer) GetEncoding() (encoding.Encoding, error) {
 	oi := l.GetObjectInfoNode()
 	var enc string
 	if oi != nil {
-		enc = oi.GetPropertyMap()[CharacterEncodingTerm].AsString()
+		enc = oi.GetProperties()[CharacterEncodingTerm].AsString()
 		if len(enc) == 0 {
 			return encoding.Nop, nil
 		}
@@ -122,7 +122,7 @@ func (l *Layer) NewNode(ID string, types ...string) LayerNode {
 // GetTargetType returns the value of the targetType field from the
 // layer information node
 func (l *Layer) GetTargetType() string {
-	v := l.layerInfo.GetPropertyMap()[TargetType]
+	v := l.layerInfo.GetProperties()[TargetType]
 	if v == nil {
 		return ""
 	}
@@ -137,7 +137,7 @@ func (l *Layer) SetTargetType(t string) {
 			oin.AddTypes(t)
 		}
 	}
-	l.layerInfo.GetPropertyMap()[TargetType] = StringPropertyValue(t)
+	l.layerInfo.GetProperties()[TargetType] = StringPropertyValue(t)
 }
 
 // ForEachAttribute calls f with each attribute node, depth first. If
@@ -150,8 +150,20 @@ func (l *Layer) ForEachAttribute(f func(LayerNode) bool) bool {
 	return true
 }
 
+// RenameBlankNodes will call namerFunc for each blank node, so they
+// can be renamed and won't cause name clashes
+func (l *Layer) RenameBlankNodes(namer func(LayerNode)) {
+	for nodes := l.AllNodes(); nodes.HasNext(); {
+		node := nodes.Next().(LayerNode)
+		id := node.GetID()
+		if len(id) == 0 || id[0] == '_' {
+			namer(node)
+		}
+	}
+}
+
 // ForEachAttributeNode calls f with each attribute node, depth
-// first. If f returns false, iteration stops. This function avoids loops
+// first. If f returns false, iteration stops. This function visits each node only once
 func ForEachAttributeNode(root LayerNode, f func(LayerNode) bool) bool {
 	return forEachAttributeNode(root, f, map[LayerNode]struct{}{})
 }
@@ -161,7 +173,6 @@ func forEachAttributeNode(root LayerNode, f func(LayerNode) bool, loop map[Layer
 		return true
 	}
 	loop[root] = struct{}{}
-	defer delete(loop, root)
 
 	if root.IsAttributeNode() {
 		if !f(root) {
