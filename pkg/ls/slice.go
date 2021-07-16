@@ -28,7 +28,7 @@ func GetSliceByTermsFunc(includeTerms []string, includeAttributeNodes bool) func
 			includeNode = true
 		}
 		properties := make(map[string]*PropertyValue)
-		for k, v := range node.GetPropertyMap() {
+		for k, v := range node.GetProperties() {
 			if _, ok := incl[k]; ok {
 				properties[k] = v
 			}

@@ -197,6 +197,7 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 			}
 		}
 	}
+	repo.index = ret
 	return ret, warnings, nil
 }
 

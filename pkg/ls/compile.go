@@ -13,7 +13,9 @@
 // limitations under the License.
 package ls
 
-import ()
+import (
+	"fmt"
+)
 
 type Compiler struct {
 	// Resolver resolves an ID and returns a strong reference. If
@@ -27,6 +29,12 @@ type compilerContext struct {
 	targetLayer   *Layer
 	loadedSchemas map[string]*Layer
 	compiled      map[string]LayerNode
+	blankNodeID   uint
+}
+
+func (c *compilerContext) blankNodeNamer(node LayerNode) {
+	node.SetID(fmt.Sprintf("_b:%d", c.blankNodeID))
+	c.blankNodeID++
 }
 
 func (compiler Compiler) loadSchema(ctx *compilerContext, ref string) (*Layer, error) {
@@ -89,7 +97,6 @@ func (compiler Compiler) compile(ctx *compilerContext, ref string, topLevel bool
 	if c := ctx.compiled[ref]; c != nil {
 		return c, nil
 	}
-
 	// Load the schema
 	schema, err := compiler.loadSchema(ctx, ref)
 	if err != nil {
@@ -102,13 +109,16 @@ func (compiler Compiler) compile(ctx *compilerContext, ref string, topLevel bool
 	// Here, scheme is loaded but not compiled
 	// If this is the top-leve, we set the target layer as this schema
 	var compileRoot LayerNode
+	schema.RenameBlankNodes(ctx.blankNodeNamer)
 	if topLevel {
-		ctx.targetLayer = schema.Clone()
+		ctx.targetLayer = schema
 		compileRoot = ctx.targetLayer.GetObjectInfoNode()
 	} else {
-		c := schema.Clone()
-		compileRoot = c.GetObjectInfoNode()
-		ctx.targetLayer.Import(c.Graph)
+		compileRoot = schema.GetObjectInfoNode()
+		// Add all nodes except the schema node and the layer node
+		ctx.targetLayer.Import(schema.Graph)
+		// Remove root node
+		schema.GetLayerInfoNode().Remove()
 	}
 	if compileRoot == nil {
 		return nil, nil
@@ -121,7 +131,9 @@ func (compiler Compiler) compile(ctx *compilerContext, ref string, topLevel bool
 		return nil, err
 	}
 	if topLevel {
-		compiler.compileTerms(ctx.targetLayer)
+		if err := compiler.compileTerms(ctx.targetLayer); err != nil {
+			return nil, err
+		}
 	}
 	return compileRoot, nil
 }
@@ -135,7 +147,7 @@ func (compiler Compiler) compileTerms(layer *Layer) error {
 				return err
 			}
 		}
-		for k, v := range node.GetPropertyMap() {
+		for k, v := range node.GetProperties() {
 			result, err := GetTermCompiler(k).CompileTerm(k, v)
 			if err != nil {
 				return err
@@ -148,7 +160,7 @@ func (compiler Compiler) compileTerms(layer *Layer) error {
 				if err := GetEdgeCompiler(edge.GetLabel()).CompileEdge(edge); err != nil {
 					return err
 				}
-				for k, v := range edge.GetPropertyMap() {
+				for k, v := range edge.GetProperties() {
 					result, err := GetTermCompiler(k).CompileTerm(k, v)
 					if err != nil {
 						return err
@@ -182,8 +194,9 @@ func (compiler Compiler) resolveReferences(ctx *compilerContext, root LayerNode)
 }
 
 func (compiler Compiler) resolveReference(ctx *compilerContext, node LayerNode) error {
-	properties := node.GetPropertyMap()
+	properties := node.GetProperties()
 	ref := properties[LayerTerms.Reference].AsString()
+	delete(properties, LayerTerms.Reference)
 	// already compiled, or being compiled?
 	compiled := ctx.compiled[ref]
 	if compiled == nil {
@@ -194,12 +207,11 @@ func (compiler Compiler) resolveReference(ctx *compilerContext, node LayerNode) 
 		}
 	}
 	// Here, compiled is already imported into the target graph
-
 	// This is no longer a reference node
 	node.RemoveTypes(AttributeTypes.Reference)
 	node.AddTypes(compiled.GetTypes()...)
 	// Compose the properties of the compiled root node with the referenced node
-	if err := ComposeProperties(properties, node.GetPropertyMap()); err != nil {
+	if err := ComposeProperties(properties, node.GetProperties()); err != nil {
 		return err
 	}
 	// Attach the node to all the children of the compiled node
@@ -246,7 +258,7 @@ func (compiler Compiler) resolveComposition(compositeNode LayerNode, completed m
 				edge.SetFrom(compositeNode)
 			}
 			// Copy all properties of the component node to the composite node
-			if err := ComposeProperties(compositeNode.GetPropertyMap(), component.GetPropertyMap()); err != nil {
+			if err := ComposeProperties(compositeNode.GetProperties(), component.GetProperties()); err != nil {
 				return err
 			}
 			// Copy all types

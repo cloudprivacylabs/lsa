@@ -47,15 +47,15 @@ type EdgeCompiler interface {
 type TermCompiler interface {
 	// CompileTerm gets a term and its value, and returns an object that
 	// will be placed in the Compiled map of the node or the edge.
-	CompileTerm(string, interface{}) (interface{}, error)
+	CompileTerm(string, *PropertyValue) (interface{}, error)
 }
 
 type emptyCompiler struct{}
 
 // CompileNode returns the value unmodified
-func (emptyCompiler) CompileNode(LayerNode) error                          { return nil }
-func (emptyCompiler) CompileEdge(LayerEdge) error                          { return nil }
-func (emptyCompiler) CompileTerm(string, interface{}) (interface{}, error) { return nil, nil }
+func (emptyCompiler) CompileNode(LayerNode) error                             { return nil }
+func (emptyCompiler) CompileEdge(LayerEdge) error                             { return nil }
+func (emptyCompiler) CompileTerm(string, *PropertyValue) (interface{}, error) { return nil, nil }
 
 // GetNodeCompiler return a compiler that will compile the term when
 // the term is a node label

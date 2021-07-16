@@ -27,10 +27,10 @@ type inputNode struct {
 	types     []string
 	processed bool
 	graphNode LayerNode
+	docNode   DocumentNode
 }
 
-// UnmarshalLayer unmarshals a schem ar overlay
-func UnmarshalLayer(in interface{}) (*Layer, error) {
+func getNodesFromGraph(in interface{}) (map[string]*inputNode, error) {
 	proc := ld.NewJsonLdProcessor()
 	flattened, err := proc.Flatten(in, nil, nil)
 	if err != nil {
@@ -53,7 +53,15 @@ func UnmarshalLayer(in interface{}) (*Layer, error) {
 		inode.id = GetNodeID(m)
 		inputNodes[inode.id] = &inode
 	}
+	return inputNodes, nil
+}
 
+// UnmarshalLayer unmarshals a schema ar overlay
+func UnmarshalLayer(in interface{}) (*Layer, error) {
+	inputNodes, err := getNodesFromGraph(in)
+	if err != nil {
+		return nil, err
+	}
 	// Find the root node: there must be one node with overlay or schema type
 	var rootNode *inputNode
 	for _, v := range inputNodes {
@@ -177,7 +185,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 			if len(oid) == 0 {
 				return MakeErrInvalidInput(inode.id)
 			}
-			attribute.GetPropertyMap()[LayerTerms.Reference] = StringPropertyValue(oid)
+			attribute.GetProperties()[LayerTerms.Reference] = StringPropertyValue(oid)
 
 		case LayerTerms.ArrayItems:
 			attribute.AddTypes(AttributeTypes.Array)
@@ -255,13 +263,13 @@ func unmarshalAnnotations(target *Layer, node *inputNode, allNodes map[string]*i
 				break
 			}
 			setValue := func(v string) {
-				value := node.graphNode.GetPropertyMap()[key]
+				value := node.graphNode.GetProperties()[key]
 				if value == nil {
-					node.graphNode.GetPropertyMap()[key] = StringPropertyValue(v)
+					node.graphNode.GetProperties()[key] = StringPropertyValue(v)
 				} else if value.IsStringSlice() {
-					node.graphNode.GetPropertyMap()[key] = StringSlicePropertyValue(append(value.AsStringSlice(), v))
+					node.graphNode.GetProperties()[key] = StringSlicePropertyValue(append(value.AsStringSlice(), v))
 				} else {
-					node.graphNode.GetPropertyMap()[key] = StringSlicePropertyValue([]string{value.AsString(), v})
+					node.graphNode.GetProperties()[key] = StringSlicePropertyValue([]string{value.AsString(), v})
 				}
 			}
 			// If list, descend to its elements
@@ -310,19 +318,21 @@ func marshalNode(node LayerNode) interface{} {
 		m["@type"] = t
 	}
 
-	for k, v := range node.GetPropertyMap() {
-		if k == LayerTerms.Reference {
-			m[k] = []interface{}{map[string]interface{}{"@id": v.AsString()}}
+	for k, v := range node.GetProperties() {
+		var key string
+		if GetTermInfo(k).IsID {
+			key = "@id"
 		} else {
-			if v.IsString() {
-				m[k] = []interface{}{map[string]interface{}{"@value": v.AsString()}}
-			} else if v.IsStringSlice() {
-				arr := make([]interface{}, 0)
-				for _, elem := range v.AsStringSlice() {
-					arr = append(arr, map[string]interface{}{"@value": elem})
-				}
-				m[k] = arr
+			key = "@value"
+		}
+		if v.IsString() {
+			m[k] = []interface{}{map[string]interface{}{key: v.AsString()}}
+		} else if v.IsStringSlice() {
+			arr := make([]interface{}, 0)
+			for _, elem := range v.AsStringSlice() {
+				arr = append(arr, map[string]interface{}{key: elem})
 			}
+			m[k] = arr
 		}
 	}
 

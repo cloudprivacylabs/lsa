@@ -111,7 +111,7 @@ func mergeNodes(targetLayer *Layer, target, source LayerNode, processedSourceNod
 		return nil
 	}
 
-	if err := ComposeProperties(target.GetPropertyMap(), source.GetPropertyMap()); err != nil {
+	if err := ComposeProperties(target.GetProperties(), source.GetProperties()); err != nil {
 		return err
 	}
 	return nil

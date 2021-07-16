@@ -15,6 +15,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 
 	"github.com/spf13/cobra"
@@ -25,6 +26,54 @@ import (
 
 func init() {
 	importCmd.AddCommand(importJSONCmd)
+}
+
+type ImportJSONSchemaRequest struct {
+	Entities   []jsonsch.Entity   `json:"entities"`
+	SchemaID   string             `json:"schemaId"`
+	Schema     string             `json:"schemaManifest"`
+	ObjectType string             `json:"objectType"`
+	Layers     []SliceByTermsSpec `json:"layers"`
+}
+
+func (req *ImportJSONSchemaRequest) SetSchemaNames() {
+	for i := range req.Entities {
+		req.Entities[i].SchemaName = execTemplate(req.SchemaID, map[string]interface{}{"name": req.Entities[i].Name, "ref": req.Entities[i].Ref})
+	}
+}
+
+func (req *ImportJSONSchemaRequest) CompileAndImport() ([]jsonsch.ImportedEntity, error) {
+	req.SetSchemaNames()
+	return jsonsch.CompileAndImport(req.Entities)
+}
+
+func (req *ImportJSONSchemaRequest) Slice(item jsonsch.ImportedEntity) ([]*ls.Layer, *ls.SchemaManifest, error) {
+	layerIDs := make([]string, 0)
+	baseID := ""
+	returnLayers := make([]*ls.Layer, 0)
+	tdata := map[string]interface{}{"name": item.Entity.Name, "ref": item.Entity.Ref}
+	for _, ovl := range req.Layers {
+		layer, err := ovl.Slice(item.Layer, execTemplate(req.ObjectType, tdata), tdata)
+		if err != nil {
+			return nil, nil, err
+		}
+		if layer.GetLayerType() == ls.SchemaTerm {
+			if baseID != "" {
+				return nil, nil, fmt.Errorf("Multiple schemas")
+			}
+			baseID = layer.GetID()
+		} else {
+			layerIDs = append(layerIDs, layer.GetID())
+		}
+		returnLayers = append(returnLayers, layer)
+	}
+	sch := ls.SchemaManifest{
+		ID:         execTemplate(req.SchemaID, tdata),
+		TargetType: execTemplate(req.ObjectType, tdata),
+		Schema:     baseID,
+		Overlays:   layerIDs,
+	}
+	return returnLayers, &sch, nil
 }
 
 var importJSONCmd = &cobra.Command{
@@ -65,15 +114,7 @@ are Go templates, you can reference entity names and references using {{.name}} 
 			failErr(err)
 		}
 
-		type request struct {
-			Entities   []jsonsch.Entity   `json:"entities"`
-			SchemaID   string             `json:"schemaId"`
-			Schema     string             `json:"schemaManifest"`
-			ObjectType string             `json:"objectType"`
-			Layers     []SliceByTermsSpec `json:"layers"`
-		}
-
-		var req request
+		var req ImportJSONSchemaRequest
 		if err := json.Unmarshal(inputData, &req); err != nil {
 			failErr(err)
 		}
@@ -81,47 +122,25 @@ are Go templates, you can reference entity names and references using {{.name}} 
 			return
 		}
 
-		for i := range req.Entities {
-			req.Entities[i].SchemaName = execTemplate(req.SchemaID, map[string]interface{}{"name": req.Entities[i].Name, "ref": req.Entities[i].Ref})
-		}
-
-		results, err := jsonsch.CompileAndImport(req.Entities)
+		results, err := req.CompileAndImport()
 		if err != nil {
 			failErr(err)
 		}
-
 		for _, item := range results {
-			layerIDs := make([]string, 0)
-			baseID := ""
-			tdata := map[string]interface{}{"name": item.Entity.Name, "ref": item.Entity.Ref}
-			for _, ovl := range req.Layers {
-				layer, err := ovl.Slice(item.Layer, execTemplate(req.ObjectType, tdata), tdata)
-				if err != nil {
-					failErr(err)
-				}
-				if layer.GetLayerType() == ls.SchemaTerm {
-					if baseID != "" {
-						fail("Multiple schemas")
-					}
-					baseID = layer.GetID()
-				} else {
-					layerIDs = append(layerIDs, layer.GetID())
-				}
-				data, err := json.MarshalIndent(ls.MarshalLayer(layer), "", "  ")
-				if err != nil {
-					failErr(err)
-				}
-				ioutil.WriteFile(execTemplate(ovl.File, tdata), data, 0664)
+			layers, sch, err := req.Slice(item)
+			if err != nil {
+				failErr(err)
 			}
-
-			if len(req.Schema) > 0 {
-				sch := ls.SchemaManifest{
-					ID:         execTemplate(req.SchemaID, tdata),
-					TargetType: execTemplate(req.ObjectType, tdata),
-					Schema:     baseID,
-					Overlays:   layerIDs,
+			tdata := map[string]interface{}{"name": item.Entity.Name, "ref": item.Entity.Ref}
+			for i := range layers {
+				data, err := json.MarshalIndent(ls.MarshalLayer(layers[i]), "", "  ")
+				if err != nil {
+					failErr(err)
 				}
-				data, _ := json.MarshalIndent(ls.MarshalSchemaManifest(&sch), "", "  ")
+				ioutil.WriteFile(execTemplate(req.Layers[i].File, tdata), data, 0664)
+			}
+			if len(req.Schema) > 0 {
+				data, _ := json.MarshalIndent(ls.MarshalSchemaManifest(sch), "", "  ")
 				ioutil.WriteFile(execTemplate(req.Schema, tdata), data, 0664)
 			}
 		}

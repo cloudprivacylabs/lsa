@@ -26,7 +26,7 @@ var (
 	SchemaManifestTerm = NewTerm(LS+"SchemaManifest", false, false, NoComposition, nil)
 
 	// TargetType is the term specifying the data type for the attribute defined
-	TargetType = NewTerm(LS+"targetType", false, false, SetComposition, nil)
+	TargetType = NewTerm(LS+"targetType", true, false, SetComposition, nil)
 
 	// DescriptionTerm is used for comments/descriptions
 	DescriptionTerm = NewTerm(LS+"description", false, false, SetComposition, nil)
@@ -42,6 +42,9 @@ var (
 
 	// LayerRootTerm is an edge term that connects layer node to the root node of the schema
 	LayerRootTerm = NewTerm(LS+"layer", false, false, ErrorComposition, nil)
+
+	// DefaultValueTerm is the defalut value for an attribute if attribute is not present
+	DefaultValueTerm = NewTerm(LS+"defaultValue", false, false, OverrideComposition, nil)
 )
 
 // AttributeTypes defines the terms describing attribute types. Each
@@ -83,14 +86,18 @@ var LayerTerms = struct {
 	OneOf string
 }{
 	Attributes:    NewTerm(LS+"Object#attributes", false, false, ErrorComposition, nil),
-	AttributeList: NewTerm(LS+"Object#attributeList", false, false, ErrorComposition, nil),
-	Reference:     NewTerm(LS+"Reference#reference", false, false, ErrorComposition, nil),
+	AttributeList: NewTerm(LS+"Object#attributeList", false, true, ErrorComposition, nil),
+	Reference:     NewTerm(LS+"Reference#reference", true, false, ErrorComposition, nil),
 	ArrayItems:    NewTerm(LS+"Array#items", false, false, ErrorComposition, nil),
-	AllOf:         NewTerm(LS+"Composite#allOf", false, false, ErrorComposition, nil),
-	OneOf:         NewTerm(LS+"Polymorphic#oneOf", false, false, ErrorComposition, nil),
+	AllOf:         NewTerm(LS+"Composite#allOf", false, true, ErrorComposition, nil),
+	OneOf:         NewTerm(LS+"Polymorphic#oneOf", false, true, ErrorComposition, nil),
 }
 
+// DocumentNodeTerm is ithe type of document nodes
+var DocumentNodeTerm = NewTerm(LS+"DocumentNode", false, false, ErrorComposition, nil)
+
 var DataEdgeTerms = struct {
+	// Type of a document node
 	// Edge label linking attribute nodes to an object node
 	ObjectAttributes string
 	// Edge label linking array element nodes to an array node
@@ -152,6 +159,16 @@ var (
 
 var registeredTerms = map[string]TermSemantics{}
 
+// If a term is know, using this function avoids duplicate string
+// copies
+func knownTerm(s string) string {
+	x, ok := registeredTerms[s]
+	if ok {
+		return x.Term
+	}
+	return s
+}
+
 func RegisterTerm(t TermSemantics) {
 	_, ok := registeredTerms[t.Term]
 	if ok {
@@ -170,5 +187,6 @@ func GetTermInfo(term string) TermSemantics {
 
 // GetTermMetadata returns metadata about a term
 func GetTermMetadata(term string) interface{} {
-	return GetTermInfo(term).Metadata
+	t := GetTermInfo(term)
+	return t.Metadata
 }

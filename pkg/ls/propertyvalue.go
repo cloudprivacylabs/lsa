@@ -82,6 +82,21 @@ func (p *PropertyValue) IsStringSlice() bool {
 	return ok
 }
 
+// Has checks if  p has the given string or is equal to it
+func (p *PropertyValue) Has(s string) bool {
+	if p.IsString() {
+		return p.AsString() == s
+	}
+	if p.IsStringSlice() {
+		for _, x := range p.AsStringSlice() {
+			if x == s {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (p PropertyValue) Clone() *PropertyValue {
 	return &PropertyValue{value: p.value}
 }

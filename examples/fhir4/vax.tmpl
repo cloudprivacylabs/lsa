@@ -1,0 +1,46 @@
+{{- $patient := ginstanceOf .g "http://hl7.org/fhir/Patient"  | first }}
+{{- $patientName := gpath $patient "https://lschema.org/data/object#attributes" "https://lschema.org/attributeName=name" | first }}
+{{- $immunization := ginstanceOf .g "http://hl7.org/fhir/Immunization" | first }}
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://w3id.org/pathogen/v1",
+    "https://w3id.org/security/bbs/v1"
+  ],
+  "id": "http://example.org/credentials/",
+  "type": [
+    "VerifiableCredential"
+  ],
+  "issuanceDate": "2021-02-04T20:29:37+00:00",
+  "expirationDate": "2021-02-05T20:29:37+00:00",
+  "issuer": "did:example:123",
+  "credentialSubject": {
+    "@context": [
+      "https://w3id.org/pathogen/v1"
+    ],
+    "type": "GHPVaccinationCertificate",
+    "linkedVaccineCertificate": "b32cb6e9-2a35-4f82-ad17-631d679895a9",
+    "recipient": {
+      "@context": [
+        "https://w3id.org/pathogen/v1"
+      ],
+      "type": "GHPEventRecipient",
+      {{- $familyName := gpath $patientName "https://lschema.org/data/array#elements" "" "https://lschema.org/data/object#attributes" "https://lschema.org/attributeName=family" | first  }}
+      "familyName": "{{$familyName.GetValue}}",
+      {{- $givenName := list -}}
+      {{- range (gpath $patientName "https://lschema.org/data/array#elements" "" "https://lschema.org/data/object#attributes" "https://lschema.org/attributeName=given" "https://lschema.org/data/array#elements" )}}
+      {{- $givenName = append $givenName .GetValue -}}
+      {{- end }}
+      "givenName": "{{join " " $givenName }}",
+      "birthDate": "{{ (gpath $patient  "https://lschema.org/data/object#attributes" "https://lschema.org/attributeName=birthDate"  | first).GetValue }}"
+    },
+    "disease": "",
+    "medicinalProductName": "",
+    "marketingAuthorizationHolder": "",
+    "doseNumber": "",
+    {{- $occurence := (gpath $immunization "https://lschema.org/data/object#attributes"  "https://lschema.org/attributeName=occurrenceDateTime" | first).GetValue}}
+    "dateOfVaccination": "{{$occurence}}",
+    "countryOfVaccination": ""
+  },
+  "evidence": []
+}

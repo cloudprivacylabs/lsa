@@ -22,17 +22,18 @@ import (
 )
 
 type schemaProperty struct {
-	key         string
-	reference   string
-	object      *objectSchema
-	array       *arraySchema
-	oneOf       []schemaProperty
-	allOf       []schemaProperty
-	typ         []string
-	format      string
-	enum        []interface{}
-	pattern     string
-	description string
+	key          string
+	reference    string
+	object       *objectSchema
+	array        *arraySchema
+	oneOf        []schemaProperty
+	allOf        []schemaProperty
+	typ          []string
+	format       string
+	enum         []interface{}
+	pattern      string
+	description  string
+	defaultValue *string
 }
 
 type arraySchema struct {
@@ -61,30 +62,34 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 	id := entityId + "#" + strings.Join(name, ".")
 	newNode := layer.NewNode(id)
 	if len(attr.format) > 0 {
-		newNode.GetPropertyMap()[validators.JsonFormatTerm] = ls.StringPropertyValue(attr.format)
+		newNode.GetProperties()[validators.JsonFormatTerm] = ls.StringPropertyValue(attr.format)
 	}
 	if len(attr.pattern) > 0 {
-		newNode.GetPropertyMap()[validators.PatternTerm] = ls.StringPropertyValue(attr.pattern)
+		newNode.GetProperties()[validators.PatternTerm] = ls.StringPropertyValue(attr.pattern)
 	}
 	if len(attr.description) > 0 {
-		newNode.GetPropertyMap()[ls.DescriptionTerm] = ls.StringPropertyValue(attr.description)
+		newNode.GetProperties()[ls.DescriptionTerm] = ls.StringPropertyValue(attr.description)
 	}
 	if len(attr.typ) > 0 {
-		newNode.GetPropertyMap()[ls.TargetType] = ls.StringSlicePropertyValue(attr.typ)
+		newNode.GetProperties()[ls.TargetType] = ls.StringSlicePropertyValue(attr.typ)
 	}
 	if len(attr.key) > 0 {
-		newNode.GetPropertyMap()[ls.AttributeNameTerm] = ls.StringPropertyValue(attr.key)
+		newNode.GetProperties()[ls.AttributeNameTerm] = ls.StringPropertyValue(attr.key)
 	}
 	if len(attr.enum) > 0 {
 		elements := make([]string, 0, len(attr.enum))
 		for _, v := range attr.enum {
 			elements = append(elements, fmt.Sprint(v))
 		}
-		newNode.GetPropertyMap()[validators.EnumTerm] = ls.StringSlicePropertyValue(elements)
+		newNode.GetProperties()[validators.EnumTerm] = ls.StringSlicePropertyValue(elements)
+	}
+	if attr.defaultValue != nil {
+		newNode.GetProperties()[ls.DefaultValueTerm] = ls.StringPropertyValue(*attr.defaultValue)
 	}
 
 	if len(attr.reference) > 0 {
 		newNode.AddTypes(ls.AttributeTypes.Reference)
+		newNode.GetProperties()[ls.LayerTerms.Reference] = ls.StringPropertyValue(attr.reference)
 		return newNode
 	}
 
@@ -95,7 +100,7 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 			newNode.Connect(x, ls.LayerTerms.AttributeList)
 		}
 		if len(attr.object.required) > 0 {
-			newNode.GetPropertyMap()[validators.RequiredTerm] = ls.StringSlicePropertyValue(attr.object.required)
+			newNode.GetProperties()[validators.RequiredTerm] = ls.StringSlicePropertyValue(attr.object.required)
 		}
 		return newNode
 	}

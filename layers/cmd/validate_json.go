@@ -19,7 +19,7 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(validateJsonCmd)
+	validateCmd.AddCommand(validateJsonCmd)
 }
 
 var validateJsonCmd = &cobra.Command{

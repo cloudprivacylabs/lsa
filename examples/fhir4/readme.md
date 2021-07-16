@@ -4,6 +4,26 @@ This example illustrates working with health data in FHIR JSON format.
 The FHIR 4.0 schema is included in this directory as
 well:`fhir.schema.json`
 
+## Preprocessing
+
+First we have to extract all top level entities from the FHIR schema:
+
+```
+cat fhir.schema.json |jq '.definitions | keys[]'|sed 's/\"//g' > entities
+```
+
+This will give all the keys. Manually edit the output to remove
+values, like string, date, etc. They are the lower-cased entities.
+
+Then create an input spec from the resulting file.
+
+```
+for item in `cat entities` ; do
+echo \{\"ref\":\"fhir.schema.json#/definitions/$item\",\"name\":\"$item\",\"id\":\"http://hl7.org/fhir/$item\"\},
+done >fhir-import.json
+
+```
+
 ## Importing FHIR schema
 
 The first step is to import the FHIR schema into layered schema
