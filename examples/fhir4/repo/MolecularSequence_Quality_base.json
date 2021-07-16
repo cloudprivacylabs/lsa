@@ -7,9 +7,12 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/MolecularSequence_Quality",
+        "@type": [
+          "http://hl7.org/fhir/MolecularSequence_Quality"
+        ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_queryTP",
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_recall",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -20,157 +23,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_queryTP"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_queryFP",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_queryFP"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/MolecularSequence_Quality#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#truthTP",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "truthTP"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A rational number with implicit precision"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_start",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_start"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#truthFN",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "truthFN"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A rational number with implicit precision"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_gtFP",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_gtFP"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#start",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "start"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A whole number"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?([0]|([1-9][0-9]*))$"
+                "@value": "_recall"
               }
             ]
           },
@@ -191,7 +44,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "number"
+                "@id": "number"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -201,70 +54,28 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#precision",
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#id",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "precision"
+                "@value": "id"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A rational number with implicit precision"
+                "@value": "A sequence of Unicode characters"
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "number"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#fScore",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "fScore"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A rational number with implicit precision"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_precision",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_precision"
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -296,33 +107,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#gtFP",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "gtFP"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A rational number with implicit precision"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_truthTP",
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_start",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -333,50 +118,18 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_truthTP"
+                "@value": "_start"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_truthFN",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_truthFN"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#standardSequence",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "standardSequence"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#end",
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#start",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "end"
+                "@value": "start"
               }
             ],
             "https://lschema.org/description": [
@@ -386,28 +139,12 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "number"
+                "@id": "number"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
                 "@value": "^-?([0]|([1-9][0-9]*))$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#roc",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/MolecularSequence_Roc"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "roc"
               }
             ]
           },
@@ -428,70 +165,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#queryTP",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "queryTP"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A rational number with implicit precision"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#method",
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_queryTP",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "method"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "_queryTP"
               }
             ]
           },
@@ -512,12 +197,52 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "number"
+                "@id": "number"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
                 "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_truthFN",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_truthFN"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/MolecularSequence_Quality#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
               }
             ]
           },
@@ -546,7 +271,33 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_end",
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#fScore",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "fScore"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A rational number with implicit precision"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_truthTP",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -557,23 +308,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_end"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#score",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Quantity"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "score"
+                "@value": "_truthTP"
               }
             ]
           },
@@ -594,7 +329,75 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_recall",
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#queryTP",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "queryTP"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A rational number with implicit precision"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#gtFP",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "gtFP"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A rational number with implicit precision"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#standardSequence",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "standardSequence"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_precision",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -605,7 +408,207 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_recall"
+                "@value": "_precision"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_end",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_end"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#truthTP",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "truthTP"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A rational number with implicit precision"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#roc",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/MolecularSequence_Roc"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "roc"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#precision",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "precision"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A rational number with implicit precision"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_queryFP",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_queryFP"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#end",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "end"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A whole number"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^-?([0]|([1-9][0-9]*))$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#truthFN",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "truthFN"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A rational number with implicit precision"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#_gtFP",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_gtFP"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#method",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "method"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Quality#score",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Quantity"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "score"
               }
             ]
           }
@@ -614,7 +617,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/MolecularSequence_Quality"
+        "@id": "http://hl7.org/fhir/MolecularSequence_Quality"
       }
     ]
   }

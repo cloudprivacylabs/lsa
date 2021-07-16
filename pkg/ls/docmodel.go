@@ -21,6 +21,7 @@ import (
 type DocumentNode interface {
 	digraph.Node
 
+	GetID() string
 	SetValue(interface{})
 	GetValue() interface{}
 	GetProperty(key string) (*PropertyValue, bool)
@@ -42,6 +43,8 @@ func NewBasicDocumentNode(ID string) *BasicDocumentNode {
 	return ret
 }
 
+func (node *BasicDocumentNode) GetID() string { return node.Label().(string) }
+
 // SetValue sets the value
 func (node *BasicDocumentNode) SetValue(value interface{}) {
 	node.Value = value
@@ -62,3 +65,20 @@ func (node *BasicDocumentNode) SetProperty(key string, value *PropertyValue) {
 }
 
 func (node *BasicDocumentNode) GetProperties() map[string]*PropertyValue { return node.Properties }
+
+// GetFilteredValue returns the field value processed by the schema
+// value filters, and then the node value filters
+func (node *BasicDocumentNode) GetFilteredValue() interface{} {
+	schemaNode, _ := node.NextNode(InstanceOfTerm).(LayerNode)
+	return GetFilteredValue(schemaNode, node)
+}
+
+// GetFilteredValue filters the value through the schema properties
+// and then through the node properties before returning
+func GetFilteredValue(schemaNode LayerNode, docNode DocumentNode) interface{} {
+	value := docNode.GetValue()
+	if schemaNode != nil {
+		value = FilterValue(value, docNode, schemaNode.GetProperties())
+	}
+	return FilterValue(value, docNode, docNode.GetProperties())
+}

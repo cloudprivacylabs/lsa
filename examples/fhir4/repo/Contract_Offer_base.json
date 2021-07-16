@@ -7,52 +7,31 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/Contract_Offer",
+        "@type": [
+          "http://hl7.org/fhir/Contract_Offer"
+        ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/Contract_Offer#decisionMode",
+            "@id": "http://hl7.org/fhir/Contract_Offer#identifier",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Contract_Offer#decisionMode.*",
+                "@id": "http://hl7.org/fhir/Contract_Offer#identifier.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference#reference": [
                   {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                    "@id": "http://hl7.org/fhir/Identifier"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "decisionMode"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Contract_Offer#_linkId",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Contract_Offer#_linkId.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Element"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_linkId"
+                "@value": "identifier"
               }
             ]
           },
@@ -73,7 +52,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -83,76 +62,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Contract_Offer#topic",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "topic"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Contract_Offer#modifierExtension",
+            "@id": "http://hl7.org/fhir/Contract_Offer#answer",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Contract_Offer#modifierExtension.*",
+                "@id": "http://hl7.org/fhir/Contract_Offer#answer.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference#reference": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/Contract_Answer"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Contract_Offer#linkId",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Contract_Offer#linkId.*",
-                "@type": [
-                  "https://lschema.org/Value"
-                ],
-                "https://lschema.org/description": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@value": "string"
-                  }
-                ],
-                "https://lschema.org/validation#pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "linkId"
+                "@value": "answer"
               }
             ]
           },
@@ -174,7 +103,7 @@
                 ],
                 "https://lschema.org/targetType": [
                   {
-                    "@value": "number"
+                    "@id": "number"
                   }
                 ],
                 "https://lschema.org/validation#pattern": [
@@ -215,6 +144,80 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/Contract_Offer#_linkId",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Contract_Offer#_linkId.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Element"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_linkId"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Contract_Offer#decision",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "decision"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Contract_Offer#linkId",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Contract_Offer#linkId.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/description": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ],
+                "https://lschema.org/validation#pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "linkId"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/Contract_Offer#extension",
             "@type": [
               "https://lschema.org/Array"
@@ -239,92 +242,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Contract_Offer#answer",
+            "@id": "http://hl7.org/fhir/Contract_Offer#decisionMode",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Contract_Offer#answer.*",
+                "@id": "http://hl7.org/fhir/Contract_Offer#decisionMode.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference#reference": [
                   {
-                    "@id": "http://hl7.org/fhir/Contract_Answer"
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "answer"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Contract_Offer#_text",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Contract_Offer#text",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "text"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Contract_Offer#identifier",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Contract_Offer#identifier.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Identifier"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "identifier"
+                "@value": "decisionMode"
               }
             ]
           },
@@ -353,22 +290,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Contract_Offer#decision",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "decision"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/Contract_Offer#type",
             "@type": [
               "https://lschema.org/Reference"
@@ -383,13 +304,95 @@
                 "@value": "type"
               }
             ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Contract_Offer#text",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Contract_Offer#topic",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "topic"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Contract_Offer#_text",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_text"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Contract_Offer#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Contract_Offer#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
+              }
+            ]
           }
         ]
       }
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/Contract_Offer"
+        "@id": "http://hl7.org/fhir/Contract_Offer"
       }
     ]
   }

@@ -236,6 +236,10 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 		if len(sch.Description) > 0 {
 			target.description = sch.Description
 		}
+		if sch.Default != nil {
+			s := fmt.Sprint(sch.Default)
+			target.defaultValue = &s
+		}
 	}
 
 	return nil

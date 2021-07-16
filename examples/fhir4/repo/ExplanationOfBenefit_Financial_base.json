@@ -7,6 +7,9 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial",
+        "@type": [
+          "http://hl7.org/fhir/ExplanationOfBenefit_Financial"
+        ],
         "https://lschema.org/Object#attributes": [
           {
             "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#extension",
@@ -33,6 +36,88 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#allowedString",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "allowedString"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The quantity of the benefit which is permitted under the coverage."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#_allowedString",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_allowedString"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#_allowedUnsignedInt",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_allowedUnsignedInt"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#usedUnsignedInt",
             "@type": [
               "https://lschema.org/Value"
@@ -49,33 +134,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[0]|([1-9][0-9]*)$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#allowedUnsignedInt",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "allowedUnsignedInt"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The quantity of the benefit which is permitted under the coverage."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "number"
+                "@id": "number"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -101,18 +160,70 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#_allowedUnsignedInt",
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#type",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/CodeableConcept"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_allowedUnsignedInt"
+                "@value": "type"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#allowedUnsignedInt",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "allowedUnsignedInt"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The quantity of the benefit which is permitted under the coverage."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[0]|([1-9][0-9]*)$"
               }
             ]
           },
@@ -147,121 +258,13 @@
                 "@value": "allowedMoney"
               }
             ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#type",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "type"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#_allowedString",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_allowedString"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#allowedString",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "allowedString"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The quantity of the benefit which is permitted under the coverage."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
           }
         ]
       }
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/ExplanationOfBenefit_Financial"
+        "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Financial"
       }
     ]
   }

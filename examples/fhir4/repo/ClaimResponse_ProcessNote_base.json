@@ -7,46 +7,57 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote",
+        "@type": [
+          "http://hl7.org/fhir/ClaimResponse_ProcessNote"
+        ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote#number",
+            "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote#id",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "number"
+                "@value": "id"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "An integer with a value that is positive (e.g. \u003e0)"
+                "@value": "A sequence of Unicode characters"
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "number"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^[1-9][0-9]*$"
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote#_type",
+            "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote#extension",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_type"
+                "@value": "extension"
               }
             ]
           },
@@ -102,44 +113,44 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote#text",
+            "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote#number",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "text"
+                "@value": "number"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A sequence of Unicode characters"
+                "@value": "An integer with a value that is positive (e.g. \u003e0)"
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "number"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "^[1-9][0-9]*$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote#language",
+            "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote#_type",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "language"
+                "@value": "_type"
               }
             ]
           },
@@ -160,52 +171,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote#extension",
+            "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote#language",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/CodeableConcept"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "language"
               }
             ]
           },
@@ -224,13 +201,39 @@
                 "@value": "_number"
               }
             ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote#text",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
           }
         ]
       }
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/ClaimResponse_ProcessNote"
+        "@id": "http://hl7.org/fhir/ClaimResponse_ProcessNote"
       }
     ]
   }

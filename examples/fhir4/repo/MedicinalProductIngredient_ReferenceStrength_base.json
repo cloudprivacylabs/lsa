@@ -7,6 +7,9 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength",
+        "@type": [
+          "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength"
+        ],
         "https://lschema.org/Object#attributes": [
           {
             "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength#modifierExtension",
@@ -33,6 +36,38 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength#strength",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Ratio"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "strength"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength#strengthLowLimit",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Ratio"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "strengthLowLimit"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength#id",
             "@type": [
               "https://lschema.org/Value"
@@ -49,7 +84,33 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength#measurementPoint",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "measurementPoint"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -71,78 +132,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "substance"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength#strengthLowLimit",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Ratio"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "strengthLowLimit"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength#country",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength#country.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "country"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength#strength",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Ratio"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "strength"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength#_measurementPoint",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_measurementPoint"
               }
             ]
           },
@@ -171,28 +160,42 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength#measurementPoint",
+            "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength#country",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength#country.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "measurementPoint"
+                "@value": "country"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength#_measurementPoint",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
-            "https://lschema.org/description": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "_measurementPoint"
               }
             ]
           }
@@ -201,7 +204,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength"
+        "@id": "http://hl7.org/fhir/MedicinalProductIngredient_ReferenceStrength"
       }
     ]
   }

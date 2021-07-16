@@ -7,20 +7,33 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/RelatedArtifact",
+        "@type": [
+          "http://hl7.org/fhir/RelatedArtifact"
+        ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/RelatedArtifact#_display",
+            "@id": "http://hl7.org/fhir/RelatedArtifact#label",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_display"
+                "@value": "label"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -41,38 +54,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RelatedArtifact#_type",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_type"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedArtifact#document",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Attachment"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "document"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/RelatedArtifact#resource",
             "@type": [
               "https://lschema.org/Value"
@@ -89,7 +70,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -99,80 +80,28 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RelatedArtifact#display",
+            "@id": "http://hl7.org/fhir/RelatedArtifact#url",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "display"
+                "@value": "url"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A sequence of Unicode characters"
+                "@value": "A URI that is a literal reference"
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedArtifact#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedArtifact#citation",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "citation"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A string that may contain Github Flavored Markdown syntax for optional processing by a mark down presentation engine"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "^\\S*$"
               }
             ]
           },
@@ -201,13 +130,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RelatedArtifact#label",
+            "@id": "http://hl7.org/fhir/RelatedArtifact#display",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "label"
+                "@value": "display"
               }
             ],
             "https://lschema.org/description": [
@@ -217,7 +146,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -243,28 +172,86 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RelatedArtifact#url",
+            "@id": "http://hl7.org/fhir/RelatedArtifact#citation",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "url"
+                "@value": "citation"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A URI that is a literal reference"
+                "@value": "A string that may contain Github Flavored Markdown syntax for optional processing by a mark down presentation engine"
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^\\S*$"
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedArtifact#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedArtifact#document",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Attachment"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "document"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedArtifact#_display",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_display"
               }
             ]
           },
@@ -281,6 +268,22 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_label"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedArtifact#_type",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_type"
               }
             ]
           },
@@ -331,7 +334,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/RelatedArtifact"
+        "@id": "http://hl7.org/fhir/RelatedArtifact"
       }
     ]
   }

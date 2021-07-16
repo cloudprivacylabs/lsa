@@ -134,10 +134,12 @@ func (l *Layer) SetTargetType(t string) {
 	if oldT := l.GetTargetType(); len(oldT) > 0 {
 		if oin := l.GetObjectInfoNode(); oin != nil {
 			oin.RemoveTypes(oldT)
-			oin.AddTypes(t)
 		}
 	}
 	l.layerInfo.GetProperties()[TargetType] = StringPropertyValue(t)
+	if oin := l.GetObjectInfoNode(); oin != nil {
+		oin.AddTypes(t)
+	}
 }
 
 // ForEachAttribute calls f with each attribute node, depth first. If

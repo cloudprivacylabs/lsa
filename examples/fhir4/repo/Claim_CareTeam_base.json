@@ -7,20 +7,39 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/Claim_CareTeam",
+        "@type": [
+          "http://hl7.org/fhir/Claim_CareTeam"
+        ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/Claim_CareTeam#qualification",
+            "@id": "http://hl7.org/fhir/Claim_CareTeam#_responsible",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "qualification"
+                "@value": "_responsible"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Claim_CareTeam#provider",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "provider"
               }
             ]
           },
@@ -41,7 +60,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "number"
+                "@id": "number"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -67,6 +86,38 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/Claim_CareTeam#qualification",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "qualification"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Claim_CareTeam#_sequence",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_sequence"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/Claim_CareTeam#responsible",
             "@type": [
               "https://lschema.org/Value"
@@ -83,7 +134,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "boolean"
+                "@id": "boolean"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -93,18 +144,28 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Claim_CareTeam#_responsible",
+            "@id": "http://hl7.org/fhir/Claim_CareTeam#id",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_responsible"
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -133,22 +194,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Claim_CareTeam#provider",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "provider"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/Claim_CareTeam#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
@@ -171,55 +216,13 @@
                 "@value": "modifierExtension"
               }
             ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Claim_CareTeam#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Claim_CareTeam#_sequence",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_sequence"
-              }
-            ]
           }
         ]
       }
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/Claim_CareTeam"
+        "@id": "http://hl7.org/fhir/Claim_CareTeam"
       }
     ]
   }

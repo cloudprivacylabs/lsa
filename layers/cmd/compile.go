@@ -19,7 +19,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
@@ -100,8 +99,8 @@ var compileCmd = &cobra.Command{
 				failErr(err)
 			}
 		}
-		renderer := jsoningest.LDRenderer{}
-		intf := renderer.Render(layer.Graph)
+		marshaler := ls.LDMarshaler{}
+		intf := marshaler.Marshal(layer.Graph)
 		x, _ := json.MarshalIndent(intf, "", "  ")
 		fmt.Println(string(x))
 	},

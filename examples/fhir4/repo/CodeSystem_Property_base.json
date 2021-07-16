@@ -7,72 +7,10 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/CodeSystem_Property",
+        "@type": [
+          "http://hl7.org/fhir/CodeSystem_Property"
+        ],
         "https://lschema.org/Object#attributes": [
-          {
-            "@id": "http://hl7.org/fhir/CodeSystem_Property#type",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "type"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The type of the property value. Properties of type \"code\" contain a code defined by the code system (e.g. a reference to another defined concept)."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "code"
-              },
-              {
-                "@value": "Coding"
-              },
-              {
-                "@value": "string"
-              },
-              {
-                "@value": "integer"
-              },
-              {
-                "@value": "boolean"
-              },
-              {
-                "@value": "dateTime"
-              },
-              {
-                "@value": "decimal"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CodeSystem_Property#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
           {
             "@id": "http://hl7.org/fhir/CodeSystem_Property#modifierExtension",
             "@type": [
@@ -114,6 +52,32 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/CodeSystem_Property#uri",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "uri"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "String of characters used to identify a name or a resource"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/CodeSystem_Property#_uri",
             "@type": [
               "https://lschema.org/Reference"
@@ -130,28 +94,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/CodeSystem_Property#description",
+            "@id": "http://hl7.org/fhir/CodeSystem_Property#extension",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/CodeSystem_Property#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "description"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "extension"
               }
             ]
           },
@@ -188,52 +150,41 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/CodeSystem_Property#uri",
+            "@id": "http://hl7.org/fhir/CodeSystem_Property#type",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "uri"
+                "@value": "type"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "String of characters used to identify a name or a resource"
+                "@value": "The type of the property value. Properties of type \"code\" contain a code defined by the code system (e.g. a reference to another defined concept)."
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "code"
+              },
+              {
+                "@value": "Coding"
+              },
               {
                 "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
+              },
               {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CodeSystem_Property#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
+                "@value": "integer"
+              },
               {
-                "@id": "http://hl7.org/fhir/CodeSystem_Property#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
+                "@value": "boolean"
+              },
               {
-                "@value": "extension"
+                "@value": "dateTime"
+              },
+              {
+                "@value": "decimal"
               }
             ]
           },
@@ -254,12 +205,64 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
                 "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CodeSystem_Property#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CodeSystem_Property#description",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "description"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           }
@@ -268,7 +271,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/CodeSystem_Property"
+        "@id": "http://hl7.org/fhir/CodeSystem_Property"
       }
     ]
   }

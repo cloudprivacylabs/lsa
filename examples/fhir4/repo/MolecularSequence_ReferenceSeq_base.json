@@ -7,6 +7,9 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq",
+        "@type": [
+          "http://hl7.org/fhir/MolecularSequence_ReferenceSeq"
+        ],
         "https://lschema.org/Object#attributes": [
           {
             "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#genomeBuild",
@@ -25,7 +28,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -35,33 +38,23 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#windowEnd",
+            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#chromosome",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "windowEnd"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A whole number"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?([0]|([1-9][0-9]*))$"
+                "@value": "chromosome"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#_genomeBuild",
+            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#_strand",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -72,7 +65,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_genomeBuild"
+                "@value": "_strand"
               }
             ]
           },
@@ -101,13 +94,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#extension",
+            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#extension.*",
+                "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
@@ -120,7 +113,39 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#_genomeBuild",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_genomeBuild"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#_orientation",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_orientation"
               }
             ]
           },
@@ -165,7 +190,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#_strand",
+            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#_windowStart",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -176,33 +201,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_strand"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#referenceSeqString",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "referenceSeqString"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "_windowStart"
               }
             ]
           },
@@ -223,126 +222,12 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "number"
+                "@id": "number"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
                 "@value": "^-?([0]|([1-9][0-9]*))$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#referenceSeqId",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "referenceSeqId"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#chromosome",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "chromosome"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#_orientation",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_orientation"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#_windowStart",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_windowStart"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
               }
             ]
           },
@@ -377,13 +262,131 @@
                 "@value": "referenceSeqPointer"
               }
             ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#referenceSeqString",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "referenceSeqString"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#windowEnd",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "windowEnd"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A whole number"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^-?([0]|([1-9][0-9]*))$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#referenceSeqId",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "referenceSeqId"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
           }
         ]
       }
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq"
+        "@id": "http://hl7.org/fhir/MolecularSequence_ReferenceSeq"
       }
     ]
   }

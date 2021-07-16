@@ -7,47 +7,10 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/SubstanceAmount",
+        "@type": [
+          "http://hl7.org/fhir/SubstanceAmount"
+        ],
         "https://lschema.org/Object#attributes": [
-          {
-            "@id": "http://hl7.org/fhir/SubstanceAmount#amountType",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "amountType"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceAmount#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/SubstanceAmount#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
           {
             "@id": "http://hl7.org/fhir/SubstanceAmount#amountText",
             "@type": [
@@ -65,7 +28,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -75,23 +38,39 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceAmount#amountString",
+            "@id": "http://hl7.org/fhir/SubstanceAmount#amountRange",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Range"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "amountRange"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceAmount#id",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "amountString"
+                "@value": "id"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "Used to capture quantitative values for a variety of elements. If only limits are given, the arithmetic mean would be the average. If only a single definite value for a given element is given, it would be captured in this field."
+                "@value": "A sequence of Unicode characters"
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -101,26 +80,34 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceAmount#extension",
+            "@id": "http://hl7.org/fhir/SubstanceAmount#amountQuantity",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/SubstanceAmount#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Quantity"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "amountQuantity"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceAmount#amountType",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "amountType"
               }
             ]
           },
@@ -157,34 +144,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceAmount#amountQuantity",
+            "@id": "http://hl7.org/fhir/SubstanceAmount#modifierExtension",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Quantity"
+                "@id": "http://hl7.org/fhir/SubstanceAmount#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "amountQuantity"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceAmount#amountRange",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Range"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "amountRange"
+                "@value": "modifierExtension"
               }
             ]
           },
@@ -205,28 +184,52 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceAmount#id",
+            "@id": "http://hl7.org/fhir/SubstanceAmount#amountString",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
+                "@value": "amountString"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A sequence of Unicode characters"
+                "@value": "Used to capture quantitative values for a variety of elements. If only limits are given, the arithmetic mean would be the average. If only a single definite value for a given element is given, it would be captured in this field."
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceAmount#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/SubstanceAmount#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
               }
             ]
           }
@@ -235,7 +238,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/SubstanceAmount"
+        "@id": "http://hl7.org/fhir/SubstanceAmount"
       }
     ]
   }

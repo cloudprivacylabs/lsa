@@ -7,7 +7,36 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/MessageDefinition_Focus",
+        "@type": [
+          "http://hl7.org/fhir/MessageDefinition_Focus"
+        ],
         "https://lschema.org/Object#attributes": [
+          {
+            "@id": "http://hl7.org/fhir/MessageDefinition_Focus#min",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "min"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "An integer with a value that is not negative (e.g. \u003e= 0)"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[0]|([1-9][0-9]*)$"
+              }
+            ]
+          },
           {
             "@id": "http://hl7.org/fhir/MessageDefinition_Focus#max",
             "@type": [
@@ -25,7 +54,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -35,60 +64,54 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageDefinition_Focus#_min",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_min"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageDefinition_Focus#code",
+            "@id": "http://hl7.org/fhir/MessageDefinition_Focus#profile",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "code"
+                "@value": "profile"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                "@value": "^\\S*$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageDefinition_Focus#_max",
+            "@id": "http://hl7.org/fhir/MessageDefinition_Focus#id",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_max"
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -117,6 +140,32 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/MessageDefinition_Focus#code",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "code"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/MessageDefinition_Focus#_code",
             "@type": [
               "https://lschema.org/Reference"
@@ -133,28 +182,34 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageDefinition_Focus#id",
+            "@id": "http://hl7.org/fhir/MessageDefinition_Focus#_max",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
+                "@value": "_max"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageDefinition_Focus#_min",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
-            "https://lschema.org/description": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "_min"
               }
             ]
           },
@@ -181,65 +236,13 @@
                 "@value": "extension"
               }
             ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageDefinition_Focus#min",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "min"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "An integer with a value that is not negative (e.g. \u003e= 0)"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[0]|([1-9][0-9]*)$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageDefinition_Focus#profile",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "profile"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^\\S*$"
-              }
-            ]
           }
         ]
       }
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/MessageDefinition_Focus"
+        "@id": "http://hl7.org/fhir/MessageDefinition_Focus"
       }
     ]
   }

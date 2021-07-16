@@ -7,15 +7,52 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/ValueSet_Include",
+        "@type": [
+          "http://hl7.org/fhir/ValueSet_Include"
+        ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/ValueSet_Include#version",
+            "@id": "http://hl7.org/fhir/ValueSet_Include#valueSet",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ValueSet_Include#valueSet.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/description": [
+                  {
+                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ],
+                "https://lschema.org/validation#pattern": [
+                  {
+                    "@value": "^\\S*$"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueSet"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ValueSet_Include#id",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "version"
+                "@value": "id"
               }
             ],
             "https://lschema.org/description": [
@@ -25,28 +62,12 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ValueSet_Include#_system",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_system"
               }
             ]
           },
@@ -67,7 +88,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -77,26 +98,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ValueSet_Include#extension",
+            "@id": "http://hl7.org/fhir/ValueSet_Include#concept",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/ValueSet_Include#extension.*",
+                "@id": "http://hl7.org/fhir/ValueSet_Include#concept.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference#reference": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/ValueSet_Concept"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "concept"
               }
             ]
           },
@@ -141,6 +162,22 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/ValueSet_Include#_system",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_system"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/ValueSet_Include#filter",
             "@type": [
               "https://lschema.org/Array"
@@ -165,37 +202,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ValueSet_Include#concept",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ValueSet_Include#concept.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ValueSet_Concept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "concept"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ValueSet_Include#id",
+            "@id": "http://hl7.org/fhir/ValueSet_Include#version",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
+                "@value": "version"
               }
             ],
             "https://lschema.org/description": [
@@ -205,7 +218,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -215,36 +228,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ValueSet_Include#valueSet",
+            "@id": "http://hl7.org/fhir/ValueSet_Include#extension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/ValueSet_Include#valueSet.*",
+                "@id": "http://hl7.org/fhir/ValueSet_Include#extension.*",
                 "@type": [
-                  "https://lschema.org/Value"
+                  "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/description": [
+                "https://lschema.org/Reference#reference": [
                   {
-                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@value": "string"
-                  }
-                ],
-                "https://lschema.org/validation#pattern": [
-                  {
-                    "@value": "^\\S*$"
+                    "@id": "http://hl7.org/fhir/Extension"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueSet"
+                "@value": "extension"
               }
             ]
           }
@@ -253,7 +256,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/ValueSet_Include"
+        "@id": "http://hl7.org/fhir/ValueSet_Include"
       }
     ]
   }

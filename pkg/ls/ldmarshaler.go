@@ -11,17 +11,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package json
+package ls
 
 import (
 	"fmt"
 
 	"github.com/bserdar/digraph"
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-// LDRenderer renders a graph in JSON-LD flattened format
-type LDRenderer struct {
+// LDMarshaler renders a graph in JSON-LD flattened format
+type LDMarshaler struct {
 	// If set, generates node identifiers from the given node. It should
 	// be able to generate blank node IDs if the node is to be
 	// represented as an RDF blank node, or if the node does not have an
@@ -37,7 +36,7 @@ type LDRenderer struct {
 	EdgeLabelGeneratorFunc func(digraph.Edge) string
 }
 
-func (rd *LDRenderer) Render(input *digraph.Graph) interface{} {
+func (rd *LDMarshaler) Marshal(input *digraph.Graph) interface{} {
 	type outputNode struct {
 		id     string
 		ldNode map[string]interface{}
@@ -65,13 +64,13 @@ func (rd *LDRenderer) Render(input *digraph.Graph) interface{} {
 	}
 
 	type propertiesSupport interface {
-		GetProperties() map[string]*ls.PropertyValue
+		GetProperties() map[string]*PropertyValue
 	}
 
 	// Process the properties
 	for gnode, onode := range nodeIdMap {
 		switch n := gnode.(type) {
-		case ls.LayerNode:
+		case LayerNode:
 			t := n.GetTypes()
 			if len(t) > 0 {
 				arr := make([]interface{}, 0, len(t))
@@ -80,10 +79,30 @@ func (rd *LDRenderer) Render(input *digraph.Graph) interface{} {
 				}
 				onode.ldNode["@type"] = arr
 			}
-		case ls.DocumentNode:
+		case DocumentNode:
 			if v := n.GetValue(); v != nil {
-				onode.ldNode[ls.AttributeValueTerm] = v
+				onode.ldNode[AttributeValueTerm] = v
 			}
+			types := onode.ldNode["@type"]
+			if types == nil {
+				types = DocumentNodeTerm
+			} else if s, ok := types.(string); ok {
+				if s != DocumentNodeTerm {
+					types = []interface{}{s, DocumentNodeTerm}
+				}
+			} else if arr, ok := types.([]interface{}); ok {
+				hasType := false
+				for _, c := range arr {
+					if c == DocumentNodeTerm {
+						hasType = true
+						break
+					}
+				}
+				if !hasType {
+					types = append(arr, DocumentNodeTerm)
+				}
+			}
+			onode.ldNode["@type"] = types
 		}
 		if prop, ok := gnode.(propertiesSupport); ok {
 			for key, pvalue := range prop.GetProperties() {
@@ -112,7 +131,7 @@ func (rd *LDRenderer) Render(input *digraph.Graph) interface{} {
 				}
 			}
 			existing, ok := onode.ldNode[labelStr]
-			if ls.GetTermInfo(labelStr).IsList {
+			if GetTermInfo(labelStr).IsList {
 				if !ok {
 					onode.ldNode[labelStr] = map[string]interface{}{"@list": []interface{}{map[string]interface{}{"@id": nodeIdMap[edge.To()].id}}}
 				} else {
@@ -137,4 +156,115 @@ func (rd *LDRenderer) Render(input *digraph.Graph) interface{} {
 		graph = append(graph, v.ldNode)
 	}
 	return map[string]interface{}{"@graph": graph}
+}
+
+// Unmarshal a graph
+func UnmarshalGraph(input interface{}) (*digraph.Graph, error) {
+	inputNodes, err := getNodesFromGraph(input)
+	if err != nil {
+		return nil, err
+	}
+	hasType := func(t string, types []string) bool {
+		for _, x := range types {
+			if t == x {
+				return true
+			}
+		}
+		return false
+	}
+	target := digraph.New()
+
+	// Generate a graph node for each input node to populate the graph
+	for _, inode := range inputNodes {
+		switch {
+		case hasType(DocumentNodeTerm, inode.types):
+			// A document node
+			inode.docNode = NewBasicDocumentNode(inode.id)
+			target.AddNode(inode.docNode)
+
+		default:
+			inode.graphNode = NewLayerNode(inode.id, inode.types...)
+			target.AddNode(inode.graphNode)
+		}
+	}
+
+	// Deal with properties and edges
+	type propertySupport interface {
+		GetProperties() map[string]*PropertyValue
+	}
+	for _, inode := range inputNodes {
+		switch {
+		case hasType(DocumentNodeTerm, inode.types):
+			// A document node
+			for k, v := range inode.node {
+				if v == nil {
+					continue
+				}
+				switch k {
+				case AttributeValueTerm:
+					val, vals, _, err := GetValuesOrIDs(v)
+					if err != nil {
+						return nil, err
+					}
+					if len(vals) == 1 {
+						inode.docNode.SetValue(vals[0])
+					} else {
+						inode.docNode.SetValue(val)
+					}
+				default:
+					value, values, ids, err := GetValuesOrIDs(v)
+					if err != nil {
+						return nil, err
+					}
+					if values == nil && ids == nil {
+						inode.docNode.GetProperties()[k] = StringPropertyValue(value)
+					} else if values != nil {
+						inode.docNode.GetProperties()[k] = StringSlicePropertyValue(values)
+					} else if ids != nil {
+						for _, id := range ids {
+							tgt := inputNodes[id]
+							if tgt != nil {
+								var t digraph.Node
+								if tgt.graphNode != nil {
+									t = tgt.graphNode
+								} else {
+									t = tgt.docNode
+								}
+								target.AddEdge(inode.docNode, t, digraph.NewBasicEdge(k, nil))
+							}
+						}
+					}
+				}
+			}
+
+		default:
+			inode.graphNode = NewLayerNode(inode.id, inode.types...)
+			target.AddNode(inode.graphNode)
+			for k, v := range inode.node {
+				value, values, ids, err := GetValuesOrIDs(v)
+				if err != nil {
+					return nil, err
+				}
+				if values == nil && ids == nil {
+					inode.graphNode.GetProperties()[k] = StringPropertyValue(value)
+				} else if values != nil {
+					inode.graphNode.GetProperties()[k] = StringSlicePropertyValue(values)
+				} else if ids != nil {
+					for _, id := range ids {
+						tgt := inputNodes[id]
+						if tgt != nil {
+							var t digraph.Node
+							if tgt.graphNode != nil {
+								t = tgt.graphNode
+							} else {
+								t = tgt.docNode
+							}
+							target.AddEdge(inode.graphNode, t, digraph.NewBasicEdge(k, nil))
+						}
+					}
+				}
+			}
+		}
+	}
+	return target, nil
 }

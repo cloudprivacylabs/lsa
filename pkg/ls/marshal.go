@@ -27,10 +27,10 @@ type inputNode struct {
 	types     []string
 	processed bool
 	graphNode LayerNode
+	docNode   DocumentNode
 }
 
-// UnmarshalLayer unmarshals a schem ar overlay
-func UnmarshalLayer(in interface{}) (*Layer, error) {
+func getNodesFromGraph(in interface{}) (map[string]*inputNode, error) {
 	proc := ld.NewJsonLdProcessor()
 	flattened, err := proc.Flatten(in, nil, nil)
 	if err != nil {
@@ -53,7 +53,15 @@ func UnmarshalLayer(in interface{}) (*Layer, error) {
 		inode.id = GetNodeID(m)
 		inputNodes[inode.id] = &inode
 	}
+	return inputNodes, nil
+}
 
+// UnmarshalLayer unmarshals a schema ar overlay
+func UnmarshalLayer(in interface{}) (*Layer, error) {
+	inputNodes, err := getNodesFromGraph(in)
+	if err != nil {
+		return nil, err
+	}
 	// Find the root node: there must be one node with overlay or schema type
 	var rootNode *inputNode
 	for _, v := range inputNodes {
@@ -311,18 +319,20 @@ func marshalNode(node LayerNode) interface{} {
 	}
 
 	for k, v := range node.GetProperties() {
-		if k == LayerTerms.Reference {
-			m[k] = []interface{}{map[string]interface{}{"@id": v.AsString()}}
+		var key string
+		if GetTermInfo(k).IsID {
+			key = "@id"
 		} else {
-			if v.IsString() {
-				m[k] = []interface{}{map[string]interface{}{"@value": v.AsString()}}
-			} else if v.IsStringSlice() {
-				arr := make([]interface{}, 0)
-				for _, elem := range v.AsStringSlice() {
-					arr = append(arr, map[string]interface{}{"@value": elem})
-				}
-				m[k] = arr
+			key = "@value"
+		}
+		if v.IsString() {
+			m[k] = []interface{}{map[string]interface{}{key: v.AsString()}}
+		} else if v.IsStringSlice() {
+			arr := make([]interface{}, 0)
+			for _, elem := range v.AsStringSlice() {
+				arr = append(arr, map[string]interface{}{key: elem})
 			}
+			m[k] = arr
 		}
 	}
 

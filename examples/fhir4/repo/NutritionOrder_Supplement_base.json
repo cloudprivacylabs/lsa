@@ -7,35 +7,12 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/NutritionOrder_Supplement",
+        "@type": [
+          "http://hl7.org/fhir/NutritionOrder_Supplement"
+        ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#instruction",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "instruction"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#_instruction",
+            "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#_productName",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -46,7 +23,73 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_instruction"
+                "@value": "_productName"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#quantity",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Quantity"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "quantity"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
               }
             ]
           },
@@ -91,13 +134,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#id",
+            "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#instruction",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
+                "@value": "instruction"
               }
             ],
             "https://lschema.org/description": [
@@ -107,7 +150,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -117,18 +160,28 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#_productName",
+            "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#productName",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_productName"
+                "@value": "productName"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -157,68 +210,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#quantity",
+            "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#_instruction",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/Quantity"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "quantity"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#productName",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "productName"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/NutritionOrder_Supplement#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
+                "@value": "_instruction"
               }
             ]
           }
@@ -227,7 +230,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/NutritionOrder_Supplement"
+        "@id": "http://hl7.org/fhir/NutritionOrder_Supplement"
       }
     ]
   }

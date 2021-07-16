@@ -7,47 +7,10 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition",
+        "@type": [
+          "http://hl7.org/fhir/FamilyMemberHistory_Condition"
+        ],
         "https://lschema.org/Object#attributes": [
-          {
-            "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#onsetRange",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Range"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "onsetRange"
-              }
-            ]
-          },
           {
             "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#_onsetString",
             "@type": [
@@ -81,12 +44,28 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#onsetRange",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Range"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "onsetRange"
               }
             ]
           },
@@ -139,6 +118,32 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#contributedToDeath",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "contributedToDeath"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Value of \"true\" or \"false\""
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "boolean"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^true|false$"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#_contributedToDeath",
             "@type": [
               "https://lschema.org/Reference"
@@ -155,6 +160,22 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#onsetPeriod",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "onsetPeriod"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#code",
             "@type": [
               "https://lschema.org/Reference"
@@ -167,6 +188,22 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "code"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#outcome",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "outcome"
               }
             ]
           },
@@ -203,7 +240,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -213,60 +250,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#outcome",
+            "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#extension",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "outcome"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#onsetPeriod",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "onsetPeriod"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition#contributedToDeath",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "contributedToDeath"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Value of \"true\" or \"false\""
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "boolean"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^true|false$"
+                "@value": "extension"
               }
             ]
           }
@@ -275,7 +278,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/FamilyMemberHistory_Condition"
+        "@id": "http://hl7.org/fhir/FamilyMemberHistory_Condition"
       }
     ]
   }

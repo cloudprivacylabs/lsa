@@ -7,7 +7,134 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic",
+        "@type": [
+          "http://hl7.org/fhir/EvidenceVariable_Characteristic"
+        ],
         "https://lschema.org/Object#attributes": [
+          {
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#description",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "description"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#usageContext",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#usageContext.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/UsageContext"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "usageContext"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#participantEffectiveTiming",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Timing"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "participantEffectiveTiming"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#definitionCanonical",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "definitionCanonical"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Define members of the evidence element using Codes (such as condition, medication, or observation), Expressions ( using an expression language such as FHIRPath or CQL) or DataRequirements (such as Diabetes diagnosis onset in the last year)."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#_definitionCanonical",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_definitionCanonical"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#_description",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_description"
+              }
+            ]
+          },
           {
             "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#_exclude",
             "@type": [
@@ -41,38 +168,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#participantEffectiveTiming",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Timing"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "participantEffectiveTiming"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#timeFromStart",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Duration"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "timeFromStart"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#participantEffectiveDateTime",
             "@type": [
               "https://lschema.org/Value"
@@ -89,7 +184,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -99,13 +194,29 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#description",
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#definitionDataRequirement",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/DataRequirement"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "definitionDataRequirement"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#id",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "description"
+                "@value": "id"
               }
             ],
             "https://lschema.org/description": [
@@ -115,7 +226,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -125,90 +236,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#_definitionCanonical",
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#definitionCodeableConcept",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/CodeableConcept"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_definitionCanonical"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#definitionReference",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "definitionReference"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#usageContext",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#usageContext.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/UsageContext"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "usageContext"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#participantEffectivePeriod",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "participantEffectivePeriod"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#_participantEffectiveDateTime",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_participantEffectiveDateTime"
+                "@value": "definitionCodeableConcept"
               }
             ]
           },
@@ -229,7 +268,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "boolean"
+                "@id": "boolean"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -239,42 +278,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#_groupMeasure",
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#participantEffectiveDuration",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Duration"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_groupMeasure"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
+                "@value": "participantEffectiveDuration"
               }
             ]
           },
@@ -315,59 +330,95 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#definitionCanonical",
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#_groupMeasure",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "definitionCanonical"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Define members of the evidence element using Codes (such as condition, medication, or observation), Expressions ( using an expression language such as FHIRPath or CQL) or DataRequirements (such as Diabetes diagnosis onset in the last year)."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^\\S*$"
+                "@value": "_groupMeasure"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#id",
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#_participantEffectiveDateTime",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "_participantEffectiveDateTime"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#participantEffectiveDuration",
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#definitionTriggerDefinition",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/TriggerDefinition"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "definitionTriggerDefinition"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#participantEffectivePeriod",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "participantEffectivePeriod"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#timeFromStart",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -378,7 +429,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "participantEffectiveDuration"
+                "@value": "timeFromStart"
               }
             ]
           },
@@ -407,66 +458,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#definitionCodeableConcept",
+            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#definitionReference",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "definitionCodeableConcept"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#definitionTriggerDefinition",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/TriggerDefinition"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "definitionTriggerDefinition"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#definitionDataRequirement",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/DataRequirement"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "definitionDataRequirement"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic#_description",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_description"
+                "@value": "definitionReference"
               }
             ]
           }
@@ -475,7 +478,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/EvidenceVariable_Characteristic"
+        "@id": "http://hl7.org/fhir/EvidenceVariable_Characteristic"
       }
     ]
   }

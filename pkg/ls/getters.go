@@ -13,6 +13,10 @@
 // limitations under the License.
 package ls
 
+import (
+	"fmt"
+)
+
 // GetKeyValue returns the value of the key in the node. The node must
 // be a map
 func GetKeyValue(key string, node interface{}) (interface{}, bool) {
@@ -129,4 +133,49 @@ func DescendToListElements(in []interface{}) []interface{} {
 		}
 	}
 	return in
+}
+
+// GetValuesOrIDs returns the @values, or @ids contained in the interface
+// This can be a single value, an array, or a @list
+func GetValuesOrIDs(in interface{}) (value string, values, ids []string, err error) {
+	if in == nil {
+		return
+	}
+	if arr, ok := in.([]interface{}); ok {
+		for _, el := range arr {
+			val, vals, i, e := GetValuesOrIDs(el)
+			if e != nil {
+				return "", nil, nil, e
+			}
+			if vals == nil && i == nil {
+				values = append(values, val)
+			} else {
+				if vals != nil {
+					values = append(values, vals...)
+				}
+				if i != nil {
+					ids = append(ids, i...)
+				}
+			}
+		}
+		if len(values) > 0 && len(ids) > 0 {
+			return "", nil, nil, ErrInvalidJsonLdGraph
+		}
+		return
+	}
+
+	if m, ok := in.(map[string]interface{}); ok {
+		if lst, ok := m["@list"]; ok {
+			return GetValuesOrIDs(lst)
+		}
+		if id, ok := m["@id"]; ok {
+			return "", nil, []string{fmt.Sprint(id)}, nil
+		}
+		if v, ok := m["@value"]; ok {
+			return fmt.Sprint(v), nil, nil, nil
+		}
+		return "", nil, nil, ErrInvalidJsonLdGraph
+	}
+	value = fmt.Sprint(in)
+	return
 }

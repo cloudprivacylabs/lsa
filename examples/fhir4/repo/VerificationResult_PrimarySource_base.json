@@ -7,20 +7,31 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource",
+        "@type": [
+          "http://hl7.org/fhir/VerificationResult_PrimarySource"
+        ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#canPushUpdates",
+            "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#type",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#type.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "canPushUpdates"
+                "@value": "type"
               }
             ]
           },
@@ -49,6 +60,22 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#who",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "who"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#validationStatus",
             "@type": [
               "https://lschema.org/Reference"
@@ -65,76 +92,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#communicationMethod",
+            "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#canPushUpdates",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#communicationMethod.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/CodeableConcept"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "communicationMethod"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#type",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#type.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "type"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "canPushUpdates"
               }
             ]
           },
@@ -187,6 +156,30 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#communicationMethod",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#communicationMethod.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "communicationMethod"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#validationDate",
             "@type": [
               "https://lschema.org/Value"
@@ -203,7 +196,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -229,18 +222,28 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#who",
+            "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource#id",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "who"
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           }
@@ -249,7 +252,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/VerificationResult_PrimarySource"
+        "@id": "http://hl7.org/fhir/VerificationResult_PrimarySource"
       }
     ]
   }

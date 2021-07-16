@@ -157,8 +157,8 @@ var ingestJSONCmd = &cobra.Command{
 			renderer := dot.Renderer{Options: dot.DefaultOptions()}
 			renderer.Render(target, "g", os.Stdout)
 		case "json", "jsonld":
-			renderer := jsoningest.LDRenderer{}
-			out := renderer.Render(target)
+			marshaler := ls.LDMarshaler{}
+			out := marshaler.Marshal(target)
 			x, _ := json.MarshalIndent(out, "", "  ")
 			fmt.Println(string(x))
 		case "rdf":

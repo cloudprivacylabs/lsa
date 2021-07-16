@@ -7,70 +7,31 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem",
+        "@type": [
+          "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem"
+        ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#identifier",
+            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#identifier.*",
+                "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference#reference": [
                   {
-                    "@id": "http://hl7.org/fhir/Identifier"
+                    "@id": "http://hl7.org/fhir/Extension"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "identifier"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#physicalCharacteristics",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/ProdCharacteristic"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "physicalCharacteristics"
+                "@value": "modifierExtension"
               }
             ]
           },
@@ -99,42 +60,76 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#extension",
+            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#shelfLifeStorage",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#extension.*",
+                "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#shelfLifeStorage.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference#reference": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/ProductShelfLife"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "shelfLifeStorage"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#type",
+            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#identifier",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#identifier.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Identifier"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "type"
+                "@value": "identifier"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -159,6 +154,126 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "material"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#manufacturedItem",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#manufacturedItem.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "manufacturedItem"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#type",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "type"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#physicalCharacteristics",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/ProdCharacteristic"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "physicalCharacteristics"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#otherCharacteristics",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#otherCharacteristics.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "otherCharacteristics"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#quantity",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Quantity"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "quantity"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
               }
             ]
           },
@@ -233,125 +348,13 @@
                 "@value": "alternateMaterial"
               }
             ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#manufacturedItem",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#manufacturedItem.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "manufacturedItem"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#shelfLifeStorage",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#shelfLifeStorage.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ProductShelfLife"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "shelfLifeStorage"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#quantity",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Quantity"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "quantity"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#otherCharacteristics",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem#otherCharacteristics.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "otherCharacteristics"
-              }
-            ]
           }
         ]
       }
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem"
+        "@id": "http://hl7.org/fhir/MedicinalProductPackaged_PackageItem"
       }
     ]
   }

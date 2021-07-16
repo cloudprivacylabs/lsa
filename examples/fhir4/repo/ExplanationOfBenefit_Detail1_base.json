@@ -7,81 +7,10 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1",
+        "@type": [
+          "http://hl7.org/fhir/ExplanationOfBenefit_Detail1"
+        ],
         "https://lschema.org/Object#attributes": [
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#noteNumber",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#noteNumber.*",
-                "@type": [
-                  "https://lschema.org/Value"
-                ],
-                "https://lschema.org/description": [
-                  {
-                    "@value": "An integer with a value that is positive (e.g. \u003e0)"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@value": "number"
-                  }
-                ],
-                "https://lschema.org/validation#pattern": [
-                  {
-                    "@value": "^[1-9][0-9]*$"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "noteNumber"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#quantity",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Quantity"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "quantity"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#modifier",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#modifier.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifier"
-              }
-            ]
-          },
           {
             "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#modifierExtension",
             "@type": [
@@ -107,34 +36,68 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#productOrService",
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#quantity",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/Quantity"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "productOrService"
+                "@value": "quantity"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#unitPrice",
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#_noteNumber",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Money"
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#_noteNumber.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Element"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "unitPrice"
+                "@value": "_noteNumber"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#factor",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "factor"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A rational number with implicit precision"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
               }
             ]
           },
@@ -179,28 +142,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#factor",
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#adjudication",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#adjudication.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Adjudication"
+                  }
+                ]
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "factor"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A rational number with implicit precision"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+                "@value": "adjudication"
               }
             ]
           },
@@ -217,6 +178,40 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "net"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#noteNumber",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#noteNumber.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/description": [
+                  {
+                    "@value": "An integer with a value that is positive (e.g. \u003e0)"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "number"
+                  }
+                ],
+                "https://lschema.org/validation#pattern": [
+                  {
+                    "@value": "^[1-9][0-9]*$"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "noteNumber"
               }
             ]
           },
@@ -245,30 +240,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#adjudication",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#adjudication.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Adjudication"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "adjudication"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#id",
             "@type": [
               "https://lschema.org/Value"
@@ -285,7 +256,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -295,26 +266,58 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#_noteNumber",
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#unitPrice",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Money"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "unitPrice"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#productOrService",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "productOrService"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#modifier",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#_noteNumber.*",
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1#modifier.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference#reference": [
                   {
-                    "@id": "http://hl7.org/fhir/Element"
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_noteNumber"
+                "@value": "modifier"
               }
             ]
           }
@@ -323,7 +326,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1"
+        "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Detail1"
       }
     ]
   }

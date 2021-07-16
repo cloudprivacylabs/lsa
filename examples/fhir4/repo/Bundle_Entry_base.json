@@ -7,7 +7,34 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/Bundle_Entry",
+        "@type": [
+          "http://hl7.org/fhir/Bundle_Entry"
+        ],
         "https://lschema.org/Object#attributes": [
+          {
+            "@id": "http://hl7.org/fhir/Bundle_Entry#link",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Bundle_Entry#link.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Bundle_Link"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "link"
+              }
+            ]
+          },
           {
             "@id": "http://hl7.org/fhir/Bundle_Entry#fullUrl",
             "@type": [
@@ -25,7 +52,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -35,18 +62,74 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Bundle_Entry#search",
+            "@id": "http://hl7.org/fhir/Bundle_Entry#_fullUrl",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/Bundle_Search"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "search"
+                "@value": "_fullUrl"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Bundle_Entry#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Bundle_Entry#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Bundle_Entry#request",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Bundle_Request"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "request"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Bundle_Entry#response",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Bundle_Response"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "response"
               }
             ]
           },
@@ -67,12 +150,36 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Bundle_Entry#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Bundle_Entry#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
               }
             ]
           },
@@ -1700,122 +1807,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Bundle_Entry#request",
+            "@id": "http://hl7.org/fhir/Bundle_Entry#search",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/Bundle_Request"
+                "@id": "http://hl7.org/fhir/Bundle_Search"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "request"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Bundle_Entry#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Bundle_Entry#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Bundle_Entry#link",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Bundle_Entry#link.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Bundle_Link"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "link"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Bundle_Entry#response",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Bundle_Response"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "response"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Bundle_Entry#_fullUrl",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_fullUrl"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Bundle_Entry#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Bundle_Entry#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
+                "@value": "search"
               }
             ]
           }
@@ -1824,7 +1827,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/Bundle_Entry"
+        "@id": "http://hl7.org/fhir/Bundle_Entry"
       }
     ]
   }

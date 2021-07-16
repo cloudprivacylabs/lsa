@@ -7,153 +7,10 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/Dosage",
+        "@type": [
+          "http://hl7.org/fhir/Dosage"
+        ],
         "https://lschema.org/Object#attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Dosage#site",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "site"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Dosage#patientInstruction",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "patientInstruction"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Dosage#maxDosePerAdministration",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Quantity"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "maxDosePerAdministration"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Dosage#maxDosePerLifetime",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Quantity"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "maxDosePerLifetime"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Dosage#_sequence",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_sequence"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Dosage#maxDosePerPeriod",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Ratio"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "maxDosePerPeriod"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Dosage#_text",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Dosage#additionalInstruction",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Dosage#additionalInstruction.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "additionalInstruction"
-              }
-            ]
-          },
           {
             "@id": "http://hl7.org/fhir/Dosage#modifierExtension",
             "@type": [
@@ -179,39 +36,33 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Dosage#_asNeededBoolean",
+            "@id": "http://hl7.org/fhir/Dosage#sequence",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_asNeededBoolean"
+                "@value": "sequence"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A whole number"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^-?([0]|([1-9][0-9]*))$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Dosage#_patientInstruction",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_patientInstruction"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Dosage#method",
+            "@id": "http://hl7.org/fhir/Dosage#asNeededCodeableConcept",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -222,7 +73,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "method"
+                "@value": "asNeededCodeableConcept"
               }
             ]
           },
@@ -251,7 +102,23 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Dosage#asNeededCodeableConcept",
+            "@id": "http://hl7.org/fhir/Dosage#_sequence",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_sequence"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Dosage#method",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -262,7 +129,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "asNeededCodeableConcept"
+                "@value": "method"
               }
             ]
           },
@@ -279,6 +146,58 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "timing"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Dosage#patientInstruction",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "patientInstruction"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Dosage#asNeededBoolean",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "asNeededBoolean"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), or it indicates the precondition for taking the Medication (CodeableConcept)."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "boolean"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^true|false$"
               }
             ]
           },
@@ -307,96 +226,74 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Dosage#asNeededBoolean",
+            "@id": "http://hl7.org/fhir/Dosage#additionalInstruction",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Dosage#additionalInstruction.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "asNeededBoolean"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), or it indicates the precondition for taking the Medication (CodeableConcept)."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "boolean"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^true|false$"
+                "@value": "additionalInstruction"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Dosage#route",
+            "@id": "http://hl7.org/fhir/Dosage#_text",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "route"
+                "@value": "_text"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Dosage#sequence",
+            "@id": "http://hl7.org/fhir/Dosage#maxDosePerAdministration",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Quantity"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "sequence"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A whole number"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?([0]|([1-9][0-9]*))$"
+                "@value": "maxDosePerAdministration"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Dosage#text",
+            "@id": "http://hl7.org/fhir/Dosage#maxDosePerPeriod",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Ratio"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "text"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "maxDosePerPeriod"
               }
             ]
           },
@@ -417,12 +314,118 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Dosage#maxDosePerLifetime",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Quantity"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "maxDosePerLifetime"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Dosage#route",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "route"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Dosage#_patientInstruction",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_patientInstruction"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Dosage#text",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Dosage#site",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "site"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Dosage#_asNeededBoolean",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_asNeededBoolean"
               }
             ]
           }
@@ -431,7 +434,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/Dosage"
+        "@id": "http://hl7.org/fhir/Dosage"
       }
     ]
   }

@@ -7,6 +7,9 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/CapabilityStatement_Rest",
+        "@type": [
+          "http://hl7.org/fhir/CapabilityStatement_Rest"
+        ],
         "https://lschema.org/Object#attributes": [
           {
             "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#modifierExtension",
@@ -29,78 +32,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#operation",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#operation.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/CapabilityStatement_Operation"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "operation"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#interaction",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#interaction.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/CapabilityStatement_Interaction1"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "interaction"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#mode",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "mode"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Identifies whether this portion of the statement is describing the ability to initiate or receive restful operations."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "client"
-              },
-              {
-                "@value": "server"
               }
             ]
           },
@@ -129,36 +60,42 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#compartment",
+            "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#operation",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#compartment.*",
+                "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#operation.*",
                 "@type": [
-                  "https://lschema.org/Value"
+                  "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/description": [
+                "https://lschema.org/Reference#reference": [
                   {
-                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@value": "string"
-                  }
-                ],
-                "https://lschema.org/validation#pattern": [
-                  {
-                    "@value": "^\\S*$"
+                    "@id": "http://hl7.org/fhir/CapabilityStatement_Operation"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "compartment"
+                "@value": "operation"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#_mode",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_mode"
               }
             ]
           },
@@ -195,7 +132,7 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@value": "string"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
@@ -205,26 +142,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#resource",
+            "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#mode",
             "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#resource.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/CapabilityStatement_Resource"
-                  }
-                ]
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "resource"
+                "@value": "mode"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Identifies whether this portion of the statement is describing the ability to initiate or receive restful operations."
+              }
+            ],
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "client"
+              },
+              {
+                "@value": "server"
               }
             ]
           },
@@ -241,6 +178,90 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_documentation"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#interaction",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#interaction.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/CapabilityStatement_Interaction1"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "interaction"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#compartment",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#compartment.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/description": [
+                  {
+                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ],
+                "https://lschema.org/validation#pattern": [
+                  {
+                    "@value": "^\\S*$"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "compartment"
               }
             ]
           },
@@ -269,44 +290,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#id",
+            "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#resource",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/attributeName": [
+            "https://lschema.org/Array#items": [
               {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#_mode",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/CapabilityStatement_Rest#resource.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/CapabilityStatement_Resource"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_mode"
+                "@value": "resource"
               }
             ]
           }
@@ -315,7 +318,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/CapabilityStatement_Rest"
+        "@id": "http://hl7.org/fhir/CapabilityStatement_Rest"
       }
     ]
   }

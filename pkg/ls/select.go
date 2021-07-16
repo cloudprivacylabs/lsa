@@ -94,14 +94,44 @@ func unmarshalANDNodePredicate(in json.RawMessage) (NodePredicate, error) {
 	return ANDNodePredicate{Options: options}, nil
 }
 
+// NodeTypePredicate selects nodes by type
+type NodeTypePredicate struct {
+	Type string `json:"$itype"`
+}
+
+// NewNodeTypePredicate returns a new node tyoe predicate with the given type
+func NewNodeTypePredicate(t string) NodeTypePredicate {
+	return NodeTypePredicate{Type: t}
+}
+
+// EvaluateNode selects node based on the given type
+func (p NodeTypePredicate) EvaluateNode(node digraph.Node) (bool, error) {
+	type typer interface {
+		HasType(string) bool
+	}
+	t, ok := node.(typer)
+	if ok {
+		return t.HasType(p.Type), nil
+	}
+	return false, nil
+}
+
+func unmarshalNodeTypePredicate(in json.RawMessage) (NodePredicate, error) {
+	var t string
+	if err := json.Unmarshal(in, &t); err != nil {
+		return nil, err
+	}
+	return NodeTypePredicate{Type: t}, nil
+}
+
 // NodeIDPredicate selects nodes by ID
 type NodeIDPredicate struct {
 	ID string `json:"$id"`
 }
 
 // NewNodeIDPredicate returns a new node id predicate with the given ID
-func NewNodeIDPredicate(id string) (NodeIDPredicate, error) {
-	return NodeIDPredicate{ID: id}, nil
+func NewNodeIDPredicate(id string) NodeIDPredicate {
+	return NodeIDPredicate{ID: id}
 }
 
 // EvaluateNode selects node based on the given id
@@ -167,10 +197,69 @@ func unmarshalNodeIDGlobPredicate(in json.RawMessage) (NodePredicate, error) {
 	return NewNodeIDGlobPredicate(id)
 }
 
+// NodeLinkedPredicate finds nodes that are directly linked to a given
+// node with an optional given label
+type NodeLinkedPredicate struct {
+	TargetPredicate NodePredicate `json:"target"`
+	Label           *string       `json:"label"`
+}
+
+// EvaluateNode checks if the node is connected to the target node
+func (p *NodeLinkedPredicate) EvaluateNode(node digraph.Node) (bool, error) {
+	if p.Label == nil {
+		for edges := node.AllOutgoingEdges(); edges.HasNext(); {
+			edge := edges.Next()
+			r, err := p.TargetPredicate.EvaluateNode(edge.To())
+			if err != nil {
+				return false, err
+			}
+			if r {
+				return true, nil
+			}
+		}
+	} else {
+		for edges := node.AllOutgoingEdgesWithLabel(*p.Label); edges.HasNext(); {
+			edge := edges.Next()
+			r, err := p.TargetPredicate.EvaluateNode(edge.To())
+			if err != nil {
+				return false, err
+			}
+			if r {
+				return true, nil
+			}
+		}
+	}
+	return false, nil
+}
+
+func unmarshalNodeLinkedPredicate(in json.RawMessage) (NodePredicate, error) {
+	type marshal struct {
+		TargetPredicate json.RawMessage `json:"target"`
+		Label           *string         `json:"label"`
+	}
+	ret := NodeLinkedPredicate{}
+	var m marshal
+	err := json.Unmarshal(in, &m)
+	if err != nil {
+		return nil, err
+	}
+	ret.TargetPredicate, err = UnmarshalNodePredicate(m.TargetPredicate)
+	if err != nil {
+		return nil, err
+	}
+	ret.Label = m.Label
+	return &ret, nil
+}
+
 var predicateFactories = map[string]func(json.RawMessage) (NodePredicate, error){
 	"$and":    unmarshalANDNodePredicate,
 	"$id":     unmarshalNodeIDPredicate,
 	"$idglob": unmarshalNodeIDGlobPredicate,
+	"$type":   unmarshalNodeTypePredicate,
+}
+
+func init() {
+	predicateFactories["$linked"] = unmarshalNodeLinkedPredicate
 }
 
 // UnmarshalNodePredicate unmarshals a node predicate from JSON
@@ -218,6 +307,38 @@ func SelectNodes(in *digraph.Graph, predicate NodePredicate) ([]digraph.Node, er
 		if include {
 			ret = append(ret, node)
 		}
+	}
+	return ret, nil
+}
+
+// SelectNodesUnder selects some nodes accessible from the root based on the predicate
+func SelectNodesUnder(root digraph.Node, predicate NodePredicate) ([]digraph.Node, error) {
+	ret := make([]digraph.Node, 0)
+	seen := make(map[digraph.Node]struct{})
+	var selectNodes func(digraph.Node) error
+	selectNodes = func(n digraph.Node) error {
+		if _, ok := seen[n]; ok {
+			return nil
+		}
+		seen[n] = struct{}{}
+		include, err := predicate.EvaluateNode(n)
+		if err != nil {
+			return nil
+		}
+		if include {
+			ret = append(ret, n)
+		}
+		for edges := n.AllOutgoingEdges(); edges.HasNext(); {
+			edge := edges.Next()
+			if err := selectNodes(edge.To()); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+	err := selectNodes(root)
+	if err != nil {
+		return nil, err
 	}
 	return ret, nil
 }

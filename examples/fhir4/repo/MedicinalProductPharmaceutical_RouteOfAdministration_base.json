@@ -7,28 +7,23 @@
     "https://lschema.org/layer": [
       {
         "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration",
+        "@type": [
+          "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration"
+        ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#extension",
+            "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#maxSingleDose",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Quantity"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "maxSingleDose"
               }
             ]
           },
@@ -57,48 +52,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@value": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#code",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "code"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#maxDosePerDay",
             "@type": [
               "https://lschema.org/Reference"
@@ -111,38 +64,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "maxDosePerDay"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#maxTreatmentPeriod",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Duration"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "maxTreatmentPeriod"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#maxSingleDose",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Quantity"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "maxSingleDose"
               }
             ]
           },
@@ -171,6 +92,48 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#firstDose",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Quantity"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "firstDose"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#maxDosePerTreatmentPeriod",
             "@type": [
               "https://lschema.org/Reference"
@@ -187,18 +150,58 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#firstDose",
+            "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#maxTreatmentPeriod",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/Quantity"
+                "@id": "http://hl7.org/fhir/Duration"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "firstDose"
+                "@value": "maxTreatmentPeriod"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration#code",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "code"
               }
             ]
           }
@@ -207,7 +210,7 @@
     ],
     "https://lschema.org/targetType": [
       {
-        "@value": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration"
+        "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical_RouteOfAdministration"
       }
     ]
   }

@@ -22,17 +22,18 @@ import (
 )
 
 type schemaProperty struct {
-	key         string
-	reference   string
-	object      *objectSchema
-	array       *arraySchema
-	oneOf       []schemaProperty
-	allOf       []schemaProperty
-	typ         []string
-	format      string
-	enum        []interface{}
-	pattern     string
-	description string
+	key          string
+	reference    string
+	object       *objectSchema
+	array        *arraySchema
+	oneOf        []schemaProperty
+	allOf        []schemaProperty
+	typ          []string
+	format       string
+	enum         []interface{}
+	pattern      string
+	description  string
+	defaultValue *string
 }
 
 type arraySchema struct {
@@ -81,6 +82,9 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 			elements = append(elements, fmt.Sprint(v))
 		}
 		newNode.GetProperties()[validators.EnumTerm] = ls.StringSlicePropertyValue(elements)
+	}
+	if attr.defaultValue != nil {
+		newNode.GetProperties()[ls.DefaultValueTerm] = ls.StringPropertyValue(*attr.defaultValue)
 	}
 
 	if len(attr.reference) > 0 {
