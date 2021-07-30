@@ -82,3 +82,41 @@ func GetFilteredValue(schemaNode LayerNode, docNode DocumentNode) interface{} {
 	}
 	return FilterValue(value, docNode, docNode.GetProperties())
 }
+
+// IsDocumentEdge returns true if the edge is a data edge term
+func IsDocumentEdge(edge digraph.Edge) bool {
+	switch edge.Label() {
+	case DataEdgeTerms.ObjectAttributes, DataEdgeTerms.ArrayElements:
+		return true
+	}
+	return false
+}
+
+func ForEachDocumentNode(root DocumentNode, f func(DocumentNode) bool) bool {
+	return forEachDocumentNode(root, f, map[DocumentNode]struct{}{})
+}
+
+func forEachDocumentNode(root DocumentNode, f func(DocumentNode) bool, seen map[DocumentNode]struct{}) bool {
+	if _, exists := seen[root]; exists {
+		return true
+	}
+	seen[root] = struct{}{}
+
+	if !f(root) {
+		return false
+	}
+
+	for outgoing := root.AllOutgoingEdges(); outgoing.HasNext(); {
+		edge := outgoing.Next()
+		if !IsDocumentEdge(edge) {
+			continue
+		}
+		next, ok := edge.To().(DocumentNode)
+		if ok {
+			if !forEachDocumentNode(next, f, seen) {
+				return false
+			}
+		}
+	}
+	return true
+}
