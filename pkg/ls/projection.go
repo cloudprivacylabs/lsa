@@ -78,14 +78,16 @@ var ProjectionTerms = struct {
 
 type ProjectionSpec interface {
 	GetFieldProjection(targetNodeID string) FieldProjectionSpec
+	GenerateID(path []interface{}, targetSchemaNode LayerNode) string
 }
 
 type FieldProjectionSpec interface {
 }
 
 type projectionContext struct {
-	seen           map[interface{}]struct{}
-	projectionSpec ProjectionSpec
+	seen        map[interface{}]struct{}
+	spec        ProjectionSpec
+	targetGraph *digraph.Graph
 }
 
 func (ctx *projectionContext) getProjection(targetNodeID string) FieldProjectionSpec {
@@ -105,12 +107,20 @@ func processTargetSchemaNodes(ctx projectionContext, node LayerNode) error {
 	projection := ctx.getProjection(node.GetID())
 	switch {
 	case node.HasType(AttributeTypes.Value):
+		var newNode *BasicDocumentNode
 		if projection == nil {
 			if defaultValue, ok := node.GetProperties()[DefaultValueTerm]; ok {
-				ctx.newValueNode(node.GetID(), defaultValue)
+				if defaultValue.IsString() {
+					newNode = NewBasicDocumentNode(ctx.spec.GenerateNodeID(nil,append(ctx.getContainerPath(),projection.GetSourceNode()))
+					newNode.SetValue(defaultValue.AsString())
+				}
 			}
 		} else {
-			ctx.newValueNode(node.GetID(), projection.getProjectedValue())
+			newNode = NewBasicDocumentNode(ctx.generateNodeID())
+			newNode.SetValue(projection.GetProjectedValue())
+		}
+		if newNode != nil {
+			ctx.connect(newNode)
 		}
 
 	case node.HasType(AttributeTypes.Object):
