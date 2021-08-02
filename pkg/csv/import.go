@@ -19,6 +19,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/bserdar/digraph"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -30,18 +31,18 @@ type ImportSpec struct {
 
 type TermSpec struct {
 	// The term
-	Term string
+	Term string `json:"term"`
 	// The 0-based column containing term data
-	TermCol int
+	TermCol int `json:"column"`
 	// If nonempty, this template is used to build the term contents
 	// with {{.term}} and {{.data}} in template context. {{.term}} gives
 	// the Term, and {{.data}} gives the value of the term in the
 	// current cell.
-	TermTemplate string
+	TermTemplate string `json:"template"`
 	// Is property an array
-	Array bool
+	Array bool `json:"array"`
 	// Array separator character
-	ArraySeparator string
+	ArraySeparator string `json:"separator"`
 }
 
 type ErrColIndexOutOfBounds struct {
@@ -69,11 +70,11 @@ func (e ErrInvalidID) Error() string {
 // column for base attribute names, and other columns for
 // overlays. CSV does not support nested attributes. Returns an array
 // of Layer objects
-func Import(attributeID TermSpec, terms []TermSpec, input [][]string) (*ls.Layer, error) {
+func Import(attributeID TermSpec, terms []TermSpec, startRow, nRows int, input [][]string) (*ls.Layer, error) {
 	layer := ls.NewLayer()
-	root := ls.NewLayerNode("")
+	root := ls.NewNode("")
 	layer.AddNode(root)
-	layer.AddEdge(layer.GetLayerInfoNode(), root, ls.NewLayerEdge(ls.LayerRootTerm))
+	digraph.Connect(layer.GetLayerInfoNode(), root, ls.NewEdge(ls.LayerRootTerm))
 
 	var idTemplate *template.Template
 
@@ -95,45 +96,53 @@ func Import(attributeID TermSpec, terms []TermSpec, input [][]string) (*ls.Layer
 		}
 	}
 
+	nAttributeID := 0
+	nTerms := make([]int, len(terms))
 	for rowIndex, row := range input {
-		if attributeID.TermCol < 0 || attributeID.TermCol >= len(row) {
-			return nil, ErrColIndexOutOfBounds{For: "@id", Index: attributeID.TermCol}
-		}
-		id := strings.TrimSpace(row[attributeID.TermCol])
-		if len(id) == 0 {
-			break
-		}
-		// If there is a template, run it
-		if idTemplate != nil {
-			var out bytes.Buffer
-			if err := idTemplate.Execute(&out, map[string]interface{}{"term": "@id", "data": id}); err != nil {
-				return nil, err
+		fmt.Printf("Row: %d\n", rowIndex)
+		if rowIndex >= startRow && (nRows == 0 || nAttributeID < nRows) {
+			nAttributeID++
+			if attributeID.TermCol < 0 || attributeID.TermCol >= len(row) {
+				return nil, ErrColIndexOutOfBounds{For: "@id", Index: attributeID.TermCol}
 			}
-			id = strings.TrimSpace(out.String())
-		}
-		if len(id) == 0 {
-			return nil, ErrInvalidID{rowIndex}
-		}
-		attr := ls.NewLayerNode(id, ls.AttributeTypes.Attribute, ls.AttributeTypes.Value)
-		layer.AddNode(attr)
-		layer.AddEdge(root, attr, ls.NewLayerEdge(ls.LayerTerms.AttributeList))
-		for ti, term := range terms {
-			if term.TermCol < 0 || term.TermCol >= len(row) {
-				return nil, ErrColIndexOutOfBounds{For: term.Term, Index: term.TermCol}
+			id := strings.TrimSpace(row[attributeID.TermCol])
+			fmt.Printf("id: %s\n", id)
+			if len(id) == 0 {
+				break
 			}
-			data := strings.TrimSpace(row[term.TermCol])
-			if templates[ti] != nil {
+			// If there is a template, run it
+			if idTemplate != nil {
 				var out bytes.Buffer
-				if err := templates[ti].Execute(&out, map[string]interface{}{"term": term.Term, "data": data}); err != nil {
+				if err := idTemplate.Execute(&out, map[string]interface{}{"term": "@id", "data": id}); err != nil {
 					return nil, err
 				}
+				id = strings.TrimSpace(out.String())
 			}
-			if len(data) > 0 {
-				if term.Array {
-					elems := strings.Split(data, term.ArraySeparator)
-					attr.GetProperties()[term.Term] = ls.StringSlicePropertyValue(elems)
-				} else {
-					attr.GetProperties()[term.Term] = ls.StringPropertyValue(data)
+			if len(id) == 0 {
+				return nil, ErrInvalidID{rowIndex}
+			}
+			attr := ls.NewNode(id, ls.AttributeTypes.Attribute, ls.AttributeTypes.Value)
+			layer.AddNode(attr)
+			digraph.Connect(root, attr, ls.NewEdge(ls.LayerTerms.AttributeList))
+			for ti, term := range terms {
+				nTerms[ti]++
+				if term.TermCol < 0 || term.TermCol >= len(row) {
+					return nil, ErrColIndexOutOfBounds{For: term.Term, Index: term.TermCol}
+				}
+				data := strings.TrimSpace(row[term.TermCol])
+				if templates[ti] != nil {
+					var out bytes.Buffer
+					if err := templates[ti].Execute(&out, map[string]interface{}{"term": term.Term, "data": data}); err != nil {
+						return nil, err
+					}
+				}
+				if len(data) > 0 {
+					if term.Array {
+						elems := strings.Split(data, term.ArraySeparator)
+						attr.GetProperties()[term.Term] = ls.StringSlicePropertyValue(elems)
+					} else {
+						attr.GetProperties()[term.Term] = ls.StringPropertyValue(data)
+					}
 				}
 			}
 		}

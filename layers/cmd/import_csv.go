@@ -13,88 +13,97 @@
 // limitations under the License.
 package cmd
 
-// import (
-// 	"encoding/csv"
-// 	"encoding/json"
-// 	"io/ioutil"
-// 	"os"
+import (
+	"encoding/csv"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"os"
 
-// 	dec "github.com/cloudprivacylabs/lsa/pkg/csv"
-// 	"github.com/spf13/cobra"
-// )
+	dec "github.com/cloudprivacylabs/lsa/pkg/csv"
+	"github.com/spf13/cobra"
 
-// func init() {
-// 	importCmd.AddCommand(importCSVCmd)
-// 	importCSVCmd.Flags().Bool("noheader", false, "The first row is not a header row")
-// 	importCSVCmd.Flags().String("spec", "", "Import specification JSON file")
-// 	importCSVCmd.MarkFlagRequired("spec")
-// }
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
+)
 
-// var importCSVCmd = &cobra.Command{
-// 	Use:   "csv",
-// 	Short: "Import a CSV file as a schema a slice it into layers",
-// 	Long: `The input CSV file is of the following format:
-// Term1, Term2, Term3, ...
-// value1, value2, value3,...
-// value1, value2, value3,...
+func init() {
+	importCmd.AddCommand(importCSVCmd)
+	importCSVCmd.Flags().String("spec", "", "Import specification JSON file")
+	importCSVCmd.MarkFlagRequired("spec")
+}
 
-// The first line lists the terms in the schema base or the overlay. The
-// values are the values for the terms. A slicing specification
-// file can be supplied to create schema base and overlays.
+var importCSVCmd = &cobra.Command{
+	Use:   "csv",
+	Short: "Import a CSV file as a schema a slice it into layers",
+	Long: `The import specification is as follows:
 
-// {
-//   "attributeIdColumn": <columnIndex>,
-//   "objectType": "<target object type>",
-//   "layers": [
-//     "output": "outputFile",
-//     "type": "SchemaBase or Overlay",
-//     "columns": [
-//        {
-//           "index": 1,
-//           "name": "http://schemas.cloudprivacylabs.com/attributes/attributeName",
-//           "type": "@id, @value, @idlist, @valuelist"
-//        }
-//     ]
-//   ]
-// }
+{
+  "attributeId": { termSpec },
+  "layerType": "Overlay or Schema",
+  "startRow": int (0),
+  "nRows":  int (all rows),
+  "terms": [
+    {termSpec},
+     ...
+  ]
+}
 
-// `,
-// 	Args: cobra.ExactArgs(1),
-// 	Run: func(cmd *cobra.Command, args []string) {
-// 		f, err := os.Open(args[0])
-// 		if err != nil {
-// 			failErr(err)
-// 		}
-// 		records, err := csv.NewReader(f).ReadAll()
-// 		if err != nil {
-// 			failErr(err)
-// 		}
-// 		f.Close()
+where termSpec is:
 
-// 		var spec dec.ImportSpec
-// 		s, _ := cmd.Flags().GetString("spec")
-// 		data, err := ioutil.ReadFile(s)
-// 		if err != nil {
-// 			failErr(err)
-// 		}
-// 		if err := json.Unmarshal(data, &spec); err != nil {
-// 			failErr(err)
-// 		}
-// 		noHeader, _ := cmd.Flags().GetBool("noheader")
+{
+   "term": "string",
+   "column": 0-based column index containing term data,
+   "template": "term Go template, used to compute term value with {{.term}} and {{.data}} variables,
+   "array": "boolean value denoting if the term is an array",
+   "separator": "Array separator char"
+}
 
-// 		if !noHeader {
-// 			records = records[1:]
-// 		}
-// 		overlays, err := dec.Import(spec, records)
-// 		if err != nil {
-// 			failErr(err)
-// 		}
-// 		for i := range overlays {
-// 			data, err := json.MarshalIndent(overlays[i].MarshalExpanded(), "", "  ")
-// 			if err != nil {
-// 				failErr(err)
-// 			}
-// 			ioutil.WriteFile(spec.Layers[i].Output, data, 0664)
-// 		}
-// 	},
-// }
+`,
+	Args: cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		f, err := os.Open(args[0])
+		if err != nil {
+			failErr(err)
+		}
+		records, err := csv.NewReader(f).ReadAll()
+		if err != nil {
+			failErr(err)
+		}
+		f.Close()
+
+		type importSpec struct {
+			AttributeID dec.TermSpec   `json:"attributeId"`
+			LayerType   string         `json:"layerType"`
+			StartRow    int            `json:"startRow"`
+			NRows       int            `json:"nrows"`
+			Terms       []dec.TermSpec `json:"terms"`
+		}
+
+		var spec importSpec
+		s, _ := cmd.Flags().GetString("spec")
+		data, err := ioutil.ReadFile(s)
+		if err != nil {
+			failErr(err)
+		}
+		if err := json.Unmarshal(data, &spec); err != nil {
+			failErr(err)
+		}
+		if spec.LayerType == "Overlay" {
+			spec.LayerType = ls.OverlayTerm
+		} else if spec.LayerType == "Schema" {
+			spec.LayerType = ls.SchemaTerm
+		}
+		layer, err := dec.Import(spec.AttributeID, spec.Terms, spec.StartRow, spec.NRows, records)
+		if err != nil {
+			failErr(err)
+		}
+		if len(spec.LayerType) > 0 {
+			layer.SetLayerType(spec.LayerType)
+		}
+		data, err = json.MarshalIndent(ls.MarshalLayer(layer), "", "  ")
+		if err != nil {
+			failErr(err)
+		}
+		fmt.Println(string(data))
+	},
+}
