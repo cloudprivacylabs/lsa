@@ -17,3 +17,6 @@ require (
 	github.com/spf13/cobra v1.1.3
 	golang.org/x/text v0.3.6
 )
+
+replace github.com/bserdar/digraph => ../../digraph
+                                   

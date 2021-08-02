@@ -21,12 +21,12 @@ import (
 // schema. The Validate function is called with the document node that
 // needs to be validated, and the associated schema node.
 type Validator interface {
-	Validate(DocumentNode, LayerNode) error
+	Validate(docNode, layerNode Node) error
 }
 
 type nopValidator struct{}
 
-func (nopValidator) Validate(DocumentNode, LayerNode) error { return nil }
+func (nopValidator) Validate(docNode, layerNode Node) error { return nil }
 
 // GetAttributeValidator returns a validator implementation for the given validation term
 func GetAttributeValidator(term string) Validator {
@@ -42,14 +42,14 @@ func GetAttributeValidator(term string) Validator {
 }
 
 // ValidateDocumentNode runs the validators for the document node
-func ValidateDocumentNode(node DocumentNode) error {
+func ValidateDocumentNode(node Node) error {
 	// Get the schema
-	schemaNode, _ := node.NextNode(InstanceOfTerm).(LayerNode)
+	schemaNode, _ := node.Next(InstanceOfTerm).(Node)
 	return ValidateDocumentNodeBySchema(node, schemaNode)
 }
 
 // ValidateDocumentNodeBySchema runs the validators for the document node
-func ValidateDocumentNodeBySchema(node DocumentNode, schemaNode LayerNode) error {
+func ValidateDocumentNodeBySchema(node, schemaNode Node) error {
 	if schemaNode == nil {
 		return nil
 	}

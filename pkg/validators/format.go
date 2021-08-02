@@ -29,7 +29,7 @@ func (validator JsonFormatValidator) ValidateValue(value interface{}, format str
 }
 
 // Validate validates the node value if it is non-nil
-func (validator JsonFormatValidator) Validate(docNode ls.DocumentNode, schemaNode ls.LayerNode) error {
+func (validator JsonFormatValidator) Validate(docNode, schemaNode ls.Node) error {
 	if docNode == nil {
 		return nil
 	}

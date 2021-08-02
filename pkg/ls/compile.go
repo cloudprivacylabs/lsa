@@ -15,6 +15,8 @@ package ls
 
 import (
 	"fmt"
+
+	"github.com/bserdar/digraph"
 )
 
 type Compiler struct {
@@ -28,11 +30,11 @@ type Compiler struct {
 type compilerContext struct {
 	targetLayer   *Layer
 	loadedSchemas map[string]*Layer
-	compiled      map[string]LayerNode
+	compiled      map[string]Node
 	blankNodeID   uint
 }
 
-func (c *compilerContext) blankNodeNamer(node LayerNode) {
+func (c *compilerContext) blankNodeNamer(node Node) {
 	node.SetID(fmt.Sprintf("_b:%d", c.blankNodeID))
 	c.blankNodeID++
 }
@@ -62,7 +64,7 @@ func (compiler Compiler) loadSchema(ctx *compilerContext, ref string) (*Layer, e
 func (compiler Compiler) Compile(ref string) (*Layer, error) {
 	ctx := &compilerContext{
 		loadedSchemas: make(map[string]*Layer),
-		compiled:      make(map[string]LayerNode),
+		compiled:      make(map[string]Node),
 	}
 	_, err := compiler.compile(ctx, ref, true)
 	if err != nil {
@@ -75,7 +77,7 @@ func (compiler Compiler) Compile(ref string) (*Layer, error) {
 func (compiler Compiler) CompileSchema(schema *Layer) (*Layer, error) {
 	ctx := &compilerContext{
 		loadedSchemas: map[string]*Layer{schema.GetID(): schema},
-		compiled:      make(map[string]LayerNode),
+		compiled:      make(map[string]Node),
 	}
 	_, err := compiler.compile(ctx, schema.GetID(), true)
 	if err != nil {
@@ -84,7 +86,7 @@ func (compiler Compiler) CompileSchema(schema *Layer) (*Layer, error) {
 	return ctx.targetLayer, nil
 }
 
-func (compiler Compiler) compile(ctx *compilerContext, ref string, topLevel bool) (LayerNode, error) {
+func (compiler Compiler) compile(ctx *compilerContext, ref string, topLevel bool) (Node, error) {
 	var err error
 	// Resolve weak references
 	if compiler.Resolver != nil {
@@ -107,18 +109,14 @@ func (compiler Compiler) compile(ctx *compilerContext, ref string, topLevel bool
 	}
 
 	// Here, scheme is loaded but not compiled
-	// If this is the top-leve, we set the target layer as this schema
-	var compileRoot LayerNode
+	// If this is the top-level, we set the target layer as this schema
+	var compileRoot Node
 	schema.RenameBlankNodes(ctx.blankNodeNamer)
 	if topLevel {
 		ctx.targetLayer = schema
-		compileRoot = ctx.targetLayer.GetObjectInfoNode()
+		compileRoot = ctx.targetLayer.GetSchemaRootNode()
 	} else {
-		compileRoot = schema.GetObjectInfoNode()
-		// Add all nodes except the schema node and the layer node
-		ctx.targetLayer.Import(schema.Graph)
-		// Remove root node
-		schema.GetLayerInfoNode().Remove()
+		compileRoot = schema.GetSchemaRootNode()
 	}
 	if compileRoot == nil {
 		return nil, nil
@@ -140,7 +138,7 @@ func (compiler Compiler) compile(ctx *compilerContext, ref string, topLevel bool
 
 func (compiler Compiler) compileTerms(layer *Layer) error {
 	for nodes := layer.AllNodes(); nodes.HasNext(); {
-		node := nodes.Next().(LayerNode)
+		node := nodes.Next().(Node)
 		// Compile all non-attribute nodes
 		if !node.IsAttributeNode() {
 			if err := GetNodeCompiler(node.GetID()).CompileNode(node); err != nil {
@@ -155,9 +153,9 @@ func (compiler Compiler) compileTerms(layer *Layer) error {
 			if result != nil {
 				node.GetCompiledDataMap()[k] = result
 			}
-			for edges := node.AllOutgoingEdges(); edges.HasNext(); {
-				edge := edges.Next().(LayerEdge)
-				if err := GetEdgeCompiler(edge.GetLabel()).CompileEdge(edge); err != nil {
+			for edges := node.GetAllOutgoingEdges(); edges.HasNext(); {
+				edge := edges.Next().(Edge)
+				if err := GetEdgeCompiler(edge.GetLabelStr()).CompileEdge(edge); err != nil {
 					return err
 				}
 				for k, v := range edge.GetProperties() {
@@ -175,10 +173,10 @@ func (compiler Compiler) compileTerms(layer *Layer) error {
 	return nil
 }
 
-func (compiler Compiler) resolveReferences(ctx *compilerContext, root LayerNode) error {
+func (compiler Compiler) resolveReferences(ctx *compilerContext, root Node) error {
 	// Collect all reference nodes
-	references := make([]LayerNode, 0)
-	ForEachAttributeNode(root, func(n LayerNode) bool {
+	references := make([]Node, 0)
+	ForEachAttributeNode(root, func(n Node, _ []Node) bool {
 		if n.HasType(AttributeTypes.Reference) {
 			references = append(references, n)
 		}
@@ -193,7 +191,7 @@ func (compiler Compiler) resolveReferences(ctx *compilerContext, root LayerNode)
 	return nil
 }
 
-func (compiler Compiler) resolveReference(ctx *compilerContext, node LayerNode) error {
+func (compiler Compiler) resolveReference(ctx *compilerContext, node Node) error {
 	properties := node.GetProperties()
 	ref := properties[LayerTerms.Reference].AsString()
 	delete(properties, LayerTerms.Reference)
@@ -206,7 +204,6 @@ func (compiler Compiler) resolveReference(ctx *compilerContext, node LayerNode) 
 			return err
 		}
 	}
-	// Here, compiled is already imported into the target graph
 	// This is no longer a reference node
 	node.RemoveTypes(AttributeTypes.Reference)
 	node.AddTypes(compiled.GetTypes()...)
@@ -215,18 +212,18 @@ func (compiler Compiler) resolveReference(ctx *compilerContext, node LayerNode) 
 		return err
 	}
 	// Attach the node to all the children of the compiled node
-	for edges := compiled.AllOutgoingEdges(); edges.HasNext(); {
-		edge := edges.Next().(LayerEdge)
-		ctx.targetLayer.AddEdge(node, edge.To(), edge.Clone())
+	for edges := compiled.GetAllOutgoingEdges(); edges.HasNext(); {
+		edge := edges.Next().(Edge)
+		digraph.Connect(node, edge.GetTo(), edge.Clone())
 	}
 	return nil
 }
 
-func (compiler Compiler) resolveCompositions(root LayerNode) error {
+func (compiler Compiler) resolveCompositions(root Node) error {
 	// Process all composition nodes
-	completed := map[LayerNode]struct{}{}
+	completed := map[Node]struct{}{}
 	var err error
-	ForEachAttributeNode(root, func(n LayerNode) bool {
+	ForEachAttributeNode(root, func(n Node, _ []Node) bool {
 		if n.HasType(AttributeTypes.Composite) {
 			if _, processed := completed[n]; !processed {
 				if x := compiler.resolveComposition(n, completed); x != nil {
@@ -240,22 +237,33 @@ func (compiler Compiler) resolveCompositions(root LayerNode) error {
 	return err
 }
 
-func (compiler Compiler) resolveComposition(compositeNode LayerNode, completed map[LayerNode]struct{}) error {
+func copyCompiled(target, source map[interface{}]interface{}) {
+	for k, v := range source {
+		target[k] = v
+	}
+}
+
+func (compiler Compiler) resolveComposition(compositeNode Node, completed map[Node]struct{}) error {
 	completed[compositeNode] = struct{}{}
 	// At the end of this process, composite node will be converted into an object node
-	for edges := compositeNode.AllOutgoingEdgesWithLabel(LayerTerms.AllOf); edges.HasNext(); {
-		allOfEdge := edges.Next().(LayerEdge)
+	for edges := compositeNode.GetAllOutgoingEdgesWithLabel(LayerTerms.AllOf); edges.HasNext(); {
+		allOfEdge := edges.Next().(Edge)
 	top:
-		component := allOfEdge.To().(LayerNode)
+		component := allOfEdge.GetTo().(Node)
 		switch {
 		case component.HasType(AttributeTypes.Object):
 			//  Input:
 			//    compositeNode ---> component --> attributes
 			//  Output:
 			//    compositeNode --> attributes
-			for edges := component.AllOutgoingEdges(); edges.HasNext(); {
-				edge := edges.Next()
-				edge.SetFrom(compositeNode)
+			rmv := make([]Edge, 0)
+			for edges := component.GetAllOutgoingEdges(); edges.HasNext(); {
+				edge := edges.Next().(Edge)
+				digraph.Connect(compositeNode, edge.GetTo(), edge.Clone())
+				rmv = append(rmv, edge)
+			}
+			for _, e := range rmv {
+				component.RemoveOutgoingEdge(e)
 			}
 			// Copy all properties of the component node to the composite node
 			if err := ComposeProperties(compositeNode.GetProperties(), component.GetProperties()); err != nil {
@@ -270,7 +278,9 @@ func (compiler Compiler) resolveComposition(compositeNode LayerNode, completed m
 			component.HasType(AttributeTypes.Array) ||
 			component.HasType(AttributeTypes.Polymorphic):
 			// This node becomes an attribute of the main node.
-			allOfEdge.SetLabel(LayerTerms.AttributeList)
+			newEdge := allOfEdge.CloneWithLabel(LayerTerms.AttributeList)
+			compositeNode.RemoveOutgoingEdge(allOfEdge)
+			digraph.Connect(compositeNode, component, newEdge)
 
 		case component.HasType(AttributeTypes.Composite):
 			if err := compiler.resolveComposition(component, completed); err != nil {

@@ -23,13 +23,13 @@ import (
 
 // A NodePredicate determines if a node is selected or not.
 type NodePredicate interface {
-	EvaluateNode(digraph.Node) (bool, error)
+	EvaluateNode(Node) (bool, error)
 }
 
 // FalseNodePredicate returns false
 type FalseNodePredicate struct{}
 
-func (FalseNodePredicate) EvaluateNode(digraph.Node) (bool, error) { return false, nil }
+func (FalseNodePredicate) EvaluateNode(Node) (bool, error) { return false, nil }
 
 func (FalseNodePredicate) MarshalJSON() ([]byte, error) {
 	return json.Marshal(false)
@@ -38,7 +38,7 @@ func (FalseNodePredicate) MarshalJSON() ([]byte, error) {
 // TrueNodePredicate returns true
 type TrueNodePredicate struct{}
 
-func (TrueNodePredicate) EvaluateNode(digraph.Node) (bool, error) { return true, nil }
+func (TrueNodePredicate) EvaluateNode(Node) (bool, error) { return true, nil }
 
 func (TrueNodePredicate) MarshalJSON() ([]byte, error) {
 	return json.Marshal(true)
@@ -73,7 +73,7 @@ func NewANDNodePredicate(options ...NodePredicate) ANDNodePredicate {
 }
 
 // EvaluateNode returns true only if all options of the predicate return true
-func (p ANDNodePredicate) EvaluateNode(node digraph.Node) (bool, error) {
+func (p ANDNodePredicate) EvaluateNode(node Node) (bool, error) {
 	for _, option := range p.Options {
 		v, err := option.EvaluateNode(node)
 		if err != nil {
@@ -105,7 +105,7 @@ func NewNodeTypePredicate(t string) NodeTypePredicate {
 }
 
 // EvaluateNode selects node based on the given type
-func (p NodeTypePredicate) EvaluateNode(node digraph.Node) (bool, error) {
+func (p NodeTypePredicate) EvaluateNode(node Node) (bool, error) {
 	type typer interface {
 		HasType(string) bool
 	}
@@ -135,8 +135,8 @@ func NewNodeIDPredicate(id string) NodeIDPredicate {
 }
 
 // EvaluateNode selects node based on the given id
-func (p NodeIDPredicate) EvaluateNode(node digraph.Node) (bool, error) {
-	s := node.Label()
+func (p NodeIDPredicate) EvaluateNode(node Node) (bool, error) {
+	s := node.GetLabel()
 	str, ok := s.(string)
 	if !ok {
 		return false, nil
@@ -175,8 +175,8 @@ func (p *NodeIDGlobPredicate) compile() error {
 }
 
 // EvaluateNode selects node based on the given glob
-func (p *NodeIDGlobPredicate) EvaluateNode(node digraph.Node) (bool, error) {
-	s := node.Label()
+func (p *NodeIDGlobPredicate) EvaluateNode(node Node) (bool, error) {
+	s := node.GetLabel()
 	str, ok := s.(string)
 	if !ok {
 		return false, nil
@@ -205,11 +205,11 @@ type NodeLinkedPredicate struct {
 }
 
 // EvaluateNode checks if the node is connected to the target node
-func (p *NodeLinkedPredicate) EvaluateNode(node digraph.Node) (bool, error) {
+func (p *NodeLinkedPredicate) EvaluateNode(node Node) (bool, error) {
 	if p.Label == nil {
-		for edges := node.AllOutgoingEdges(); edges.HasNext(); {
+		for edges := node.GetAllOutgoingEdges(); edges.HasNext(); {
 			edge := edges.Next()
-			r, err := p.TargetPredicate.EvaluateNode(edge.To())
+			r, err := p.TargetPredicate.EvaluateNode(edge.GetTo().(Node))
 			if err != nil {
 				return false, err
 			}
@@ -218,9 +218,9 @@ func (p *NodeLinkedPredicate) EvaluateNode(node digraph.Node) (bool, error) {
 			}
 		}
 	} else {
-		for edges := node.AllOutgoingEdgesWithLabel(*p.Label); edges.HasNext(); {
+		for edges := node.GetAllOutgoingEdgesWithLabel(*p.Label); edges.HasNext(); {
 			edge := edges.Next()
-			r, err := p.TargetPredicate.EvaluateNode(edge.To())
+			r, err := p.TargetPredicate.EvaluateNode(edge.GetTo().(Node))
 			if err != nil {
 				return false, err
 			}
@@ -296,10 +296,10 @@ func UnmarshalNodePredicate(in []byte) (NodePredicate, error) {
 }
 
 // SelectNodes selects some nodes from the graph based on predicate
-func SelectNodes(in *digraph.Graph, predicate NodePredicate) ([]digraph.Node, error) {
-	ret := make([]digraph.Node, 0)
+func SelectNodes(in *digraph.Graph, predicate NodePredicate) ([]Node, error) {
+	ret := make([]Node, 0)
 	for nodes := in.AllNodes(); nodes.HasNext(); {
-		node := nodes.Next()
+		node := nodes.Next().(Node)
 		include, err := predicate.EvaluateNode(node)
 		if err != nil {
 			return nil, err
@@ -312,11 +312,11 @@ func SelectNodes(in *digraph.Graph, predicate NodePredicate) ([]digraph.Node, er
 }
 
 // SelectNodesUnder selects some nodes accessible from the root based on the predicate
-func SelectNodesUnder(root digraph.Node, predicate NodePredicate) ([]digraph.Node, error) {
-	ret := make([]digraph.Node, 0)
-	seen := make(map[digraph.Node]struct{})
-	var selectNodes func(digraph.Node) error
-	selectNodes = func(n digraph.Node) error {
+func SelectNodesUnder(root Node, predicate NodePredicate) ([]Node, error) {
+	ret := make([]Node, 0)
+	seen := make(map[Node]struct{})
+	var selectNodes func(Node) error
+	selectNodes = func(n Node) error {
 		if _, ok := seen[n]; ok {
 			return nil
 		}
@@ -328,9 +328,9 @@ func SelectNodesUnder(root digraph.Node, predicate NodePredicate) ([]digraph.Nod
 		if include {
 			ret = append(ret, n)
 		}
-		for edges := n.AllOutgoingEdges(); edges.HasNext(); {
+		for edges := n.GetAllOutgoingEdges(); edges.HasNext(); {
 			edge := edges.Next()
-			if err := selectNodes(edge.To()); err != nil {
+			if err := selectNodes(edge.GetTo().(Node)); err != nil {
 				return err
 			}
 		}

@@ -120,7 +120,7 @@ func DefaultOptions() Options {
 }
 
 // SchemaNodeRenderer renders the node as an HTML table
-func SchemaNodeRenderer(ID string, node ls.LayerNode, options *Options) string {
+func SchemaNodeRenderer(ID string, node ls.Node, options *Options) string {
 	to := options.Table
 	to.ID = ID
 	wr := &bytes.Buffer{}
@@ -141,7 +141,7 @@ func SchemaNodeRenderer(ID string, node ls.LayerNode, options *Options) string {
 	return wr.String()
 }
 
-func DocNodeRenderer(ID string, node ls.DocumentNode, options *Options) string {
+func DocNodeRenderer(ID string, node ls.Node, options *Options) string {
 	to := options.Table
 	to.ID = ID
 	wr := &bytes.Buffer{}
@@ -150,7 +150,7 @@ func DocNodeRenderer(ID string, node ls.DocumentNode, options *Options) string {
 
 	io.WriteString(wr, "<TR>")
 	io.WriteString(wr, options.TD.String())
-	io.WriteString(wr, fmt.Sprint(node.Label()))
+	io.WriteString(wr, node.GetID())
 
 	io.WriteString(wr, "</TD></TR>")
 
@@ -174,13 +174,14 @@ type Renderer struct {
 	Options Options
 }
 
-func (r Renderer) NodeRenderer(ID string, node digraph.Node, wr io.Writer) error {
-	if sch, ok := node.(ls.LayerNode); ok {
-		_, err := io.WriteString(wr, SchemaNodeRenderer(ID, sch, &r.Options))
+func (r Renderer) NodeRenderer(ID string, n digraph.Node, wr io.Writer) error {
+	node := n.(ls.Node)
+	if node.HasType(ls.AttributeTypes.Attribute) {
+		_, err := io.WriteString(wr, SchemaNodeRenderer(ID, node, &r.Options))
 		return err
 	}
-	if doc, ok := node.(ls.DocumentNode); ok {
-		_, err := io.WriteString(wr, DocNodeRenderer(ID, doc, &r.Options))
+	if node.HasType(ls.DocumentNodeTerm) {
+		_, err := io.WriteString(wr, DocNodeRenderer(ID, node, &r.Options))
 		return err
 	}
 	return digraph.DefaultDOTNodeRender(ID, node, wr)

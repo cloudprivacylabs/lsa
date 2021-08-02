@@ -16,8 +16,10 @@ package ls
 import (
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 
+	"github.com/bserdar/digraph"
 	"github.com/piprate/json-gold/ld"
 )
 
@@ -26,8 +28,7 @@ type inputNode struct {
 	id        string
 	types     []string
 	processed bool
-	graphNode LayerNode
-	docNode   DocumentNode
+	graphNode Node
 }
 
 func getNodesFromGraph(in interface{}) (map[string]*inputNode, error) {
@@ -165,7 +166,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 					}
 				}
 			}
-			for _, attr := range attrArray {
+			for index, attr := range attrArray {
 				// This must be a link
 				follow := GetNodeID(attr)
 				attrNode := allNodes[follow]
@@ -175,7 +176,9 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 				if err := unmarshalAttributeNode(target, attrNode, allNodes); err != nil {
 					return err
 				}
-				target.AddEdge(inode.graphNode, attrNode.graphNode, NewLayerEdge(k))
+				edge := NewEdge(k)
+				edge.SetIndex(index)
+				digraph.Connect(inode.graphNode, attrNode.graphNode, edge)
 			}
 
 		case LayerTerms.Reference:
@@ -202,7 +205,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 				if err := unmarshalAttributeNode(target, itemsNode, allNodes); err != nil {
 					return err
 				}
-				target.AddEdge(inode.graphNode, itemsNode.graphNode, NewLayerEdge(k))
+				digraph.Connect(inode.graphNode, itemsNode.graphNode, NewEdge(k))
 			default:
 				return MakeErrInvalidInput(inode.id, "Multiple array items")
 			}
@@ -214,11 +217,11 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 				attribute.AddTypes(AttributeTypes.Polymorphic)
 			}
 			// m must be a list
-			elements := GetListElements(val)
+			elements := GetLDListElements(val)
 			if elements == nil {
 				return MakeErrInvalidInput(inode.id, "@list expected")
 			}
-			for _, element := range elements {
+			for index, element := range elements {
 				nnode := allNodes[GetNodeID(element)]
 				if nnode == nil {
 					return MakeErrInvalidInput(inode.id, "Cannot follow link")
@@ -226,7 +229,9 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 				if err := unmarshalAttributeNode(target, nnode, allNodes); err != nil {
 					return err
 				}
-				target.AddEdge(inode.graphNode, nnode.graphNode, NewLayerEdge(k))
+				edge := NewEdge(k)
+				edge.SetIndex(index)
+				digraph.Connect(inode.graphNode, nnode.graphNode, edge)
 			}
 		}
 	}
@@ -290,7 +295,7 @@ func unmarshalAnnotations(target *Layer, node *inputNode, allNodes map[string]*i
 							if referencedNode == nil {
 								setValue(id)
 							} else {
-								target.AddEdge(node.graphNode, referencedNode.graphNode, NewLayerEdge(key))
+								digraph.Connect(node.graphNode, referencedNode.graphNode, NewEdge(key))
 							}
 						}
 					}
@@ -305,13 +310,11 @@ func MarshalLayer(layer *Layer) interface{} {
 	return []interface{}{marshalNode(layer.GetLayerInfoNode())}
 }
 
-func marshalNode(node LayerNode) interface{} {
+func marshalNode(node Node) interface{} {
 	m := make(map[string]interface{})
-	if node.Label() != nil {
-		s := node.Label().(string)
-		if len(s) > 0 {
-			m["@id"] = s
-		}
+	s := node.GetID()
+	if len(s) > 0 {
+		m["@id"] = s
 	}
 	t := node.GetTypes()
 	if len(t) > 0 {
@@ -336,15 +339,18 @@ func marshalNode(node LayerNode) interface{} {
 		}
 	}
 
-	edges := node.AllOutgoingEdges()
-	for edges.HasNext() {
-		edge := edges.Next().(LayerEdge)
-		toNode := marshalNode(edge.To().(LayerNode))
-		existing := m[edge.Label().(string)]
-		switch edge.Label() {
+	edges := node.GetAllOutgoingEdges().All()
+	sort.Slice(edges, func(i, j int) bool {
+		return edges[i].(Edge).GetIndex() < edges[j].(Edge).GetIndex()
+	})
+	for _, e := range edges {
+		edge := e.(Edge)
+		toNode := marshalNode(edge.GetTo().(Node))
+		existing := m[edge.GetLabelStr()]
+		switch edge.GetLabelStr() {
 		case LayerTerms.AttributeList, LayerTerms.AllOf, LayerTerms.OneOf:
 			if existing == nil {
-				m[edge.Label().(string)] = []interface{}{map[string]interface{}{"@list": []interface{}{toNode}}}
+				m[edge.GetLabelStr()] = []interface{}{map[string]interface{}{"@list": []interface{}{toNode}}}
 			} else {
 				listMap := existing.([]interface{})[0].(map[string]interface{})
 				listMap["@list"] = append(listMap["@list"].([]interface{}), toNode)
@@ -362,9 +368,9 @@ func marshalNode(node LayerNode) interface{} {
 
 		default:
 			if existing == nil {
-				m[edge.Label().(string)] = []interface{}{toNode}
+				m[edge.GetLabelStr()] = []interface{}{toNode}
 			} else {
-				m[edge.Label().(string)] = append(m[edge.Label().(string)].([]interface{}), toNode)
+				m[edge.GetLabelStr()] = append(m[edge.GetLabelStr()].([]interface{}), toNode)
 			}
 		}
 	}
@@ -394,7 +400,7 @@ func UnmarshalSchemaManifest(in interface{}) (*SchemaManifest, error) {
 		case SchemaBaseTerm:
 			ret.Schema = GetNodeID(v)
 		case OverlaysTerm:
-			for _, x := range GetListElements(v) {
+			for _, x := range GetLDListElements(v) {
 				ret.Overlays = append(ret.Overlays, GetNodeID(x))
 			}
 		}

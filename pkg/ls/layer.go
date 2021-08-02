@@ -26,13 +26,13 @@ import (
 // object defined by the layer.
 type Layer struct {
 	*digraph.Graph
-	layerInfo LayerNode
+	layerInfo Node
 }
 
 // NewLayer returns a new empty layer
 func NewLayer() *Layer {
 	ret := &Layer{Graph: digraph.New()}
-	ret.layerInfo = NewLayerNode("")
+	ret.layerInfo = NewNode("")
 	ret.AddNode(ret.layerInfo)
 	return ret
 }
@@ -41,32 +41,32 @@ func NewLayer() *Layer {
 func (l *Layer) Clone() *Layer {
 	ret := &Layer{Graph: digraph.New()}
 	nodeMap := digraph.Copy(ret.Graph, l.Graph, func(node digraph.Node) digraph.Node {
-		return node.(LayerNode).Clone()
+		return node.(Node).Clone()
 	},
 		func(edge digraph.Edge) digraph.Edge {
-			return edge.(LayerEdge).Clone()
+			return edge.(Edge).Clone()
 		})
 	if x := nodeMap[l.layerInfo]; x != nil {
-		ret.layerInfo = x.(LayerNode)
+		ret.layerInfo = x.(Node)
 	}
 	return ret
 }
 
 // GetLayerInfoNode returns the root node of the schema
-func (l *Layer) GetLayerInfoNode() LayerNode { return l.layerInfo }
+func (l *Layer) GetLayerInfoNode() Node { return l.layerInfo }
 
-// GetObjectInfoNode returns the root node of the object defined by the schema
-func (l *Layer) GetObjectInfoNode() LayerNode {
-	x := l.layerInfo.NextNode(LayerRootTerm)
+// GetSchemaRootNode returns the root node of the object defined by the schema
+func (l *Layer) GetSchemaRootNode() Node {
+	x := l.layerInfo.Next(LayerRootTerm)
 	if x == nil {
 		return nil
 	}
-	return x.(LayerNode)
+	return x.(Node)
 }
 
 // GetID returns the ID of the layer
 func (l *Layer) GetID() string {
-	return l.layerInfo.Label().(string)
+	return l.layerInfo.GetLabel().(string)
 }
 
 // SetID sets the ID of the layer
@@ -100,7 +100,7 @@ func (l *Layer) SetLayerType(t string) {
 // the default encoding is used, which does not perform any character
 // translation
 func (l *Layer) GetEncoding() (encoding.Encoding, error) {
-	oi := l.GetObjectInfoNode()
+	oi := l.GetSchemaRootNode()
 	var enc string
 	if oi != nil {
 		enc = oi.GetProperties()[CharacterEncodingTerm].AsString()
@@ -113,8 +113,8 @@ func (l *Layer) GetEncoding() (encoding.Encoding, error) {
 
 // NewNode creates a new node for the layer with the given ID and
 // types, and adds the node to the layer
-func (l *Layer) NewNode(ID string, types ...string) LayerNode {
-	ret := NewLayerNode(ID, types...)
+func (l *Layer) NewNode(ID string, types ...string) Node {
+	ret := NewNode(ID, types...)
 	l.AddNode(ret)
 	return ret
 }
@@ -132,20 +132,20 @@ func (l *Layer) GetTargetType() string {
 // SetTargetType sets the targe types of the layer
 func (l *Layer) SetTargetType(t string) {
 	if oldT := l.GetTargetType(); len(oldT) > 0 {
-		if oin := l.GetObjectInfoNode(); oin != nil {
+		if oin := l.GetSchemaRootNode(); oin != nil {
 			oin.RemoveTypes(oldT)
 		}
 	}
 	l.layerInfo.GetProperties()[TargetType] = StringPropertyValue(t)
-	if oin := l.GetObjectInfoNode(); oin != nil {
+	if oin := l.GetSchemaRootNode(); oin != nil {
 		oin.AddTypes(t)
 	}
 }
 
 // ForEachAttribute calls f with each attribute node, depth first. If
 // f returns false, iteration stops
-func (l *Layer) ForEachAttribute(f func(LayerNode) bool) bool {
-	oi := l.GetObjectInfoNode()
+func (l *Layer) ForEachAttribute(f func(Node, []Node) bool) bool {
+	oi := l.GetSchemaRootNode()
 	if oi != nil {
 		return ForEachAttributeNode(oi, f)
 	}
@@ -154,9 +154,9 @@ func (l *Layer) ForEachAttribute(f func(LayerNode) bool) bool {
 
 // RenameBlankNodes will call namerFunc for each blank node, so they
 // can be renamed and won't cause name clashes
-func (l *Layer) RenameBlankNodes(namer func(LayerNode)) {
+func (l *Layer) RenameBlankNodes(namer func(Node)) {
 	for nodes := l.AllNodes(); nodes.HasNext(); {
-		node := nodes.Next().(LayerNode)
+		node := nodes.Next().(Node)
 		id := node.GetID()
 		if len(id) == 0 || id[0] == '_' {
 			namer(node)
@@ -164,31 +164,62 @@ func (l *Layer) RenameBlankNodes(namer func(LayerNode)) {
 	}
 }
 
-// ForEachAttributeNode calls f with each attribute node, depth
-// first. If f returns false, iteration stops. This function visits each node only once
-func ForEachAttributeNode(root LayerNode, f func(LayerNode) bool) bool {
-	return forEachAttributeNode(root, f, map[LayerNode]struct{}{})
+// GetPath returns the path to the given attribute node
+func (l *Layer) GetAttributePath(node Node) []Node {
+	var ret []Node
+	ForEachAttributeNode(l.GetSchemaRootNode(), func(n Node, path []Node) bool {
+		if n == node {
+			ret = path
+			return false
+		}
+		return true
+	})
+	return ret
 }
 
-func forEachAttributeNode(root LayerNode, f func(LayerNode) bool, loop map[LayerNode]struct{}) bool {
+// FindAttributeByID returns the attribute and the path to it
+func (l *Layer) FindAttributeByID(id string) (Node, []Node) {
+	var node Node
+	var path []Node
+	ForEachAttributeNode(l.GetSchemaRootNode(), func(n Node, p []Node) bool {
+		if n.GetID() == id {
+			node = n
+			path = p
+			return false
+		}
+		return true
+	})
+	return node, path
+}
+
+// ForEachAttributeNode calls f with each attribute node, depth
+// first. Path contains all the nodes from root to the current
+// node. If f returns false, iteration stops. This function visits
+// each node only once
+func ForEachAttributeNode(root Node, f func(node Node, path []Node) bool) bool {
+	return forEachAttributeNode(root, make([]Node, 0, 32), f, map[Node]struct{}{})
+}
+
+func forEachAttributeNode(root Node, path []Node, f func(Node, []Node) bool, loop map[Node]struct{}) bool {
 	if _, exists := loop[root]; exists {
 		return true
 	}
 	loop[root] = struct{}{}
 
+	path = append(path, root)
 	if root.IsAttributeNode() {
-		if !f(root) {
+		if !f(root, path) {
 			return false
 		}
 	}
-	for outgoing := root.AllOutgoingEdges(); outgoing.HasNext(); {
-		edge := outgoing.Next().(LayerEdge)
+	for outgoing := root.GetAllOutgoingEdges(); outgoing.HasNext(); {
+		edge := outgoing.Next().(Edge)
 		if !edge.IsAttributeTreeEdge() {
 			continue
 		}
-		next := edge.To().(LayerNode)
+		next := edge.GetTo().(Node)
 		if next.HasType(AttributeTypes.Attribute) {
-			if !forEachAttributeNode(next, f, loop) {
+			if !forEachAttributeNode(next, path, f, loop) {
 				return false
 			}
 		}

@@ -64,43 +64,43 @@ func TestCompose(t *testing.T) {
 	})
 }
 
-// // func TestOverride(t *testing.T) {
-// // 	base := expand(t, `{
-// // "@context": "../../schemas/ls.jsonld",
-// // "@type":"Schema",
-// // "attributes": [
-// // 	{
-// //  	"@id":  "attr1" ,
-// //   "@type": "Value",
-// // 	"type":"string"
-// //  }
-// //  ]
-// // }`)
-// // 	ovl := expand(t, `{
-// // "@context": "../../schemas/ls.jsonld",
-// // "@type":"Overlay",
-// // "attributes": [
-// // 	{
-// //  	"@id":  "attr1" ,
-// //   "@type": "Value",
-// // 	"type":"int"
-// //  }
-// //  ]
-// // }`)
-// // 	baseattr := getLayer(base)
-// // 	ovlattr := getLayer(ovl)
-// // 	err := baseattr.Compose(ComposeOptions{}, Terms, ovlattr)
-// // 	if err != nil {
-// // 		t.Error(err)
-// // 	}
-// // 	base = baseattr.MarshalExpanded().([]interface{})
-// // 	t.Logf("%+v", base[0])
-// // 	//attrBase := base[0].(map[string]interface{})[LayerTerms.Attributes.GetTerm()]
-// // 	item := baseattr.Index["attr1"]
-// // 	if GetNodeValue(item.Values[AttributeAnnotations.Type.GetTerm()].([]interface{})[0]) != "int" {
-// // 		t.Errorf("Expecting int")
-// // 	}
-// // 	if len(item.Values[AttributeAnnotations.Type.GetTerm()].([]interface{})) != 1 {
-// // 		t.Errorf("Expecting 1 elements")
-// // 	}
-// // }
+// func TestOverride(t *testing.T) {
+// 	base := expand(t, `{
+// "@context": "../../schemas/ls.jsonld",
+// "@type":"Schema",
+// "attributes": [
+// 	{
+//  	"@id":  "attr1" ,
+//   "@type": "Value",
+// 	"type":"string"
+//  }
+//  ]
+// }`)
+// 	ovl := expand(t, `{
+// "@context": "../../schemas/ls.jsonld",
+// "@type":"Overlay",
+// "attributes": [
+// 	{
+//  	"@id":  "attr1" ,
+//   "@type": "Value",
+// 	"type":"int"
+//  }
+//  ]
+// }`)
+// 	baseattr := getLayer(base)
+// 	ovlattr := getLayer(ovl)
+// 	err := baseattr.Compose(ComposeOptions{}, Terms, ovlattr)
+// 	if err != nil {
+// 		t.Error(err)
+// 	}
+// 	base = baseattr.MarshalExpanded().([]interface{})
+// 	t.Logf("%+v", base[0])
+// 	//attrBase := base[0].(map[string]interface{})[LayerTerms.Attributes.GetTerm()]
+// 	item := baseattr.Index["attr1"]
+// 	if GetNodeValue(item.Values[AttributeAnnotations.Type.GetTerm()].([]interface{})[0]) != "int" {
+// 		t.Errorf("Expecting int")
+// 	}
+// 	if len(item.Values[AttributeAnnotations.Type.GetTerm()].([]interface{})) != 1 {
+// 		t.Errorf("Expecting 1 elements")
+// 	}
+// }

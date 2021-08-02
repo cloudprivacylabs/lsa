@@ -57,7 +57,7 @@ func deepEqual(i1, i2 interface{}) error {
 		for k, v := range m1 {
 			val, exists := m2[k]
 			if !exists {
-				return fmt.Errorf("Missing key %s", k)
+				return fmt.Errorf("Missing key %s in %v/%v", k, m1, m2)
 			}
 			if err := deepEqual(v, val); err != nil {
 				return err

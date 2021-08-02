@@ -19,6 +19,101 @@ import (
 	"github.com/bserdar/digraph"
 )
 
+// GetNodeTypes returns the node @type. The argument must be a map
+func GetNodeTypes(node interface{}) []string {
+	m, ok := node.(map[string]interface{})
+	if !ok {
+		return nil
+	}
+	arr, ok := m["@type"].([]interface{})
+	if ok {
+		ret := make([]string, 0, len(arr))
+		for _, x := range arr {
+			s, _ := x.(string)
+			if len(s) > 0 {
+				ret = append(ret, s)
+			}
+		}
+		return ret
+	}
+	return nil
+}
+
+// GetKeyValue returns the value of the key in the node. The node must
+// be a map
+func GetKeyValue(key string, node interface{}) (interface{}, bool) {
+	var m map[string]interface{}
+	arr, ok := node.([]interface{})
+	if ok {
+		if len(arr) == 1 {
+			m, _ = arr[0].(map[string]interface{})
+		}
+	} else {
+		m, _ = node.(map[string]interface{})
+	}
+	if m == nil {
+		return "", false
+	}
+	v, ok := m[key]
+	return v, ok
+}
+
+// GetStringValue returns a string value from the node with the
+// key. The node must be a map
+func GetStringValue(key string, node interface{}) string {
+	v, _ := GetKeyValue(key, node)
+	if v == nil {
+		return ""
+	}
+	return v.(string)
+}
+
+// GetNodeID returns the node @id. The argument must be a map
+func GetNodeID(node interface{}) string {
+	return GetStringValue("@id", node)
+}
+
+// GetLDListElements returns the elements of a @list node. The input can
+// be a [{"@list":elements}] or {@list:elements}. If the input cannot
+// be interpreted as a list, returns nil
+func GetLDListElements(node interface{}) []interface{} {
+	var m map[string]interface{}
+	if arr, ok := node.([]interface{}); ok {
+		if len(arr) == 1 {
+			m, _ = arr[0].(map[string]interface{})
+		}
+	}
+	if m == nil {
+		m, _ = node.(map[string]interface{})
+	}
+	if len(m) == 0 {
+		return []interface{}{}
+	}
+	lst, ok := m["@list"]
+	if !ok {
+		return nil
+	}
+	elements, ok := lst.([]interface{})
+	if !ok {
+		return nil
+	}
+	return elements
+}
+
+// If in is a @list, returns its elements
+func DescendToListElements(in []interface{}) []interface{} {
+	if len(in) == 1 {
+		if m, ok := in[0].(map[string]interface{}); ok {
+			if l, ok := m["@list"]; ok {
+				if a, ok := l.([]interface{}); ok {
+					return a
+				}
+			}
+		}
+	}
+	return in
+}
+
 // LDMarshaler renders a graph in JSON-LD flattened format
 type LDMarshaler struct {
 	// If set, generates node identifiers from the given node. It should
@@ -28,12 +123,12 @@ type LDMarshaler struct {
 	//
 	// If not set, the default generator function uses the string node
 	// id, or _b:<n> if the node does not have an id.
-	NodeIDGeneratorFunc func(digraph.Node) string
+	NodeIDGeneratorFunc func(Node) string
 
 	// If set, generates edge labels for the given edge. If it is not set,
 	// the default is to use the edge label. If edge does not have a
 	// label,
-	EdgeLabelGeneratorFunc func(digraph.Edge) string
+	EdgeLabelGeneratorFunc func(Edge) string
 }
 
 func (rd *LDMarshaler) Marshal(input *digraph.Graph) interface{} {
@@ -43,14 +138,14 @@ func (rd *LDMarshaler) Marshal(input *digraph.Graph) interface{} {
 	}
 	blankNodeId := 0
 	// Assign IDs to all nodes
-	nodeIdMap := make(map[digraph.Node]outputNode)
+	nodeIdMap := make(map[Node]outputNode)
 	for nodes := input.AllNodes(); nodes.HasNext(); {
-		node := nodes.Next()
+		node := nodes.Next().(Node)
 		var idstr string
 		if rd.NodeIDGeneratorFunc != nil {
 			idstr = rd.NodeIDGeneratorFunc(node)
 		} else {
-			id := node.Label()
+			id := node.GetLabel()
 			if id == nil {
 				idstr = fmt.Sprintf("_b:%d", blankNodeId)
 				blankNodeId++
@@ -69,9 +164,8 @@ func (rd *LDMarshaler) Marshal(input *digraph.Graph) interface{} {
 
 	// Process the properties
 	for gnode, onode := range nodeIdMap {
-		switch n := gnode.(type) {
-		case LayerNode:
-			t := n.GetTypes()
+		if gnode.IsAttributeNode() {
+			t := gnode.GetTypes()
 			if len(t) > 0 {
 				arr := make([]interface{}, 0, len(t))
 				for _, x := range t {
@@ -79,8 +173,8 @@ func (rd *LDMarshaler) Marshal(input *digraph.Graph) interface{} {
 				}
 				onode.ldNode["@type"] = arr
 			}
-		case DocumentNode:
-			if v := n.GetValue(); v != nil {
+		} else if gnode.IsDocumentNode() {
+			if v := gnode.GetValue(); v != nil {
 				onode.ldNode[AttributeValueTerm] = v
 			}
 			types := onode.ldNode["@type"]
@@ -117,13 +211,13 @@ func (rd *LDMarshaler) Marshal(input *digraph.Graph) interface{} {
 
 	// Process outgoing edges
 	for gnode, onode := range nodeIdMap {
-		for edges := gnode.AllOutgoingEdges(); edges.HasNext(); {
-			edge := edges.Next()
+		for edges := gnode.GetAllOutgoingEdges(); edges.HasNext(); {
+			edge := edges.Next().(Edge)
 			var labelStr string
 			if rd.EdgeLabelGeneratorFunc != nil {
 				labelStr = rd.EdgeLabelGeneratorFunc(edge)
 			} else {
-				id := edge.Label()
+				id := edge.GetLabel()
 				if id == nil {
 					labelStr = "http://www.w3.org/1999/02/22-rdf-syntax-ns#property"
 				} else if labelStr = fmt.Sprint(id); len(labelStr) == 0 {
@@ -133,20 +227,20 @@ func (rd *LDMarshaler) Marshal(input *digraph.Graph) interface{} {
 			existing, ok := onode.ldNode[labelStr]
 			if GetTermInfo(labelStr).IsList {
 				if !ok {
-					onode.ldNode[labelStr] = map[string]interface{}{"@list": []interface{}{map[string]interface{}{"@id": nodeIdMap[edge.To()].id}}}
+					onode.ldNode[labelStr] = map[string]interface{}{"@list": []interface{}{map[string]interface{}{"@id": nodeIdMap[edge.GetTo().(Node)].id}}}
 				} else {
 					x := existing.(map[string]interface{})["@list"].([]interface{})
-					x = append(x, map[string]interface{}{"@id": nodeIdMap[edge.To()].id})
+					x = append(x, map[string]interface{}{"@id": nodeIdMap[edge.GetTo().(Node)].id})
 					existing.(map[string]interface{})["@list"] = x
 				}
 			} else {
 				if !ok {
-					onode.ldNode[labelStr] = map[string]interface{}{"@id": nodeIdMap[edge.To()].id}
+					onode.ldNode[labelStr] = map[string]interface{}{"@id": nodeIdMap[edge.GetTo().(Node)].id}
 				} else if arr, ok := existing.([]interface{}); ok {
-					arr = append(arr, map[string]interface{}{"@id": nodeIdMap[edge.To()].id})
+					arr = append(arr, map[string]interface{}{"@id": nodeIdMap[edge.GetTo().(Node)].id})
 					onode.ldNode[labelStr] = arr
 				} else {
-					onode.ldNode[labelStr] = []interface{}{onode.ldNode[labelStr], map[string]interface{}{"@id": nodeIdMap[edge.To()].id}}
+					onode.ldNode[labelStr] = []interface{}{onode.ldNode[labelStr], map[string]interface{}{"@id": nodeIdMap[edge.GetTo().(Node)].id}}
 				}
 			}
 		}
@@ -156,6 +250,51 @@ func (rd *LDMarshaler) Marshal(input *digraph.Graph) interface{} {
 		graph = append(graph, v.ldNode)
 	}
 	return map[string]interface{}{"@graph": graph}
+}
+
+// getValuesOrIDs returns the @values, or @ids contained in the interface
+// This can be a single value, an array, or a @list
+func getValuesOrIDs(in interface{}) (value string, values, ids []string, err error) {
+	if in == nil {
+		return
+	}
+	if arr, ok := in.([]interface{}); ok {
+		for _, el := range arr {
+			val, vals, i, e := getValuesOrIDs(el)
+			if e != nil {
+				return "", nil, nil, e
+			}
+			if vals == nil && i == nil {
+				values = append(values, val)
+			} else {
+				if vals != nil {
+					values = append(values, vals...)
+				}
+				if i != nil {
+					ids = append(ids, i...)
+				}
+			}
+		}
+		if len(values) > 0 && len(ids) > 0 {
+			return "", nil, nil, ErrInvalidJsonLdGraph
+		}
+		return
+	}
+
+	if m, ok := in.(map[string]interface{}); ok {
+		if lst, ok := m["@list"]; ok {
+			return getValuesOrIDs(lst)
+		}
+		if id, ok := m["@id"]; ok {
+			return "", nil, []string{fmt.Sprint(id)}, nil
+		}
+		if v, ok := m["@value"]; ok {
+			return fmt.Sprint(v), nil, nil, nil
+		}
+		return "", nil, nil, ErrInvalidJsonLdGraph
+	}
+	value = fmt.Sprint(in)
+	return
 }
 
 // Unmarshal a graph
@@ -176,16 +315,8 @@ func UnmarshalGraph(input interface{}) (*digraph.Graph, error) {
 
 	// Generate a graph node for each input node to populate the graph
 	for _, inode := range inputNodes {
-		switch {
-		case hasType(DocumentNodeTerm, inode.types):
-			// A document node
-			inode.docNode = NewBasicDocumentNode(inode.id)
-			target.AddNode(inode.docNode)
-
-		default:
-			inode.graphNode = NewLayerNode(inode.id, inode.types...)
-			target.AddNode(inode.graphNode)
-		}
+		inode.graphNode = NewNode(inode.id, inode.types...)
+		target.AddNode(inode.graphNode)
 	}
 
 	// Deal with properties and edges
@@ -202,35 +333,29 @@ func UnmarshalGraph(input interface{}) (*digraph.Graph, error) {
 				}
 				switch k {
 				case AttributeValueTerm:
-					val, vals, _, err := GetValuesOrIDs(v)
+					val, vals, _, err := getValuesOrIDs(v)
 					if err != nil {
 						return nil, err
 					}
 					if len(vals) == 1 {
-						inode.docNode.SetValue(vals[0])
+						inode.graphNode.SetValue(vals[0])
 					} else {
-						inode.docNode.SetValue(val)
+						inode.graphNode.SetValue(val)
 					}
 				default:
-					value, values, ids, err := GetValuesOrIDs(v)
+					value, values, ids, err := getValuesOrIDs(v)
 					if err != nil {
 						return nil, err
 					}
 					if values == nil && ids == nil {
-						inode.docNode.GetProperties()[k] = StringPropertyValue(value)
+						inode.graphNode.GetProperties()[k] = StringPropertyValue(value)
 					} else if values != nil {
-						inode.docNode.GetProperties()[k] = StringSlicePropertyValue(values)
+						inode.graphNode.GetProperties()[k] = StringSlicePropertyValue(values)
 					} else if ids != nil {
 						for _, id := range ids {
 							tgt := inputNodes[id]
 							if tgt != nil {
-								var t digraph.Node
-								if tgt.graphNode != nil {
-									t = tgt.graphNode
-								} else {
-									t = tgt.docNode
-								}
-								target.AddEdge(inode.docNode, t, digraph.NewBasicEdge(k, nil))
+								digraph.Connect(inode.graphNode, tgt.graphNode, NewEdge(k))
 							}
 						}
 					}
@@ -238,10 +363,10 @@ func UnmarshalGraph(input interface{}) (*digraph.Graph, error) {
 			}
 
 		default:
-			inode.graphNode = NewLayerNode(inode.id, inode.types...)
+			inode.graphNode = NewNode(inode.id, inode.types...)
 			target.AddNode(inode.graphNode)
 			for k, v := range inode.node {
-				value, values, ids, err := GetValuesOrIDs(v)
+				value, values, ids, err := getValuesOrIDs(v)
 				if err != nil {
 					return nil, err
 				}
@@ -253,13 +378,7 @@ func UnmarshalGraph(input interface{}) (*digraph.Graph, error) {
 					for _, id := range ids {
 						tgt := inputNodes[id]
 						if tgt != nil {
-							var t digraph.Node
-							if tgt.graphNode != nil {
-								t = tgt.graphNode
-							} else {
-								t = tgt.docNode
-							}
-							target.AddEdge(inode.graphNode, t, digraph.NewBasicEdge(k, nil))
+							digraph.Connect(inode.graphNode, tgt.graphNode, NewEdge(k))
 						}
 					}
 				}
