@@ -70,6 +70,7 @@ type Node interface {
 	// unspecified. If the node is cloned with compiled data map, the
 	// new node will get a shallow copy of the compiled data
 	GetCompiledDataMap() map[interface{}]interface{}
+	GetFilteredValue() interface{}
 }
 
 // node is either an attribute node, document node, or an annotation

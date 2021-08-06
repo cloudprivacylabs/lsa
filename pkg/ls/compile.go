@@ -137,7 +137,7 @@ func (compiler Compiler) compile(ctx *compilerContext, ref string, topLevel bool
 }
 
 func (compiler Compiler) compileTerms(layer *Layer) error {
-	for nodes := layer.AllNodes(); nodes.HasNext(); {
+	for nodes := layer.GetAllNodes(); nodes.HasNext(); {
 		node := nodes.Next().(Node)
 		// Compile all non-attribute nodes
 		if !node.IsAttributeNode() {
@@ -263,7 +263,7 @@ func (compiler Compiler) resolveComposition(compositeNode Node, completed map[No
 				rmv = append(rmv, edge)
 			}
 			for _, e := range rmv {
-				component.RemoveOutgoingEdge(e)
+				e.Disconnect()
 			}
 			// Copy all properties of the component node to the composite node
 			if err := ComposeProperties(compositeNode.GetProperties(), component.GetProperties()); err != nil {
@@ -279,7 +279,7 @@ func (compiler Compiler) resolveComposition(compositeNode Node, completed map[No
 			component.HasType(AttributeTypes.Polymorphic):
 			// This node becomes an attribute of the main node.
 			newEdge := allOfEdge.CloneWithLabel(LayerTerms.AttributeList)
-			compositeNode.RemoveOutgoingEdge(allOfEdge)
+			allOfEdge.Disconnect()
 			digraph.Connect(compositeNode, component, newEdge)
 
 		case component.HasType(AttributeTypes.Composite):

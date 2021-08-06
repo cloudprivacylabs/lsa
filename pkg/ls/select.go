@@ -298,7 +298,7 @@ func UnmarshalNodePredicate(in []byte) (NodePredicate, error) {
 // SelectNodes selects some nodes from the graph based on predicate
 func SelectNodes(in *digraph.Graph, predicate NodePredicate) ([]Node, error) {
 	ret := make([]Node, 0)
-	for nodes := in.AllNodes(); nodes.HasNext(); {
+	for nodes := in.GetAllNodes(); nodes.HasNext(); {
 		node := nodes.Next().(Node)
 		include, err := predicate.EvaluateNode(node)
 		if err != nil {

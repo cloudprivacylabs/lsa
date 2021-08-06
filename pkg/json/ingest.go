@@ -95,7 +95,7 @@ func (ingester *Ingester) Ingest(target *digraph.Graph, baseID string, input int
 	importedSchemaNodes := make(map[ls.Node]ls.Node)
 	ingester.link(target, importedSchemaNodes, dn)
 	if ingester.Schema != nil {
-		for nodes := ingester.Schema.AllNodes(); nodes.HasNext(); {
+		for nodes := ingester.Schema.GetAllNodes(); nodes.HasNext(); {
 			schemaNode := nodes.Next().(ls.Node)
 			importedNode := importedSchemaNodes[schemaNode]
 			if importedNode != nil {
@@ -270,10 +270,14 @@ func (ingester *Ingester) ingestValue(target *digraph.Graph, input interface{}, 
 }
 
 func (ingester *Ingester) newNode(ID string) ls.Node {
+	var node ls.Node
 	if ingester.NewNodeFunc != nil {
-		return ingester.NewNodeFunc(ID)
+		node = ingester.NewNodeFunc(ID)
+	} else {
+		node = ls.NewNode(ID)
 	}
-	return ls.NewNode(ID)
+	node.AddTypes(ls.DocumentNodeTerm)
+	return node
 }
 
 func (ingester *Ingester) generateID(input interface{}, path []interface{}, schemaNode ls.Node) string {
@@ -288,7 +292,7 @@ func (ingester *Ingester) connect(srcNode, targetNode digraph.Node, edgeLabel st
 	if ingester.NewEdgeFunc != nil {
 		edge = ingester.NewEdgeFunc(edgeLabel)
 	} else {
-		edge = digraph.NewBasicEdge(edgeLabel, nil)
+		edge = ls.NewEdge(edgeLabel)
 	}
 	digraph.Connect(srcNode, targetNode, edge)
 	return edge

@@ -139,7 +139,7 @@ func (rd *LDMarshaler) Marshal(input *digraph.Graph) interface{} {
 	blankNodeId := 0
 	// Assign IDs to all nodes
 	nodeIdMap := make(map[Node]outputNode)
-	for nodes := input.AllNodes(); nodes.HasNext(); {
+	for nodes := input.GetAllNodes(); nodes.HasNext(); {
 		node := nodes.Next().(Node)
 		var idstr string
 		if rd.NodeIDGeneratorFunc != nil {

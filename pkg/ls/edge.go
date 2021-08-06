@@ -14,6 +14,8 @@
 package ls
 
 import (
+	"sort"
+
 	"github.com/bserdar/digraph"
 )
 
@@ -96,6 +98,26 @@ func (e *edge) Clone() Edge {
 // CloneWithLabel returns a copy of the schema edge with a new label
 func (e *edge) CloneWithLabel(label string) Edge {
 	ret := NewEdge(label).(*edge)
+	ret.index = e.index
 	ret.properties = CopyPropertyMap(e.properties)
 	return ret
+}
+
+// SortEdges sorts edges by index
+func SortEdges(edges []Edge) {
+	sort.Slice(edges, func(i, j int) bool { return edges[i].GetIndex() < edges[j].GetIndex() })
+}
+
+// SortEdgesItr sorts the edges by index
+func SortEdgesItr(edges digraph.Edges) digraph.Edges {
+	e := make([]Edge, 0)
+	for edges.HasNext() {
+		e = append(e, edges.Next().(Edge))
+	}
+	SortEdges(e)
+	arr := make([]digraph.Edge, 0, len(e))
+	for _, x := range e {
+		arr = append(arr, x)
+	}
+	return digraph.Edges{&digraph.EdgeArrayIterator{arr}}
 }

@@ -152,10 +152,20 @@ func (l *Layer) ForEachAttribute(f func(Node, []Node) bool) bool {
 	return true
 }
 
+// ForEachAttributeOrdered calls f with each attribute node, depth
+// first and in order. If f returns false, iteration stops
+func (l *Layer) ForEachAttributeOrdered(f func(Node, []Node) bool) bool {
+	oi := l.GetSchemaRootNode()
+	if oi != nil {
+		return ForEachAttributeNodeOrdered(oi, f)
+	}
+	return true
+}
+
 // RenameBlankNodes will call namerFunc for each blank node, so they
 // can be renamed and won't cause name clashes
 func (l *Layer) RenameBlankNodes(namer func(Node)) {
-	for nodes := l.AllNodes(); nodes.HasNext(); {
+	for nodes := l.GetAllNodes(); nodes.HasNext(); {
 		node := nodes.Next().(Node)
 		id := node.GetID()
 		if len(id) == 0 || id[0] == '_' {
@@ -197,10 +207,10 @@ func (l *Layer) FindAttributeByID(id string) (Node, []Node) {
 // node. If f returns false, iteration stops. This function visits
 // each node only once
 func ForEachAttributeNode(root Node, f func(node Node, path []Node) bool) bool {
-	return forEachAttributeNode(root, make([]Node, 0, 32), f, map[Node]struct{}{})
+	return forEachAttributeNode(root, make([]Node, 0, 32), f, map[Node]struct{}{}, false)
 }
 
-func forEachAttributeNode(root Node, path []Node, f func(Node, []Node) bool, loop map[Node]struct{}) bool {
+func forEachAttributeNode(root Node, path []Node, f func(Node, []Node) bool, loop map[Node]struct{}, ordered bool) bool {
 	if _, exists := loop[root]; exists {
 		return true
 	}
@@ -212,17 +222,31 @@ func forEachAttributeNode(root Node, path []Node, f func(Node, []Node) bool, loo
 			return false
 		}
 	}
-	for outgoing := root.GetAllOutgoingEdges(); outgoing.HasNext(); {
+
+	outgoing := root.GetAllOutgoingEdges()
+	if ordered {
+		outgoing = SortEdgesItr(outgoing)
+	}
+
+	for outgoing.HasNext() {
 		edge := outgoing.Next().(Edge)
 		if !edge.IsAttributeTreeEdge() {
 			continue
 		}
 		next := edge.GetTo().(Node)
 		if next.HasType(AttributeTypes.Attribute) {
-			if !forEachAttributeNode(next, path, f, loop) {
+			if !forEachAttributeNode(next, path, f, loop, ordered) {
 				return false
 			}
 		}
 	}
 	return true
+}
+
+// ForEachAttributeNodeOrdered calls f with each attribute node, depth
+// first, preserving order. Path contains all the nodes from root to the current
+// node. If f returns false, iteration stops. This function visits
+// each node only once
+func ForEachAttributeNodeOrdered(root Node, f func(node Node, path []Node) bool) bool {
+	return forEachAttributeNode(root, make([]Node, 0, 32), f, map[Node]struct{}{}, true)
 }

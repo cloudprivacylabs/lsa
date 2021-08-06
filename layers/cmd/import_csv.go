@@ -29,6 +29,7 @@ import (
 func init() {
 	importCmd.AddCommand(importCSVCmd)
 	importCSVCmd.Flags().String("spec", "", "Import specification JSON file")
+	importCSVCmd.Flags().String("layerId", "", "Layer ID")
 	importCSVCmd.MarkFlagRequired("spec")
 }
 
@@ -38,8 +39,14 @@ var importCSVCmd = &cobra.Command{
 	Long: `The import specification is as follows:
 
 {
-  "attributeId": { termSpec },
+  "attributeId": { attrSpec 
+     "term": "string",
+     "column": 0-based column index containing term data,
+     "template": "term Go template, used to compute term value with {{.term}}, {{.data}}, and {{.row}} variables",
+     "arrayTemplate": "Go template that determines array element type."
+  },
   "layerType": "Overlay or Schema",
+  "layerId": "id",
   "startRow": int (0),
   "nRows":  int (all rows),
   "terms": [
@@ -72,11 +79,13 @@ where termSpec is:
 		f.Close()
 
 		type importSpec struct {
-			AttributeID dec.TermSpec   `json:"attributeId"`
-			LayerType   string         `json:"layerType"`
-			StartRow    int            `json:"startRow"`
-			NRows       int            `json:"nrows"`
-			Terms       []dec.TermSpec `json:"terms"`
+			AttributeID dec.AttributeSpec `json:"attributeId"`
+			LayerType   string            `json:"layerType"`
+			LayerID     string            `json:"layerId"`
+			TargetType  string            `json:"targetType"`
+			StartRow    int               `json:"startRow"`
+			NRows       int               `json:"nrows"`
+			Terms       []dec.TermSpec    `json:"terms"`
 		}
 
 		var spec importSpec
@@ -87,6 +96,10 @@ where termSpec is:
 		}
 		if err := json.Unmarshal(data, &spec); err != nil {
 			failErr(err)
+		}
+		s, _ = cmd.Flags().GetString("layerId")
+		if len(s) > 0 {
+			spec.LayerID = s
 		}
 		if spec.LayerType == "Overlay" {
 			spec.LayerType = ls.OverlayTerm
@@ -99,6 +112,12 @@ where termSpec is:
 		}
 		if len(spec.LayerType) > 0 {
 			layer.SetLayerType(spec.LayerType)
+		}
+		if len(spec.LayerID) > 0 {
+			layer.SetID(spec.LayerID)
+		}
+		if len(spec.TargetType) > 0 {
+			layer.SetTargetType(spec.TargetType)
 		}
 		data, err = json.MarshalIndent(ls.MarshalLayer(layer), "", "  ")
 		if err != nil {

@@ -35,7 +35,7 @@ type SelectNodesExpression struct {
 // EvaluateExpression evaluates the predicate for all nodes, and returns []digraph.Node
 func (expr SelectNodesExpression) EvaluateExpression(g *digraph.Graph) (interface{}, error) {
 	ret := make([]digraph.Node, 0)
-	for nodes := g.AllNodes(); nodes.HasNext(); {
+	for nodes := g.GetAllNodes(); nodes.HasNext(); {
 		node := nodes.Next().(Node)
 		result, err := expr.Predicate.EvaluateNode(node)
 		if err != nil {
