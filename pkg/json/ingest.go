@@ -197,7 +197,7 @@ func (ingester *Ingester) ingestObject(target *digraph.Graph, input map[string]i
 		addNextNode := func(node ls.Node) error {
 			key := node.GetProperties()[ingester.KeyTerm].AsString()
 			if len(key) == 0 {
-				return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema", ingester.KeyTerm))
+				return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema at %s", ingester.KeyTerm, node.GetID()))
 			}
 			if _, ok := nextNodes[key]; ok {
 				return ErrInvalidSchema(fmt.Sprintf("Multiple elements with key '%s'", key))

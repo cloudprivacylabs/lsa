@@ -64,7 +64,7 @@ func (layer *Layer) Compose(source *Layer) error {
 			}
 			edge := GetLayerEdgeBetweenNodes(parent, sourceNode)
 			if edge != nil {
-				digraph.Connect(parentInLayer, sourceNode, edge)
+				digraph.Connect(parentInLayer, sourceNode, edge.Clone())
 			}
 		}
 		processedSourceNodes[sourceNode] = struct{}{}
