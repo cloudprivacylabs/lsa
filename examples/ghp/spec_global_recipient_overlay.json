@@ -1,0 +1,27 @@
+{
+    "layerType": "Overlay",
+    "targetType": "https://lfph.org/ghp/global/event_recipient",
+    "startRow": 3,
+    "nRows": 5,
+    "attributeId": {
+        "term": "@id",
+        "column": 2,
+        "template": "https://lfph.org/ghp/global/event_recipient/{{.data}}",
+        "arrayTypeTemplate": "{{- if eq (index .row 2) \"Array[Text]\"}}https://lschema.org/Value{{- end}}",
+        "arrayIdTemplate": "{{- if eq (index .row 2) \"Array[Text]\"}}https://lfph.org/ghp/global/event_recipient/{{.data}}/elements{{- end}}"
+    },
+    "terms": [
+        {
+            "term": "https://lschema.org/label",
+            "column": 3,
+            "array": true,
+            "separator": "|"
+        },
+        {
+            "term": "https://lschema.org/description",
+            "column": 4
+        }
+    ]
+}
+
+        

@@ -14,124 +14,195 @@
 package csv
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
+	"text/template"
 
+	"github.com/bserdar/digraph"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/terms"
 )
 
 type ImportSpec struct {
-	AttributeIDColumn int         `json:"attributeIdColumn"`
-	ObjectType        string      `json:"objectType"`
-	Layers            []LayerSpec `json:"layers"`
+	AttributeID TermSpec
+
+	Terms []TermSpec
 }
 
-type LayerSpec struct {
-	Output  string          `json:"output"`
-	Columns []ColumnProfile `json:"columns"`
+type TermSpec struct {
+	// The term
+	Term string `json:"term"`
+	// The 0-based column containing term data
+	TermCol int `json:"column"`
+	// If nonempty, this template is used to build the term contents
+	// with {{.term}}, {{.data}}, and {{.row}} in template context. {{.term}} gives
+	// the Term, and {{.data}} gives the value of the term in the
+	// current cell.
+	TermTemplate string `json:"template"`
+	// Is property an array
+	Array bool `json:"array"`
+	// Array separator character
+	ArraySeparator string `json:"separator"`
 }
 
-// Import a CSV input and slice into a base schema and its
-// overlays. The CSV file is organized as columns, one column for base
-// attribute names, and other columns for overlays. CSV does not
-// support nested attributes. Returns an array of *SchemaBase and
-// *SchemaLayer objects
-func Import(spec ImportSpec, input [][]string) (layers []*ls.Layer, err error) {
-	getColValue := func(row []string, col int) (value string, ok bool) {
-		if col >= 0 && col < len(row) {
-			return row[col], true
-		}
-		return "", false
+type AttributeSpec struct {
+	// The 0-based column containing term data
+	TermCol int `json:"column"`
+	// If nonempty, this template is used to build the term contents
+	// with {{.term}}, {{.data}}, and {{.row}} in template context. {{.term}} gives
+	// the Term, and {{.data}} gives the value of the term in the
+	// current cell.
+	TermTemplate string `json:"template"`
+
+	// If evaluates to a nonempty string, the attribute is an array whose elements are of this type
+	ArrayTypeTemplate string `json:"arrayTypeTemplate"`
+	ArrayIDTemplate   string `json:"arrayIdTemplate"`
+}
+
+type ErrColIndexOutOfBounds struct {
+	For   string
+	Index int
+}
+
+func (e ErrColIndexOutOfBounds) Error() string {
+	s := fmt.Sprintf("Column index out of bounds: %d", e.Index)
+	if e.For != "" {
+		s += " " + e.For
 	}
-	for _, layer := range spec.Layers {
-		newLayer := ls.NewLayer()
-		newLayer.TargetType = []string{spec.ObjectType}
-		layers = append(layers, newLayer)
+	return s
+}
 
-		for _, row := range input {
-			attribute := ls.NewAttribute(newLayer.Root)
-			for _, col := range layer.Columns {
-				if col.Index == spec.AttributeIDColumn {
-					continue
-				}
-				colValue, ok := getColValue(row, col.Index)
-				if !ok {
-					continue
-				}
-				t := col.Type
-				if len(t) == 0 {
-					term, ok := ls.Terms[col.Name]
-					if ok {
-						switch term.GetContainerType() {
-						case terms.SetTermType:
-							switch term.GetValueType() {
-							case terms.ValueTermType:
-								t = "@set"
-							case terms.IDTermType:
-								t = "@idlist"
-							case terms.ObjectTermType:
-								return nil, fmt.Errorf("Unsupported term: %s", col.Name)
-							}
+type ErrInvalidID struct {
+	Row int
+}
 
-						case terms.ListTermType:
-							switch term.GetValueType() {
-							case terms.ValueTermType:
-								t = "@list"
-							case terms.IDTermType:
-								t = "@idlist"
-							case terms.ObjectTermType:
-								return nil, fmt.Errorf("Unsupported term: %s", col.Name)
-							}
-						case terms.MonadicTermType:
-							switch term.GetValueType() {
-							case terms.ValueTermType:
-								t = "@value"
-							case terms.IDTermType:
-								t = "@id"
-							case terms.ObjectTermType:
-								return nil, fmt.Errorf("Unsupported term: %s", col.Name)
-							}
-						}
-					}
-				}
-				if col.Name == ls.LayerTerms.Attributes.GetTerm() ||
-					col.Name == ls.LayerTerms.AllOf.GetTerm() ||
-					col.Name == ls.LayerTerms.OneOf.GetTerm() ||
-					col.Name == ls.LayerTerms.ArrayItems.GetTerm() {
-					return nil, fmt.Errorf("%s cannot be used in CSV", col.Name)
-				}
-				switch t {
-				case "@value":
-					attribute.Values[col.Name] = []map[string]interface{}{{"@value": colValue}}
-				case "@id":
-					if col.Name == ls.LayerTerms.Reference.GetTerm() {
-						attribute.Type = &ls.ReferenceType{colValue}
-					} else {
-						attribute.Values[col.Name] = []map[string]interface{}{{"@id": colValue}}
-					}
-				case "@list", "@set":
-					lst := make([]interface{}, 0)
-					for _, x := range strings.Split(colValue, ",") {
-						lst = append(lst, map[string]interface{}{"@value": x})
-					}
-					attribute.Values[col.Name] = []interface{}{map[string]interface{}{t: lst}}
-				case "@idlist":
-					lst := make([]interface{}, 0)
-					for _, x := range strings.Split(colValue, ",") {
-						lst = append(lst, map[string]interface{}{"@id": x})
-					}
-					attribute.Values[col.Name] = []interface{}{map[string]interface{}{"@list": lst}}
-				}
+func (e ErrInvalidID) Error() string {
+	return fmt.Sprintf("Invalid ID at row  %d", e.Row)
+}
+
+// Import a CSV schema. The CSV file is organized as columns, one
+// column for base attribute names, and other columns for
+// overlays. CSV does not support nested attributes. Returns an array
+// of Layer objects
+func Import(attributeID AttributeSpec, terms []TermSpec, startRow, nRows int, input [][]string) (*ls.Layer, error) {
+	layer := ls.NewLayer()
+	root := ls.NewNode("", ls.AttributeTypes.Object, ls.AttributeTypes.Attribute)
+	layer.AddNode(root)
+	digraph.Connect(layer.GetLayerInfoNode(), root, ls.NewEdge(ls.LayerRootTerm))
+
+	var idTemplate, arrayIdTemplate, arrayTypeTemplate *template.Template
+
+	if len(attributeID.TermTemplate) > 0 {
+		var err error
+		idTemplate, err = template.New("").Parse(attributeID.TermTemplate)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if len(attributeID.ArrayTypeTemplate) > 0 {
+		var err error
+		arrayTypeTemplate, err = template.New("").Parse(attributeID.ArrayTypeTemplate)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if len(attributeID.ArrayIDTemplate) > 0 {
+		var err error
+		arrayIdTemplate, err = template.New("").Parse(attributeID.ArrayIDTemplate)
+		if err != nil {
+			return nil, err
+		}
+	}
+	templates := make([]*template.Template, len(terms))
+	for i, t := range terms {
+		if len(t.TermTemplate) > 0 {
+			tmp, err := template.New("").Parse(t.TermTemplate)
+			if err != nil {
+				return nil, err
 			}
-			id, ok := getColValue(row, spec.AttributeIDColumn)
-			if ok {
-				attribute.ID = id
-				if err := newLayer.Root.GetAttributes().Add(attribute, newLayer); err != nil {
+			templates[i] = tmp
+		}
+	}
+
+	nAttributeID := 0
+	nTerms := make([]int, len(terms))
+	index := 0
+	for rowIndex, row := range input {
+		runtmp := func(t *template.Template, term, data string) (string, error) {
+			if t == nil {
+				return data, nil
+			}
+			var out bytes.Buffer
+			if err := t.Execute(&out, map[string]interface{}{"term": term, "data": data, "row": row}); err != nil {
+				return "", err
+			}
+			return strings.TrimSpace(out.String()), nil
+		}
+		if rowIndex >= startRow && (nRows == 0 || nAttributeID < nRows) {
+			var err error
+			nAttributeID++
+			if attributeID.TermCol < 0 || attributeID.TermCol >= len(row) {
+				return nil, ErrColIndexOutOfBounds{For: "@id", Index: attributeID.TermCol}
+			}
+			id := strings.TrimSpace(row[attributeID.TermCol])
+			if len(id) == 0 {
+				break
+			}
+			id, err = runtmp(idTemplate, "@id", id)
+			if err != nil {
+				return nil, err
+			}
+			if len(id) == 0 {
+				return nil, ErrInvalidID{rowIndex}
+			}
+			var attr ls.Node
+			if arrayIdTemplate != nil {
+				attr = ls.NewNode(id, ls.AttributeTypes.Attribute, ls.AttributeTypes.Array)
+				arrId, err := runtmp(arrayIdTemplate, "@id", id)
+				if err != nil {
 					return nil, err
 				}
+				if len(arrId) == 0 {
+					attr = ls.NewNode(id, ls.AttributeTypes.Attribute, ls.AttributeTypes.Value)
+				} else {
+					typ, err := runtmp(arrayTypeTemplate, "@id", id)
+					if err != nil {
+						return nil, err
+					}
+					if len(typ) == 0 {
+						typ = ls.AttributeTypes.Value
+					}
+					elems := ls.NewNode(arrId, ls.AttributeTypes.Attribute, typ)
+					attr.Connect(elems, ls.LayerTerms.ArrayItems)
+				}
+			} else {
+				attr = ls.NewNode(id, ls.AttributeTypes.Attribute, ls.AttributeTypes.Value)
+			}
+			layer.AddNode(attr)
+			edge := ls.NewEdge(ls.LayerTerms.AttributeList)
+			edge.SetIndex(index)
+			index++
+			digraph.Connect(root, attr, edge)
+			for ti, term := range terms {
+				nTerms[ti]++
+				if term.TermCol < 0 || term.TermCol >= len(row) {
+					return nil, ErrColIndexOutOfBounds{For: term.Term, Index: term.TermCol}
+				}
+				data := strings.TrimSpace(row[term.TermCol])
+				data, err = runtmp(templates[ti], term.Term, data)
+				if err != nil {
+					return nil, err
+				}
+				if len(data) > 0 {
+					if term.Array {
+						elems := strings.Split(data, term.ArraySeparator)
+						attr.GetProperties()[term.Term] = ls.StringSlicePropertyValue(elems)
+					} else {
+						attr.GetProperties()[term.Term] = ls.StringPropertyValue(data)
+					}
+				}
 			}
 		}
 	}
-	return
+	return layer, nil
 }

@@ -147,7 +147,7 @@ func Import(entities []CompiledEntity) ([]ImportedEntity, error) {
 		imported.Layer.GetLayerInfoNode().Connect(imported.Layer.NewNode(ctx.currentEntity.ID), ls.LayerRootTerm)
 		nodes := s.object.itr(ctx.currentEntity.ID, nil, imported.Layer)
 		for _, node := range nodes {
-			imported.Layer.GetObjectInfoNode().Connect(node, ls.LayerTerms.Attributes)
+			imported.Layer.GetSchemaRootNode().Connect(node, ls.LayerTerms.Attributes)
 		}
 
 		ret = append(ret, imported)

@@ -45,12 +45,12 @@ type objectSchema struct {
 	required   []string
 }
 
-func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer) ls.LayerNode {
+func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer) ls.Node {
 	return schemaAttrs(entityId, append(name, "*"), a.items, layer)
 }
 
-func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer) []ls.LayerNode {
-	ret := make([]ls.LayerNode, 0, len(obj.properties))
+func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer) []ls.Node {
+	ret := make([]ls.Node, 0, len(obj.properties))
 	for k, v := range obj.properties {
 		nm := append(name, k)
 		ret = append(ret, schemaAttrs(entityId, nm, v, layer))
@@ -58,7 +58,7 @@ func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer) []l
 	return ret
 }
 
-func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer) ls.LayerNode {
+func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer) ls.Node {
 	id := entityId + "#" + strings.Join(name, ".")
 	newNode := layer.NewNode(id)
 	if len(attr.format) > 0 {
@@ -111,8 +111,8 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 		return newNode
 	}
 
-	buildChoices := func(arr []schemaProperty) []ls.LayerNode {
-		elements := make([]ls.LayerNode, 0, len(arr))
+	buildChoices := func(arr []schemaProperty) []ls.Node {
+		elements := make([]ls.Node, 0, len(arr))
 		for i, x := range arr {
 			newName := append(name, fmt.Sprint(i))
 			node := schemaAttrs(entityId, newName, x, layer)

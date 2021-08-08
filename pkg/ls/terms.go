@@ -43,8 +43,11 @@ var (
 	// LayerRootTerm is an edge term that connects layer node to the root node of the schema
 	LayerRootTerm = NewTerm(LS+"layer", false, false, ErrorComposition, nil)
 
-	// DefaultValueTerm is the defalut value for an attribute if attribute is not present
+	// DefaultValueTerm is the default value for an attribute if attribute is not present
 	DefaultValueTerm = NewTerm(LS+"defaultValue", false, false, OverrideComposition, nil)
+
+	// LabelTerm defines one or more presentation layer labels for the attribute
+	LabelTerm = NewTerm(LS+"label", false, false, OverrideComposition, nil)
 )
 
 // AttributeTypes defines the terms describing attribute types. Each

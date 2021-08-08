@@ -17,13 +17,13 @@ import ()
 
 // A ValueFilter applies a filter to the node value
 type ValueFilter interface {
-	FilterValue(interface{}, DocumentNode) interface{}
+	FilterValue(interface{}, Node) interface{}
 }
 
 // NopFilter does not modify the underlying value
 type NopFilter struct{}
 
-func (NopFilter) FilterValue(in interface{}, _ DocumentNode) interface{} { return in }
+func (NopFilter) FilterValue(in interface{}, _ Node) interface{} { return in }
 
 // GetValueFilter returns the value filter for the term. If the term has none, returns NopFilter
 func GetValueFilter(term string) ValueFilter {
@@ -35,7 +35,7 @@ func GetValueFilter(term string) ValueFilter {
 }
 
 // FilterValue computes the processed node value
-func FilterValue(value interface{}, docnode DocumentNode, properties map[string]*PropertyValue) interface{} {
+func FilterValue(value interface{}, docnode Node, properties map[string]*PropertyValue) interface{} {
 	for k := range properties {
 		value = GetValueFilter(k).FilterValue(value, docnode)
 	}

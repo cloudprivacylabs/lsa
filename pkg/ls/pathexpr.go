@@ -24,28 +24,28 @@ import (
 // property predicates of the form:
 //
 //   edgeLabel property=value  edgeLabel property=value ...
-func EvaluatePathExpression(nodes []digraph.Node, expr ...string) []digraph.Node {
+func EvaluatePathExpression(nodes []Node, expr ...string) []Node {
 	if len(nodes) == 0 {
 		return nil
 	}
-	current := map[digraph.Node]struct{}{}
+	current := map[Node]struct{}{}
 	for _, x := range nodes {
 		current[x] = struct{}{}
 	}
 	edgeLabel := true
 	for _, curExpr := range expr {
-		nextNodes := make(map[digraph.Node]struct{})
+		nextNodes := make(map[Node]struct{})
 		if edgeLabel {
 			// Advance current to the next nodes
 			for n := range current {
 				var edges digraph.Edges
 				if len(curExpr) == 0 {
-					edges = n.AllOutgoingEdges()
+					edges = n.GetAllOutgoingEdges()
 				} else {
-					edges = n.AllOutgoingEdgesWithLabel(curExpr)
+					edges = n.GetAllOutgoingEdgesWithLabel(curExpr)
 				}
 				for edges.HasNext() {
-					nextNodes[edges.Next().To()] = struct{}{}
+					nextNodes[edges.Next().GetTo().(Node)] = struct{}{}
 				}
 			}
 		} else {
@@ -117,7 +117,7 @@ func EvaluatePathExpression(nodes []digraph.Node, expr ...string) []digraph.Node
 		current = nextNodes
 		edgeLabel = !edgeLabel
 	}
-	ret := make([]digraph.Node, 0, len(current))
+	ret := make([]Node, 0, len(current))
 	for x := range current {
 		ret = append(ret, x)
 	}

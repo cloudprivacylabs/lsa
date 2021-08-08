@@ -24,18 +24,18 @@ with `contact` being a reference:
 "attributes": {
   "http://example.org/Person/firstName": {
       "@type": "Value",
-      "name":"firstName"
+      "attributeName":"firstName"
   },
   "http://example.org/Person/lastName": {
       "@type": "Value",
-      "name": "lastName"
+      "attributeName": "lastName"
   },
   "http://example.org/Person/contact": {
       "@type": "Array",
-      "name": "contact",
+      "attributeName": "contact",
       "items": {
          "@type": "Reference",
-          "reference": "http://example.org/Contact"
+          "reference": "http://example.org/Contact/schemaManifest"
       }
   }
 }

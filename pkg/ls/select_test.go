@@ -13,26 +13,26 @@
 // limitations under the License.
 package ls
 
-import (
-	"encoding/json"
-	"testing"
-)
+// import (
+// 	"encoding/json"
+// 	"testing"
+// )
 
-func TestPredicateMarshal(t *testing.T) {
-	check := func(inp, exp string) {
-		pred, err := UnmarshalNodePredicate([]byte(inp))
-		if err != nil {
-			t.Error(err)
-			return
-		}
-		x, _ := json.Marshal(pred)
-		out := string(x)
-		if out != exp {
-			t.Errorf("Expected %s got %s", exp, out)
-		}
-		t.Logf("Input: %s, predicate: %+v, output: %s", inp, pred, out)
-	}
-	check("false", "false")
-	check("{}", "false")
-	check(`{"$id":"blah"}`, `{"$id":"blah"}`)
-}
+// func TestPredicateMarshal(t *testing.T) {
+// 	check := func(inp, exp string) {
+// 		pred, err := UnmarshalNodePredicate([]byte(inp))
+// 		if err != nil {
+// 			t.Error(err)
+// 			return
+// 		}
+// 		x, _ := json.Marshal(pred)
+// 		out := string(x)
+// 		if out != exp {
+// 			t.Errorf("Expected %s got %s", exp, out)
+// 		}
+// 		t.Logf("Input: %s, predicate: %+v, output: %s", inp, pred, out)
+// 	}
+// 	check("false", "false")
+// 	check("{}", "false")
+// 	check(`{"$id":"blah"}`, `{"$id":"blah"}`)
+// }

@@ -15,16 +15,16 @@ var RequiredTerm = ls.NewTerm(ls.LS+"validation#required", false, false, ls.Over
 type RequiredValidator struct{}
 
 // Validate checks if value is nil. If value is nil and it is required, returns an error
-func (validator RequiredValidator) Validate(docNode ls.DocumentNode, schemaNode ls.LayerNode) error {
+func (validator RequiredValidator) Validate(docNode, schemaNode ls.Node) error {
 	if docNode == nil {
 		return nil
 	}
 	required := schemaNode.GetProperties()[RequiredTerm].AsStringSlice()
 	if len(required) > 0 {
 		names := make(map[string]struct{})
-		for nodes := docNode.AllOutgoingEdgesWithLabel(ls.DataEdgeTerms.ObjectAttributes).Targets(); nodes.HasNext(); {
-			node := nodes.Next().(ls.DocumentNode)
-			name, _ := node.GetProperty(ls.AttributeNameTerm)
+		for nodes := docNode.GetAllOutgoingEdgesWithLabel(ls.DataEdgeTerms.ObjectAttributes).Targets(); nodes.HasNext(); {
+			node := nodes.Next().(ls.Node)
+			name, _ := node.GetProperties()[ls.AttributeNameTerm]
 			if name.IsString() {
 				names[name.AsString()] = struct{}{}
 			}

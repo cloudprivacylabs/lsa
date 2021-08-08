@@ -73,6 +73,11 @@ func (repo *Repository) ParseAddObject(in []byte) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+	return repo.ParseAddIntf(m)
+}
+
+// ParseAddIntf parses and adds the unmarshaled object
+func (repo *Repository) ParseAddIntf(m interface{}) (interface{}, error) {
 	layer, err1 := ls.UnmarshalLayer(m)
 	if err1 != nil {
 		manifest, err2 := ls.UnmarshalSchemaManifest(m)
@@ -140,7 +145,10 @@ func (repo *Repository) GetSchemaManifestByObjectType(t string) *ls.SchemaManife
 func (repo *Repository) GetComposedSchema(id string) (*ls.Layer, error) {
 	m := repo.GetSchemaManifest(id)
 	if m == nil {
-		return nil, ErrNotFound(id)
+		m = repo.GetSchemaManifestByObjectType(id)
+		if m == nil {
+			return nil, ErrNotFound(id)
+		}
 	}
 	var result *ls.Layer
 	if len(m.Schema) > 0 {

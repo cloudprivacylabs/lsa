@@ -34,7 +34,7 @@ func (validator EnumValidator) ValidateValue(value interface{}, options []interf
 }
 
 // Validate validates the node value if it is non-nil
-func (validator EnumValidator) Validate(docNode ls.DocumentNode, schemaNode ls.LayerNode) error {
+func (validator EnumValidator) Validate(docNode, schemaNode ls.Node) error {
 	if docNode == nil {
 		return nil
 	}

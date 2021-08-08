@@ -18,7 +18,7 @@ var PatternTerm = ls.NewTerm(ls.LS+"validation#pattern", false, false, ls.Overri
 type PatternValidator struct{}
 
 // Validate validates the node value if it is non-nil
-func (validator PatternValidator) Validate(docNode ls.DocumentNode, schemaNode ls.LayerNode) error {
+func (validator PatternValidator) Validate(docNode, schemaNode ls.Node) error {
 	if docNode == nil {
 		return nil
 	}

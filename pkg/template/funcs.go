@@ -50,7 +50,8 @@ func graphExprFunc(graph *digraph.Graph, expression string) (interface{}, error)
 
 // Return the first node with the given id
 func graphNodeFunc(graph *digraph.Graph, id string) interface{} {
-	nodes := graph.AllNodesWithLabel(id)
+	ix := graph.GetNodeIndex()
+	nodes := ix.NodesByLabel(id)
 	if nodes.HasNext() {
 		return nodes.Next()
 	}
@@ -75,6 +76,6 @@ func graphInstanceOfFunc(graph *digraph.Graph, t string) interface{} {
 }
 
 // Follow the path from the given node using edgelabel, property=value, edgelabel, ...
-func graphPath(node digraph.Node, path ...string) []digraph.Node {
-	return ls.EvaluatePathExpression([]digraph.Node{node}, path...)
+func graphPath(node ls.Node, path ...string) []ls.Node {
+	return ls.EvaluatePathExpression([]ls.Node{node}, path...)
 }

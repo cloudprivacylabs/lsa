@@ -13,27 +13,21 @@
 // limitations under the License.
 package ls
 
-// Recursively copy in
-func copyIntf(in interface{}) interface{} {
-	if arr, ok := in.([]interface{}); ok {
-		ret := make([]interface{}, 0, len(arr))
-		for _, x := range arr {
-			ret = append(ret, copyIntf(x))
-		}
-		return ret
-	}
-	if m, ok := in.(map[string]interface{}); ok {
-		ret := make(map[string]interface{}, len(m))
-		for k, v := range m {
-			ret[k] = copyIntf(v)
-		}
-		return ret
-	}
-	return in
-}
-
-func copyCompiled(target, source map[interface{}]interface{}) {
-	for k, v := range source {
-		target[k] = v
-	}
-}
+// // Recursively copy in
+// func copyIntf(in interface{}) interface{} {
+// 	if arr, ok := in.([]interface{}); ok {
+// 		ret := make([]interface{}, 0, len(arr))
+// 		for _, x := range arr {
+// 			ret = append(ret, copyIntf(x))
+// 		}
+// 		return ret
+// 	}
+// 	if m, ok := in.(map[string]interface{}); ok {
+// 		ret := make(map[string]interface{}, len(m))
+// 		for k, v := range m {
+// 			ret[k] = copyIntf(v)
+// 		}
+// 		return ret
+// 	}
+// 	return in
+// }

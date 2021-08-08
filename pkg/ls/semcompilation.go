@@ -24,7 +24,7 @@ type NodeCompiler interface {
 	// CompileNode gets a node and compiles the associated term on that
 	// node. It should store the compiled state into node.Compiled with
 	// the an opaque key
-	CompileNode(LayerNode) error
+	CompileNode(Node) error
 }
 
 // EdgeCompiler interface represents term compilation algorithm when
@@ -36,7 +36,7 @@ type EdgeCompiler interface {
 	// CompileEdge gets an edge and compiles the associated term on that
 	// edge. It should store tje compiled state into edge.Compiled with
 	// an opaque key
-	CompileEdge(LayerEdge) error
+	CompileEdge(Edge) error
 }
 
 // TermCompiler interface represents term compilation algorithm. This
@@ -53,8 +53,8 @@ type TermCompiler interface {
 type emptyCompiler struct{}
 
 // CompileNode returns the value unmodified
-func (emptyCompiler) CompileNode(LayerNode) error                             { return nil }
-func (emptyCompiler) CompileEdge(LayerEdge) error                             { return nil }
+func (emptyCompiler) CompileNode(Node) error                                  { return nil }
+func (emptyCompiler) CompileEdge(Edge) error                                  { return nil }
 func (emptyCompiler) CompileTerm(string, *PropertyValue) (interface{}, error) { return nil, nil }
 
 // GetNodeCompiler return a compiler that will compile the term when

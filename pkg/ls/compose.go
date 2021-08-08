@@ -14,11 +14,11 @@
 package ls
 
 import (
-	"fmt"
+	"github.com/bserdar/digraph"
 )
 
-// Compose schema layers. Directly modifies the target. The source
-// must be an overlay.
+// Compose schema layers. Directly modifies the source and the
+// target. The source must be an overlay.
 func (layer *Layer) Compose(source *Layer) error {
 	if source.GetLayerType() != OverlayTerm {
 		return ErrCompositionSourceNotOverlay
@@ -35,64 +35,39 @@ func (layer *Layer) Compose(source *Layer) error {
 	var err error
 	// Process attributes of the source layer depth-first
 	// Compose the source attribute nodes with the target attribute nodes, ignoring any nodes attached to them
-	processedSourceNodes := make(map[LayerNode]struct{})
-	source.ForEachAttribute(func(sourceNode LayerNode) bool {
+	processedSourceNodes := make(map[Node]struct{})
+	source.ForEachAttribute(func(sourceNode Node, sourcePath []Node) bool {
 		if _, processed := processedSourceNodes[sourceNode]; processed {
 			return true
 		}
 		// If node exists in target, merge
-		targetNodes := layer.AllNodesWithLabel(sourceNode.Label()).All()
-		switch len(targetNodes) {
-		case 1:
+		targetNode, targetPath := layer.FindAttributeByID(sourceNode.GetID())
+		if targetNode != nil {
 			// Target node exists. Merge if paths match
-			if pathsMatch(targetNodes[0].(LayerNode), sourceNode, sourceNode) {
-				if err = mergeNodes(layer, targetNodes[0].(LayerNode), sourceNode, processedSourceNodes); err != nil {
+			if pathsMatch(targetPath, sourcePath) {
+				if err = mergeNodes(layer, targetNode, sourceNode, processedSourceNodes); err != nil {
 					return false
 				}
 			}
-
-		case 0:
+		} else {
 			// Target node does not exist.
 			// Parent node must exist, because this is a depth-first algorithm
-			parent, edge := GetParentAttribute(sourceNode)
-			if parent == nil {
+			if len(sourcePath) <= 1 {
 				err = ErrInvalidComposition
 				return false
 			}
-			parentInLayer := layer.AllNodesWithLabel(parent.Label()).All()
-			switch len(parentInLayer) {
-			case 0:
+			parent := sourcePath[len(sourcePath)-2]
+			parentInLayer, _ := layer.FindAttributeByID(parent.GetID())
+			if parentInLayer == nil {
 				err = ErrInvalidComposition
 				return false
-			case 1:
-				// Add the same node to this layer
-				newNode := sourceNode.Clone()
-				layer.AddNode(newNode)
-				layer.AddEdge(parentInLayer[0], newNode, edge.Clone())
-			default:
-				err = ErrDuplicateAttributeID(fmt.Sprint(sourceNode.Label()))
-				return false
 			}
-		default:
-			err = ErrDuplicateAttributeID(fmt.Sprint(sourceNode.Label()))
-			return false
+			edge := GetLayerEdgeBetweenNodes(parent, sourceNode)
+			if edge != nil {
+				digraph.Connect(parentInLayer, sourceNode, edge.Clone())
+			}
 		}
 		processedSourceNodes[sourceNode] = struct{}{}
-		return true
-	})
-	if err != nil {
-		return err
-	}
-	// Copy all non-attribute nodes of source to target
-	nodeMap := make(map[LayerNode]LayerNode)
-	seen := make(map[LayerNode]struct{})
-	source.ForEachAttribute(func(sourceNode LayerNode) bool {
-		targetNodes := layer.AllNodesWithLabel(sourceNode.Label()).All()
-		if len(targetNodes) != 1 {
-			// This should not really happen
-			panic("Cannot find node even after adding")
-		}
-		mergeNonattributeGraph(layer, targetNodes[0].(LayerNode), sourceNode, seen, nodeMap)
 		return true
 	})
 	if err != nil {
@@ -102,7 +77,7 @@ func (layer *Layer) Compose(source *Layer) error {
 }
 
 // Merge source into target.
-func mergeNodes(targetLayer *Layer, target, source LayerNode, processedSourceNodes map[LayerNode]struct{}) error {
+func mergeNodes(targetLayer *Layer, target, source Node, processedSourceNodes map[Node]struct{}) error {
 	if _, processed := processedSourceNodes[source]; processed {
 		return nil
 	}
@@ -115,33 +90,6 @@ func mergeNodes(targetLayer *Layer, target, source LayerNode, processedSourceNod
 		return err
 	}
 	return nil
-}
-
-func mergeNonattributeGraph(targetLayer *Layer, targetNode, sourceNode LayerNode, seen map[LayerNode]struct{}, nodeMap map[LayerNode]LayerNode) {
-	// If the source node is already seen, return
-	if _, processed := seen[sourceNode]; processed {
-		return
-	}
-	for edges := sourceNode.AllOutgoingEdges(); edges.HasNext(); {
-		edge := edges.Next().(LayerEdge)
-		// Skip all attribute nodes
-		if edge.IsAttributeTreeEdge() {
-			continue
-		}
-
-		toNode := edge.To().(LayerNode)
-		seen[toNode] = struct{}{}
-		// If edge.to is not in target, add it
-		targetTo, exists := nodeMap[toNode]
-		if !exists {
-			targetTo = toNode.Clone()
-			targetLayer.AddNode(targetTo)
-			nodeMap[toNode] = targetTo
-		}
-		// Connect the nodes
-		targetLayer.AddEdge(targetNode, targetTo, edge.Clone())
-		mergeNonattributeGraph(targetLayer, targetTo, toNode, seen, nodeMap)
-	}
 }
 
 // ComposeProperties will combine the properties in source to
@@ -159,28 +107,26 @@ func ComposeProperties(target, source map[string]*PropertyValue) error {
 }
 
 // pathsMatch returns true if the attribute predecessors of source matches target's
-func pathsMatch(target, source, initialSource LayerNode) bool {
-	if source.GetID() != target.GetID() {
-		return false
+func pathsMatch(targetPath, sourcePath []Node) bool {
+	tn := len(targetPath)
+	sn := len(sourcePath)
+	for {
+		if tn == 0 {
+			return true
+		}
+		if sn == 0 {
+			return false
+		}
+		if sourcePath[sn-1].HasType(SchemaTerm) || sourcePath[sn-1].HasType(OverlayTerm) {
+			return true
+		}
+		if targetPath[tn-1].HasType(SchemaTerm) || targetPath[tn-1].HasType(OverlayTerm) {
+			return false
+		}
+		if targetPath[tn-1].GetID() != sourcePath[sn-1].GetID() {
+			return false
+		}
+		tn--
+		sn--
 	}
-	sourceParent, _ := GetParentAttribute(source)
-	// If sourceParents reached the top level, stop
-	if sourceParent == nil {
-		return true
-	}
-	if sourceParent.HasType(SchemaTerm) || sourceParent.HasType(OverlayTerm) {
-		return true
-	}
-	targetParent, _ := GetParentAttribute(target)
-	if targetParent == nil {
-		return false
-	}
-	if targetParent.HasType(SchemaTerm) || targetParent.HasType(OverlayTerm) {
-		return false
-	}
-	// Loop?
-	if sourceParent == initialSource {
-		return false
-	}
-	return pathsMatch(targetParent, sourceParent, initialSource)
 }
