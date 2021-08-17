@@ -189,10 +189,15 @@ func (l *Layer) GetAttributePath(node Node) []Node {
 
 // FindAttributeByID returns the attribute and the path to it
 func (l *Layer) FindAttributeByID(id string) (Node, []Node) {
+	return l.FindFirstAttribute(func(n Node) bool { return n.GetID() == id })
+}
+
+// FindFirstAttribute returns the first attribute for which the predicate holds
+func (l *Layer) FindFirstAttribute(predicate func(Node) bool) (Node, []Node) {
 	var node Node
 	var path []Node
 	ForEachAttributeNode(l.GetSchemaRootNode(), func(n Node, p []Node) bool {
-		if n.GetID() == id {
+		if predicate(n) {
 			node = n
 			path = p
 			return false

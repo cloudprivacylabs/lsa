@@ -14,7 +14,17 @@
 package cmd
 
 import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"io/ioutil"
+
+	"github.com/bserdar/digraph"
 	"github.com/spf13/cobra"
+
+	"github.com/cloudprivacylabs/lsa/pkg/dot"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
 
 func init() {
@@ -25,4 +35,109 @@ func init() {
 var ingestCmd = &cobra.Command{
 	Use:   "ingest",
 	Short: "Ingest and enrich data with a schema",
+}
+
+func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string) (*ls.Layer, error) {
+	var layer *ls.Layer
+	if len(compiledSchema) > 0 {
+		sch, err := ioutil.ReadFile(compiledSchema)
+		if err != nil {
+			return nil, err
+		}
+		var v interface{}
+		err = json.Unmarshal(sch, &v)
+		if err != nil {
+			return nil, err
+		}
+		layer, err = ls.UnmarshalLayer(v)
+		if err != nil {
+			return nil, err
+		}
+		compiler := ls.Compiler{}
+		layer, err = compiler.CompileSchema(layer)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if layer == nil {
+		var repo *fs.Repository
+		if len(repoDir) > 0 {
+			var err error
+			repo, err = getRepo(repoDir)
+			if err != nil {
+				return nil, err
+			}
+		}
+		if len(schemaName) > 0 {
+			if repo != nil {
+				var err error
+				layer, err = repo.GetComposedSchema(schemaName)
+				if err != nil {
+					return nil, err
+				}
+				compiler := ls.Compiler{Resolver: func(x string) (string, error) {
+					if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
+						return manifest.ID, nil
+					}
+					return x, nil
+				},
+					Loader: func(x string) (*ls.Layer, error) {
+						return repo.LoadAndCompose(x)
+					},
+				}
+				layer, err = compiler.Compile(schemaName)
+				if err != nil {
+					return nil, err
+				}
+			} else {
+				var v interface{}
+				err := readJSON(schemaName, &v)
+				if err != nil {
+					return nil, err
+				}
+				layer, err = ls.UnmarshalLayer(v)
+				if err != nil {
+					return nil, err
+				}
+				compiler := ls.Compiler{Resolver: func(x string) (string, error) {
+					if x == schemaName {
+						return x, nil
+					}
+					if x == layer.GetID() {
+						return x, nil
+					}
+					return "", fmt.Errorf("Not found")
+				},
+					Loader: func(x string) (*ls.Layer, error) {
+						if x == schemaName || x == layer.GetID() {
+							return layer, nil
+						}
+						return nil, fmt.Errorf("Not found")
+					},
+				}
+				layer, err = compiler.Compile(schemaName)
+				if err != nil {
+					return nil, err
+				}
+			}
+		}
+	}
+	return layer, nil
+}
+
+func OutputIngestedGraph(outFormat string, target *digraph.Graph, wr io.Writer) error {
+	switch outFormat {
+	case "dot":
+		renderer := dot.Renderer{Options: dot.DefaultOptions()}
+		renderer.Render(target, "g", wr)
+	case "json", "jsonld":
+		marshaler := ls.LDMarshaler{}
+		out := marshaler.Marshal(target)
+		x, _ := json.MarshalIndent(out, "", "  ")
+		wr.Write(x)
+	case "rdf":
+	default:
+		return fmt.Errorf("unknown output format")
+	}
+	return nil
 }
