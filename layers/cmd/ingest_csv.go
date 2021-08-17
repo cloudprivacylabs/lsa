@@ -13,110 +13,112 @@
 // limitations under the License.
 package cmd
 
-// import (
-// 	"encoding/csv"
-// 	"encoding/json"
-// 	"fmt"
-// 	"io"
-// 	"os"
+import (
+	"bytes"
+	"encoding/csv"
+	"io"
+	"os"
+	"strings"
+	"text/template"
 
-// 	"github.com/spf13/cobra"
+	"github.com/bserdar/digraph"
+	"github.com/spf13/cobra"
 
-// 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
-// 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-// 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
-// )
+	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
+)
 
-// func init() {
-// 	ingestCmd.AddCommand(ingestCSVCmd)
-// 	ingestCSVCmd.Flags().String("schema", "", "Schema id to use")
-// 	ingestCSVCmd.Flags().String("profile", "", "CSV profile")
-// 	ingestCSVCmd.Flags().String("id", "http://example.org/data", "Base ID to use for ingested nodes")
-// 	ingestCSVCmd.Flags().Int("skip", 1, "Number of rows to skip (default 1)")
-// 	ingestCSVCmd.MarkFlagRequired("schema")
-// }
+func init() {
+	ingestCmd.AddCommand(ingestCSVCmd)
+	ingestCSVCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
+	ingestCSVCmd.Flags().String("format", "json", "Output format, json(ld), rdf, or dot")
+	ingestCSVCmd.Flags().Int("startRow", 1, "Start row 0-based (default 1)")
+	ingestCSVCmd.Flags().Int("endRow", -1, "End row 0-based")
+	ingestCSVCmd.Flags().Int("headerRow", -1, "Header row 0-based (default: no header)")
+	ingestCSVCmd.Flags().String("id", "", "Object ID Go template for ingested data.")
+	ingestCSVCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
+}
 
-// var ingestCSVCmd = &cobra.Command{
-// 	Use:   "csv",
-// 	Short: "Ingest a CSV document and enrich it with a schema",
-// 	Args:  cobra.MaximumNArgs(1),
-// 	Run: func(cmd *cobra.Command, args []string) {
-// 		f, err := os.Open(args[0])
-// 		if err != nil {
-// 			failErr(err)
-// 		}
+var ingestCSVCmd = &cobra.Command{
+	Use:   "csv",
+	Short: "Ingest a CSV document and enrich it with a schema",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		compiledSchema, _ := cmd.Flags().GetString("compiledschema")
+		repoDir, _ := cmd.Flags().GetString("repo")
+		schemaName, _ := cmd.Flags().GetString("schema")
+		layer, err := LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName)
+		if err != nil {
+			failErr(err)
+		}
 
-// 		var profile csvingest.IngestionProfile
-// 		if s, _ := cmd.Flags().GetString("profile"); len(s) > 0 {
-// 			if err := readJSON(s, &profile); err != nil {
-// 				failErr(err)
-// 			}
-// 		}
+		f, err := os.Open(args[0])
+		if err != nil {
+			failErr(err)
+		}
 
-// 		repoDir, _ := cmd.Flags().GetString("repo")
-// 		if len(repoDir) == 0 {
-// 			fail("Specify a repository directory using --repo")
-// 		}
-// 		repo := fs.New(repoDir, ls.Terms, func(fname string, err error) {
-// 			fmt.Printf("%s: %s\n", fname, err)
-// 		})
-// 		if err := repo.Load(true); err != nil {
-// 			failErr(err)
-// 		}
-// 		schemaId, _ := cmd.Flags().GetString("schema")
-// 		schema := repo.GetSchemaManifest(schemaId)
-// 		if schema == nil {
-// 			fail(fmt.Sprintf("Schema not found: %s", schemaId))
-// 		}
-// 		compiler := ls.Compiler{Resolver: func(x string) (string, error) {
-// 			if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
-// 				return manifest.ID, nil
-// 			}
-// 			return x, nil
-// 		},
-// 			Loader: repo.LoadAndCompose,
-// 		}
-// 		resolved, err := compiler.Compile(schemaId)
-// 		if err != nil {
-// 			failErr(err)
-// 		}
+		reader := csv.NewReader(f)
+		startRow, err := cmd.Flags().GetInt("startRow")
+		if err != nil {
+			failErr(err)
+		}
+		endRow, err := cmd.Flags().GetInt("endRow")
+		if err != nil {
+			failErr(err)
+		}
+		headerRow, err := cmd.Flags().GetInt("headerRow")
+		if err != nil {
+			failErr(err)
+		}
+		if headerRow >= startRow {
+			fail("Header row is ahead of start row")
+		}
+		ingester := csvingest.Ingester{
+			Target:             digraph.New(),
+			Schema:             layer,
+			UseInstanceOfEdges: true,
+		}
+		idTemplate, _ := cmd.Flags().GetString("id")
+		if len(idTemplate) == 0 {
+			idTemplate = `row_{{.rowIndex}}`
+		}
+		idTmp, err := template.New("id").Parse(idTemplate)
+		if err != nil {
+			failErr(err)
+		}
 
-// 		reader := csv.NewReader(f)
-// 		skip, _ := cmd.Flags().GetInt("skip")
-// 		for i := 0; i < skip; i++ {
-// 			row, err := reader.Read()
-// 			if err == io.EOF {
-// 				return
-// 			}
-// 			if err != nil {
-// 				failErr(err)
-// 			}
-// 			if i == 0 && len(profile.Columns) == 0 {
-// 				profile.Columns, err = csvingest.DefaultProfile(row)
-// 				if err != nil {
-// 					failErr(err)
-// 				}
-// 			}
-// 		}
-// 		if len(profile.Columns) == 0 {
-// 			fail("No CSV profile")
-// 		}
-
-// 		for {
-// 			row, err := reader.Read()
-// 			if err == io.EOF {
-// 				break
-// 			}
-// 			if err != nil {
-// 				failErr(err)
-// 			}
-// 			ID, _ := cmd.Flags().GetString("id")
-// 			data, err := csvingest.Ingest(ID, row, profile, resolved)
-// 			if err != nil {
-// 				failErr(err)
-// 			}
-// 			out, _ := json.MarshalIndent(ls.DataModelToMap(data, true), "", "  ")
-// 			fmt.Println(string(out))
-// 		}
-// 	},
-// }
+		for row := 0; ; row++ {
+			rowData, err := reader.Read()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				failErr(err)
+			}
+			if headerRow == row {
+				ingester.ColumnNames = rowData
+			} else if row >= startRow {
+				if endRow != -1 && row > endRow {
+					break
+				}
+				templateData := map[string]interface{}{
+					"rowIndex":  row,
+					"dataIndex": row - startRow,
+					"columns":   rowData,
+				}
+				buf := bytes.Buffer{}
+				if err := idTmp.Execute(&buf, templateData); err != nil {
+					failErr(err)
+				}
+				if err := ingester.Ingest(rowData, strings.TrimSpace(buf.String())); err != nil {
+					failErr(err)
+				}
+				outFormat, _ := cmd.Flags().GetString("format")
+				err = OutputIngestedGraph(outFormat, ingester.Target, os.Stdout)
+				if err != nil {
+					failErr(err)
+				}
+				ingester.Target = digraph.New()
+			}
+		}
+	},
+}
