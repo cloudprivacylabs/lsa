@@ -49,9 +49,9 @@ func (tc composeTestCase) run(t *testing.T) {
 	}
 
 	marshaled := MarshalLayer(base)
-	if err := deepEqual(toMap(marshaled), toMap(tc.Expected)); err != nil {
-		expected, _ := json.MarshalIndent(toMap(tc.Expected), "", "  ")
-		got, _ := json.MarshalIndent(toMap(marshaled), "", "  ")
+	if err := DeepEqual(ToMap(marshaled), ToMap(tc.Expected)); err != nil {
+		expected, _ := json.MarshalIndent(ToMap(tc.Expected), "", "  ")
+		got, _ := json.MarshalIndent(ToMap(marshaled), "", "  ")
 		t.Errorf("%v %s: Expected:\n%s\nGot:\n%s\n", err, tc.Name, string(expected), string(got))
 	}
 }

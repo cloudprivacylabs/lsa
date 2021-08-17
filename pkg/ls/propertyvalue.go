@@ -97,6 +97,26 @@ func (p *PropertyValue) Has(s string) bool {
 	return false
 }
 
+// Equal compares two property values, and returns true if they are equal
+func (p *PropertyValue) Equal(v *PropertyValue) bool {
+	if p.IsString() && v.IsString() && p.AsString() == v.AsString() {
+		return true
+	}
+	if p.IsStringSlice() && v.IsStringSlice() {
+		s1 := p.AsStringSlice()
+		s2 := v.AsStringSlice()
+		if len(s1) == len(s2) {
+			for i, x := range s1 {
+				if s2[i] != x {
+					return false
+				}
+			}
+			return true
+		}
+	}
+	return false
+}
+
 func (p PropertyValue) Clone() *PropertyValue {
 	return &PropertyValue{value: p.value}
 }

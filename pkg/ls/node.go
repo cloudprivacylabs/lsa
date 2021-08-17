@@ -71,6 +71,9 @@ type Node interface {
 	// new node will get a shallow copy of the compiled data
 	GetCompiledDataMap() map[interface{}]interface{}
 	GetFilteredValue() interface{}
+	// Return all descendants of the node going through edges with given
+	// labels. If edge labels are empty, all edges are included
+	GetDescendants(edgeLabels ...string) map[Node]struct{}
 }
 
 // node is either an attribute node, document node, or an annotation
@@ -229,4 +232,35 @@ func IsDocumentEdge(edge digraph.Edge) bool {
 		return true
 	}
 	return false
+}
+
+// GetDescendants returns the descendants of the current node accessed
+// using the labels. If labels are empty, all accessible nodes are returned
+func (node *node) GetDescendants(edgeLabels ...string) map[Node]struct{} {
+	seen := make(map[Node]struct{})
+	labels := make(map[string]struct{})
+	for _, x := range edgeLabels {
+		labels[x] = struct{}{}
+	}
+	seen[node] = struct{}{}
+	node.getDescendants(labels, seen)
+	return seen
+}
+
+func (nd *node) getDescendants(labels map[string]struct{}, seen map[Node]struct{}) {
+	edges := nd.GetAllOutgoingEdges()
+	for edges.HasNext() {
+		edge := edges.Next().(Edge)
+		_, ok := labels[edge.GetLabelStr()]
+		if len(labels) > 0 && !ok {
+			continue
+		}
+		nextNode := edge.GetTo().(*node)
+		_, ok = seen[nextNode]
+		if ok {
+			continue
+		}
+		seen[nextNode] = struct{}{}
+		nextNode.getDescendants(labels, seen)
+	}
 }

@@ -13,74 +13,74 @@
 // limitations under the License.
 package ls
 
-import (
-	"encoding/json"
+// import (
+// 	"encoding/json"
 
-	"github.com/bserdar/digraph"
-)
+// 	"github.com/bserdar/digraph"
+// )
 
-type Expression interface {
-	EvaluateExpression(*digraph.Graph) (interface{}, error)
-}
+// type Expression interface {
+// 	EvaluateExpression(*digraph.Graph) (interface{}, error)
+// }
 
-type NullExpression struct{}
+// type NullExpression struct{}
 
-func (NullExpression) EvaluateExpression(*digraph.Graph) (interface{}, error) { return nil, nil }
+// func (NullExpression) EvaluateExpression(*digraph.Graph) (interface{}, error) { return nil, nil }
 
-// SelectNodesExpression selects graph nodes based on a predicate
-type SelectNodesExpression struct {
-	Predicate NodePredicate `json:"$selectNodes"`
-}
+// // SelectNodesExpression selects graph nodes based on a predicate
+// type SelectNodesExpression struct {
+// 	Predicate NodePredicate `json:"$selectNodes"`
+// }
 
-// EvaluateExpression evaluates the predicate for all nodes, and returns []digraph.Node
-func (expr SelectNodesExpression) EvaluateExpression(g *digraph.Graph) (interface{}, error) {
-	ret := make([]digraph.Node, 0)
-	for nodes := g.GetAllNodes(); nodes.HasNext(); {
-		node := nodes.Next().(Node)
-		result, err := expr.Predicate.EvaluateNode(node)
-		if err != nil {
-			return nil, err
-		}
-		if result {
-			ret = append(ret, node)
-		}
-	}
-	return ret, nil
-}
+// // EvaluateExpression evaluates the predicate for all nodes, and returns []digraph.Node
+// func (expr SelectNodesExpression) EvaluateExpression(g *digraph.Graph) (interface{}, error) {
+// 	ret := make([]digraph.Node, 0)
+// 	for nodes := g.GetAllNodes(); nodes.HasNext(); {
+// 		node := nodes.Next().(Node)
+// 		result, err := expr.Predicate.EvaluateNode(node)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		if result {
+// 			ret = append(ret, node)
+// 		}
+// 	}
+// 	return ret, nil
+// }
 
-func unmarshalSelectNodesExpression(in json.RawMessage) (Expression, error) {
-	np, err := UnmarshalNodePredicate(in)
-	if err != nil {
-		return nil, err
-	}
-	return SelectNodesExpression{Predicate: np}, nil
-}
+// func unmarshalSelectNodesExpression(in json.RawMessage) (Expression, error) {
+// 	np, err := UnmarshalNodePredicate(in)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return SelectNodesExpression{Predicate: np}, nil
+// }
 
-var expressionFactories = map[string]func(json.RawMessage) (Expression, error){
-	"$selectNodes": unmarshalSelectNodesExpression,
-}
+// var expressionFactories = map[string]func(json.RawMessage) (Expression, error){
+// 	"$selectNodes": unmarshalSelectNodesExpression,
+// }
 
-func UnmarshalExpression(in []byte) (Expression, error) {
-	var input map[string]json.RawMessage
-	if err := json.Unmarshal(in, &input); err != nil {
-		return nil, err
-	}
-	if len(input) == 0 {
-		return NullExpression{}, nil
-	}
-	if len(input) > 1 {
-		return nil, ErrInvalidExpression
-	}
-	for k, v := range input {
-		factory, ok := expressionFactories[k]
-		if !ok {
-			return nil, ErrUnknownOperator{k}
-		}
-		value, err := factory(v)
-		if err != nil {
-			return nil, err
-		}
-		return value, nil
-	}
-	return nil, nil
-}
+// func UnmarshalExpression(in []byte) (Expression, error) {
+// 	var input map[string]json.RawMessage
+// 	if err := json.Unmarshal(in, &input); err != nil {
+// 		return nil, err
+// 	}
+// 	if len(input) == 0 {
+// 		return NullExpression{}, nil
+// 	}
+// 	if len(input) > 1 {
+// 		return nil, ErrInvalidExpression
+// 	}
+// 	for k, v := range input {
+// 		factory, ok := expressionFactories[k]
+// 		if !ok {
+// 			return nil, ErrUnknownOperator{k}
+// 		}
+// 		value, err := factory(v)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		return value, nil
+// 	}
+// 	return nil, nil
+// }
