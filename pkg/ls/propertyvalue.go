@@ -13,6 +13,10 @@
 // limitations under the License.
 package ls
 
+import (
+	"strconv"
+)
+
 // PropertyValue can be a string or []string. It is an immutable value object
 type PropertyValue struct {
 	value interface{}
@@ -115,6 +119,22 @@ func (p *PropertyValue) Equal(v *PropertyValue) bool {
 		}
 	}
 	return false
+}
+
+// Returns true if the underlying value is a string, and that string can be converted to int
+func (p *PropertyValue) IsInt() bool {
+	s, ok := p.value.(string)
+	if !ok {
+		return false
+	}
+	_, err := strconv.Atoi(s)
+	return err == nil
+}
+
+// AsInt attempts to return the underlying string value as integer
+func (p *PropertyValue) AsInt() int {
+	i, _ := strconv.Atoi(p.value.(string))
+	return i
 }
 
 func (p PropertyValue) Clone() *PropertyValue {

@@ -15,7 +15,7 @@ var stringSliceSelectors = map[string]func(StringSliceValue) (Value, error){
 	},
 	"has": func(v StringSliceValue) (Value, error) {
 		ret := StringHas
-		ret.Closure = func(args []Value) (Value, error) {
+		ret.Closure = func(ctx *Context, args []Value) (Value, error) {
 			str, err := args[0].AsString()
 			if err != nil {
 				return nil, err
@@ -82,10 +82,10 @@ func (value StringSliceValue) Add(v2 Value) (Value, error) {
 	return ret, nil
 }
 
-func (value StringSliceValue) AsBool() (bool, error)     { return len(value) > 0, nil }
-func (StringSliceValue) AsInt() (int, error)             { return 0, ErrNotANumber }
-func (StringSliceValue) Call([]Value) (Value, error)     { return nil, ErrNotCallable }
-func (value StringSliceValue) AsString() (string, error) { return fmt.Sprint(value), nil }
+func (value StringSliceValue) AsBool() (bool, error)           { return len(value) > 0, nil }
+func (StringSliceValue) AsInt() (int, error)                   { return 0, ErrNotANumber }
+func (StringSliceValue) Call(*Context, []Value) (Value, error) { return nil, ErrNotCallable }
+func (value StringSliceValue) AsString() (string, error)       { return fmt.Sprint(value), nil }
 func (value StringSliceValue) Eq(v Value) (bool, error) {
 	sl, ok := v.(StringSliceValue)
 	if !ok {

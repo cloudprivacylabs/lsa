@@ -71,9 +71,6 @@ type Node interface {
 	// new node will get a shallow copy of the compiled data
 	GetCompiledDataMap() map[interface{}]interface{}
 	GetFilteredValue() interface{}
-	// Return all descendants of the node going through edges with given
-	// labels. If edge labels are empty, all edges are included
-	GetDescendants(edgeLabels ...string) map[Node]struct{}
 }
 
 // node is either an attribute node, document node, or an annotation
@@ -234,33 +231,93 @@ func IsDocumentEdge(edge digraph.Edge) bool {
 	return false
 }
 
-// GetDescendants returns the descendants of the current node accessed
-// using the labels. If labels are empty, all accessible nodes are returned
-func (node *node) GetDescendants(edgeLabels ...string) map[Node]struct{} {
-	seen := make(map[Node]struct{})
-	labels := make(map[string]struct{})
-	for _, x := range edgeLabels {
-		labels[x] = struct{}{}
-	}
-	seen[node] = struct{}{}
-	node.getDescendants(labels, seen)
-	return seen
+type EdgeFuncResult int
+
+const (
+	FollowEdgeResult EdgeFuncResult = iota
+	SkipEdgeResult
+	StopEdgeResult
+)
+
+// IterateDescendants iterates the descendants of the node based on
+// the results of nodeFunc and edgeFunc.
+//
+// For each visited node, if nodeFunc is not nil, nodeFunc is called
+// with the node and the path to the node. If nodeFunc returns false,
+// processing stops.
+//
+// For each outgoing edge, if edgeFunc is not nil, edgeFunc is called
+// with the edge and the path to the source node. If edgeFunc returns
+// FollowEdgeResult, the edge is followed. If edgeFunc returnd
+// DontFollowEdgeResult, edge is skipped. If edgeFunc returns
+// StopEdgeResult, iteration stops.
+func IterateDescendants(from Node, nodeFunc func(Node, []Node) bool, edgeFunc func(Edge, []Node) EdgeFuncResult, ordered bool) bool {
+	return iterateDescendants(from, []Node{}, nodeFunc, edgeFunc, ordered, map[Node]struct{}{})
 }
 
-func (nd *node) getDescendants(labels map[string]struct{}, seen map[Node]struct{}) {
-	edges := nd.GetAllOutgoingEdges()
-	for edges.HasNext() {
-		edge := edges.Next().(Edge)
-		_, ok := labels[edge.GetLabelStr()]
-		if len(labels) > 0 && !ok {
-			continue
-		}
-		nextNode := edge.GetTo().(*node)
-		_, ok = seen[nextNode]
-		if ok {
-			continue
-		}
-		seen[nextNode] = struct{}{}
-		nextNode.getDescendants(labels, seen)
+func iterateDescendants(root Node, path []Node, nodeFunc func(Node, []Node) bool, edgeFunc func(Edge, []Node) EdgeFuncResult, ordered bool, seen map[Node]struct{}) bool {
+	if _, exists := seen[root]; exists {
+		return true
 	}
+	seen[root] = struct{}{}
+
+	path = append(path, root)
+
+	if nodeFunc != nil && !nodeFunc(root, path) {
+		return false
+	}
+
+	outgoing := root.GetAllOutgoingEdges()
+	if ordered {
+		outgoing = SortEdgesItr(outgoing)
+	}
+
+	for outgoing.HasNext() {
+		edge := outgoing.Next().(Edge)
+		follow := FollowEdgeResult
+		if edgeFunc != nil {
+			follow = edgeFunc(edge, path)
+		}
+		switch follow {
+		case StopEdgeResult:
+			return false
+		case SkipEdgeResult:
+		case FollowEdgeResult:
+			next := edge.GetTo().(Node)
+			if !iterateDescendants(next, path, nodeFunc, edgeFunc, ordered, seen) {
+				return false
+			}
+		}
+	}
+	return true
+
+}
+
+// FirstReachable returns the first reachable node for which
+// nodePrdicate returns true, using only the edges for which
+// edgePredicate returns true.
+func FirstReachable(from Node, nodePredicate func(Node, []Node) bool, edgePredicate func(Edge, []Node) bool) (Node, []Node) {
+	var (
+		ret  Node
+		path []Node
+	)
+	IterateDescendants(from, func(n Node, p []Node) bool {
+		if nodePredicate(n, p) {
+			ret = n
+			path = p
+			return false
+		}
+		return true
+	},
+		func(e Edge, p []Node) EdgeFuncResult {
+			if edgePredicate == nil {
+				return FollowEdgeResult
+			}
+			if edgePredicate(e, p) {
+				return FollowEdgeResult
+			}
+			return SkipEdgeResult
+		},
+		true)
+	return ret, path
 }

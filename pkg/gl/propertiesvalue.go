@@ -47,7 +47,6 @@ func (value PropertiesValue) Index(index Value) (Value, error) {
 
 func (value PropertiesValue) AsBool() (bool, error) { return len(value.Properties) > 0, nil }
 func (PropertiesValue) AsInt() (int, error)         { return 0, ErrNotANumber }
-func (PropertiesValue) Call([]Value) (Value, error) { return nil, ErrNotCallable }
 
 func (value PropertiesValue) Eq(v Value) (bool, error) {
 	p, ok := v.(PropertiesValue)

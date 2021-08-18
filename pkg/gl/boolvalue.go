@@ -17,9 +17,9 @@ func (v BoolValue) AsInt() (int, error) {
 	return 0, nil
 }
 
-func (BoolValue) Call([]Value) (Value, error)        { return nil, ErrNotCallable }
-func (BoolValue) Index(Value) (Value, error)         { return nil, ErrNotIndexable }
-func (BoolValue) Selector(sel string) (Value, error) { return nil, ErrUnknownSelector{Selector: sel} }
+func (BoolValue) Call(*Context, []Value) (Value, error) { return nil, ErrNotCallable }
+func (BoolValue) Index(Value) (Value, error)            { return nil, ErrNotIndexable }
+func (BoolValue) Selector(sel string) (Value, error)    { return nil, ErrUnknownSelector{Selector: sel} }
 func (b BoolValue) Eq(v Value) (bool, error) {
 	x, err := v.AsBool()
 	if err != nil {

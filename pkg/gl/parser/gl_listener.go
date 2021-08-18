@@ -26,14 +26,14 @@ type glListener interface {
 	// EnterLogicalOrExpression is called when entering the LogicalOrExpression production.
 	EnterLogicalOrExpression(c *LogicalOrExpressionContext)
 
-	// EnterSearchExpression is called when entering the SearchExpression production.
-	EnterSearchExpression(c *SearchExpressionContext)
-
 	// EnterIndexExpression is called when entering the IndexExpression production.
 	EnterIndexExpression(c *IndexExpressionContext)
 
 	// EnterNotExpression is called when entering the NotExpression production.
 	EnterNotExpression(c *NotExpressionContext)
+
+	// EnterClosureExpression is called when entering the ClosureExpression production.
+	EnterClosureExpression(c *ClosureExpressionContext)
 
 	// EnterEqualityExpression is called when entering the EqualityExpression production.
 	EnterEqualityExpression(c *EqualityExpressionContext)
@@ -43,9 +43,6 @@ type glListener interface {
 
 	// EnterIdentifierExpression is called when entering the IdentifierExpression production.
 	EnterIdentifierExpression(c *IdentifierExpressionContext)
-
-	// EnterClosure is called when entering the closure production.
-	EnterClosure(c *ClosureContext)
 
 	// EnterLvalue is called when entering the lvalue production.
 	EnterLvalue(c *LvalueContext)
@@ -83,14 +80,14 @@ type glListener interface {
 	// ExitLogicalOrExpression is called when exiting the LogicalOrExpression production.
 	ExitLogicalOrExpression(c *LogicalOrExpressionContext)
 
-	// ExitSearchExpression is called when exiting the SearchExpression production.
-	ExitSearchExpression(c *SearchExpressionContext)
-
 	// ExitIndexExpression is called when exiting the IndexExpression production.
 	ExitIndexExpression(c *IndexExpressionContext)
 
 	// ExitNotExpression is called when exiting the NotExpression production.
 	ExitNotExpression(c *NotExpressionContext)
+
+	// ExitClosureExpression is called when exiting the ClosureExpression production.
+	ExitClosureExpression(c *ClosureExpressionContext)
 
 	// ExitEqualityExpression is called when exiting the EqualityExpression production.
 	ExitEqualityExpression(c *EqualityExpressionContext)
@@ -100,9 +97,6 @@ type glListener interface {
 
 	// ExitIdentifierExpression is called when exiting the IdentifierExpression production.
 	ExitIdentifierExpression(c *IdentifierExpressionContext)
-
-	// ExitClosure is called when exiting the closure production.
-	ExitClosure(c *ClosureContext)
 
 	// ExitLvalue is called when exiting the lvalue production.
 	ExitLvalue(c *LvalueContext)

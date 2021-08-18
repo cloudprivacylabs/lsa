@@ -21,9 +21,9 @@ func (v NumberValue) AsBool() (bool, error) {
 	return i == 0, nil
 }
 
-func (NumberValue) Call([]Value) (Value, error)        { return nil, ErrNotCallable }
-func (NumberValue) Index(Value) (Value, error)         { return nil, ErrNotIndexable }
-func (NumberValue) Selector(sel string) (Value, error) { return nil, ErrUnknownSelector{Selector: sel} }
+func (NumberValue) Call(*Context, []Value) (Value, error) { return nil, ErrNotCallable }
+func (NumberValue) Index(Value) (Value, error)            { return nil, ErrNotIndexable }
+func (NumberValue) Selector(sel string) (Value, error)    { return nil, ErrUnknownSelector{Selector: sel} }
 
 func (v NumberValue) Iterate(f func(Value) (Value, error)) (Value, error) {
 	return f(v)

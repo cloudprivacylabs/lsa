@@ -5,7 +5,7 @@ grammar gl;
 
 expression
  : lvalue '=' expression                                      # AssignmentExpression
- | expression ':' closure                                     # SearchExpression
+ | identifierName '->' expression                             # ClosureExpression
  | expression '[' expression ']'                              # IndexExpression
  | expression '.' identifierName                              # DotExpression
  | expression arguments                                       # FunctionCallExpression
@@ -16,10 +16,6 @@ expression
  | Identifier                                                 # IdentifierExpression
  | literal                                                    # LiteralExpression
  | '(' expression ')'                                         # ParenthesizedExpression
- ;
-
-closure
- : identifierName '->' expression
  ;
 
 
@@ -81,6 +77,7 @@ Identifier
 
 StringLiteral
  : '"' StringCharacter* '"'
+ | '\'' StringCharacter* '\''
  ;
 
 WhiteSpaces

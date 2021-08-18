@@ -10,6 +10,14 @@ type NodeValue struct {
 	Nodes map[ls.Node]struct{}
 }
 
+func NewNodeValue(nodes ...ls.Node) NodeValue {
+	ret := NodeValue{Nodes: make(map[ls.Node]struct{})}
+	for _, n := range nodes {
+		ret.Nodes[n] = struct{}{}
+	}
+	return ret
+}
+
 func (n NodeValue) oneNode() (ls.Node, error) {
 	switch len(n.Nodes) {
 	case 0:
@@ -29,6 +37,9 @@ var nodeSelectors = map[string]func(NodeValue) (Value, error){
 			return nil, err
 		}
 		return ValueOf(n.GetID()), nil
+	},
+	"length": func(node NodeValue) (Value, error) {
+		return ValueOf(len(node.Nodes)), nil
 	},
 	"type": func(node NodeValue) (Value, error) {
 		n, err := node.oneNode()
@@ -51,24 +62,58 @@ var nodeSelectors = map[string]func(NodeValue) (Value, error){
 		}
 		return ValueOf(n.GetProperties()), nil
 	},
-	"descendants": func(node NodeValue) (Value, error) {
-		return FunctionValue{MinArgs: 0, MaxArgs: -1, Name: "descendants", Closure: func(args []Value) (Value, error) {
-			result := make(map[ls.Node]struct{})
-			labels := make([]string, 0, len(args))
-			for _, arg := range args {
-				v, err := arg.AsString()
-				if err != nil {
-					return nil, err
-				}
-				labels = append(labels, v)
+	"firstReachable": func(node NodeValue) (Value, error) {
+		// firstReachable(nodeClosure)
+		// firstReachable(nodeClosure, edgeClosure)
+		return FunctionValue{MinArgs: 1, MaxArgs: 2, Name: "firstReachable", Closure: func(ctx *Context, args []Value) (Value, error) {
+			nodeClosure, ok := args[0].(Closure)
+			if !ok {
+				return nil, ErrNotAClosure
 			}
+			var edgeClosure Closure
+			if len(args) == 2 {
+				edgeClosure, ok = args[1].(Closure)
+				if !ok {
+					return nil, ErrNotAClosure
+				}
+			}
+			var closureError error
+			var found ls.Node
 			for nd := range node.Nodes {
-				nodes := nd.GetDescendants(labels...)
-				for k := range nodes {
-					result[k] = struct{}{}
+				ls.FirstReachable(nd, func(node ls.Node, _ []ls.Node) bool {
+					b, err := AsBool(nodeClosure.Evaluate(ValueOf(node), ctx))
+					if err != nil {
+						closureError = err
+						return true
+					}
+					if b {
+						found = node
+						return true
+					}
+					return false
+				},
+					func(edge ls.Edge, _ []ls.Node) bool {
+						if edgeClosure.F == nil {
+							return true
+						}
+						b, err := AsBool(edgeClosure.Evaluate(ValueOf(edge), ctx))
+						if err != nil {
+							closureError = err
+							return false
+						}
+						if b {
+							return false
+						}
+						return true
+					})
+				if closureError != nil {
+					return nil, closureError
+				}
+				if found != nil {
+					return NewNodeValue(found), nil
 				}
 			}
-			return NodeValue{Nodes: result}, nil
+			return NewNodeValue(), nil
 		}}, nil
 	},
 }
@@ -82,7 +127,7 @@ func (v NodeValue) Selector(sel string) (Value, error) {
 }
 
 func (v NodeValue) Iterate(f func(Value) (Value, error)) (Value, error) {
-	ret := NodeValue{Nodes: make(map[ls.Node]struct{})}
+	ret := NewNodeValue()
 	for node := range v.Nodes {
 		n, err := f(ValueOf(node))
 		if err != nil {
@@ -108,7 +153,7 @@ func (v NodeValue) Add(v2 Value) (Value, error) {
 	if !ok {
 		return nil, ErrIncompatibleValue
 	}
-	ret := NodeValue{Nodes: map[ls.Node]struct{}{}}
+	ret := NewNodeValue()
 	for k := range v.Nodes {
 		ret.Nodes[k] = struct{}{}
 	}

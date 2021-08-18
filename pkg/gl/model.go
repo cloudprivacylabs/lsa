@@ -14,7 +14,7 @@ type Value interface {
 	// Index selects an value from an indexable value
 	Index(Value) (Value, error)
 	// Call a method/function with arguments
-	Call([]Value) (Value, error)
+	Call(*Context, []Value) (Value, error)
 
 	// Eq checks equivalence
 	Eq(Value) (bool, error)
@@ -38,7 +38,7 @@ func (BasicValue) Selector(sel string) (Value, error) {
 	return nil, ErrUnknownSelector{Selector: sel}
 }
 
-func (BasicValue) Call(args []Value) (Value, error) {
+func (BasicValue) Call(*Context, []Value) (Value, error) {
 	return nil, ErrNotCallable
 }
 
@@ -78,6 +78,18 @@ func (NullValue) Eq(v Value) (bool, error) {
 	return false, nil
 }
 
+type Closure struct {
+	BasicValue
+	Symbol string
+	F      Expression
+}
+
+func (c Closure) Evaluate(arg Value, ctx *Context) (Value, error) {
+	newContext := ctx.NewNestedContext()
+	newContext.Set(c.Symbol, arg)
+	return c.F.Evaluate(newContext)
+}
+
 type LValue struct {
 	BasicValue
 	Name string
@@ -88,19 +100,19 @@ type FunctionValue struct {
 	MinArgs int
 	MaxArgs int
 	Name    string
-	Closure func([]Value) (Value, error)
+	Closure func(*Context, []Value) (Value, error)
 }
 
 func (FunctionValue) Eq(Value) (bool, error) { return false, nil }
 
-func (f FunctionValue) Call(args []Value) (Value, error) {
+func (f FunctionValue) Call(ctx *Context, args []Value) (Value, error) {
 	if len(args) < f.MinArgs {
 		return nil, ErrInvalidFunctionCall(fmt.Sprintf("'%s' needs at least %d args but got %d", f.Name, f.MinArgs, len(args)))
 	}
 	if f.MaxArgs >= 0 && len(args) > f.MaxArgs {
 		return nil, ErrInvalidFunctionCall(fmt.Sprintf("'%s' needs at most %d args but got %d", f.Name, f.MaxArgs, len(args)))
 	}
-	return f.Closure(args)
+	return f.Closure(ctx, args)
 }
 
 func ValueOf(value interface{}) Value {
@@ -155,4 +167,21 @@ func ValueOf(value interface{}) Value {
 		return PropertiesValue{Properties: t}
 	}
 	panic("Unrepresentable value")
+}
+
+// AsBool is a convenience function that will return an error if the
+// input contains an error, or if the value cannot be converted to a
+// bool value. Use it as:
+//
+//   b, err:=AsBool(expression.Evaluate(ctx))
+//
+func AsBool(v Value, err error) (bool, error) {
+	if err != nil {
+		return false, err
+	}
+	b, err := v.AsBool()
+	if err != nil {
+		return false, err
+	}
+	return b, nil
 }

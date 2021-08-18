@@ -57,12 +57,6 @@ func (s *BaseglListener) EnterLogicalOrExpression(ctx *LogicalOrExpressionContex
 // ExitLogicalOrExpression is called when production LogicalOrExpression is exited.
 func (s *BaseglListener) ExitLogicalOrExpression(ctx *LogicalOrExpressionContext) {}
 
-// EnterSearchExpression is called when production SearchExpression is entered.
-func (s *BaseglListener) EnterSearchExpression(ctx *SearchExpressionContext) {}
-
-// ExitSearchExpression is called when production SearchExpression is exited.
-func (s *BaseglListener) ExitSearchExpression(ctx *SearchExpressionContext) {}
-
 // EnterIndexExpression is called when production IndexExpression is entered.
 func (s *BaseglListener) EnterIndexExpression(ctx *IndexExpressionContext) {}
 
@@ -74,6 +68,12 @@ func (s *BaseglListener) EnterNotExpression(ctx *NotExpressionContext) {}
 
 // ExitNotExpression is called when production NotExpression is exited.
 func (s *BaseglListener) ExitNotExpression(ctx *NotExpressionContext) {}
+
+// EnterClosureExpression is called when production ClosureExpression is entered.
+func (s *BaseglListener) EnterClosureExpression(ctx *ClosureExpressionContext) {}
+
+// ExitClosureExpression is called when production ClosureExpression is exited.
+func (s *BaseglListener) ExitClosureExpression(ctx *ClosureExpressionContext) {}
 
 // EnterEqualityExpression is called when production EqualityExpression is entered.
 func (s *BaseglListener) EnterEqualityExpression(ctx *EqualityExpressionContext) {}
@@ -92,12 +92,6 @@ func (s *BaseglListener) EnterIdentifierExpression(ctx *IdentifierExpressionCont
 
 // ExitIdentifierExpression is called when production IdentifierExpression is exited.
 func (s *BaseglListener) ExitIdentifierExpression(ctx *IdentifierExpressionContext) {}
-
-// EnterClosure is called when production closure is entered.
-func (s *BaseglListener) EnterClosure(ctx *ClosureContext) {}
-
-// ExitClosure is called when production closure is exited.
-func (s *BaseglListener) ExitClosure(ctx *ClosureContext) {}
 
 // EnterLvalue is called when production lvalue is entered.
 func (s *BaseglListener) EnterLvalue(ctx *LvalueContext) {}

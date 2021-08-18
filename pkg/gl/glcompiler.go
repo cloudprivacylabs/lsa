@@ -76,8 +76,9 @@ func (compiler *Compiler) ExitLiteralExpression(c *parser.LiteralExpressionConte
 		compiler.push(NullLiteral{})
 	} else if text == "true" || text == "false" {
 		compiler.push(BoolLiteral(text == "true"))
-	} else if len(text) > 0 && text[0] == '"' {
-		q, err := strconv.Unquote(text)
+	} else if len(text) > 0 && text[0] == '"' || text[0] == '\'' {
+		ntext := "\"" + text[1:len(text)-1] + "\""
+		q, err := strconv.Unquote(ntext)
 		compiler.setError(err)
 		compiler.push(StringLiteral(q))
 	} else {
@@ -190,23 +191,11 @@ func (compiler *Compiler) ExitArguments(c *parser.ArgumentsContext) {
 	compiler.push(args)
 }
 
-func (compiler *Compiler) ExitClosure(c *parser.ClosureContext) {
+func (compiler *Compiler) ExitClosureExpression(c *parser.ClosureExpressionContext) {
 	expr, ok := compiler.pop().(Expression)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
 	identifier := c.GetStart().GetText()
-	compiler.push(Closure{Symbol: identifier, Closure: expr})
-}
-
-func (compiler *Compiler) ExitSearchExpression(c *parser.SearchExpressionContext) {
-	closure, ok := compiler.pop().(Closure)
-	if !ok {
-		compiler.setError(ErrNotExpression)
-	}
-	expr, ok := compiler.pop().(Expression)
-	if !ok {
-		compiler.setError(ErrNotExpression)
-	}
-	compiler.push(SearchExpression{Base: expr, Closure: closure})
+	compiler.push(ClosureExpression{Symbol: identifier, F: expr})
 }

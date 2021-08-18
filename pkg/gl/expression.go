@@ -197,38 +197,14 @@ func (expr FunctionCallExpression) Evaluate(ctx *Context) (Value, error) {
 		}
 		argValues = append(argValues, v)
 	}
-	return f.Call(argValues)
+	return f.Call(ctx, argValues)
 }
 
-type Closure struct {
-	Symbol  string
-	Closure Expression
+type ClosureExpression struct {
+	Symbol string
+	F      Expression
 }
 
-type SearchExpression struct {
-	Base Expression
-	Closure
-}
-
-func (expr SearchExpression) Evaluate(ctx *Context) (Value, error) {
-	base, err := expr.Base.Evaluate(ctx)
-	if err != nil {
-		return nil, err
-	}
-	nested := ctx.NewNestedContext()
-	return base.Iterate(func(v Value) (Value, error) {
-		nested.Set(expr.Symbol, v)
-		res, err := expr.Closure.Closure.Evaluate(nested)
-		if err != nil {
-			return nil, err
-		}
-		b, err := res.AsBool()
-		if err != nil {
-			return nil, err
-		}
-		if b {
-			return v, nil
-		}
-		return NullValue{}, nil
-	})
+func (expr ClosureExpression) Evaluate(ctx *Context) (Value, error) {
+	return Closure{Symbol: expr.Symbol, F: expr.F}, nil
 }

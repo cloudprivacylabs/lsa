@@ -19,6 +19,7 @@ var ErrNotLValue = errors.New("Not LValue")
 var ErrCannotIterate = errors.New("Cannot iterate")
 var ErrCannotAccumulate = errors.New("Cannot accumulate collection of values")
 var ErrIncompatibleValue = errors.New("Incompatible value")
+var ErrNotAClosure = errors.New("Not a closure")
 
 type ErrInvalidFunctionCall string
 

@@ -21,8 +21,8 @@ func (value StringValue) Selector(sel string) (Value, error) {
 	return nil, ErrUnknownSelector{Selector: sel}
 }
 
-func (StringValue) Call([]Value) (Value, error) { return nil, ErrNotCallable }
-func (StringValue) Index(Value) (Value, error)  { return nil, ErrNotIndexable }
+func (StringValue) Call(*Context, []Value) (Value, error) { return nil, ErrNotCallable }
+func (StringValue) Index(Value) (Value, error)            { return nil, ErrNotIndexable }
 
 func (s StringValue) Iterate(f func(Value) (Value, error)) (Value, error) {
 	return f(s)
