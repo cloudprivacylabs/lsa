@@ -7,115 +7,32 @@ import (
 // NodeValue is zero or mode nodes on the stack
 type NodeValue struct {
 	BasicValue
-	Nodes map[ls.Node]struct{}
+	Nodes ls.NodeSet
 }
 
 func NewNodeValue(nodes ...ls.Node) NodeValue {
-	ret := NodeValue{Nodes: make(map[ls.Node]struct{})}
-	for _, n := range nodes {
-		ret.Nodes[n] = struct{}{}
-	}
-	return ret
+	return NodeValue{Nodes: ls.NewNodeSet(nodes...)}
 }
 
 func (n NodeValue) oneNode() (ls.Node, error) {
-	switch len(n.Nodes) {
+	switch n.Nodes.Len() {
 	case 0:
 		return nil, ErrNoNodesInResult
 	case 1:
-		for k := range n.Nodes {
-			return k, nil
-		}
+		return n.Nodes.Slice()[0], nil
 	}
 	return nil, ErrMultipleNodesInResult
 }
 
 var nodeSelectors = map[string]func(NodeValue) (Value, error){
-	"id": func(node NodeValue) (Value, error) {
-		n, err := node.oneNode()
-		if err != nil {
-			return nil, err
-		}
-		return ValueOf(n.GetID()), nil
-	},
-	"length": func(node NodeValue) (Value, error) {
-		return ValueOf(len(node.Nodes)), nil
-	},
-	"type": func(node NodeValue) (Value, error) {
-		n, err := node.oneNode()
-		if err != nil {
-			return nil, err
-		}
-		return ValueOf(n.GetTypes()), nil
-	},
-	"value": func(node NodeValue) (Value, error) {
-		n, err := node.oneNode()
-		if err != nil {
-			return nil, err
-		}
-		return ValueOf(n.GetValue()), nil
-	},
-	"properties": func(node NodeValue) (Value, error) {
-		n, err := node.oneNode()
-		if err != nil {
-			return nil, err
-		}
-		return ValueOf(n.GetProperties()), nil
-	},
-	"firstReachable": func(node NodeValue) (Value, error) {
-		// firstReachable(nodeClosure)
-		// firstReachable(nodeClosure, edgeClosure)
-		return FunctionValue{MinArgs: 1, MaxArgs: 2, Name: "firstReachable", Closure: func(ctx *Context, args []Value) (Value, error) {
-			nodeClosure, ok := args[0].(Closure)
-			if !ok {
-				return nil, ErrNotAClosure
-			}
-			var edgeClosure Closure
-			if len(args) == 2 {
-				edgeClosure, ok = args[1].(Closure)
-				if !ok {
-					return nil, ErrNotAClosure
-				}
-			}
-			var closureError error
-			var found ls.Node
-			for nd := range node.Nodes {
-				ls.FirstReachable(nd, func(node ls.Node, _ []ls.Node) bool {
-					b, err := AsBool(nodeClosure.Evaluate(ValueOf(node), ctx))
-					if err != nil {
-						closureError = err
-						return true
-					}
-					if b {
-						found = node
-						return true
-					}
-					return false
-				},
-					func(edge ls.Edge, _ []ls.Node) bool {
-						if edgeClosure.F == nil {
-							return true
-						}
-						b, err := AsBool(edgeClosure.Evaluate(ValueOf(edge), ctx))
-						if err != nil {
-							closureError = err
-							return false
-						}
-						if b {
-							return false
-						}
-						return true
-					})
-				if closureError != nil {
-					return nil, closureError
-				}
-				if found != nil {
-					return NewNodeValue(found), nil
-				}
-			}
-			return NewNodeValue(), nil
-		}}, nil
-	},
+	"id":             oneNode(func(node ls.Node) (Value, error) { return StringValue(node.GetID()), nil }),
+	"length":         func(node NodeValue) (Value, error) { return ValueOf(node.Nodes.Len()), nil },
+	"type":           oneNode(func(node ls.Node) (Value, error) { return StringSliceValue(node.GetTypes()), nil }),
+	"value":          oneNode(func(node ls.Node) (Value, error) { return ValueOf(node.GetValue()), nil }),
+	"properties":     oneNode(func(node ls.Node) (Value, error) { return PropertiesValue{Properties: node.GetProperties()}, nil }),
+	"firstReachable": nodeFirstReachableFunc,
+	"instanceOf":     nodeInstanceOfFunc,
+	"walk":           nodeWalk,
 }
 
 func (v NodeValue) Selector(sel string) (Value, error) {
@@ -128,7 +45,7 @@ func (v NodeValue) Selector(sel string) (Value, error) {
 
 func (v NodeValue) Iterate(f func(Value) (Value, error)) (Value, error) {
 	ret := NewNodeValue()
-	for node := range v.Nodes {
+	for node := range v.Nodes.Slice() {
 		n, err := f(ValueOf(node))
 		if err != nil {
 			return nil, err
@@ -154,16 +71,12 @@ func (v NodeValue) Add(v2 Value) (Value, error) {
 		return nil, ErrIncompatibleValue
 	}
 	ret := NewNodeValue()
-	for k := range v.Nodes {
-		ret.Nodes[k] = struct{}{}
-	}
-	for k := range nodes.Nodes {
-		ret.Nodes[k] = struct{}{}
-	}
+	ret.Nodes.Add(v.Nodes.Slice()...)
+	ret.Nodes.Add(nodes.Nodes.Slice()...)
 	return ret, nil
 }
 
-func (v NodeValue) AsBool() (bool, error) { return len(v.Nodes) > 0, nil }
+func (v NodeValue) AsBool() (bool, error) { return v.Nodes.Len() > 0, nil }
 
 func (v NodeValue) AsString() (string, error) { return "", ErrNotAString }
 
@@ -172,13 +85,5 @@ func (v NodeValue) Eq(val Value) (bool, error) {
 	if !ok {
 		return false, ErrIncomparable
 	}
-	if len(nv.Nodes) != len(v.Nodes) {
-		return false, nil
-	}
-	for k := range nv.Nodes {
-		if _, ok := v.Nodes[k]; !ok {
-			return false, nil
-		}
-	}
-	return true, nil
+	return v.Nodes.EqualSet(nv.Nodes), nil
 }

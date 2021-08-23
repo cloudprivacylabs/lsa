@@ -171,23 +171,35 @@ func DocNodeRenderer(ID string, node ls.Node, options *Options) string {
 }
 
 type Renderer struct {
-	Options Options
+	Options          Options
+	NodeSelectorFunc func(ls.Node) bool
+	EdgeSelectorFunc func(ls.Edge) bool
 }
 
-func (r Renderer) NodeRenderer(ID string, n digraph.Node, wr io.Writer) error {
+func (r Renderer) NodeRenderer(ID string, n digraph.Node, wr io.Writer) (bool, error) {
 	node := n.(ls.Node)
+	if r.NodeSelectorFunc != nil && !r.NodeSelectorFunc(node) {
+		return false, nil
+	}
 	if node.HasType(ls.AttributeTypes.Attribute) {
 		_, err := io.WriteString(wr, SchemaNodeRenderer(ID, node, &r.Options))
-		return err
+		return true, err
 	}
 	if node.HasType(ls.DocumentNodeTerm) {
 		_, err := io.WriteString(wr, DocNodeRenderer(ID, node, &r.Options))
-		return err
+		return true, err
 	}
-	return digraph.DefaultDOTNodeRender(ID, node, wr)
+	return true, digraph.DefaultDOTNodeRender(ID, node, wr)
+}
+
+func (r Renderer) EdgeRenderer(fromID, toID string, edge digraph.Edge, w io.Writer) (bool, error) {
+	if r.EdgeSelectorFunc == nil || r.EdgeSelectorFunc(edge.(ls.Edge)) {
+		return true, digraph.DefaultDOTEdgeRender(fromID, toID, edge, w)
+	}
+	return false, nil
 }
 
 func (r Renderer) Render(g *digraph.Graph, graphName string, out io.Writer) error {
-	dr := digraph.DOTRenderer{NodeRenderer: r.NodeRenderer}
+	dr := digraph.DOTRenderer{NodeRenderer: r.NodeRenderer, EdgeRenderer: r.EdgeRenderer}
 	return dr.Render(g, graphName, out)
 }

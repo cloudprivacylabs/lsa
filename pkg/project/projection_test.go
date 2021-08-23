@@ -15,7 +15,6 @@ package project
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"testing"
 
 	"github.com/bserdar/digraph"
@@ -31,52 +30,61 @@ type testCase struct {
 	Expected    interface{} `json:"expected"`
 }
 
-func runTestSuite(t *testing.T, file string) {
-	data, err := ioutil.ReadFile("testdata/" + file)
+func (tc testCase) GetName() string { return tc.Name }
+
+func (tc testCase) Run(t *testing.T) {
+	t.Logf("Running %s", tc.Name)
+	targetLayer, err := ls.UnmarshalLayer(tc.Target)
 	if err != nil {
-		t.Errorf("File: %s %v", file, err)
+		t.Errorf("Test case: %s Cannot unmarshal target layer: %v", tc.Name, err)
 		return
 	}
-	var cases []testCase
-	if err := json.Unmarshal(data, &cases); err != nil {
-		t.Errorf("File: %s %v", file, err)
+	sourceGraph, err := ls.UnmarshalGraph(tc.SourceGraph)
+	if err != nil {
+		t.Errorf("Test case: %s Cannot unmarshal source graph: %v", tc.Name, err)
 		return
 	}
-	for _, tc := range cases {
-		t.Logf("Running %s", tc.Name)
-		targetLayer, err := ls.UnmarshalLayer(tc.Target)
-		if err != nil {
-			t.Errorf("File: %s Test case: %s Cannot unmarshal target layer: %v", file, tc.Name, err)
-			return
-		}
-		sourceGraph, err := ls.UnmarshalGraph(tc.SourceGraph)
-		if err != nil {
-			t.Errorf("File: %s Test case: %s Cannot unmarshal source graph: %v", file, tc.Name, err)
-			return
-		}
-		nix := sourceGraph.GetNodeIndex()
-		rootNode := nix.NodesByLabel(tc.RootID).All()
-		if len(rootNode) != 1 {
-			t.Errorf("File: %s Test case: %s No root node", file, tc.Name)
-			return
-		}
-		projector := Projector{TargetSchema: targetLayer}
-		result, err := projector.Project(rootNode[0].(ls.Node))
-		if err != nil {
-			t.Errorf("File: %s Test case: %s Projection error: %v", file, tc.Name, err)
-			return
-		}
-		ldMarshaler := ls.LDMarshaler{}
-		resultGraph := digraph.New()
-		resultGraph.AddNode(result)
-		resultMarshaled := ldMarshaler.Marshal(resultGraph)
-		t.Logf("Projected: %v", ls.ToMap(resultMarshaled))
-		if err := ls.DeepEqual(ls.ToMap(resultMarshaled), ls.ToMap(tc.Expected)); err != nil {
-			t.Errorf("File: %s Test case: %s Result is different from the expected: Result: %v Expected: %v", file, tc.Name, ls.ToMap(resultMarshaled), ls.ToMap(tc.Expected))
-		}
+	nix := sourceGraph.GetNodeIndex()
+	rootNode := nix.NodesByLabel(tc.RootID).All()
+	if len(rootNode) != 1 {
+		t.Errorf(" Test case: %s No root node", tc.Name)
+		return
+	}
+	projector := Projector{TargetSchema: targetLayer}
+	result, err := projector.Project(rootNode[0].(ls.Node))
+	if err != nil {
+		t.Errorf("Test case: %s Projection error: %v", tc.Name, err)
+		return
+	}
+	if result == nil {
+		t.Errorf("Test case: %s nil projection", tc.Name)
+		return
+	}
+	result.SetLabel("root")
+	ldMarshaler := ls.LDMarshaler{}
+	resultGraph := digraph.New()
+	resultGraph.AddNode(result)
+
+	expectedGraph, err := ls.UnmarshalGraph(tc.Expected)
+	if err != nil {
+		t.Errorf("Test case: %s Cannot unmarshal expected graph: %v", tc.Name, err)
+		return
+	}
+	resultMarshaled := ldMarshaler.Marshal(resultGraph)
+	t.Logf("Projected: %v", ls.ToMap(resultMarshaled))
+	eq := digraph.CheckIsomorphism(resultGraph.GetNodeIndex(), expectedGraph.GetNodeIndex(), func(n1, n2 digraph.Node) bool { return true }, func(e1, e2 digraph.Edge) bool { return true })
+
+	if !eq {
+		t.Errorf("Test case: %s Result is different from the expected: Result: %v Expected: %v", tc.Name, ls.ToMap(resultMarshaled), ls.ToMap(tc.Expected))
 	}
 }
 
 func TestBasicProjection(t *testing.T) {
-	runTestSuite(t, "basic.json")
+	run := func(in json.RawMessage) (ls.TestCase, error) {
+		var c testCase
+		err := json.Unmarshal(in, &c)
+		return c, err
+	}
+	ls.RunTestsFromFile(t, "testdata/basic.json", run)
+	ls.RunTestsFromFile(t, "testdata/fhir.json", run)
 }

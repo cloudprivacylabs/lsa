@@ -86,7 +86,9 @@ type Closure struct {
 
 func (c Closure) Evaluate(arg Value, ctx *Context) (Value, error) {
 	newContext := ctx.NewNestedContext()
-	newContext.Set(c.Symbol, arg)
+	if len(c.Symbol) > 0 {
+		newContext.Set(c.Symbol, arg)
+	}
 	return c.F.Evaluate(newContext)
 }
 
@@ -132,13 +134,9 @@ func ValueOf(value interface{}) Value {
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64:
 		return NumberValue(fmt.Sprint(t))
 	case ls.Node:
-		return NodeValue{Nodes: map[ls.Node]struct{}{t: struct{}{}}}
+		return NodeValue{Nodes: ls.NewNodeSet(t)}
 	case []ls.Node:
-		ret := NodeValue{Nodes: make(map[ls.Node]struct{}, len(t))}
-		for _, x := range t {
-			ret.Nodes[x] = struct{}{}
-		}
-		return ret
+		return NodeValue{Nodes: ls.NewNodeSet(t...)}
 	case ls.Edge:
 		return EdgeValue{Edges: map[ls.Edge]struct{}{t: struct{}{}}}
 	case []ls.Edge:
@@ -148,9 +146,9 @@ func ValueOf(value interface{}) Value {
 		}
 		return ret
 	case digraph.NodeIterator:
-		ret := NodeValue{Nodes: make(map[ls.Node]struct{})}
+		ret := NodeValue{Nodes: ls.NewNodeSet()}
 		for t.HasNext() {
-			ret.Nodes[t.Next().(ls.Node)] = struct{}{}
+			ret.Nodes.Add(t.Next().(ls.Node))
 		}
 		return ret
 	case digraph.EdgeIterator:

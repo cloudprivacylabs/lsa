@@ -35,22 +35,27 @@ func TestExprParse(t *testing.T) {
 		}
 	}
 	ctx := NewContext()
-	// check("123", ctx, ValueOf(123))
-	// check(`"123"`, ctx, ValueOf("123"))
-	// check("null", ctx, ValueOf(nil))
-	// check("true", ctx, ValueOf(true))
-	// check("false", ctx, ValueOf(false))
+	check("123", ctx, ValueOf(123))
+	check(`"123"`, ctx, ValueOf("123"))
+	check("null", ctx, ValueOf(nil))
+	check("true", ctx, ValueOf(true))
+	check("false", ctx, ValueOf(false))
 
-	// ctx.Set("abc", "123")
-	// check("abc", ctx, ValueOf("123"))
-	// check(`abc.length`, ctx, ValueOf(3))
-	// ctx.Set("arr", []string{"a", "b", "c"})
-	// check(`arr.has("a")`, ctx, ValueOf(true))
-	// check(`arr.has("d")`, ctx, ValueOf(false))
-	// check(`!arr`, ctx, ValueOf(false))
-	// check(`!false`, ctx, ValueOf(true))
-	// check(`abc=="123"`, ctx, ValueOf(true))
-	// check(`abc!="123"`, ctx, ValueOf(false))
+	ctx.Set("abc", "123")
+	check("abc", ctx, ValueOf("123"))
+	check(`abc.length`, ctx, ValueOf(3))
+	ctx.Set("arr", []string{"a", "b", "c"})
+	check(`arr.has("a")`, ctx, ValueOf(true))
+	check(`arr.has("d")`, ctx, ValueOf(false))
+	check(`!arr`, ctx, ValueOf(false))
+	check(`!false`, ctx, ValueOf(true))
+	check(`abc=="123"`, ctx, ValueOf(true))
+	check(`abc!="123"`, ctx, ValueOf(false))
+	check(`newvar=abc=="123"`, ctx, ValueOf(true))
+	if !reflect.DeepEqual(ctx.Get("newvar"), ValueOf(true)) {
+		t.Errorf("Assignment error")
+	}
+	check(`x=1`, ctx, ValueOf(1))
 
 	node1 := ls.NewNode("id1")
 	node2 := ls.NewNode("id2")
@@ -58,5 +63,4 @@ func TestExprParse(t *testing.T) {
 	ctx.Set("node", ValueOf(node1))
 	check("node.firstReachable(n->(n.id=='id2')).length", ctx, ValueOf(1))
 
-	//	check(`x=1`, ctx, ValueOf(1))
 }

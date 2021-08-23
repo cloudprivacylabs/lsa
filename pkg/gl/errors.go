@@ -20,6 +20,8 @@ var ErrCannotIterate = errors.New("Cannot iterate")
 var ErrCannotAccumulate = errors.New("Cannot accumulate collection of values")
 var ErrIncompatibleValue = errors.New("Incompatible value")
 var ErrNotAClosure = errors.New("Not a closure")
+var ErrClosureOrBooleanExpected = errors.New("Closure or a boolean value expected")
+var ErrInvalidArgumentType = errors.New("Invalid argument type")
 
 type ErrInvalidFunctionCall string
 

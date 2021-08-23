@@ -34,11 +34,17 @@ var ProjectionTerms = struct {
 	Source string
 	// IfEmpty determines whether to project the node even if it has no value
 	IfEmpty string
+	// JoinMethod determines how to join multiple values to generate a single value
+	JoinMethod string
+	// JoinDelimiter specifies the join delimiter if there are multiple values to be combined
+	JoinDelimiter string
 }{
-	If:      ls.NewTerm(PT+"if", false, false, ls.OverrideComposition, nil),
-	Vars:    ls.NewTerm(PT+"vars", false, true, ls.OverrideComposition, nil),
-	Source:  ls.NewTerm(PT+"source", false, false, ls.OverrideComposition, nil),
-	IfEmpty: ls.NewTerm(PT+"ifEmptu", false, false, ls.OverrideComposition, nil),
+	If:            ls.NewTerm(PT+"if", false, false, ls.OverrideComposition, nil),
+	Vars:          ls.NewTerm(PT+"vars", false, true, ls.OverrideComposition, nil),
+	Source:        ls.NewTerm(PT+"source", false, false, ls.OverrideComposition, nil),
+	IfEmpty:       ls.NewTerm(PT+"ifEmpty", false, false, ls.OverrideComposition, nil),
+	JoinMethod:    ls.NewTerm(PT+"joinMethod", false, false, ls.OverrideComposition, nil),
+	JoinDelimiter: ls.NewTerm(PT+"joinDelimiter", false, false, ls.OverrideComposition, nil),
 }
 
 type Projector struct {
@@ -70,7 +76,7 @@ func (projector *Projector) generateID(schemaPath, docPath []ls.Node) string {
 	if projector.GenerateID != nil {
 		return projector.GenerateID(schemaPath, docPath)
 	}
-	return ""
+	return schemaPath[len(schemaPath)-1].GetID()
 }
 
 // ErrInvalidSchemaNodeType is returned if the schema node type cannot
@@ -177,11 +183,11 @@ func (projector *Projector) object(context *ProjectionContext) (ls.Node, error) 
 		if !ok {
 			return nil, ErrInvalidSource
 		}
-		if len(sourceNodes.Nodes) > 1 {
+		if sourceNodes.Nodes.Len() > 1 {
 			return nil, ErrMultipleSourceNodesForObject
 		}
-		if len(sourceNodes.Nodes) == 1 {
-			for k := range sourceNodes.Nodes {
+		if sourceNodes.Nodes.Len() == 1 {
+			for _, k := range sourceNodes.Nodes.Slice() {
 				context.sourceNode = k
 				context.glContext.Set("source", context.sourceNode)
 			}
@@ -231,12 +237,35 @@ func (projector *Projector) value(context *ProjectionContext) (ls.Node, error) {
 	if source != nil {
 		switch sourceValue := source.(type) {
 		case gl.NodeValue:
-			if len(sourceValue.Nodes) == 1 {
-				for node := range sourceValue.Nodes {
-					targetNode.SetValue(node.GetValue())
-					empty = false
+			switch {
+			case sourceValue.Nodes.Len() == 1:
+				targetNode.SetValue(sourceValue.Nodes.Slice()[0].GetValue())
+				empty = false
+			case sourceValue.Nodes.Len() > 1:
+				joinMethod := "join"
+				prop := properties[ProjectionTerms.JoinMethod]
+				if prop != nil && prop.IsString() {
+					joinMethod = prop.AsString()
 				}
+				joinDelimiter := " "
+				prop = properties[ProjectionTerms.JoinDelimiter]
+				if prop != nil && prop.IsString() {
+					joinDelimiter = prop.AsString()
+				}
+				result, err := JoinValues(sourceValue.Nodes.Slice(), joinMethod, joinDelimiter)
+				if err != nil {
+					return nil, err
+				}
+				targetNode.SetValue(result)
+				empty = false
 			}
+		case gl.BoolValue, gl.NumberValue, gl.StringValue:
+			str, err := source.AsString()
+			if err != nil {
+				return nil, err
+			}
+			targetNode.SetValue(str)
+			empty = false
 		}
 	}
 

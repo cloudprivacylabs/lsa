@@ -25,9 +25,9 @@ type composeTestCase struct {
 	Expected interface{}   `json:"expected"`
 }
 
-func (tc composeTestCase) getName() string { return tc.Name }
+func (tc composeTestCase) GetName() string { return tc.Name }
 
-func (tc composeTestCase) run(t *testing.T) {
+func (tc composeTestCase) Run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
 	base, err := UnmarshalLayer(tc.Base)
 	if err != nil {
@@ -57,7 +57,7 @@ func (tc composeTestCase) run(t *testing.T) {
 }
 
 func TestCompose(t *testing.T) {
-	runTestsFromFile(t, "testdata/composecases.json", func(in json.RawMessage) (testCase, error) {
+	RunTestsFromFile(t, "testdata/composecases.json", func(in json.RawMessage) (testCase, error) {
 		var c composeTestCase
 		err := json.Unmarshal(in, &c)
 		return c, err

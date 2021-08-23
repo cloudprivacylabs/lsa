@@ -6,6 +6,10 @@ type Expression interface {
 	Evaluate(*Context) (Value, error)
 }
 
+type FuncAsExpression func(*Context) (Value, error)
+
+func (f FuncAsExpression) Evaluate(ctx *Context) (Value, error) { return f(ctx) }
+
 type LValueExpression string
 
 func (l LValueExpression) Evaluate(*Context) (Value, error) { return LValue{Name: string(l)}, nil }

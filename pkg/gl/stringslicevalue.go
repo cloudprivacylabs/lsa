@@ -7,28 +7,112 @@ import (
 // StringSliceValue is a []string on the stack
 type StringSliceValue []string
 
-var StringHas = FunctionValue{MinArgs: 1, MaxArgs: 1, Name: "string.has"}
-
 var stringSliceSelectors = map[string]func(StringSliceValue) (Value, error){
 	"length": func(v StringSliceValue) (Value, error) {
 		return ValueOf(len(v)), nil
 	},
 	"has": func(v StringSliceValue) (Value, error) {
-		ret := StringHas
-		ret.Closure = func(ctx *Context, args []Value) (Value, error) {
-			str, err := args[0].AsString()
-			if err != nil {
-				return nil, err
-			}
-			for _, x := range v {
-				if x == str {
+		return FunctionValue{
+			MinArgs: 1,
+			MaxArgs: 1,
+			Name:    "has",
+			Closure: func(ctx *Context, args []Value) (Value, error) {
+				str, err := args[0].AsString()
+				if err != nil {
+					return nil, err
+				}
+				if v.has(str) {
 					return TrueValue, nil
 				}
-			}
-			return FalseValue, nil
-		}
-		return ret, nil
+				return FalseValue, nil
+			},
+		}, nil
 	},
+	"hasAny": func(v StringSliceValue) (Value, error) {
+		return FunctionValue{
+			MinArgs: 1,
+			MaxArgs: -1,
+			Name:    "hasAny",
+			Closure: func(ctx *Context, args []Value) (Value, error) {
+				str, err := argsToStrings(args)
+				if err != nil {
+					return nil, err
+				}
+				if v.hasAny(str...) {
+					return TrueValue, nil
+				}
+				return FalseValue, nil
+			},
+		}, nil
+	},
+	"hasAll": func(v StringSliceValue) (Value, error) {
+		return FunctionValue{
+			MinArgs: 1,
+			MaxArgs: -1,
+			Name:    "hasAll",
+			Closure: func(ctx *Context, args []Value) (Value, error) {
+				str, err := argsToStrings(args)
+				if err != nil {
+					return nil, err
+				}
+				if v.hasAll(str...) {
+					return TrueValue, nil
+				}
+				return FalseValue, nil
+			},
+		}, nil
+	},
+}
+
+func argsToStrings(args []Value) (StringSliceValue, error) {
+	ret := make([]string, 0, len(args))
+	for _, arg := range args {
+		switch t := arg.(type) {
+		case StringValue:
+			ret = append(ret, string(t))
+		case StringSliceValue:
+			ret = append(ret, []string(t)...)
+		default:
+			return nil, ErrNotAString
+		}
+	}
+	return ret, nil
+}
+
+func (value StringSliceValue) has(s string) bool {
+	for _, x := range value {
+		if x == s {
+			return true
+		}
+	}
+	return false
+}
+
+func (value StringSliceValue) hasAny(strs ...string) bool {
+	for _, s := range strs {
+		for _, x := range value {
+			if x == s {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (value StringSliceValue) hasAll(strs ...string) bool {
+	for _, s := range strs {
+		found := false
+		for _, x := range value {
+			if x == s {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
 }
 
 func (value StringSliceValue) Selector(sel string) (Value, error) {

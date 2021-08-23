@@ -25,9 +25,9 @@ type marshalTestCase struct {
 	Marshaled interface{} `json:"marshaled"`
 }
 
-func (tc marshalTestCase) getName() string { return tc.Name }
+func (tc marshalTestCase) GetName() string { return tc.Name }
 
-func (tc marshalTestCase) run(t *testing.T) {
+func (tc marshalTestCase) Run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
 	layer, err := UnmarshalLayer(tc.Input)
 	if err != nil {
@@ -43,7 +43,7 @@ func (tc marshalTestCase) run(t *testing.T) {
 }
 
 func TestMarshaling(t *testing.T) {
-	runTestsFromFile(t, "testdata/marshalcases.json", func(in json.RawMessage) (testCase, error) {
+	RunTestsFromFile(t, "testdata/marshalcases.json", func(in json.RawMessage) (testCase, error) {
 		var c marshalTestCase
 		err := json.Unmarshal(in, &c)
 		return c, err

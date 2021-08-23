@@ -44,13 +44,6 @@ var edgeSelectors = map[string]func(EdgeValue) (Value, error){
 		}
 		return ValueOf(e.GetTo().(ls.Node)), nil
 	},
-	"index": func(edge EdgeValue) (Value, error) {
-		e, err := edge.oneEdge()
-		if err != nil {
-			return nil, err
-		}
-		return ValueOf(e.GetIndex()), nil
-	},
 	"properties": func(edge EdgeValue) (Value, error) {
 		e, err := edge.oneEdge()
 		if err != nil {

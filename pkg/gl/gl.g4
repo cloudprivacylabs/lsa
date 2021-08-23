@@ -4,15 +4,15 @@ grammar gl;
 
 
 expression
- : lvalue '=' expression                                      # AssignmentExpression
- | identifierName '->' expression                             # ClosureExpression
- | expression '[' expression ']'                              # IndexExpression
+ : expression '[' expression ']'                              # IndexExpression
  | expression '.' identifierName                              # DotExpression
  | expression arguments                                       # FunctionCallExpression
  | '!' expression                                             # NotExpression
  | expression ( '==' | '!=') expression                       # EqualityExpression
  | expression '&&' expression                                 # LogicalAndExpression
  | expression '||' expression                                 # LogicalOrExpression
+ | lvalue '=' expression                                      # AssignmentExpression
+ | identifierName '->' expression                             # ClosureExpression
  | Identifier                                                 # IdentifierExpression
  | literal                                                    # LiteralExpression
  | '(' expression ')'                                         # ParenthesizedExpression
@@ -77,7 +77,7 @@ Identifier
 
 StringLiteral
  : '"' StringCharacter* '"'
- | '\'' StringCharacter* '\''
+ | '\'' SingleStringCharacter* '\''
  ;
 
 WhiteSpaces
@@ -86,6 +86,11 @@ WhiteSpaces
 
 fragment StringCharacter
  : ~["\\\r\n]
+ | '\\' EscapeSequence
+ ;
+
+fragment SingleStringCharacter
+ : ~['\\\r\n]
  | '\\' EscapeSequence
  ;
 

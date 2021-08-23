@@ -25,9 +25,9 @@ type sliceTestCase struct {
 	Expected interface{} `json:"expected"`
 }
 
-func (tc sliceTestCase) getName() string { return tc.Name }
+func (tc sliceTestCase) GetName() string { return tc.Name }
 
-func (tc sliceTestCase) run(t *testing.T) {
+func (tc sliceTestCase) Run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
 	sch, err := UnmarshalLayer(tc.Schema)
 	if err != nil {
@@ -44,7 +44,7 @@ func (tc sliceTestCase) run(t *testing.T) {
 }
 
 func TestSlice(t *testing.T) {
-	runTestsFromFile(t, "testdata/slicecases.json", func(in json.RawMessage) (testCase, error) {
+	RunTestsFromFile(t, "testdata/slicecases.json", func(in json.RawMessage) (testCase, error) {
 		var c sliceTestCase
 		err := json.Unmarshal(in, &c)
 		return c, err
