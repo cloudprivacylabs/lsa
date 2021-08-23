@@ -23,11 +23,6 @@ type Edge interface {
 	digraph.Edge
 
 	GetLabelStr() string
-	IsAttributeTreeEdge() bool
-
-	// Indexes are used to index ordered array edges.
-	GetIndex() int
-	SetIndex(int)
 
 	// Clone returns a new edge that is a copy of this one but
 	// unconnected to any nodes
@@ -42,7 +37,6 @@ type Edge interface {
 // edge is a labeled graph edge between two nodes
 type edge struct {
 	digraph.EdgeHeader
-	index      int
 	properties map[string]*PropertyValue
 	compiled   map[interface{}]interface{}
 }
@@ -61,9 +55,6 @@ func NewEdge(label string) Edge {
 	return ret
 }
 
-func (edge *edge) GetIndex() int  { return edge.index }
-func (edge *edge) SetIndex(i int) { edge.index = i }
-
 // GetLabelStr returns the edge label
 func (edge *edge) GetLabelStr() string {
 	if edge == nil {
@@ -78,7 +69,7 @@ func (edge *edge) GetLabelStr() string {
 
 // IsAttributeTreeEdge returns true if the edge is an edge between two
 // attribute nodes
-func (edge *edge) IsAttributeTreeEdge() bool {
+func IsAttributeTreeEdge(edge Edge) bool {
 	if edge == nil {
 		return false
 	}
@@ -98,14 +89,13 @@ func (e *edge) Clone() Edge {
 // CloneWithLabel returns a copy of the schema edge with a new label
 func (e *edge) CloneWithLabel(label string) Edge {
 	ret := NewEdge(label).(*edge)
-	ret.index = e.index
 	ret.properties = CopyPropertyMap(e.properties)
 	return ret
 }
 
-// SortEdges sorts edges by index
+// SortEdges sorts edges by their target node index
 func SortEdges(edges []Edge) {
-	sort.Slice(edges, func(i, j int) bool { return edges[i].GetIndex() < edges[j].GetIndex() })
+	sort.Slice(edges, func(i, j int) bool { return edges[i].GetTo().(Node).GetIndex() < edges[j].GetTo().(Node).GetIndex() })
 }
 
 // SortEdgesItr sorts the edges by index
@@ -120,4 +110,25 @@ func SortEdgesItr(edges digraph.Edges) digraph.Edges {
 		arr = append(arr, x)
 	}
 	return digraph.Edges{&digraph.EdgeArrayIterator{arr}}
+}
+
+// An EdgeSet is a set of edges
+type EdgeSet map[Edge]struct{}
+
+// NewEdgeSet creates a new edge set containing the given edges
+func NewEdgeSet(edge ...Edge) EdgeSet {
+	ret := make(EdgeSet, len(edge))
+	for _, k := range edge {
+		ret[k] = struct{}{}
+	}
+	return ret
+}
+
+// Slice returns edges in the set as a slice
+func (set EdgeSet) Slice() []Edge {
+	ret := make([]Edge, 0, len(set))
+	for k := range set {
+		ret = append(ret, k)
+	}
+	return ret
 }

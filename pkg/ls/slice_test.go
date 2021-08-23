@@ -25,9 +25,9 @@ type sliceTestCase struct {
 	Expected interface{} `json:"expected"`
 }
 
-func (tc sliceTestCase) getName() string { return tc.Name }
+func (tc sliceTestCase) GetName() string { return tc.Name }
 
-func (tc sliceTestCase) run(t *testing.T) {
+func (tc sliceTestCase) Run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
 	sch, err := UnmarshalLayer(tc.Schema)
 	if err != nil {
@@ -36,15 +36,15 @@ func (tc sliceTestCase) run(t *testing.T) {
 	}
 	slice := sch.Slice(OverlayTerm, GetSliceByTermsFunc(tc.Terms, false))
 	marshaled := MarshalLayer(slice)
-	if err := deepEqual(toMap(marshaled), toMap(tc.Expected)); err != nil {
-		expected, _ := json.MarshalIndent(toMap(tc.Expected), "", "  ")
-		got, _ := json.MarshalIndent(toMap(marshaled), "", "  ")
+	if err := DeepEqual(ToMap(marshaled), ToMap(tc.Expected)); err != nil {
+		expected, _ := json.MarshalIndent(ToMap(tc.Expected), "", "  ")
+		got, _ := json.MarshalIndent(ToMap(marshaled), "", "  ")
 		t.Errorf("%v %s: Expected:\n%s\nGot:\n%s\n", err, tc.Name, string(expected), string(got))
 	}
 }
 
 func TestSlice(t *testing.T) {
-	runTestsFromFile(t, "testdata/slicecases.json", func(in json.RawMessage) (testCase, error) {
+	RunTestsFromFile(t, "testdata/slicecases.json", func(in json.RawMessage) (testCase, error) {
 		var c sliceTestCase
 		err := json.Unmarshal(in, &c)
 		return c, err

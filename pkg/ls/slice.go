@@ -28,7 +28,7 @@ func GetSliceByTermsFunc(includeTerms []string, includeAttributeNodes bool) func
 	}
 	return func(layer *Layer, nd Node) Node {
 		includeNode := false
-		if includeAttributeNodes && nd.IsAttributeNode() {
+		if includeAttributeNodes && IsAttributeNode(nd) {
 			includeNode = true
 		}
 		properties := make(map[string]*PropertyValue)
@@ -65,7 +65,7 @@ func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, Node) Node) 
 	if sourceRoot != nil {
 		for targets := sourceRoot.GetAllOutgoingEdges(); targets.HasNext(); {
 			edge := targets.Next().(Edge)
-			if edge.IsAttributeTreeEdge() {
+			if IsAttributeTreeEdge(edge) {
 				newNode := slice(ret, edge.GetTo().(Node), nodeFilter, map[Node]struct{}{})
 				if newNode != nil {
 					rootNode.Connect(newNode, edge.GetLabelStr())

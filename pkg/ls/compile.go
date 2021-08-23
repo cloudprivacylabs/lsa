@@ -140,7 +140,7 @@ func (compiler Compiler) compileTerms(layer *Layer) error {
 	for nodes := layer.GetAllNodes(); nodes.HasNext(); {
 		node := nodes.Next().(Node)
 		// Compile all non-attribute nodes
-		if !node.IsAttributeNode() {
+		if !IsAttributeNode(node) {
 			if err := GetNodeCompiler(node.GetID()).CompileNode(node); err != nil {
 				return err
 			}

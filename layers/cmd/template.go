@@ -13,61 +13,53 @@
 // limitations under the License.
 package cmd
 
-import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"text/template"
+// import (
+// 	"bytes"
+// 	"encoding/json"
+// 	"fmt"
+// 	"io/ioutil"
+// 	"text/template"
 
-	"github.com/spf13/cobra"
+// 	"github.com/spf13/cobra"
 
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	lstemplate "github.com/cloudprivacylabs/lsa/pkg/template"
-)
+// 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+// 	lstemplate "github.com/cloudprivacylabs/lsa/pkg/template"
+// )
 
-func init() {
-	rootCmd.AddCommand(templateCmd)
-	templateCmd.Flags().String("graph", "", "Input graph")
-	templateCmd.Flags().String("template", "", "Template file")
-	templateCmd.MarkFlagRequired("template")
-	templateCmd.MarkFlagRequired("graph")
-}
+// func init() {
+// 	rootCmd.AddCommand(templateCmd)
+// 	templateCmd.Flags().String("graph", "", "Input graph")
+// 	templateCmd.Flags().String("template", "", "Template file")
+// 	templateCmd.MarkFlagRequired("template")
+// 	templateCmd.MarkFlagRequired("graph")
+// }
 
-var templateCmd = &cobra.Command{
-	Use:   "template",
-	Short: "Generate output using a Go template from a graph",
-	Run: func(cmd *cobra.Command, args []string) {
-		tfile, _ := cmd.Flags().GetString("template")
-		tmp := template.New("")
-		tmp.Funcs(lstemplate.Functions)
-		data, err := ioutil.ReadFile(tfile)
-		if err != nil {
-			failErr(err)
-		}
-		_, err = tmp.Parse(string(data))
-		if err != nil {
-			failErr(err)
-		}
+// var templateCmd = &cobra.Command{
+// 	Use:   "template",
+// 	Short: "Generate output using a Go template from a graph",
+// 	Run: func(cmd *cobra.Command, args []string) {
+// 		tfile, _ := cmd.Flags().GetString("template")
+// 		tmp := template.New("")
+// 		tmp.Funcs(lstemplate.Functions)
+// 		data, err := ioutil.ReadFile(tfile)
+// 		if err != nil {
+// 			failErr(err)
+// 		}
+// 		_, err = tmp.Parse(string(data))
+// 		if err != nil {
+// 			failErr(err)
+// 		}
 
-		gfile, _ := cmd.Flags().GetString("graph")
-		data, err = ioutil.ReadFile(gfile)
-		if err != nil {
-			failErr(err)
-		}
-		var v interface{}
-		if err := json.Unmarshal(data, &v); err != nil {
-			failErr(err)
-		}
-		graph, err := ls.UnmarshalGraph(v)
-		if err != nil {
-			failErr(err)
-		}
-		var out bytes.Buffer
-		err = tmp.Execute(&out, map[string]interface{}{"g": graph})
-		if err != nil {
-			failErr(err)
-		}
-		fmt.Print(out.String())
-	},
-}
+// 		gfile, _ := cmd.Flags().GetString("graph")
+//    graph, err:=ReadGraph(gFile)
+// 		if err != nil {
+// 			failErr(err)
+// 		}
+// 		var out bytes.Buffer
+// 		err = tmp.Execute(&out, map[string]interface{}{"g": graph})
+// 		if err != nil {
+// 			failErr(err)
+// 		}
+// 		fmt.Print(out.String())
+// 	},
+// }

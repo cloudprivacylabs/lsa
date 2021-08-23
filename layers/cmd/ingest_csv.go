@@ -30,7 +30,6 @@ import (
 func init() {
 	ingestCmd.AddCommand(ingestCSVCmd)
 	ingestCSVCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
-	ingestCSVCmd.Flags().String("format", "json", "Output format, json(ld), rdf, or dot")
 	ingestCSVCmd.Flags().Int("startRow", 1, "Start row 0-based (default 1)")
 	ingestCSVCmd.Flags().Int("endRow", -1, "End row 0-based")
 	ingestCSVCmd.Flags().Int("headerRow", -1, "Header row 0-based (default: no header)")
@@ -113,7 +112,8 @@ var ingestCSVCmd = &cobra.Command{
 					failErr(err)
 				}
 				outFormat, _ := cmd.Flags().GetString("format")
-				err = OutputIngestedGraph(outFormat, ingester.Target, os.Stdout)
+				includeSchema, _ := cmd.Flags().GetBool("includeSchema")
+				err = OutputIngestedGraph(outFormat, ingester.Target, os.Stdout, includeSchema)
 				if err != nil {
 					failErr(err)
 				}

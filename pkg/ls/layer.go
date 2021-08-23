@@ -222,7 +222,7 @@ func forEachAttributeNode(root Node, path []Node, f func(Node, []Node) bool, loo
 	loop[root] = struct{}{}
 
 	path = append(path, root)
-	if root.IsAttributeNode() {
+	if IsAttributeNode(root) {
 		if !f(root, path) {
 			return false
 		}
@@ -235,7 +235,7 @@ func forEachAttributeNode(root Node, path []Node, f func(Node, []Node) bool, loo
 
 	for outgoing.HasNext() {
 		edge := outgoing.Next().(Edge)
-		if !edge.IsAttributeTreeEdge() {
+		if !IsAttributeTreeEdge(edge) {
 			continue
 		}
 		next := edge.GetTo().(Node)

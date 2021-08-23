@@ -68,3 +68,11 @@ func StringSetSubtract(s1, s2 []string) []string {
 	}
 	return out
 }
+
+func StringSetToSlice(str map[string]struct{}) []string {
+	ret := make([]string, 0, len(str))
+	for x := range str {
+		ret = append(ret, x)
+	}
+	return ret
+}
