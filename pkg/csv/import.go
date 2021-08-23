@@ -180,7 +180,7 @@ func Import(attributeID AttributeSpec, terms []TermSpec, startRow, nRows int, in
 			}
 			layer.AddNode(attr)
 			edge := ls.NewEdge(ls.LayerTerms.AttributeList)
-			edge.SetIndex(index)
+			attr.SetIndex(index)
 			index++
 			digraph.Connect(root, attr, edge)
 			for ti, term := range terms {

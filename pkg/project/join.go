@@ -11,41 +11,36 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package ls
+package project
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"os"
-	"testing"
+	"errors"
+	"fmt"
+	"strings"
+
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-type TestCase interface {
-	GetName() string
-	Run(*testing.T)
-}
+const (
+	JoinMethodJoin  = "join"
+	JoinMethodError = "error"
+)
 
-func RunTestsFromFile(t *testing.T, file string, unmarshal func(json.RawMessage) (TestCase, error)) {
-	d, err := ioutil.ReadFile(file)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	var cases []json.RawMessage
-	err = json.Unmarshal(d, &cases)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+var ErrJoinFailure = errors.New("Join failure")
 
-	for _, c := range cases {
-		tc, err := unmarshal(c)
-		if err != nil {
-			t.Error(err)
-		} else {
-			if run := os.Getenv("CASE"); run == "" || run == tc.GetName() {
-				tc.Run(t)
-			}
+func JoinValues(nodes []ls.Node, method, delimiter string) (string, error) {
+	values := make([]string, 0, len(nodes))
+	for _, n := range nodes {
+		v := n.GetValue()
+		if v != nil {
+			values = append(values, fmt.Sprint(v))
 		}
 	}
+	if len(values) > 1 && method == JoinMethodError {
+		return "", ErrJoinFailure
+	}
+	if method == JoinMethodJoin {
+		return strings.Join(values, delimiter), nil
+	}
+	return "", ErrJoinFailure
 }

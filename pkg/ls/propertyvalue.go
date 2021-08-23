@@ -14,13 +14,18 @@
 package ls
 
 import (
+	"fmt"
 	"strconv"
+	"strings"
 )
 
 // PropertyValue can be a string or []string. It is an immutable value object
 type PropertyValue struct {
 	value interface{}
 }
+
+// IntPropertyValue converts the int value to string, and returns a string value
+func IntPropertyValue(i int) *PropertyValue { return &PropertyValue{value: fmt.Sprint(i)} }
 
 // StringPropertyValue creates a string value
 func StringPropertyValue(s string) *PropertyValue { return &PropertyValue{value: s} }
@@ -101,6 +106,26 @@ func (p *PropertyValue) Has(s string) bool {
 	return false
 }
 
+// Equal compares two property values, and returns true if they are equal
+func (p *PropertyValue) Equal(v *PropertyValue) bool {
+	if p.IsString() && v.IsString() && p.AsString() == v.AsString() {
+		return true
+	}
+	if p.IsStringSlice() && v.IsStringSlice() {
+		s1 := p.AsStringSlice()
+		s2 := v.AsStringSlice()
+		if len(s1) == len(s2) {
+			for i, x := range s1 {
+				if s2[i] != x {
+					return false
+				}
+			}
+			return true
+		}
+	}
+	return false
+}
+
 // Returns true if the underlying value is a string, and that string can be converted to int
 func (p *PropertyValue) IsInt() bool {
 	s, ok := p.value.(string)
@@ -119,6 +144,16 @@ func (p *PropertyValue) AsInt() int {
 
 func (p PropertyValue) Clone() *PropertyValue {
 	return &PropertyValue{value: p.value}
+}
+
+func (p PropertyValue) String() string {
+	if p.IsString() {
+		return p.AsString()
+	}
+	if p.IsStringSlice() {
+		return strings.Join(p.AsStringSlice(), ",")
+	}
+	return fmt.Sprint(p.value)
 }
 
 // CopyPropertyMap returns a copy of the property map

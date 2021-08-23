@@ -11,28 +11,30 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package ls
+package cmd
 
-// import (
-// 	"encoding/json"
-// 	"testing"
-// )
+import (
+	"os"
 
-// func TestPredicateMarshal(t *testing.T) {
-// 	check := func(inp, exp string) {
-// 		pred, err := UnmarshalNodePredicate([]byte(inp))
-// 		if err != nil {
-// 			t.Error(err)
-// 			return
-// 		}
-// 		x, _ := json.Marshal(pred)
-// 		out := string(x)
-// 		if out != exp {
-// 			t.Errorf("Expected %s got %s", exp, out)
-// 		}
-// 		t.Logf("Input: %s, predicate: %+v, output: %s", inp, pred, out)
-// 	}
-// 	check("false", "false")
-// 	check("{}", "false")
-// 	check(`{"$id":"blah"}`, `{"$id":"blah"}`)
-// }
+	"github.com/spf13/cobra"
+)
+
+func init() {
+	graphCmd.AddCommand(graphDotCmd)
+}
+
+var graphDotCmd = &cobra.Command{
+	Use:   "dot",
+	Short: "Write graph as a DOT file",
+	Args:  cobra.MaximumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		g, err := ReadGraph(args[0])
+		if err != nil {
+			failErr(err)
+		}
+		err = OutputIngestedGraph("dot", g, os.Stdout, true)
+		if err != nil {
+			failErr(err)
+		}
+	},
+}

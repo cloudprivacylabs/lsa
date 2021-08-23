@@ -30,6 +30,8 @@ import (
 func init() {
 	rootCmd.AddCommand(ingestCmd)
 	ingestCmd.PersistentFlags().String("repo", "", "Schema repository directory")
+	ingestCmd.PersistentFlags().String("format", "json", "Output format, json(ld), rdf, or dot")
+	ingestCmd.PersistentFlags().Bool("includeSchema", false, "Include schema in the output")
 }
 
 var ingestCmd = &cobra.Command{
@@ -125,7 +127,32 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string) (*ls.L
 	return layer, nil
 }
 
-func OutputIngestedGraph(outFormat string, target *digraph.Graph, wr io.Writer) error {
+func OutputIngestedGraph(outFormat string, target *digraph.Graph, wr io.Writer, includeSchema bool) error {
+	if !includeSchema {
+		schemaNodes := make(map[ls.Node]struct{})
+		for nodes := target.GetAllNodes(); nodes.HasNext(); {
+			node := nodes.Next().(ls.Node)
+			if ls.IsDocumentNode(node) {
+				for _, edge := range node.GetAllOutgoingEdgesWithLabel(ls.InstanceOfTerm).All() {
+					schemaNodes[edge.GetTo().(ls.Node)] = struct{}{}
+				}
+			}
+		}
+		newTarget := digraph.New()
+		ls.Copy(target, newTarget, func(n ls.Node) bool {
+			if !ls.IsAttributeNode(n) {
+				return true
+			}
+			if _, ok := schemaNodes[n]; ok {
+				return true
+			}
+			return false
+		},
+			func(edge ls.Edge) bool {
+				return !ls.IsAttributeTreeEdge(edge)
+			})
+		target = newTarget
+	}
 	switch outFormat {
 	case "dot":
 		renderer := dot.Renderer{Options: dot.DefaultOptions()}

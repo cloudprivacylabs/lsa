@@ -27,7 +27,6 @@ func init() {
 	ingestCmd.AddCommand(ingestJSONCmd)
 	ingestJSONCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
 	ingestJSONCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
-	ingestJSONCmd.Flags().String("format", "json", "Output format, json(ld), rdf, or dot")
 	ingestJSONCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 }
 
@@ -68,7 +67,8 @@ var ingestJSONCmd = &cobra.Command{
 			failErr(err)
 		}
 		outFormat, _ := cmd.Flags().GetString("format")
-		err = OutputIngestedGraph(outFormat, target, os.Stdout)
+		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
+		err = OutputIngestedGraph(outFormat, target, os.Stdout, includeSchema)
 		if err != nil {
 			failErr(err)
 		}

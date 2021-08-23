@@ -92,23 +92,8 @@ func (ingester *Ingester) Ingest(target *digraph.Graph, baseID string, input int
 	if err != nil {
 		return nil, err
 	}
-	importedSchemaNodes := make(map[ls.Node]ls.Node)
-	ingester.link(target, importedSchemaNodes, dn)
-	if ingester.Schema != nil {
-		for nodes := ingester.Schema.GetAllNodes(); nodes.HasNext(); {
-			schemaNode := nodes.Next().(ls.Node)
-			importedNode := importedSchemaNodes[schemaNode]
-			if importedNode != nil {
-				for edges := schemaNode.GetAllOutgoingEdges(); edges.HasNext(); {
-					schemaEdge := edges.Next().(ls.Edge)
-					importedToNode := importedSchemaNodes[schemaEdge.GetTo().(ls.Node)]
-					if importedToNode != nil {
-						digraph.Connect(importedNode, importedToNode, schemaEdge.Clone())
-					}
-				}
-			}
-		}
-	}
+	target.AddNode(dn.node)
+	ingester.link(dn)
 	return dn.node, err
 }
 
@@ -119,24 +104,18 @@ type addedNode struct {
 	term       string
 }
 
-func (ingester *Ingester) link(target *digraph.Graph, importedSchemaNodes map[ls.Node]ls.Node, a *addedNode) {
-	ingester.linkNode(target, importedSchemaNodes, a)
+func (ingester *Ingester) link(a *addedNode) {
+	ingester.linkNode(a)
 	for _, c := range a.children {
-		ingester.link(target, importedSchemaNodes, c)
+		ingester.link(c)
 		ingester.connect(a.node, c.node, a.term)
 	}
 }
 
-func (ingester *Ingester) linkNode(target *digraph.Graph, importedSchemaNodes map[ls.Node]ls.Node, a *addedNode) {
-	target.AddNode(a.node)
+func (ingester *Ingester) linkNode(a *addedNode) {
 	if a.schemaNode != nil {
-		newNode, ok := importedSchemaNodes[a.schemaNode]
-		if !ok {
-			newNode = a.schemaNode.Clone()
-			target.AddNode(newNode)
-			importedSchemaNodes[a.schemaNode] = newNode
-		}
-		ingester.connect(a.node, newNode, ls.InstanceOfTerm)
+		a.node.AddTypes(ls.FilterNonLayerTypes(a.schemaNode.GetTypes())...)
+		ingester.connect(a.node, a.schemaNode, ls.InstanceOfTerm)
 	}
 }
 

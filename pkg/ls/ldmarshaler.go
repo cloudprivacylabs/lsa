@@ -164,39 +164,22 @@ func (rd *LDMarshaler) Marshal(input *digraph.Graph) interface{} {
 
 	// Process the properties
 	for gnode, onode := range nodeIdMap {
-		if gnode.IsAttributeNode() {
-			t := gnode.GetTypes()
-			if len(t) > 0 {
+		t := gnode.GetTypes()
+		if len(t) > 0 {
+			if len(t) == 1 {
+				onode.ldNode["@type"] = t[0]
+			} else {
 				arr := make([]interface{}, 0, len(t))
 				for _, x := range t {
 					arr = append(arr, x)
 				}
 				onode.ldNode["@type"] = arr
 			}
-		} else if gnode.IsDocumentNode() {
+		}
+		if IsDocumentNode(gnode) {
 			if v := gnode.GetValue(); v != nil {
 				onode.ldNode[AttributeValueTerm] = v
 			}
-			types := onode.ldNode["@type"]
-			if types == nil {
-				types = DocumentNodeTerm
-			} else if s, ok := types.(string); ok {
-				if s != DocumentNodeTerm {
-					types = []interface{}{s, DocumentNodeTerm}
-				}
-			} else if arr, ok := types.([]interface{}); ok {
-				hasType := false
-				for _, c := range arr {
-					if c == DocumentNodeTerm {
-						hasType = true
-						break
-					}
-				}
-				if !hasType {
-					types = append(arr, DocumentNodeTerm)
-				}
-			}
-			onode.ldNode["@type"] = types
 		}
 		if prop, ok := gnode.(propertiesSupport); ok {
 			for key, pvalue := range prop.GetProperties() {
@@ -332,6 +315,7 @@ func UnmarshalGraph(input interface{}) (*digraph.Graph, error) {
 					continue
 				}
 				switch k {
+				case "@id", "@type":
 				case AttributeValueTerm:
 					val, vals, _, err := getValuesOrIDs(v)
 					if err != nil {
@@ -363,8 +347,6 @@ func UnmarshalGraph(input interface{}) (*digraph.Graph, error) {
 			}
 
 		default:
-			inode.graphNode = NewNode(inode.id, inode.types...)
-			target.AddNode(inode.graphNode)
 			for k, v := range inode.node {
 				value, values, ids, err := getValuesOrIDs(v)
 				if err != nil {

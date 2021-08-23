@@ -177,7 +177,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 					return err
 				}
 				edge := NewEdge(k)
-				edge.SetIndex(index)
+				attrNode.graphNode.SetIndex(index)
 				digraph.Connect(inode.graphNode, attrNode.graphNode, edge)
 			}
 
@@ -230,7 +230,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 					return err
 				}
 				edge := NewEdge(k)
-				edge.SetIndex(index)
+				nnode.graphNode.SetIndex(index)
 				digraph.Connect(inode.graphNode, nnode.graphNode, edge)
 			}
 		}
@@ -341,7 +341,7 @@ func marshalNode(node Node) interface{} {
 
 	edges := node.GetAllOutgoingEdges().All()
 	sort.Slice(edges, func(i, j int) bool {
-		return edges[i].(Edge).GetIndex() < edges[j].(Edge).GetIndex()
+		return edges[i].GetTo().(Node).GetIndex() < edges[j].GetTo().(Node).GetIndex()
 	})
 	for _, e := range edges {
 		edge := e.(Edge)

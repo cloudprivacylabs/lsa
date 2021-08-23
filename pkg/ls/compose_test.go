@@ -25,9 +25,9 @@ type composeTestCase struct {
 	Expected interface{}   `json:"expected"`
 }
 
-func (tc composeTestCase) getName() string { return tc.Name }
+func (tc composeTestCase) GetName() string { return tc.Name }
 
-func (tc composeTestCase) run(t *testing.T) {
+func (tc composeTestCase) Run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
 	base, err := UnmarshalLayer(tc.Base)
 	if err != nil {
@@ -49,15 +49,15 @@ func (tc composeTestCase) run(t *testing.T) {
 	}
 
 	marshaled := MarshalLayer(base)
-	if err := deepEqual(toMap(marshaled), toMap(tc.Expected)); err != nil {
-		expected, _ := json.MarshalIndent(toMap(tc.Expected), "", "  ")
-		got, _ := json.MarshalIndent(toMap(marshaled), "", "  ")
+	if err := DeepEqual(ToMap(marshaled), ToMap(tc.Expected)); err != nil {
+		expected, _ := json.MarshalIndent(ToMap(tc.Expected), "", "  ")
+		got, _ := json.MarshalIndent(ToMap(marshaled), "", "  ")
 		t.Errorf("%v %s: Expected:\n%s\nGot:\n%s\n", err, tc.Name, string(expected), string(got))
 	}
 }
 
 func TestCompose(t *testing.T) {
-	runTestsFromFile(t, "testdata/composecases.json", func(in json.RawMessage) (testCase, error) {
+	RunTestsFromFile(t, "testdata/composecases.json", func(in json.RawMessage) (testCase, error) {
 		var c composeTestCase
 		err := json.Unmarshal(in, &c)
 		return c, err

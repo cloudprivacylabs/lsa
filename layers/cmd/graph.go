@@ -11,41 +11,34 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package ls
+package cmd
 
 import (
 	"encoding/json"
 	"io/ioutil"
-	"os"
-	"testing"
+
+	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/spf13/cobra"
 )
 
-type TestCase interface {
-	GetName() string
-	Run(*testing.T)
+func init() {
+	rootCmd.AddCommand(graphCmd)
 }
 
-func RunTestsFromFile(t *testing.T, file string, unmarshal func(json.RawMessage) (TestCase, error)) {
-	d, err := ioutil.ReadFile(file)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	var cases []json.RawMessage
-	err = json.Unmarshal(d, &cases)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+var graphCmd = &cobra.Command{
+	Use:   "graph",
+	Short: "Work with a graph",
+}
 
-	for _, c := range cases {
-		tc, err := unmarshal(c)
-		if err != nil {
-			t.Error(err)
-		} else {
-			if run := os.Getenv("CASE"); run == "" || run == tc.GetName() {
-				tc.Run(t)
-			}
-		}
+func ReadGraph(gfile string) (*digraph.Graph, error) {
+	data, err := ioutil.ReadFile(gfile)
+	if err != nil {
+		return nil, err
 	}
+	var v interface{}
+	if err := json.Unmarshal(data, &v); err != nil {
+		return nil, err
+	}
+	return ls.UnmarshalGraph(v)
 }
