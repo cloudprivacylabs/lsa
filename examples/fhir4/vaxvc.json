@@ -1,0 +1,56 @@
+{
+    "@context": ["https://lschema.org/ls.json", "https://lschema.org/project.json"],
+    "@type": "Schema",
+    "@id": "https://example.org/vax",
+    "layer": {
+        "@type": ["Object","http://example.org/TargetType"],
+        "attributes": [
+            {
+                "@id": "https://www.w3.org/2018/credentials/v1/name",
+                "@type": "Value",
+                "source": "'COVID-19 Vaccination Certificate'"
+            },
+            {
+                "@id":"https://www.w3.org/2018/credentials/v1/credentialSubject",
+                "@type": "Object",
+                "vars": [
+                    "immunization=source.firstReachable(node->(node.type.hasAll('http://hl7.org/fhir/Immunization','https://lschema.org/DocumentNode')))",
+                    "patient=source.firstReachable(node->(node.type.hasAll('http://hl7.org/fhir/Patient','https://lschema.org/DocumentNode')))"
+                ],
+                "attributes": [
+                    {
+                        "@id": "https://w3id.org/vaccination#batchNumber",
+                        "@type": "Value",
+                        "source": "immunization.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/Immunization#lotNumber')))"
+                    },
+                    {
+                        "@id": "https://w3id.org/vaccination#recipient",
+                        "@type": "Object",
+                        "attributes": [
+                            {
+                                "@id": "http://schema.org/givenName",
+                                "@type": "Value",
+                                "source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/HumanName#given'))).walk('https://lschema.org/data/array#elements')"
+                            },
+                            {
+                                "@id": "http://schema.org/familyName",
+                                "@type": "Value",
+                                "source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/HumanName#family')))"
+                            },
+                            {
+                                "@id": "http://schema.org/gender",
+                                "@type": "Value",
+                                "source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/Patient#gender')))"
+                            },
+                            {
+                                "@id": "http://schema.org/birthDate",
+                                "@type": "Value",
+                                "source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/Patient#birthDate')))"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
