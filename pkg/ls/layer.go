@@ -76,10 +76,10 @@ func (l *Layer) SetID(ID string) {
 
 // GetLayerType returns the layer type, SchemaTerm or OverlayTerm.
 func (l *Layer) GetLayerType() string {
-	if l.layerInfo.HasType(SchemaTerm) {
+	if l.layerInfo.GetTypes().Has(SchemaTerm) {
 		return SchemaTerm
 	}
-	if l.layerInfo.HasType(OverlayTerm) {
+	if l.layerInfo.GetTypes().Has(OverlayTerm) {
 		return OverlayTerm
 	}
 	return ""
@@ -90,8 +90,8 @@ func (l *Layer) SetLayerType(t string) {
 	if t != SchemaTerm && t != OverlayTerm {
 		panic("Invalid layer type:" + t)
 	}
-	l.layerInfo.RemoveTypes(SchemaTerm, OverlayTerm)
-	l.layerInfo.AddTypes(t)
+	l.layerInfo.GetTypes().Remove(SchemaTerm, OverlayTerm)
+	l.layerInfo.GetTypes().Add(t)
 }
 
 // GetEncoding returns the encoding that should be used to
@@ -133,12 +133,12 @@ func (l *Layer) GetTargetType() string {
 func (l *Layer) SetTargetType(t string) {
 	if oldT := l.GetTargetType(); len(oldT) > 0 {
 		if oin := l.GetSchemaRootNode(); oin != nil {
-			oin.RemoveTypes(oldT)
+			oin.GetTypes().Remove(oldT)
 		}
 	}
 	l.layerInfo.GetProperties()[TargetType] = StringPropertyValue(t)
 	if oin := l.GetSchemaRootNode(); oin != nil {
-		oin.AddTypes(t)
+		oin.GetTypes().Add(t)
 	}
 }
 
@@ -239,7 +239,7 @@ func forEachAttributeNode(root Node, path []Node, f func(Node, []Node) bool, loo
 			continue
 		}
 		next := edge.GetTo().(Node)
-		if next.HasType(AttributeTypes.Attribute) {
+		if next.GetTypes().Has(AttributeTypes.Attribute) {
 			if !forEachAttributeNode(next, path, f, loop, ordered) {
 				return false
 			}

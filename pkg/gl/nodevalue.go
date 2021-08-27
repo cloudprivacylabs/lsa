@@ -27,7 +27,7 @@ func (n NodeValue) oneNode() (ls.Node, error) {
 var nodeSelectors = map[string]func(NodeValue) (Value, error){
 	"id":             oneNode(func(node ls.Node) (Value, error) { return StringValue(node.GetID()), nil }),
 	"length":         func(node NodeValue) (Value, error) { return ValueOf(node.Nodes.Len()), nil },
-	"type":           oneNode(func(node ls.Node) (Value, error) { return StringSliceValue(node.GetTypes()), nil }),
+	"type":           oneNode(func(node ls.Node) (Value, error) { return StringSliceValue(node.GetTypes().Slice()), nil }),
 	"value":          oneNode(func(node ls.Node) (Value, error) { return ValueOf(node.GetValue()), nil }),
 	"properties":     oneNode(func(node ls.Node) (Value, error) { return PropertiesValue{Properties: node.GetProperties()}, nil }),
 	"firstReachable": nodeFirstReachableFunc,

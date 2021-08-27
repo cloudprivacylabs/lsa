@@ -44,7 +44,7 @@ func (tc sliceTestCase) Run(t *testing.T) {
 }
 
 func TestSlice(t *testing.T) {
-	RunTestsFromFile(t, "testdata/slicecases.json", func(in json.RawMessage) (testCase, error) {
+	RunTestsFromFile(t, "testdata/slicecases.json", func(in json.RawMessage) (TestCase, error) {
 		var c sliceTestCase
 		err := json.Unmarshal(in, &c)
 		return c, err

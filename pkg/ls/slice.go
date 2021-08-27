@@ -59,7 +59,7 @@ func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, Node) Node) 
 	sourceRoot := layer.GetSchemaRootNode()
 	if sourceRoot != nil {
 		rootNode.SetID(sourceRoot.GetID())
-		rootNode.SetTypes(sourceRoot.GetTypes()...)
+		rootNode.GetTypes().Set(sourceRoot.GetTypes().Slice()...)
 	}
 	hasNodes := false
 	if sourceRoot != nil {
@@ -68,14 +68,14 @@ func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, Node) Node) 
 			if IsAttributeTreeEdge(edge) {
 				newNode := slice(ret, edge.GetTo().(Node), nodeFilter, map[Node]struct{}{})
 				if newNode != nil {
-					rootNode.Connect(newNode, edge.GetLabelStr())
+					Connect(rootNode, newNode, edge.GetLabelStr())
 					hasNodes = true
 				}
 			}
 		}
 	}
 	if hasNodes {
-		ret.GetLayerInfoNode().Connect(rootNode, LayerRootTerm)
+		Connect(ret.GetLayerInfoNode(), rootNode, LayerRootTerm)
 	}
 	return ret
 }
@@ -99,7 +99,7 @@ func slice(targetLayer *Layer, sourceNode Node, nodeFilter func(*Layer, Node) No
 		if newTo != nil {
 			// If targetNode was filtered out, it has to be included now
 			if targetNode == nil {
-				targetNode = targetLayer.NewNode(sourceNode.GetID(), sourceNode.GetTypes()...)
+				targetNode = targetLayer.NewNode(sourceNode.GetID(), sourceNode.GetTypes().Slice()...)
 			}
 			digraph.Connect(targetNode, newTo, edge.Clone())
 		}

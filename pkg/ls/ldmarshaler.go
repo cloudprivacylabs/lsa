@@ -165,12 +165,12 @@ func (rd *LDMarshaler) Marshal(input *digraph.Graph) interface{} {
 	// Process the properties
 	for gnode, onode := range nodeIdMap {
 		t := gnode.GetTypes()
-		if len(t) > 0 {
-			if len(t) == 1 {
-				onode.ldNode["@type"] = t[0]
+		if t.Len() > 0 {
+			if t.Len() == 1 {
+				onode.ldNode["@type"] = t.Slice()[0]
 			} else {
-				arr := make([]interface{}, 0, len(t))
-				for _, x := range t {
+				arr := make([]interface{}, 0, t.Len())
+				for _, x := range t.Slice() {
 					arr = append(arr, x)
 				}
 				onode.ldNode["@type"] = arr

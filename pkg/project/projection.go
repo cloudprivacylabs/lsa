@@ -149,14 +149,14 @@ func (projector *Projector) project(context *ProjectionContext) (ls.Node, error)
 		return nil, err
 	}
 	switch {
-	case schemaNode.HasType(ls.AttributeTypes.Value):
+	case schemaNode.GetTypes().Has(ls.AttributeTypes.Value):
 		return projector.value(context)
-	case schemaNode.HasType(ls.AttributeTypes.Object):
+	case schemaNode.GetTypes().Has(ls.AttributeTypes.Object):
 		return projector.object(context)
-	case schemaNode.HasType(ls.AttributeTypes.Array):
-	case schemaNode.HasType(ls.AttributeTypes.Polymorphic):
+	case schemaNode.GetTypes().Has(ls.AttributeTypes.Array):
+	case schemaNode.GetTypes().Has(ls.AttributeTypes.Polymorphic):
 	}
-	return nil, ErrInvalidSchemaNodeType(schemaNode.GetTypes())
+	return nil, ErrInvalidSchemaNodeType(schemaNode.GetTypes().Slice())
 }
 
 func (projector *Projector) object(context *ProjectionContext) (ls.Node, error) {
@@ -169,7 +169,7 @@ func (projector *Projector) object(context *ProjectionContext) (ls.Node, error) 
 	// out to be empty, this target node may be thrown away
 	targetNode := ls.NewNode(projector.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm)
 	if projector.AddInstanceOfEdges {
-		targetNode.Connect(schemaNode, ls.InstanceOfTerm)
+		ls.Connect(targetNode, schemaNode, ls.InstanceOfTerm)
 	}
 	context.docPath = append(context.docPath, targetNode)
 
@@ -204,7 +204,7 @@ func (projector *Projector) object(context *ProjectionContext) (ls.Node, error) 
 			return nil, err
 		}
 		if newNode != nil {
-			targetNode.Connect(newNode, ls.DataEdgeTerms.ObjectAttributes)
+			ls.Connect(targetNode, newNode, ls.DataEdgeTerms.ObjectAttributes)
 			empty = false
 		}
 	}
@@ -225,7 +225,7 @@ func (projector *Projector) value(context *ProjectionContext) (ls.Node, error) {
 	// out to be empty, this target node may be thrown away
 	targetNode := ls.NewNode(projector.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm)
 	if projector.AddInstanceOfEdges {
-		targetNode.Connect(schemaNode, ls.InstanceOfTerm)
+		ls.Connect(targetNode, schemaNode, ls.InstanceOfTerm)
 	}
 	context.docPath = append(context.docPath, targetNode)
 

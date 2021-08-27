@@ -173,7 +173,7 @@ func Import(attributeID AttributeSpec, terms []TermSpec, startRow, nRows int, in
 						typ = ls.AttributeTypes.Value
 					}
 					elems := ls.NewNode(arrId, ls.AttributeTypes.Attribute, typ)
-					attr.Connect(elems, ls.LayerTerms.ArrayItems)
+					ls.Connect(attr, elems, ls.LayerTerms.ArrayItems)
 				}
 			} else {
 				attr = ls.NewNode(id, ls.AttributeTypes.Attribute, ls.AttributeTypes.Value)

@@ -35,7 +35,7 @@ var (
 	AttributeNameTerm = NewTerm(LS+"attributeName", false, false, ErrorComposition, nil)
 
 	// AttributeIndexTerm represents the index of an array element
-	AttributeIndexTerm = NewTerm(LS+"attributeIndex", false, false, ErrorComposition, nil)
+	AttributeIndexTerm = NewTerm(LS+"attributeIndex", false, false, NoComposition, nil)
 
 	// AttributeValueTerm represents the value of an attribute
 	AttributeValueTerm = NewTerm(LS+"attributeValue", false, false, ErrorComposition, nil)

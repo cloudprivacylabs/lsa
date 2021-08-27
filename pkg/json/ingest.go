@@ -63,13 +63,17 @@ func (e ErrDataIngestion) Error() string {
 
 func (e ErrDataIngestion) Unwrap() error { return e.Err }
 
-// DefaultNodeIDGenerator returns Ingester.Schema.ID + join(path,".")
-func (ingester *Ingester) DefaultNodeIDGenerator(input interface{}, path []interface{}, schemaNode ls.Node) string {
+func pathToString(path []interface{}) string {
 	components := make([]string, 0, len(path)+1)
 	for _, x := range path {
 		components = append(components, fmt.Sprint(x))
 	}
 	return strings.Join(components, ".")
+}
+
+// DefaultNodeIDGenerator returns Ingester.Schema.ID + join(path,".")
+func (ingester *Ingester) DefaultNodeIDGenerator(input interface{}, path []interface{}, schemaNode ls.Node) string {
+	return pathToString(path)
 }
 
 // Ingest a json document using the schema. The output will have all
@@ -114,7 +118,7 @@ func (ingester *Ingester) link(a *addedNode) {
 
 func (ingester *Ingester) linkNode(a *addedNode) {
 	if a.schemaNode != nil {
-		a.node.AddTypes(ls.FilterNonLayerTypes(a.schemaNode.GetTypes())...)
+		a.node.GetTypes().Add(ls.FilterNonLayerTypes(a.schemaNode.GetTypes().Slice())...)
 		ingester.connect(a.node, a.schemaNode, ls.InstanceOfTerm)
 	}
 }
@@ -133,7 +137,7 @@ func (ingester *Ingester) ingest(target *digraph.Graph, input interface{}, path 
 		return newNode, nil
 	}
 
-	if schemaNode != nil && schemaNode.HasType(ls.AttributeTypes.Polymorphic) {
+	if schemaNode != nil && schemaNode.GetTypes().Has(ls.AttributeTypes.Polymorphic) {
 		return validate(ingester.ingestPolymorphicNode(target, input, path, schemaNode))
 	}
 	if m, ok := input.(map[string]interface{}); ok {
@@ -169,17 +173,17 @@ func (ingester *Ingester) ingestObject(target *digraph.Graph, input map[string]i
 	nextNodes := make(map[string]ls.Node)
 	// There is a schema node for this node. It must be an object
 	if schemaNode != nil {
-		if !schemaNode.HasType(ls.AttributeTypes.Object) {
+		if !schemaNode.GetTypes().Has(ls.AttributeTypes.Object) {
 			return nil, ErrSchemaValidation("A JSON object is not expected here")
 		}
 
 		addNextNode := func(node ls.Node) error {
 			key := node.GetProperties()[ingester.KeyTerm].AsString()
 			if len(key) == 0 {
-				return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema at %s", ingester.KeyTerm, node.GetID()))
+				return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema at %s path: %s", ingester.KeyTerm, node.GetID(), pathToString(path)))
 			}
 			if _, ok := nextNodes[key]; ok {
-				return ErrInvalidSchema(fmt.Sprintf("Multiple elements with key '%s'", key))
+				return ErrInvalidSchema(fmt.Sprintf("Multiple elements with key '%s' path %s", key, pathToString(path)))
 			}
 			nextNodes[key] = node
 			return nil
@@ -214,7 +218,7 @@ func (ingester *Ingester) ingestObject(target *digraph.Graph, input map[string]i
 func (ingester *Ingester) ingestArray(target *digraph.Graph, input []interface{}, path []interface{}, schemaNode ls.Node) (*addedNode, error) {
 	var elements ls.Node
 	if schemaNode != nil {
-		if !schemaNode.HasType(ls.AttributeTypes.Array) {
+		if !schemaNode.GetTypes().Has(ls.AttributeTypes.Array) {
 			return nil, ErrSchemaValidation("A JSON array is not expected here")
 		}
 		n := schemaNode.Next(ls.LayerTerms.ArrayItems)
@@ -239,7 +243,7 @@ func (ingester *Ingester) ingestArray(target *digraph.Graph, input []interface{}
 
 func (ingester *Ingester) ingestValue(target *digraph.Graph, input interface{}, path []interface{}, schemaNode ls.Node) (*addedNode, error) {
 	if schemaNode != nil {
-		if !schemaNode.HasType(ls.AttributeTypes.Value) {
+		if !schemaNode.GetTypes().Has(ls.AttributeTypes.Value) {
 			return nil, ErrSchemaValidation("A JSON value is not expected here")
 		}
 	}
@@ -255,7 +259,7 @@ func (ingester *Ingester) newNode(ID string) ls.Node {
 	} else {
 		node = ls.NewNode(ID)
 	}
-	node.AddTypes(ls.DocumentNodeTerm)
+	node.GetTypes().Add(ls.DocumentNodeTerm)
 	return node
 }
 

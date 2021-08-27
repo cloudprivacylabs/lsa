@@ -15,7 +15,6 @@ package cmd
 
 import (
 	"encoding/json"
-	"io/ioutil"
 
 	"github.com/bserdar/digraph"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -31,8 +30,8 @@ var graphCmd = &cobra.Command{
 	Short: "Work with a graph",
 }
 
-func ReadGraph(gfile string) (*digraph.Graph, error) {
-	data, err := ioutil.ReadFile(gfile)
+func ReadGraph(gfile []string) (*digraph.Graph, error) {
+	data, err := readFileOrStdin(gfile)
 	if err != nil {
 		return nil, err
 	}

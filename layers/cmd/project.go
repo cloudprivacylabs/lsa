@@ -35,7 +35,7 @@ var projectCmd = &cobra.Command{
 	Short: "Project a graph using a target schema",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		g, err := ReadGraph(args[0])
+		g, err := ReadGraph(args)
 		if err != nil {
 			failErr(err)
 		}
