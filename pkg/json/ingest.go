@@ -14,6 +14,7 @@
 package json
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -203,6 +204,7 @@ func (ingester *Ingester) ingestObject(target *digraph.Graph, input map[string]i
 		schemaNode: schemaNode,
 		term:       ls.DataEdgeTerms.ObjectAttributes,
 	}
+	ret.node.GetTypes().Add(ObjectTypeTerm)
 
 	for key, value := range input {
 		childNode, err := ingester.ingest(target, value, append(path, key), nextNodes[key])
@@ -230,6 +232,7 @@ func (ingester *Ingester) ingestArray(target *digraph.Graph, input []interface{}
 		schemaNode: schemaNode,
 		term:       ls.DataEdgeTerms.ArrayElements,
 	}
+	ret.node.GetTypes().Add(ArrayTypeTerm)
 	for index := range input {
 		childNode, err := ingester.ingest(target, input[index], append(path, index), elements)
 		if err != nil {
@@ -248,7 +251,24 @@ func (ingester *Ingester) ingestValue(target *digraph.Graph, input interface{}, 
 		}
 	}
 	newNode := ingester.newNode(ingester.generateID(input, path, schemaNode))
-	newNode.SetValue(input)
+	if input != nil {
+		switch v := input.(type) {
+		case bool:
+			newNode.SetValue(fmt.Sprint(v))
+			newNode.GetTypes().Add(BooleanTypeTerm)
+		case string:
+			newNode.SetValue(v)
+			newNode.GetTypes().Add(StringTypeTerm)
+		case uint8, uint16, uint32, uint64, int8, int16, int32, int64, int, uint, float32, float64:
+			newNode.SetValue(fmt.Sprint(v))
+			newNode.GetTypes().Add(NumberTypeTerm)
+		case json.Number:
+			newNode.SetValue(v.String())
+			newNode.GetTypes().Add(NumberTypeTerm)
+		default:
+			newNode.SetValue(fmt.Sprint(v))
+		}
+	}
 	return &addedNode{node: newNode, schemaNode: schemaNode}, nil
 }
 

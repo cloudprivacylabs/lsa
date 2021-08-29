@@ -28,6 +28,7 @@ func init() {
 	ingestJSONCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
 	ingestJSONCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
 	ingestJSONCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
+	ingestJSONCmd.Flags().String("output", "graph", "Output json, or graph")
 }
 
 var ingestJSONCmd = &cobra.Command{
@@ -62,15 +63,31 @@ var ingestJSONCmd = &cobra.Command{
 
 		baseID, _ := cmd.Flags().GetString("id")
 		target := digraph.New()
-		_, err = ingester.Ingest(target, baseID, input)
+		root, err := ingester.Ingest(target, baseID, input)
 		if err != nil {
 			failErr(err)
 		}
 		outFormat, _ := cmd.Flags().GetString("format")
 		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
-		err = OutputIngestedGraph(outFormat, target, os.Stdout, includeSchema)
-		if err != nil {
-			failErr(err)
+		output, _ := cmd.Flags().GetString("output")
+		if output == "graph" {
+			err = OutputIngestedGraph(outFormat, target, os.Stdout, includeSchema)
+			if err != nil {
+				failErr(err)
+			}
+			return
+		}
+		if output == "json" {
+			exportOptions := jsoningest.ExportOptions{
+				BuildNodeKeyFunc: jsoningest.GetBuildNodeKeyBySchemaNodeFunc(func(schemaNode, docNode ls.Node) (string, bool, error) {
+					return schemaNode.GetID(), true, nil
+				}),
+			}
+			data, err := jsoningest.Export(root, exportOptions)
+			if err != nil {
+				failErr(err)
+			}
+			data.Encode(os.Stdout)
 		}
 	},
 }

@@ -15,6 +15,7 @@ package ls
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/bserdar/digraph"
 )
@@ -31,6 +32,22 @@ func (types *Types) Add(t ...string) {
 		x := knownTerm(t[i])
 		if !types.Has(x) {
 			types.slice = append(types.slice, x)
+		}
+	}
+}
+
+// AddTypes adds all the types into this one
+func (types *Types) AddTypes(t ...*Types) {
+	set := make(map[string]struct{})
+	for _, k := range types.slice {
+		set[k] = struct{}{}
+	}
+	for _, tt := range t {
+		for _, k := range tt.slice {
+			if _, exists := set[k]; !exists {
+				types.slice = append(types.slice, k)
+				set[k] = struct{}{}
+			}
 		}
 	}
 }
@@ -239,6 +256,11 @@ func IsDocumentEdge(edge digraph.Edge) bool {
 	return false
 }
 
+// SortNodes sorts nodes by their node index
+func SortNodes(nodes []Node) {
+	sort.Slice(nodes, func(i, j int) bool { return nodes[i].GetIndex() < nodes[j].GetIndex() })
+}
+
 type EdgeFuncResult int
 
 const (
@@ -349,6 +371,17 @@ func InstanceOf(node Node) []Node {
 		ret = append(ret, x)
 	}
 	return ret
+}
+
+// CombineNodeTypes returns a combination of the types of all the given nodes
+func CombineNodeTypes(nodes []Node) *Types {
+	ret := Types{}
+	t := make([]*Types, 0, len(nodes))
+	for _, n := range nodes {
+		t = append(t, n.GetTypes())
+	}
+	ret.AddTypes(t...)
+	return &ret
 }
 
 // NodeSet is a set of nodes

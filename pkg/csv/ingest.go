@@ -43,7 +43,7 @@ func (ingester Ingester) getID(columnIndex int, columnData string) string {
 	return fmt.Sprintf("col_%d", columnIndex)
 }
 
-func (ingester Ingester) Ingest(data []string, ID string) error {
+func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 	rootNode := ls.NewNode(ID, ls.DocumentNodeTerm)
 	ingester.Target.AddNode(rootNode)
 	for columnIndex, columnData := range data {
@@ -82,7 +82,7 @@ func (ingester Ingester) Ingest(data []string, ID string) error {
 		}
 		newNode.GetProperties()[ColumnIndexTerm] = ls.StringPropertyValue(fmt.Sprint(columnIndex))
 	}
-	return nil
+	return rootNode, nil
 }
 
 // // IngestionProfile defines how CSV columns are mapped to data by

@@ -108,7 +108,7 @@ var ingestCSVCmd = &cobra.Command{
 				if err := idTmp.Execute(&buf, templateData); err != nil {
 					failErr(err)
 				}
-				if err := ingester.Ingest(rowData, strings.TrimSpace(buf.String())); err != nil {
+				if _, err := ingester.Ingest(rowData, strings.TrimSpace(buf.String())); err != nil {
 					failErr(err)
 				}
 				outFormat, _ := cmd.Flags().GetString("format")
