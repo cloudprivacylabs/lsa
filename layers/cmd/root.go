@@ -14,6 +14,7 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -114,6 +115,22 @@ func readJSONFileOrStdin(input []string, output interface{}, enc ...encoding.Enc
 		return dec.Decode(output)
 	}
 	return readJSON(input[0], output, enc...)
+}
+
+func streamJSONFileOrStdin(input []string, enc ...encoding.Encoding) (io.Reader, error) {
+	if len(input) == 0 {
+		var rd io.Reader
+		rd = os.Stdin
+		if len(enc) == 1 {
+			rd = enc[0].NewDecoder().Reader(os.Stdin)
+		}
+		return rd, nil
+	}
+	data, err := readURL(input[0], enc...)
+	if err != nil {
+		return nil, err
+	}
+	return bytes.NewReader(data), nil
 }
 
 func readFileOrStdin(input []string) ([]byte, error) {

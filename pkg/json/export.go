@@ -16,7 +16,6 @@ package json
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 
 	"github.com/cloudprivacylabs/lsa/pkg/gl"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -83,93 +82,6 @@ func DefaultBuildNodeKeyFunc(node ls.Node) (string, bool, error) {
 	return "", false, nil
 }
 
-type Encodable interface {
-	Encode(io.Writer) error
-}
-
-// ExportKeyValue is a JSON key-value pair
-type ExportKeyValue struct {
-	Key   string
-	Value Encodable
-}
-
-// ExportValue is a JSON value
-type ExportValue struct {
-	Value json.RawMessage
-}
-
-// Encode a value
-func (e ExportValue) Encode(w io.Writer) error {
-	_, err := w.Write(e.Value)
-	return err
-}
-
-// Encode a key-value pair
-func (e ExportKeyValue) Encode(w io.Writer) error {
-	data, err := json.Marshal(e.Key)
-	if err != nil {
-		return err
-	}
-	if _, err := w.Write(data); err != nil {
-		return err
-	}
-	if _, err := w.Write([]byte{':'}); err != nil {
-		return err
-	}
-	return e.Value.Encode(w)
-}
-
-// ExportObject represents a JSON object
-type ExportObject struct {
-	Values []ExportKeyValue
-}
-
-// Encode a json object
-func (e ExportObject) Encode(w io.Writer) error {
-	if _, err := w.Write([]byte{'{'}); err != nil {
-		return err
-	}
-	for i, v := range e.Values {
-		if i > 0 {
-			if _, err := w.Write([]byte{','}); err != nil {
-				return err
-			}
-		}
-		if err := v.Encode(w); err != nil {
-			return err
-		}
-	}
-	if _, err := w.Write([]byte{'}'}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// ExportArray represents a JSON array
-type ExportArray struct {
-	Elements []Encodable
-}
-
-func (e ExportArray) Encode(w io.Writer) error {
-	if _, err := w.Write([]byte{'['}); err != nil {
-		return err
-	}
-	for i, value := range e.Elements {
-		if i > 0 {
-			if _, err := w.Write([]byte{','}); err != nil {
-				return err
-			}
-		}
-		if err := value.Encode(w); err != nil {
-			return err
-		}
-	}
-	if _, err := w.Write([]byte{']'}); err != nil {
-		return err
-	}
-	return nil
-}
-
 type ErrInvalidBooleanValue struct {
 	NodeID string
 	Value  string
@@ -208,7 +120,7 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 	types := ls.CombineNodeTypes(ls.InstanceOf(node))
 	switch {
 	case types.Has(ls.AttributeTypes.Object):
-		ret := ExportObject{}
+		ret := Object{}
 		gnodes := node.GetAllOutgoingEdgesWithLabel(ls.DataEdgeTerms.ObjectAttributes).Targets().All()
 		nodes := make([]ls.Node, 0, len(gnodes))
 		for _, node := range gnodes {
@@ -225,13 +137,13 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 				if err != nil {
 					return nil, err
 				}
-				ret.Values = append(ret.Values, ExportKeyValue{Key: key, Value: value})
+				ret.Values = append(ret.Values, KeyValue{Key: key, Value: value})
 			}
 		}
 		return ret, nil
 
 	case types.Has(ls.AttributeTypes.Array):
-		ret := ExportArray{}
+		ret := Array{}
 		gnodes := node.GetAllOutgoingEdgesWithLabel(ls.DataEdgeTerms.ArrayElements).Targets().All()
 		nodes := make([]ls.Node, 0, len(gnodes))
 		for _, node := range gnodes {
@@ -256,23 +168,23 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 		switch {
 		case types.Has(BooleanTypeTerm):
 			if valueStr == "true" {
-				return ExportValue{Value: []byte("true")}, nil
+				return Value{Value: []byte("true")}, nil
 			}
 			if valueStr == "false" {
-				return ExportValue{Value: []byte("false")}, nil
+				return Value{Value: []byte("false")}, nil
 			}
 			return nil, ErrInvalidBooleanValue{NodeID: node.GetID(), Value: valueStr}
 		case types.Has(StringTypeTerm):
 			data, _ := json.Marshal(valueStr)
-			return ExportValue{Value: data}, nil
+			return Value{Value: data}, nil
 		case types.Has(NumberTypeTerm), types.Has(IntegerTypeTerm):
 			data, _ := json.Marshal(json.Number([]byte(valueStr)))
-			return ExportValue{Value: data}, nil
+			return Value{Value: data}, nil
 		case types.Has(ObjectTypeTerm), types.Has(ArrayTypeTerm):
 			return nil, ErrValueExpected{NodeID: node.GetID()}
 		default:
 			data, _ := json.Marshal(valueStr)
-			return ExportValue{Value: data}, nil
+			return Value{Value: data}, nil
 		}
 	}
 	return nil, nil

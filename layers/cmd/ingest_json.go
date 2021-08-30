@@ -14,6 +14,7 @@
 package cmd
 
 import (
+	"io"
 	"os"
 
 	"github.com/bserdar/digraph"
@@ -43,18 +44,21 @@ var ingestJSONCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		var input map[string]interface{}
+		var input io.Reader
 		if layer != nil {
 			enc, err := layer.GetEncoding()
 			if err != nil {
 				failErr(err)
 			}
-			if err := readJSONFileOrStdin(args, &input, enc); err != nil {
+			input, err = streamJSONFileOrStdin(args, enc)
+			if err != nil {
 				failErr(err)
 			}
-		}
-		if err := readJSONFileOrStdin(args, &input); err != nil {
-			failErr(err)
+		} else {
+			input, err = streamJSONFileOrStdin(args)
+			if err != nil {
+				failErr(err)
+			}
 		}
 		ingester := jsoningest.Ingester{
 			Schema:  layer,
@@ -63,7 +67,7 @@ var ingestJSONCmd = &cobra.Command{
 
 		baseID, _ := cmd.Flags().GetString("id")
 		target := digraph.New()
-		root, err := ingester.Ingest(target, baseID, input)
+		root, err := jsoningest.IngestStream(&ingester, target, baseID, input)
 		if err != nil {
 			failErr(err)
 		}
