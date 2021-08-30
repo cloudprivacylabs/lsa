@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package project
+package transform
 
 import (
 	"errors"
@@ -21,60 +21,60 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-const PT = ls.LS + "projection#"
+const RS = ls.LS + "reshape#"
 
-// ProjectionTerms defines the terms used to specify projection layers
-var ProjectionTerms = struct {
-	// If given, the If term specifies a predicate that should be true to project the node
+// ReshapeTerms defines the terms used to specify reshaping layers
+var ReshapeTerms = struct {
+	// If given, the If term specifies a predicate that should be true to reshape the node
 	If string
 	// Vars defines a list of expressions that pull values from the
 	// source graph and define them as variables
 	Vars string
 	// Source specifies the source value to be used to generate the target value
 	Source string
-	// IfEmpty determines whether to project the node even if it has no value
+	// IfEmpty determines whether to reshape the node even if it has no value
 	IfEmpty string
 	// JoinMethod determines how to join multiple values to generate a single value
 	JoinMethod string
 	// JoinDelimiter specifies the join delimiter if there are multiple values to be combined
 	JoinDelimiter string
 }{
-	If:            ls.NewTerm(PT+"if", false, false, ls.OverrideComposition, nil),
-	Vars:          ls.NewTerm(PT+"vars", false, true, ls.OverrideComposition, nil),
-	Source:        ls.NewTerm(PT+"source", false, false, ls.OverrideComposition, nil),
-	IfEmpty:       ls.NewTerm(PT+"ifEmpty", false, false, ls.OverrideComposition, nil),
-	JoinMethod:    ls.NewTerm(PT+"joinMethod", false, false, ls.OverrideComposition, nil),
-	JoinDelimiter: ls.NewTerm(PT+"joinDelimiter", false, false, ls.OverrideComposition, nil),
+	If:            ls.NewTerm(RS+"if", false, false, ls.OverrideComposition, nil),
+	Vars:          ls.NewTerm(RS+"vars", false, true, ls.OverrideComposition, nil),
+	Source:        ls.NewTerm(RS+"source", false, false, ls.OverrideComposition, nil),
+	IfEmpty:       ls.NewTerm(RS+"ifEmpty", false, false, ls.OverrideComposition, nil),
+	JoinMethod:    ls.NewTerm(RS+"joinMethod", false, false, ls.OverrideComposition, nil),
+	JoinDelimiter: ls.NewTerm(RS+"joinDelimiter", false, false, ls.OverrideComposition, nil),
 }
 
-type Projector struct {
+type Reshaper struct {
 	TargetSchema *ls.Layer
 
 	// If true, adds the references to the target schema
 	AddInstanceOfEdges bool
 
-	// GetProjectionProperties will return the projection related
+	// GetReshaeProperties will return the reshaping related
 	// properties for the node. This can be set to a function that
-	// retrieves properties from an overlay, thus allowing projection
+	// retrieves properties from an overlay, thus allowing reshaping
 	// computations without layer composition
-	GetProjectionProperties func(ls.Node) map[string]*ls.PropertyValue
+	GetReshapeProperties func(ls.Node) map[string]*ls.PropertyValue
 
 	// GenerateID will generate a node ID given schema path and target document path up to the new node
 	GenerateID func(schemaPath, docPath []ls.Node) string
 }
 
-func (projector *Projector) getProperties(node ls.Node) map[string]*ls.PropertyValue {
-	if projector.GetProjectionProperties != nil {
-		return projector.GetProjectionProperties(node)
+func (respaher *Reshaper) getProperties(node ls.Node) map[string]*ls.PropertyValue {
+	if respaher.GetReshapeProperties != nil {
+		return respaher.GetReshapeProperties(node)
 	}
 	return node.GetProperties()
 }
 
 // GenerateID gets the schema path for the new field, and the path to
 // the parent container of the generated node
-func (projector *Projector) generateID(schemaPath, docPath []ls.Node) string {
-	if projector.GenerateID != nil {
-		return projector.GenerateID(schemaPath, docPath)
+func (respaher *Reshaper) generateID(schemaPath, docPath []ls.Node) string {
+	if respaher.GenerateID != nil {
+		return respaher.GenerateID(schemaPath, docPath)
 	}
 	return schemaPath[len(schemaPath)-1].GetID()
 }
@@ -85,7 +85,7 @@ func (projector *Projector) generateID(schemaPath, docPath []ls.Node) string {
 type ErrInvalidSchemaNodeType []string
 
 func (e ErrInvalidSchemaNodeType) Error() string {
-	return fmt.Sprintf("Invalid schema node type for projection: %v", []string(e))
+	return fmt.Sprintf("Invalid schema node type for reshaping: %v", []string(e))
 }
 
 var (
@@ -94,7 +94,7 @@ var (
 	ErrSourceMustBeString           = errors.New("source term value must be a string")
 )
 
-type ProjectionContext struct {
+type ReshapeContext struct {
 	// The expression language interpreter context
 	glContext *gl.Context
 	// All schema nodes from the root to the current node
@@ -102,40 +102,40 @@ type ProjectionContext struct {
 	// Generated document paths from the root to the parent of the current node
 	docPath []ls.Node
 
-	// The root node to be used to project
+	// The root node to be used to reshape
 	sourceNode ls.Node
 }
 
-func (p *ProjectionContext) CurrentSchemaNode() ls.Node {
+func (p *ReshapeContext) CurrentSchemaNode() ls.Node {
 	return p.schemaPath[len(p.schemaPath)-1]
 }
 
-func (p *ProjectionContext) nestedContext() *ProjectionContext {
+func (p *ReshapeContext) nestedContext() *ReshapeContext {
 	ret := *p
 	ret.glContext = p.glContext.NewNestedContext()
 	return &ret
 }
 
-// Project the graph rooted at the rootNode to the targetSchema, using
-// the getProjectionProperties function that will return projection
+// Reshape the graph rooted at the rootNode to the targetSchema, using
+// the getReshapeProperties function that will return reshaping
 // properties for given schema nodes
-func (projector *Projector) Project(rootNode ls.Node) (ls.Node, error) {
-	ctx := ProjectionContext{
+func (respaher *Reshaper) Reshape(rootNode ls.Node) (ls.Node, error) {
+	ctx := ReshapeContext{
 		glContext:  gl.NewContext(),
-		schemaPath: []ls.Node{projector.TargetSchema.GetSchemaRootNode()},
+		schemaPath: []ls.Node{respaher.TargetSchema.GetSchemaRootNode()},
 		docPath:    []ls.Node{},
 		sourceNode: rootNode,
 	}
 	ctx.glContext.Set("source", rootNode)
-	return projector.project(&ctx)
+	return respaher.reshape(&ctx)
 }
 
-func (projector *Projector) project(context *ProjectionContext) (ls.Node, error) {
+func (respaher *Reshaper) reshape(context *ReshapeContext) (ls.Node, error) {
 	context = context.nestedContext()
 	schemaNode := context.CurrentSchemaNode()
-	properties := projector.getProperties(schemaNode)
+	properties := respaher.getProperties(schemaNode)
 	// Check conditionals first
-	conditionals := properties[ProjectionTerms.If]
+	conditionals := properties[ReshapeTerms.If]
 	v, err := checkConditionals(context, conditionals)
 	if err != nil {
 		return nil, err
@@ -144,36 +144,36 @@ func (projector *Projector) project(context *ProjectionContext) (ls.Node, error)
 		return nil, nil
 	}
 	// Declare the variables
-	variables := properties[ProjectionTerms.Vars]
+	variables := properties[ReshapeTerms.Vars]
 	if err = setupVariables(context, variables); err != nil {
 		return nil, err
 	}
 	switch {
 	case schemaNode.GetTypes().Has(ls.AttributeTypes.Value):
-		return projector.value(context)
+		return respaher.value(context)
 	case schemaNode.GetTypes().Has(ls.AttributeTypes.Object):
-		return projector.object(context)
+		return respaher.object(context)
 	case schemaNode.GetTypes().Has(ls.AttributeTypes.Array):
 	case schemaNode.GetTypes().Has(ls.AttributeTypes.Polymorphic):
 	}
 	return nil, ErrInvalidSchemaNodeType(schemaNode.GetTypes().Slice())
 }
 
-func (projector *Projector) object(context *ProjectionContext) (ls.Node, error) {
+func (respaher *Reshaper) object(context *ReshapeContext) (ls.Node, error) {
 	schemaNode := context.CurrentSchemaNode()
-	properties := projector.getProperties(schemaNode)
+	properties := respaher.getProperties(schemaNode)
 	attributes := ls.SortEdgesItr(schemaNode.GetAllOutgoingEdgesWithLabel(ls.LayerTerms.Attributes)).Targets().All()
 	attributes = append(attributes, ls.SortEdgesItr(schemaNode.GetAllOutgoingEdgesWithLabel(ls.LayerTerms.AttributeList)).Targets().All()...)
 
 	// Create a target node for this object node. If the object turns
 	// out to be empty, this target node may be thrown away
-	targetNode := ls.NewNode(projector.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm)
-	if projector.AddInstanceOfEdges {
+	targetNode := ls.NewNode(respaher.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm)
+	if respaher.AddInstanceOfEdges {
 		ls.Connect(targetNode, schemaNode, ls.InstanceOfTerm)
 	}
 	context.docPath = append(context.docPath, targetNode)
 
-	source, err := getSource(context, properties[ProjectionTerms.Source])
+	source, err := getSource(context, properties[ReshapeTerms.Source])
 	if err != nil {
 		return nil, err
 	}
@@ -198,7 +198,7 @@ func (projector *Projector) object(context *ProjectionContext) (ls.Node, error) 
 	for _, a := range attributes {
 		schemaAttribute := a.(ls.Node)
 		context.schemaPath = append(context.schemaPath, schemaAttribute)
-		newNode, err := projector.project(context)
+		newNode, err := respaher.reshape(context)
 		context.schemaPath = context.schemaPath[:len(context.schemaPath)-1]
 		if err != nil {
 			return nil, err
@@ -209,7 +209,7 @@ func (projector *Projector) object(context *ProjectionContext) (ls.Node, error) 
 		}
 	}
 	if empty {
-		ifEmpty := properties[ProjectionTerms.IfEmpty]
+		ifEmpty := properties[ReshapeTerms.IfEmpty]
 		if ifEmpty != nil && ifEmpty.IsString() && ifEmpty.AsString() == "true" {
 			return targetNode, nil
 		}
@@ -218,18 +218,18 @@ func (projector *Projector) object(context *ProjectionContext) (ls.Node, error) 
 	return targetNode, nil
 }
 
-func (projector *Projector) value(context *ProjectionContext) (ls.Node, error) {
+func (respaher *Reshaper) value(context *ReshapeContext) (ls.Node, error) {
 	schemaNode := context.CurrentSchemaNode()
-	properties := projector.getProperties(schemaNode)
+	properties := respaher.getProperties(schemaNode)
 	// Create a target node for this object node. If the object turns
 	// out to be empty, this target node may be thrown away
-	targetNode := ls.NewNode(projector.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm)
-	if projector.AddInstanceOfEdges {
+	targetNode := ls.NewNode(respaher.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm)
+	if respaher.AddInstanceOfEdges {
 		ls.Connect(targetNode, schemaNode, ls.InstanceOfTerm)
 	}
 	context.docPath = append(context.docPath, targetNode)
 
-	source, err := getSource(context, properties[ProjectionTerms.Source])
+	source, err := getSource(context, properties[ReshapeTerms.Source])
 	if err != nil {
 		return nil, err
 	}
@@ -243,12 +243,12 @@ func (projector *Projector) value(context *ProjectionContext) (ls.Node, error) {
 				empty = false
 			case sourceValue.Nodes.Len() > 1:
 				joinMethod := "join"
-				prop := properties[ProjectionTerms.JoinMethod]
+				prop := properties[ReshapeTerms.JoinMethod]
 				if prop != nil && prop.IsString() {
 					joinMethod = prop.AsString()
 				}
 				joinDelimiter := " "
-				prop = properties[ProjectionTerms.JoinDelimiter]
+				prop = properties[ReshapeTerms.JoinDelimiter]
 				if prop != nil && prop.IsString() {
 					joinDelimiter = prop.AsString()
 				}
@@ -270,7 +270,7 @@ func (projector *Projector) value(context *ProjectionContext) (ls.Node, error) {
 	}
 
 	if empty {
-		ifEmpty := properties[ProjectionTerms.IfEmpty]
+		ifEmpty := properties[ReshapeTerms.IfEmpty]
 		if ifEmpty != nil && ifEmpty.IsString() && ifEmpty.AsString() == "true" {
 			return targetNode, nil
 		}
@@ -279,7 +279,7 @@ func (projector *Projector) value(context *ProjectionContext) (ls.Node, error) {
 	return targetNode, nil
 }
 
-func getSource(context *ProjectionContext, source *ls.PropertyValue) (gl.Value, error) {
+func getSource(context *ReshapeContext, source *ls.PropertyValue) (gl.Value, error) {
 	if source == nil {
 		return nil, nil
 	}
@@ -293,7 +293,7 @@ func getSource(context *ProjectionContext, source *ls.PropertyValue) (gl.Value, 
 	return value, nil
 }
 
-func setupVariables(context *ProjectionContext, variables *ls.PropertyValue) error {
+func setupVariables(context *ReshapeContext, variables *ls.PropertyValue) error {
 	if variables == nil {
 		return nil
 	}
@@ -312,7 +312,7 @@ func setupVariables(context *ProjectionContext, variables *ls.PropertyValue) err
 	return nil
 }
 
-func checkConditionals(context *ProjectionContext, conditionals *ls.PropertyValue) (bool, error) {
+func checkConditionals(context *ReshapeContext, conditionals *ls.PropertyValue) (bool, error) {
 	if conditionals == nil {
 		return true, nil
 	}

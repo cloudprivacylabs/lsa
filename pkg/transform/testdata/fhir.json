@@ -1530,12 +1530,12 @@
                     {
                         "@id": "https://www.w3.org/2018/credentials/v1/name",
                         "@type": "ls:Value",
-                        "ls:projection#source": "'COVID-19 Vaccination Certificate'"
+                        "ls:reshape#source": "'COVID-19 Vaccination Certificate'"
                     },
                     {
                         "@id":"https://www.w3.org/2018/credentials/v1/credentialSubject",
                         "@type": "ls:Object",
-                        "ls:projection#vars": [
+                        "ls:reshape#vars": [
                             "immunization=source.firstReachable(node->(node.type.hasAll('http://hl7.org/fhir/Immunization','https://lschema.org/DocumentNode')))",
                             "patient=source.firstReachable(node->(node.type.hasAll('http://hl7.org/fhir/Patient','https://lschema.org/DocumentNode')))"
                         ],
@@ -1543,7 +1543,7 @@
                             {
                                 "@id": "https://w3id.org/vaccination#batchNumber",
                                 "@type": "ls:Value",
-                                "ls:projection#source": "immunization.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/Immunization#lotNumber')))"
+                                "ls:reshape#source": "immunization.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/Immunization#lotNumber')))"
                             },
                             {
                                 "@id": "https://w3id.org/vaccination#recipient",
@@ -1552,22 +1552,22 @@
                                     {
                                         "@id": "http://schema.org/givenName",
                                         "@type": "ls:Value",
-                                        "ls:projection#source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/HumanName#given'))).walk('https://lschema.org/data/array#elements')"
+                                        "ls:reshape#source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/HumanName#given'))).walk('https://lschema.org/data/array#elements')"
                                     },
                                     {
                                         "@id": "http://schema.org/familyName",
                                         "@type": "ls:Value",
-                                        "ls:projection#source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/HumanName#family')))"
+                                        "ls:reshape#source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/HumanName#family')))"
                                     },
                                     {
                                         "@id": "http://schema.org/gender",
                                         "@type": "ls:Value",
-                                        "ls:projection#source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/Patient#gender')))"
+                                        "ls:reshape#source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/Patient#gender')))"
                                     },
                                     {
                                         "@id": "http://schema.org/birthDate",
                                         "@type": "ls:Value",
-                                        "ls:projection#source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/Patient#birthDate')))"
+                                        "ls:reshape#source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/Patient#birthDate')))"
                                     }
                                 ]
                             }

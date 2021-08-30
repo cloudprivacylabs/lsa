@@ -18,21 +18,21 @@ import (
 
 	"github.com/bserdar/digraph"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/project"
+	"github.com/cloudprivacylabs/lsa/pkg/transform"
 	"github.com/spf13/cobra"
 )
 
 func init() {
-	rootCmd.AddCommand(projectCmd)
-	projectCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
-	projectCmd.Flags().String("repo", "", "Schema repository directory")
-	projectCmd.PersistentFlags().String("format", "json", "Output format, json(ld), rdf, or dot")
-	projectCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
+	rootCmd.AddCommand(reshapeCmd)
+	reshapeCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
+	reshapeCmd.Flags().String("repo", "", "Schema repository directory")
+	reshapeCmd.PersistentFlags().String("format", "json", "Output format, json(ld), rdf, or dot")
+	reshapeCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 }
 
-var projectCmd = &cobra.Command{
-	Use:   "project",
-	Short: "Project a graph using a target schema",
+var reshapeCmd = &cobra.Command{
+	Use:   "reshape",
+	Short: "Reshape a graph using a target schema",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		g, err := ReadGraph(args)
@@ -47,14 +47,14 @@ var projectCmd = &cobra.Command{
 			failErr(err)
 		}
 
-		projector := project.Projector{TargetSchema: layer}
+		reshaper := transform.Reshaper{TargetSchema: layer}
 		nix := g.GetNodeIndex()
 		sources := nix.Sources()
 		if len(sources) != 1 {
 			fail("Cannot determine the root of the graph")
 		}
 		rootNode := sources[0]
-		result, err := projector.Project(rootNode.(ls.Node))
+		result, err := reshaper.Reshape(rootNode.(ls.Node))
 		if err != nil {
 			failErr(err)
 		}
