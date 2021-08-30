@@ -19,24 +19,29 @@ import (
 	"io"
 )
 
-type Encodable interface {
+// OM represents the JSON object model that preserves order
+type OM interface {
 	Encode(io.Writer) error
 }
 
 // KeyValue is a JSON key-value pair
 type KeyValue struct {
 	Key   string
-	Value Encodable
+	Value OM
 }
 
-// Value is a JSON value
+// Value is a JSON value. It is one of nil, string, bool, json.Number
 type Value struct {
-	Value json.RawMessage
+	Value interface{}
 }
 
 // Encode a value
 func (e Value) Encode(w io.Writer) error {
-	_, err := w.Write(e.Value)
+	data, err := json.Marshal(e.Value)
+	if err != nil {
+		return err
+	}
+	_, err = w.Write(data)
 	return err
 }
 
@@ -83,7 +88,7 @@ func (e Object) Encode(w io.Writer) error {
 
 // Array represents a JSON array
 type Array struct {
-	Elements []Encodable
+	Elements []OM
 }
 
 func (e Array) Encode(w io.Writer) error {
@@ -106,8 +111,8 @@ func (e Array) Encode(w io.Writer) error {
 	return nil
 }
 
-func Decode(decoder *json.Decoder) (Encodable, error) {
-	var ret Encodable
+func Decode(decoder *json.Decoder) (OM, error) {
+	var ret OM
 
 	tok, err := decoder.Token()
 	if err == io.EOF {
@@ -163,8 +168,8 @@ func decodeObject(decoder *json.Decoder) (Object, error) {
 	return ret, nil
 }
 
-func decodeElement(decoder *json.Decoder) (Encodable, bool, error) {
-	var ret Encodable
+func decodeElement(decoder *json.Decoder) (OM, bool, error) {
+	var ret OM
 
 	tok, err := decoder.Token()
 	if err == io.EOF {
@@ -209,15 +214,15 @@ func decodeValue(tok json.Token) (Value, error) {
 	ret := Value{}
 	switch val := tok.(type) {
 	case bool:
-		ret.Value = json.RawMessage(fmt.Sprint(val))
+		ret.Value = val
 	case float64:
-		ret.Value = []byte(fmt.Sprint(val))
+		ret.Value = json.Number([]byte(fmt.Sprint(val)))
 	case json.Number:
-		ret.Value = json.RawMessage(val)
+		ret.Value = val
 	case string:
-		ret.Value, _ = json.Marshal(val)
+		ret.Value = val
 	case nil:
-		ret.Value = []byte("null")
+		ret.Value = nil
 	}
 	return ret, nil
 }

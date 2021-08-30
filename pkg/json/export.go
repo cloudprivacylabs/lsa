@@ -92,8 +92,8 @@ func (e ErrInvalidBooleanValue) Error() string {
 }
 
 // Export the document subtree to the target. The returned result is
-// Encodable, which respects element ordering
-func Export(node ls.Node, options ExportOptions) (Encodable, error) {
+// OM, which respects element ordering
+func Export(node ls.Node, options ExportOptions) (OM, error) {
 	return exportJSON(node, options, map[ls.Node]struct{}{})
 }
 
@@ -105,7 +105,7 @@ func (e ErrValueExpected) Error() string {
 	return fmt.Sprintf("Value expected at %s", e.NodeID)
 }
 
-func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) (Encodable, error) {
+func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) (OM, error) {
 	// Loop protection
 	if _, exists := seen[node]; exists {
 		return nil, nil
@@ -168,23 +168,20 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 		switch {
 		case types.Has(BooleanTypeTerm):
 			if valueStr == "true" {
-				return Value{Value: []byte("true")}, nil
+				return Value{Value: true}, nil
 			}
 			if valueStr == "false" {
-				return Value{Value: []byte("false")}, nil
+				return Value{Value: false}, nil
 			}
 			return nil, ErrInvalidBooleanValue{NodeID: node.GetID(), Value: valueStr}
 		case types.Has(StringTypeTerm):
-			data, _ := json.Marshal(valueStr)
-			return Value{Value: data}, nil
+			return Value{Value: valueStr}, nil
 		case types.Has(NumberTypeTerm), types.Has(IntegerTypeTerm):
-			data, _ := json.Marshal(json.Number([]byte(valueStr)))
-			return Value{Value: data}, nil
+			return Value{Value: json.Number(valueStr)}, nil
 		case types.Has(ObjectTypeTerm), types.Has(ArrayTypeTerm):
 			return nil, ErrValueExpected{NodeID: node.GetID()}
 		default:
-			data, _ := json.Marshal(valueStr)
-			return Value{Value: data}, nil
+			return Value{Value: valueStr}, nil
 		}
 	}
 	return nil, nil
