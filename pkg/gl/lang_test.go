@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package gl
 
 import (
@@ -59,7 +60,7 @@ func TestExprParse(t *testing.T) {
 
 	node1 := ls.NewNode("id1")
 	node2 := ls.NewNode("id2")
-	node1.Connect(node2, "edgeLabel")
+	ls.Connect(node1, node2, "edgeLabel")
 	ctx.Set("node", ValueOf(node1))
 	check("node.firstReachable(n->(n.id=='id2')).length", ctx, ValueOf(1))
 

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package ls
 
 import (
@@ -117,10 +118,10 @@ func pathsMatch(targetPath, sourcePath []Node) bool {
 		if sn == 0 {
 			return false
 		}
-		if sourcePath[sn-1].HasType(SchemaTerm) || sourcePath[sn-1].HasType(OverlayTerm) {
+		if sourcePath[sn-1].GetTypes().Has(SchemaTerm) || sourcePath[sn-1].GetTypes().Has(OverlayTerm) {
 			return true
 		}
-		if targetPath[tn-1].HasType(SchemaTerm) || targetPath[tn-1].HasType(OverlayTerm) {
+		if targetPath[tn-1].GetTypes().Has(SchemaTerm) || targetPath[tn-1].GetTypes().Has(OverlayTerm) {
 			return false
 		}
 		if targetPath[tn-1].GetID() != sourcePath[sn-1].GetID() {

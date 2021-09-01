@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package ls
 
 // Composer interface represents term composition algorithm. During
@@ -40,15 +41,12 @@ const (
 
 // GetComposerForTerm returns a term composer
 func GetComposerForTerm(term string) Composer {
-	md := GetTermMetadata(term)
-	if md == nil {
-		return SetComposition
-	}
-	c, ok := md.(Composer)
+	info := GetTermInfo(term)
+	c, ok := info.Metadata.(Composer)
 	if ok {
 		return c
 	}
-	return SetComposition
+	return info.Composition
 }
 
 // Compose target and src based on the composition type

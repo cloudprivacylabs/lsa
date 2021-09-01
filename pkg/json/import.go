@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package json
 
 import (
@@ -144,10 +145,10 @@ func Import(entities []CompiledEntity) ([]ImportedEntity, error) {
 		imported.Layer = ls.NewLayer()
 		imported.Layer.SetLayerType(ls.SchemaTerm)
 		imported.Layer.SetID(ctx.currentEntity.ID)
-		imported.Layer.GetLayerInfoNode().Connect(imported.Layer.NewNode(ctx.currentEntity.ID), ls.LayerRootTerm)
+		ls.Connect(imported.Layer.GetLayerInfoNode(), imported.Layer.NewNode(ctx.currentEntity.ID), ls.LayerRootTerm)
 		nodes := s.object.itr(ctx.currentEntity.ID, nil, imported.Layer)
 		for _, node := range nodes {
-			imported.Layer.GetSchemaRootNode().Connect(node, ls.LayerTerms.Attributes)
+			ls.Connect(imported.Layer.GetSchemaRootNode(), node, ls.LayerTerms.Attributes)
 		}
 
 		ret = append(ret, imported)

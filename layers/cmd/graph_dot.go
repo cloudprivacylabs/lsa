@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package cmd
 
 import (
@@ -28,7 +29,7 @@ var graphDotCmd = &cobra.Command{
 	Short: "Write graph as a DOT file",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		g, err := ReadGraph(args[0])
+		g, err := ReadGraph(args)
 		if err != nil {
 			failErr(err)
 		}

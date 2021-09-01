@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package cmd
 
 import (
@@ -77,13 +78,11 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string) (*ls.L
 				if err != nil {
 					return nil, err
 				}
-				compiler := ls.Compiler{Resolver: func(x string) (string, error) {
-					if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
-						return manifest.ID, nil
-					}
-					return x, nil
-				},
+				compiler := ls.Compiler{
 					Loader: func(x string) (*ls.Layer, error) {
+						if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
+							x = manifest.ID
+						}
 						return repo.LoadAndCompose(x)
 					},
 				}
@@ -101,15 +100,7 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string) (*ls.L
 				if err != nil {
 					return nil, err
 				}
-				compiler := ls.Compiler{Resolver: func(x string) (string, error) {
-					if x == schemaName {
-						return x, nil
-					}
-					if x == layer.GetID() {
-						return x, nil
-					}
-					return "", fmt.Errorf("Not found")
-				},
+				compiler := ls.Compiler{
 					Loader: func(x string) (*ls.Layer, error) {
 						if x == schemaName || x == layer.GetID() {
 							return layer, nil

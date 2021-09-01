@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package dot
 
 import (
@@ -181,11 +182,11 @@ func (r Renderer) NodeRenderer(ID string, n digraph.Node, wr io.Writer) (bool, e
 	if r.NodeSelectorFunc != nil && !r.NodeSelectorFunc(node) {
 		return false, nil
 	}
-	if node.HasType(ls.AttributeTypes.Attribute) {
+	if node.GetTypes().Has(ls.AttributeTypes.Attribute) {
 		_, err := io.WriteString(wr, SchemaNodeRenderer(ID, node, &r.Options))
 		return true, err
 	}
-	if node.HasType(ls.DocumentNodeTerm) {
+	if node.GetTypes().Has(ls.DocumentNodeTerm) {
 		_, err := io.WriteString(wr, DocNodeRenderer(ID, node, &r.Options))
 		return true, err
 	}

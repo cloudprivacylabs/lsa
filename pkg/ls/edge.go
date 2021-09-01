@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package ls
 
 import (
@@ -27,7 +28,6 @@ type Edge interface {
 	// Clone returns a new edge that is a copy of this one but
 	// unconnected to any nodes
 	Clone() Edge
-	CloneWithLabel(string) Edge
 
 	GetProperties() map[string]*PropertyValue
 
@@ -83,13 +83,16 @@ func IsAttributeTreeEdge(edge Edge) bool {
 
 // Clone returns a copy of the schema edge
 func (e *edge) Clone() Edge {
-	return e.CloneWithLabel(e.GetLabelStr())
+	return CloneWithLabel(e, e.GetLabelStr())
 }
 
 // CloneWithLabel returns a copy of the schema edge with a new label
-func (e *edge) CloneWithLabel(label string) Edge {
+func CloneWithLabel(e Edge, label string) Edge {
 	ret := NewEdge(label).(*edge)
-	ret.properties = CopyPropertyMap(e.properties)
+	p := ret.GetProperties()
+	for k, v := range e.GetProperties() {
+		p[k] = v.Clone()
+	}
 	return ret
 }
 

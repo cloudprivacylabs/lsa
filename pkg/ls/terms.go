@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package ls
 
 const LS = "https://lschema.org/"
@@ -35,7 +36,7 @@ var (
 	AttributeNameTerm = NewTerm(LS+"attributeName", false, false, ErrorComposition, nil)
 
 	// AttributeIndexTerm represents the index of an array element
-	AttributeIndexTerm = NewTerm(LS+"attributeIndex", false, false, ErrorComposition, nil)
+	AttributeIndexTerm = NewTerm(LS+"attributeIndex", false, false, NoComposition, nil)
 
 	// AttributeValueTerm represents the value of an attribute
 	AttributeValueTerm = NewTerm(LS+"attributeValue", false, false, ErrorComposition, nil)

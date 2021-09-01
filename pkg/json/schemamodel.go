@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package json
 
 import (
@@ -88,16 +89,16 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 	}
 
 	if len(attr.reference) > 0 {
-		newNode.AddTypes(ls.AttributeTypes.Reference)
+		newNode.GetTypes().Add(ls.AttributeTypes.Reference)
 		newNode.GetProperties()[ls.LayerTerms.Reference] = ls.StringPropertyValue(attr.reference)
 		return newNode
 	}
 
 	if attr.object != nil {
-		newNode.AddTypes(ls.AttributeTypes.Object)
+		newNode.GetTypes().Add(ls.AttributeTypes.Object)
 		attrs := attr.object.itr(entityId, name, layer)
 		for _, x := range attrs {
-			newNode.Connect(x, ls.LayerTerms.AttributeList)
+			ls.Connect(newNode, x, ls.LayerTerms.AttributeList)
 		}
 		if len(attr.object.required) > 0 {
 			newNode.GetProperties()[validators.RequiredTerm] = ls.StringSlicePropertyValue(attr.object.required)
@@ -105,9 +106,9 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 		return newNode
 	}
 	if attr.array != nil {
-		newNode.AddTypes(ls.AttributeTypes.Array)
+		newNode.GetTypes().Add(ls.AttributeTypes.Array)
 		n := attr.array.itr(entityId, name, layer)
-		newNode.Connect(n, ls.LayerTerms.ArrayItems)
+		ls.Connect(newNode, n, ls.LayerTerms.ArrayItems)
 		return newNode
 	}
 
@@ -121,19 +122,19 @@ func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.
 		return elements
 	}
 	if len(attr.oneOf) > 0 {
-		newNode.AddTypes(ls.AttributeTypes.Polymorphic)
+		newNode.GetTypes().Add(ls.AttributeTypes.Polymorphic)
 		for _, x := range buildChoices(attr.oneOf) {
-			newNode.Connect(x, ls.LayerTerms.OneOf)
+			ls.Connect(newNode, x, ls.LayerTerms.OneOf)
 		}
 		return newNode
 	}
 	if len(attr.allOf) > 0 {
-		newNode.AddTypes(ls.AttributeTypes.Composite)
+		newNode.GetTypes().Add(ls.AttributeTypes.Composite)
 		for _, x := range buildChoices(attr.oneOf) {
-			newNode.Connect(x, ls.LayerTerms.AllOf)
+			ls.Connect(newNode, x, ls.LayerTerms.AllOf)
 		}
 		return newNode
 	}
-	newNode.AddTypes(ls.AttributeTypes.Value)
+	newNode.GetTypes().Add(ls.AttributeTypes.Value)
 	return newNode
 }

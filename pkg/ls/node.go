@@ -11,30 +11,82 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package ls
 
 import (
+	"fmt"
+	"sort"
+
 	"github.com/bserdar/digraph"
 )
+
+// Types is a set of strings for representing node types
+type Types struct {
+	slice []string
+}
+
+// Add adds new types. The result is the set-union of the existing
+// types and the given types
+func (types *Types) Add(t ...string) {
+	for i := range t {
+		x := knownTerm(t[i])
+		if !types.Has(x) {
+			types.slice = append(types.slice, x)
+		}
+	}
+}
+
+// AddTypes adds all the types into this one
+func (types *Types) AddTypes(t ...*Types) {
+	set := make(map[string]struct{})
+	for _, k := range types.slice {
+		set[k] = struct{}{}
+	}
+	for _, tt := range t {
+		for _, k := range tt.slice {
+			if _, exists := set[k]; !exists {
+				types.slice = append(types.slice, k)
+				set[k] = struct{}{}
+			}
+		}
+	}
+}
+
+func (types Types) Slice() []string { return types.slice }
+func (types Types) Len() int        { return len(types.slice) }
+
+// Remove removes the given set of types from the node.
+func (types *Types) Remove(t ...string) {
+	types.slice = StringSetSubtract(types.slice, t)
+}
+
+// Set sets the types
+func (types *Types) Set(t ...string) {
+	types.slice = make([]string, 0, len(t))
+	types.Add(t...)
+}
+
+// Has returns true if the set has the given type
+func (types Types) Has(t string) bool {
+	for _, x := range types.slice {
+		if t == x {
+			return true
+		}
+	}
+	return false
+}
+
+func (types Types) String() string {
+	return fmt.Sprint(types.slice)
+}
 
 // Node is the node type used for schema layer graphs
 type Node interface {
 	digraph.Node
 
 	// Return the types of the node
-	GetTypes() []string
-
-	// Returns true if the node has the given type
-	HasType(string) bool
-
-	// Add the given types to the node type
-	AddTypes(...string)
-
-	// Remove the given types from the node
-	RemoveTypes(...string)
-
-	// Sets the types of the node to the given types
-	SetTypes(...string)
+	GetTypes() *Types
 
 	// Return node ID
 	GetID() string
@@ -45,9 +97,6 @@ type Node interface {
 	// Clone returns a new node that is a copy of this one, but the
 	// returned node is not connected
 	Clone() Node
-
-	// Connect this node to the target layer node with the given edge label
-	Connect(Node, string) Edge
 
 	// Value of the document node, nil if the node is not a document node
 	GetValue() interface{}
@@ -67,7 +116,6 @@ type Node interface {
 	// unspecified. If the node is cloned with compiled data map, the
 	// new node will get a shallow copy of the compiled data
 	GetCompiledDataMap() map[interface{}]interface{}
-	GetFilteredValue() interface{}
 }
 
 // node is either an attribute node, document node, or an annotation
@@ -79,7 +127,7 @@ type node struct {
 	digraph.NodeHeader
 
 	// The types of the schema node
-	types []string
+	types Types
 
 	// value for document nodes
 	value interface{}
@@ -111,7 +159,7 @@ func (a *node) SetIndex(index int) {
 }
 
 func IsDocumentNode(a Node) bool {
-	return a.HasType(DocumentNodeTerm)
+	return a.GetTypes().Has(DocumentNodeTerm)
 }
 
 // NewNode returns a new node with the given types
@@ -120,7 +168,7 @@ func NewNode(ID string, types ...string) Node {
 		properties: make(map[string]*PropertyValue),
 		compiled:   make(map[interface{}]interface{}),
 	}
-	ret.AddTypes(types...)
+	ret.types.Add(types...)
 	ret.SetLabel(ID)
 	return &ret
 }
@@ -140,63 +188,27 @@ func (a *node) SetID(ID string) {
 }
 
 // GetTypes returns the types of the node
-func (a *node) GetTypes() []string {
-	if a == nil {
-		return nil
-	}
-	return a.types
+func (a *node) GetTypes() *Types {
+	return &a.types
 }
 
-// AddTypes adds new types to the schema node. The result is the
-// set-union of the existing types and the given types
-func (a *node) AddTypes(t ...string) {
-	for i := range t {
-		t[i] = knownTerm(t[i])
-	}
-	a.types = StringSetUnion(a.types, t)
-}
-
-// RemoveTypes removes the given set of types from the node.
-func (a *node) RemoveTypes(t ...string) {
-	a.types = StringSetSubtract(a.types, t)
-}
-
-// SetTypes sets the types of the node
-func (a *node) SetTypes(t ...string) {
-	a.types = make([]string, 0, len(t))
-	a.AddTypes(t...)
-}
-
-// HasType returns true if the node has the given type
-func (a *node) HasType(t string) bool {
-	if a == nil {
-		return false
-	}
-	for _, x := range a.types {
-		if t == x {
-			return true
-		}
-	}
-	return false
-}
-
-// Connect this node with the target node using an edge with the given label
-func (a *node) Connect(target Node, edgeLabel string) Edge {
+// Connect source node with the target node using an edge with the given label
+func Connect(source, target Node, edgeLabel string) Edge {
 	edge := NewEdge(edgeLabel)
-	digraph.Connect(a, target, edge)
+	digraph.Connect(source, target, edge)
 	return edge
 }
 
 // IsAttributeNode returns true if the node has Attribute type
 func IsAttributeNode(a Node) bool {
-	return a != nil && a.HasType(AttributeTypes.Attribute)
+	return a.GetTypes().Has(AttributeTypes.Attribute)
 }
 
 // Clone returns a copy of the node data. The returned node has the
 // same label, types, and properties. The Compiled map is directly
 // assigned to the new node
 func (a *node) Clone() Node {
-	ret := NewNode(a.GetID(), a.GetTypes()...).(*node)
+	ret := NewNode(a.GetID(), a.GetTypes().Slice()...).(*node)
 	ret.value = a.value
 	ret.properties = CopyPropertyMap(a.properties)
 	ret.compiled = a.compiled
@@ -215,10 +227,14 @@ func GetLayerEdgeBetweenNodes(source, target Node) Edge {
 	return nil
 }
 
-// GetFilteredValue returns the field value processed by the schema
+// GetNodeFilteredValue returns the field value processed by the schema
 // value filters, and then the node value filters
-func (node *node) GetFilteredValue() interface{} {
-	schemaNode, _ := node.Next(InstanceOfTerm).(Node)
+func GetNodeFilteredValue(node Node) interface{} {
+	var schemaNode Node
+	iedges := node.GetAllOutgoingEdgesWithLabel(InstanceOfTerm).All()
+	if len(iedges) == 1 {
+		schemaNode = iedges[0].GetTo().(Node)
+	}
 	return GetFilteredValue(schemaNode, node)
 }
 
@@ -239,6 +255,11 @@ func IsDocumentEdge(edge digraph.Edge) bool {
 		return true
 	}
 	return false
+}
+
+// SortNodes sorts nodes by their node index
+func SortNodes(nodes []Node) {
+	sort.Slice(nodes, func(i, j int) bool { return nodes[i].GetIndex() < nodes[j].GetIndex() })
 }
 
 type EdgeFuncResult int
@@ -351,6 +372,17 @@ func InstanceOf(node Node) []Node {
 		ret = append(ret, x)
 	}
 	return ret
+}
+
+// CombineNodeTypes returns a combination of the types of all the given nodes
+func CombineNodeTypes(nodes []Node) *Types {
+	ret := Types{}
+	t := make([]*Types, 0, len(nodes))
+	for _, n := range nodes {
+		t = append(t, n.GetTypes())
+	}
+	ret.AddTypes(t...)
+	return &ret
 }
 
 // NodeSet is a set of nodes

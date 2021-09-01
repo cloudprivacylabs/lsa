@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package ls
 
 import (
@@ -57,7 +58,7 @@ func (tc composeTestCase) Run(t *testing.T) {
 }
 
 func TestCompose(t *testing.T) {
-	RunTestsFromFile(t, "testdata/composecases.json", func(in json.RawMessage) (testCase, error) {
+	RunTestsFromFile(t, "testdata/composecases.json", func(in json.RawMessage) (TestCase, error) {
 		var c composeTestCase
 		err := json.Unmarshal(in, &c)
 		return c, err

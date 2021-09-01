@@ -11,16 +11,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package json
 
-import (
-	"encoding/json"
-	"testing"
+// import (
+// 	"encoding/json"
+// 	"testing"
 
-	"github.com/piprate/json-gold/ld"
+// 	"github.com/piprate/json-gold/ld"
 
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
-)
+// 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+// )
 
 // func expand(t *testing.T, in string) []interface{} {
 // 	proc := ld.NewJsonLdProcessor()

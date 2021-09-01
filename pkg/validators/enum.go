@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"fmt"
 	"reflect"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -30,7 +31,7 @@ func (validator EnumValidator) ValidateValue(value interface{}, options []interf
 			return nil
 		}
 	}
-	return ls.ErrValidation{Validator: "EnumTerm", Msg: "None of the options match"}
+	return ls.ErrValidation{Validator: "EnumTerm", Msg: "None of the options match", Value: fmt.Sprint(value)}
 }
 
 // Validate validates the node value if it is non-nil

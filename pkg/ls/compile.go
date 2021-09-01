@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package ls
 
 import (
@@ -20,10 +21,7 @@ import (
 )
 
 type Compiler struct {
-	// Resolver resolves an ID and returns a strong reference. If
-	// resolver func is nil, references are directly sent to loader func
-	Resolver func(string) (string, error)
-	// Loader loads a layer using a strong reference. This cannot be nil
+	// Loader loads a layer using a strong reference.
 	Loader func(string) (*Layer, error)
 }
 
@@ -41,12 +39,6 @@ func (c *compilerContext) blankNodeNamer(node Node) {
 
 func (compiler Compiler) loadSchema(ctx *compilerContext, ref string) (*Layer, error) {
 	var err error
-	if compiler.Resolver != nil {
-		ref, err = compiler.Resolver(ref)
-		if err != nil {
-			return nil, err
-		}
-	}
 	layer := ctx.loadedSchemas[ref]
 	if layer != nil {
 		return layer, nil
@@ -88,13 +80,6 @@ func (compiler Compiler) CompileSchema(schema *Layer) (*Layer, error) {
 
 func (compiler Compiler) compile(ctx *compilerContext, ref string, topLevel bool) (Node, error) {
 	var err error
-	// Resolve weak references
-	if compiler.Resolver != nil {
-		ref, err = compiler.Resolver(ref)
-		if err != nil {
-			return nil, err
-		}
-	}
 	// If compiled already, return the compiled node
 	if c := ctx.compiled[ref]; c != nil {
 		return c, nil
@@ -177,7 +162,7 @@ func (compiler Compiler) resolveReferences(ctx *compilerContext, root Node) erro
 	// Collect all reference nodes
 	references := make([]Node, 0)
 	ForEachAttributeNode(root, func(n Node, _ []Node) bool {
-		if n.HasType(AttributeTypes.Reference) {
+		if n.GetTypes().Has(AttributeTypes.Reference) {
 			references = append(references, n)
 		}
 		return true
@@ -205,8 +190,8 @@ func (compiler Compiler) resolveReference(ctx *compilerContext, node Node) error
 		}
 	}
 	// This is no longer a reference node
-	node.RemoveTypes(AttributeTypes.Reference)
-	node.AddTypes(compiled.GetTypes()...)
+	node.GetTypes().Remove(AttributeTypes.Reference)
+	node.GetTypes().Add(compiled.GetTypes().Slice()...)
 	// Compose the properties of the compiled root node with the referenced node
 	if err := ComposeProperties(properties, node.GetProperties()); err != nil {
 		return err
@@ -224,7 +209,7 @@ func (compiler Compiler) resolveCompositions(root Node) error {
 	completed := map[Node]struct{}{}
 	var err error
 	ForEachAttributeNode(root, func(n Node, _ []Node) bool {
-		if n.HasType(AttributeTypes.Composite) {
+		if n.GetTypes().Has(AttributeTypes.Composite) {
 			if _, processed := completed[n]; !processed {
 				if x := compiler.resolveComposition(n, completed); x != nil {
 					err = x
@@ -251,7 +236,7 @@ func (compiler Compiler) resolveComposition(compositeNode Node, completed map[No
 	top:
 		component := allOfEdge.GetTo().(Node)
 		switch {
-		case component.HasType(AttributeTypes.Object):
+		case component.GetTypes().Has(AttributeTypes.Object):
 			//  Input:
 			//    compositeNode ---> component --> attributes
 			//  Output:
@@ -270,19 +255,19 @@ func (compiler Compiler) resolveComposition(compositeNode Node, completed map[No
 				return err
 			}
 			// Copy all types
-			compositeNode.AddTypes(component.GetTypes()...)
+			compositeNode.GetTypes().Add(component.GetTypes().Slice()...)
 			// Copy compiled items
 			copyCompiled(compositeNode.GetCompiledDataMap(), component.GetCompiledDataMap())
 
-		case component.HasType(AttributeTypes.Value) ||
-			component.HasType(AttributeTypes.Array) ||
-			component.HasType(AttributeTypes.Polymorphic):
+		case component.GetTypes().Has(AttributeTypes.Value) ||
+			component.GetTypes().Has(AttributeTypes.Array) ||
+			component.GetTypes().Has(AttributeTypes.Polymorphic):
 			// This node becomes an attribute of the main node.
-			newEdge := allOfEdge.CloneWithLabel(LayerTerms.AttributeList)
+			newEdge := CloneWithLabel(allOfEdge, LayerTerms.AttributeList)
 			allOfEdge.Disconnect()
 			digraph.Connect(compositeNode, component, newEdge)
 
-		case component.HasType(AttributeTypes.Composite):
+		case component.GetTypes().Has(AttributeTypes.Composite):
 			if err := compiler.resolveComposition(component, completed); err != nil {
 				return err
 			}
@@ -292,7 +277,7 @@ func (compiler Compiler) resolveComposition(compositeNode Node, completed map[No
 		}
 	}
 	// Convert the node to an object
-	compositeNode.RemoveTypes(AttributeTypes.Composite)
-	compositeNode.AddTypes(AttributeTypes.Object)
+	compositeNode.GetTypes().Remove(AttributeTypes.Composite)
+	compositeNode.GetTypes().Add(AttributeTypes.Object)
 	return nil
 }

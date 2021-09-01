@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package ls
 
 import (
@@ -83,7 +84,7 @@ func UnmarshalLayer(in interface{}) (*Layer, error) {
 	targetType := GetNodeID(rootNode.node[TargetType])
 	target := NewLayer()
 	rootNode.graphNode = target.GetLayerInfoNode()
-	rootNode.graphNode.SetTypes(rootNode.types...)
+	rootNode.graphNode.GetTypes().Set(rootNode.types...)
 	rootNode.graphNode.SetID(rootNode.id)
 	if len(rootNode.graphNode.GetID()) == 0 || rootNode.graphNode.GetID() == "./" || strings.HasPrefix(rootNode.graphNode.GetID(), "_") {
 		return nil, MakeErrInvalidInput("No layer @id")
@@ -94,7 +95,7 @@ func UnmarshalLayer(in interface{}) (*Layer, error) {
 		} else {
 			layerRoot.graphNode = target.NewNode("")
 		}
-		target.GetLayerInfoNode().Connect(layerRoot.graphNode, LayerRootTerm)
+		Connect(target.GetLayerInfoNode(), layerRoot.graphNode, LayerRootTerm)
 	}
 
 	for _, node := range inputNodes {
@@ -118,7 +119,7 @@ func UnmarshalLayer(in interface{}) (*Layer, error) {
 	// Deal with annotations
 	for _, node := range inputNodes {
 		if node.graphNode != nil {
-			if !node.graphNode.HasType(AttributeTypes.Attribute) {
+			if !node.graphNode.GetTypes().Has(AttributeTypes.Attribute) {
 				continue
 			}
 		}
@@ -137,7 +138,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 	}
 	inode.processed = true
 	attribute := inode.graphNode
-	attribute.AddTypes(AttributeTypes.Attribute)
+	attribute.GetTypes().Add(AttributeTypes.Attribute)
 	// Process the nested attribute nodes
 	for k, val := range inode.node {
 		switch k {
@@ -146,12 +147,12 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 			if arr, ok := val.([]interface{}); ok {
 				for _, t := range arr {
 					if str, ok := t.(string); ok {
-						attribute.AddTypes(str)
+						attribute.GetTypes().Add(str)
 					}
 				}
 			}
 		case LayerTerms.Attributes, LayerTerms.AttributeList:
-			attribute.AddTypes(AttributeTypes.Object)
+			attribute.GetTypes().Add(AttributeTypes.Object)
 			// m must be an array of attributes. It can be under a @list
 			attrArray, ok := val.([]interface{})
 			if !ok {
@@ -182,7 +183,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 			}
 
 		case LayerTerms.Reference:
-			attribute.AddTypes(AttributeTypes.Reference)
+			attribute.GetTypes().Add(AttributeTypes.Reference)
 			// There can be at most one reference
 			oid := GetNodeID(val)
 			if len(oid) == 0 {
@@ -191,7 +192,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 			attribute.GetProperties()[LayerTerms.Reference] = StringPropertyValue(oid)
 
 		case LayerTerms.ArrayItems:
-			attribute.AddTypes(AttributeTypes.Array)
+			attribute.GetTypes().Add(AttributeTypes.Array)
 			// m must be an array of 1
 			itemsArr, _ := val.([]interface{})
 			switch len(itemsArr) {
@@ -212,9 +213,9 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 
 		case LayerTerms.AllOf, LayerTerms.OneOf:
 			if k == LayerTerms.AllOf {
-				attribute.AddTypes(AttributeTypes.Composite)
+				attribute.GetTypes().Add(AttributeTypes.Composite)
 			} else {
-				attribute.AddTypes(AttributeTypes.Polymorphic)
+				attribute.GetTypes().Add(AttributeTypes.Polymorphic)
 			}
 			// m must be a list
 			elements := GetLDListElements(val)
@@ -236,10 +237,10 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 		}
 	}
 
-	t := FilterAttributeTypes(attribute.GetTypes())
+	t := FilterAttributeTypes(attribute.GetTypes().Slice())
 	switch len(t) {
 	case 0:
-		attribute.AddTypes(AttributeTypes.Value)
+		attribute.GetTypes().Add(AttributeTypes.Value)
 	case 1:
 	default:
 		return ErrMultipleTypes(inode.id)
@@ -317,8 +318,8 @@ func marshalNode(node Node) interface{} {
 		m["@id"] = s
 	}
 	t := node.GetTypes()
-	if len(t) > 0 {
-		m["@type"] = t
+	if t.Len() > 0 {
+		m["@type"] = t.Slice()
 	}
 
 	for k, v := range node.GetProperties() {

@@ -11,7 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package project
+
+package transform
 
 import (
 	"encoding/json"
@@ -50,14 +51,14 @@ func (tc testCase) Run(t *testing.T) {
 		t.Errorf(" Test case: %s No root node", tc.Name)
 		return
 	}
-	projector := Projector{TargetSchema: targetLayer}
-	result, err := projector.Project(rootNode[0].(ls.Node))
+	reshaper := Reshaper{TargetSchema: targetLayer}
+	result, err := reshaper.Reshape(rootNode[0].(ls.Node))
 	if err != nil {
-		t.Errorf("Test case: %s Projection error: %v", tc.Name, err)
+		t.Errorf("Test case: %s Reshaper error: %v", tc.Name, err)
 		return
 	}
 	if result == nil {
-		t.Errorf("Test case: %s nil projection", tc.Name)
+		t.Errorf("Test case: %s nil reshaping", tc.Name)
 		return
 	}
 	result.SetLabel("root")
@@ -79,7 +80,7 @@ func (tc testCase) Run(t *testing.T) {
 	}
 }
 
-func TestBasicProjection(t *testing.T) {
+func TestBasicReshape(t *testing.T) {
 	run := func(in json.RawMessage) (ls.TestCase, error) {
 		var c testCase
 		err := json.Unmarshal(in, &c)

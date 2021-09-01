@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package ls
 
 import (
@@ -37,13 +38,13 @@ func (tc marshalTestCase) Run(t *testing.T) {
 	marshaled := MarshalLayer(layer)
 	if err := DeepEqual(ToMap(marshaled), ToMap(tc.Marshaled)); err != nil {
 		expected, _ := json.MarshalIndent(ToMap(tc.Marshaled), "", "  ")
-		got, _ := json.MarshalIndent(toMap(marshaled), "", "  ")
+		got, _ := json.MarshalIndent(ToMap(marshaled), "", "  ")
 		t.Errorf("%v %s: Expected:\n%s\nGot:\n%s\n", err, tc.Name, string(expected), string(got))
 	}
 }
 
 func TestMarshaling(t *testing.T) {
-	RunTestsFromFile(t, "testdata/marshalcases.json", func(in json.RawMessage) (testCase, error) {
+	RunTestsFromFile(t, "testdata/marshalcases.json", func(in json.RawMessage) (TestCase, error) {
 		var c marshalTestCase
 		err := json.Unmarshal(in, &c)
 		return c, err

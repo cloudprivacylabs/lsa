@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package ls
 
 import (
@@ -79,11 +80,12 @@ func (e ErrValidatorCompile) Unwrap() error { return e.Err }
 type ErrValidation struct {
 	Validator string
 	Msg       string
+	Value     string
 	Err       error
 }
 
 func (e ErrValidation) Error() string {
-	return fmt.Sprintf("Validation error: %s %s", e.Validator, e.Msg)
+	return fmt.Sprintf("Validation error: %s %s %s", e.Validator, e.Msg, e.Value)
 }
 
 func (e ErrValidation) Unwrap() error {

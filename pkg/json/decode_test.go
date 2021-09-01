@@ -11,16 +11,36 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package presentation
 
-// IDBase is https://lschema.org/presentation/"
-const IDBase = ls.LS + "presentation/"
+package json
 
-// Presentation related terms
-var (
-	LabelTerm       = ls.NewTerm(IDBase+"label", false, false, ls.OverrideComposition, nil)
-	ChoiceTerm      = ls.NewTerm(IDBase+"choice", false, true, ls.OverrideComposition, nil)
-	ChoiceKeyTerm   = ls.NewTerm(IDBase+"choice#key", false, false, ls.OverrideComposition, nil)
-	ChoiceLabelTerm = ls.NewTerm(IDBase+"choice#label", false, false, ls.OverrideComposition, nil)
-	HelpTerm        = ls.NewTerm(IDBase+"help", false, false, ls.OverrideComposition, nil)
+import (
+	"bytes"
+	"encoding/json"
+	"testing"
 )
+
+func TestDecode(t *testing.T) {
+	rd := bytes.NewReader([]byte(`{
+    "firstName": "John",
+    "lastName": "Doe",
+    "extraField": true,
+    "contact": [
+        {
+            "type": "cell",
+            "value": "123-123123"
+        },
+        {
+            "type": "work",
+            "value": "234-234234"
+        }
+    ]
+}`))
+	dec := json.NewDecoder(rd)
+	dec.UseNumber()
+	out, err := Decode(dec)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Logf("%+v", out)
+}

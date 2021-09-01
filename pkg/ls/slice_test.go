@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package ls
 
 import (
@@ -44,7 +45,7 @@ func (tc sliceTestCase) Run(t *testing.T) {
 }
 
 func TestSlice(t *testing.T) {
-	RunTestsFromFile(t, "testdata/slicecases.json", func(in json.RawMessage) (testCase, error) {
+	RunTestsFromFile(t, "testdata/slicecases.json", func(in json.RawMessage) (TestCase, error) {
 		var c sliceTestCase
 		err := json.Unmarshal(in, &c)
 		return c, err

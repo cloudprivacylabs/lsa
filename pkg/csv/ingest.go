@@ -1,16 +1,17 @@
 // Copyright 2021 Cloud Privacy Labs, LLC
-
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package csv
 
 import (
@@ -43,7 +44,7 @@ func (ingester Ingester) getID(columnIndex int, columnData string) string {
 	return fmt.Sprintf("col_%d", columnIndex)
 }
 
-func (ingester Ingester) Ingest(data []string, ID string) error {
+func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 	rootNode := ls.NewNode(ID, ls.DocumentNodeTerm)
 	ingester.Target.AddNode(rootNode)
 	for columnIndex, columnData := range data {
@@ -72,17 +73,17 @@ func (ingester Ingester) Ingest(data []string, ID string) error {
 			}
 		}
 		newNode := ls.NewNode(ingester.getID(columnIndex, columnData), ls.DocumentNodeTerm)
-		rootNode.Connect(newNode, ls.DataEdgeTerms.ObjectAttributes)
+		ls.Connect(rootNode, newNode, ls.DataEdgeTerms.ObjectAttributes)
 		newNode.SetValue(columnData)
 		if schemaNode != nil && ingester.UseInstanceOfEdges {
-			newNode.Connect(schemaNode, ls.InstanceOfTerm)
+			ls.Connect(newNode, schemaNode, ls.InstanceOfTerm)
 		}
 		if len(columnName) > 0 {
 			newNode.GetProperties()[ColumnNameTerm] = ls.StringPropertyValue(columnName)
 		}
 		newNode.GetProperties()[ColumnIndexTerm] = ls.StringPropertyValue(fmt.Sprint(columnIndex))
 	}
-	return nil
+	return rootNode, nil
 }
 
 // // IngestionProfile defines how CSV columns are mapped to data by

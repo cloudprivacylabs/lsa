@@ -12,33 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cmd
+package json
 
 import (
-	"encoding/json"
-
-	"github.com/bserdar/digraph"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/spf13/cobra"
 )
 
-func init() {
-	rootCmd.AddCommand(graphCmd)
-}
+const JSON = "https://json.org#"
 
-var graphCmd = &cobra.Command{
-	Use:   "graph",
-	Short: "Work with a graph",
-}
-
-func ReadGraph(gfile []string) (*digraph.Graph, error) {
-	data, err := readFileOrStdin(gfile)
-	if err != nil {
-		return nil, err
-	}
-	var v interface{}
-	if err := json.Unmarshal(data, &v); err != nil {
-		return nil, err
-	}
-	return ls.UnmarshalGraph(v)
-}
+var StringTypeTerm = ls.NewTerm(JSON+"string", false, false, ls.OverrideComposition, nil)
+var NumberTypeTerm = ls.NewTerm(JSON+"number", false, false, ls.OverrideComposition, nil)
+var IntegerTypeTerm = ls.NewTerm(JSON+"integer", false, false, ls.OverrideComposition, nil)
+var BooleanTypeTerm = ls.NewTerm(JSON+"boolean", false, false, ls.OverrideComposition, nil)
+var ObjectTypeTerm = ls.NewTerm(JSON+"object", false, false, ls.OverrideComposition, nil)
+var ArrayTypeTerm = ls.NewTerm(JSON+"array", false, false, ls.OverrideComposition, nil)
