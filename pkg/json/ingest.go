@@ -168,7 +168,7 @@ func (ingester *Ingester) ingest(target *digraph.Graph, input OM, path []interfa
 func (ingester *Ingester) ingestPolymorphicNode(target *digraph.Graph, input OM, path []interface{}, schemaNode ls.Node) (*addedNode, error) {
 	// Polymorphic node. Try each option
 	var newChild *addedNode
-	for nodes := schemaNode.GetAllOutgoingEdgesWithLabel(ls.LayerTerms.OneOf).Targets(); nodes.HasNext(); {
+	for nodes := schemaNode.OutWith(ls.LayerTerms.OneOf).Targets(); nodes.HasNext(); {
 		optionNode := nodes.Next().(ls.Node)
 		childNode, err := ingester.ingest(target, input, path, optionNode)
 		if err == nil {
@@ -204,12 +204,12 @@ func (ingester *Ingester) ingestObject(target *digraph.Graph, input Object, path
 			nextNodes[key] = node
 			return nil
 		}
-		for nodes := schemaNode.GetAllOutgoingEdgesWithLabel(ls.LayerTerms.Attributes).Targets(); nodes.HasNext(); {
+		for nodes := schemaNode.OutWith(ls.LayerTerms.Attributes).Targets(); nodes.HasNext(); {
 			if err := addNextNode(nodes.Next().(ls.Node)); err != nil {
 				return nil, err
 			}
 		}
-		for nodes := schemaNode.GetAllOutgoingEdgesWithLabel(ls.LayerTerms.AttributeList).Targets(); nodes.HasNext(); {
+		for nodes := schemaNode.OutWith(ls.LayerTerms.AttributeList).Targets(); nodes.HasNext(); {
 			if err := addNextNode(nodes.Next().(ls.Node)); err != nil {
 				return nil, err
 			}
@@ -238,9 +238,9 @@ func (ingester *Ingester) ingestArray(target *digraph.Graph, input Array, path [
 		if !schemaNode.GetTypes().Has(ls.AttributeTypes.Array) {
 			return nil, ErrSchemaValidation("A JSON array is not expected here")
 		}
-		n := schemaNode.Next(ls.LayerTerms.ArrayItems)
-		if n != nil {
-			elements = n.(ls.Node)
+		n := schemaNode.NextWith(ls.LayerTerms.ArrayItems)
+		if len(n) == 1 {
+			elements = n[0].(ls.Node)
 		}
 	}
 	ret := &addedNode{node: ingester.newNode(ingester.generateID(path, schemaNode)),

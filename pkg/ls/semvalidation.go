@@ -45,7 +45,11 @@ func GetAttributeValidator(term string) Validator {
 // ValidateDocumentNode runs the validators for the document node
 func ValidateDocumentNode(node Node) error {
 	// Get the schema
-	schemaNode, _ := node.Next(InstanceOfTerm).(Node)
+	var schemaNode Node
+	schemaNodes := node.NextWith(InstanceOfTerm)
+	if len(schemaNodes) == 1 {
+		schemaNode = schemaNodes[0].(Node)
+	}
 	return ValidateDocumentNodeBySchema(node, schemaNode)
 }
 

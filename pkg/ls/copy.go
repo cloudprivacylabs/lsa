@@ -30,7 +30,7 @@ func Copy(in, target *digraph.Graph, nodeSelector func(Node) bool, edgeSelector 
 		}
 	}
 	for src, dest := range nodeMap {
-		edges := src.GetAllOutgoingEdges()
+		edges := src.Out()
 		for edges.HasNext() {
 			edge := edges.Next().(Edge)
 			newTo := nodeMap[edge.GetTo().(Node)]

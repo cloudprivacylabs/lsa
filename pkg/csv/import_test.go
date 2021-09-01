@@ -18,6 +18,8 @@ import (
 	"encoding/csv"
 	"os"
 	"testing"
+
+	"github.com/bserdar/digraph"
 )
 
 func TestCSVImport(t *testing.T) {
@@ -34,21 +36,21 @@ func TestCSVImport(t *testing.T) {
 		return
 	}
 
-	idSpec := TermSpec{TermCol: 1}
+	idSpec := AttributeSpec{TermCol: 1}
 	colSpecs := []TermSpec{
 		{
 			Term:    "https://lschema.org/validation#format",
 			TermCol: 5,
 		},
 	}
-	layer, err := Import(idSpec, colSpecs, records[3:])
+	layer, err := Import(idSpec, colSpecs, 3, 0, records)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
 	for _, s := range []string{"photo", "givenName", "middleName", "familyName", "birthDate", "linkedVaccineCertificate", "recipient", "disease", "vaccineDescription", "vaccineType", "medicinalProductName", "cvxCode", "marketingAuthorizationHolder", "doseNumber", "dosesPerCycle", "dateOfVaccination", "stateOfVaccination", "countryOfVaccination", "certificateIssuer", "certificateNumber"} {
-		nodes := layer.AllNodesWithLabel(s).All()
+		nodes := layer.GetAllNodes().Select(digraph.NodesByLabelPredicate(s)).All()
 		if len(nodes) != 1 {
 			t.Errorf("Cannot find %s", s)
 		}

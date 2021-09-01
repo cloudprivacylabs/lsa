@@ -49,8 +49,8 @@ var reshapeCmd = &cobra.Command{
 		}
 
 		reshaper := transform.Reshaper{TargetSchema: layer}
-		nix := g.GetNodeIndex()
-		sources := nix.Sources()
+		nix := g.GetIndex()
+		sources := digraph.Sources(nix)
 		if len(sources) != 1 {
 			fail("Cannot determine the root of the graph")
 		}

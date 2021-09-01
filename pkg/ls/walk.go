@@ -55,7 +55,7 @@ func (w *walkState) next(set NodeSet) NodeSet {
 	ret := NewNodeSet()
 	edges := make([]Edge, 0)
 	for _, node := range set.Slice() {
-		for outgoing := node.GetAllOutgoingEdges(); outgoing.HasNext(); {
+		for outgoing := node.Out(); outgoing.HasNext(); {
 			edge := outgoing.Next().(Edge)
 			if w.walk.steps[w.at].edgePredicate(edge) {
 				edges = append(edges, edge)

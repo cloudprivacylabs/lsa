@@ -195,7 +195,7 @@ func (rd *LDMarshaler) Marshal(input *digraph.Graph) interface{} {
 
 	// Process outgoing edges
 	for gnode, onode := range nodeIdMap {
-		for edges := gnode.GetAllOutgoingEdges(); edges.HasNext(); {
+		for edges := gnode.Out(); edges.HasNext(); {
 			edge := edges.Next().(Edge)
 			var labelStr string
 			if rd.EdgeLabelGeneratorFunc != nil {

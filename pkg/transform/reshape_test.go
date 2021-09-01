@@ -45,7 +45,7 @@ func (tc testCase) Run(t *testing.T) {
 		t.Errorf("Test case: %s Cannot unmarshal source graph: %v", tc.Name, err)
 		return
 	}
-	nix := sourceGraph.GetNodeIndex()
+	nix := sourceGraph.GetIndex()
 	rootNode := nix.NodesByLabel(tc.RootID).All()
 	if len(rootNode) != 1 {
 		t.Errorf(" Test case: %s No root node", tc.Name)
@@ -73,7 +73,7 @@ func (tc testCase) Run(t *testing.T) {
 	}
 	resultMarshaled := ldMarshaler.Marshal(resultGraph)
 	t.Logf("Projected: %v", ls.ToMap(resultMarshaled))
-	eq := digraph.CheckIsomorphism(resultGraph.GetNodeIndex(), expectedGraph.GetNodeIndex(), func(n1, n2 digraph.Node) bool { return true }, func(e1, e2 digraph.Edge) bool { return true })
+	eq := digraph.CheckIsomorphism(resultGraph.GetIndex(), expectedGraph.GetIndex(), func(n1, n2 digraph.Node) bool { return true }, func(e1, e2 digraph.Edge) bool { return true })
 
 	if !eq {
 		t.Errorf("Test case: %s Result is different from the expected: Result: %v Expected: %v", tc.Name, ls.ToMap(resultMarshaled), ls.ToMap(tc.Expected))

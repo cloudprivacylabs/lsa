@@ -64,7 +64,7 @@ func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, Node) Node) 
 	}
 	hasNodes := false
 	if sourceRoot != nil {
-		for targets := sourceRoot.GetAllOutgoingEdges(); targets.HasNext(); {
+		for targets := sourceRoot.Out(); targets.HasNext(); {
 			edge := targets.Next().(Edge)
 			if IsAttributeTreeEdge(edge) {
 				newNode := slice(ret, edge.GetTo().(Node), nodeFilter, map[Node]struct{}{})
@@ -94,7 +94,7 @@ func slice(targetLayer *Layer, sourceNode Node, nodeFilter func(*Layer, Node) No
 	// Try to filter first. This may return nil
 	targetNode := nodeFilter(targetLayer, sourceNode)
 
-	for edges := sourceNode.GetAllOutgoingEdges(); edges.HasNext(); {
+	for edges := sourceNode.Out(); edges.HasNext(); {
 		edge := edges.Next().(Edge)
 		newTo := slice(targetLayer, edge.GetTo().(Node), nodeFilter, ctx)
 		if newTo != nil {

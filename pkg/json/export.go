@@ -34,7 +34,7 @@ type ExportOptions struct {
 // what key to use
 func GetBuildNodeKeyBySchemaNodeFunc(f func(schemaNode, docNode ls.Node) (string, bool, error)) func(ls.Node) (string, bool, error) {
 	return func(node ls.Node) (string, bool, error) {
-		schemaNodes := node.GetAllOutgoingEdgesWithLabel(ls.InstanceOfTerm).Targets().All()
+		schemaNodes := node.OutWith(ls.InstanceOfTerm).Targets().All()
 		if len(schemaNodes) != 1 {
 			return "", false, nil
 		}
@@ -122,7 +122,7 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 	switch {
 	case types.Has(ls.AttributeTypes.Object):
 		ret := Object{}
-		gnodes := node.GetAllOutgoingEdgesWithLabel(ls.DataEdgeTerms.ObjectAttributes).Targets().All()
+		gnodes := node.OutWith(ls.DataEdgeTerms.ObjectAttributes).Targets().All()
 		nodes := make([]ls.Node, 0, len(gnodes))
 		for _, node := range gnodes {
 			nodes = append(nodes, node.(ls.Node))
@@ -145,7 +145,7 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 
 	case types.Has(ls.AttributeTypes.Array):
 		ret := Array{}
-		gnodes := node.GetAllOutgoingEdgesWithLabel(ls.DataEdgeTerms.ArrayElements).Targets().All()
+		gnodes := node.OutWith(ls.DataEdgeTerms.ArrayElements).Targets().All()
 		nodes := make([]ls.Node, 0, len(gnodes))
 		for _, node := range gnodes {
 			nodes = append(nodes, node.(ls.Node))

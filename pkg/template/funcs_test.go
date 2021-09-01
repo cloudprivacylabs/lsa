@@ -14,70 +14,70 @@
 
 package template
 
-import (
-	"bytes"
-	"encoding/json"
-	"testing"
-	"text/template"
+// import (
+// 	"bytes"
+// 	"encoding/json"
+// 	"testing"
+// 	"text/template"
 
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
-)
+// 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+// )
 
-func TestTemplateProcessing(t *testing.T) {
-	var v interface{}
-	json.Unmarshal([]byte(`[ {
-            "@id": "http://testschema",
-            "@type": [
-                "https://lschema.org/Schema"
-            ],
-            "https://lschema.org/layer": [{
-                "@type": ["https://lschema.org/Attribute",
-                          "https://lschema.org/Object",
-                          "https://lschema.org/targetType"],
-                "https://lschema.org/Object#attributes": [
-                    {
-                        "@id": "http://attr1",
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"]
-                    },
-                    {
-                        "@id": "http://attr2",
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Object"],
-                        "https://lschema.org/Object#attributes": [
-                            {
-                                "@id": "http://attr3",
-                                "@type":  ["https://lschema.org/Attribute","https://lschema.org/Value"]
-                            },
-                            {
-                                "@id": "http://attr4",
-                                "@type":  ["https://lschema.org/Attribute","https://lschema.org/Array"],
-                                "https://lschema.org/Array#items": [
-                                    {
-                                        "@id": "http://attr5",
-                                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }]
-}]`), &v)
-	layer, err := ls.UnmarshalLayer(v)
-	if err != nil {
-		panic(err)
-	}
-	tmp := template.New("")
-	tmp.Funcs(Functions)
-	tmp, err = tmp.Parse(`{{$x := (gnode .l "http://attr2")}} {{$x.GetID}}`)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	out := bytes.Buffer{}
-	err = tmp.Execute(&out, map[string]interface{}{"l": layer.Graph})
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	t.Log(out.String())
-}
+// func TestTemplateProcessing(t *testing.T) {
+// 	var v interface{}
+// 	json.Unmarshal([]byte(`[ {
+//             "@id": "http://testschema",
+//             "@type": [
+//                 "https://lschema.org/Schema"
+//             ],
+//             "https://lschema.org/layer": [{
+//                 "@type": ["https://lschema.org/Attribute",
+//                           "https://lschema.org/Object",
+//                           "https://lschema.org/targetType"],
+//                 "https://lschema.org/Object#attributes": [
+//                     {
+//                         "@id": "http://attr1",
+//                         "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"]
+//                     },
+//                     {
+//                         "@id": "http://attr2",
+//                         "@type": ["https://lschema.org/Attribute","https://lschema.org/Object"],
+//                         "https://lschema.org/Object#attributes": [
+//                             {
+//                                 "@id": "http://attr3",
+//                                 "@type":  ["https://lschema.org/Attribute","https://lschema.org/Value"]
+//                             },
+//                             {
+//                                 "@id": "http://attr4",
+//                                 "@type":  ["https://lschema.org/Attribute","https://lschema.org/Array"],
+//                                 "https://lschema.org/Array#items": [
+//                                     {
+//                                         "@id": "http://attr5",
+//                                         "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"]
+//                                     }
+//                                 ]
+//                             }
+//                         ]
+//                     }
+//                 ]
+//             }]
+// }]`), &v)
+// 	layer, err := ls.UnmarshalLayer(v)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	tmp := template.New("")
+// 	tmp.Funcs(Functions)
+// 	tmp, err = tmp.Parse(`{{$x := (gnode .l "http://attr2")}} {{$x.GetID}}`)
+// 	if err != nil {
+// 		t.Error(err)
+// 		return
+// 	}
+// 	out := bytes.Buffer{}
+// 	err = tmp.Execute(&out, map[string]interface{}{"l": layer.Graph})
+// 	if err != nil {
+// 		t.Error(err)
+// 		return
+// 	}
+// 	t.Log(out.String())
+// }

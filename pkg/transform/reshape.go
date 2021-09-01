@@ -163,8 +163,8 @@ func (respaher *Reshaper) reshape(context *ReshapeContext) (ls.Node, error) {
 func (respaher *Reshaper) object(context *ReshapeContext) (ls.Node, error) {
 	schemaNode := context.CurrentSchemaNode()
 	properties := respaher.getProperties(schemaNode)
-	attributes := ls.SortEdgesItr(schemaNode.GetAllOutgoingEdgesWithLabel(ls.LayerTerms.Attributes)).Targets().All()
-	attributes = append(attributes, ls.SortEdgesItr(schemaNode.GetAllOutgoingEdgesWithLabel(ls.LayerTerms.AttributeList)).Targets().All()...)
+	attributes := ls.SortEdgesItr(schemaNode.OutWith(ls.LayerTerms.Attributes)).Targets().All()
+	attributes = append(attributes, ls.SortEdgesItr(schemaNode.OutWith(ls.LayerTerms.AttributeList)).Targets().All()...)
 
 	// Create a target node for this object node. If the object turns
 	// out to be empty, this target node may be thrown away

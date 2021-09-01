@@ -218,7 +218,7 @@ func (a *node) Clone() Node {
 // GetAttributeEdgeBetweenNodes returns the attribute edges between
 // two nodes. If there are no direct edges, return nil
 func GetLayerEdgeBetweenNodes(source, target Node) Edge {
-	for edges := source.GetAllOutgoingEdges(); edges.HasNext(); {
+	for edges := source.Out(); edges.HasNext(); {
 		edge := edges.Next().(Edge)
 		if IsAttributeTreeEdge(edge) && edge.GetTo() == target {
 			return edge
@@ -231,7 +231,7 @@ func GetLayerEdgeBetweenNodes(source, target Node) Edge {
 // value filters, and then the node value filters
 func GetNodeFilteredValue(node Node) interface{} {
 	var schemaNode Node
-	iedges := node.GetAllOutgoingEdgesWithLabel(InstanceOfTerm).All()
+	iedges := node.OutWith(InstanceOfTerm).All()
 	if len(iedges) == 1 {
 		schemaNode = iedges[0].GetTo().(Node)
 	}
@@ -298,7 +298,7 @@ func iterateDescendants(root Node, path []Node, nodeFunc func(Node, []Node) bool
 		return false
 	}
 
-	outgoing := root.GetAllOutgoingEdges()
+	outgoing := root.Out()
 	if ordered {
 		outgoing = SortEdgesItr(outgoing)
 	}
