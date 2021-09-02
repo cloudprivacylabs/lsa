@@ -112,7 +112,28 @@ func (e Array) Encode(w io.Writer) error {
 	return nil
 }
 
+type stringInterner struct {
+	strings map[string]string
+}
+
+func newInterner() stringInterner { return stringInterner{strings: make(map[string]string)} }
+
+func (s stringInterner) intern(key string) string {
+	result, ok := s.strings[key]
+	if !ok {
+		result = key
+		s.strings[key] = result
+	}
+	return result
+}
+
 func Decode(decoder *json.Decoder) (OM, error) {
+	decoder.UseNumber()
+	interner := newInterner()
+	return decode(decoder, interner)
+}
+
+func decode(decoder *json.Decoder, interner stringInterner) (OM, error) {
 	var ret OM
 
 	tok, err := decoder.Token()
@@ -125,9 +146,9 @@ func Decode(decoder *json.Decoder) (OM, error) {
 	if delim, ok := tok.(json.Delim); ok {
 		switch delim {
 		case '{':
-			ret, err = decodeObject(decoder)
+			ret, err = decodeObject(decoder, interner)
 		case '[':
-			ret, err = decodeArray(decoder)
+			ret, err = decodeArray(decoder, interner)
 		default:
 			err = &json.SyntaxError{Offset: decoder.InputOffset()}
 		}
@@ -137,7 +158,7 @@ func Decode(decoder *json.Decoder) (OM, error) {
 	return ret, err
 }
 
-func decodeObject(decoder *json.Decoder) (Object, error) {
+func decodeObject(decoder *json.Decoder, interner stringInterner) (Object, error) {
 	ret := Object{}
 	for {
 		tok, err := decoder.Token()
@@ -159,8 +180,9 @@ func decodeObject(decoder *json.Decoder) (Object, error) {
 		if !ok {
 			return ret, &json.SyntaxError{Offset: decoder.InputOffset()}
 		}
+		key = interner.intern(key)
 
-		value, err := Decode(decoder)
+		value, err := decode(decoder, interner)
 		if err != nil {
 			return ret, err
 		}
@@ -169,7 +191,7 @@ func decodeObject(decoder *json.Decoder) (Object, error) {
 	return ret, nil
 }
 
-func decodeElement(decoder *json.Decoder) (OM, bool, error) {
+func decodeElement(decoder *json.Decoder, interner stringInterner) (OM, bool, error) {
 	var ret OM
 
 	tok, err := decoder.Token()
@@ -182,9 +204,9 @@ func decodeElement(decoder *json.Decoder) (OM, bool, error) {
 	if delim, ok := tok.(json.Delim); ok {
 		switch delim {
 		case '{':
-			ret, err = decodeObject(decoder)
+			ret, err = decodeObject(decoder, interner)
 		case '[':
-			ret, err = decodeArray(decoder)
+			ret, err = decodeArray(decoder, interner)
 		case ']':
 			return ret, true, nil
 		default:
@@ -196,10 +218,10 @@ func decodeElement(decoder *json.Decoder) (OM, bool, error) {
 	return ret, false, err
 }
 
-func decodeArray(decoder *json.Decoder) (Array, error) {
+func decodeArray(decoder *json.Decoder, interner stringInterner) (Array, error) {
 	ret := Array{}
 	for {
-		value, done, err := decodeElement(decoder)
+		value, done, err := decodeElement(decoder, interner)
 		if err != nil {
 			return ret, err
 		}
