@@ -138,7 +138,7 @@ func (compiler Compiler) compileTerms(layer *Layer) error {
 			if result != nil {
 				node.GetCompiledDataMap()[k] = result
 			}
-			for edges := node.GetAllOutgoingEdges(); edges.HasNext(); {
+			for edges := node.Out(); edges.HasNext(); {
 				edge := edges.Next().(Edge)
 				if err := GetEdgeCompiler(edge.GetLabelStr()).CompileEdge(edge); err != nil {
 					return err
@@ -197,7 +197,7 @@ func (compiler Compiler) resolveReference(ctx *compilerContext, node Node) error
 		return err
 	}
 	// Attach the node to all the children of the compiled node
-	for edges := compiled.GetAllOutgoingEdges(); edges.HasNext(); {
+	for edges := compiled.Out(); edges.HasNext(); {
 		edge := edges.Next().(Edge)
 		digraph.Connect(node, edge.GetTo(), edge.Clone())
 	}
@@ -231,7 +231,7 @@ func copyCompiled(target, source map[interface{}]interface{}) {
 func (compiler Compiler) resolveComposition(compositeNode Node, completed map[Node]struct{}) error {
 	completed[compositeNode] = struct{}{}
 	// At the end of this process, composite node will be converted into an object node
-	for edges := compositeNode.GetAllOutgoingEdgesWithLabel(LayerTerms.AllOf); edges.HasNext(); {
+	for edges := compositeNode.OutWith(LayerTerms.AllOf); edges.HasNext(); {
 		allOfEdge := edges.Next().(Edge)
 	top:
 		component := allOfEdge.GetTo().(Node)
@@ -242,7 +242,7 @@ func (compiler Compiler) resolveComposition(compositeNode Node, completed map[No
 			//  Output:
 			//    compositeNode --> attributes
 			rmv := make([]Edge, 0)
-			for edges := component.GetAllOutgoingEdges(); edges.HasNext(); {
+			for edges := component.Out(); edges.HasNext(); {
 				edge := edges.Next().(Edge)
 				digraph.Connect(compositeNode, edge.GetTo(), edge.Clone())
 				rmv = append(rmv, edge)

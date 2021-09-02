@@ -97,7 +97,7 @@ var (
 
 type ReshapeContext struct {
 	// The expression language interpreter context
-	glContext *gl.Context
+	glContext *gl.Scope
 	// All schema nodes from the root to the current node
 	schemaPath []ls.Node
 	// Generated document paths from the root to the parent of the current node
@@ -113,7 +113,7 @@ func (p *ReshapeContext) CurrentSchemaNode() ls.Node {
 
 func (p *ReshapeContext) nestedContext() *ReshapeContext {
 	ret := *p
-	ret.glContext = p.glContext.NewNestedContext()
+	ret.glContext = p.glContext.NewScope()
 	return &ret
 }
 
@@ -122,7 +122,7 @@ func (p *ReshapeContext) nestedContext() *ReshapeContext {
 // properties for given schema nodes
 func (respaher *Reshaper) Reshape(rootNode ls.Node) (ls.Node, error) {
 	ctx := ReshapeContext{
-		glContext:  gl.NewContext(),
+		glContext:  gl.NewScope(),
 		schemaPath: []ls.Node{respaher.TargetSchema.GetSchemaRootNode()},
 		docPath:    []ls.Node{},
 		sourceNode: rootNode,
@@ -163,8 +163,8 @@ func (respaher *Reshaper) reshape(context *ReshapeContext) (ls.Node, error) {
 func (respaher *Reshaper) object(context *ReshapeContext) (ls.Node, error) {
 	schemaNode := context.CurrentSchemaNode()
 	properties := respaher.getProperties(schemaNode)
-	attributes := ls.SortEdgesItr(schemaNode.GetAllOutgoingEdgesWithLabel(ls.LayerTerms.Attributes)).Targets().All()
-	attributes = append(attributes, ls.SortEdgesItr(schemaNode.GetAllOutgoingEdgesWithLabel(ls.LayerTerms.AttributeList)).Targets().All()...)
+	attributes := ls.SortEdgesItr(schemaNode.OutWith(ls.LayerTerms.Attributes)).Targets().All()
+	attributes = append(attributes, ls.SortEdgesItr(schemaNode.OutWith(ls.LayerTerms.AttributeList)).Targets().All()...)
 
 	// Create a target node for this object node. If the object turns
 	// out to be empty, this target node may be thrown away
@@ -287,7 +287,7 @@ func getSource(context *ReshapeContext, source *ls.PropertyValue) (gl.Value, err
 	if !source.IsString() {
 		return nil, ErrSourceMustBeString
 	}
-	value, err := gl.EvaluateExpression(context.glContext, source.AsString())
+	value, err := gl.EvaluateWith(context.glContext, source.AsString())
 	if err != nil {
 		return nil, err
 	}
@@ -299,13 +299,13 @@ func setupVariables(context *ReshapeContext, variables *ls.PropertyValue) error 
 		return nil
 	}
 	if variables.IsString() {
-		if _, err := gl.EvaluateExpression(context.glContext, variables.AsString()); err != nil {
+		if _, err := gl.EvaluateWith(context.glContext, variables.AsString()); err != nil {
 			return err
 		}
 	}
 	if variables.IsStringSlice() {
 		for _, x := range variables.AsStringSlice() {
-			if _, err := gl.EvaluateExpression(context.glContext, x); err != nil {
+			if _, err := gl.EvaluateWith(context.glContext, x); err != nil {
 				return err
 			}
 		}
@@ -319,7 +319,7 @@ func checkConditionals(context *ReshapeContext, conditionals *ls.PropertyValue) 
 	}
 	result := true
 	if conditionals.IsString() {
-		r, err := gl.EvaluateExpression(context.glContext, conditionals.AsString())
+		r, err := gl.EvaluateWith(context.glContext, conditionals.AsString())
 		if err != nil {
 			return false, err
 		}
@@ -330,7 +330,7 @@ func checkConditionals(context *ReshapeContext, conditionals *ls.PropertyValue) 
 	}
 	if conditionals.IsStringSlice() {
 		for _, x := range conditionals.AsStringSlice() {
-			r, err := gl.EvaluateExpression(context.glContext, x)
+			r, err := gl.EvaluateWith(context.glContext, x)
 			if err != nil {
 				return false, err
 			}

@@ -8,6 +8,21 @@ import "github.com/antlr/antlr4/runtime/Go/antlr"
 type glListener interface {
 	antlr.ParseTreeListener
 
+	// EnterExpressionScript is called when entering the ExpressionScript production.
+	EnterExpressionScript(c *ExpressionScriptContext)
+
+	// EnterStatementListScript is called when entering the StatementListScript production.
+	EnterStatementListScript(c *StatementListScriptContext)
+
+	// EnterStatements is called when entering the Statements production.
+	EnterStatements(c *StatementsContext)
+
+	// EnterStatementBlock is called when entering the StatementBlock production.
+	EnterStatementBlock(c *StatementBlockContext)
+
+	// EnterExpressionStatement is called when entering the ExpressionStatement production.
+	EnterExpressionStatement(c *ExpressionStatementContext)
+
 	// EnterParenthesizedExpression is called when entering the ParenthesizedExpression production.
 	EnterParenthesizedExpression(c *ParenthesizedExpressionContext)
 
@@ -61,6 +76,21 @@ type glListener interface {
 
 	// EnterIdentifierName is called when entering the identifierName production.
 	EnterIdentifierName(c *IdentifierNameContext)
+
+	// ExitExpressionScript is called when exiting the ExpressionScript production.
+	ExitExpressionScript(c *ExpressionScriptContext)
+
+	// ExitStatementListScript is called when exiting the StatementListScript production.
+	ExitStatementListScript(c *StatementListScriptContext)
+
+	// ExitStatements is called when exiting the Statements production.
+	ExitStatements(c *StatementsContext)
+
+	// ExitStatementBlock is called when exiting the StatementBlock production.
+	ExitStatementBlock(c *StatementBlockContext)
+
+	// ExitExpressionStatement is called when exiting the ExpressionStatement production.
+	ExitExpressionStatement(c *ExpressionStatementContext)
 
 	// ExitParenthesizedExpression is called when exiting the ParenthesizedExpression production.
 	ExitParenthesizedExpression(c *ParenthesizedExpressionContext)

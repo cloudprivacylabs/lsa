@@ -8,6 +8,9 @@ import (
 type StringValue string
 
 var stringSelectors = map[string]func(StringValue) (Value, error){
+	// str.length
+	//
+	// Returns the length of the string
 	"length": func(v StringValue) (Value, error) {
 		return ValueOf(len(v)), nil
 	},
@@ -21,12 +24,8 @@ func (value StringValue) Selector(sel string) (Value, error) {
 	return nil, ErrUnknownSelector{Selector: sel}
 }
 
-func (StringValue) Call(*Context, []Value) (Value, error) { return nil, ErrNotCallable }
-func (StringValue) Index(Value) (Value, error)            { return nil, ErrNotIndexable }
-
-func (s StringValue) Iterate(f func(Value) (Value, error)) (Value, error) {
-	return f(s)
-}
+func (StringValue) Call(*Scope, []Value) (Value, error) { return nil, ErrNotCallable }
+func (StringValue) Index(Value) (Value, error)          { return nil, ErrNotIndexable }
 
 func (value StringValue) AsBool() (bool, error) { return len(value) > 0, nil }
 

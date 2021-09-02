@@ -9,10 +9,6 @@ import (
 
 //go:generate antlr4 -Dlanguage=Go gl.g4 -o parser
 
-// type Expression interface {
-// 	//	parser.IExpressionContext
-// }
-
 type errorListener struct {
 	antlr.DefaultErrorListener
 	err error
@@ -24,8 +20,8 @@ func (lst *errorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymb
 	}
 }
 
-// ParseExpression parses the given input string as an expression and returns an evaluatable expression object
-func ParseExpression(input string) (Expression, error) {
+// Parse parses the given input string as a script and returns an evaluatable object
+func Parse(input string) (Evaluatable, error) {
 	lexer := parser.NewglLexer(antlr.NewInputStream(input))
 	stream := antlr.NewCommonTokenStream(lexer, 0)
 	p := parser.NewglParser(stream)
@@ -33,22 +29,28 @@ func ParseExpression(input string) (Expression, error) {
 	p.AddErrorListener(&errListener)
 	p.BuildParseTrees = true
 	compiler := NewCompiler()
-	antlr.ParseTreeWalkerDefault.Walk(compiler, p.Expression())
+	antlr.ParseTreeWalkerDefault.Walk(compiler, p.Script())
 	if err := compiler.Error(); err != nil {
 		return nil, err
 	}
-	expr, ok := compiler.pop().(Expression)
+	expr, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		return nil, ErrNotExpression
 	}
 	return expr, nil
 }
 
-// EvaluateExpression parses and evaluates an expression
-func EvaluateExpression(context *Context, input string) (Value, error) {
-	e, err := ParseExpression(input)
+// EvaluateWith parses and evaluates a script with the given scope
+func EvaluateWith(scope *Scope, input string) (Value, error) {
+	e, err := Parse(input)
 	if err != nil {
 		return nil, err
 	}
-	return e.Evaluate(context)
+	return e.Evaluate(scope)
+}
+
+// Evaluate parses and evaluates a script with empty scope
+func Evaluate(input string) (Value, error) {
+	scope := NewScope()
+	return EvaluateWith(scope, input)
 }

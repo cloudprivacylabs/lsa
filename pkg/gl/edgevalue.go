@@ -4,12 +4,14 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-// EdgeValue is zero or more edge on the stack
+// EdgeValue is zero or more edges
 type EdgeValue struct {
-	BasicValue
+	basicValue
 	Edges map[ls.Edge]struct{}
 }
 
+// oneEdge is a convenience function that returns the edge if there is
+// one, and that returns an error otherwise
 func (e EdgeValue) oneEdge() (ls.Edge, error) {
 	switch len(e.Edges) {
 	case 0:
@@ -23,6 +25,9 @@ func (e EdgeValue) oneEdge() (ls.Edge, error) {
 }
 
 var edgeSelectors = map[string]func(EdgeValue) (Value, error){
+	// edge.label
+	//
+	// The label of the edge, a string value
 	"label": func(edge EdgeValue) (Value, error) {
 		e, err := edge.oneEdge()
 		if err != nil {
@@ -30,6 +35,9 @@ var edgeSelectors = map[string]func(EdgeValue) (Value, error){
 		}
 		return ValueOf(e.GetLabel()), nil
 	},
+	// edge.from
+	//
+	// The source node of the edge, a node value
 	"from": func(edge EdgeValue) (Value, error) {
 		e, err := edge.oneEdge()
 		if err != nil {
@@ -37,6 +45,9 @@ var edgeSelectors = map[string]func(EdgeValue) (Value, error){
 		}
 		return ValueOf(e.GetFrom().(ls.Node)), nil
 	},
+	// edge.to
+	//
+	// The target node of the edge, a node value
 	"to": func(edge EdgeValue) (Value, error) {
 		e, err := edge.oneEdge()
 		if err != nil {
@@ -44,6 +55,9 @@ var edgeSelectors = map[string]func(EdgeValue) (Value, error){
 		}
 		return ValueOf(e.GetTo().(ls.Node)), nil
 	},
+	// edge.properties
+	//
+	// The properties of the edge, a Properties value
 	"properties": func(edge EdgeValue) (Value, error) {
 		e, err := edge.oneEdge()
 		if err != nil {
@@ -53,37 +67,16 @@ var edgeSelectors = map[string]func(EdgeValue) (Value, error){
 	},
 }
 
+// Selector selects one of the selectors of the edge
 func (e EdgeValue) Selector(sel string) (Value, error) {
 	selected := edgeSelectors[sel]
 	if selected != nil {
 		return selected(e)
 	}
-	return e.BasicValue.Selector(sel)
+	return e.basicValue.Selector(sel)
 }
 
-func (e EdgeValue) Iterate(f func(Value) (Value, error)) (Value, error) {
-	var ret Value
-	for edge := range e.Edges {
-		v, err := f(ValueOf(edge))
-		if err != nil {
-			return nil, err
-		}
-		if ret == nil {
-			ret = v
-		} else {
-			accumulator, ok := ret.(Accumulator)
-			if !ok {
-				return nil, ErrCannotAccumulate
-			}
-			ret, err = accumulator.Add(v)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
-	return ret, nil
-}
-
+// Add returns the set union of to edge sets
 func (e EdgeValue) Add(v2 Value) (Value, error) {
 	edges, ok := v2.(EdgeValue)
 	if !ok {
@@ -99,10 +92,13 @@ func (e EdgeValue) Add(v2 Value) (Value, error) {
 	return ret, nil
 }
 
+// AsBool returns true if edge value is nonempty
 func (e EdgeValue) AsBool() (bool, error) { return len(e.Edges) > 0, nil }
 
+// AsString returns error
 func (e EdgeValue) AsString() (string, error) { return "", ErrNotAString }
 
+// Eq compares two edge sets
 func (e EdgeValue) Eq(val Value) (bool, error) {
 	ev, ok := val.(EdgeValue)
 	if !ok {

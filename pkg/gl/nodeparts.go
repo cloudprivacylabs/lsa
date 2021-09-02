@@ -14,7 +14,7 @@ func oneNode(f func(node ls.Node) (Value, error)) func(NodeValue) (Value, error)
 	}
 }
 
-var trueClosure = Closure{F: BoolLiteral(true)}
+var trueClosure = Closure{F: boolLiteral(true)}
 
 // closureOrBool will return a predicate closure, or if the value is a bool, a closure that returns that bool
 func closureOrBool(v Value) (Closure, error) {
@@ -24,7 +24,7 @@ func closureOrBool(v Value) (Closure, error) {
 		if err != nil {
 			return cl, ErrClosureOrBooleanExpected
 		}
-		return Closure{F: BoolLiteral(b)}, nil
+		return Closure{F: boolLiteral(b)}, nil
 	}
 	return cl, nil
 }
@@ -36,7 +36,7 @@ func nodeFirstReachableFunc(node NodeValue) (Value, error) {
 		MinArgs: 1,
 		MaxArgs: 2,
 		Name:    "firstReachable",
-		Closure: func(ctx *Context, args []Value) (Value, error) {
+		Closure: func(scope *Scope, args []Value) (Value, error) {
 			nodeClosure, err := closureOrBool(args[0])
 			if err != nil {
 				return nil, err
@@ -52,7 +52,7 @@ func nodeFirstReachableFunc(node NodeValue) (Value, error) {
 			var found ls.Node
 			for _, nd := range node.Nodes.Slice() {
 				ls.FirstReachable(nd, func(node ls.Node, _ []ls.Node) bool {
-					b, err := AsBool(nodeClosure.Evaluate(ValueOf(node), ctx))
+					b, err := AsBool(nodeClosure.Evaluate(ValueOf(node), scope))
 					if err != nil {
 						closureError = err
 						return true
@@ -64,7 +64,7 @@ func nodeFirstReachableFunc(node NodeValue) (Value, error) {
 					return false
 				},
 					func(edge ls.Edge, _ []ls.Node) bool {
-						b, err := AsBool(edgeClosure.Evaluate(ValueOf(edge), ctx))
+						b, err := AsBool(edgeClosure.Evaluate(ValueOf(edge), scope))
 						if err != nil {
 							closureError = err
 							return false
@@ -91,7 +91,7 @@ func nodeInstanceOfFunc(node NodeValue) (Value, error) {
 		MinArgs: 1,
 		MaxArgs: 1,
 		Name:    "instanceOf",
-		Closure: func(ctx *Context, args []Value) (Value, error) {
+		Closure: func(scope *Scope, args []Value) (Value, error) {
 			result := NewNodeValue()
 			id, err := args[0].AsString()
 			if err != nil {
@@ -115,7 +115,7 @@ func nodeWalk(node NodeValue) (Value, error) {
 		MinArgs: 0,
 		MaxArgs: -1,
 		Name:    "walk",
-		Closure: func(ctx *Context, args []Value) (Value, error) {
+		Closure: func(scope *Scope, args []Value) (Value, error) {
 			result := NewNodeValue()
 			walk := ls.NewWalk()
 			var edgePredicate func(ls.Edge) bool
@@ -137,12 +137,12 @@ func nodeWalk(node NodeValue) (Value, error) {
 						if ok {
 							edgeClosure = Closure{
 								Symbol: "e",
-								F: EqualityExpression{
-									Right: SelectExpression{
-										Base:     IdentifierValue("e"),
-										Selector: "label",
+								F: equalityExpression{
+									right: selectExpression{
+										base:     identifierValue("e"),
+										selector: "label",
 									},
-									Left: StringLiteral(s),
+									left: stringLiteral(s),
 								},
 							}
 						} else {
@@ -150,12 +150,12 @@ func nodeWalk(node NodeValue) (Value, error) {
 							if err != nil {
 								return cl, ErrInvalidArgumentType
 							}
-							edgeClosure = Closure{F: BoolLiteral(b)}
+							edgeClosure = Closure{F: boolLiteral(b)}
 						}
 					}
 					edgePredicate = func(e ls.Edge) bool {
 						var b bool
-						b, err = AsBool(edgeClosure.Evaluate(ValueOf(e), ctx))
+						b, err = AsBool(edgeClosure.Evaluate(ValueOf(e), scope))
 						return b
 					}
 				} else {
@@ -169,12 +169,12 @@ func nodeWalk(node NodeValue) (Value, error) {
 						if ok {
 							nodeClosure = Closure{
 								Symbol: "n",
-								F: EqualityExpression{
-									Right: SelectExpression{
-										Base:     IdentifierValue("n"),
-										Selector: "id",
+								F: equalityExpression{
+									right: selectExpression{
+										base:     identifierValue("n"),
+										selector: "id",
 									},
-									Left: StringLiteral(s),
+									left: stringLiteral(s),
 								},
 							}
 						} else {
@@ -182,12 +182,12 @@ func nodeWalk(node NodeValue) (Value, error) {
 							if err != nil {
 								return cl, ErrInvalidArgumentType
 							}
-							nodeClosure = Closure{F: BoolLiteral(b)}
+							nodeClosure = Closure{F: boolLiteral(b)}
 						}
 					}
 					nodePredicate = func(n ls.Node) bool {
 						var b bool
-						b, err = AsBool(nodeClosure.Evaluate(ValueOf(n), ctx))
+						b, err = AsBool(nodeClosure.Evaluate(ValueOf(n), scope))
 						return b
 					}
 					walk.Step(edgePredicate, nodePredicate)

@@ -5,11 +5,13 @@ import ()
 // BoolValue is a boolean value on the stack
 type BoolValue bool
 
-var TrueValue = BoolValue(true)
-var FalseValue = BoolValue(false)
+// Boolean literals
+var (
+	TrueValue  = BoolValue(true)
+	FalseValue = BoolValue(false)
+)
 
-var boolSelectors = map[string]func(BoolValue) (Value, error){}
-
+// AsInt returns 0 or 1
 func (v BoolValue) AsInt() (int, error) {
 	if v == true {
 		return 1, nil
@@ -17,9 +19,16 @@ func (v BoolValue) AsInt() (int, error) {
 	return 0, nil
 }
 
-func (BoolValue) Call(*Context, []Value) (Value, error) { return nil, ErrNotCallable }
-func (BoolValue) Index(Value) (Value, error)            { return nil, ErrNotIndexable }
-func (BoolValue) Selector(sel string) (Value, error)    { return nil, ErrUnknownSelector{Selector: sel} }
+// Call returns ErrNotCallable
+func (BoolValue) Call(*Scope, []Value) (Value, error) { return nil, ErrNotCallable }
+
+// Index returns ErrNotIndexable
+func (BoolValue) Index(Value) (Value, error) { return nil, ErrNotIndexable }
+
+// Selector returns ErrUnknownSelector
+func (BoolValue) Selector(sel string) (Value, error) { return nil, ErrUnknownSelector{Selector: sel} }
+
+// Eq returns true of the value.AsBool has the same value as this
 func (b BoolValue) Eq(v Value) (bool, error) {
 	x, err := v.AsBool()
 	if err != nil {
@@ -28,11 +37,10 @@ func (b BoolValue) Eq(v Value) (bool, error) {
 	return bool(b) == x, nil
 }
 
-func (b BoolValue) Iterate(f func(Value) (Value, error)) (Value, error) {
-	return f(b)
-}
-
+// AsBool returns the value
 func (v BoolValue) AsBool() (bool, error) { return bool(v), nil }
+
+// AsString returns "true" or "false"
 func (v BoolValue) AsString() (string, error) {
 	if v == true {
 		return "true", nil

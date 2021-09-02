@@ -14,12 +14,10 @@ type Value interface {
 	// Index selects an value from an indexable value
 	Index(Value) (Value, error)
 	// Call a method/function with arguments
-	Call(*Context, []Value) (Value, error)
+	Call(*Scope, []Value) (Value, error)
 
 	// Eq checks equivalence
 	Eq(Value) (bool, error)
-
-	Iterate(func(Value) (Value, error)) (Value, error)
 
 	// Return value as an integer, or return error if it cannot be represented as an integer
 	AsInt() (int, error)
@@ -28,93 +26,57 @@ type Value interface {
 	AsString() (string, error)
 }
 
-type Accumulator interface {
-	Add(Value) (Value, error)
-}
+type basicValue struct{}
 
-type BasicValue struct{}
-
-func (BasicValue) Selector(sel string) (Value, error) {
+func (basicValue) Selector(sel string) (Value, error) {
 	return nil, ErrUnknownSelector{Selector: sel}
 }
 
-func (BasicValue) Call(*Context, []Value) (Value, error) {
+func (basicValue) Call(*Scope, []Value) (Value, error) {
 	return nil, ErrNotCallable
 }
 
-func (BasicValue) Index(i Value) (Value, error) {
+func (basicValue) Index(i Value) (Value, error) {
 	return nil, ErrNotIndexable
 }
 
-func (BasicValue) Iterate(func(Value) (Value, error)) (Value, error) { return nil, ErrCannotIterate }
-
-func (BasicValue) AsInt() (int, error) {
+func (basicValue) AsInt() (int, error) {
 	return 0, ErrNotANumber
 }
 
-func (BasicValue) AsBool() (bool, error) {
+func (basicValue) AsBool() (bool, error) {
 	return false, nil
 }
 
-func (BasicValue) AsString() (string, error) {
+func (basicValue) AsString() (string, error) {
 	return "", ErrNotAString
 }
 
-func (BasicValue) Eq(Value) (bool, error) { return false, ErrIncomparable }
+func (basicValue) Eq(Value) (bool, error) { return false, ErrIncomparable }
 
-type NullValue struct {
-	BasicValue
-}
-
-func (NullValue) AsString() (string, error) { return "null", nil }
-
-func (NullValue) Eq(v Value) (bool, error) {
-	if v == nil {
-		return true, nil
-	}
-	if _, ok := v.(NullValue); ok {
-		return true, nil
-	}
-	return false, nil
-}
-
-type Closure struct {
-	BasicValue
-	Symbol string
-	F      Expression
-}
-
-func (c Closure) Evaluate(arg Value, ctx *Context) (Value, error) {
-	newContext := ctx.NewNestedContext()
-	if len(c.Symbol) > 0 {
-		newContext.Set(c.Symbol, arg)
-	}
-	return c.F.Evaluate(newContext)
-}
-
-type LValue struct {
-	BasicValue
-	Name string
+type lValue struct {
+	basicValue
+	name string
 }
 
 type FunctionValue struct {
-	BasicValue
+	basicValue
 	MinArgs int
 	MaxArgs int
 	Name    string
-	Closure func(*Context, []Value) (Value, error)
+	Closure func(*Scope, []Value) (Value, error)
 }
 
 func (FunctionValue) Eq(Value) (bool, error) { return false, nil }
 
-func (f FunctionValue) Call(ctx *Context, args []Value) (Value, error) {
+func (f FunctionValue) Call(scope *Scope, args []Value) (Value, error) {
 	if len(args) < f.MinArgs {
 		return nil, ErrInvalidFunctionCall(fmt.Sprintf("'%s' needs at least %d args but got %d", f.Name, f.MinArgs, len(args)))
 	}
 	if f.MaxArgs >= 0 && len(args) > f.MaxArgs {
 		return nil, ErrInvalidFunctionCall(fmt.Sprintf("'%s' needs at most %d args but got %d", f.Name, f.MaxArgs, len(args)))
 	}
-	return f.Closure(ctx, args)
+	return f.Closure(scope, args)
 }
 
 func ValueOf(value interface{}) Value {

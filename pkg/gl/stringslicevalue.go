@@ -8,15 +8,22 @@ import (
 type StringSliceValue []string
 
 var stringSliceSelectors = map[string]func(StringSliceValue) (Value, error){
+	// slice.length
+	//
+	// Returns the number of elements in the string slice
 	"length": func(v StringSliceValue) (Value, error) {
 		return ValueOf(len(v)), nil
 	},
+
+	// slice.has(v)
+	//
+	// Returns if the slice has the string representation of the value
 	"has": func(v StringSliceValue) (Value, error) {
 		return FunctionValue{
 			MinArgs: 1,
 			MaxArgs: 1,
 			Name:    "has",
-			Closure: func(ctx *Context, args []Value) (Value, error) {
+			Closure: func(scope *Scope, args []Value) (Value, error) {
 				str, err := args[0].AsString()
 				if err != nil {
 					return nil, err
@@ -28,12 +35,16 @@ var stringSliceSelectors = map[string]func(StringSliceValue) (Value, error){
 			},
 		}, nil
 	},
+
+	// slice.hasAny(v,...)
+	//
+	// Returns if the slice has any one of the string representations of the values
 	"hasAny": func(v StringSliceValue) (Value, error) {
 		return FunctionValue{
 			MinArgs: 1,
 			MaxArgs: -1,
 			Name:    "hasAny",
-			Closure: func(ctx *Context, args []Value) (Value, error) {
+			Closure: func(scope *Scope, args []Value) (Value, error) {
 				str, err := argsToStrings(args)
 				if err != nil {
 					return nil, err
@@ -45,12 +56,16 @@ var stringSliceSelectors = map[string]func(StringSliceValue) (Value, error){
 			},
 		}, nil
 	},
+
+	// slice.hasAll(v,...)
+	//
+	// Returns if the slice has all the string representations of the values
 	"hasAll": func(v StringSliceValue) (Value, error) {
 		return FunctionValue{
 			MinArgs: 1,
 			MaxArgs: -1,
 			Name:    "hasAll",
-			Closure: func(ctx *Context, args []Value) (Value, error) {
+			Closure: func(scope *Scope, args []Value) (Value, error) {
 				str, err := argsToStrings(args)
 				if err != nil {
 					return nil, err
@@ -134,29 +149,6 @@ func (value StringSliceValue) Index(index Value) (Value, error) {
 	return ValueOf(value[i]), nil
 }
 
-func (value StringSliceValue) Iterate(f func(Value) (Value, error)) (Value, error) {
-	var ret Value
-	for _, k := range value {
-		v, err := f(ValueOf(k))
-		if err != nil {
-			return nil, err
-		}
-		if ret == nil {
-			ret = v
-		} else {
-			acc, ok := ret.(Accumulator)
-			if !ok {
-				return nil, ErrCannotAccumulate
-			}
-			ret, err = acc.Add(v)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
-	return ret, nil
-}
-
 func (value StringSliceValue) Add(v2 Value) (Value, error) {
 	slice, ok := v2.(StringSliceValue)
 	if !ok {
@@ -166,10 +158,10 @@ func (value StringSliceValue) Add(v2 Value) (Value, error) {
 	return ret, nil
 }
 
-func (value StringSliceValue) AsBool() (bool, error)           { return len(value) > 0, nil }
-func (StringSliceValue) AsInt() (int, error)                   { return 0, ErrNotANumber }
-func (StringSliceValue) Call(*Context, []Value) (Value, error) { return nil, ErrNotCallable }
-func (value StringSliceValue) AsString() (string, error)       { return fmt.Sprint(value), nil }
+func (value StringSliceValue) AsBool() (bool, error)         { return len(value) > 0, nil }
+func (StringSliceValue) AsInt() (int, error)                 { return 0, ErrNotANumber }
+func (StringSliceValue) Call(*Scope, []Value) (Value, error) { return nil, ErrNotCallable }
+func (value StringSliceValue) AsString() (string, error)     { return fmt.Sprint(value), nil }
 func (value StringSliceValue) Eq(v Value) (bool, error) {
 	sl, ok := v.(StringSliceValue)
 	if !ok {

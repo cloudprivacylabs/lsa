@@ -340,7 +340,7 @@ func marshalNode(node Node) interface{} {
 		}
 	}
 
-	edges := node.GetAllOutgoingEdges().All()
+	edges := node.Out().All()
 	sort.Slice(edges, func(i, j int) bool {
 		return edges[i].GetTo().(Node).GetIndex() < edges[j].GetTo().(Node).GetIndex()
 	})

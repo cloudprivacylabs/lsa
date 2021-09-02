@@ -41,7 +41,7 @@ func NewLayer() *Layer {
 // Clone returns a copy of the layer
 func (l *Layer) Clone() *Layer {
 	ret := &Layer{Graph: digraph.New()}
-	nodeMap := digraph.Copy(ret.Graph, l.Graph, func(node digraph.Node) digraph.Node {
+	nodeMap := digraph.CopyGraph(ret.Graph, l.Graph, func(node digraph.Node) digraph.Node {
 		return node.(Node).Clone()
 	},
 		func(edge digraph.Edge) digraph.Edge {
@@ -58,11 +58,11 @@ func (l *Layer) GetLayerInfoNode() Node { return l.layerInfo }
 
 // GetSchemaRootNode returns the root node of the object defined by the schema
 func (l *Layer) GetSchemaRootNode() Node {
-	x := l.layerInfo.Next(LayerRootTerm)
-	if x == nil {
+	x := l.layerInfo.NextWith(LayerRootTerm)
+	if len(x) != 1 {
 		return nil
 	}
-	return x.(Node)
+	return x[0].(Node)
 }
 
 // GetID returns the ID of the layer
@@ -229,7 +229,7 @@ func forEachAttributeNode(root Node, path []Node, f func(Node, []Node) bool, loo
 		}
 	}
 
-	outgoing := root.GetAllOutgoingEdges()
+	outgoing := root.Out()
 	if ordered {
 		outgoing = SortEdgesItr(outgoing)
 	}

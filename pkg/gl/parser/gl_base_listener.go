@@ -21,6 +21,36 @@ func (s *BaseglListener) EnterEveryRule(ctx antlr.ParserRuleContext) {}
 // ExitEveryRule is called when any rule is exited.
 func (s *BaseglListener) ExitEveryRule(ctx antlr.ParserRuleContext) {}
 
+// EnterExpressionScript is called when production ExpressionScript is entered.
+func (s *BaseglListener) EnterExpressionScript(ctx *ExpressionScriptContext) {}
+
+// ExitExpressionScript is called when production ExpressionScript is exited.
+func (s *BaseglListener) ExitExpressionScript(ctx *ExpressionScriptContext) {}
+
+// EnterStatementListScript is called when production StatementListScript is entered.
+func (s *BaseglListener) EnterStatementListScript(ctx *StatementListScriptContext) {}
+
+// ExitStatementListScript is called when production StatementListScript is exited.
+func (s *BaseglListener) ExitStatementListScript(ctx *StatementListScriptContext) {}
+
+// EnterStatements is called when production Statements is entered.
+func (s *BaseglListener) EnterStatements(ctx *StatementsContext) {}
+
+// ExitStatements is called when production Statements is exited.
+func (s *BaseglListener) ExitStatements(ctx *StatementsContext) {}
+
+// EnterStatementBlock is called when production StatementBlock is entered.
+func (s *BaseglListener) EnterStatementBlock(ctx *StatementBlockContext) {}
+
+// ExitStatementBlock is called when production StatementBlock is exited.
+func (s *BaseglListener) ExitStatementBlock(ctx *StatementBlockContext) {}
+
+// EnterExpressionStatement is called when production ExpressionStatement is entered.
+func (s *BaseglListener) EnterExpressionStatement(ctx *ExpressionStatementContext) {}
+
+// ExitExpressionStatement is called when production ExpressionStatement is exited.
+func (s *BaseglListener) ExitExpressionStatement(ctx *ExpressionStatementContext) {}
+
 // EnterParenthesizedExpression is called when production ParenthesizedExpression is entered.
 func (s *BaseglListener) EnterParenthesizedExpression(ctx *ParenthesizedExpressionContext) {}
 

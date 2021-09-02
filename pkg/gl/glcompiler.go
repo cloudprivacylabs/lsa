@@ -1,7 +1,6 @@
 package gl
 
 import (
-	"errors"
 	"strconv"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
@@ -9,21 +8,21 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/gl/parser"
 )
 
-var ErrInvalidExpression = errors.New("Invalid expression")
-var ErrNotExpression = errors.New("Not an expression")
-
+// Compiler is the graph language script compiler
 type Compiler struct {
 	*parser.BaseglListener
 	stack []interface{}
 	err   error
 }
 
+// NewCompiler returns a new gl compiler
 func NewCompiler() *Compiler {
 	return &Compiler{
 		stack: make([]interface{}, 0, 64),
 	}
 }
 
+// Error returns the first detected error
 func (c *Compiler) Error() error {
 	return c.err
 }
@@ -54,123 +53,168 @@ func (c *Compiler) setError(err error) {
 	}
 }
 
-func (compiler *Compiler) ExitAssignmentExpression(c *parser.AssignmentExpressionContext) {
-	val, ok := compiler.pop().(Expression)
+func (compiler *Compiler) EnterStatements(c *parser.StatementsContext) {
+	compiler.push(statementList{})
+}
+
+func (compiler *Compiler) EnterStatementBlock(c *parser.StatementBlockContext) {
+	compiler.push(statementList{newScope: true})
+}
+
+func (compiler *Compiler) exitStatements() {
+	// Pop until we hit the statement list
+	statements := make([]Evaluatable, 0)
+	for {
+		v := compiler.pop()
+		if s, ok := v.(statementList); ok {
+			for i := len(statements) - 1; i >= 0; i-- {
+				s.statements = append(s.statements, statements[i])
+			}
+			compiler.push(s)
+			return
+		}
+		ev, ok := v.(Evaluatable)
+		if !ok {
+			compiler.setError(ErrNotExpression)
+			return
+		}
+		statements = append(statements, ev)
+	}
+}
+
+func (compiler *Compiler) ExitStatements(c *parser.StatementsContext) {
+	compiler.exitStatements()
+}
+
+func (compiler *Compiler) ExitStatementBlock(c *parser.StatementBlockContext) {
+	compiler.exitStatements()
+}
+
+func (compiler *Compiler) ExitExpressionStatement(c *parser.ExpressionStatementContext) {
+	v, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
-	lv, ok := compiler.pop().(LValueExpression)
+	compiler.push(expressionStatement{value: v})
+}
+
+func (compiler *Compiler) ExitAssignmentExpression(c *parser.AssignmentExpressionContext) {
+	val, ok := compiler.pop().(Evaluatable)
+	if !ok {
+		compiler.setError(ErrNotExpression)
+	}
+	lv, ok := compiler.pop().(lValueExpression)
 	if !ok {
 		compiler.setError(ErrNotLValue)
 	}
-	compiler.push(AssignmentExpression{LValue: string(lv), RValue: val})
+	compiler.push(assignmentExpression{lValue: string(lv), rValue: val})
 }
 
 func (compiler *Compiler) ExitLvalue(c *parser.LvalueContext) {
-	compiler.push(LValueExpression(c.GetText()))
+	compiler.push(lValueExpression(c.GetText()))
 }
 
 func (compiler *Compiler) ExitLiteralExpression(c *parser.LiteralExpressionContext) {
 	text := c.GetText()
 	if text == "null" {
-		compiler.push(NullLiteral{})
+		compiler.push(nullLiteral{})
 	} else if text == "true" || text == "false" {
-		compiler.push(BoolLiteral(text == "true"))
+		compiler.push(boolLiteral(text == "true"))
 	} else if len(text) > 0 && text[0] == '"' || text[0] == '\'' {
 		ntext := "\"" + text[1:len(text)-1] + "\""
 		q, err := strconv.Unquote(ntext)
 		compiler.setError(err)
-		compiler.push(StringLiteral(q))
+		compiler.push(stringLiteral(q))
 	} else {
-		compiler.push(NumberLiteral(text))
+		compiler.push(numberLiteral(text))
 	}
 }
 
 func (compiler *Compiler) ExitIdentifierExpression(c *parser.IdentifierExpressionContext) {
-	compiler.push(IdentifierValue(c.GetText()))
+	compiler.push(identifierValue(c.GetText()))
 }
 
 func (compiler *Compiler) ExitLogicalAndExpression(c *parser.LogicalAndExpressionContext) {
-	v1, ok := compiler.pop().(Expression)
+	v1, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
-	v2, ok := compiler.pop().(Expression)
+	v2, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
-	compiler.push(LogicalAndExpression{Right: v1, Left: v2})
+	compiler.push(logicalAndExpression{right: v1, left: v2})
 }
 
 func (compiler *Compiler) ExitDotExpression(c *parser.DotExpressionContext) {
 	selector := c.GetStop().GetText()
-	base, ok := compiler.pop().(Expression)
+	base, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
-	compiler.push(SelectExpression{Base: base, Selector: selector})
+	compiler.push(selectExpression{base: base, selector: selector})
 }
 
 func (compiler *Compiler) ExitLogicalOrExpression(c *parser.LogicalOrExpressionContext) {
-	v1, ok := compiler.pop().(Expression)
+	v1, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
-	v2, ok := compiler.pop().(Expression)
+	v2, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
-	compiler.push(LogicalOrExpression{Right: v1, Left: v2})
+	compiler.push(logicalOrExpression{right: v1, left: v2})
 }
 
 func (compiler *Compiler) ExitIndexExpression(c *parser.IndexExpressionContext) {
-	index, ok := compiler.pop().(Expression)
+	index, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
-	base, ok := compiler.pop().(Expression)
+	base, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
-	compiler.push(IndexExpression{Base: base, Index: index})
+	compiler.push(indexExpression{base: base, index: index})
 }
 
 func (compiler *Compiler) ExitNotExpression(c *parser.NotExpressionContext) {
-	val, ok := compiler.pop().(Expression)
+	val, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
-	compiler.push(NotExpression{Base: val})
+	compiler.push(notExpression{base: val})
 }
 
 func (compiler *Compiler) ExitEqualityExpression(c *parser.EqualityExpressionContext) {
-	v1, ok := compiler.pop().(Expression)
+	v1, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
-	v2, ok := compiler.pop().(Expression)
+	v2, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
-	eq := Expression(EqualityExpression{Left: v2, Right: v1})
+	eq := Evaluatable(equalityExpression{left: v2, right: v1})
 	if c.GetChild(1).(antlr.TerminalNode).GetSymbol().GetText() == "!=" {
-		eq = NotExpression{Base: eq}
+		eq = notExpression{base: eq}
 	}
 	compiler.push(eq)
 }
 
 func (compiler *Compiler) ExitFunctionCallExpression(c *parser.FunctionCallExpressionContext) {
 	a := compiler.pop()
-	args, ok := a.([]Expression)
+	args, ok := a.([]Evaluatable)
 	if !ok {
 		compiler.setError(ErrEvaluation)
 		return
 	}
-	f, ok := compiler.pop().(Expression)
+	f, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
-	compiler.push(FunctionCallExpression{Function: f, Args: args})
+	compiler.push(functionCallExpression{function: f, args: args})
 }
 
 func (compiler *Compiler) ExitArguments(c *parser.ArgumentsContext) {
@@ -180,10 +224,10 @@ func (compiler *Compiler) ExitArguments(c *parser.ArgumentsContext) {
 	if ch < 0 {
 		return
 	}
-	args := make([]Expression, ch)
+	args := make([]Evaluatable, ch)
 	for i := ch - 1; i >= 0; i-- {
 		var ok bool
-		args[i], ok = compiler.pop().(Expression)
+		args[i], ok = compiler.pop().(Evaluatable)
 		if !ok {
 			compiler.setError(ErrNotExpression)
 		}
@@ -192,10 +236,10 @@ func (compiler *Compiler) ExitArguments(c *parser.ArgumentsContext) {
 }
 
 func (compiler *Compiler) ExitClosureExpression(c *parser.ClosureExpressionContext) {
-	expr, ok := compiler.pop().(Expression)
+	expr, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
 	identifier := c.GetStart().GetText()
-	compiler.push(ClosureExpression{Symbol: identifier, F: expr})
+	compiler.push(closureExpression{symbol: identifier, f: expr})
 }

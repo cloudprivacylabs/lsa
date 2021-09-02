@@ -112,7 +112,7 @@ func SortEdgesItr(edges digraph.Edges) digraph.Edges {
 	for _, x := range e {
 		arr = append(arr, x)
 	}
-	return digraph.Edges{&digraph.EdgeArrayIterator{arr}}
+	return digraph.NewEdges(arr...)
 }
 
 // An EdgeSet is a set of edges

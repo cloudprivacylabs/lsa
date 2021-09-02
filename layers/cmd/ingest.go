@@ -124,7 +124,7 @@ func OutputIngestedGraph(outFormat string, target *digraph.Graph, wr io.Writer, 
 		for nodes := target.GetAllNodes(); nodes.HasNext(); {
 			node := nodes.Next().(ls.Node)
 			if ls.IsDocumentNode(node) {
-				for _, edge := range node.GetAllOutgoingEdgesWithLabel(ls.InstanceOfTerm).All() {
+				for _, edge := range node.OutWith(ls.InstanceOfTerm).All() {
 					schemaNodes[edge.GetTo().(ls.Node)] = struct{}{}
 				}
 			}
