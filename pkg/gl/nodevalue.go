@@ -6,7 +6,7 @@ import (
 
 // NodeValue is zero or mode nodes on the stack
 type NodeValue struct {
-	BasicValue
+	basicValue
 	Nodes ls.NodeSet
 }
 
@@ -40,23 +40,7 @@ func (v NodeValue) Selector(sel string) (Value, error) {
 	if selected != nil {
 		return selected(v)
 	}
-	return v.BasicValue.Selector(sel)
-}
-
-func (v NodeValue) Iterate(f func(Value) (Value, error)) (Value, error) {
-	ret := NewNodeValue()
-	for node := range v.Nodes.Slice() {
-		n, err := f(ValueOf(node))
-		if err != nil {
-			return nil, err
-		}
-		x, err := ret.Add(n)
-		if err != nil {
-			return nil, err
-		}
-		ret = x.(NodeValue)
-	}
-	return ret, nil
+	return v.basicValue.Selector(sel)
 }
 
 func (v NodeValue) Add(v2 Value) (Value, error) {

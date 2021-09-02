@@ -1,7 +1,18 @@
 grammar gl;
 
+script
+ : expression     # ExpressionScript
+ | statementList  # StatementListScript
+ ;
 
+statementList
+ : statement+             # Statements
+ | '{' statementList '}'  # StatementBlock
+ ;
 
+statement
+ : expression ';'     # ExpressionStatement
+ ;
 
 expression
  : expression '[' expression ']'                              # IndexExpression
@@ -81,7 +92,7 @@ StringLiteral
  ;
 
 WhiteSpaces
- : [\t\u000B\u000C\u0020\u00A0]+ -> channel(HIDDEN)
+ : [\r\n\t\u000B\u000C\u0020\u00A0]+ -> channel(HIDDEN)
  ;
 
 fragment StringCharacter

@@ -32,29 +32,6 @@ func (value ValueArrayValue) Index(index Value) (Value, error) {
 	return ValueOf(value[i]), nil
 }
 
-func (value ValueArrayValue) Iterate(f func(Value) (Value, error)) (Value, error) {
-	var ret Value
-	for _, k := range value {
-		v, err := f(k)
-		if err != nil {
-			return nil, err
-		}
-		if ret == nil {
-			ret = v
-		} else {
-			acc, ok := ret.(Accumulator)
-			if !ok {
-				return nil, ErrCannotAccumulate
-			}
-			ret, err = acc.Add(v)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
-	return ret, nil
-}
-
 func (value ValueArrayValue) Add(v2 Value) (Value, error) {
 	slice, ok := v2.(ValueArrayValue)
 	if !ok {
@@ -64,10 +41,10 @@ func (value ValueArrayValue) Add(v2 Value) (Value, error) {
 	return ret, nil
 }
 
-func (value ValueArrayValue) AsBool() (bool, error)           { return len(value) > 0, nil }
-func (ValueArrayValue) AsInt() (int, error)                   { return 0, ErrNotANumber }
-func (ValueArrayValue) Call(*Context, []Value) (Value, error) { return nil, ErrNotCallable }
-func (ValueArrayValue) Eq(Value) (bool, error)                { return false, ErrIncomparable }
+func (value ValueArrayValue) AsBool() (bool, error)         { return len(value) > 0, nil }
+func (ValueArrayValue) AsInt() (int, error)                 { return 0, ErrNotANumber }
+func (ValueArrayValue) Call(*Scope, []Value) (Value, error) { return nil, ErrNotCallable }
+func (ValueArrayValue) Eq(Value) (bool, error)              { return false, ErrIncomparable }
 func (value ValueArrayValue) AsString() (string, error) {
 	s := make([]string, 0, len(value))
 	for _, x := range value {

@@ -2,65 +2,89 @@ package gl
 
 import ()
 
-type Expression interface {
-	Evaluate(*Context) (Value, error)
+type Evaluatable interface {
+	Evaluate(*Scope) (Value, error)
 }
 
-type FuncAsExpression func(*Context) (Value, error)
+type lValueExpression string
 
-func (f FuncAsExpression) Evaluate(ctx *Context) (Value, error) { return f(ctx) }
+func (l lValueExpression) Evaluate(*Scope) (Value, error) { return lValue{name: string(l)}, nil }
 
-type LValueExpression string
+type nullLiteral struct{}
 
-func (l LValueExpression) Evaluate(*Context) (Value, error) { return LValue{Name: string(l)}, nil }
+func (nullLiteral) Evaluate(*Scope) (Value, error) { return NullValue{}, nil }
 
-type NullLiteral struct{}
+type boolLiteral bool
 
-func (l NullLiteral) Evaluate(*Context) (Value, error) { return NullValue{}, nil }
+func (l boolLiteral) Evaluate(*Scope) (Value, error) { return BoolValue(l), nil }
 
-type BoolLiteral bool
+type stringLiteral string
 
-func (l BoolLiteral) Evaluate(*Context) (Value, error) { return BoolValue(l), nil }
+func (l stringLiteral) Evaluate(*Scope) (Value, error) { return StringValue(l), nil }
 
-type StringLiteral string
+type numberLiteral string
 
-func (l StringLiteral) Evaluate(*Context) (Value, error) { return StringValue(l), nil }
+func (l numberLiteral) Evaluate(*Scope) (Value, error) { return NumberValue(l), nil }
 
-type NumberLiteral string
+type identifierValue string
 
-func (l NumberLiteral) Evaluate(*Context) (Value, error) { return NumberValue(l), nil }
-
-type IdentifierValue string
-
-func (expr IdentifierValue) Evaluate(ctx *Context) (Value, error) {
-	value := ctx.Get(string(expr))
+func (expr identifierValue) Evaluate(scope *Scope) (Value, error) {
+	value := scope.Get(string(expr))
 	if value == nil {
 		return nil, ErrUnknownIdentifier(expr)
 	}
 	return value, nil
 }
 
-type AssignmentExpression struct {
-	LValue string
-	RValue Expression
+type statementList struct {
+	statements []Evaluatable
+	newScope   bool
 }
 
-func (expr AssignmentExpression) Evaluate(ctx *Context) (Value, error) {
-	v, err := expr.RValue.Evaluate(ctx)
+func (expr statementList) Evaluate(scope *Scope) (Value, error) {
+	if expr.newScope {
+		scope = scope.NewScope()
+	}
+	var ret Value
+	var err error
+	for _, stmt := range expr.statements {
+		ret, err = stmt.Evaluate(scope)
+		if err != nil {
+			break
+		}
+	}
+	return ret, err
+}
+
+type expressionStatement struct {
+	value Evaluatable
+}
+
+func (expr expressionStatement) Evaluate(scope *Scope) (Value, error) {
+	return expr.value.Evaluate(scope)
+}
+
+type assignmentExpression struct {
+	lValue string
+	rValue Evaluatable
+}
+
+func (expr assignmentExpression) Evaluate(scope *Scope) (Value, error) {
+	v, err := expr.rValue.Evaluate(scope)
 	if err != nil {
 		return nil, err
 	}
-	ctx.Set(expr.LValue, v)
+	scope.Set(expr.lValue, v)
 	return v, nil
 }
 
-type LogicalAndExpression struct {
-	Left  Expression
-	Right Expression
+type logicalAndExpression struct {
+	left  Evaluatable
+	right Evaluatable
 }
 
-func (expr LogicalAndExpression) Evaluate(ctx *Context) (Value, error) {
-	v1, err := expr.Left.Evaluate(ctx)
+func (expr logicalAndExpression) Evaluate(scope *Scope) (Value, error) {
+	v1, err := expr.left.Evaluate(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +95,7 @@ func (expr LogicalAndExpression) Evaluate(ctx *Context) (Value, error) {
 	if !b1 {
 		return FalseValue, nil
 	}
-	v2, err := expr.Right.Evaluate(ctx)
+	v2, err := expr.right.Evaluate(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -85,13 +109,13 @@ func (expr LogicalAndExpression) Evaluate(ctx *Context) (Value, error) {
 	return TrueValue, nil
 }
 
-type LogicalOrExpression struct {
-	Left  Expression
-	Right Expression
+type logicalOrExpression struct {
+	left  Evaluatable
+	right Evaluatable
 }
 
-func (expr LogicalOrExpression) Evaluate(ctx *Context) (Value, error) {
-	v1, err := expr.Left.Evaluate(ctx)
+func (expr logicalOrExpression) Evaluate(scope *Scope) (Value, error) {
+	v1, err := expr.left.Evaluate(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +126,7 @@ func (expr LogicalOrExpression) Evaluate(ctx *Context) (Value, error) {
 	if b1 {
 		return TrueValue, nil
 	}
-	v2, err := expr.Right.Evaluate(ctx)
+	v2, err := expr.right.Evaluate(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -116,42 +140,42 @@ func (expr LogicalOrExpression) Evaluate(ctx *Context) (Value, error) {
 	return FalseValue, nil
 }
 
-type SelectExpression struct {
-	Base     Expression
-	Selector string
+type selectExpression struct {
+	base     Evaluatable
+	selector string
 }
 
-func (expr SelectExpression) Evaluate(ctx *Context) (Value, error) {
-	base, err := expr.Base.Evaluate(ctx)
+func (expr selectExpression) Evaluate(scope *Scope) (Value, error) {
+	base, err := expr.base.Evaluate(scope)
 	if err != nil {
 		return nil, err
 	}
-	return base.Selector(expr.Selector)
+	return base.Selector(expr.selector)
 }
 
-type IndexExpression struct {
-	Base  Expression
-	Index Expression
+type indexExpression struct {
+	base  Evaluatable
+	index Evaluatable
 }
 
-func (expr IndexExpression) Evaluate(ctx *Context) (Value, error) {
-	base, err := expr.Base.Evaluate(ctx)
+func (expr indexExpression) Evaluate(scope *Scope) (Value, error) {
+	base, err := expr.base.Evaluate(scope)
 	if err != nil {
 		return nil, err
 	}
-	index, err := expr.Index.Evaluate(ctx)
+	index, err := expr.index.Evaluate(scope)
 	if err != nil {
 		return nil, err
 	}
 	return base.Index(index)
 }
 
-type NotExpression struct {
-	Base Expression
+type notExpression struct {
+	base Evaluatable
 }
 
-func (expr NotExpression) Evaluate(ctx *Context) (Value, error) {
-	v, err := expr.Base.Evaluate(ctx)
+func (expr notExpression) Evaluate(scope *Scope) (Value, error) {
+	v, err := expr.base.Evaluate(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -162,17 +186,17 @@ func (expr NotExpression) Evaluate(ctx *Context) (Value, error) {
 	return ValueOf(!b), nil
 }
 
-type EqualityExpression struct {
-	Left  Expression
-	Right Expression
+type equalityExpression struct {
+	left  Evaluatable
+	right Evaluatable
 }
 
-func (expr EqualityExpression) Evaluate(ctx *Context) (Value, error) {
-	v1, err := expr.Left.Evaluate(ctx)
+func (expr equalityExpression) Evaluate(scope *Scope) (Value, error) {
+	v1, err := expr.left.Evaluate(scope)
 	if err != nil {
 		return nil, err
 	}
-	v2, err := expr.Right.Evaluate(ctx)
+	v2, err := expr.right.Evaluate(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -183,32 +207,32 @@ func (expr EqualityExpression) Evaluate(ctx *Context) (Value, error) {
 	return ValueOf(b), nil
 }
 
-type FunctionCallExpression struct {
-	Function Expression
-	Args     []Expression
+type functionCallExpression struct {
+	function Evaluatable
+	args     []Evaluatable
 }
 
-func (expr FunctionCallExpression) Evaluate(ctx *Context) (Value, error) {
-	f, err := expr.Function.Evaluate(ctx)
+func (expr functionCallExpression) Evaluate(scope *Scope) (Value, error) {
+	f, err := expr.function.Evaluate(scope)
 	if err != nil {
 		return nil, err
 	}
-	argValues := make([]Value, 0, len(expr.Args))
-	for _, x := range expr.Args {
-		v, err := x.Evaluate(ctx)
+	argValues := make([]Value, 0, len(expr.args))
+	for _, x := range expr.args {
+		v, err := x.Evaluate(scope)
 		if err != nil {
 			return nil, err
 		}
 		argValues = append(argValues, v)
 	}
-	return f.Call(ctx, argValues)
+	return f.Call(scope, argValues)
 }
 
-type ClosureExpression struct {
-	Symbol string
-	F      Expression
+type closureExpression struct {
+	symbol string
+	f      Evaluatable
 }
 
-func (expr ClosureExpression) Evaluate(ctx *Context) (Value, error) {
-	return Closure{Symbol: expr.Symbol, F: expr.F}, nil
+func (expr closureExpression) Evaluate(scope *Scope) (Value, error) {
+	return Closure{Symbol: expr.symbol, F: expr.f}, nil
 }

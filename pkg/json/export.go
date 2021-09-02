@@ -47,7 +47,7 @@ func GetBuildNodeKeyBySchemaNodeFunc(f func(schemaNode, docNode ls.Node) (string
 // node argument
 func GetBuildNodeKeyExprFunc(closure gl.Closure) func(ls.Node) (string, bool, error) {
 	return func(node ls.Node) (string, bool, error) {
-		value, err := closure.Evaluate(gl.ValueOf(node), gl.NewContext())
+		value, err := closure.Evaluate(gl.ValueOf(node), gl.NewScope())
 		if err != nil {
 			return "", false, err
 		}

@@ -22,46 +22,50 @@ import (
 )
 
 func TestExprParse(t *testing.T) {
-	check := func(input string, ctx *Context, expected Value) {
-		expr, err := ParseExpression(input)
+	check := func(input string, scope *Scope, expected Value) {
+		expr, err := Parse(input)
 		if err != nil {
-			t.Error(err)
+			t.Errorf("%s: %s", input, err)
 			return
 		}
-		value, err := expr.Evaluate(ctx)
+		value, err := expr.Evaluate(scope)
 		if err != nil {
-			t.Error(err)
+			t.Errorf("%s: %s", input, err)
 		} else if !reflect.DeepEqual(value, expected) {
 			t.Errorf("input: %s expected: %v got: %v", input, expected, value)
 		}
 	}
-	ctx := NewContext()
-	check("123", ctx, ValueOf(123))
-	check(`"123"`, ctx, ValueOf("123"))
-	check("null", ctx, ValueOf(nil))
-	check("true", ctx, ValueOf(true))
-	check("false", ctx, ValueOf(false))
+	scope := NewScope()
+	check("123", scope, ValueOf(123))
+	check(`"123"`, scope, ValueOf("123"))
+	check("null", scope, ValueOf(nil))
+	check("true", scope, ValueOf(true))
+	check("false", scope, ValueOf(false))
 
-	ctx.Set("abc", "123")
-	check("abc", ctx, ValueOf("123"))
-	check(`abc.length`, ctx, ValueOf(3))
-	ctx.Set("arr", []string{"a", "b", "c"})
-	check(`arr.has("a")`, ctx, ValueOf(true))
-	check(`arr.has("d")`, ctx, ValueOf(false))
-	check(`!arr`, ctx, ValueOf(false))
-	check(`!false`, ctx, ValueOf(true))
-	check(`abc=="123"`, ctx, ValueOf(true))
-	check(`abc!="123"`, ctx, ValueOf(false))
-	check(`newvar=abc=="123"`, ctx, ValueOf(true))
-	if !reflect.DeepEqual(ctx.Get("newvar"), ValueOf(true)) {
+	scope.Set("abc", "123")
+	check("abc", scope, ValueOf("123"))
+	check(`abc.length`, scope, ValueOf(3))
+	// Linefeed is valid whitespace
+	check(`abc.
+  length`, scope, ValueOf(3))
+	scope.Set("arr", []string{"a", "b", "c"})
+	check(`arr.has("a")`, scope, ValueOf(true))
+	check(`arr.has("d")`, scope, ValueOf(false))
+	check(`!arr`, scope, ValueOf(false))
+	check(`!false`, scope, ValueOf(true))
+	check(`abc=="123"`, scope, ValueOf(true))
+	check(`abc!="123"`, scope, ValueOf(false))
+	check(`newvar=abc=="123"`, scope, ValueOf(true))
+	if !reflect.DeepEqual(scope.Get("newvar"), ValueOf(true)) {
 		t.Errorf("Assignment error")
 	}
-	check(`x=1`, ctx, ValueOf(1))
+	check(`x=1`, scope, ValueOf(1))
 
 	node1 := ls.NewNode("id1")
 	node2 := ls.NewNode("id2")
 	ls.Connect(node1, node2, "edgeLabel")
-	ctx.Set("node", ValueOf(node1))
-	check("node.firstReachable(n->(n.id=='id2')).length", ctx, ValueOf(1))
-
+	scope.Set("node", ValueOf(node1))
+	check("node.firstReachable(n->n.id=='id2').length", scope, ValueOf(1))
+	check("node.firstReachable(n->n.id=='id2'&&n.id=='id2').length", scope, ValueOf(1))
+	check("123;abc.length;", scope, ValueOf(3))
 }

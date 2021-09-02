@@ -6,7 +6,7 @@ import (
 
 // PropertiesValue is a map[string]*PropertyValue on the stack
 type PropertiesValue struct {
-	BasicValue
+	basicValue
 	Properties map[string]*ls.PropertyValue
 }
 
