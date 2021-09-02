@@ -41,16 +41,24 @@ type edge struct {
 	compiled   map[interface{}]interface{}
 }
 
-func (edge *edge) GetCompiledDataMap() map[interface{}]interface{} { return edge.compiled }
+func (edge *edge) GetCompiledDataMap() map[interface{}]interface{} {
+	if edge.compiled == nil {
+		edge.compiled = make(map[interface{}]interface{})
+	}
+	return edge.compiled
+}
 
-func (edge *edge) GetProperties() map[string]*PropertyValue { return edge.properties }
+func (edge *edge) GetProperties() map[string]*PropertyValue {
+	if edge.properties == nil {
+		edge.properties = make(map[string]*PropertyValue)
+	}
+	return edge.properties
+}
 
 // NewEdge returns a new initialized  edge
 func NewEdge(label string) Edge {
 	ret := &edge{
 		EdgeHeader: digraph.NewEdgeHeader(label),
-		properties: make(map[string]*PropertyValue),
-		compiled:   make(map[interface{}]interface{}),
 	}
 	return ret
 }

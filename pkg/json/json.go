@@ -18,6 +18,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 // OM represents the JSON object model that preserves order
@@ -112,28 +114,12 @@ func (e Array) Encode(w io.Writer) error {
 	return nil
 }
 
-type stringInterner struct {
-	strings map[string]string
-}
-
-func newInterner() stringInterner { return stringInterner{strings: make(map[string]string)} }
-
-func (s stringInterner) intern(key string) string {
-	result, ok := s.strings[key]
-	if !ok {
-		result = key
-		s.strings[key] = result
-	}
-	return result
-}
-
 func Decode(decoder *json.Decoder) (OM, error) {
 	decoder.UseNumber()
-	interner := newInterner()
-	return decode(decoder, interner)
+	return decode(decoder, ls.NewInterner())
 }
 
-func decode(decoder *json.Decoder, interner stringInterner) (OM, error) {
+func decode(decoder *json.Decoder, interner ls.StringInterner) (OM, error) {
 	var ret OM
 
 	tok, err := decoder.Token()
@@ -158,7 +144,7 @@ func decode(decoder *json.Decoder, interner stringInterner) (OM, error) {
 	return ret, err
 }
 
-func decodeObject(decoder *json.Decoder, interner stringInterner) (Object, error) {
+func decodeObject(decoder *json.Decoder, interner ls.StringInterner) (Object, error) {
 	ret := Object{}
 	for {
 		tok, err := decoder.Token()
@@ -180,7 +166,7 @@ func decodeObject(decoder *json.Decoder, interner stringInterner) (Object, error
 		if !ok {
 			return ret, &json.SyntaxError{Offset: decoder.InputOffset()}
 		}
-		key = interner.intern(key)
+		key = interner.Intern(key)
 
 		value, err := decode(decoder, interner)
 		if err != nil {
@@ -191,7 +177,7 @@ func decodeObject(decoder *json.Decoder, interner stringInterner) (Object, error
 	return ret, nil
 }
 
-func decodeElement(decoder *json.Decoder, interner stringInterner) (OM, bool, error) {
+func decodeElement(decoder *json.Decoder, interner ls.StringInterner) (OM, bool, error) {
 	var ret OM
 
 	tok, err := decoder.Token()
@@ -218,7 +204,7 @@ func decodeElement(decoder *json.Decoder, interner stringInterner) (OM, bool, er
 	return ret, false, err
 }
 
-func decodeArray(decoder *json.Decoder, interner stringInterner) (Array, error) {
+func decodeArray(decoder *json.Decoder, interner ls.StringInterner) (Array, error) {
 	ret := Array{}
 	for {
 		value, done, err := decodeElement(decoder, interner)
