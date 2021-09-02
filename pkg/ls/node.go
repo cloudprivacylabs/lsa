@@ -325,7 +325,7 @@ func iterateDescendants(root Node, path []Node, nodeFunc func(Node, []Node) bool
 }
 
 // FirstReachable returns the first reachable node for which
-// nodePrdicate returns true, using only the edges for which
+// nodePredicate returns true, using only the edges for which
 // edgePredicate returns true.
 func FirstReachable(from Node, nodePredicate func(Node, []Node) bool, edgePredicate func(Edge, []Node) bool) (Node, []Node) {
 	var (

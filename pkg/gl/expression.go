@@ -74,6 +74,22 @@ func (expr assignmentExpression) Evaluate(scope *Scope) (Value, error) {
 	if err != nil {
 		return nil, err
 	}
+	if err := scope.SetValue(expr.lValue, v); err != nil {
+		return nil, err
+	}
+	return v, nil
+}
+
+type definitionExpression struct {
+	lValue string
+	rValue Evaluatable
+}
+
+func (expr definitionExpression) Evaluate(scope *Scope) (Value, error) {
+	v, err := expr.rValue.Evaluate(scope)
+	if err != nil {
+		return nil, err
+	}
 	scope.Set(expr.lValue, v)
 	return v, nil
 }

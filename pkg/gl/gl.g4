@@ -5,13 +5,21 @@ script
  | statementList  # StatementListScript
  ;
 
-statementList
- : statement+             # Statements
- | '{' statementList '}'  # StatementBlock
+statement
+ : expressionStatement
+ | statementBlock
  ;
 
-statement
- : expression ';'     # ExpressionStatement
+statementList
+ : statement+ 
+ ;
+
+statementBlock
+ :  '{' statementList '}' 
+ ;
+
+expressionStatement
+ : expression ';'
  ;
 
 expression
@@ -23,7 +31,9 @@ expression
  | expression '&&' expression                                 # LogicalAndExpression
  | expression '||' expression                                 # LogicalOrExpression
  | lvalue '=' expression                                      # AssignmentExpression
+ | lvalue ':=' expression                                     # DefinitionExpression
  | identifierName '->' expression                             # ClosureExpression
+ | identifierName '->' statementBlock                         # BlockClosureExpression
  | Identifier                                                 # IdentifierExpression
  | literal                                                    # LiteralExpression
  | '(' expression ')'                                         # ParenthesizedExpression
