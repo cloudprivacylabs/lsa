@@ -67,7 +67,7 @@ layers import jsonschema fhir-import.json
 The file `simplebundle.json` contains a simple FHIR bundle record. To ignest:
 
 ```
-layers ingest json --repo repo/ simplebundle.json  --schema http://hl7.org/fhir/Bundle
+layers ingest json --repo repo/ simplebundle.json  --schema http://hl7.org/fhir/Bundle/schema
 ```
 
 This command will read the input file using the schema
@@ -99,35 +99,22 @@ determined by `resourceType` field. Data ingestion process discovers
 the type of the `resource` using schema constraints, loads the
 relevant schema, and applies it.
 
-## Converting data using templates
+## Reshaping data
 
-The `vax.tmpl` contains a Go template that operates on the ingested
-graph to output parts of a vaccine certificate. The template accesses
-the data graph nodes to extract information:
+Ingest data:
 
 ```
-{{- $patient := ginstanceOf .g "http://hl7.org/fhir/Patient"  | first }}
+layers ingest json --repo repo/ --schema http://hl7.org/fhir/Bundle/schema covid-bundle.json > covid-bundle-ingested.json
 ```
 
-The above finds a node such that:
+Reshape using the `vax.json` schema:
+
 ```
-Data Node  --- instanceOf ---> Schema Node
-                               type: http://hl7.org/fhir/Patient
+layers reshape covid-bundle-ingested.json --schema vax.json
 ```
 
-This template follows the path `-- attributes --> name`
-```
-{{- $patientName := gpath $patient "https://lschema.org/data/object#attributes" "https://lschema.org/attributeName=name" | first }}
-```
+Or as a pipeline:
 
-This template extracts the birthdate from a patient node by following `-- attributes --> birthDate`:
 ```
-{{ (gpath $patient  "https://lschema.org/data/object#attributes" "https://lschema.org/attributeName=birthDate"  | first).GetValue }}"
+layers ingest json --repo repo/ --schema http://hl7.org/fhir/Bundle/schema covid-bundle.json | layers reshape --schema vax.json
 ```
-
-
-To process the template:
-```
-layers template --template vax.tmpl --graph graphfile
-```
-where the `graphfile` is the ingested data.

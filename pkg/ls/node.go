@@ -157,7 +157,8 @@ func (a *node) GetValue() interface{} { return a.value }
 func (a *node) SetValue(value interface{}) { a.value = value }
 
 func (a *node) GetIndex() int {
-	p := a.properties[AttributeIndexTerm]
+	properties := a.GetProperties()
+	p := properties[AttributeIndexTerm]
 	if p == nil || !p.IsString() {
 		return 0
 	}
@@ -165,7 +166,8 @@ func (a *node) GetIndex() int {
 }
 
 func (a *node) SetIndex(index int) {
-	a.properties[AttributeIndexTerm] = IntPropertyValue(index)
+	properties := a.GetProperties()
+	properties[AttributeIndexTerm] = IntPropertyValue(index)
 }
 
 func IsDocumentNode(a Node) bool {
