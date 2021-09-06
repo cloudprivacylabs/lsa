@@ -26,7 +26,6 @@ type Compiler struct {
 }
 
 type compilerContext struct {
-	targetLayer   *Layer
 	loadedSchemas map[string]*Layer
 	compiled      map[string]Node
 	blankNodeID   uint
@@ -58,11 +57,7 @@ func (compiler Compiler) Compile(ref string) (*Layer, error) {
 		loadedSchemas: make(map[string]*Layer),
 		compiled:      make(map[string]Node),
 	}
-	_, err := compiler.compile(ctx, ref, true)
-	if err != nil {
-		return nil, err
-	}
-	return ctx.targetLayer, nil
+	return compiler.compile(ctx, ref)
 }
 
 // CompileSchema compiles the loaded schema
@@ -71,14 +66,26 @@ func (compiler Compiler) CompileSchema(schema *Layer) (*Layer, error) {
 		loadedSchemas: map[string]*Layer{schema.GetID(): schema},
 		compiled:      make(map[string]Node),
 	}
-	_, err := compiler.compile(ctx, schema.GetID(), true)
+	return compiler.compile(ctx, schema.GetID())
+}
+
+func (compiler Compiler) compile(ctx *compilerContext, ref string) (*Layer, error) {
+	compileRoot, err := compiler.compileRefs(ctx, ref)
 	if err != nil {
 		return nil, err
 	}
-	return ctx.targetLayer, nil
+	schema := ctx.loadedSchemas[ref]
+	schema.ResetIndex()
+	if err := compiler.resolveCompositions(compileRoot); err != nil {
+		return nil, err
+	}
+	if err := compiler.compileTerms(schema); err != nil {
+		return nil, err
+	}
+	return schema, nil
 }
 
-func (compiler Compiler) compile(ctx *compilerContext, ref string, topLevel bool) (Node, error) {
+func (compiler Compiler) compileRefs(ctx *compilerContext, ref string) (Node, error) {
 	var err error
 	// If compiled already, return the compiled node
 	if c := ctx.compiled[ref]; c != nil {
@@ -97,76 +104,28 @@ func (compiler Compiler) compile(ctx *compilerContext, ref string, topLevel bool
 	// If this is the top-level, we set the target layer as this schema
 	var compileRoot Node
 	schema.RenameBlankNodes(ctx.blankNodeNamer)
-	if topLevel {
-		ctx.targetLayer = schema
-		compileRoot = ctx.targetLayer.GetSchemaRootNode()
-	} else {
-		compileRoot = schema.GetSchemaRootNode()
-	}
+	schema.ResetIndex()
+	compileRoot = schema.GetSchemaRootNode()
 	if compileRoot == nil {
 		return nil, nil
 	}
+	// Resolve all references
 	ctx.compiled[ref] = compileRoot
-	if err := compiler.resolveReferences(ctx, compileRoot); err != nil {
+	if err := compiler.resolveReferences(ctx, schema.GetIndex().NodesSlice()); err != nil {
 		return nil, err
-	}
-	if err := compiler.resolveCompositions(compileRoot); err != nil {
-		return nil, err
-	}
-	if topLevel {
-		if err := compiler.compileTerms(ctx.targetLayer); err != nil {
-			return nil, err
-		}
 	}
 	return compileRoot, nil
 }
 
-func (compiler Compiler) compileTerms(layer *Layer) error {
-	for nodes := layer.GetAllNodes(); nodes.HasNext(); {
-		node := nodes.Next().(Node)
-		// Compile all non-attribute nodes
-		if !IsAttributeNode(node) {
-			if err := GetNodeCompiler(node.GetID()).CompileNode(node); err != nil {
-				return err
-			}
-		}
-		for k, v := range node.GetProperties() {
-			result, err := GetTermCompiler(k).CompileTerm(k, v)
-			if err != nil {
-				return err
-			}
-			if result != nil {
-				node.GetCompiledDataMap()[k] = result
-			}
-			for edges := node.Out(); edges.HasNext(); {
-				edge := edges.Next().(Edge)
-				if err := GetEdgeCompiler(edge.GetLabelStr()).CompileEdge(edge); err != nil {
-					return err
-				}
-				for k, v := range edge.GetProperties() {
-					result, err := GetTermCompiler(k).CompileTerm(k, v)
-					if err != nil {
-						return err
-					}
-					if result != nil {
-						edge.GetCompiledDataMap()[k] = result
-					}
-				}
-			}
-		}
-	}
-	return nil
-}
-
-func (compiler Compiler) resolveReferences(ctx *compilerContext, root Node) error {
+func (compiler Compiler) resolveReferences(ctx *compilerContext, nodes []digraph.Node) error {
 	// Collect all reference nodes
 	references := make([]Node, 0)
-	ForEachAttributeNode(root, func(n Node, _ []Node) bool {
-		if n.GetTypes().Has(AttributeTypes.Reference) {
-			references = append(references, n)
+	for _, n := range nodes {
+		nd := n.(Node)
+		if nd.GetTypes().Has(AttributeTypes.Reference) {
+			references = append(references, nd)
 		}
-		return true
-	})
+	}
 	// Resolve each reference
 	for _, node := range references {
 		if err := compiler.resolveReference(ctx, node); err != nil {
@@ -184,7 +143,7 @@ func (compiler Compiler) resolveReference(ctx *compilerContext, node Node) error
 	compiled := ctx.compiled[ref]
 	if compiled == nil {
 		var err error
-		compiled, err = compiler.compile(ctx, ref, false)
+		compiled, err = compiler.compileRefs(ctx, ref)
 		if err != nil {
 			return err
 		}
@@ -279,5 +238,42 @@ func (compiler Compiler) resolveComposition(compositeNode Node, completed map[No
 	// Convert the node to an object
 	compositeNode.GetTypes().Remove(AttributeTypes.Composite)
 	compositeNode.GetTypes().Add(AttributeTypes.Object)
+	return nil
+}
+
+func (compiler Compiler) compileTerms(layer *Layer) error {
+	for _, n := range layer.GetIndex().NodesSlice() {
+		node := n.(Node)
+		// Compile all non-attribute nodes
+		if !IsAttributeNode(node) {
+			if err := GetNodeCompiler(node.GetID()).CompileNode(node); err != nil {
+				return err
+			}
+		}
+		for k, v := range node.GetProperties() {
+			result, err := GetTermCompiler(k).CompileTerm(k, v)
+			if err != nil {
+				return err
+			}
+			if result != nil {
+				node.GetCompiledDataMap()[k] = result
+			}
+			for edges := node.Out(); edges.HasNext(); {
+				edge := edges.Next().(Edge)
+				if err := GetEdgeCompiler(edge.GetLabelStr()).CompileEdge(edge); err != nil {
+					return err
+				}
+				for k, v := range edge.GetProperties() {
+					result, err := GetTermCompiler(k).CompileTerm(k, v)
+					if err != nil {
+						return err
+					}
+					if result != nil {
+						edge.GetCompiledDataMap()[k] = result
+					}
+				}
+			}
+		}
+	}
 	return nil
 }
