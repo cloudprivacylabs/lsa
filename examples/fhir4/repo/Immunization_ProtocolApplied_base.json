@@ -12,6 +12,64 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
+            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#authority",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "authority"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#series",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "series"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#_series",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_series"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#extension",
             "@type": [
               "https://lschema.org/Array"
@@ -36,6 +94,32 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#doseNumberPositiveInt",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "doseNumberPositiveInt"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Nominal position in a series."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[1-9][0-9]*$"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#_seriesDosesString",
             "@type": [
               "https://lschema.org/Reference"
@@ -52,6 +136,56 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#targetDisease",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#targetDisease.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "targetDisease"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#_doseNumberPositiveInt",
             "@type": [
               "https://lschema.org/Reference"
@@ -64,30 +198,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_doseNumberPositiveInt"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
               }
             ]
           },
@@ -118,34 +228,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#_series",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_series"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#id",
+            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#seriesDosesString",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
+                "@value": "seriesDosesString"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A sequence of Unicode characters"
+                "@value": "The recommended number of doses to achieve immunity."
               }
             ],
             "https://lschema.org/targetType": [
@@ -186,120 +280,42 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#seriesDosesString",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "seriesDosesString"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The recommended number of doses to achieve immunity."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#series",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "series"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#authority",
+            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#_doseNumberString",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/Reference"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "authority"
+                "@value": "_doseNumberString"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#doseNumberPositiveInt",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "doseNumberPositiveInt"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Nominal position in a series."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[1-9][0-9]*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#targetDisease",
+            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#targetDisease.*",
+                "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference#reference": [
                   {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                    "@id": "http://hl7.org/fhir/Extension"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "targetDisease"
+                "@value": "modifierExtension"
               }
             ]
           },
@@ -316,22 +332,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_seriesDosesPositiveInt"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Immunization_ProtocolApplied#_doseNumberString",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_doseNumberString"
               }
             ]
           }

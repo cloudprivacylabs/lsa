@@ -12,26 +12,285 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#preAuthRefPeriod",
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#formCode",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "formCode"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#claim",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "claim"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#created",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "created"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#form",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Attachment"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "form"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#provider",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "provider"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_outcome",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_outcome"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#billablePeriod",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "billablePeriod"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#type",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "type"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "resourceType"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "This is a ExplanationOfBenefit resource"
+              }
+            ],
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "ExplanationOfBenefit"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#payment",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Payment"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "payment"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#adjudication",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#preAuthRefPeriod.*",
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#adjudication.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference#reference": [
                   {
-                    "@id": "http://hl7.org/fhir/Period"
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Adjudication"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "preAuthRefPeriod"
+                "@value": "adjudication"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#use",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "use"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#payee",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Payee"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "payee"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#precedence",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "precedence"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "An integer with a value that is positive (e.g. \u003e0)"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[1-9][0-9]*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#fundsReserveRequested",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "fundsReserveRequested"
               }
             ]
           },
@@ -66,30 +325,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#careTeam",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#careTeam.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_CareTeam"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "careTeam"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/ExplanationOfBenefit#patient",
             "@type": [
               "https://lschema.org/Reference"
@@ -102,6 +337,378 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "patient"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#total",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#total.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Total"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "total"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#accident",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Accident"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "accident"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#related",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#related.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Related"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "related"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#priority",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "priority"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#disposition",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "disposition"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#claimResponse",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "claimResponse"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#referral",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "referral"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_status",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_status"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#implicitRules",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "implicitRules"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "String of characters used to identify a name or a resource"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_created",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_created"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#meta",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Meta"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "meta"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#procedure",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#procedure.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Procedure"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "procedure"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_language",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_language"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_use",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_use"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#benefitPeriod",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "benefitPeriod"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_preAuthRef",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_preAuthRef.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Element"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_preAuthRef"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#processNote",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#processNote.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_ProcessNote"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "processNote"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_disposition",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_disposition"
               }
             ]
           },
@@ -1737,44 +2344,66 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#subType",
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#benefitBalance",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#benefitBalance.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_BenefitBalance"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "benefitBalance"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Item"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "item"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#prescription",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "subType"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#created",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "created"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+                "@value": "prescription"
               }
             ]
           },
@@ -1791,6 +2420,208 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_implicitRules"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#insurance",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#insurance.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Insurance"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "insurance"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#text",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Narrative"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#careTeam",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#careTeam.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_CareTeam"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "careTeam"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#diagnosis",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#diagnosis.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Diagnosis"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "diagnosis"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#language",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "language"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#facility",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "facility"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#fundsReserve",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "fundsReserve"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#originalPrescription",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "originalPrescription"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#enterer",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "enterer"
               }
             ]
           },
@@ -1829,127 +2660,23 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#benefitPeriod",
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#id",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/Period"
+                "@id": "http://hl7.org/fhir/id"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "benefitPeriod"
+                "@value": "id"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_preAuthRef",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_preAuthRef.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Element"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_preAuthRef"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#enterer",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "enterer"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#provider",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "provider"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#benefitBalance",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#benefitBalance.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_BenefitBalance"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "benefitBalance"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#type",
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#subType",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -1960,87 +2687,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "type"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#priority",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "priority"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_precedence",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_precedence"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#meta",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Meta"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "meta"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_status",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_status"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#payment",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Payment"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "payment"
+                "@value": "subType"
               }
             ]
           },
@@ -2069,100 +2716,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#claimResponse",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "claimResponse"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#prescription",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "prescription"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#form",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Attachment"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "form"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#total",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#total.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Total"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "total"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#resourceType",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "resourceType"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "This is a ExplanationOfBenefit resource"
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "ExplanationOfBenefit"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_use",
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_precedence",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -2173,339 +2727,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_use"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#processNote",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#processNote.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_ProcessNote"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "processNote"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_language",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_language"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#related",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#related.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Related"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "related"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#fundsReserveRequested",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "fundsReserveRequested"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#payee",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Payee"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "payee"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#fundsReserve",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "fundsReserve"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#procedure",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#procedure.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Procedure"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "procedure"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#insurer",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "insurer"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#language",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "language"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#formCode",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "formCode"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#supportingInfo",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#supportingInfo.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_SupportingInfo"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "supportingInfo"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#facility",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "facility"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#adjudication",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#adjudication.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Adjudication"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "adjudication"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#item.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Item"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "item"
+                "@value": "_precedence"
               }
             ]
           },
@@ -2536,6 +2758,54 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#supportingInfo",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#supportingInfo.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_SupportingInfo"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "supportingInfo"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#preAuthRefPeriod",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#preAuthRefPeriod.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Period"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "preAuthRefPeriod"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/ExplanationOfBenefit#addItem",
             "@type": [
               "https://lschema.org/Array"
@@ -2560,73 +2830,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#insurance",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#insurance.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Insurance"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "insurance"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_outcome",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_outcome"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#precedence",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "precedence"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "An integer with a value that is positive (e.g. \u003e0)"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[1-9][0-9]*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#originalPrescription",
+            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#insurer",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -2637,221 +2841,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "originalPrescription"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#accident",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Accident"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "accident"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#referral",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "referral"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_disposition",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_disposition"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#use",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "use"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#billablePeriod",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "billablePeriod"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#implicitRules",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "implicitRules"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#diagnosis",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ExplanationOfBenefit#diagnosis.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ExplanationOfBenefit_Diagnosis"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "diagnosis"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#claim",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "claim"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#text",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Narrative"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#disposition",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "disposition"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ExplanationOfBenefit#_created",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_created"
+                "@value": "insurer"
               }
             ]
           }

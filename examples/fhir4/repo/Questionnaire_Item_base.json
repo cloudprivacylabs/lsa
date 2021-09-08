@@ -12,6 +12,192 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#answerValueSet",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "answerValueSet"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#_maxLength",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_maxLength"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#_enableBehavior",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_enableBehavior"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#definition",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "definition"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "String of characters used to identify a name or a resource"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#prefix",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "prefix"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#item",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Questionnaire_Item#item.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Questionnaire_Item"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "item"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#text",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#repeats",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "repeats"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Value of \"true\" or \"false\""
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "boolean"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^true|false$"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/Questionnaire_Item#enableBehavior",
             "@type": [
               "https://lschema.org/Value"
@@ -32,6 +218,30 @@
               },
               {
                 "@value": "any"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#initial",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Questionnaire_Item#initial.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Questionnaire_Initial"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "initial"
               }
             ]
           },
@@ -86,148 +296,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#answerOption",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Questionnaire_Item#answerOption.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Questionnaire_AnswerOption"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "answerOption"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Questionnaire_Item#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#text",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "text"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#repeats",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "repeats"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Value of \"true\" or \"false\""
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "boolean"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^true|false$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#_linkId",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_linkId"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/Questionnaire_Item#linkId",
             "@type": [
               "https://lschema.org/Value"
@@ -254,33 +322,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#prefix",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "prefix"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#_enableBehavior",
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#_linkId",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -291,33 +333,73 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_enableBehavior"
+                "@value": "_linkId"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#definition",
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#_repeats",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_repeats"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#readOnly",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "definition"
+                "@value": "readOnly"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "String of characters used to identify a name or a resource"
+                "@value": "Value of \"true\" or \"false\""
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@id": "string"
+                "@id": "boolean"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^\\S*$"
+                "@value": "^true|false$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#answerOption",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Questionnaire_Item#answerOption.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Questionnaire_AnswerOption"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "answerOption"
               }
             ]
           },
@@ -348,7 +430,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#_prefix",
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#_definition",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -359,73 +441,57 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_prefix"
+                "@value": "_definition"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#_required",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_required"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#item",
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#enableWhen",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Questionnaire_Item#item.*",
+                "@id": "http://hl7.org/fhir/Questionnaire_Item#enableWhen.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference#reference": [
                   {
-                    "@id": "http://hl7.org/fhir/Questionnaire_Item"
+                    "@id": "http://hl7.org/fhir/Questionnaire_EnableWhen"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "item"
+                "@value": "enableWhen"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#readOnly",
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#id",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "readOnly"
+                "@value": "id"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "Value of \"true\" or \"false\""
+                "@value": "A sequence of Unicode characters"
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@id": "boolean"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^true|false$"
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -512,31 +578,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#enableWhen",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Questionnaire_Item#enableWhen.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Questionnaire_EnableWhen"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "enableWhen"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#_repeats",
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#_readOnly",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -547,23 +589,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_repeats"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#_type",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_type"
+                "@value": "_readOnly"
               }
             ]
           },
@@ -592,7 +618,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#_definition",
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#_required",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -603,36 +629,52 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_definition"
+                "@value": "_required"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#initial",
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#_prefix",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_prefix"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#extension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Questionnaire_Item#initial.*",
+                "@id": "http://hl7.org/fhir/Questionnaire_Item#extension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference#reference": [
                   {
-                    "@id": "http://hl7.org/fhir/Questionnaire_Initial"
+                    "@id": "http://hl7.org/fhir/Extension"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "initial"
+                "@value": "extension"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#_readOnly",
+            "@id": "http://hl7.org/fhir/Questionnaire_Item#_type",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -643,49 +685,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_readOnly"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#_maxLength",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_maxLength"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Questionnaire_Item#answerValueSet",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "answerValueSet"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^\\S*$"
+                "@value": "_type"
               }
             ]
           }

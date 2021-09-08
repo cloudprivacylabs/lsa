@@ -217,7 +217,7 @@ func (ingester *Ingester) ingestObject(target *digraph.Graph, input Object, path
 	}
 	ret := &addedNode{node: ingester.newNode(ingester.generateID(path, schemaNode)),
 		schemaNode: schemaNode,
-		term:       ls.DataEdgeTerms.ObjectAttributes,
+		term:       ls.HasTerm,
 	}
 	ret.node.GetTypes().Add(ObjectTypeTerm)
 
@@ -245,7 +245,7 @@ func (ingester *Ingester) ingestArray(target *digraph.Graph, input Array, path [
 	}
 	ret := &addedNode{node: ingester.newNode(ingester.generateID(path, schemaNode)),
 		schemaNode: schemaNode,
-		term:       ls.DataEdgeTerms.ArrayElements,
+		term:       ls.HasTerm,
 	}
 	ret.node.GetTypes().Add(ArrayTypeTerm)
 	for index := range input.Elements {

@@ -12,54 +12,42 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/Annotation#text",
+            "@id": "http://hl7.org/fhir/Annotation#extension",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Annotation#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "text"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A string that may contain Github Flavored Markdown syntax for optional processing by a mark down presentation engine"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "extension"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Annotation#authorString",
+            "@id": "http://hl7.org/fhir/Annotation#_time",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "authorString"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The individual responsible for making the annotation."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "_time"
               }
             ]
           },
@@ -106,54 +94,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Annotation#authorReference",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "authorReference"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Annotation#_time",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_time"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Annotation#_authorString",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_authorString"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/Annotation#id",
             "@type": [
               "https://lschema.org/Value"
@@ -180,26 +120,86 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Annotation#extension",
+            "@id": "http://hl7.org/fhir/Annotation#text",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Value"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/attributeName": [
               {
-                "@id": "http://hl7.org/fhir/Annotation#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
+                "@value": "text"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string that may contain Github Flavored Markdown syntax for optional processing by a mark down presentation engine"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Annotation#authorReference",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "authorReference"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Annotation#_authorString",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_authorString"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Annotation#authorString",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "authorString"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The individual responsible for making the annotation."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           }

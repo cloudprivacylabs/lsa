@@ -12,48 +12,6 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/Bundle_Request#_method",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_method"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Bundle_Request#ifNoneExist",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "ifNoneExist"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/Bundle_Request#id",
             "@type": [
               "https://lschema.org/Value"
@@ -80,7 +38,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Bundle_Request#_ifNoneMatch",
+            "@id": "http://hl7.org/fhir/Bundle_Request#_method",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -91,18 +49,70 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_ifNoneMatch"
+                "@value": "_method"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Bundle_Request#extension",
+            "@id": "http://hl7.org/fhir/Bundle_Request#_ifModifiedSince",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_ifModifiedSince"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Bundle_Request#method",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "method"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "In a transaction or batch, this is the HTTP action to be executed for this entry. In a history bundle, this indicates the HTTP action that occurred."
+              }
+            ],
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "GET"
+              },
+              {
+                "@value": "HEAD"
+              },
+              {
+                "@value": "POST"
+              },
+              {
+                "@value": "PUT"
+              },
+              {
+                "@value": "DELETE"
+              },
+              {
+                "@value": "PATCH"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Bundle_Request#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Bundle_Request#extension.*",
+                "@id": "http://hl7.org/fhir/Bundle_Request#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
@@ -115,12 +125,12 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "modifierExtension"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Bundle_Request#_ifNoneExist",
+            "@id": "http://hl7.org/fhir/Bundle_Request#_ifMatch",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -131,7 +141,33 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_ifNoneExist"
+                "@value": "_ifMatch"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Bundle_Request#ifNoneExist",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "ifNoneExist"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -178,98 +214,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Bundle_Request#method",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "method"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "In a transaction or batch, this is the HTTP action to be executed for this entry. In a history bundle, this indicates the HTTP action that occurred."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "GET"
-              },
-              {
-                "@value": "HEAD"
-              },
-              {
-                "@value": "POST"
-              },
-              {
-                "@value": "PUT"
-              },
-              {
-                "@value": "DELETE"
-              },
-              {
-                "@value": "PATCH"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Bundle_Request#_ifModifiedSince",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_ifModifiedSince"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Bundle_Request#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Bundle_Request#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Bundle_Request#_ifMatch",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_ifMatch"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/Bundle_Request#url",
             "@type": [
               "https://lschema.org/Value"
@@ -292,6 +236,62 @@
             "https://lschema.org/validation#pattern": [
               {
                 "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Bundle_Request#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Bundle_Request#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Bundle_Request#_ifNoneMatch",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_ifNoneMatch"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Bundle_Request#_ifNoneExist",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_ifNoneExist"
               }
             ]
           },

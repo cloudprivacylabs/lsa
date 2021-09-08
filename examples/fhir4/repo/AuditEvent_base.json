@@ -12,80 +12,6 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/AuditEvent#implicitRules",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "implicitRules"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent#_language",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_language"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent#text",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Narrative"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent#source",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent_Source"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "source"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/AuditEvent#purposeOfEvent",
             "@type": [
               "https://lschema.org/Array"
@@ -110,126 +36,35 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent#subtype",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent#subtype.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Coding"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "subtype"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent#recorded",
+            "@id": "http://hl7.org/fhir/AuditEvent#action",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "recorded"
+                "@value": "action"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "An instant in time - known at least to the second"
+                "@value": "Indicator for type of action performed during the event that generated the audit."
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/validation#enumeration": [
               {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
+                "@value": "C"
+              },
               {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent#meta",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
+                "@value": "R"
+              },
               {
-                "@id": "http://hl7.org/fhir/Meta"
-              }
-            ],
-            "https://lschema.org/attributeName": [
+                "@value": "U"
+              },
               {
-                "@value": "meta"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent#type",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
+                "@value": "D"
+              },
               {
-                "@id": "http://hl7.org/fhir/Coding"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "type"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent#period",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "period"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent#outcomeDesc",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "outcomeDesc"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "E"
               }
             ]
           },
@@ -279,6 +114,134 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/AuditEvent#_action",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_action"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#outcome",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "outcome"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Indicates whether the event succeeded or failed."
+              }
+            ],
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "0"
+              },
+              {
+                "@value": "4"
+              },
+              {
+                "@value": "8"
+              },
+              {
+                "@value": "12"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#_recorded",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_recorded"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#_implicitRules",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_implicitRules"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#entity",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent#entity.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/AuditEvent_Entity"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "entity"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#language",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "language"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/AuditEvent#extension",
             "@type": [
               "https://lschema.org/Array"
@@ -303,34 +266,60 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent#_implicitRules",
+            "@id": "http://hl7.org/fhir/AuditEvent#meta",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Meta"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_implicitRules"
+                "@value": "meta"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent#_recorded",
+            "@id": "http://hl7.org/fhir/AuditEvent#text",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Narrative"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_recorded"
+                "@value": "text"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#implicitRules",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "implicitRules"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "String of characters used to identify a name or a resource"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^\\S*$"
               }
             ]
           },
@@ -355,55 +344,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent#_outcome",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_outcome"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent#action",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "action"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Indicator for type of action performed during the event that generated the audit."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "C"
-              },
-              {
-                "@value": "R"
-              },
-              {
-                "@value": "U"
-              },
-              {
-                "@value": "D"
-              },
-              {
-                "@value": "E"
               }
             ]
           },
@@ -2039,18 +1979,66 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent#id",
+            "@id": "http://hl7.org/fhir/AuditEvent#type",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Coding"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "type"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#period",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "period"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#source",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent_Source"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "source"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#outcomeDesc",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
+                "@value": "outcomeDesc"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
+                "@value": "A sequence of Unicode characters"
               }
             ],
             "https://lschema.org/targetType": [
@@ -2060,12 +2048,78 @@
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent#_action",
+            "@id": "http://hl7.org/fhir/AuditEvent#subtype",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent#subtype.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Coding"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "subtype"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#recorded",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "recorded"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "An instant in time - known at least to the second"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#id",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#_outcome",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -2076,7 +2130,23 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_action"
+                "@value": "_outcome"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent#_language",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_language"
               }
             ]
           },
@@ -2093,86 +2163,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_outcomeDesc"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent#outcome",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "outcome"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Indicates whether the event succeeded or failed."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "0"
-              },
-              {
-                "@value": "4"
-              },
-              {
-                "@value": "8"
-              },
-              {
-                "@value": "12"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent#language",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "language"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent#entity",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent#entity.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/AuditEvent_Entity"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "entity"
               }
             ]
           }

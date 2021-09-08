@@ -12,6 +12,22 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#_referenceAllele",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_referenceAllele"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/MolecularSequence_Variant#_observedAllele",
             "@type": [
               "https://lschema.org/Reference"
@@ -28,13 +44,55 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#referenceAllele",
+            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#_cigar",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_cigar"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#start",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "referenceAllele"
+                "@value": "start"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A whole number"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^-?([0]|([1-9][0-9]*))$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#cigar",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "cigar"
               }
             ],
             "https://lschema.org/description": [
@@ -50,6 +108,22 @@
             "https://lschema.org/validation#pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#_start",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_start"
               }
             ]
           },
@@ -78,37 +152,29 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#modifierExtension",
+            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#variantPointer",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/MolecularSequence_Variant#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
+                "@value": "variantPointer"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#start",
+            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#end",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "start"
+                "@value": "end"
               }
             ],
             "https://lschema.org/description": [
@@ -144,18 +210,28 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#_start",
+            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#referenceAllele",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_start"
+                "@value": "referenceAllele"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -186,60 +262,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#end",
+            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#modifierExtension",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/attributeName": [
+            "https://lschema.org/Array#items": [
               {
-                "@value": "end"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A whole number"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?([0]|([1-9][0-9]*))$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#_referenceAllele",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/MolecularSequence_Variant#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_referenceAllele"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#_cigar",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_cigar"
+                "@value": "modifierExtension"
               }
             ]
           },
@@ -266,48 +308,6 @@
             "https://lschema.org/validation#pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#cigar",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "cigar"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MolecularSequence_Variant#variantPointer",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "variantPointer"
               }
             ]
           }

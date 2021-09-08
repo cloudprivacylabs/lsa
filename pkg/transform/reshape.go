@@ -205,7 +205,7 @@ func (respaher *Reshaper) object(context *ReshapeContext) (ls.Node, error) {
 			return nil, err
 		}
 		if newNode != nil {
-			ls.Connect(targetNode, newNode, ls.DataEdgeTerms.ObjectAttributes)
+			ls.Connect(targetNode, newNode, ls.HasTerm)
 			empty = false
 		}
 	}

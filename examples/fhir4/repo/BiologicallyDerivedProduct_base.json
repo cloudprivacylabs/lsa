@@ -12,60 +12,66 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#quantity",
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#identifier",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#identifier.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Identifier"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "identifier"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#status",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "quantity"
+                "@value": "status"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A whole number"
+                "@value": "Whether the product is currently available."
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/validation#enumeration": [
               {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
+                "@value": "available"
+              },
               {
-                "@value": "^-?([0]|([1-9][0-9]*))$"
+                "@value": "unavailable"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#productCode",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "productCode"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#id",
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#implicitRules",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
+                "@value": "implicitRules"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
+                "@value": "String of characters used to identify a name or a resource"
               }
             ],
             "https://lschema.org/targetType": [
@@ -75,7 +81,31 @@
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
+                "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
               }
             ]
           },
@@ -100,46 +130,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "processing"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#parent",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#parent.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "parent"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#_quantity",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_quantity"
               }
             ]
           },
@@ -176,6 +166,30 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#storage",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#storage.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct_Storage"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "storage"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#resourceType",
             "@type": [
               "https://lschema.org/Value"
@@ -197,7 +211,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#_status",
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#_language",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -208,55 +222,23 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_status"
+                "@value": "_language"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#request",
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#_quantity",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#request.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "request"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
+                "@value": "_quantity"
               }
             ]
           },
@@ -293,52 +275,59 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#implicitRules",
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#productCategory",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "implicitRules"
+                "@value": "productCategory"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "String of characters used to identify a name or a resource"
+                "@value": "Broad category of this product."
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/validation#enumeration": [
               {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
+                "@value": "organ"
+              },
               {
-                "@value": "^\\S*$"
+                "@value": "tissue"
+              },
+              {
+                "@value": "fluid"
+              },
+              {
+                "@value": "cells"
+              },
+              {
+                "@value": "biologicalAgent"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#modifierExtension",
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#parent",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#modifierExtension.*",
+                "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#parent.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference#reference": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/Reference"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
+                "@value": "parent"
               }
             ]
           },
@@ -2000,35 +1989,100 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#productCategory",
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#quantity",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "productCategory"
+                "@value": "quantity"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "Broad category of this product."
+                "@value": "A whole number"
               }
             ],
-            "https://lschema.org/validation#enumeration": [
+            "https://lschema.org/targetType": [
               {
-                "@value": "organ"
-              },
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
               {
-                "@value": "tissue"
-              },
+                "@value": "^-?([0]|([1-9][0-9]*))$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#id",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
               {
-                "@value": "fluid"
-              },
+                "@id": "http://hl7.org/fhir/id"
+              }
+            ],
+            "https://lschema.org/attributeName": [
               {
-                "@value": "cells"
-              },
+                "@value": "id"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
               {
-                "@value": "biologicalAgent"
+                "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#productCode",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "productCode"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#_status",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_status"
               }
             ]
           },
@@ -2049,26 +2103,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#status",
+            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#request",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#request.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "status"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Whether the product is currently available."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "available"
-              },
-              {
-                "@value": "unavailable"
+                "@value": "request"
               }
             ]
           },
@@ -2085,70 +2139,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "manipulation"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#_language",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_language"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#identifier",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#identifier.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Identifier"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "identifier"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#storage",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct#storage.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct_Storage"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "storage"
               }
             ]
           }

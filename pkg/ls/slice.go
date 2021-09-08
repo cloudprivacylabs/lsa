@@ -55,14 +55,19 @@ var IncludeAllNodesInSliceFunc = func(layer *Layer, nd Node) Node {
 func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, Node) Node) *Layer {
 	ret := NewLayer()
 	ret.SetLayerType(layerType)
-	rootNode := NewNode("")
-	ret.AddNode(rootNode)
 	sourceRoot := layer.GetSchemaRootNode()
+	var rootNode Node
 	if sourceRoot != nil {
-		rootNode.SetID(sourceRoot.GetID())
-		rootNode.GetTypes().Set(sourceRoot.GetTypes().Slice()...)
+		rootNode = nodeFilter(ret, layer.GetSchemaRootNode())
 	}
-	hasNodes := false
+	if rootNode == nil {
+		rootNode = NewNode("")
+		ret.AddNode(rootNode)
+		if sourceRoot != nil {
+			rootNode.SetID(sourceRoot.GetID())
+			rootNode.GetTypes().Set(sourceRoot.GetTypes().Slice()...)
+		}
+	}
 	if sourceRoot != nil {
 		for targets := sourceRoot.Out(); targets.HasNext(); {
 			edge := targets.Next().(Edge)
@@ -70,14 +75,11 @@ func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, Node) Node) 
 				newNode := slice(ret, edge.GetTo().(Node), nodeFilter, map[Node]struct{}{})
 				if newNode != nil {
 					Connect(rootNode, newNode, edge.GetLabelStr())
-					hasNodes = true
 				}
 			}
 		}
 	}
-	if hasNodes {
-		Connect(ret.GetLayerInfoNode(), rootNode, LayerRootTerm)
-	}
+	Connect(ret.GetLayerInfoNode(), rootNode, LayerRootTerm)
 	return ret
 }
 

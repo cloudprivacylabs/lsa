@@ -73,7 +73,7 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 			}
 		}
 		newNode := ls.NewNode(ingester.getID(columnIndex, columnData), ls.DocumentNodeTerm)
-		ls.Connect(rootNode, newNode, ls.DataEdgeTerms.ObjectAttributes)
+		ls.Connect(rootNode, newNode, ls.HasTerm)
 		newNode.SetValue(columnData)
 		if schemaNode != nil && ingester.UseInstanceOfEdges {
 			ls.Connect(newNode, schemaNode, ls.InstanceOfTerm)

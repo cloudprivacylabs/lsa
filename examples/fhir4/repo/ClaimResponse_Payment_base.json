@@ -12,18 +12,18 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/ClaimResponse_Payment#amount",
+            "@id": "http://hl7.org/fhir/ClaimResponse_Payment#identifier",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/Money"
+                "@id": "http://hl7.org/fhir/Identifier"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "amount"
+                "@value": "identifier"
               }
             ]
           },
@@ -44,38 +44,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ClaimResponse_Payment#adjustment",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Money"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "adjustment"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ClaimResponse_Payment#_date",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_date"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/ClaimResponse_Payment#adjustmentReason",
             "@type": [
               "https://lschema.org/Reference"
@@ -92,26 +60,44 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ClaimResponse_Payment#extension",
+            "@id": "http://hl7.org/fhir/ClaimResponse_Payment#id",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Value"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/attributeName": [
               {
-                "@id": "http://hl7.org/fhir/ClaimResponse_Payment#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse_Payment#amount",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Money"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "amount"
               }
             ]
           },
@@ -140,6 +126,62 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/ClaimResponse_Payment#_date",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_date"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse_Payment#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ClaimResponse_Payment#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse_Payment#adjustment",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Money"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "adjustment"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/ClaimResponse_Payment#date",
             "@type": [
               "https://lschema.org/Value"
@@ -162,48 +204,6 @@
             "https://lschema.org/validation#pattern": [
               {
                 "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ClaimResponse_Payment#identifier",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Identifier"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "identifier"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ClaimResponse_Payment#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           }

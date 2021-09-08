@@ -100,16 +100,8 @@ var LayerTerms = struct {
 // DocumentNodeTerm is ithe type of document nodes
 var DocumentNodeTerm = NewTerm(LS+"DocumentNode", false, false, ErrorComposition, nil)
 
-var DataEdgeTerms = struct {
-	// Type of a document node
-	// Edge label linking attribute nodes to an object node
-	ObjectAttributes string
-	// Edge label linking array element nodes to an array node
-	ArrayElements string
-}{
-	ObjectAttributes: NewTerm(LS+"data/object#attributes", false, false, ErrorComposition, nil),
-	ArrayElements:    NewTerm(LS+"data/array#elements", false, false, ErrorComposition, nil),
-}
+// HasTerm is an edge term for linking document elements
+var HasTerm = NewTerm(LS+"data#has", false, false, ErrorComposition, nil)
 
 // FilterAttributeTypes returns all recognized attribute types from
 // the given types array. This is mainly used for validation, to

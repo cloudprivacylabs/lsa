@@ -12,28 +12,60 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#value",
+            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#preferred",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "value"
+                "@value": "preferred"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A sequence of Unicode characters"
+                "@value": "Value of \"true\" or \"false\""
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@id": "string"
+                "@id": "boolean"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "^true|false$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#_value",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_value"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#_preferred",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_preferred"
               }
             ]
           },
@@ -60,6 +92,30 @@
             "https://lschema.org/validation#pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
               }
             ]
           },
@@ -94,90 +150,28 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#modifierExtension",
+            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#value",
             "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#_comment",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
+                "@value": "value"
               }
             ],
-            "https://lschema.org/attributeName": [
+            "https://lschema.org/description": [
               {
-                "@value": "_comment"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#_type",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
+                "@value": "A sequence of Unicode characters"
               }
             ],
-            "https://lschema.org/attributeName": [
+            "https://lschema.org/targetType": [
               {
-                "@value": "_type"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#_preferred",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "string"
               }
             ],
-            "https://lschema.org/attributeName": [
+            "https://lschema.org/validation#pattern": [
               {
-                "@value": "_preferred"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#_value",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_value"
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -208,29 +202,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#period",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "period"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#extension",
+            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#extension.*",
+                "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
@@ -243,33 +221,55 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "modifierExtension"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#preferred",
+            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#_type",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "preferred"
+                "@value": "_type"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#_comment",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
-            "https://lschema.org/description": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "Value of \"true\" or \"false\""
+                "@value": "_comment"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/NamingSystem_UniqueId#period",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/attributeName": [
               {
-                "@id": "boolean"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^true|false$"
+                "@value": "period"
               }
             ]
           }

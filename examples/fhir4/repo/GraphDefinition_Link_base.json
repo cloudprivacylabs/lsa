@@ -12,13 +12,13 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/GraphDefinition_Link#max",
+            "@id": "http://hl7.org/fhir/GraphDefinition_Link#sliceName",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "max"
+                "@value": "sliceName"
               }
             ],
             "https://lschema.org/description": [
@@ -38,6 +38,46 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/GraphDefinition_Link#_max",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_max"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/GraphDefinition_Link#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/GraphDefinition_Link#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/GraphDefinition_Link#_description",
             "@type": [
               "https://lschema.org/Reference"
@@ -50,22 +90,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_description"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/GraphDefinition_Link#_path",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_path"
               }
             ]
           },
@@ -96,37 +120,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/GraphDefinition_Link#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/GraphDefinition_Link#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/GraphDefinition_Link#sliceName",
+            "@id": "http://hl7.org/fhir/GraphDefinition_Link#id",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "sliceName"
+                "@value": "id"
               }
             ],
             "https://lschema.org/description": [
@@ -170,18 +170,28 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/GraphDefinition_Link#_max",
+            "@id": "http://hl7.org/fhir/GraphDefinition_Link#min",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_max"
+                "@value": "min"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A whole number"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^-?([0]|([1-9][0-9]*))$"
               }
             ]
           },
@@ -210,33 +220,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/GraphDefinition_Link#min",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "min"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A whole number"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?([0]|([1-9][0-9]*))$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/GraphDefinition_Link#_min",
+            "@id": "http://hl7.org/fhir/GraphDefinition_Link#_path",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -247,7 +231,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_min"
+                "@value": "_path"
               }
             ]
           },
@@ -259,6 +243,32 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "path"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/GraphDefinition_Link#max",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "max"
               }
             ],
             "https://lschema.org/description": [
@@ -294,28 +304,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/GraphDefinition_Link#id",
+            "@id": "http://hl7.org/fhir/GraphDefinition_Link#_min",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "_min"
               }
             ]
           }

@@ -38,28 +38,50 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#expression",
+            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#_requirements",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "expression"
+                "@value": "_requirements"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#_key",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
-            "https://lschema.org/description": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "A sequence of Unicode characters"
+                "@value": "_key"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#_severity",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/attributeName": [
               {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "_severity"
               }
             ]
           },
@@ -90,110 +112,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#requirements",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "requirements"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#_xpath",
+            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#key",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/id"
               }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_xpath"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#key",
-            "@type": [
-              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
                 "@value": "key"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#severity",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "severity"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Identifies the impact constraint violation has on the conformance of the instance."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "error"
-              },
-              {
-                "@value": "warning"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#_severity",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_severity"
               }
             ]
           },
@@ -224,7 +154,31 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#_expression",
+            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#_human",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -235,7 +189,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_expression"
+                "@value": "_human"
               }
             ]
           },
@@ -264,7 +218,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#_key",
+            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#_xpath",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -275,31 +229,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_key"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
+                "@value": "_xpath"
               }
             ]
           },
@@ -330,7 +260,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#_human",
+            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#_expression",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -341,23 +271,83 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_human"
+                "@value": "_expression"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#_requirements",
+            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#requirements",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_requirements"
+                "@value": "requirements"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#severity",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "severity"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Identifies the impact constraint violation has on the conformance of the instance."
+              }
+            ],
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "error"
+              },
+              {
+                "@value": "warning"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ElementDefinition_Constraint#expression",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "expression"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           }

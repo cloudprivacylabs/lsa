@@ -12,32 +12,26 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/Patient_Contact#gender",
+            "@id": "http://hl7.org/fhir/Patient_Contact#telecom",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Patient_Contact#telecom.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/ContactPoint"
+                  }
+                ]
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "gender"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Administrative Gender - the gender that the contact person is considered to have for administration and record keeping purposes."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "male"
-              },
-              {
-                "@value": "female"
-              },
-              {
-                "@value": "other"
-              },
-              {
-                "@value": "unknown"
+                "@value": "telecom"
               }
             ]
           },
@@ -58,28 +52,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Patient_Contact#id",
+            "@id": "http://hl7.org/fhir/Patient_Contact#organization",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "organization"
               }
             ]
           },
@@ -104,22 +88,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Patient_Contact#organization",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "organization"
               }
             ]
           },
@@ -160,30 +128,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "name"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Patient_Contact#telecom",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Patient_Contact#telecom.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ContactPoint"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "telecom"
               }
             ]
           },
@@ -240,6 +184,62 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_gender"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Patient_Contact#gender",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "gender"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Administrative Gender - the gender that the contact person is considered to have for administration and record keeping purposes."
+              }
+            ],
+            "https://lschema.org/validation#enumeration": [
+              {
+                "@value": "male"
+              },
+              {
+                "@value": "female"
+              },
+              {
+                "@value": "other"
+              },
+              {
+                "@value": "unknown"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Patient_Contact#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           }

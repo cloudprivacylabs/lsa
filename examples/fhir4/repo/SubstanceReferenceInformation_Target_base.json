@@ -12,42 +12,28 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#amountType",
+            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#amountString",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "amountType"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
+                "@value": "amountString"
               }
             ],
-            "https://lschema.org/attributeName": [
+            "https://lschema.org/description": [
               {
-                "@value": "modifierExtension"
+                "@value": "Todo."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -64,6 +50,22 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "amountRange"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#amountType",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "amountType"
               }
             ]
           },
@@ -94,13 +96,29 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#extension",
+            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#target",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Identifier"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "target"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#extension.*",
+                "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
@@ -113,7 +131,39 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#organismType",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "organismType"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#amountQuantity",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Quantity"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "amountQuantity"
               }
             ]
           },
@@ -150,34 +200,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#amountQuantity",
+            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#_amountString",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/Quantity"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "amountQuantity"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#target",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Identifier"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "target"
+                "@value": "_amountString"
               }
             ]
           },
@@ -222,60 +256,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#_amountString",
+            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#extension",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_amountString"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#organismType",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "organismType"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation_Target#amountString",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "amountString"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Todo."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "extension"
               }
             ]
           }

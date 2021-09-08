@@ -22,7 +22,7 @@ func (validator RequiredValidator) Validate(docNode, schemaNode ls.Node) error {
 	required := schemaNode.GetProperties()[RequiredTerm].AsStringSlice()
 	if len(required) > 0 {
 		names := make(map[string]struct{})
-		for nodes := docNode.OutWith(ls.DataEdgeTerms.ObjectAttributes).Targets(); nodes.HasNext(); {
+		for nodes := docNode.OutWith(ls.HasTerm).Targets(); nodes.HasNext(); {
 			node := nodes.Next().(ls.Node)
 			name, _ := node.GetProperties()[ls.AttributeNameTerm]
 			if name.IsString() {

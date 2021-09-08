@@ -12,58 +12,6 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#period",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "period"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A rational number with implicit precision"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#offset",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "offset"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "An integer with a value that is not negative (e.g. \u003e= 0)"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[0]|([1-9][0-9]*)$"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/Timing_Repeat#boundsRange",
             "@type": [
               "https://lschema.org/Reference"
@@ -80,95 +28,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#count",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "count"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "An integer with a value that is positive (e.g. \u003e0)"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[1-9][0-9]*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#_periodUnit",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_periodUnit"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#_when",
+            "@id": "http://hl7.org/fhir/Timing_Repeat#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Timing_Repeat#_when.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Element"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_when"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#boundsDuration",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Duration"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "boundsDuration"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Timing_Repeat#extension.*",
+                "@id": "http://hl7.org/fhir/Timing_Repeat#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
@@ -181,18 +47,34 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "modifierExtension"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#frequencyMax",
+            "@id": "http://hl7.org/fhir/Timing_Repeat#_duration",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_duration"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Timing_Repeat#frequency",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "frequencyMax"
+                "@value": "frequency"
               }
             ],
             "https://lschema.org/description": [
@@ -228,41 +110,33 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#dayOfWeek",
+            "@id": "http://hl7.org/fhir/Timing_Repeat#period",
             "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Timing_Repeat#dayOfWeek.*",
-                "@type": [
-                  "https://lschema.org/Value"
-                ],
-                "https://lschema.org/description": [
-                  {
-                    "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@id": "string"
-                  }
-                ],
-                "https://lschema.org/validation#pattern": [
-                  {
-                    "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-                  }
-                ]
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "dayOfWeek"
+                "@value": "period"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A rational number with implicit precision"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#_countMax",
+            "@id": "http://hl7.org/fhir/Timing_Repeat#_count",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -273,47 +147,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_countMax"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#_period",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_period"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Timing_Repeat#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
+                "@value": "_count"
               }
             ]
           },
@@ -344,7 +178,57 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#_durationUnit",
+            "@id": "http://hl7.org/fhir/Timing_Repeat#periodMax",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "periodMax"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A rational number with implicit precision"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Timing_Repeat#_when",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Timing_Repeat#_when.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Element"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_when"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Timing_Repeat#_period",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -355,7 +239,99 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_durationUnit"
+                "@value": "_period"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Timing_Repeat#_dayOfWeek",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Timing_Repeat#_dayOfWeek.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Element"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_dayOfWeek"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Timing_Repeat#boundsDuration",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Duration"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "boundsDuration"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Timing_Repeat#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Timing_Repeat#countMax",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "countMax"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "An integer with a value that is positive (e.g. \u003e0)"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[1-9][0-9]*$"
               }
             ]
           },
@@ -394,23 +370,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#boundsPeriod",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "boundsPeriod"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#_count",
+            "@id": "http://hl7.org/fhir/Timing_Repeat#_periodMax",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -421,23 +381,41 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_count"
+                "@value": "_periodMax"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#_offset",
+            "@id": "http://hl7.org/fhir/Timing_Repeat#dayOfWeek",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Timing_Repeat#dayOfWeek.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/description": [
+                  {
+                    "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ],
+                "https://lschema.org/validation#pattern": [
+                  {
+                    "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_offset"
+                "@value": "dayOfWeek"
               }
             ]
           },
@@ -481,7 +459,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#_frequency",
+            "@id": "http://hl7.org/fhir/Timing_Repeat#_durationUnit",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -492,65 +470,23 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_frequency"
+                "@value": "_durationUnit"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#_frequencyMax",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_frequencyMax"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#id",
+            "@id": "http://hl7.org/fhir/Timing_Repeat#offset",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
+                "@value": "offset"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#frequency",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "frequency"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "An integer with a value that is positive (e.g. \u003e0)"
+                "@value": "An integer with a value that is not negative (e.g. \u003e= 0)"
               }
             ],
             "https://lschema.org/targetType": [
@@ -560,73 +496,7 @@
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^[1-9][0-9]*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#_timeOfDay",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Timing_Repeat#_timeOfDay.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Element"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_timeOfDay"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#_periodMax",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_periodMax"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#countMax",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "countMax"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "An integer with a value that is positive (e.g. \u003e0)"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[1-9][0-9]*$"
+                "@value": "^[0]|([1-9][0-9]*)$"
               }
             ]
           },
@@ -657,52 +527,79 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#durationUnit",
+            "@id": "http://hl7.org/fhir/Timing_Repeat#boundsPeriod",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "boundsPeriod"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Timing_Repeat#count",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "durationUnit"
+                "@value": "count"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "The units of time for the duration, in UCUM units."
+                "@value": "An integer with a value that is positive (e.g. \u003e0)"
               }
             ],
-            "https://lschema.org/validation#enumeration": [
+            "https://lschema.org/targetType": [
               {
-                "@value": "s"
-              },
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
               {
-                "@value": "min"
-              },
-              {
-                "@value": "h"
-              },
-              {
-                "@value": "d"
-              },
-              {
-                "@value": "wk"
-              },
-              {
-                "@value": "mo"
-              },
-              {
-                "@value": "a"
+                "@value": "^[1-9][0-9]*$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#_dayOfWeek",
+            "@id": "http://hl7.org/fhir/Timing_Repeat#extension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/Timing_Repeat#_dayOfWeek.*",
+                "@id": "http://hl7.org/fhir/Timing_Repeat#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Timing_Repeat#_timeOfDay",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/Timing_Repeat#_timeOfDay.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
@@ -715,7 +612,39 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_dayOfWeek"
+                "@value": "_timeOfDay"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Timing_Repeat#_frequencyMax",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_frequencyMax"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Timing_Repeat#_offset",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_offset"
               }
             ]
           },
@@ -819,7 +748,33 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#_duration",
+            "@id": "http://hl7.org/fhir/Timing_Repeat#frequencyMax",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "frequencyMax"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "An integer with a value that is positive (e.g. \u003e0)"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[1-9][0-9]*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Timing_Repeat#_frequency",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -830,33 +785,78 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_duration"
+                "@value": "_frequency"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Timing_Repeat#periodMax",
+            "@id": "http://hl7.org/fhir/Timing_Repeat#_periodUnit",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_periodUnit"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Timing_Repeat#durationUnit",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "periodMax"
+                "@value": "durationUnit"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A rational number with implicit precision"
+                "@value": "The units of time for the duration, in UCUM units."
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/validation#enumeration": [
               {
-                "@id": "number"
+                "@value": "s"
+              },
+              {
+                "@value": "min"
+              },
+              {
+                "@value": "h"
+              },
+              {
+                "@value": "d"
+              },
+              {
+                "@value": "wk"
+              },
+              {
+                "@value": "mo"
+              },
+              {
+                "@value": "a"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Timing_Repeat#_countMax",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+                "@value": "_countMax"
               }
             ]
           }

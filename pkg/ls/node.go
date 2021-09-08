@@ -269,11 +269,7 @@ func GetFilteredValue(schemaNode, docNode Node) interface{} {
 
 // IsDocumentEdge returns true if the edge is a data edge term
 func IsDocumentEdge(edge digraph.Edge) bool {
-	switch edge.GetLabel() {
-	case DataEdgeTerms.ObjectAttributes, DataEdgeTerms.ArrayElements:
-		return true
-	}
-	return false
+	return edge.GetLabel() == HasTerm
 }
 
 // SortNodes sorts nodes by their node index

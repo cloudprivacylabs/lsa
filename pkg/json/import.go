@@ -136,19 +136,24 @@ func Import(entities []CompiledEntity) ([]ImportedEntity, error) {
 		if err := importSchema(&ctx, &s, ctx.currentEntity.Schema); err != nil {
 			return nil, err
 		}
-		if s.object == nil {
-			return nil, fmt.Errorf("%s base schema is not an object", ctx.currentEntity.GetEntityName())
-		}
 
 		imported := ImportedEntity{}
 		imported.Entity = ctx.entities[i]
 		imported.Layer = ls.NewLayer()
 		imported.Layer.SetLayerType(ls.SchemaTerm)
 		imported.Layer.SetID(ctx.currentEntity.ID)
-		ls.Connect(imported.Layer.GetLayerInfoNode(), imported.Layer.NewNode(ctx.currentEntity.ID), ls.LayerRootTerm)
-		nodes := s.object.itr(ctx.currentEntity.ID, nil, imported.Layer)
-		for _, node := range nodes {
-			ls.Connect(imported.Layer.GetSchemaRootNode(), node, ls.LayerTerms.Attributes)
+		rootNode := imported.Layer.NewNode(ctx.currentEntity.ID)
+		ls.Connect(imported.Layer.GetLayerInfoNode(), rootNode, ls.LayerRootTerm)
+		if s.object != nil {
+			nodes := s.object.itr(ctx.currentEntity.ID, nil, imported.Layer)
+			for _, node := range nodes {
+				ls.Connect(rootNode, node, ls.LayerTerms.Attributes)
+			}
+		} else if s.array != nil {
+			node := s.array.itr(ctx.currentEntity.ID, nil, imported.Layer)
+			ls.Connect(rootNode, node, ls.LayerTerms.ArrayItems)
+		} else {
+			buildSchemaAttrs(ctx.currentEntity.ID, nil, s, imported.Layer, rootNode)
 		}
 
 		ret = append(ret, imported)

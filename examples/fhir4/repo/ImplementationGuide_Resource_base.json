@@ -12,13 +12,13 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#exampleBoolean",
+            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#exampleCanonical",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "exampleBoolean"
+                "@value": "exampleCanonical"
               }
             ],
             "https://lschema.org/description": [
@@ -28,71 +28,39 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@id": "boolean"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^true|false$"
+                "@value": "^\\S*$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#extension",
+            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#_name",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Reference#reference": [
               {
-                "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "_name"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#_fhirVersion",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#_fhirVersion.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Element"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_fhirVersion"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#description",
+            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#name",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "description"
+                "@value": "name"
               }
             ],
             "https://lschema.org/description": [
@@ -128,112 +96,44 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#name",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "name"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#groupingId",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
                 "@value": "groupingId"
               }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
-              }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#_exampleBoolean",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_exampleBoolean"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#id",
+            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#exampleBoolean",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
+                "@value": "exampleBoolean"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A sequence of Unicode characters"
+                "@value": "If true or a reference, indicates the resource is an example instance.  If a reference is present, indicates that the example is an example of the specified profile."
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@id": "string"
+                "@id": "boolean"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#_name",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_name"
+                "@value": "^true|false$"
               }
             ]
           },
@@ -250,6 +150,54 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_exampleCanonical"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#_fhirVersion",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#_fhirVersion.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Element"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_fhirVersion"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
               }
             ]
           },
@@ -338,6 +286,74 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#_description",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_description"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#description",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "description"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#reference",
             "@type": [
               "https://lschema.org/Reference"
@@ -378,33 +394,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#exampleCanonical",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "exampleCanonical"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "If true or a reference, indicates the resource is an example instance.  If a reference is present, indicates that the example is an example of the specified profile."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#_description",
+            "@id": "http://hl7.org/fhir/ImplementationGuide_Resource#_exampleBoolean",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -415,7 +405,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_description"
+                "@value": "_exampleBoolean"
               }
             ]
           }

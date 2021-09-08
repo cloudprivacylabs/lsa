@@ -152,7 +152,7 @@ func (compiler Compiler) resolveReference(ctx *compilerContext, node Node) error
 	node.GetTypes().Remove(AttributeTypes.Reference)
 	node.GetTypes().Add(compiled.GetTypes().Slice()...)
 	// Compose the properties of the compiled root node with the referenced node
-	if err := ComposeProperties(properties, node.GetProperties()); err != nil {
+	if err := ComposeProperties(properties, compiled.GetProperties()); err != nil {
 		return err
 	}
 	// Attach the node to all the children of the compiled node

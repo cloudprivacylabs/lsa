@@ -12,92 +12,52 @@
         ],
         "https://lschema.org/Object#attributes": [
           {
-            "@id": "http://hl7.org/fhir/ClaimResponse_Detail#detailSequence",
+            "@id": "http://hl7.org/fhir/ClaimResponse_Detail#id",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "detailSequence"
+                "@value": "id"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "An integer with a value that is positive (e.g. \u003e0)"
+                "@value": "A sequence of Unicode characters"
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@id": "number"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation#pattern": [
               {
-                "@value": "^[1-9][0-9]*$"
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ClaimResponse_Detail#_noteNumber",
+            "@id": "http://hl7.org/fhir/ClaimResponse_Detail#subDetail",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/ClaimResponse_Detail#_noteNumber.*",
+                "@id": "http://hl7.org/fhir/ClaimResponse_Detail#subDetail.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference#reference": [
                   {
-                    "@id": "http://hl7.org/fhir/Element"
+                    "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_noteNumber"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ClaimResponse_Detail#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ClaimResponse_Detail#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ClaimResponse_Detail#_detailSequence",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_detailSequence"
+                "@value": "subDetail"
               }
             ]
           },
@@ -160,6 +120,46 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/ClaimResponse_Detail#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array#items": [
+              {
+                "@id": "http://hl7.org/fhir/ClaimResponse_Detail#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference#reference": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse_Detail#_detailSequence",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference#reference": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_detailSequence"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/ClaimResponse_Detail#adjudication",
             "@type": [
               "https://lschema.org/Array"
@@ -184,52 +184,52 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ClaimResponse_Detail#subDetail",
+            "@id": "http://hl7.org/fhir/ClaimResponse_Detail#detailSequence",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "detailSequence"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "An integer with a value that is positive (e.g. \u003e0)"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation#pattern": [
+              {
+                "@value": "^[1-9][0-9]*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse_Detail#_noteNumber",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array#items": [
               {
-                "@id": "http://hl7.org/fhir/ClaimResponse_Detail#subDetail.*",
+                "@id": "http://hl7.org/fhir/ClaimResponse_Detail#_noteNumber.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference#reference": [
                   {
-                    "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail"
+                    "@id": "http://hl7.org/fhir/Element"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "subDetail"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ClaimResponse_Detail#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "_noteNumber"
               }
             ]
           }
