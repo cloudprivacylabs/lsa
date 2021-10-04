@@ -43,3 +43,14 @@ func (scope *Scope) Set(key string, value interface{}) *Scope {
 	scope.symbols[key] = ValueOf(value)
 	return scope
 }
+
+func (scope *Scope) SetValue(key string, value interface{}) error {
+	if _, ok := scope.symbols[key]; ok {
+		scope.symbols[key] = ValueOf(value)
+		return nil
+	}
+	if scope.parent != nil {
+		return scope.parent.SetValue(key, value)
+	}
+	return ErrUnknownIdentifier(key)
+}

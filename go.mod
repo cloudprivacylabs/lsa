@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210803070921-b358b509191a
-	github.com/bserdar/digraph v1.1.2
+	github.com/bserdar/digraph v1.1.4
 	github.com/piprate/json-gold v0.4.0
 	github.com/santhosh-tekuri/jsonschema/v3 v3.0.1
 	github.com/spf13/cobra v1.1.3

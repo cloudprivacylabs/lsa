@@ -10,52 +10,46 @@
         "@type": [
           "http://hl7.org/fhir/SubstanceSpecification_Structure"
         ],
-        "https://lschema.org/Object#attributes": [
+        "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#isotope",
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#molecularFormula",
             "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#isotope.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/SubstanceSpecification_Isotope"
-                  }
-                ]
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "isotope"
+                "@value": "molecularFormula"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#source",
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#_molecularFormula",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#source.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "source"
+                "@value": "_molecularFormula"
               }
             ]
           },
@@ -79,33 +73,49 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#extension",
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#representation",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#extension.*",
+                "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#representation.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/SubstanceSpecification_Representation"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "representation"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#_molecularFormulaByMoiety",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_molecularFormulaByMoiety"
               }
             ]
           },
@@ -114,7 +124,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/CodeableConcept"
               }
@@ -126,18 +136,66 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#_molecularFormulaByMoiety",
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#opticalActivity",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/CodeableConcept"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_molecularFormulaByMoiety"
+                "@value": "opticalActivity"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#isotope",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#isotope.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/SubstanceSpecification_Isotope"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "isotope"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#source",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#source.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "source"
               }
             ]
           },
@@ -161,49 +219,33 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#molecularWeight",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/SubstanceSpecification_MolecularWeight"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "molecularWeight"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#representation",
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#extension",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#representation.*",
+                "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#extension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/SubstanceSpecification_Representation"
+                    "@id": "http://hl7.org/fhir/Extension"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "representation"
+                "@value": "extension"
               }
             ]
           },
@@ -212,13 +254,13 @@
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
                 "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/Extension"
                   }
@@ -232,60 +274,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#_molecularFormula",
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#molecularWeight",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/SubstanceSpecification_MolecularWeight"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_molecularFormula"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#opticalActivity",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "opticalActivity"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Structure#molecularFormula",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "molecularFormula"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "molecularWeight"
               }
             ]
           }

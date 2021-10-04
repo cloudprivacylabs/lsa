@@ -70,10 +70,32 @@ func StringSetSubtract(s1, s2 []string) []string {
 	return out
 }
 
+// StringSetToSlice converts a string set to slice
 func StringSetToSlice(str map[string]struct{}) []string {
 	ret := make([]string, 0, len(str))
 	for x := range str {
 		ret = append(ret, x)
 	}
 	return ret
+}
+
+// StringInterner is used to intern strings so multiple identical
+// copies of strings are minimized
+type StringInterner struct {
+	strings map[string]string
+}
+
+// Return a new interner
+func NewInterner() StringInterner {
+	return StringInterner{strings: make(map[string]string)}
+}
+
+// Intern a string and return the corresponding interned string
+func (s StringInterner) Intern(key string) string {
+	result, ok := s.strings[key]
+	if !ok {
+		result = key
+		s.strings[key] = result
+	}
+	return result
 }

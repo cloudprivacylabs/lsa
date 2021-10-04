@@ -8,7 +8,7 @@ import (
 )
 
 // EnumTerm is used for enumeration validator
-var EnumTerm = ls.NewTerm(ls.LS+"validation#enumeration", false, false, ls.OverrideComposition, struct {
+var EnumTerm = ls.NewTerm(ls.LS+"validation/enumeration", false, false, ls.OverrideComposition, struct {
 	EnumValidator
 }{
 	EnumValidator{},

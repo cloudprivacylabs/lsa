@@ -10,28 +10,116 @@
         "@type": [
           "http://hl7.org/fhir/Encounter_Hospitalization"
         ],
-        "https://lschema.org/Object#attributes": [
+        "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#modifierExtension",
+            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#dischargeDisposition",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "dischargeDisposition"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#dietPreference",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Encounter_Hospitalization#modifierExtension.*",
+                "@id": "http://hl7.org/fhir/Encounter_Hospitalization#dietPreference.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
+                "@value": "dietPreference"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#destination",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "destination"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#origin",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "origin"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#admitSource",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "admitSource"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#specialCourtesy",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Encounter_Hospitalization#specialCourtesy.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "specialCourtesy"
               }
             ]
           },
@@ -40,7 +128,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Identifier"
               }
@@ -56,7 +144,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/CodeableConcept"
               }
@@ -68,17 +156,17 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#specialCourtesy",
+            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#specialArrangement",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Encounter_Hospitalization#specialCourtesy.*",
+                "@id": "http://hl7.org/fhir/Encounter_Hospitalization#specialArrangement.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/CodeableConcept"
                   }
@@ -87,55 +175,31 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "specialCourtesy"
+                "@value": "specialArrangement"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#destination",
+            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#extension",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Reference"
+                "@id": "http://hl7.org/fhir/Encounter_Hospitalization#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "destination"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#admitSource",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "admitSource"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#dischargeDisposition",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "dischargeDisposition"
+                "@value": "extension"
               }
             ]
           },
@@ -159,88 +223,24 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#origin",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "origin"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#dietPreference",
+            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Encounter_Hospitalization#dietPreference.*",
+                "@id": "http://hl7.org/fhir/Encounter_Hospitalization#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "dietPreference"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#specialArrangement",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Encounter_Hospitalization#specialArrangement.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "specialArrangement"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Encounter_Hospitalization#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Encounter_Hospitalization#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/Extension"
                   }
@@ -249,7 +249,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "modifierExtension"
               }
             ]
           }

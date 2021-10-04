@@ -138,16 +138,27 @@ type node struct {
 	compiled map[interface{}]interface{}
 }
 
-func (a *node) GetCompiledDataMap() map[interface{}]interface{} { return a.compiled }
+func (a *node) GetCompiledDataMap() map[interface{}]interface{} {
+	if a.compiled == nil {
+		a.compiled = make(map[interface{}]interface{})
+	}
+	return a.compiled
+}
 
-func (a *node) GetProperties() map[string]*PropertyValue { return a.properties }
+func (a *node) GetProperties() map[string]*PropertyValue {
+	if a.properties == nil {
+		a.properties = make(map[string]*PropertyValue)
+	}
+	return a.properties
+}
 
 func (a *node) GetValue() interface{} { return a.value }
 
 func (a *node) SetValue(value interface{}) { a.value = value }
 
 func (a *node) GetIndex() int {
-	p := a.properties[AttributeIndexTerm]
+	properties := a.GetProperties()
+	p := properties[AttributeIndexTerm]
 	if p == nil || !p.IsString() {
 		return 0
 	}
@@ -155,7 +166,8 @@ func (a *node) GetIndex() int {
 }
 
 func (a *node) SetIndex(index int) {
-	a.properties[AttributeIndexTerm] = IntPropertyValue(index)
+	properties := a.GetProperties()
+	properties[AttributeIndexTerm] = IntPropertyValue(index)
 }
 
 func IsDocumentNode(a Node) bool {
@@ -164,13 +176,20 @@ func IsDocumentNode(a Node) bool {
 
 // NewNode returns a new node with the given types
 func NewNode(ID string, types ...string) Node {
-	ret := node{
-		properties: make(map[string]*PropertyValue),
-		compiled:   make(map[interface{}]interface{}),
-	}
+	ret := node{}
 	ret.types.Add(types...)
 	ret.SetLabel(ID)
 	return &ret
+}
+
+// NewNodes allocates n empty nodes
+func NewNodes(n int) []Node {
+	nodes := make([]node, n)
+	ret := make([]Node, n)
+	for i := range nodes {
+		ret[i] = &nodes[i]
+	}
+	return ret
 }
 
 // GetID returns the node ID
@@ -250,11 +269,7 @@ func GetFilteredValue(schemaNode, docNode Node) interface{} {
 
 // IsDocumentEdge returns true if the edge is a data edge term
 func IsDocumentEdge(edge digraph.Edge) bool {
-	switch edge.GetLabel() {
-	case DataEdgeTerms.ObjectAttributes, DataEdgeTerms.ArrayElements:
-		return true
-	}
-	return false
+	return edge.GetLabel() == HasTerm
 }
 
 // SortNodes sorts nodes by their node index
@@ -325,7 +340,7 @@ func iterateDescendants(root Node, path []Node, nodeFunc func(Node, []Node) bool
 }
 
 // FirstReachable returns the first reachable node for which
-// nodePrdicate returns true, using only the edges for which
+// nodePredicate returns true, using only the edges for which
 // edgePredicate returns true.
 func FirstReachable(from Node, nodePredicate func(Node, []Node) bool, edgePredicate func(Edge, []Node) bool) (Node, []Node) {
 	var (

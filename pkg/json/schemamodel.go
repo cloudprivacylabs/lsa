@@ -62,6 +62,10 @@ func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer) []l
 func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer) ls.Node {
 	id := entityId + "#" + strings.Join(name, ".")
 	newNode := layer.NewNode(id)
+	return buildSchemaAttrs(entityId, name, attr, layer, newNode)
+}
+
+func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer, newNode ls.Node) ls.Node {
 	if len(attr.format) > 0 {
 		newNode.GetProperties()[validators.JsonFormatTerm] = ls.StringPropertyValue(attr.format)
 	}

@@ -22,7 +22,7 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-const RS = ls.LS + "reshape#"
+const RS = ls.LS + "reshape/"
 
 // ReshapeTerms defines the terms used to specify reshaping layers
 var ReshapeTerms = struct {
@@ -205,7 +205,7 @@ func (respaher *Reshaper) object(context *ReshapeContext) (ls.Node, error) {
 			return nil, err
 		}
 		if newNode != nil {
-			ls.Connect(targetNode, newNode, ls.DataEdgeTerms.ObjectAttributes)
+			ls.Connect(targetNode, newNode, ls.HasTerm)
 			empty = false
 		}
 	}

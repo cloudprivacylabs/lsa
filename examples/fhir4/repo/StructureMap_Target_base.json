@@ -10,87 +10,19 @@
         "@type": [
           "http://hl7.org/fhir/StructureMap_Target"
         ],
-        "https://lschema.org/Object#attributes": [
+        "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/StructureMap_Target#listRuleId",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "listRuleId"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/StructureMap_Target#context",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "context"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/StructureMap_Target#_transform",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_transform"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/StructureMap_Target#extension",
+            "@id": "http://hl7.org/fhir/StructureMap_Target#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/StructureMap_Target#extension.*",
+                "@id": "http://hl7.org/fhir/StructureMap_Target#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/Extension"
                   }
@@ -99,7 +31,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "modifierExtension"
               }
             ]
           },
@@ -123,9 +55,132 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Target#_contextType",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_contextType"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Target#_transform",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_transform"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Target#_listRuleId",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_listRuleId"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Target#element",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "element"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Target#listMode",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Target#listMode.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/validation/enumeration": [
+                  {
+                    "@value": "first"
+                  },
+                  {
+                    "@value": "share"
+                  },
+                  {
+                    "@value": "last"
+                  },
+                  {
+                    "@value": "collate"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "listMode"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Target#variable",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "variable"
               }
             ]
           },
@@ -134,7 +189,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -146,75 +201,11 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/StructureMap_Target#_listMode",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Target#_listMode.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Element"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_listMode"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/StructureMap_Target#parameter",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Target#parameter.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/StructureMap_Parameter"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "parameter"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/StructureMap_Target#_variable",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_variable"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/StructureMap_Target#_context",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -226,18 +217,74 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/StructureMap_Target#_listRuleId",
+            "@id": "http://hl7.org/fhir/StructureMap_Target#contextType",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Value"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/attributeName": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@value": "contextType"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "How to interpret the context."
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "type"
+              },
+              {
+                "@value": "variable"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Target#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Target#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_listRuleId"
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Target#_listMode",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Target#_listMode.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Element"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_listMode"
               }
             ]
           },
@@ -256,7 +303,7 @@
                 "@value": "How the data is copied / created."
               }
             ],
-            "https://lschema.org/validation#enumeration": [
+            "https://lschema.org/validation/enumeration": [
               {
                 "@value": "create"
               },
@@ -311,151 +358,74 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/StructureMap_Target#element",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "element"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/StructureMap_Target#contextType",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "contextType"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "How to interpret the context."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "type"
-              },
-              {
-                "@value": "variable"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/StructureMap_Target#variable",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "variable"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/StructureMap_Target#listMode",
+            "@id": "http://hl7.org/fhir/StructureMap_Target#parameter",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/StructureMap_Target#listMode.*",
-                "@type": [
-                  "https://lschema.org/Value"
-                ],
-                "https://lschema.org/validation#enumeration": [
-                  {
-                    "@value": "first"
-                  },
-                  {
-                    "@value": "share"
-                  },
-                  {
-                    "@value": "last"
-                  },
-                  {
-                    "@value": "collate"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "listMode"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/StructureMap_Target#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Target#modifierExtension.*",
+                "@id": "http://hl7.org/fhir/StructureMap_Target#parameter.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/StructureMap_Parameter"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
+                "@value": "parameter"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/StructureMap_Target#_contextType",
+            "@id": "http://hl7.org/fhir/StructureMap_Target#context",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "context"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Target#_variable",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_contextType"
+                "@value": "_variable"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Target#listRuleId",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "listRuleId"
               }
             ]
           }

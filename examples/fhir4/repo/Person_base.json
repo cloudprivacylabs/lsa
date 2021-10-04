@@ -10,57 +10,28 @@
         "@type": [
           "http://hl7.org/fhir/Person"
         ],
-        "https://lschema.org/Object#attributes": [
+        "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Person#_language",
+            "@id": "http://hl7.org/fhir/Person#telecom",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Person#telecom.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/ContactPoint"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_language"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Person#_birthDate",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_birthDate"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Person#resourceType",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "resourceType"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "This is a Person resource"
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "Person"
+                "@value": "telecom"
               }
             ]
           },
@@ -69,13 +40,13 @@
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
                 "@id": "http://hl7.org/fhir/Person#extension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/Extension"
                   }
@@ -108,55 +79,9 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Person#gender",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "gender"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Administrative Gender."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "male"
-              },
-              {
-                "@value": "female"
-              },
-              {
-                "@value": "other"
-              },
-              {
-                "@value": "unknown"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Person#managingOrganization",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "managingOrganization"
               }
             ]
           },
@@ -165,7 +90,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Narrative"
               }
@@ -177,1697 +102,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Person#_active",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_active"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Person#modifierExtension",
+            "@id": "http://hl7.org/fhir/Person#name",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Person#modifierExtension.*",
+                "@id": "http://hl7.org/fhir/Person#name.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/HumanName"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Person#identifier",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Person#identifier.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Identifier"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "identifier"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Person#contained",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/Person#contained.*",
-                "@type": [
-                  "https://lschema.org/Polymorphic"
-                ],
-                "https://lschema.org/Polymorphic#oneOf": [
-                  {
-                    "@list": [
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.0",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Account"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.1",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ActivityDefinition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.2",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/AdverseEvent"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.3",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/AllergyIntolerance"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.4",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Appointment"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.5",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/AppointmentResponse"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.6",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/AuditEvent"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.7",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Basic"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.8",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Binary"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.9",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.10",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/BodyStructure"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.11",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Bundle"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.12",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/CapabilityStatement"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.13",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/CarePlan"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.14",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/CareTeam"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.15",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/CatalogEntry"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.16",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ChargeItem"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.17",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ChargeItemDefinition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.18",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Claim"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.19",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ClaimResponse"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.20",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ClinicalImpression"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.21",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/CodeSystem"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.22",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Communication"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.23",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/CommunicationRequest"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.24",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/CompartmentDefinition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.25",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Composition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.26",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ConceptMap"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.27",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Condition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.28",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Consent"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.29",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Contract"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.30",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Coverage"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.31",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/CoverageEligibilityRequest"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.32",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/CoverageEligibilityResponse"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.33",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/DetectedIssue"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.34",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Device"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.35",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/DeviceDefinition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.36",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/DeviceMetric"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.37",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/DeviceRequest"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.38",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/DeviceUseStatement"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.39",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/DiagnosticReport"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.40",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/DocumentManifest"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.41",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/DocumentReference"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.42",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.43",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Encounter"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.44",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Endpoint"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.45",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/EnrollmentRequest"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.46",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/EnrollmentResponse"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.47",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/EpisodeOfCare"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.48",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/EventDefinition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.49",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Evidence"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.50",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/EvidenceVariable"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.51",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ExampleScenario"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.52",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.53",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/FamilyMemberHistory"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.54",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Flag"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.55",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Goal"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.56",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/GraphDefinition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.57",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Group"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.58",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/GuidanceResponse"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.59",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/HealthcareService"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.60",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ImagingStudy"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.61",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Immunization"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.62",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ImmunizationEvaluation"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.63",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ImmunizationRecommendation"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.64",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ImplementationGuide"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.65",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/InsurancePlan"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.66",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Invoice"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.67",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Library"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.68",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Linkage"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.69",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/List"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.70",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Location"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.71",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Measure"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.72",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MeasureReport"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.73",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Media"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.74",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Medication"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.75",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicationAdministration"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.76",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicationDispense"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.77",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicationKnowledge"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.78",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicationRequest"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.79",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicationStatement"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.80",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicinalProduct"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.81",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicinalProductAuthorization"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.82",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicinalProductContraindication"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.83",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicinalProductIndication"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.84",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicinalProductIngredient"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.85",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicinalProductInteraction"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.86",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicinalProductManufactured"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.87",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicinalProductPackaged"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.88",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.89",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MedicinalProductUndesirableEffect"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.90",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MessageDefinition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.91",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MessageHeader"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.92",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/MolecularSequence"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.93",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/NamingSystem"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.94",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/NutritionOrder"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.95",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Observation"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.96",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ObservationDefinition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.97",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/OperationDefinition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.98",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/OperationOutcome"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.99",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Organization"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.100",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/OrganizationAffiliation"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.101",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Parameters"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.102",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Patient"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.103",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/PaymentNotice"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.104",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/PaymentReconciliation"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.105",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Person"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.106",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/PlanDefinition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.107",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Practitioner"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.108",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/PractitionerRole"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.109",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Procedure"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.110",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Provenance"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.111",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Questionnaire"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.112",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/QuestionnaireResponse"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.113",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/RelatedPerson"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.114",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/RequestGroup"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.115",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchDefinition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.116",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchElementDefinition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.117",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchStudy"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.118",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ResearchSubject"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.119",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/RiskAssessment"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.120",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/RiskEvidenceSynthesis"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.121",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Schedule"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.122",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/SearchParameter"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.123",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ServiceRequest"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.124",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Slot"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.125",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Specimen"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.126",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/SpecimenDefinition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.127",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/StructureDefinition"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.128",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/StructureMap"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.129",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Subscription"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.130",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Substance"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.131",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/SubstanceNucleicAcid"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.132",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/SubstancePolymer"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.133",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/SubstanceProtein"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.134",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.135",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.136",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/SubstanceSpecification"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.137",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/SupplyDelivery"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.138",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/SupplyRequest"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.139",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/Task"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.140",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/TerminologyCapabilities"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.141",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/TestReport"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.142",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/TestScript"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.143",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/ValueSet"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.144",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/VerificationResult"
-                          }
-                        ]
-                      },
-                      {
-                        "@id": "http://hl7.org/fhir/Person#contained.*.145",
-                        "@type": [
-                          "https://lschema.org/Reference"
-                        ],
-                        "https://lschema.org/Reference#reference": [
-                          {
-                            "@id": "http://hl7.org/fhir/VisionPrescription"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "contained"
+                "@value": "name"
               }
             ]
           },
@@ -1891,33 +145,1672 @@
                 "@id": "boolean"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^true|false$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Person#address",
+            "@id": "http://hl7.org/fhir/Person#_implicitRules",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_implicitRules"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Person#contained",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Person#address.*",
+                "@id": "http://hl7.org/fhir/Person#contained.*",
                 "@type": [
-                  "https://lschema.org/Reference"
+                  "https://lschema.org/Polymorphic"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Polymorphic/oneOf": [
                   {
-                    "@id": "http://hl7.org/fhir/Address"
+                    "@list": [
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.0",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Account"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.1",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ActivityDefinition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.2",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/AdverseEvent"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.3",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/AllergyIntolerance"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.4",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Appointment"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.5",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/AppointmentResponse"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.6",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/AuditEvent"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.7",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Basic"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.8",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Binary"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.9",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/BiologicallyDerivedProduct"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.10",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/BodyStructure"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.11",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Bundle"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.12",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/CapabilityStatement"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.13",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/CarePlan"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.14",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/CareTeam"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.15",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/CatalogEntry"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.16",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ChargeItem"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.17",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ChargeItemDefinition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.18",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Claim"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.19",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ClaimResponse"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.20",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ClinicalImpression"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.21",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/CodeSystem"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.22",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Communication"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.23",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/CommunicationRequest"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.24",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/CompartmentDefinition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.25",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Composition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.26",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ConceptMap"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.27",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Condition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.28",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Consent"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.29",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Contract"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.30",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Coverage"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.31",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/CoverageEligibilityRequest"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.32",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/CoverageEligibilityResponse"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.33",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/DetectedIssue"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.34",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Device"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.35",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/DeviceDefinition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.36",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/DeviceMetric"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.37",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/DeviceRequest"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.38",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/DeviceUseStatement"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.39",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/DiagnosticReport"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.40",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/DocumentManifest"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.41",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/DocumentReference"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.42",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/EffectEvidenceSynthesis"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.43",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Encounter"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.44",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Endpoint"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.45",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/EnrollmentRequest"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.46",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/EnrollmentResponse"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.47",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/EpisodeOfCare"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.48",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/EventDefinition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.49",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Evidence"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.50",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/EvidenceVariable"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.51",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ExampleScenario"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.52",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ExplanationOfBenefit"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.53",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/FamilyMemberHistory"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.54",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Flag"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.55",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Goal"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.56",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/GraphDefinition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.57",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Group"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.58",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/GuidanceResponse"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.59",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/HealthcareService"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.60",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ImagingStudy"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.61",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Immunization"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.62",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ImmunizationEvaluation"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.63",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ImmunizationRecommendation"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.64",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ImplementationGuide"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.65",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/InsurancePlan"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.66",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Invoice"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.67",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Library"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.68",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Linkage"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.69",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/List"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.70",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Location"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.71",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Measure"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.72",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MeasureReport"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.73",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Media"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.74",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Medication"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.75",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationAdministration"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.76",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationDispense"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.77",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationKnowledge"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.78",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationRequest"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.79",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicationStatement"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.80",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicinalProduct"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.81",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicinalProductAuthorization"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.82",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicinalProductContraindication"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.83",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicinalProductIndication"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.84",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicinalProductIngredient"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.85",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicinalProductInteraction"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.86",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicinalProductManufactured"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.87",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicinalProductPackaged"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.88",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicinalProductPharmaceutical"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.89",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MedicinalProductUndesirableEffect"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.90",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MessageDefinition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.91",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MessageHeader"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.92",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/MolecularSequence"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.93",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/NamingSystem"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.94",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/NutritionOrder"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.95",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Observation"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.96",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ObservationDefinition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.97",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/OperationDefinition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.98",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/OperationOutcome"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.99",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Organization"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.100",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/OrganizationAffiliation"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.101",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Parameters"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.102",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Patient"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.103",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/PaymentNotice"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.104",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/PaymentReconciliation"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.105",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Person"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.106",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/PlanDefinition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.107",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Practitioner"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.108",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/PractitionerRole"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.109",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Procedure"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.110",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Provenance"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.111",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Questionnaire"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.112",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/QuestionnaireResponse"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.113",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/RelatedPerson"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.114",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/RequestGroup"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.115",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchDefinition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.116",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchElementDefinition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.117",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchStudy"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.118",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ResearchSubject"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.119",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/RiskAssessment"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.120",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/RiskEvidenceSynthesis"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.121",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Schedule"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.122",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/SearchParameter"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.123",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ServiceRequest"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.124",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Slot"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.125",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Specimen"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.126",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/SpecimenDefinition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.127",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/StructureDefinition"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.128",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/StructureMap"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.129",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Subscription"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.130",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Substance"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.131",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/SubstanceNucleicAcid"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.132",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/SubstancePolymer"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.133",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/SubstanceProtein"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.134",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/SubstanceReferenceInformation"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.135",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.136",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/SubstanceSpecification"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.137",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/SupplyDelivery"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.138",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/SupplyRequest"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.139",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/Task"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.140",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/TerminologyCapabilities"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.141",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/TestReport"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.142",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/TestScript"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.143",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/ValueSet"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.144",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/VerificationResult"
+                          }
+                        ]
+                      },
+                      {
+                        "@id": "http://hl7.org/fhir/Person#contained.*.145",
+                        "@type": [
+                          "https://lschema.org/Reference"
+                        ],
+                        "https://lschema.org/Reference/ref": [
+                          {
+                            "@id": "http://hl7.org/fhir/VisionPrescription"
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "address"
+                "@value": "contained"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Person#id",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
               }
             ]
           },
@@ -1926,13 +1819,13 @@
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
                 "@id": "http://hl7.org/fhir/Person#link.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/Person_Link"
                   }
@@ -1942,6 +1835,22 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "link"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Person#_language",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_language"
               }
             ]
           },
@@ -1965,9 +1874,41 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Person#_active",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_active"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Person#photo",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Attachment"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "photo"
               }
             ]
           },
@@ -1991,33 +1932,25 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^\\S*$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Person#telecom",
+            "@id": "http://hl7.org/fhir/Person#managingOrganization",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Person#telecom.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/ContactPoint"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "telecom"
+                "@value": "managingOrganization"
               }
             ]
           },
@@ -2026,7 +1959,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -2038,84 +1971,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Person#_implicitRules",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_implicitRules"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Person#name",
+            "@id": "http://hl7.org/fhir/Person#identifier",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Person#name.*",
+                "@id": "http://hl7.org/fhir/Person#identifier.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/HumanName"
+                    "@id": "http://hl7.org/fhir/Identifier"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "name"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Person#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Any combination of letters, numerals, \"-\" and \".\", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Person#photo",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Attachment"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "photo"
+                "@value": "identifier"
               }
             ]
           },
@@ -2124,7 +1999,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Meta"
               }
@@ -2132,6 +2007,121 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "meta"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Person#gender",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "gender"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Administrative Gender."
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "male"
+              },
+              {
+                "@value": "female"
+              },
+              {
+                "@value": "other"
+              },
+              {
+                "@value": "unknown"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Person#_birthDate",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_birthDate"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Person#address",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Person#address.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Address"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "address"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Person#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "resourceType"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "This is a Person resource"
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "Person"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Person#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Person#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
               }
             ]
           }

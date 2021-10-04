@@ -46,9 +46,6 @@ var (
 
 	// DefaultValueTerm is the default value for an attribute if attribute is not present
 	DefaultValueTerm = NewTerm(LS+"defaultValue", false, false, OverrideComposition, nil)
-
-	// LabelTerm defines one or more presentation layer labels for the attribute
-	LabelTerm = NewTerm(LS+"label", false, false, OverrideComposition, nil)
 )
 
 // AttributeTypes defines the terms describing attribute types. Each
@@ -89,27 +86,19 @@ var LayerTerms = struct {
 	// All options of a polymorphic attribute
 	OneOf string
 }{
-	Attributes:    NewTerm(LS+"Object#attributes", false, false, ErrorComposition, nil),
-	AttributeList: NewTerm(LS+"Object#attributeList", false, true, ErrorComposition, nil),
-	Reference:     NewTerm(LS+"Reference#reference", true, false, ErrorComposition, nil),
-	ArrayItems:    NewTerm(LS+"Array#items", false, false, ErrorComposition, nil),
-	AllOf:         NewTerm(LS+"Composite#allOf", false, true, ErrorComposition, nil),
-	OneOf:         NewTerm(LS+"Polymorphic#oneOf", false, true, ErrorComposition, nil),
+	Attributes:    NewTerm(LS+"Object/attributes", false, false, ErrorComposition, nil),
+	AttributeList: NewTerm(LS+"Object/attributeList", false, true, ErrorComposition, nil),
+	Reference:     NewTerm(LS+"Reference/ref", true, false, ErrorComposition, nil),
+	ArrayItems:    NewTerm(LS+"Array/elements", false, false, ErrorComposition, nil),
+	AllOf:         NewTerm(LS+"Composite/allOf", false, true, ErrorComposition, nil),
+	OneOf:         NewTerm(LS+"Polymorphic/oneOf", false, true, ErrorComposition, nil),
 }
 
 // DocumentNodeTerm is ithe type of document nodes
 var DocumentNodeTerm = NewTerm(LS+"DocumentNode", false, false, ErrorComposition, nil)
 
-var DataEdgeTerms = struct {
-	// Type of a document node
-	// Edge label linking attribute nodes to an object node
-	ObjectAttributes string
-	// Edge label linking array element nodes to an array node
-	ArrayElements string
-}{
-	ObjectAttributes: NewTerm(LS+"data/object#attributes", false, false, ErrorComposition, nil),
-	ArrayElements:    NewTerm(LS+"data/array#elements", false, false, ErrorComposition, nil),
-}
+// HasTerm is an edge term for linking document elements
+var HasTerm = NewTerm(LS+"data/has", false, false, ErrorComposition, nil)
 
 // FilterAttributeTypes returns all recognized attribute types from
 // the given types array. This is mainly used for validation, to
@@ -154,11 +143,11 @@ var (
 
 	// InstanceOfTerm is an edge term that is used to connect values with
 	// their schema specifications
-	InstanceOfTerm = NewTerm(LS+"data#instanceOf", false, false, ErrorComposition, nil)
+	InstanceOfTerm = NewTerm(LS+"data/instanceOf", false, false, ErrorComposition, nil)
 
-	BundleTerm     = NewTerm(LS+"SchemaManifest#bundle", false, false, ErrorComposition, nil)
-	SchemaBaseTerm = NewTerm(LS+"SchemaManifest#schema", true, false, ErrorComposition, nil)
-	OverlaysTerm   = NewTerm(LS+"SchemaManifest#overlays", true, true, ErrorComposition, nil)
+	BundleTerm     = NewTerm(LS+"SchemaManifest/bundle", false, false, ErrorComposition, nil)
+	SchemaBaseTerm = NewTerm(LS+"SchemaManifest/schema", true, false, ErrorComposition, nil)
+	OverlaysTerm   = NewTerm(LS+"SchemaManifest/overlays", true, true, ErrorComposition, nil)
 )
 
 var registeredTerms = map[string]TermSemantics{}

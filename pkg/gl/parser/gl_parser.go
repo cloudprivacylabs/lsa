@@ -16,65 +16,72 @@ var _ = reflect.Copy
 var _ = strconv.Itoa
 
 var parserATN = []uint16{
-	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 25, 108,
+	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 26, 122,
 	4, 2, 9, 2, 4, 3, 9, 3, 4, 4, 9, 4, 4, 5, 9, 5, 4, 6, 9, 6, 4, 7, 9, 7,
-	4, 8, 9, 8, 4, 9, 9, 9, 4, 10, 9, 10, 4, 11, 9, 11, 3, 2, 3, 2, 5, 2, 25,
-	10, 2, 3, 3, 6, 3, 28, 10, 3, 13, 3, 14, 3, 29, 3, 3, 3, 3, 3, 3, 3, 3,
-	5, 3, 36, 10, 3, 3, 4, 3, 4, 3, 4, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5,
-	3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 5, 5,
-	58, 10, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5,
-	3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 7, 5, 79, 10, 5,
-	12, 5, 14, 5, 82, 11, 5, 3, 6, 3, 6, 3, 7, 3, 7, 5, 7, 88, 10, 7, 3, 7,
-	3, 7, 3, 8, 3, 8, 3, 8, 7, 8, 95, 10, 8, 12, 8, 14, 8, 98, 11, 8, 3, 9,
-	3, 9, 5, 9, 102, 10, 9, 3, 10, 3, 10, 3, 11, 3, 11, 3, 11, 2, 3, 8, 12,
-	2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 2, 5, 3, 2, 10, 11, 4, 2, 19, 20, 24,
-	24, 3, 2, 21, 22, 2, 114, 2, 24, 3, 2, 2, 2, 4, 35, 3, 2, 2, 2, 6, 37,
-	3, 2, 2, 2, 8, 57, 3, 2, 2, 2, 10, 83, 3, 2, 2, 2, 12, 85, 3, 2, 2, 2,
-	14, 91, 3, 2, 2, 2, 16, 101, 3, 2, 2, 2, 18, 103, 3, 2, 2, 2, 20, 105,
-	3, 2, 2, 2, 22, 25, 5, 8, 5, 2, 23, 25, 5, 4, 3, 2, 24, 22, 3, 2, 2, 2,
-	24, 23, 3, 2, 2, 2, 25, 3, 3, 2, 2, 2, 26, 28, 5, 6, 4, 2, 27, 26, 3, 2,
-	2, 2, 28, 29, 3, 2, 2, 2, 29, 27, 3, 2, 2, 2, 29, 30, 3, 2, 2, 2, 30, 36,
-	3, 2, 2, 2, 31, 32, 7, 3, 2, 2, 32, 33, 5, 4, 3, 2, 33, 34, 7, 4, 2, 2,
-	34, 36, 3, 2, 2, 2, 35, 27, 3, 2, 2, 2, 35, 31, 3, 2, 2, 2, 36, 5, 3, 2,
-	2, 2, 37, 38, 5, 8, 5, 2, 38, 39, 7, 5, 2, 2, 39, 7, 3, 2, 2, 2, 40, 41,
-	8, 5, 1, 2, 41, 42, 7, 9, 2, 2, 42, 58, 5, 8, 5, 11, 43, 44, 5, 10, 6,
-	2, 44, 45, 7, 14, 2, 2, 45, 46, 5, 8, 5, 7, 46, 58, 3, 2, 2, 2, 47, 48,
-	5, 20, 11, 2, 48, 49, 7, 15, 2, 2, 49, 50, 5, 8, 5, 6, 50, 58, 3, 2, 2,
-	2, 51, 58, 7, 23, 2, 2, 52, 58, 5, 16, 9, 2, 53, 54, 7, 16, 2, 2, 54, 55,
-	5, 8, 5, 2, 55, 56, 7, 17, 2, 2, 56, 58, 3, 2, 2, 2, 57, 40, 3, 2, 2, 2,
-	57, 43, 3, 2, 2, 2, 57, 47, 3, 2, 2, 2, 57, 51, 3, 2, 2, 2, 57, 52, 3,
-	2, 2, 2, 57, 53, 3, 2, 2, 2, 58, 80, 3, 2, 2, 2, 59, 60, 12, 10, 2, 2,
-	60, 61, 9, 2, 2, 2, 61, 79, 5, 8, 5, 11, 62, 63, 12, 9, 2, 2, 63, 64, 7,
-	12, 2, 2, 64, 79, 5, 8, 5, 10, 65, 66, 12, 8, 2, 2, 66, 67, 7, 13, 2, 2,
-	67, 79, 5, 8, 5, 9, 68, 69, 12, 14, 2, 2, 69, 70, 7, 6, 2, 2, 70, 71, 5,
-	8, 5, 2, 71, 72, 7, 7, 2, 2, 72, 79, 3, 2, 2, 2, 73, 74, 12, 13, 2, 2,
-	74, 75, 7, 8, 2, 2, 75, 79, 5, 20, 11, 2, 76, 77, 12, 12, 2, 2, 77, 79,
-	5, 12, 7, 2, 78, 59, 3, 2, 2, 2, 78, 62, 3, 2, 2, 2, 78, 65, 3, 2, 2, 2,
-	78, 68, 3, 2, 2, 2, 78, 73, 3, 2, 2, 2, 78, 76, 3, 2, 2, 2, 79, 82, 3,
-	2, 2, 2, 80, 78, 3, 2, 2, 2, 80, 81, 3, 2, 2, 2, 81, 9, 3, 2, 2, 2, 82,
-	80, 3, 2, 2, 2, 83, 84, 5, 20, 11, 2, 84, 11, 3, 2, 2, 2, 85, 87, 7, 16,
-	2, 2, 86, 88, 5, 14, 8, 2, 87, 86, 3, 2, 2, 2, 87, 88, 3, 2, 2, 2, 88,
-	89, 3, 2, 2, 2, 89, 90, 7, 17, 2, 2, 90, 13, 3, 2, 2, 2, 91, 96, 5, 8,
-	5, 2, 92, 93, 7, 18, 2, 2, 93, 95, 5, 8, 5, 2, 94, 92, 3, 2, 2, 2, 95,
-	98, 3, 2, 2, 2, 96, 94, 3, 2, 2, 2, 96, 97, 3, 2, 2, 2, 97, 15, 3, 2, 2,
-	2, 98, 96, 3, 2, 2, 2, 99, 102, 9, 3, 2, 2, 100, 102, 5, 18, 10, 2, 101,
-	99, 3, 2, 2, 2, 101, 100, 3, 2, 2, 2, 102, 17, 3, 2, 2, 2, 103, 104, 9,
-	4, 2, 2, 104, 19, 3, 2, 2, 2, 105, 106, 7, 23, 2, 2, 106, 21, 3, 2, 2,
-	2, 11, 24, 29, 35, 57, 78, 80, 87, 96, 101,
+	4, 8, 9, 8, 4, 9, 9, 9, 4, 10, 9, 10, 4, 11, 9, 11, 4, 12, 9, 12, 4, 13,
+	9, 13, 3, 2, 3, 2, 5, 2, 29, 10, 2, 3, 3, 3, 3, 5, 3, 33, 10, 3, 3, 4,
+	6, 4, 36, 10, 4, 13, 4, 14, 4, 37, 3, 5, 3, 5, 3, 5, 3, 5, 3, 6, 3, 6,
+	3, 6, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7,
+	3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7,
+	3, 7, 3, 7, 5, 7, 72, 10, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7,
+	3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7, 3, 7,
+	7, 7, 93, 10, 7, 12, 7, 14, 7, 96, 11, 7, 3, 8, 3, 8, 3, 9, 3, 9, 5, 9,
+	102, 10, 9, 3, 9, 3, 9, 3, 10, 3, 10, 3, 10, 7, 10, 109, 10, 10, 12, 10,
+	14, 10, 112, 11, 10, 3, 11, 3, 11, 5, 11, 116, 10, 11, 3, 12, 3, 12, 3,
+	13, 3, 13, 3, 13, 2, 3, 12, 14, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22,
+	24, 2, 5, 3, 2, 10, 11, 4, 2, 20, 21, 25, 25, 3, 2, 22, 23, 2, 128, 2,
+	28, 3, 2, 2, 2, 4, 32, 3, 2, 2, 2, 6, 35, 3, 2, 2, 2, 8, 39, 3, 2, 2, 2,
+	10, 43, 3, 2, 2, 2, 12, 71, 3, 2, 2, 2, 14, 97, 3, 2, 2, 2, 16, 99, 3,
+	2, 2, 2, 18, 105, 3, 2, 2, 2, 20, 115, 3, 2, 2, 2, 22, 117, 3, 2, 2, 2,
+	24, 119, 3, 2, 2, 2, 26, 29, 5, 12, 7, 2, 27, 29, 5, 6, 4, 2, 28, 26, 3,
+	2, 2, 2, 28, 27, 3, 2, 2, 2, 29, 3, 3, 2, 2, 2, 30, 33, 5, 10, 6, 2, 31,
+	33, 5, 8, 5, 2, 32, 30, 3, 2, 2, 2, 32, 31, 3, 2, 2, 2, 33, 5, 3, 2, 2,
+	2, 34, 36, 5, 4, 3, 2, 35, 34, 3, 2, 2, 2, 36, 37, 3, 2, 2, 2, 37, 35,
+	3, 2, 2, 2, 37, 38, 3, 2, 2, 2, 38, 7, 3, 2, 2, 2, 39, 40, 7, 3, 2, 2,
+	40, 41, 5, 6, 4, 2, 41, 42, 7, 4, 2, 2, 42, 9, 3, 2, 2, 2, 43, 44, 5, 12,
+	7, 2, 44, 45, 7, 5, 2, 2, 45, 11, 3, 2, 2, 2, 46, 47, 8, 7, 1, 2, 47, 48,
+	7, 9, 2, 2, 48, 72, 5, 12, 7, 13, 49, 50, 5, 14, 8, 2, 50, 51, 7, 14, 2,
+	2, 51, 52, 5, 12, 7, 9, 52, 72, 3, 2, 2, 2, 53, 54, 5, 14, 8, 2, 54, 55,
+	7, 15, 2, 2, 55, 56, 5, 12, 7, 8, 56, 72, 3, 2, 2, 2, 57, 58, 5, 24, 13,
+	2, 58, 59, 7, 16, 2, 2, 59, 60, 5, 12, 7, 7, 60, 72, 3, 2, 2, 2, 61, 62,
+	5, 24, 13, 2, 62, 63, 7, 16, 2, 2, 63, 64, 5, 8, 5, 2, 64, 72, 3, 2, 2,
+	2, 65, 72, 7, 24, 2, 2, 66, 72, 5, 20, 11, 2, 67, 68, 7, 17, 2, 2, 68,
+	69, 5, 12, 7, 2, 69, 70, 7, 18, 2, 2, 70, 72, 3, 2, 2, 2, 71, 46, 3, 2,
+	2, 2, 71, 49, 3, 2, 2, 2, 71, 53, 3, 2, 2, 2, 71, 57, 3, 2, 2, 2, 71, 61,
+	3, 2, 2, 2, 71, 65, 3, 2, 2, 2, 71, 66, 3, 2, 2, 2, 71, 67, 3, 2, 2, 2,
+	72, 94, 3, 2, 2, 2, 73, 74, 12, 12, 2, 2, 74, 75, 9, 2, 2, 2, 75, 93, 5,
+	12, 7, 13, 76, 77, 12, 11, 2, 2, 77, 78, 7, 12, 2, 2, 78, 93, 5, 12, 7,
+	12, 79, 80, 12, 10, 2, 2, 80, 81, 7, 13, 2, 2, 81, 93, 5, 12, 7, 11, 82,
+	83, 12, 16, 2, 2, 83, 84, 7, 6, 2, 2, 84, 85, 5, 12, 7, 2, 85, 86, 7, 7,
+	2, 2, 86, 93, 3, 2, 2, 2, 87, 88, 12, 15, 2, 2, 88, 89, 7, 8, 2, 2, 89,
+	93, 5, 24, 13, 2, 90, 91, 12, 14, 2, 2, 91, 93, 5, 16, 9, 2, 92, 73, 3,
+	2, 2, 2, 92, 76, 3, 2, 2, 2, 92, 79, 3, 2, 2, 2, 92, 82, 3, 2, 2, 2, 92,
+	87, 3, 2, 2, 2, 92, 90, 3, 2, 2, 2, 93, 96, 3, 2, 2, 2, 94, 92, 3, 2, 2,
+	2, 94, 95, 3, 2, 2, 2, 95, 13, 3, 2, 2, 2, 96, 94, 3, 2, 2, 2, 97, 98,
+	5, 24, 13, 2, 98, 15, 3, 2, 2, 2, 99, 101, 7, 17, 2, 2, 100, 102, 5, 18,
+	10, 2, 101, 100, 3, 2, 2, 2, 101, 102, 3, 2, 2, 2, 102, 103, 3, 2, 2, 2,
+	103, 104, 7, 18, 2, 2, 104, 17, 3, 2, 2, 2, 105, 110, 5, 12, 7, 2, 106,
+	107, 7, 19, 2, 2, 107, 109, 5, 12, 7, 2, 108, 106, 3, 2, 2, 2, 109, 112,
+	3, 2, 2, 2, 110, 108, 3, 2, 2, 2, 110, 111, 3, 2, 2, 2, 111, 19, 3, 2,
+	2, 2, 112, 110, 3, 2, 2, 2, 113, 116, 9, 3, 2, 2, 114, 116, 5, 22, 12,
+	2, 115, 113, 3, 2, 2, 2, 115, 114, 3, 2, 2, 2, 116, 21, 3, 2, 2, 2, 117,
+	118, 9, 4, 2, 2, 118, 23, 3, 2, 2, 2, 119, 120, 7, 24, 2, 2, 120, 25, 3,
+	2, 2, 2, 11, 28, 32, 37, 71, 92, 94, 101, 110, 115,
 }
 var literalNames = []string{
 	"", "'{'", "'}'", "';'", "'['", "']'", "'.'", "'!'", "'=='", "'!='", "'&&'",
-	"'||'", "'='", "'->'", "'('", "')'", "','", "'null'",
+	"'||'", "'='", "':='", "'->'", "'('", "')'", "','", "'null'",
 }
 var symbolicNames = []string{
-	"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "NullLiteral",
-	"BooleanLiteral", "DecimalLiteral", "HexIntegerLiteral", "Identifier",
-	"StringLiteral", "WhiteSpaces",
+	"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+	"NullLiteral", "BooleanLiteral", "DecimalLiteral", "HexIntegerLiteral",
+	"Identifier", "StringLiteral", "WhiteSpaces",
 }
 
 var ruleNames = []string{
-	"script", "statementList", "statement", "expression", "lvalue", "arguments",
-	"argumentList", "literal", "numericLiteral", "identifierName",
+	"script", "statement", "statementList", "statementBlock", "expressionStatement",
+	"expression", "lvalue", "arguments", "argumentList", "literal", "numericLiteral",
+	"identifierName",
 }
 
 type glParser struct {
@@ -125,27 +132,30 @@ const (
 	glParserT__13             = 14
 	glParserT__14             = 15
 	glParserT__15             = 16
-	glParserNullLiteral       = 17
-	glParserBooleanLiteral    = 18
-	glParserDecimalLiteral    = 19
-	glParserHexIntegerLiteral = 20
-	glParserIdentifier        = 21
-	glParserStringLiteral     = 22
-	glParserWhiteSpaces       = 23
+	glParserT__16             = 17
+	glParserNullLiteral       = 18
+	glParserBooleanLiteral    = 19
+	glParserDecimalLiteral    = 20
+	glParserHexIntegerLiteral = 21
+	glParserIdentifier        = 22
+	glParserStringLiteral     = 23
+	glParserWhiteSpaces       = 24
 )
 
 // glParser rules.
 const (
-	glParserRULE_script         = 0
-	glParserRULE_statementList  = 1
-	glParserRULE_statement      = 2
-	glParserRULE_expression     = 3
-	glParserRULE_lvalue         = 4
-	glParserRULE_arguments      = 5
-	glParserRULE_argumentList   = 6
-	glParserRULE_literal        = 7
-	glParserRULE_numericLiteral = 8
-	glParserRULE_identifierName = 9
+	glParserRULE_script              = 0
+	glParserRULE_statement           = 1
+	glParserRULE_statementList       = 2
+	glParserRULE_statementBlock      = 3
+	glParserRULE_expressionStatement = 4
+	glParserRULE_expression          = 5
+	glParserRULE_lvalue              = 6
+	glParserRULE_arguments           = 7
+	glParserRULE_argumentList        = 8
+	glParserRULE_literal             = 9
+	glParserRULE_numericLiteral      = 10
+	glParserRULE_identifierName      = 11
 )
 
 // IScriptContext is an interface to support dynamic dispatch.
@@ -298,14 +308,14 @@ func (p *glParser) Script() (localctx IScriptContext) {
 		}
 	}()
 
-	p.SetState(22)
+	p.SetState(26)
 	p.GetErrorHandler().Sync(p)
 	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 0, p.GetParserRuleContext()) {
 	case 1:
 		localctx = NewExpressionScriptContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(20)
+			p.SetState(24)
 			p.expression(0)
 		}
 
@@ -313,219 +323,10 @@ func (p *glParser) Script() (localctx IScriptContext) {
 		localctx = NewStatementListScriptContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(21)
+			p.SetState(25)
 			p.StatementList()
 		}
 
-	}
-
-	return localctx
-}
-
-// IStatementListContext is an interface to support dynamic dispatch.
-type IStatementListContext interface {
-	antlr.ParserRuleContext
-
-	// GetParser returns the parser.
-	GetParser() antlr.Parser
-
-	// IsStatementListContext differentiates from other interfaces.
-	IsStatementListContext()
-}
-
-type StatementListContext struct {
-	*antlr.BaseParserRuleContext
-	parser antlr.Parser
-}
-
-func NewEmptyStatementListContext() *StatementListContext {
-	var p = new(StatementListContext)
-	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = glParserRULE_statementList
-	return p
-}
-
-func (*StatementListContext) IsStatementListContext() {}
-
-func NewStatementListContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *StatementListContext {
-	var p = new(StatementListContext)
-
-	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
-
-	p.parser = parser
-	p.RuleIndex = glParserRULE_statementList
-
-	return p
-}
-
-func (s *StatementListContext) GetParser() antlr.Parser { return s.parser }
-
-func (s *StatementListContext) CopyFrom(ctx *StatementListContext) {
-	s.BaseParserRuleContext.CopyFrom(ctx.BaseParserRuleContext)
-}
-
-func (s *StatementListContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *StatementListContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
-	return antlr.TreesStringTree(s, ruleNames, recog)
-}
-
-type StatementsContext struct {
-	*StatementListContext
-}
-
-func NewStatementsContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *StatementsContext {
-	var p = new(StatementsContext)
-
-	p.StatementListContext = NewEmptyStatementListContext()
-	p.parser = parser
-	p.CopyFrom(ctx.(*StatementListContext))
-
-	return p
-}
-
-func (s *StatementsContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *StatementsContext) AllStatement() []IStatementContext {
-	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IStatementContext)(nil)).Elem())
-	var tst = make([]IStatementContext, len(ts))
-
-	for i, t := range ts {
-		if t != nil {
-			tst[i] = t.(IStatementContext)
-		}
-	}
-
-	return tst
-}
-
-func (s *StatementsContext) Statement(i int) IStatementContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IStatementContext)(nil)).Elem(), i)
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IStatementContext)
-}
-
-func (s *StatementsContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(glListener); ok {
-		listenerT.EnterStatements(s)
-	}
-}
-
-func (s *StatementsContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(glListener); ok {
-		listenerT.ExitStatements(s)
-	}
-}
-
-type StatementBlockContext struct {
-	*StatementListContext
-}
-
-func NewStatementBlockContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *StatementBlockContext {
-	var p = new(StatementBlockContext)
-
-	p.StatementListContext = NewEmptyStatementListContext()
-	p.parser = parser
-	p.CopyFrom(ctx.(*StatementListContext))
-
-	return p
-}
-
-func (s *StatementBlockContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *StatementBlockContext) StatementList() IStatementListContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IStatementListContext)(nil)).Elem(), 0)
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IStatementListContext)
-}
-
-func (s *StatementBlockContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(glListener); ok {
-		listenerT.EnterStatementBlock(s)
-	}
-}
-
-func (s *StatementBlockContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(glListener); ok {
-		listenerT.ExitStatementBlock(s)
-	}
-}
-
-func (p *glParser) StatementList() (localctx IStatementListContext) {
-	localctx = NewStatementListContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 2, glParserRULE_statementList)
-	var _la int
-
-	defer func() {
-		p.ExitRule()
-	}()
-
-	defer func() {
-		if err := recover(); err != nil {
-			if v, ok := err.(antlr.RecognitionException); ok {
-				localctx.SetException(v)
-				p.GetErrorHandler().ReportError(p, v)
-				p.GetErrorHandler().Recover(p, v)
-			} else {
-				panic(err)
-			}
-		}
-	}()
-
-	p.SetState(33)
-	p.GetErrorHandler().Sync(p)
-
-	switch p.GetTokenStream().LA(1) {
-	case glParserT__6, glParserT__13, glParserNullLiteral, glParserBooleanLiteral, glParserDecimalLiteral, glParserHexIntegerLiteral, glParserIdentifier, glParserStringLiteral:
-		localctx = NewStatementsContext(p, localctx)
-		p.EnterOuterAlt(localctx, 1)
-		p.SetState(25)
-		p.GetErrorHandler().Sync(p)
-		_la = p.GetTokenStream().LA(1)
-
-		for ok := true; ok; ok = (((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<glParserT__6)|(1<<glParserT__13)|(1<<glParserNullLiteral)|(1<<glParserBooleanLiteral)|(1<<glParserDecimalLiteral)|(1<<glParserHexIntegerLiteral)|(1<<glParserIdentifier)|(1<<glParserStringLiteral))) != 0) {
-			{
-				p.SetState(24)
-				p.Statement()
-			}
-
-			p.SetState(27)
-			p.GetErrorHandler().Sync(p)
-			_la = p.GetTokenStream().LA(1)
-		}
-
-	case glParserT__0:
-		localctx = NewStatementBlockContext(p, localctx)
-		p.EnterOuterAlt(localctx, 2)
-		{
-			p.SetState(29)
-			p.Match(glParserT__0)
-		}
-		{
-			p.SetState(30)
-			p.StatementList()
-		}
-		{
-			p.SetState(31)
-			p.Match(glParserT__1)
-		}
-
-	default:
-		panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
 	}
 
 	return localctx
@@ -569,8 +370,24 @@ func NewStatementContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 
 func (s *StatementContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *StatementContext) CopyFrom(ctx *StatementContext) {
-	s.BaseParserRuleContext.CopyFrom(ctx.BaseParserRuleContext)
+func (s *StatementContext) ExpressionStatement() IExpressionStatementContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IExpressionStatementContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IExpressionStatementContext)
+}
+
+func (s *StatementContext) StatementBlock() IStatementBlockContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IStatementBlockContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IStatementBlockContext)
 }
 
 func (s *StatementContext) GetRuleContext() antlr.RuleContext {
@@ -581,49 +398,21 @@ func (s *StatementContext) ToStringTree(ruleNames []string, recog antlr.Recogniz
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-type ExpressionStatementContext struct {
-	*StatementContext
-}
-
-func NewExpressionStatementContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *ExpressionStatementContext {
-	var p = new(ExpressionStatementContext)
-
-	p.StatementContext = NewEmptyStatementContext()
-	p.parser = parser
-	p.CopyFrom(ctx.(*StatementContext))
-
-	return p
-}
-
-func (s *ExpressionStatementContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *ExpressionStatementContext) Expression() IExpressionContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IExpressionContext)(nil)).Elem(), 0)
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IExpressionContext)
-}
-
-func (s *ExpressionStatementContext) EnterRule(listener antlr.ParseTreeListener) {
+func (s *StatementContext) EnterRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(glListener); ok {
-		listenerT.EnterExpressionStatement(s)
+		listenerT.EnterStatement(s)
 	}
 }
 
-func (s *ExpressionStatementContext) ExitRule(listener antlr.ParseTreeListener) {
+func (s *StatementContext) ExitRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(glListener); ok {
-		listenerT.ExitExpressionStatement(s)
+		listenerT.ExitStatement(s)
 	}
 }
 
 func (p *glParser) Statement() (localctx IStatementContext) {
 	localctx = NewStatementContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 4, glParserRULE_statement)
+	p.EnterRule(localctx, 2, glParserRULE_statement)
 
 	defer func() {
 		p.ExitRule()
@@ -641,14 +430,352 @@ func (p *glParser) Statement() (localctx IStatementContext) {
 		}
 	}()
 
-	localctx = NewExpressionStatementContext(p, localctx)
+	p.SetState(30)
+	p.GetErrorHandler().Sync(p)
+
+	switch p.GetTokenStream().LA(1) {
+	case glParserT__6, glParserT__14, glParserNullLiteral, glParserBooleanLiteral, glParserDecimalLiteral, glParserHexIntegerLiteral, glParserIdentifier, glParserStringLiteral:
+		p.EnterOuterAlt(localctx, 1)
+		{
+			p.SetState(28)
+			p.ExpressionStatement()
+		}
+
+	case glParserT__0:
+		p.EnterOuterAlt(localctx, 2)
+		{
+			p.SetState(29)
+			p.StatementBlock()
+		}
+
+	default:
+		panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
+	}
+
+	return localctx
+}
+
+// IStatementListContext is an interface to support dynamic dispatch.
+type IStatementListContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// IsStatementListContext differentiates from other interfaces.
+	IsStatementListContext()
+}
+
+type StatementListContext struct {
+	*antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyStatementListContext() *StatementListContext {
+	var p = new(StatementListContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = glParserRULE_statementList
+	return p
+}
+
+func (*StatementListContext) IsStatementListContext() {}
+
+func NewStatementListContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *StatementListContext {
+	var p = new(StatementListContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = glParserRULE_statementList
+
+	return p
+}
+
+func (s *StatementListContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *StatementListContext) AllStatement() []IStatementContext {
+	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IStatementContext)(nil)).Elem())
+	var tst = make([]IStatementContext, len(ts))
+
+	for i, t := range ts {
+		if t != nil {
+			tst[i] = t.(IStatementContext)
+		}
+	}
+
+	return tst
+}
+
+func (s *StatementListContext) Statement(i int) IStatementContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IStatementContext)(nil)).Elem(), i)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IStatementContext)
+}
+
+func (s *StatementListContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *StatementListContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *StatementListContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.EnterStatementList(s)
+	}
+}
+
+func (s *StatementListContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.ExitStatementList(s)
+	}
+}
+
+func (p *glParser) StatementList() (localctx IStatementListContext) {
+	localctx = NewStatementListContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 4, glParserRULE_statementList)
+	var _la int
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
+	p.SetState(33)
+	p.GetErrorHandler().Sync(p)
+	_la = p.GetTokenStream().LA(1)
+
+	for ok := true; ok; ok = (((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<glParserT__0)|(1<<glParserT__6)|(1<<glParserT__14)|(1<<glParserNullLiteral)|(1<<glParserBooleanLiteral)|(1<<glParserDecimalLiteral)|(1<<glParserHexIntegerLiteral)|(1<<glParserIdentifier)|(1<<glParserStringLiteral))) != 0) {
+		{
+			p.SetState(32)
+			p.Statement()
+		}
+
+		p.SetState(35)
+		p.GetErrorHandler().Sync(p)
+		_la = p.GetTokenStream().LA(1)
+	}
+
+	return localctx
+}
+
+// IStatementBlockContext is an interface to support dynamic dispatch.
+type IStatementBlockContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// IsStatementBlockContext differentiates from other interfaces.
+	IsStatementBlockContext()
+}
+
+type StatementBlockContext struct {
+	*antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyStatementBlockContext() *StatementBlockContext {
+	var p = new(StatementBlockContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = glParserRULE_statementBlock
+	return p
+}
+
+func (*StatementBlockContext) IsStatementBlockContext() {}
+
+func NewStatementBlockContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *StatementBlockContext {
+	var p = new(StatementBlockContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = glParserRULE_statementBlock
+
+	return p
+}
+
+func (s *StatementBlockContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *StatementBlockContext) StatementList() IStatementListContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IStatementListContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IStatementListContext)
+}
+
+func (s *StatementBlockContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *StatementBlockContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *StatementBlockContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.EnterStatementBlock(s)
+	}
+}
+
+func (s *StatementBlockContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.ExitStatementBlock(s)
+	}
+}
+
+func (p *glParser) StatementBlock() (localctx IStatementBlockContext) {
+	localctx = NewStatementBlockContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 6, glParserRULE_statementBlock)
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(35)
+		p.SetState(37)
+		p.Match(glParserT__0)
+	}
+	{
+		p.SetState(38)
+		p.StatementList()
+	}
+	{
+		p.SetState(39)
+		p.Match(glParserT__1)
+	}
+
+	return localctx
+}
+
+// IExpressionStatementContext is an interface to support dynamic dispatch.
+type IExpressionStatementContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// IsExpressionStatementContext differentiates from other interfaces.
+	IsExpressionStatementContext()
+}
+
+type ExpressionStatementContext struct {
+	*antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyExpressionStatementContext() *ExpressionStatementContext {
+	var p = new(ExpressionStatementContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = glParserRULE_expressionStatement
+	return p
+}
+
+func (*ExpressionStatementContext) IsExpressionStatementContext() {}
+
+func NewExpressionStatementContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *ExpressionStatementContext {
+	var p = new(ExpressionStatementContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = glParserRULE_expressionStatement
+
+	return p
+}
+
+func (s *ExpressionStatementContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *ExpressionStatementContext) Expression() IExpressionContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IExpressionContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IExpressionContext)
+}
+
+func (s *ExpressionStatementContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *ExpressionStatementContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *ExpressionStatementContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.EnterExpressionStatement(s)
+	}
+}
+
+func (s *ExpressionStatementContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.ExitExpressionStatement(s)
+	}
+}
+
+func (p *glParser) ExpressionStatement() (localctx IExpressionStatementContext) {
+	localctx = NewExpressionStatementContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 8, glParserRULE_expressionStatement)
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
+	{
+		p.SetState(41)
 		p.expression(0)
 	}
 	{
-		p.SetState(36)
+		p.SetState(42)
 		p.Match(glParserT__2)
 	}
 
@@ -848,56 +975,6 @@ func (s *DotExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
 	}
 }
 
-type AssignmentExpressionContext struct {
-	*ExpressionContext
-}
-
-func NewAssignmentExpressionContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *AssignmentExpressionContext {
-	var p = new(AssignmentExpressionContext)
-
-	p.ExpressionContext = NewEmptyExpressionContext()
-	p.parser = parser
-	p.CopyFrom(ctx.(*ExpressionContext))
-
-	return p
-}
-
-func (s *AssignmentExpressionContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *AssignmentExpressionContext) Lvalue() ILvalueContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*ILvalueContext)(nil)).Elem(), 0)
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(ILvalueContext)
-}
-
-func (s *AssignmentExpressionContext) Expression() IExpressionContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IExpressionContext)(nil)).Elem(), 0)
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IExpressionContext)
-}
-
-func (s *AssignmentExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(glListener); ok {
-		listenerT.EnterAssignmentExpression(s)
-	}
-}
-
-func (s *AssignmentExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(glListener); ok {
-		listenerT.ExitAssignmentExpression(s)
-	}
-}
-
 type LiteralExpressionContext struct {
 	*ExpressionContext
 }
@@ -991,6 +1068,56 @@ func (s *LogicalOrExpressionContext) ExitRule(listener antlr.ParseTreeListener) 
 	}
 }
 
+type DefinitionExpressionContext struct {
+	*ExpressionContext
+}
+
+func NewDefinitionExpressionContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *DefinitionExpressionContext {
+	var p = new(DefinitionExpressionContext)
+
+	p.ExpressionContext = NewEmptyExpressionContext()
+	p.parser = parser
+	p.CopyFrom(ctx.(*ExpressionContext))
+
+	return p
+}
+
+func (s *DefinitionExpressionContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *DefinitionExpressionContext) Lvalue() ILvalueContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*ILvalueContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(ILvalueContext)
+}
+
+func (s *DefinitionExpressionContext) Expression() IExpressionContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IExpressionContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IExpressionContext)
+}
+
+func (s *DefinitionExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.EnterDefinitionExpression(s)
+	}
+}
+
+func (s *DefinitionExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.ExitDefinitionExpression(s)
+	}
+}
+
 type IndexExpressionContext struct {
 	*ExpressionContext
 }
@@ -1081,6 +1208,190 @@ func (s *NotExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
 func (s *NotExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(glListener); ok {
 		listenerT.ExitNotExpression(s)
+	}
+}
+
+type FunctionCallExpressionContext struct {
+	*ExpressionContext
+}
+
+func NewFunctionCallExpressionContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *FunctionCallExpressionContext {
+	var p = new(FunctionCallExpressionContext)
+
+	p.ExpressionContext = NewEmptyExpressionContext()
+	p.parser = parser
+	p.CopyFrom(ctx.(*ExpressionContext))
+
+	return p
+}
+
+func (s *FunctionCallExpressionContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *FunctionCallExpressionContext) Expression() IExpressionContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IExpressionContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IExpressionContext)
+}
+
+func (s *FunctionCallExpressionContext) Arguments() IArgumentsContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IArgumentsContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IArgumentsContext)
+}
+
+func (s *FunctionCallExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.EnterFunctionCallExpression(s)
+	}
+}
+
+func (s *FunctionCallExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.ExitFunctionCallExpression(s)
+	}
+}
+
+type IdentifierExpressionContext struct {
+	*ExpressionContext
+}
+
+func NewIdentifierExpressionContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *IdentifierExpressionContext {
+	var p = new(IdentifierExpressionContext)
+
+	p.ExpressionContext = NewEmptyExpressionContext()
+	p.parser = parser
+	p.CopyFrom(ctx.(*ExpressionContext))
+
+	return p
+}
+
+func (s *IdentifierExpressionContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *IdentifierExpressionContext) Identifier() antlr.TerminalNode {
+	return s.GetToken(glParserIdentifier, 0)
+}
+
+func (s *IdentifierExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.EnterIdentifierExpression(s)
+	}
+}
+
+func (s *IdentifierExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.ExitIdentifierExpression(s)
+	}
+}
+
+type AssignmentExpressionContext struct {
+	*ExpressionContext
+}
+
+func NewAssignmentExpressionContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *AssignmentExpressionContext {
+	var p = new(AssignmentExpressionContext)
+
+	p.ExpressionContext = NewEmptyExpressionContext()
+	p.parser = parser
+	p.CopyFrom(ctx.(*ExpressionContext))
+
+	return p
+}
+
+func (s *AssignmentExpressionContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *AssignmentExpressionContext) Lvalue() ILvalueContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*ILvalueContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(ILvalueContext)
+}
+
+func (s *AssignmentExpressionContext) Expression() IExpressionContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IExpressionContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IExpressionContext)
+}
+
+func (s *AssignmentExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.EnterAssignmentExpression(s)
+	}
+}
+
+func (s *AssignmentExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.ExitAssignmentExpression(s)
+	}
+}
+
+type BlockClosureExpressionContext struct {
+	*ExpressionContext
+}
+
+func NewBlockClosureExpressionContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *BlockClosureExpressionContext {
+	var p = new(BlockClosureExpressionContext)
+
+	p.ExpressionContext = NewEmptyExpressionContext()
+	p.parser = parser
+	p.CopyFrom(ctx.(*ExpressionContext))
+
+	return p
+}
+
+func (s *BlockClosureExpressionContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *BlockClosureExpressionContext) IdentifierName() IIdentifierNameContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IIdentifierNameContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IIdentifierNameContext)
+}
+
+func (s *BlockClosureExpressionContext) StatementBlock() IStatementBlockContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IStatementBlockContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IStatementBlockContext)
+}
+
+func (s *BlockClosureExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.EnterBlockClosureExpression(s)
+	}
+}
+
+func (s *BlockClosureExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(glListener); ok {
+		listenerT.ExitBlockClosureExpression(s)
 	}
 }
 
@@ -1187,90 +1498,6 @@ func (s *EqualityExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
 	}
 }
 
-type FunctionCallExpressionContext struct {
-	*ExpressionContext
-}
-
-func NewFunctionCallExpressionContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *FunctionCallExpressionContext {
-	var p = new(FunctionCallExpressionContext)
-
-	p.ExpressionContext = NewEmptyExpressionContext()
-	p.parser = parser
-	p.CopyFrom(ctx.(*ExpressionContext))
-
-	return p
-}
-
-func (s *FunctionCallExpressionContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *FunctionCallExpressionContext) Expression() IExpressionContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IExpressionContext)(nil)).Elem(), 0)
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IExpressionContext)
-}
-
-func (s *FunctionCallExpressionContext) Arguments() IArgumentsContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IArgumentsContext)(nil)).Elem(), 0)
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IArgumentsContext)
-}
-
-func (s *FunctionCallExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(glListener); ok {
-		listenerT.EnterFunctionCallExpression(s)
-	}
-}
-
-func (s *FunctionCallExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(glListener); ok {
-		listenerT.ExitFunctionCallExpression(s)
-	}
-}
-
-type IdentifierExpressionContext struct {
-	*ExpressionContext
-}
-
-func NewIdentifierExpressionContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *IdentifierExpressionContext {
-	var p = new(IdentifierExpressionContext)
-
-	p.ExpressionContext = NewEmptyExpressionContext()
-	p.parser = parser
-	p.CopyFrom(ctx.(*ExpressionContext))
-
-	return p
-}
-
-func (s *IdentifierExpressionContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *IdentifierExpressionContext) Identifier() antlr.TerminalNode {
-	return s.GetToken(glParserIdentifier, 0)
-}
-
-func (s *IdentifierExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(glListener); ok {
-		listenerT.EnterIdentifierExpression(s)
-	}
-}
-
-func (s *IdentifierExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(glListener); ok {
-		listenerT.ExitIdentifierExpression(s)
-	}
-}
-
 func (p *glParser) Expression() (localctx IExpressionContext) {
 	return p.expression(0)
 }
@@ -1281,8 +1508,8 @@ func (p *glParser) expression(_p int) (localctx IExpressionContext) {
 	localctx = NewExpressionContext(p, p.GetParserRuleContext(), _parentState)
 	var _prevctx IExpressionContext = localctx
 	var _ antlr.ParserRuleContext = _prevctx // TODO: To prevent unused variable warning.
-	_startState := 6
-	p.EnterRecursionRule(localctx, 6, glParserRULE_expression, _p)
+	_startState := 10
+	p.EnterRecursionRule(localctx, 10, glParserRULE_expression, _p)
 	var _la int
 
 	defer func() {
@@ -1304,7 +1531,7 @@ func (p *glParser) expression(_p int) (localctx IExpressionContext) {
 	var _alt int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(55)
+	p.SetState(69)
 	p.GetErrorHandler().Sync(p)
 	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 3, p.GetParserRuleContext()) {
 	case 1:
@@ -1313,12 +1540,12 @@ func (p *glParser) expression(_p int) (localctx IExpressionContext) {
 		_prevctx = localctx
 
 		{
-			p.SetState(39)
+			p.SetState(45)
 			p.Match(glParserT__6)
 		}
 		{
-			p.SetState(40)
-			p.expression(9)
+			p.SetState(46)
+			p.expression(11)
 		}
 
 	case 2:
@@ -1326,73 +1553,107 @@ func (p *glParser) expression(_p int) (localctx IExpressionContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(41)
+			p.SetState(47)
 			p.Lvalue()
 		}
 		{
-			p.SetState(42)
+			p.SetState(48)
 			p.Match(glParserT__11)
 		}
 		{
-			p.SetState(43)
-			p.expression(5)
+			p.SetState(49)
+			p.expression(7)
 		}
 
 	case 3:
-		localctx = NewClosureExpressionContext(p, localctx)
-		p.SetParserRuleContext(localctx)
-		_prevctx = localctx
-		{
-			p.SetState(45)
-			p.IdentifierName()
-		}
-		{
-			p.SetState(46)
-			p.Match(glParserT__12)
-		}
-		{
-			p.SetState(47)
-			p.expression(4)
-		}
-
-	case 4:
-		localctx = NewIdentifierExpressionContext(p, localctx)
-		p.SetParserRuleContext(localctx)
-		_prevctx = localctx
-		{
-			p.SetState(49)
-			p.Match(glParserIdentifier)
-		}
-
-	case 5:
-		localctx = NewLiteralExpressionContext(p, localctx)
-		p.SetParserRuleContext(localctx)
-		_prevctx = localctx
-		{
-			p.SetState(50)
-			p.Literal()
-		}
-
-	case 6:
-		localctx = NewParenthesizedExpressionContext(p, localctx)
+		localctx = NewDefinitionExpressionContext(p, localctx)
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
 			p.SetState(51)
-			p.Match(glParserT__13)
+			p.Lvalue()
 		}
 		{
 			p.SetState(52)
-			p.expression(0)
+			p.Match(glParserT__12)
 		}
 		{
 			p.SetState(53)
+			p.expression(6)
+		}
+
+	case 4:
+		localctx = NewClosureExpressionContext(p, localctx)
+		p.SetParserRuleContext(localctx)
+		_prevctx = localctx
+		{
+			p.SetState(55)
+			p.IdentifierName()
+		}
+		{
+			p.SetState(56)
+			p.Match(glParserT__13)
+		}
+		{
+			p.SetState(57)
+			p.expression(5)
+		}
+
+	case 5:
+		localctx = NewBlockClosureExpressionContext(p, localctx)
+		p.SetParserRuleContext(localctx)
+		_prevctx = localctx
+		{
+			p.SetState(59)
+			p.IdentifierName()
+		}
+		{
+			p.SetState(60)
+			p.Match(glParserT__13)
+		}
+		{
+			p.SetState(61)
+			p.StatementBlock()
+		}
+
+	case 6:
+		localctx = NewIdentifierExpressionContext(p, localctx)
+		p.SetParserRuleContext(localctx)
+		_prevctx = localctx
+		{
+			p.SetState(63)
+			p.Match(glParserIdentifier)
+		}
+
+	case 7:
+		localctx = NewLiteralExpressionContext(p, localctx)
+		p.SetParserRuleContext(localctx)
+		_prevctx = localctx
+		{
+			p.SetState(64)
+			p.Literal()
+		}
+
+	case 8:
+		localctx = NewParenthesizedExpressionContext(p, localctx)
+		p.SetParserRuleContext(localctx)
+		_prevctx = localctx
+		{
+			p.SetState(65)
 			p.Match(glParserT__14)
+		}
+		{
+			p.SetState(66)
+			p.expression(0)
+		}
+		{
+			p.SetState(67)
+			p.Match(glParserT__15)
 		}
 
 	}
 	p.GetParserRuleContext().SetStop(p.GetTokenStream().LT(-1))
-	p.SetState(78)
+	p.SetState(92)
 	p.GetErrorHandler().Sync(p)
 	_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 5, p.GetParserRuleContext())
 
@@ -1402,19 +1663,19 @@ func (p *glParser) expression(_p int) (localctx IExpressionContext) {
 				p.TriggerExitRuleEvent()
 			}
 			_prevctx = localctx
-			p.SetState(76)
+			p.SetState(90)
 			p.GetErrorHandler().Sync(p)
 			switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 4, p.GetParserRuleContext()) {
 			case 1:
 				localctx = NewEqualityExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, glParserRULE_expression)
-				p.SetState(57)
+				p.SetState(71)
 
-				if !(p.Precpred(p.GetParserRuleContext(), 8)) {
-					panic(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 8)", ""))
+				if !(p.Precpred(p.GetParserRuleContext(), 10)) {
+					panic(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 10)", ""))
 				}
 				{
-					p.SetState(58)
+					p.SetState(72)
 					_la = p.GetTokenStream().LA(1)
 
 					if !(_la == glParserT__7 || _la == glParserT__8) {
@@ -1425,99 +1686,99 @@ func (p *glParser) expression(_p int) (localctx IExpressionContext) {
 					}
 				}
 				{
-					p.SetState(59)
-					p.expression(9)
+					p.SetState(73)
+					p.expression(11)
 				}
 
 			case 2:
 				localctx = NewLogicalAndExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, glParserRULE_expression)
-				p.SetState(60)
+				p.SetState(74)
 
-				if !(p.Precpred(p.GetParserRuleContext(), 7)) {
-					panic(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 7)", ""))
+				if !(p.Precpred(p.GetParserRuleContext(), 9)) {
+					panic(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 9)", ""))
 				}
 				{
-					p.SetState(61)
+					p.SetState(75)
 					p.Match(glParserT__9)
 				}
 				{
-					p.SetState(62)
-					p.expression(8)
+					p.SetState(76)
+					p.expression(10)
 				}
 
 			case 3:
 				localctx = NewLogicalOrExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, glParserRULE_expression)
-				p.SetState(63)
+				p.SetState(77)
 
-				if !(p.Precpred(p.GetParserRuleContext(), 6)) {
-					panic(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 6)", ""))
+				if !(p.Precpred(p.GetParserRuleContext(), 8)) {
+					panic(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 8)", ""))
 				}
 				{
-					p.SetState(64)
+					p.SetState(78)
 					p.Match(glParserT__10)
 				}
 				{
-					p.SetState(65)
-					p.expression(7)
+					p.SetState(79)
+					p.expression(9)
 				}
 
 			case 4:
 				localctx = NewIndexExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, glParserRULE_expression)
-				p.SetState(66)
+				p.SetState(80)
 
-				if !(p.Precpred(p.GetParserRuleContext(), 12)) {
-					panic(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 12)", ""))
+				if !(p.Precpred(p.GetParserRuleContext(), 14)) {
+					panic(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 14)", ""))
 				}
 				{
-					p.SetState(67)
+					p.SetState(81)
 					p.Match(glParserT__3)
 				}
 				{
-					p.SetState(68)
+					p.SetState(82)
 					p.expression(0)
 				}
 				{
-					p.SetState(69)
+					p.SetState(83)
 					p.Match(glParserT__4)
 				}
 
 			case 5:
 				localctx = NewDotExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, glParserRULE_expression)
-				p.SetState(71)
+				p.SetState(85)
 
-				if !(p.Precpred(p.GetParserRuleContext(), 11)) {
-					panic(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 11)", ""))
+				if !(p.Precpred(p.GetParserRuleContext(), 13)) {
+					panic(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 13)", ""))
 				}
 				{
-					p.SetState(72)
+					p.SetState(86)
 					p.Match(glParserT__5)
 				}
 				{
-					p.SetState(73)
+					p.SetState(87)
 					p.IdentifierName()
 				}
 
 			case 6:
 				localctx = NewFunctionCallExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, glParserRULE_expression)
-				p.SetState(74)
+				p.SetState(88)
 
-				if !(p.Precpred(p.GetParserRuleContext(), 10)) {
-					panic(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 10)", ""))
+				if !(p.Precpred(p.GetParserRuleContext(), 12)) {
+					panic(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 12)", ""))
 				}
 				{
-					p.SetState(75)
+					p.SetState(89)
 					p.Arguments()
 				}
 
 			}
 
 		}
-		p.SetState(80)
+		p.SetState(94)
 		p.GetErrorHandler().Sync(p)
 		_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 5, p.GetParserRuleContext())
 	}
@@ -1595,7 +1856,7 @@ func (s *LvalueContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *glParser) Lvalue() (localctx ILvalueContext) {
 	localctx = NewLvalueContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 8, glParserRULE_lvalue)
+	p.EnterRule(localctx, 12, glParserRULE_lvalue)
 
 	defer func() {
 		p.ExitRule()
@@ -1615,7 +1876,7 @@ func (p *glParser) Lvalue() (localctx ILvalueContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(81)
+		p.SetState(95)
 		p.IdentifierName()
 	}
 
@@ -1692,7 +1953,7 @@ func (s *ArgumentsContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *glParser) Arguments() (localctx IArgumentsContext) {
 	localctx = NewArgumentsContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 10, glParserRULE_arguments)
+	p.EnterRule(localctx, 14, glParserRULE_arguments)
 	var _la int
 
 	defer func() {
@@ -1713,23 +1974,23 @@ func (p *glParser) Arguments() (localctx IArgumentsContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(83)
-		p.Match(glParserT__13)
+		p.SetState(97)
+		p.Match(glParserT__14)
 	}
-	p.SetState(85)
+	p.SetState(99)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	if ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<glParserT__6)|(1<<glParserT__13)|(1<<glParserNullLiteral)|(1<<glParserBooleanLiteral)|(1<<glParserDecimalLiteral)|(1<<glParserHexIntegerLiteral)|(1<<glParserIdentifier)|(1<<glParserStringLiteral))) != 0 {
+	if ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<glParserT__6)|(1<<glParserT__14)|(1<<glParserNullLiteral)|(1<<glParserBooleanLiteral)|(1<<glParserDecimalLiteral)|(1<<glParserHexIntegerLiteral)|(1<<glParserIdentifier)|(1<<glParserStringLiteral))) != 0 {
 		{
-			p.SetState(84)
+			p.SetState(98)
 			p.ArgumentList()
 		}
 
 	}
 	{
-		p.SetState(87)
-		p.Match(glParserT__14)
+		p.SetState(101)
+		p.Match(glParserT__15)
 	}
 
 	return localctx
@@ -1818,7 +2079,7 @@ func (s *ArgumentListContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *glParser) ArgumentList() (localctx IArgumentListContext) {
 	localctx = NewArgumentListContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 12, glParserRULE_argumentList)
+	p.EnterRule(localctx, 16, glParserRULE_argumentList)
 	var _la int
 
 	defer func() {
@@ -1839,24 +2100,24 @@ func (p *glParser) ArgumentList() (localctx IArgumentListContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(89)
+		p.SetState(103)
 		p.expression(0)
 	}
-	p.SetState(94)
+	p.SetState(108)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	for _la == glParserT__15 {
+	for _la == glParserT__16 {
 		{
-			p.SetState(90)
-			p.Match(glParserT__15)
+			p.SetState(104)
+			p.Match(glParserT__16)
 		}
 		{
-			p.SetState(91)
+			p.SetState(105)
 			p.expression(0)
 		}
 
-		p.SetState(96)
+		p.SetState(110)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
@@ -1946,7 +2207,7 @@ func (s *LiteralContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *glParser) Literal() (localctx ILiteralContext) {
 	localctx = NewLiteralContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 14, glParserRULE_literal)
+	p.EnterRule(localctx, 18, glParserRULE_literal)
 	var _la int
 
 	defer func() {
@@ -1965,14 +2226,14 @@ func (p *glParser) Literal() (localctx ILiteralContext) {
 		}
 	}()
 
-	p.SetState(99)
+	p.SetState(113)
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
 	case glParserNullLiteral, glParserBooleanLiteral, glParserStringLiteral:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(97)
+			p.SetState(111)
 			_la = p.GetTokenStream().LA(1)
 
 			if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<glParserNullLiteral)|(1<<glParserBooleanLiteral)|(1<<glParserStringLiteral))) != 0) {
@@ -1986,7 +2247,7 @@ func (p *glParser) Literal() (localctx ILiteralContext) {
 	case glParserDecimalLiteral, glParserHexIntegerLiteral:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(98)
+			p.SetState(112)
 			p.NumericLiteral()
 		}
 
@@ -2065,7 +2326,7 @@ func (s *NumericLiteralContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *glParser) NumericLiteral() (localctx INumericLiteralContext) {
 	localctx = NewNumericLiteralContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 16, glParserRULE_numericLiteral)
+	p.EnterRule(localctx, 20, glParserRULE_numericLiteral)
 	var _la int
 
 	defer func() {
@@ -2086,7 +2347,7 @@ func (p *glParser) NumericLiteral() (localctx INumericLiteralContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(101)
+		p.SetState(115)
 		_la = p.GetTokenStream().LA(1)
 
 		if !(_la == glParserDecimalLiteral || _la == glParserHexIntegerLiteral) {
@@ -2164,7 +2425,7 @@ func (s *IdentifierNameContext) ExitRule(listener antlr.ParseTreeListener) {
 
 func (p *glParser) IdentifierName() (localctx IIdentifierNameContext) {
 	localctx = NewIdentifierNameContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 18, glParserRULE_identifierName)
+	p.EnterRule(localctx, 22, glParserRULE_identifierName)
 
 	defer func() {
 		p.ExitRule()
@@ -2184,7 +2445,7 @@ func (p *glParser) IdentifierName() (localctx IIdentifierNameContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(103)
+		p.SetState(117)
 		p.Match(glParserIdentifier)
 	}
 
@@ -2193,7 +2454,7 @@ func (p *glParser) IdentifierName() (localctx IIdentifierNameContext) {
 
 func (p *glParser) Sempred(localctx antlr.RuleContext, ruleIndex, predIndex int) bool {
 	switch ruleIndex {
-	case 3:
+	case 5:
 		var t *ExpressionContext = nil
 		if localctx != nil {
 			t = localctx.(*ExpressionContext)
@@ -2208,22 +2469,22 @@ func (p *glParser) Sempred(localctx antlr.RuleContext, ruleIndex, predIndex int)
 func (p *glParser) Expression_Sempred(localctx antlr.RuleContext, predIndex int) bool {
 	switch predIndex {
 	case 0:
-		return p.Precpred(p.GetParserRuleContext(), 8)
+		return p.Precpred(p.GetParserRuleContext(), 10)
 
 	case 1:
-		return p.Precpred(p.GetParserRuleContext(), 7)
+		return p.Precpred(p.GetParserRuleContext(), 9)
 
 	case 2:
-		return p.Precpred(p.GetParserRuleContext(), 6)
+		return p.Precpred(p.GetParserRuleContext(), 8)
 
 	case 3:
-		return p.Precpred(p.GetParserRuleContext(), 12)
+		return p.Precpred(p.GetParserRuleContext(), 14)
 
 	case 4:
-		return p.Precpred(p.GetParserRuleContext(), 11)
+		return p.Precpred(p.GetParserRuleContext(), 13)
 
 	case 5:
-		return p.Precpred(p.GetParserRuleContext(), 10)
+		return p.Precpred(p.GetParserRuleContext(), 12)
 
 	default:
 		panic("No predicate with index: " + fmt.Sprint(predIndex))

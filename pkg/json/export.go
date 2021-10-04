@@ -122,7 +122,7 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 	switch {
 	case types.Has(ls.AttributeTypes.Object):
 		ret := Object{}
-		gnodes := node.OutWith(ls.DataEdgeTerms.ObjectAttributes).Targets().All()
+		gnodes := node.OutWith(ls.HasTerm).Targets().All()
 		nodes := make([]ls.Node, 0, len(gnodes))
 		for _, node := range gnodes {
 			nodes = append(nodes, node.(ls.Node))
@@ -145,7 +145,7 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 
 	case types.Has(ls.AttributeTypes.Array):
 		ret := Array{}
-		gnodes := node.OutWith(ls.DataEdgeTerms.ArrayElements).Targets().All()
+		gnodes := node.OutWith(ls.HasTerm).Targets().All()
 		nodes := make([]ls.Node, 0, len(gnodes))
 		for _, node := range gnodes {
 			nodes = append(nodes, node.(ls.Node))

@@ -7,7 +7,7 @@ import (
 )
 
 // JsonFormatTerm validates if the value matches one of the json format implementations
-var JsonFormatTerm = ls.NewTerm(ls.LS+"validation#json/format", false, false, ls.OverrideComposition, struct {
+var JsonFormatTerm = ls.NewTerm(ls.LS+"validation/json/format", false, false, ls.OverrideComposition, struct {
 	JsonFormatValidator
 }{
 	JsonFormatValidator{},

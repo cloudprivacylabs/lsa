@@ -55,11 +55,11 @@ func TestExprParse(t *testing.T) {
 	check(`!false`, scope, ValueOf(true))
 	check(`abc=="123"`, scope, ValueOf(true))
 	check(`abc!="123"`, scope, ValueOf(false))
-	check(`newvar=abc=="123"`, scope, ValueOf(true))
+	check(`newvar:=abc=="123"`, scope, ValueOf(true))
 	if !reflect.DeepEqual(scope.Get("newvar"), ValueOf(true)) {
 		t.Errorf("Assignment error")
 	}
-	check(`x=1`, scope, ValueOf(1))
+	check(`x:=1`, scope, ValueOf(1))
 
 	node1 := ls.NewNode("id1")
 	node2 := ls.NewNode("id2")
@@ -67,5 +67,9 @@ func TestExprParse(t *testing.T) {
 	scope.Set("node", ValueOf(node1))
 	check("node.firstReachable(n->n.id=='id2').length", scope, ValueOf(1))
 	check("node.firstReachable(n->n.id=='id2'&&n.id=='id2').length", scope, ValueOf(1))
+	check("node.firstReachable(n->{n.id=='id2';}).length", scope, ValueOf(1))
 	check("123;abc.length;", scope, ValueOf(3))
+	check("a:=1;  { a=2; } a;", scope, ValueOf(2))
+	check("a:=1;  { a:=2; } a;", scope, ValueOf(1))
+	check("x:=1;  { y:=2; } x;", scope, ValueOf(1))
 }

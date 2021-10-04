@@ -74,6 +74,7 @@ func (layer *Layer) Compose(source *Layer) error {
 	if err != nil {
 		return err
 	}
+	layer.ResetIndex()
 	return nil
 }
 

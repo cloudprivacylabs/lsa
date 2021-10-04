@@ -28,6 +28,7 @@ import (
 type Layer struct {
 	*digraph.Graph
 	layerInfo Node
+	index     *digraph.Index
 }
 
 // NewLayer returns a new empty layer
@@ -36,6 +37,20 @@ func NewLayer() *Layer {
 	ret.layerInfo = NewNode("")
 	ret.AddNode(ret.layerInfo)
 	return ret
+}
+
+// ResetIndex must be used after modifying the layer to reset the layer index
+func (l *Layer) ResetIndex() {
+	l.index = nil
+}
+
+// GetIndex returns a graph index for the layer. The layer must not be
+// modified after the index is retrieved
+func (l *Layer) GetIndex() *digraph.Index {
+	if l.index == nil {
+		l.index = l.Graph.GetIndex()
+	}
+	return l.index
 }
 
 // Clone returns a copy of the layer

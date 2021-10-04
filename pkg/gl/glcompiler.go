@@ -53,12 +53,16 @@ func (c *Compiler) setError(err error) {
 	}
 }
 
-func (compiler *Compiler) EnterStatements(c *parser.StatementsContext) {
-	compiler.push(statementList{})
+type statementBlockMarker struct {
+	newScope bool
+}
+
+func (compiler *Compiler) EnterStatementList(c *parser.StatementListContext) {
+	compiler.push(statementBlockMarker{})
 }
 
 func (compiler *Compiler) EnterStatementBlock(c *parser.StatementBlockContext) {
-	compiler.push(statementList{newScope: true})
+	compiler.push(statementBlockMarker{newScope: true})
 }
 
 func (compiler *Compiler) exitStatements() {
@@ -66,11 +70,12 @@ func (compiler *Compiler) exitStatements() {
 	statements := make([]Evaluatable, 0)
 	for {
 		v := compiler.pop()
-		if s, ok := v.(statementList); ok {
+		if s, ok := v.(statementBlockMarker); ok {
+			result := statementList{newScope: s.newScope}
 			for i := len(statements) - 1; i >= 0; i-- {
-				s.statements = append(s.statements, statements[i])
+				result.statements = append(result.statements, statements[i])
 			}
-			compiler.push(s)
+			compiler.push(result)
 			return
 		}
 		ev, ok := v.(Evaluatable)
@@ -82,7 +87,7 @@ func (compiler *Compiler) exitStatements() {
 	}
 }
 
-func (compiler *Compiler) ExitStatements(c *parser.StatementsContext) {
+func (compiler *Compiler) ExitStatementList(c *parser.StatementListContext) {
 	compiler.exitStatements()
 }
 
@@ -108,6 +113,18 @@ func (compiler *Compiler) ExitAssignmentExpression(c *parser.AssignmentExpressio
 		compiler.setError(ErrNotLValue)
 	}
 	compiler.push(assignmentExpression{lValue: string(lv), rValue: val})
+}
+
+func (compiler *Compiler) ExitDefinitionExpression(c *parser.DefinitionExpressionContext) {
+	val, ok := compiler.pop().(Evaluatable)
+	if !ok {
+		compiler.setError(ErrNotExpression)
+	}
+	lv, ok := compiler.pop().(lValueExpression)
+	if !ok {
+		compiler.setError(ErrNotLValue)
+	}
+	compiler.push(definitionExpression{lValue: string(lv), rValue: val})
 }
 
 func (compiler *Compiler) ExitLvalue(c *parser.LvalueContext) {
@@ -235,11 +252,18 @@ func (compiler *Compiler) ExitArguments(c *parser.ArgumentsContext) {
 	compiler.push(args)
 }
 
-func (compiler *Compiler) ExitClosureExpression(c *parser.ClosureExpressionContext) {
+func (compiler *Compiler) exitClosureExpression(identifier string) {
 	expr, ok := compiler.pop().(Evaluatable)
 	if !ok {
 		compiler.setError(ErrNotExpression)
 	}
-	identifier := c.GetStart().GetText()
 	compiler.push(closureExpression{symbol: identifier, f: expr})
+}
+
+func (compiler *Compiler) ExitClosureExpression(c *parser.ClosureExpressionContext) {
+	compiler.exitClosureExpression(c.GetStart().GetText())
+}
+
+func (compiler *Compiler) ExitBlockClosureExpression(c *parser.BlockClosureExpressionContext) {
+	compiler.exitClosureExpression(c.GetStart().GetText())
 }

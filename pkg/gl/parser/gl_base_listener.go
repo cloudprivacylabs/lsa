@@ -33,22 +33,28 @@ func (s *BaseglListener) EnterStatementListScript(ctx *StatementListScriptContex
 // ExitStatementListScript is called when production StatementListScript is exited.
 func (s *BaseglListener) ExitStatementListScript(ctx *StatementListScriptContext) {}
 
-// EnterStatements is called when production Statements is entered.
-func (s *BaseglListener) EnterStatements(ctx *StatementsContext) {}
+// EnterStatement is called when production statement is entered.
+func (s *BaseglListener) EnterStatement(ctx *StatementContext) {}
 
-// ExitStatements is called when production Statements is exited.
-func (s *BaseglListener) ExitStatements(ctx *StatementsContext) {}
+// ExitStatement is called when production statement is exited.
+func (s *BaseglListener) ExitStatement(ctx *StatementContext) {}
 
-// EnterStatementBlock is called when production StatementBlock is entered.
+// EnterStatementList is called when production statementList is entered.
+func (s *BaseglListener) EnterStatementList(ctx *StatementListContext) {}
+
+// ExitStatementList is called when production statementList is exited.
+func (s *BaseglListener) ExitStatementList(ctx *StatementListContext) {}
+
+// EnterStatementBlock is called when production statementBlock is entered.
 func (s *BaseglListener) EnterStatementBlock(ctx *StatementBlockContext) {}
 
-// ExitStatementBlock is called when production StatementBlock is exited.
+// ExitStatementBlock is called when production statementBlock is exited.
 func (s *BaseglListener) ExitStatementBlock(ctx *StatementBlockContext) {}
 
-// EnterExpressionStatement is called when production ExpressionStatement is entered.
+// EnterExpressionStatement is called when production expressionStatement is entered.
 func (s *BaseglListener) EnterExpressionStatement(ctx *ExpressionStatementContext) {}
 
-// ExitExpressionStatement is called when production ExpressionStatement is exited.
+// ExitExpressionStatement is called when production expressionStatement is exited.
 func (s *BaseglListener) ExitExpressionStatement(ctx *ExpressionStatementContext) {}
 
 // EnterParenthesizedExpression is called when production ParenthesizedExpression is entered.
@@ -69,12 +75,6 @@ func (s *BaseglListener) EnterDotExpression(ctx *DotExpressionContext) {}
 // ExitDotExpression is called when production DotExpression is exited.
 func (s *BaseglListener) ExitDotExpression(ctx *DotExpressionContext) {}
 
-// EnterAssignmentExpression is called when production AssignmentExpression is entered.
-func (s *BaseglListener) EnterAssignmentExpression(ctx *AssignmentExpressionContext) {}
-
-// ExitAssignmentExpression is called when production AssignmentExpression is exited.
-func (s *BaseglListener) ExitAssignmentExpression(ctx *AssignmentExpressionContext) {}
-
 // EnterLiteralExpression is called when production LiteralExpression is entered.
 func (s *BaseglListener) EnterLiteralExpression(ctx *LiteralExpressionContext) {}
 
@@ -86,6 +86,12 @@ func (s *BaseglListener) EnterLogicalOrExpression(ctx *LogicalOrExpressionContex
 
 // ExitLogicalOrExpression is called when production LogicalOrExpression is exited.
 func (s *BaseglListener) ExitLogicalOrExpression(ctx *LogicalOrExpressionContext) {}
+
+// EnterDefinitionExpression is called when production DefinitionExpression is entered.
+func (s *BaseglListener) EnterDefinitionExpression(ctx *DefinitionExpressionContext) {}
+
+// ExitDefinitionExpression is called when production DefinitionExpression is exited.
+func (s *BaseglListener) ExitDefinitionExpression(ctx *DefinitionExpressionContext) {}
 
 // EnterIndexExpression is called when production IndexExpression is entered.
 func (s *BaseglListener) EnterIndexExpression(ctx *IndexExpressionContext) {}
@@ -99,18 +105,6 @@ func (s *BaseglListener) EnterNotExpression(ctx *NotExpressionContext) {}
 // ExitNotExpression is called when production NotExpression is exited.
 func (s *BaseglListener) ExitNotExpression(ctx *NotExpressionContext) {}
 
-// EnterClosureExpression is called when production ClosureExpression is entered.
-func (s *BaseglListener) EnterClosureExpression(ctx *ClosureExpressionContext) {}
-
-// ExitClosureExpression is called when production ClosureExpression is exited.
-func (s *BaseglListener) ExitClosureExpression(ctx *ClosureExpressionContext) {}
-
-// EnterEqualityExpression is called when production EqualityExpression is entered.
-func (s *BaseglListener) EnterEqualityExpression(ctx *EqualityExpressionContext) {}
-
-// ExitEqualityExpression is called when production EqualityExpression is exited.
-func (s *BaseglListener) ExitEqualityExpression(ctx *EqualityExpressionContext) {}
-
 // EnterFunctionCallExpression is called when production FunctionCallExpression is entered.
 func (s *BaseglListener) EnterFunctionCallExpression(ctx *FunctionCallExpressionContext) {}
 
@@ -122,6 +116,30 @@ func (s *BaseglListener) EnterIdentifierExpression(ctx *IdentifierExpressionCont
 
 // ExitIdentifierExpression is called when production IdentifierExpression is exited.
 func (s *BaseglListener) ExitIdentifierExpression(ctx *IdentifierExpressionContext) {}
+
+// EnterAssignmentExpression is called when production AssignmentExpression is entered.
+func (s *BaseglListener) EnterAssignmentExpression(ctx *AssignmentExpressionContext) {}
+
+// ExitAssignmentExpression is called when production AssignmentExpression is exited.
+func (s *BaseglListener) ExitAssignmentExpression(ctx *AssignmentExpressionContext) {}
+
+// EnterBlockClosureExpression is called when production BlockClosureExpression is entered.
+func (s *BaseglListener) EnterBlockClosureExpression(ctx *BlockClosureExpressionContext) {}
+
+// ExitBlockClosureExpression is called when production BlockClosureExpression is exited.
+func (s *BaseglListener) ExitBlockClosureExpression(ctx *BlockClosureExpressionContext) {}
+
+// EnterClosureExpression is called when production ClosureExpression is entered.
+func (s *BaseglListener) EnterClosureExpression(ctx *ClosureExpressionContext) {}
+
+// ExitClosureExpression is called when production ClosureExpression is exited.
+func (s *BaseglListener) ExitClosureExpression(ctx *ClosureExpressionContext) {}
+
+// EnterEqualityExpression is called when production EqualityExpression is entered.
+func (s *BaseglListener) EnterEqualityExpression(ctx *EqualityExpressionContext) {}
+
+// ExitEqualityExpression is called when production EqualityExpression is exited.
+func (s *BaseglListener) ExitEqualityExpression(ctx *EqualityExpressionContext) {}
 
 // EnterLvalue is called when production lvalue is entered.
 func (s *BaseglListener) EnterLvalue(ctx *LvalueContext) {}
