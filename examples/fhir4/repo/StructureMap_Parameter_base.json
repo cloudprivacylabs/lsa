@@ -10,30 +10,60 @@
         "@type": [
           "http://hl7.org/fhir/StructureMap_Parameter"
         ],
-        "https://lschema.org/Object#attributes": [
+        "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/StructureMap_Parameter#valueString",
+            "@id": "http://hl7.org/fhir/StructureMap_Parameter#_valueInteger",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueString"
+                "@value": "_valueInteger"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Parameter#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/StructureMap_Parameter#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
-            "https://lschema.org/description": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "Parameter value - variable or literal."
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Parameter#_valueDecimal",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/attributeName": [
               {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "_valueDecimal"
               }
             ]
           },
@@ -42,7 +72,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -50,32 +80,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_valueString"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/StructureMap_Parameter#valueDecimal",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueDecimal"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Parameter value - variable or literal."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
               }
             ]
           },
@@ -99,25 +103,9 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/StructureMap_Parameter#_valueInteger",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_valueInteger"
               }
             ]
           },
@@ -126,13 +114,13 @@
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
                 "@id": "http://hl7.org/fhir/StructureMap_Parameter#extension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/Extension"
                   }
@@ -146,29 +134,29 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/StructureMap_Parameter#_valueBoolean",
+            "@id": "http://hl7.org/fhir/StructureMap_Parameter#_valueId",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_valueBoolean"
+                "@value": "_valueId"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/StructureMap_Parameter#valueInteger",
+            "@id": "http://hl7.org/fhir/StructureMap_Parameter#valueDecimal",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueInteger"
+                "@value": "valueDecimal"
               }
             ],
             "https://lschema.org/description": [
@@ -181,65 +169,9 @@
                 "@id": "number"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
-                "@value": "^-?([0]|([1-9][0-9]*))$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/StructureMap_Parameter#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/StructureMap_Parameter#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/StructureMap_Parameter#_valueId",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_valueId"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/StructureMap_Parameter#_valueDecimal",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_valueDecimal"
+                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
               }
             ]
           },
@@ -263,9 +195,35 @@
                 "@id": "boolean"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^true|false$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Parameter#valueInteger",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueInteger"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Parameter value - variable or literal."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^-?([0]|([1-9][0-9]*))$"
               }
             ]
           },
@@ -289,9 +247,51 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Parameter#valueString",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueString"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Parameter value - variable or literal."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/StructureMap_Parameter#_valueBoolean",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_valueBoolean"
               }
             ]
           }

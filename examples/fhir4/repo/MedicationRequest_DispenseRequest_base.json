@@ -10,19 +10,19 @@
         "@type": [
           "http://hl7.org/fhir/MedicationRequest_DispenseRequest"
         ],
-        "https://lschema.org/Object#attributes": [
+        "https://lschema.org/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#extension",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
                 "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#extension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/Extension"
                   }
@@ -36,99 +36,11 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#dispenseInterval",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Duration"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "dispenseInterval"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#_numberOfRepeatsAllowed",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_numberOfRepeatsAllowed"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#performer",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "performer"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#expectedSupplyDuration",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Duration"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "expectedSupplyDuration"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#initialFill",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/MedicationRequest_InitialFill"
               }
@@ -140,28 +52,42 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#numberOfRepeatsAllowed",
+            "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#dispenseInterval",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Duration"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "numberOfRepeatsAllowed"
+                "@value": "dispenseInterval"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
-            "https://lschema.org/description": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "An integer with a value that is not negative (e.g. \u003e= 0)"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[0]|([1-9][0-9]*)$"
+                "@value": "modifierExtension"
               }
             ]
           },
@@ -185,9 +111,73 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#expectedSupplyDuration",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Duration"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "expectedSupplyDuration"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#_numberOfRepeatsAllowed",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_numberOfRepeatsAllowed"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#performer",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "performer"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#quantity",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Quantity"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "quantity"
               }
             ]
           },
@@ -196,7 +186,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Period"
               }
@@ -208,18 +198,28 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#quantity",
+            "@id": "http://hl7.org/fhir/MedicationRequest_DispenseRequest#numberOfRepeatsAllowed",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Quantity"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "quantity"
+                "@value": "numberOfRepeatsAllowed"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "An integer with a value that is not negative (e.g. \u003e= 0)"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[0]|([1-9][0-9]*)$"
               }
             ]
           }

@@ -10,15 +10,48 @@
         "@type": [
           "http://hl7.org/fhir/Address"
         ],
-        "https://lschema.org/Object#attributes": [
+        "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Address#id",
+            "@id": "http://hl7.org/fhir/Address#use",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
+                "@value": "use"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The purpose of this address."
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "home"
+              },
+              {
+                "@value": "work"
+              },
+              {
+                "@value": "temp"
+              },
+              {
+                "@value": "old"
+              },
+              {
+                "@value": "billing"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Address#district",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "district"
               }
             ],
             "https://lschema.org/description": [
@@ -31,7 +64,33 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Address#text",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
               }
@@ -42,7 +101,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -54,11 +113,69 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/Address#period",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "period"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Address#city",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "city"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Address#_country",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_country"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/Address#line",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
                 "@id": "http://hl7.org/fhir/Address#line.*",
                 "@type": [
@@ -74,7 +191,7 @@
                     "@id": "string"
                   }
                 ],
-                "https://lschema.org/validation#pattern": [
+                "https://lschema.org/validation/pattern": [
                   {
                     "@value": "^[ \\r\\n\\t\\S]+$"
                   }
@@ -92,7 +209,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -104,27 +221,11 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Address#_district",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_district"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/Address#_postalCode",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -155,7 +256,7 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
               }
@@ -166,13 +267,13 @@
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
                 "@id": "http://hl7.org/fhir/Address#_line.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/Element"
                   }
@@ -186,17 +287,60 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/Address#_text",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_text"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Address#type",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "type"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Distinguishes between physical addresses (those you can visit) and mailing addresses (e.g. PO Boxes and care-of addresses). Most addresses are both."
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "postal"
+              },
+              {
+                "@value": "physical"
+              },
+              {
+                "@value": "both"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/Address#extension",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
                 "@id": "http://hl7.org/fhir/Address#extension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/Extension"
                   }
@@ -210,13 +354,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Address#city",
+            "@id": "http://hl7.org/fhir/Address#id",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "city"
+                "@value": "id"
               }
             ],
             "https://lschema.org/description": [
@@ -229,7 +373,7 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
               }
@@ -240,7 +384,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -248,6 +392,38 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_use"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Address#_type",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_type"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Address#_district",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_district"
               }
             ]
           },
@@ -271,83 +447,9 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Address#_country",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_country"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Address#text",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "text"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Address#_text",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Address#_type",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_type"
               }
             ]
           },
@@ -371,111 +473,9 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Address#period",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "period"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Address#district",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "district"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Address#type",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "type"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Distinguishes between physical addresses (those you can visit) and mailing addresses (e.g. PO Boxes and care-of addresses). Most addresses are both."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "postal"
-              },
-              {
-                "@value": "physical"
-              },
-              {
-                "@value": "both"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Address#use",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "use"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The purpose of this address."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "home"
-              },
-              {
-                "@value": "work"
-              },
-              {
-                "@value": "temp"
-              },
-              {
-                "@value": "old"
-              },
-              {
-                "@value": "billing"
               }
             ]
           }

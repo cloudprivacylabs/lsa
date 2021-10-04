@@ -10,85 +10,13 @@
         "@type": [
           "http://hl7.org/fhir/PaymentReconciliation_Detail"
         ],
-        "https://lschema.org/Object#attributes": [
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#request",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "request"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#_date",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_date"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#amount",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Money"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "amount"
-              }
-            ]
-          },
+        "https://lschema.org/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#submitter",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Reference"
               }
@@ -100,11 +28,27 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#type",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "type"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#response",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Reference"
               }
@@ -116,18 +60,42 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#responsible",
+            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#extension",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Reference"
+                "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "responsible"
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#amount",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Money"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "amount"
               }
             ]
           },
@@ -136,7 +104,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Reference"
               }
@@ -167,9 +135,25 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#predecessor",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Identifier"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "predecessor"
               }
             ]
           },
@@ -193,9 +177,65 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#_date",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_date"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#request",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "request"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
               }
             ]
           },
@@ -204,7 +244,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Identifier"
               }
@@ -216,58 +256,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#predecessor",
+            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#responsible",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Identifier"
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "predecessor"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail#type",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "type"
+                "@value": "responsible"
               }
             ]
           }

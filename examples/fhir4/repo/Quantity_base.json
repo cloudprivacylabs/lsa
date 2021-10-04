@@ -10,49 +10,7 @@
         "@type": [
           "http://hl7.org/fhir/Quantity"
         ],
-        "https://lschema.org/Object#attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Quantity#unit",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "unit"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Quantity#_unit",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_unit"
-              }
-            ]
-          },
+        "https://lschema.org/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/Quantity#id",
             "@type": [
@@ -73,41 +31,9 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Quantity#_system",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_system"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Quantity#_value",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_value"
               }
             ]
           },
@@ -126,7 +52,7 @@
                 "@value": "How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is \"\u003c\" , then the real value is \u003c stated value."
               }
             ],
-            "https://lschema.org/validation#enumeration": [
+            "https://lschema.org/validation/enumeration": [
               {
                 "@value": "\u003c"
               },
@@ -142,34 +68,68 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Quantity#_comparator",
+            "@id": "http://hl7.org/fhir/Quantity#extension",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Quantity#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_comparator"
+                "@value": "extension"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Quantity#_code",
+            "@id": "http://hl7.org/fhir/Quantity#_value",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_code"
+                "@value": "_value"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Quantity#code",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "code"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
               }
             ]
           },
@@ -193,7 +153,7 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^\\S*$"
               }
@@ -219,49 +179,41 @@
                 "@id": "number"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Quantity#extension",
+            "@id": "http://hl7.org/fhir/Quantity#_code",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Quantity#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "_code"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Quantity#code",
+            "@id": "http://hl7.org/fhir/Quantity#unit",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "code"
+                "@value": "unit"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                "@value": "A sequence of Unicode characters"
               }
             ],
             "https://lschema.org/targetType": [
@@ -269,9 +221,57 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Quantity#_unit",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_unit"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Quantity#_system",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_system"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Quantity#_comparator",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_comparator"
               }
             ]
           }

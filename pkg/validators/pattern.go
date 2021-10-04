@@ -8,7 +8,7 @@ import (
 )
 
 // PatternTerm validates agains a regex
-var PatternTerm = ls.NewTerm(ls.LS+"validation#pattern", false, false, ls.OverrideComposition, struct {
+var PatternTerm = ls.NewTerm(ls.LS+"validation/pattern", false, false, ls.OverrideComposition, struct {
 	PatternValidator
 }{
 	PatternValidator{},

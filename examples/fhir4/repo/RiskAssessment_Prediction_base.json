@@ -10,46 +10,100 @@
         "@type": [
           "http://hl7.org/fhir/RiskAssessment_Prediction"
         ],
-        "https://lschema.org/Object#attributes": [
+        "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#qualitativeRisk",
+            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#_relativeRisk",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_relativeRisk"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#outcome",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/CodeableConcept"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "qualitativeRisk"
+                "@value": "outcome"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#probabilityDecimal",
+            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#modifierExtension",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "probabilityDecimal"
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#whenPeriod",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
               }
             ],
-            "https://lschema.org/description": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "Indicates how likely the outcome is (in the specified timeframe)."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+                "@value": "whenPeriod"
               }
             ]
           },
@@ -73,51 +127,25 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#probabilityRange",
+            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#whenRange",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Range"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "probabilityRange"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#relativeRisk",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "relativeRisk"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A rational number with implicit precision"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+                "@value": "whenRange"
               }
             ]
           },
@@ -141,89 +169,9 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#_relativeRisk",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_relativeRisk"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#whenRange",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Range"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "whenRange"
               }
             ]
           },
@@ -232,7 +180,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -244,27 +192,11 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#whenPeriod",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "whenPeriod"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#_probabilityDecimal",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -276,18 +208,86 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#outcome",
+            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#probabilityDecimal",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "probabilityDecimal"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Indicates how likely the outcome is (in the specified timeframe)."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#probabilityRange",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Range"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "probabilityRange"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#qualitativeRisk",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/CodeableConcept"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "outcome"
+                "@value": "qualitativeRisk"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RiskAssessment_Prediction#relativeRisk",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "relativeRisk"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A rational number with implicit precision"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
               }
             ]
           }

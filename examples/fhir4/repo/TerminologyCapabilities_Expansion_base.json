@@ -10,68 +10,30 @@
         "@type": [
           "http://hl7.org/fhir/TerminologyCapabilities_Expansion"
         ],
-        "https://lschema.org/Object#attributes": [
+        "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#_incomplete",
+            "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#incomplete",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_incomplete"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#parameter",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#parameter.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/TerminologyCapabilities_Parameter"
-                  }
-                ]
+                "@value": "incomplete"
               }
             ],
-            "https://lschema.org/attributeName": [
+            "https://lschema.org/description": [
               {
-                "@value": "parameter"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
+                "@value": "Value of \"true\" or \"false\""
               }
             ],
-            "https://lschema.org/attributeName": [
+            "https://lschema.org/targetType": [
               {
-                "@value": "modifierExtension"
+                "@id": "boolean"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^true|false$"
               }
             ]
           },
@@ -95,51 +57,33 @@
                 "@id": "boolean"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^true|false$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#_paging",
+            "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#extension",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_paging"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "extension"
               }
             ]
           },
@@ -163,7 +107,7 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
               }
@@ -174,7 +118,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -205,9 +149,59 @@
                 "@id": "boolean"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^true|false$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#parameter",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#parameter.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/TerminologyCapabilities_Parameter"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "parameter"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -216,7 +210,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -228,43 +222,17 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#incomplete",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "incomplete"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Value of \"true\" or \"false\""
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "boolean"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^true|false$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#extension",
+            "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#extension.*",
+                "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/Extension"
                   }
@@ -273,7 +241,39 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#_paging",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_paging"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TerminologyCapabilities_Expansion#_incomplete",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_incomplete"
               }
             ]
           }

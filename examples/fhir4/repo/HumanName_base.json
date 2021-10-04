@@ -10,49 +10,7 @@
         "@type": [
           "http://hl7.org/fhir/HumanName"
         ],
-        "https://lschema.org/Object#attributes": [
-          {
-            "@id": "http://hl7.org/fhir/HumanName#family",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "family"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HumanName#_family",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_family"
-              }
-            ]
-          },
+        "https://lschema.org/Object/attributes": [
           {
             "@id": "http://hl7.org/fhir/HumanName#text",
             "@type": [
@@ -73,9 +31,133 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HumanName#given",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/HumanName#given.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/description": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ],
+                "https://lschema.org/validation/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "given"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HumanName#_given",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/HumanName#_given.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Element"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_given"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HumanName#_text",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_text"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HumanName#family",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "family"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HumanName#_suffix",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/HumanName#_suffix.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Element"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_suffix"
               }
             ]
           },
@@ -84,7 +166,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -96,11 +178,51 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/HumanName#_prefix",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/HumanName#_prefix.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Element"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_prefix"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HumanName#period",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "period"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/HumanName#suffix",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
                 "@id": "http://hl7.org/fhir/HumanName#suffix.*",
                 "@type": [
@@ -116,7 +238,7 @@
                     "@id": "string"
                   }
                 ],
-                "https://lschema.org/validation#pattern": [
+                "https://lschema.org/validation/pattern": [
                   {
                     "@value": "^[ \\r\\n\\t\\S]+$"
                   }
@@ -130,26 +252,52 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/HumanName#_given",
+            "@id": "http://hl7.org/fhir/HumanName#_family",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_family"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/HumanName#prefix",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/HumanName#_given.*",
+                "@id": "http://hl7.org/fhir/HumanName#prefix.*",
                 "@type": [
-                  "https://lschema.org/Reference"
+                  "https://lschema.org/Value"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/description": [
                   {
-                    "@id": "http://hl7.org/fhir/Element"
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ],
+                "https://lschema.org/validation/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_given"
+                "@value": "prefix"
               }
             ]
           },
@@ -158,13 +306,13 @@
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
                 "@id": "http://hl7.org/fhir/HumanName#extension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/Extension"
                   }
@@ -197,157 +345,9 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HumanName#_prefix",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/HumanName#_prefix.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Element"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_prefix"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HumanName#_suffix",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/HumanName#_suffix.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Element"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_suffix"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HumanName#_text",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HumanName#period",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "period"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HumanName#prefix",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/HumanName#prefix.*",
-                "@type": [
-                  "https://lschema.org/Value"
-                ],
-                "https://lschema.org/description": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@id": "string"
-                  }
-                ],
-                "https://lschema.org/validation#pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "prefix"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/HumanName#given",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/HumanName#given.*",
-                "@type": [
-                  "https://lschema.org/Value"
-                ],
-                "https://lschema.org/description": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@id": "string"
-                  }
-                ],
-                "https://lschema.org/validation#pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "given"
               }
             ]
           },
@@ -366,7 +366,7 @@
                 "@value": "Identifies the purpose for this name."
               }
             ],
-            "https://lschema.org/validation#enumeration": [
+            "https://lschema.org/validation/enumeration": [
               {
                 "@value": "usual"
               },

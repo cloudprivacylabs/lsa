@@ -7,25 +7,19 @@
         "xsd": "http://www.w3.org/2001/XMLSchema#",
         "json": "https://json.org#",
         
-        "Attribute": {
-            "@id": "ls:Attribute"
-        },
-        "DocumentNode": {
-            "@id": "ls:DocumentNode"
-        },
-        "Value": {
-            "@id": "ls:Value"
-        },
+        "Attribute": "ls:Attribute",
+        "DocumentNode":"ls:DocumentNode",
+        "Value": "ls:Value",
         "Object": {
             "@id": "ls:Object",
             "@context": {
                 "@protected": true,
                 "attributes": {
-                    "@id": "ls:Object#attributes",
+                    "@id": "ls:Object/attributes",
                     "@container": "@id"
                 },
                 "attributeList": {
-                    "@id": "ls:Object#attributeList",
+                    "@id": "ls:Object/attributeList",
                     "@container": "@list"
                 }
             }
@@ -34,9 +28,7 @@
             "@id": "ls:Array",
             "@context": {
                 "@protected": true,
-                "items": {
-                    "@id": "ls:Array#items"
-                }
+                "arrayElements":  "ls:Array/elements"
             }
         },
         "Reference": {
@@ -44,7 +36,7 @@
             "@context": {
                 "@protected": true,
                 "reference": {
-                    "@id":"ls:Reference#reference",
+                    "@id":"ls:Reference/ref",
                     "@type": "@id"
                 }
             }
@@ -54,7 +46,7 @@
             "@context": {
                 "@protected": true,
                 "allOf": {
-                    "@id": "ls:Composite#allOf",
+                    "@id": "ls:Composite/allOf",
                     "@container": "@list"
                 }
             }
@@ -64,26 +56,13 @@
             "@context": {
                 "@protected": true,
                 "oneOf": {
-                    "@id": "ls:Polymorphic#oneOf",
+                    "@id": "ls:Polymorphic/oneOf",
                     "@container": "@list"
                 }
             }
         },
         
-        "layer": {
-            "@id": "ls:layer",
-            "@context": {
-                "attributes": {
-                    "@id": "ls:Object#attributes",
-                    "@container": "@id"
-                },
-                "attributeList": {
-                    "@id": "ls:Object#attributeList",
-                    "@container": "@list"
-                }
-            }
-        },
-        
+        "layer":  "ls:layer",
         "Overlay": {
             "@id": "ls:Overlay",
             "@context": {
@@ -114,62 +93,37 @@
                     "@type": "@id"
                 },
                 "bundle": {
-                    "@id": "ls:SchemaManifest#bundle",
+                    "@id": "ls:bundle",
                     "@type": "@id"
                 },
                 "schema": {
-                    "@id": "ls:SchemaManifest#schema",
+                    "@id": "ls:SchemaManifest/schema",
                     "@type": "@id"
                 },
                 "overlays": {
-                    "@id": "ls:SchemaManifest#overlays",
+                    "@id": "ls:SchemaManifest/overlays",
                     "@type": "@id",
                     "@container": "@list"
                 }
             }
         },
 
-        "characterEncoding": {
-           "@id": "ls:characterEncoding"
-        },
-        "description": {
-           "@id": "ls:description"
-        },
-        "attributeName": {
-            "@id": "ls:attributeName"
-        },
-        "attributeIndex": {
-            "@id": "ls:attributeIndex"
-        },
-        "label": {
-            "@id": "ls:label"
-        },
-        
+        "characterEncoding":"ls:characterEncoding",
+        "description":"ls:description",
+        "attributeName":"ls:attributeName",
+        "attributeIndex": "ls:attributeIndex",
+        "attributeIndex": "ls:attributeValue",
+        "label": "ls:label",
 
-        "defaultValue": {
-            "@id": "ls:defaultValue"
-        },
-        
-        "validation#required": {
-            "@id": "ls:validation#required"
-        },
-        "validation#pattern": {
-            "@id": "ls:validation#pattern"
-        },
-        "validation#format": {
-            "@id": "ls:validation#format"
-        },
-        "validation#enumeration": {
-            "@id": "ls:validation#enumeration"
-        },
+        "defaultValue":"ls:defaultValue",
 
-        "has": {
-            "@id": "ls:data#has"
-        },
-        "instanceOf": {
-            "@id": "ls:data#instanceOf"
-        }
+        "validation/required":"ls:validation/required",
+        "validation/pattern":"ls:validation/pattern",
+        "validation/json/format": "ls:validation/json/format",
+        "validation/enumeration": "ls:validation/enumeration",
 
+        "has": "ls:data/has",
+        "instanceOf":"ls:data/instanceOf"
           
     }
 }

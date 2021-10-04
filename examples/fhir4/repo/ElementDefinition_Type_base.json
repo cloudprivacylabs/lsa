@@ -10,7 +10,81 @@
         "@type": [
           "http://hl7.org/fhir/ElementDefinition_Type"
         ],
-        "https://lschema.org/Object#attributes": [
+        "https://lschema.org/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ElementDefinition_Type#profile",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ElementDefinition_Type#profile.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/description": [
+                  {
+                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ],
+                "https://lschema.org/validation/pattern": [
+                  {
+                    "@value": "^\\S*$"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "profile"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ElementDefinition_Type#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ElementDefinition_Type#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ElementDefinition_Type#_versioning",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_versioning"
+              }
+            ]
+          },
           {
             "@id": "http://hl7.org/fhir/ElementDefinition_Type#code",
             "@type": [
@@ -31,59 +105,76 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^\\S*$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Type#_versioning",
+            "@id": "http://hl7.org/fhir/ElementDefinition_Type#_code",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_versioning"
+                "@value": "_code"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Type#targetProfile",
+            "@id": "http://hl7.org/fhir/ElementDefinition_Type#_aggregation",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/ElementDefinition_Type#targetProfile.*",
+                "@id": "http://hl7.org/fhir/ElementDefinition_Type#_aggregation.*",
                 "@type": [
-                  "https://lschema.org/Value"
+                  "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/description": [
+                "https://lschema.org/Reference/ref": [
                   {
-                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@id": "string"
-                  }
-                ],
-                "https://lschema.org/validation#pattern": [
-                  {
-                    "@value": "^\\S*$"
+                    "@id": "http://hl7.org/fhir/Element"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "targetProfile"
+                "@value": "_aggregation"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ElementDefinition_Type#versioning",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "versioning"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Whether this reference needs to be version specific or version independent, or whether either can be used."
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "either"
+              },
+              {
+                "@value": "independent"
+              },
+              {
+                "@value": "specific"
               }
             ]
           },
@@ -107,7 +198,7 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
               }
@@ -118,13 +209,13 @@
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
                 "@id": "http://hl7.org/fhir/ElementDefinition_Type#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/Extension"
                   }
@@ -138,18 +229,36 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Type#_code",
+            "@id": "http://hl7.org/fhir/ElementDefinition_Type#targetProfile",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/ElementDefinition_Type#targetProfile.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/description": [
+                  {
+                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ],
+                "https://lschema.org/validation/pattern": [
+                  {
+                    "@value": "^\\S*$"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_code"
+                "@value": "targetProfile"
               }
             ]
           },
@@ -158,13 +267,13 @@
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
                 "@id": "http://hl7.org/fhir/ElementDefinition_Type#aggregation.*",
                 "@type": [
                   "https://lschema.org/Value"
                 ],
-                "https://lschema.org/validation#enumeration": [
+                "https://lschema.org/validation/enumeration": [
                   {
                     "@value": "contained"
                   },
@@ -180,115 +289,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "aggregation"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Type#versioning",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "versioning"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Whether this reference needs to be version specific or version independent, or whether either can be used."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "either"
-              },
-              {
-                "@value": "independent"
-              },
-              {
-                "@value": "specific"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Type#profile",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ElementDefinition_Type#profile.*",
-                "@type": [
-                  "https://lschema.org/Value"
-                ],
-                "https://lschema.org/description": [
-                  {
-                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@id": "string"
-                  }
-                ],
-                "https://lschema.org/validation#pattern": [
-                  {
-                    "@value": "^\\S*$"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "profile"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Type#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ElementDefinition_Type#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ElementDefinition_Type#_aggregation",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ElementDefinition_Type#_aggregation.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Element"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_aggregation"
               }
             ]
           }

@@ -22,7 +22,7 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-const RS = ls.LS + "reshape#"
+const RS = ls.LS + "reshape/"
 
 // ReshapeTerms defines the terms used to specify reshaping layers
 var ReshapeTerms = struct {

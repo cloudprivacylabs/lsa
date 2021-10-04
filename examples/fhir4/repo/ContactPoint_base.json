@@ -10,13 +10,79 @@
         "@type": [
           "http://hl7.org/fhir/ContactPoint"
         ],
-        "https://lschema.org/Object#attributes": [
+        "https://lschema.org/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ContactPoint#value",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "value"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ContactPoint#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ContactPoint#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ContactPoint#_system",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_system"
+              }
+            ]
+          },
           {
             "@id": "http://hl7.org/fhir/ContactPoint#_rank",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -28,67 +94,57 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ContactPoint#use",
+            "@id": "http://hl7.org/fhir/ContactPoint#system",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "use"
+                "@value": "system"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "Identifies the purpose for the contact point."
+                "@value": "Telecommunications form for contact point - what communications system is required to make use of the contact."
               }
             ],
-            "https://lschema.org/validation#enumeration": [
+            "https://lschema.org/validation/enumeration": [
               {
-                "@value": "home"
+                "@value": "phone"
               },
               {
-                "@value": "work"
+                "@value": "fax"
               },
               {
-                "@value": "temp"
+                "@value": "email"
               },
               {
-                "@value": "old"
+                "@value": "pager"
               },
               {
-                "@value": "mobile"
+                "@value": "url"
+              },
+              {
+                "@value": "sms"
+              },
+              {
+                "@value": "other"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ContactPoint#_value",
+            "@id": "http://hl7.org/fhir/ContactPoint#_use",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_value"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ContactPoint#period",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "period"
+                "@value": "_use"
               }
             ]
           },
@@ -112,51 +168,58 @@
                 "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ContactPoint#_use",
+            "@id": "http://hl7.org/fhir/ContactPoint#_value",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_use"
+                "@value": "_value"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ContactPoint#value",
+            "@id": "http://hl7.org/fhir/ContactPoint#use",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "value"
+                "@value": "use"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A sequence of Unicode characters"
+                "@value": "Identifies the purpose for the contact point."
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/validation/enumeration": [
               {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
+                "@value": "home"
+              },
               {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "work"
+              },
+              {
+                "@value": "temp"
+              },
+              {
+                "@value": "old"
+              },
+              {
+                "@value": "mobile"
               }
             ]
           },
@@ -180,88 +243,25 @@
                 "@id": "number"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[1-9][0-9]*$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ContactPoint#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ContactPoint#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ContactPoint#_system",
+            "@id": "http://hl7.org/fhir/ContactPoint#period",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Period"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_system"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ContactPoint#system",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "system"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Telecommunications form for contact point - what communications system is required to make use of the contact."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "phone"
-              },
-              {
-                "@value": "fax"
-              },
-              {
-                "@value": "email"
-              },
-              {
-                "@value": "pager"
-              },
-              {
-                "@value": "url"
-              },
-              {
-                "@value": "sms"
-              },
-              {
-                "@value": "other"
+                "@value": "period"
               }
             ]
           }

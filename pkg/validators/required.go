@@ -5,7 +5,7 @@ import (
 )
 
 // RequiredTerm validates if a required properties exist
-var RequiredTerm = ls.NewTerm(ls.LS+"validation#required", false, false, ls.OverrideComposition, struct {
+var RequiredTerm = ls.NewTerm(ls.LS+"validation/required", false, false, ls.OverrideComposition, struct {
 	RequiredValidator
 }{
 	RequiredValidator{},

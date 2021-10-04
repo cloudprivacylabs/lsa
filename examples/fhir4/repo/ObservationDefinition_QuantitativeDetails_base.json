@@ -10,54 +10,46 @@
         "@type": [
           "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails"
         ],
-        "https://lschema.org/Object#attributes": [
+        "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails#decimalPrecision",
+            "@id": "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails#id",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "decimalPrecision"
+                "@value": "id"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A whole number"
+                "@value": "A sequence of Unicode characters"
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@id": "number"
+                "@id": "string"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
-                "@value": "^-?([0]|([1-9][0-9]*))$"
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails#modifierExtension",
+            "@id": "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails#unit",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/CodeableConcept"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
+                "@value": "unit"
               }
             ]
           },
@@ -66,7 +58,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/CodeableConcept"
               }
@@ -97,33 +89,35 @@
                 "@id": "number"
               }
             ],
-            "https://lschema.org/validation#pattern": [
+            "https://lschema.org/validation/pattern": [
               {
                 "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails#extension",
+            "@id": "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails#decimalPrecision",
             "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "decimalPrecision"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A whole number"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^-?([0]|([1-9][0-9]*))$"
               }
             ]
           },
@@ -132,7 +126,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -148,7 +142,7 @@
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
                 "@id": "http://hl7.org/fhir/Element"
               }
@@ -160,44 +154,50 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails#unit",
+            "@id": "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails#extension",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "unit"
+                "@value": "extension"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails#id",
+            "@id": "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails#modifierExtension",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ObservationDefinition_QuantitativeDetails#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "modifierExtension"
               }
             ]
           }

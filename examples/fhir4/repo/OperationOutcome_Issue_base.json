@@ -10,67 +10,71 @@
         "@type": [
           "http://hl7.org/fhir/OperationOutcome_Issue"
         ],
-        "https://lschema.org/Object#attributes": [
+        "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#extension",
+            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#diagnostics",
             "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome_Issue#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "diagnostics"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#modifierExtension",
+            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#id",
             "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome_Issue#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference#reference": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#_expression",
+            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#_location",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/OperationOutcome_Issue#_expression.*",
+                "@id": "http://hl7.org/fhir/OperationOutcome_Issue#_location.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/Element"
                   }
@@ -79,23 +83,153 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_expression"
+                "@value": "_location"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#details",
+            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#_code",
             "@type": [
               "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Reference#reference": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "details"
+                "@value": "_code"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#severity",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "severity"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Indicates whether the issue indicates a variation from successful processing."
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "fatal"
+              },
+              {
+                "@value": "error"
+              },
+              {
+                "@value": "warning"
+              },
+              {
+                "@value": "information"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#_severity",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_severity"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#location",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/OperationOutcome_Issue#location.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/description": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ],
+                "https://lschema.org/validation/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "location"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#_diagnostics",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_diagnostics"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#expression",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/OperationOutcome_Issue#expression.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/description": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ],
+                "https://lschema.org/validation/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "expression"
               }
             ]
           },
@@ -114,7 +248,7 @@
                 "@value": "Describes the type of the issue. The system that creates an OperationOutcome SHALL choose the most applicable code from the IssueType value set, and may additional provide its own code for the error in the details element."
               }
             ],
-            "https://lschema.org/validation#enumeration": [
+            "https://lschema.org/validation/enumeration": [
               {
                 "@value": "invalid"
               },
@@ -211,181 +345,17 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#expression",
+            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#_expression",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/OperationOutcome_Issue#expression.*",
-                "@type": [
-                  "https://lschema.org/Value"
-                ],
-                "https://lschema.org/description": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@id": "string"
-                  }
-                ],
-                "https://lschema.org/validation#pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "expression"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#diagnostics",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "diagnostics"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation#pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#_severity",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_severity"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#_code",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_code"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#_diagnostics",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference#reference": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_diagnostics"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#severity",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "severity"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Indicates whether the issue indicates a variation from successful processing."
-              }
-            ],
-            "https://lschema.org/validation#enumeration": [
-              {
-                "@value": "fatal"
-              },
-              {
-                "@value": "error"
-              },
-              {
-                "@value": "warning"
-              },
-              {
-                "@value": "information"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#_location",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array#items": [
-              {
-                "@id": "http://hl7.org/fhir/OperationOutcome_Issue#_location.*",
+                "@id": "http://hl7.org/fhir/OperationOutcome_Issue#_expression.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/Reference#reference": [
+                "https://lschema.org/Reference/ref": [
                   {
                     "@id": "http://hl7.org/fhir/Element"
                   }
@@ -394,41 +364,71 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_location"
+                "@value": "_expression"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#location",
+            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
-            "https://lschema.org/Array#items": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/OperationOutcome_Issue#location.*",
+                "@id": "http://hl7.org/fhir/OperationOutcome_Issue#modifierExtension.*",
                 "@type": [
-                  "https://lschema.org/Value"
+                  "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/description": [
+                "https://lschema.org/Reference/ref": [
                   {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@id": "string"
-                  }
-                ],
-                "https://lschema.org/validation#pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
+                    "@id": "http://hl7.org/fhir/Extension"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "location"
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/OperationOutcome_Issue#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OperationOutcome_Issue#details",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "details"
               }
             ]
           }
