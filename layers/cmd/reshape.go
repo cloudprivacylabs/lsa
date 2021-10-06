@@ -36,14 +36,15 @@ var reshapeCmd = &cobra.Command{
 	Short: "Reshape a graph using a target schema",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		g, err := ReadGraph(args)
+		interner := ls.NewInterner()
+		g, err := ReadGraph(args, interner)
 		if err != nil {
 			failErr(err)
 		}
 		compiledSchema, _ := cmd.Flags().GetString("compiledschema")
 		repoDir, _ := cmd.Flags().GetString("repo")
 		schemaName, _ := cmd.Flags().GetString("schema")
-		layer, err := LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName)
+		layer, err := LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName, interner)
 		if err != nil {
 			failErr(err)
 		}

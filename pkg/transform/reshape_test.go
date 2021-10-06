@@ -35,12 +35,12 @@ func (tc testCase) GetName() string { return tc.Name }
 
 func (tc testCase) Run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
-	targetLayer, err := ls.UnmarshalLayer(tc.Target)
+	targetLayer, err := ls.UnmarshalLayer(tc.Target, nil)
 	if err != nil {
 		t.Errorf("Test case: %s Cannot unmarshal target layer: %v", tc.Name, err)
 		return
 	}
-	sourceGraph, err := ls.UnmarshalGraph(tc.SourceGraph)
+	sourceGraph, err := ls.UnmarshalGraph(tc.SourceGraph, nil)
 	if err != nil {
 		t.Errorf("Test case: %s Cannot unmarshal source graph: %v", tc.Name, err)
 		return
@@ -66,7 +66,7 @@ func (tc testCase) Run(t *testing.T) {
 	resultGraph := digraph.New()
 	resultGraph.AddNode(result)
 
-	expectedGraph, err := ls.UnmarshalGraph(tc.Expected)
+	expectedGraph, err := ls.UnmarshalGraph(tc.Expected, nil)
 	if err != nil {
 		t.Errorf("Test case: %s Cannot unmarshal expected graph: %v", tc.Name, err)
 		return

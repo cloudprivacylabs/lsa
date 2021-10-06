@@ -34,13 +34,19 @@ const indexFile = "index.ls"
 // Repository implements a filesystem based schema repository under a
 // given directory
 type Repository struct {
-	root  string
-	index []IndexEntry
+	root     string
+	index    []IndexEntry
+	interner ls.Interner
 }
 
 // New returns a new file repository under the given directory.
 func New(root string) *Repository {
-	return &Repository{root: root}
+	return &Repository{root: root, interner: ls.NewInterner()}
+}
+
+// NewWithInterner returns a new file repository under the given directory.
+func NewWithInterner(root string, interner ls.Interner) *Repository {
+	return &Repository{root: root, interner: interner}
 }
 
 type IndexEntry struct {
@@ -170,7 +176,7 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 			}
 			switch {
 			case hasType(ls.SchemaTerm), hasType(ls.OverlayTerm), hasType("Schema"), hasType("Overlay"):
-				layer, err := ls.UnmarshalLayer(obj)
+				layer, err := ls.UnmarshalLayer(obj, repo.interner)
 				if err != nil {
 					warnings = append(warnings, fmt.Sprintf("Cannot parse %s: %v", fname, err))
 					continue
@@ -295,7 +301,7 @@ func (repo *Repository) loadLayer(file string) *ls.Layer {
 	if err != nil {
 		panic("Cannot read " + file)
 	}
-	ret, err := ls.UnmarshalLayer(data)
+	ret, err := ls.UnmarshalLayer(data, repo.interner)
 	if err != nil {
 		panic("Cannot parse layer: " + err.Error())
 	}

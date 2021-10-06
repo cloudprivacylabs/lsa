@@ -30,7 +30,7 @@ func (tc sliceTestCase) GetName() string { return tc.Name }
 
 func (tc sliceTestCase) Run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
-	sch, err := UnmarshalLayer(tc.Schema)
+	sch, err := UnmarshalLayer(tc.Schema, nil)
 	if err != nil {
 		t.Errorf("%s: Cannot unmarshal layer: %v", tc.Name, err)
 		return

@@ -31,6 +31,7 @@ var nodeSelectors = map[string]func(NodeValue) (Value, error){
 	"value":          oneNode(func(node ls.Node) (Value, error) { return ValueOf(node.GetValue()), nil }),
 	"properties":     oneNode(func(node ls.Node) (Value, error) { return PropertiesValue{Properties: node.GetProperties()}, nil }),
 	"firstReachable": nodeFirstReachableFunc,
+	"first":          nodeFirstReachableFunc,
 	"instanceOf":     nodeInstanceOfFunc,
 	"walk":           nodeWalk,
 }

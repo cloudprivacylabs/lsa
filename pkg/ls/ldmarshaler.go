@@ -282,8 +282,11 @@ func getValuesOrIDs(in interface{}) (value string, values, ids []string, err err
 }
 
 // Unmarshal a graph
-func UnmarshalGraph(input interface{}) (*digraph.Graph, error) {
-	inputNodes, err := getNodesFromGraph(input)
+func UnmarshalGraph(input interface{}, interner Interner) (*digraph.Graph, error) {
+	if interner == nil {
+		interner = NewInterner()
+	}
+	inputNodes, err := getNodesFromGraph(input, interner)
 	if err != nil {
 		return nil, err
 	}

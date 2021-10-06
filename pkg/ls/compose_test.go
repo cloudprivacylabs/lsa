@@ -30,14 +30,14 @@ func (tc composeTestCase) GetName() string { return tc.Name }
 
 func (tc composeTestCase) Run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
-	base, err := UnmarshalLayer(tc.Base)
+	base, err := UnmarshalLayer(tc.Base, nil)
 	if err != nil {
 		t.Errorf("%s: Cannot unmarshal layer: %v", tc.Name, err)
 		return
 	}
 
 	for i, o := range tc.Overlays {
-		ovl, err := UnmarshalLayer(o)
+		ovl, err := UnmarshalLayer(o, nil)
 		if err != nil {
 			t.Errorf("%s: Cannot unmarshal overlay %d: %v", tc.Name, i, err)
 			return

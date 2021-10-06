@@ -40,7 +40,7 @@ var ingestCmd = &cobra.Command{
 	Short: "Ingest and enrich data with a schema",
 }
 
-func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string) (*ls.Layer, error) {
+func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string, interner ls.Interner) (*ls.Layer, error) {
 	var layer *ls.Layer
 	if len(compiledSchema) > 0 {
 		sch, err := ioutil.ReadFile(compiledSchema)
@@ -52,7 +52,7 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string) (*ls.L
 		if err != nil {
 			return nil, err
 		}
-		layer, err = ls.UnmarshalLayer(v)
+		layer, err = ls.UnmarshalLayer(v, interner)
 		if err != nil {
 			return nil, err
 		}
@@ -66,7 +66,7 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string) (*ls.L
 		var repo *fs.Repository
 		if len(repoDir) > 0 {
 			var err error
-			repo, err = getRepo(repoDir)
+			repo, err = getRepo(repoDir, interner)
 			if err != nil {
 				return nil, err
 			}
@@ -96,7 +96,7 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string) (*ls.L
 				if err != nil {
 					return nil, err
 				}
-				layer, err = ls.UnmarshalLayer(v)
+				layer, err = ls.UnmarshalLayer(v, interner)
 				if err != nil {
 					return nil, err
 				}

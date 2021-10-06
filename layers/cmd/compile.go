@@ -37,10 +37,11 @@ var compileCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var layer *ls.Layer
 		repoDir, _ := cmd.Flags().GetString("repo")
+		interner := ls.NewInterner()
 		var repo *fs.Repository
 		if len(repoDir) > 0 {
 			var err error
-			repo, err = getRepo(repoDir)
+			repo, err = getRepo(repoDir, interner)
 			if err != nil {
 				failErr(err)
 			}
@@ -68,12 +69,15 @@ var compileCmd = &cobra.Command{
 				failErr(err)
 			}
 		} else {
+			if len(args) != 1 {
+				fail("Need schema")
+			}
 			var v interface{}
 			err := readJSON(args[0], &v)
 			if err != nil {
 				failErr(err)
 			}
-			layer, err = ls.UnmarshalLayer(v)
+			layer, err = ls.UnmarshalLayer(v, interner)
 			if err != nil {
 				failErr(err)
 			}

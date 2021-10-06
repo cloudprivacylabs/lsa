@@ -30,7 +30,7 @@ func (tc marshalTestCase) GetName() string { return tc.Name }
 
 func (tc marshalTestCase) Run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
-	layer, err := UnmarshalLayer(tc.Input)
+	layer, err := UnmarshalLayer(tc.Input, nil)
 	if err != nil {
 		t.Errorf("%s: Cannot unmarshal layer: %v", tc.Name, err)
 		return
@@ -63,7 +63,7 @@ func TestCannotFollowLinkError(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	_, err = UnmarshalLayer(intf)
+	_, err = UnmarshalLayer(intf, nil)
 	if err != nil {
 		t.Error(err)
 	}

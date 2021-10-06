@@ -38,10 +38,11 @@ var ingestJSONCmd = &cobra.Command{
 	Short: "Ingest a JSON document and enrich it with a schema",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		interner := ls.NewInterner()
 		compiledSchema, _ := cmd.Flags().GetString("compiledschema")
 		repoDir, _ := cmd.Flags().GetString("repo")
 		schemaName, _ := cmd.Flags().GetString("schema")
-		layer, err := LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName)
+		layer, err := LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName, interner)
 		if err != nil {
 			failErr(err)
 		}

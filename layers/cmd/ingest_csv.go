@@ -26,6 +26,7 @@ import (
 	"github.com/spf13/cobra"
 
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 func init() {
@@ -43,10 +44,11 @@ var ingestCSVCmd = &cobra.Command{
 	Short: "Ingest a CSV document and enrich it with a schema",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		interner := ls.NewInterner()
 		compiledSchema, _ := cmd.Flags().GetString("compiledschema")
 		repoDir, _ := cmd.Flags().GetString("repo")
 		schemaName, _ := cmd.Flags().GetString("schema")
-		layer, err := LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName)
+		layer, err := LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName, interner)
 		if err != nil {
 			failErr(err)
 		}

@@ -33,12 +33,14 @@ var ErrEmptyManifest = errors.New("Empty manifest")
 type Repository struct {
 	schemaManifests map[string]*ls.SchemaManifest
 	layers          map[string]*ls.Layer
+	interner        ls.Interner
 }
 
 // New returns a new empty repository
 func New() *Repository {
 	return &Repository{schemaManifests: make(map[string]*ls.SchemaManifest),
-		layers: make(map[string]*ls.Layer),
+		layers:   make(map[string]*ls.Layer),
+		interner: ls.NewInterner(),
 	}
 }
 
@@ -79,7 +81,7 @@ func (repo *Repository) ParseAddObject(in []byte) (interface{}, error) {
 
 // ParseAddIntf parses and adds the unmarshaled object
 func (repo *Repository) ParseAddIntf(m interface{}) (interface{}, error) {
-	layer, err1 := ls.UnmarshalLayer(m)
+	layer, err1 := ls.UnmarshalLayer(m, repo.interner)
 	if err1 != nil {
 		manifest, err2 := ls.UnmarshalSchemaManifest(m)
 		if err2 != nil {

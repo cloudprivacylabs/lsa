@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/bserdar/jsonom"
 	"github.com/cloudprivacylabs/lsa/pkg/gl"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
@@ -94,7 +95,7 @@ func (e ErrInvalidBooleanValue) Error() string {
 
 // Export the document subtree to the target. The returned result is
 // OM, which respects element ordering
-func Export(node ls.Node, options ExportOptions) (OM, error) {
+func Export(node ls.Node, options ExportOptions) (jsonom.Node, error) {
 	return exportJSON(node, options, map[ls.Node]struct{}{})
 }
 
@@ -106,7 +107,7 @@ func (e ErrValueExpected) Error() string {
 	return fmt.Sprintf("Value expected at %s", e.NodeID)
 }
 
-func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) (OM, error) {
+func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) (jsonom.Node, error) {
 	// Loop protection
 	if _, exists := seen[node]; exists {
 		return nil, nil
@@ -121,7 +122,7 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 	types := ls.CombineNodeTypes(ls.InstanceOf(node))
 	switch {
 	case types.Has(ls.AttributeTypes.Object):
-		ret := Object{}
+		ret := jsonom.NewObject()
 		gnodes := node.OutWith(ls.HasTerm).Targets().All()
 		nodes := make([]ls.Node, 0, len(gnodes))
 		for _, node := range gnodes {
@@ -138,13 +139,13 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 				if err != nil {
 					return nil, err
 				}
-				ret.Values = append(ret.Values, KeyValue{Key: key, Value: value})
+				ret.Set(key, value)
 			}
 		}
 		return ret, nil
 
 	case types.Has(ls.AttributeTypes.Array):
-		ret := Array{}
+		ret := jsonom.NewArray()
 		gnodes := node.OutWith(ls.HasTerm).Targets().All()
 		nodes := make([]ls.Node, 0, len(gnodes))
 		for _, node := range gnodes {
@@ -156,7 +157,7 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 			if err != nil {
 				return nil, err
 			}
-			ret.Elements = append(ret.Elements, value)
+			ret.Append(value)
 		}
 		return ret, nil
 
@@ -169,20 +170,20 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 		switch {
 		case types.Has(BooleanTypeTerm):
 			if valueStr == "true" {
-				return Value{Value: true}, nil
+				return jsonom.BoolValue(true), nil
 			}
 			if valueStr == "false" {
-				return Value{Value: false}, nil
+				return jsonom.BoolValue(false), nil
 			}
 			return nil, ErrInvalidBooleanValue{NodeID: node.GetID(), Value: valueStr}
 		case types.Has(StringTypeTerm):
-			return Value{Value: valueStr}, nil
+			return jsonom.StringValue(valueStr), nil
 		case types.Has(NumberTypeTerm), types.Has(IntegerTypeTerm):
-			return Value{Value: json.Number(valueStr)}, nil
+			return jsonom.NewValue(json.Number(valueStr)), nil
 		case types.Has(ObjectTypeTerm), types.Has(ArrayTypeTerm):
 			return nil, ErrValueExpected{NodeID: node.GetID()}
 		default:
-			return Value{Value: valueStr}, nil
+			return jsonom.NewValue(valueStr), nil
 		}
 	}
 	return nil, nil

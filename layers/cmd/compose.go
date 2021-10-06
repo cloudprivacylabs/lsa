@@ -37,6 +37,7 @@ var composeCmd = &cobra.Command{
 	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		repoDir, _ := cmd.Flags().GetString("repo")
+		interner := ls.NewInterner()
 		var output *ls.Layer
 		if len(repoDir) == 0 {
 			inputs, err := readJSONMultiple(args)
@@ -44,7 +45,7 @@ var composeCmd = &cobra.Command{
 				failErr(err)
 			}
 			for i, input := range inputs {
-				layer, err := ls.UnmarshalLayer(input)
+				layer, err := ls.UnmarshalLayer(input, interner)
 				if err != nil {
 					fail(fmt.Sprintf("Cannot unmarshal %s: %v", args[i], err))
 				}
@@ -57,7 +58,7 @@ var composeCmd = &cobra.Command{
 				}
 			}
 		} else {
-			repo, err := getRepo(repoDir)
+			repo, err := getRepo(repoDir, interner)
 			if err != nil {
 				failErr(err)
 			}

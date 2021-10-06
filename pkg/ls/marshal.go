@@ -32,7 +32,7 @@ type inputNode struct {
 	graphNode Node
 }
 
-func getNodesFromGraph(in interface{}) (map[string]*inputNode, error) {
+func getNodesFromGraph(in interface{}, interner Interner) (map[string]*inputNode, error) {
 	proc := ld.NewJsonLdProcessor()
 	flattened, err := proc.Flatten(in, nil, nil)
 	if err != nil {
@@ -51,7 +51,7 @@ func getNodesFromGraph(in interface{}) (map[string]*inputNode, error) {
 			continue
 		}
 		inode := inputNode{node: m}
-		inode.types = GetNodeTypes(m)
+		inode.types = InternSlice(interner, GetNodeTypes(m))
 		inode.id = GetNodeID(m)
 		inputNodes[inode.id] = &inode
 	}
@@ -59,8 +59,11 @@ func getNodesFromGraph(in interface{}) (map[string]*inputNode, error) {
 }
 
 // UnmarshalLayer unmarshals a schema ar overlay
-func UnmarshalLayer(in interface{}) (*Layer, error) {
-	inputNodes, err := getNodesFromGraph(in)
+func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
+	if interner == nil {
+		interner = NewInterner()
+	}
+	inputNodes, err := getNodesFromGraph(in, interner)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +107,7 @@ func UnmarshalLayer(in interface{}) (*Layer, error) {
 		}
 	}
 
-	unmarshalAnnotations(target, rootNode, inputNodes)
+	unmarshalAnnotations(target, rootNode, inputNodes, interner)
 
 	if len(target.GetLayerType()) == 0 {
 		return nil, ErrNotALayer
@@ -112,7 +115,7 @@ func UnmarshalLayer(in interface{}) (*Layer, error) {
 
 	if layerRoot != nil {
 		// Unmarshal all accessible nodes starting from the layer node
-		if err := unmarshalAttributeNode(target, layerRoot, inputNodes); err != nil {
+		if err := unmarshalAttributeNode(target, layerRoot, inputNodes, interner); err != nil {
 			return nil, err
 		}
 	}
@@ -124,7 +127,7 @@ func UnmarshalLayer(in interface{}) (*Layer, error) {
 			}
 		}
 		// This is an attribute node
-		unmarshalAnnotations(target, node, inputNodes)
+		unmarshalAnnotations(target, node, inputNodes, interner)
 	}
 	if len(targetType) > 0 {
 		target.SetTargetType(targetType)
@@ -132,7 +135,7 @@ func UnmarshalLayer(in interface{}) (*Layer, error) {
 	return target, nil
 }
 
-func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string]*inputNode) error {
+func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string]*inputNode, interner Interner) error {
 	if inode.processed {
 		return nil
 	}
@@ -147,7 +150,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 			if arr, ok := val.([]interface{}); ok {
 				for _, t := range arr {
 					if str, ok := t.(string); ok {
-						attribute.GetTypes().Add(str)
+						attribute.GetTypes().Add(interner.Intern(str))
 					}
 				}
 			}
@@ -174,7 +177,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 				if attrNode == nil {
 					return MakeErrInvalidInput(inode.id, "Cannot follow link in attribute list:"+follow)
 				}
-				if err := unmarshalAttributeNode(target, attrNode, allNodes); err != nil {
+				if err := unmarshalAttributeNode(target, attrNode, allNodes, interner); err != nil {
 					return err
 				}
 				edge := NewEdge(k)
@@ -203,7 +206,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 				if itemsNode == nil {
 					return MakeErrInvalidInput(inode.id, "Cannot follow link to array items")
 				}
-				if err := unmarshalAttributeNode(target, itemsNode, allNodes); err != nil {
+				if err := unmarshalAttributeNode(target, itemsNode, allNodes, interner); err != nil {
 					return err
 				}
 				digraph.Connect(inode.graphNode, itemsNode.graphNode, NewEdge(k))
@@ -227,7 +230,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 				if nnode == nil {
 					return MakeErrInvalidInput(inode.id, "Cannot follow link")
 				}
-				if err := unmarshalAttributeNode(target, nnode, allNodes); err != nil {
+				if err := unmarshalAttributeNode(target, nnode, allNodes, interner); err != nil {
 					return err
 				}
 				edge := NewEdge(k)
@@ -248,7 +251,7 @@ func unmarshalAttributeNode(target *Layer, inode *inputNode, allNodes map[string
 	return nil
 }
 
-func unmarshalAnnotations(target *Layer, node *inputNode, allNodes map[string]*inputNode) {
+func unmarshalAnnotations(target *Layer, node *inputNode, allNodes map[string]*inputNode, interner Interner) {
 	for key, value := range node.node {
 		switch key {
 		case "@id", "@type",
@@ -268,6 +271,7 @@ func unmarshalAnnotations(target *Layer, node *inputNode, allNodes map[string]*i
 			if !ok {
 				break
 			}
+			key = interner.Intern(key)
 			setValue := func(v string) {
 				value := node.graphNode.GetProperties()[key]
 				if value == nil {

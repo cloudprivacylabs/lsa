@@ -20,14 +20,46 @@ import (
 	"github.com/bserdar/digraph"
 )
 
+// A CompiledGraph is a graph of compiled schemas
+type CompiledGraph interface {
+	GetCompiledSchema(string) *Layer
+	PutCompiledSchema(string, *Layer)
+}
+
+// DefaultCompiledGraph keeps compiled graphs in a map. Zero value of
+// DefaultCompiledGraph is ready to use
+type DefaultCompiledGraph struct {
+	layers map[string]*Layer
+}
+
+// GetCompiledSchema returns a compiled schema for the reference if known
+func (d DefaultCompiledGraph) GetCompiledSchema(ref string) *Layer {
+	if d.layers == nil {
+		return nil
+	}
+	return d.layers[ref]
+}
+
+// PutCompiledSchema adds the schema
+func (d *DefaultCompiledGraph) PutCompiledSchema(ref string, layer *Layer) {
+	if d.layers == nil {
+		d.layers = make(map[string]*Layer)
+	}
+	d.layers[ref] = layer
+}
+
 type Compiler struct {
 	// Loader loads a layer using a strong reference.
 	Loader func(string) (*Layer, error)
+	// CGraph keeps the compiled interlinked schemas. If this is
+	// initalized before compilation, then it is used during compilation
+	// and new schemas are added to it. If it is left uninitialized,
+	// compilation initializes it to default compiled graph
+	CGraph CompiledGraph
 }
 
 type compilerContext struct {
 	loadedSchemas map[string]*Layer
-	compiled      map[string]Node
 	blankNodeID   uint
 }
 
@@ -52,31 +84,37 @@ func (compiler Compiler) loadSchema(ctx *compilerContext, ref string) (*Layer, e
 
 // Compile compiles the schema by resolving all references and
 // building all compositions.
-func (compiler Compiler) Compile(ref string) (*Layer, error) {
+func (compiler *Compiler) Compile(ref string) (*Layer, error) {
 	ctx := &compilerContext{
 		loadedSchemas: make(map[string]*Layer),
-		compiled:      make(map[string]Node),
 	}
 	return compiler.compile(ctx, ref)
 }
 
 // CompileSchema compiles the loaded schema
-func (compiler Compiler) CompileSchema(schema *Layer) (*Layer, error) {
+func (compiler *Compiler) CompileSchema(schema *Layer) (*Layer, error) {
 	ctx := &compilerContext{
 		loadedSchemas: map[string]*Layer{schema.GetID(): schema},
-		compiled:      make(map[string]Node),
 	}
 	return compiler.compile(ctx, schema.GetID())
 }
 
-func (compiler Compiler) compile(ctx *compilerContext, ref string) (*Layer, error) {
-	compileRoot, err := compiler.compileRefs(ctx, ref)
+func (compiler *Compiler) compile(ctx *compilerContext, ref string) (*Layer, error) {
+	if compiler.CGraph == nil {
+		compiler.CGraph = &DefaultCompiledGraph{}
+	}
+
+	compiled := compiler.CGraph.GetCompiledSchema(ref)
+	if compiled != nil {
+		return compiled, nil
+	}
+
+	schema, err := compiler.compileRefs(ctx, ref)
 	if err != nil {
 		return nil, err
 	}
-	schema := ctx.loadedSchemas[ref]
 	schema.ResetIndex()
-	if err := compiler.resolveCompositions(compileRoot); err != nil {
+	if err := compiler.resolveCompositions(schema.GetSchemaRootNode()); err != nil {
 		return nil, err
 	}
 	if err := compiler.compileTerms(schema); err != nil {
@@ -85,10 +123,10 @@ func (compiler Compiler) compile(ctx *compilerContext, ref string) (*Layer, erro
 	return schema, nil
 }
 
-func (compiler Compiler) compileRefs(ctx *compilerContext, ref string) (Node, error) {
+func (compiler *Compiler) compileRefs(ctx *compilerContext, ref string) (*Layer, error) {
 	var err error
 	// If compiled already, return the compiled node
-	if c := ctx.compiled[ref]; c != nil {
+	if c := compiler.CGraph.GetCompiledSchema(ref); c != nil {
 		return c, nil
 	}
 	// Load the schema
@@ -100,24 +138,24 @@ func (compiler Compiler) compileRefs(ctx *compilerContext, ref string) (Node, er
 		return nil, ErrNotFound(ref)
 	}
 
-	// Here, scheme is loaded but not compiled
+	// Here, schema is loaded but not compiled
 	// If this is the top-level, we set the target layer as this schema
 	var compileRoot Node
 	schema.RenameBlankNodes(ctx.blankNodeNamer)
 	schema.ResetIndex()
 	compileRoot = schema.GetSchemaRootNode()
 	if compileRoot == nil {
-		return nil, nil
+		return nil, ErrNotFound(ref)
 	}
 	// Resolve all references
-	ctx.compiled[ref] = compileRoot
+	compiler.CGraph.PutCompiledSchema(ref, schema)
 	if err := compiler.resolveReferences(ctx, schema.GetIndex().NodesSlice()); err != nil {
 		return nil, err
 	}
-	return compileRoot, nil
+	return schema, nil
 }
 
-func (compiler Compiler) resolveReferences(ctx *compilerContext, nodes []digraph.Node) error {
+func (compiler *Compiler) resolveReferences(ctx *compilerContext, nodes []digraph.Node) error {
 	// Collect all reference nodes
 	references := make([]Node, 0)
 	for _, n := range nodes {
@@ -135,28 +173,29 @@ func (compiler Compiler) resolveReferences(ctx *compilerContext, nodes []digraph
 	return nil
 }
 
-func (compiler Compiler) resolveReference(ctx *compilerContext, node Node) error {
+func (compiler *Compiler) resolveReference(ctx *compilerContext, node Node) error {
 	properties := node.GetProperties()
 	ref := properties[LayerTerms.Reference].AsString()
 	delete(properties, LayerTerms.Reference)
 	// already compiled, or being compiled?
-	compiled := ctx.compiled[ref]
-	if compiled == nil {
+	compiledSchema := compiler.CGraph.GetCompiledSchema(ref)
+	if compiledSchema == nil {
 		var err error
-		compiled, err = compiler.compileRefs(ctx, ref)
+		compiledSchema, err = compiler.compileRefs(ctx, ref)
 		if err != nil {
 			return err
 		}
 	}
+	rootNode := compiledSchema.GetSchemaRootNode()
 	// This is no longer a reference node
 	node.GetTypes().Remove(AttributeTypes.Reference)
-	node.GetTypes().Add(compiled.GetTypes().Slice()...)
+	node.GetTypes().Add(rootNode.GetTypes().Slice()...)
 	// Compose the properties of the compiled root node with the referenced node
-	if err := ComposeProperties(properties, compiled.GetProperties()); err != nil {
+	if err := ComposeProperties(properties, rootNode.GetProperties()); err != nil {
 		return err
 	}
 	// Attach the node to all the children of the compiled node
-	for edges := compiled.Out(); edges.HasNext(); {
+	for edges := rootNode.Out(); edges.HasNext(); {
 		edge := edges.Next().(Edge)
 		digraph.Connect(node, edge.GetTo(), edge.Clone())
 	}

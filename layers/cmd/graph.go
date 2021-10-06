@@ -31,7 +31,7 @@ var graphCmd = &cobra.Command{
 	Short: "Work with a graph",
 }
 
-func ReadGraph(gfile []string) (*digraph.Graph, error) {
+func ReadGraph(gfile []string, interner ls.Interner) (*digraph.Graph, error) {
 	data, err := readFileOrStdin(gfile)
 	if err != nil {
 		return nil, err
@@ -40,5 +40,5 @@ func ReadGraph(gfile []string) (*digraph.Graph, error) {
 	if err := json.Unmarshal(data, &v); err != nil {
 		return nil, err
 	}
-	return ls.UnmarshalGraph(v)
+	return ls.UnmarshalGraph(v, interner)
 }

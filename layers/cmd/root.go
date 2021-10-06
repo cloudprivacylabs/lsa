@@ -31,6 +31,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
 
@@ -183,8 +184,8 @@ func unroll(in interface{}, depth int) interface{} {
 	return in
 }
 
-func getRepo(repodir string) (*fs.Repository, error) {
-	repo := fs.New(repodir)
+func getRepo(repodir string, interner ls.Interner) (*fs.Repository, error) {
+	repo := fs.NewWithInterner(repodir, interner)
 	if err := repo.Load(); err != nil {
 		if errors.Is(err, fs.ErrNoIndex) || errors.Is(err, fs.ErrBadIndex) {
 			warnings, err := repo.UpdateIndex()

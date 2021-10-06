@@ -18,6 +18,8 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 func init() {
@@ -29,7 +31,7 @@ var graphDotCmd = &cobra.Command{
 	Short: "Write graph as a DOT file",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		g, err := ReadGraph(args)
+		g, err := ReadGraph(args, ls.NewInterner())
 		if err != nil {
 			failErr(err)
 		}
