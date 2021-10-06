@@ -1,0 +1,224 @@
+{
+  "@graph": [
+    {
+      "@id": "_b:0",
+      "@type": "https://lschema.org/DocumentNode",
+      "https://lschema.org/data/has": [
+        {
+          "@id": "https://www.w3.org/2018/credentials/v1/name"
+        },
+        {
+          "@id": "https://www.w3.org/2018/credentials/v1/credentialSubject"
+        }
+      ],
+      "https://lschema.org/data/instanceOf": {
+        "@id": "_b:1"
+      }
+    },
+    {
+      "@id": "_b:1",
+      "@type": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object",
+        "http://example.org/vc"
+      ],
+        "https://lschema.org/attributeName": "name",
+      "https://lschema.org/Object/attributes": [
+        {
+          "@id": "https://www.w3.org/2018/credentials/v1/name"
+        },
+        {
+          "@id": "https://www.w3.org/2018/credentials/v1/credentialSubject"
+        }
+      ]
+    },
+    {
+      "@id": "https://w3id.org/vaccination#batchNumber",
+      "@type": "https://lschema.org/DocumentNode",
+      "https://lschema.org/attributeValue": "AZ45402",
+      "https://lschema.org/data/instanceOf": {
+        "@id": "https://w3id.org/vaccination#batchNumber"
+      }
+    },
+    {
+      "@id": "http://schema.org/givenName",
+      "@type": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "https://lschema.org/attributeIndex": "0",
+        "https://lschema.org/attributeName": "givenName",
+      "https://lschema.org/reshape/source": "patient.firstReachable(node->(node.type.has('https://lschema.org/DocumentNode')&&node.instanceOf('http://hl7.org/fhir/HumanName#given'))).walk('https://lschema.org/data/has')"
+    },
+    {
+      "@id": "http://schema.org/gender",
+      "@type": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+        "https://lschema.org/attributeName": "gender",
+      "https://lschema.org/attributeIndex": "2",
+      "https://lschema.org/reshape/source": "patient.firstReachable(node->(node.type.has('https://lschema.org/DocumentNode')&&node.instanceOf('http://hl7.org/fhir/Patient#gender')))"
+    },
+    {
+      "@id": "https://www.w3.org/2018/credentials/v1/credentialSubject",
+      "@type": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+        "https://lschema.org/attributeName": "credentialsSubject",
+      "https://lschema.org/Object/attributes": [
+        {
+          "@id": "https://w3id.org/vaccination#batchNumber"
+        },
+        {
+          "@id": "https://w3id.org/vaccination#recipient"
+        }
+      ],
+      "https://lschema.org/attributeIndex": "1",
+      "https://lschema.org/reshape/vars": [
+        "immunization:=source.firstReachable(node->(node.type.hasAll('http://hl7.org/fhir/Immunization','https://lschema.org/DocumentNode')))",
+        "patient:=source.firstReachable(node->(node.type.hasAll('http://hl7.org/fhir/Patient','https://lschema.org/DocumentNode')))"
+      ]
+    },
+    {
+      "@id": "https://w3id.org/vaccination#recipient",
+      "@type": "https://lschema.org/DocumentNode",
+      "https://lschema.org/data/has": [
+        {
+          "@id": "http://schema.org/givenName"
+        },
+        {
+          "@id": "http://schema.org/familyName"
+        },
+        {
+          "@id": "http://schema.org/gender"
+        },
+        {
+          "@id": "http://schema.org/birthDate"
+        }
+      ],
+      "https://lschema.org/data/instanceOf": {
+        "@id": "https://w3id.org/vaccination#recipient"
+      }
+    },
+    {
+      "@id": "http://schema.org/familyName",
+      "@type": "https://lschema.org/DocumentNode",
+      "https://lschema.org/attributeValue": "Boyer",
+      "https://lschema.org/data/instanceOf": {
+        "@id": "http://schema.org/familyName"
+      }
+    },
+    {
+      "@id": "https://www.w3.org/2018/credentials/v1/name",
+      "@type": "https://lschema.org/DocumentNode",
+      "https://lschema.org/attributeValue": "COVID-19 Vaccination Certificate",
+      "https://lschema.org/data/instanceOf": {
+        "@id": "https://www.w3.org/2018/credentials/v1/name"
+      }
+    },
+    {
+      "@id": "https://www.w3.org/2018/credentials/v1/credentialSubject",
+      "@type": "https://lschema.org/DocumentNode",
+      "https://lschema.org/data/has": [
+        {
+          "@id": "https://w3id.org/vaccination#batchNumber"
+        },
+        {
+          "@id": "https://w3id.org/vaccination#recipient"
+        }
+      ],
+      "https://lschema.org/data/instanceOf": {
+        "@id": "https://www.w3.org/2018/credentials/v1/credentialSubject"
+      }
+    },
+    {
+      "@id": "https://www.w3.org/2018/credentials/v1/name",
+      "@type": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+        "https://lschema.org/attributeName": "name",
+      "https://lschema.org/attributeIndex": "0",
+      "https://lschema.org/reshape/source": "'COVID-19 Vaccination Certificate'"
+    },
+    {
+      "@id": "https://w3id.org/vaccination#batchNumber",
+      "@type": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+        "https://lschema.org/attributeName": "batchNumber",
+      "https://lschema.org/attributeIndex": "0",
+      "https://lschema.org/reshape/source": "immunization.firstReachable(node->(node.type.has('https://lschema.org/DocumentNode')&&node.instanceOf('http://hl7.org/fhir/Immunization#lotNumber')))"
+    },
+    {
+      "@id": "https://w3id.org/vaccination#recipient",
+      "@type": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+        "https://lschema.org/attributeName": "recipient",
+      "https://lschema.org/Object/attributes": [
+        {
+          "@id": "http://schema.org/givenName"
+        },
+        {
+          "@id": "http://schema.org/familyName"
+        },
+        {
+          "@id": "http://schema.org/gender"
+        },
+        {
+          "@id": "http://schema.org/birthDate"
+        }
+      ],
+      "https://lschema.org/attributeIndex": "1"
+    },
+    {
+      "@id": "http://schema.org/givenName",
+      "@type": "https://lschema.org/DocumentNode",
+      "https://lschema.org/attributeValue": "Cary b",
+      "https://lschema.org/data/instanceOf": {
+        "@id": "http://schema.org/givenName"
+      }
+    },
+    {
+      "@id": "http://schema.org/familyName",
+      "@type": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+        "https://lschema.org/attributeName": "familyName",
+      "https://lschema.org/attributeIndex": "1",
+      "https://lschema.org/reshape/source": "patient.firstReachable(node->(node.type.has('https://lschema.org/DocumentNode')&&node.instanceOf('http://hl7.org/fhir/HumanName#family')))"
+    },
+    {
+      "@id": "http://schema.org/birthDate",
+      "@type": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+        "https://lschema.org/attributeName": "birthDate",
+      "https://lschema.org/attributeIndex": "3",
+      "https://lschema.org/reshape/source": "patient.firstReachable(node->(node.type.has('https://lschema.org/DocumentNode')&&node.instanceOf('http://hl7.org/fhir/Patient#birthDate')))"
+    },
+    {
+      "@id": "http://schema.org/gender",
+      "@type": "https://lschema.org/DocumentNode",
+      "https://lschema.org/attributeValue": "male",
+      "https://lschema.org/data/instanceOf": {
+        "@id": "http://schema.org/gender"
+      }
+    },
+    {
+      "@id": "http://schema.org/birthDate",
+      "@type": "https://lschema.org/DocumentNode",
+      "https://lschema.org/attributeValue": "1971-02-13",
+      "https://lschema.org/data/instanceOf": {
+        "@id": "http://schema.org/birthDate"
+      }
+    }
+  ]
+}

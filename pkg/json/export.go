@@ -71,15 +71,37 @@ func (options ExportOptions) BuildNodeKey(node ls.Node) (string, bool, error) {
 	return DefaultBuildNodeKeyFunc(node)
 }
 
-// DefaultBuildNodeKeyFunc returns the attribute name term propertu
-// from the node if it exists. If not, it return false
+// DefaultBuildNodeKeyFunc returns the attribute name term property
+// from the node if it exists. If not, it looks at the attributeName
+// of the node reached by instanceOf edge. If none found it return false
 func DefaultBuildNodeKeyFunc(node ls.Node) (string, bool, error) {
 	v := node.GetProperties()[ls.AttributeNameTerm]
-	if v == nil {
-		return "", false, nil
+	if v != nil {
+		if v.IsString() {
+			return v.AsString(), true, nil
+		}
+		if v.IsStringSlice() {
+			return v.AsStringSlice()[0], true, nil
+		}
 	}
-	if v.IsString() {
-		return v.AsString(), true, nil
+	found := false
+	foundLabel := ""
+	for _, inst := range ls.InstanceOf(node) {
+		v := inst.GetProperties()[ls.AttributeNameTerm]
+		if v != nil {
+			if found {
+				return "", false, nil
+			}
+			found = true
+			if v.IsString() {
+				foundLabel = v.AsString()
+			} else if v.IsStringSlice() {
+				foundLabel = v.AsStringSlice()[0]
+			}
+		}
+	}
+	if found {
+		return foundLabel, true, nil
 	}
 	return "", false, nil
 }

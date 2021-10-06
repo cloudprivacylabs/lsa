@@ -38,7 +38,7 @@ func (respaher *Reshaper) generateID(schemaPath, docPath []ls.Node) string {
 	if respaher.GenerateID != nil {
 		return respaher.GenerateID(schemaPath, docPath)
 	}
-	return schemaPath[len(schemaPath)-1].GetID()
+	return schemaPath[len(schemaPath)-1].GetID() + "d"
 }
 
 // ErrInvalidSchemaNodeType is returned if the schema node type cannot
