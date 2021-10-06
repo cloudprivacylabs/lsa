@@ -40,23 +40,32 @@ type EdgeCompiler interface {
 	CompileEdge(Edge) error
 }
 
+// CompilablePropertyContainer contains properties and a compiled data map
+type CompilablePropertyContainer interface {
+	PropertyContainer
+	GetCompiledDataMap() map[interface{}]interface{}
+}
+
 // TermCompiler interface represents term compilation algorithm. This
 // is used to compile terms stored as node/edge properties. If the
 // term metadata implements TermCompiler, this method is called, and
 // the result is stored in the Compiled map of the node/edge with the
 // term as the key.
 type TermCompiler interface {
-	// CompileTerm gets a term and its value, and returns an object that
-	// will be placed in the Compiled map of the node or the edge.
-	CompileTerm(string, *PropertyValue) (interface{}, error)
+	// CompileTerm gets a node or edge, the term and its value, and
+	// compiles it. It can store compilation data in the compiled data
+	// map.
+	CompileTerm(CompilablePropertyContainer, string, *PropertyValue) error
 }
 
 type emptyCompiler struct{}
 
 // CompileNode returns the value unmodified
-func (emptyCompiler) CompileNode(Node) error                                  { return nil }
-func (emptyCompiler) CompileEdge(Edge) error                                  { return nil }
-func (emptyCompiler) CompileTerm(string, *PropertyValue) (interface{}, error) { return nil, nil }
+func (emptyCompiler) CompileNode(Node) error { return nil }
+func (emptyCompiler) CompileEdge(Edge) error { return nil }
+func (emptyCompiler) CompileTerm(CompilablePropertyContainer, string, *PropertyValue) error {
+	return nil
+}
 
 // GetNodeCompiler return a compiler that will compile the term when
 // the term is a node label

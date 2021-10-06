@@ -40,6 +40,10 @@ func (tc testCase) Run(t *testing.T) {
 		t.Errorf("Test case: %s Cannot unmarshal target layer: %v", tc.Name, err)
 		return
 	}
+	if err := ls.CompileTerms(targetLayer); err != nil {
+		t.Errorf("Test case: %s Cannot compile: %v", tc.Name, err)
+		return
+	}
 	sourceGraph, err := ls.UnmarshalGraph(tc.SourceGraph, nil)
 	if err != nil {
 		t.Errorf("Test case: %s Cannot unmarshal source graph: %v", tc.Name, err)

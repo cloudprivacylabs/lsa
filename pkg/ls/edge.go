@@ -20,6 +20,7 @@ import (
 	"github.com/bserdar/digraph"
 )
 
+// Edge represents a graph edge
 type Edge interface {
 	digraph.Edge
 

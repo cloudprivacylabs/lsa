@@ -34,13 +34,14 @@ func (validator PatternValidator) Validate(docNode, schemaNode ls.Node) error {
 }
 
 // Compile the pattern
-func (validator PatternValidator) CompileTerm(_ string, value *ls.PropertyValue) (interface{}, error) {
+func (validator PatternValidator) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	if !value.IsString() {
-		return nil, ls.ErrValidatorCompile{Validator: PatternTerm, Msg: "Pattern is not a string value"}
+		return ls.ErrValidatorCompile{Validator: PatternTerm, Msg: "Pattern is not a string value"}
 	}
 	pattern, err := regexp.Compile(value.AsString())
 	if err != nil {
-		return nil, ls.ErrValidatorCompile{Validator: PatternTerm, Msg: "Invalid pattern", Err: err}
+		return ls.ErrValidatorCompile{Validator: PatternTerm, Msg: "Invalid pattern", Err: err}
 	}
-	return pattern, nil
+	target.GetCompiledDataMap()[term] = pattern
+	return nil
 }

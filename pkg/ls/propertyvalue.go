@@ -20,6 +20,11 @@ import (
 	"strings"
 )
 
+// PropertyContainer is an object that contains properties. Node and Edge are property containers
+type PropertyContainer interface {
+	GetProperties() map[string]*PropertyValue
+}
+
 // PropertyValue can be a string or []string. It is an immutable value object
 type PropertyValue struct {
 	value interface{}

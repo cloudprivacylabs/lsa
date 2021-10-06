@@ -22,53 +22,14 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-const RS = ls.LS + "reshape/"
-
-// ReshapeTerms defines the terms used to specify reshaping layers
-var ReshapeTerms = struct {
-	// If given, the If term specifies a predicate that should be true to reshape the node
-	If string
-	// Vars defines a list of expressions that pull values from the
-	// source graph and define them as variables
-	Vars string
-	// Source specifies the source value to be used to generate the target value
-	Source string
-	// IfEmpty determines whether to reshape the node even if it has no value
-	IfEmpty string
-	// JoinMethod determines how to join multiple values to generate a single value
-	JoinMethod string
-	// JoinDelimiter specifies the join delimiter if there are multiple values to be combined
-	JoinDelimiter string
-}{
-	If:            ls.NewTerm(RS+"if", false, false, ls.OverrideComposition, nil),
-	Vars:          ls.NewTerm(RS+"vars", false, true, ls.OverrideComposition, nil),
-	Source:        ls.NewTerm(RS+"source", false, false, ls.OverrideComposition, nil),
-	IfEmpty:       ls.NewTerm(RS+"ifEmpty", false, false, ls.OverrideComposition, nil),
-	JoinMethod:    ls.NewTerm(RS+"joinMethod", false, false, ls.OverrideComposition, nil),
-	JoinDelimiter: ls.NewTerm(RS+"joinDelimiter", false, false, ls.OverrideComposition, nil),
-}
-
 type Reshaper struct {
 	TargetSchema *ls.Layer
 
 	// If true, adds the references to the target schema
 	AddInstanceOfEdges bool
 
-	// GetReshaeProperties will return the reshaping related
-	// properties for the node. This can be set to a function that
-	// retrieves properties from an overlay, thus allowing reshaping
-	// computations without layer composition
-	GetReshapeProperties func(ls.Node) map[string]*ls.PropertyValue
-
 	// GenerateID will generate a node ID given schema path and target document path up to the new node
 	GenerateID func(schemaPath, docPath []ls.Node) string
-}
-
-func (respaher *Reshaper) getProperties(node ls.Node) map[string]*ls.PropertyValue {
-	if respaher.GetReshapeProperties != nil {
-		return respaher.GetReshapeProperties(node)
-	}
-	return node.GetProperties()
 }
 
 // GenerateID gets the schema path for the new field, and the path to
@@ -131,13 +92,11 @@ func (respaher *Reshaper) Reshape(rootNode ls.Node) (ls.Node, error) {
 	return respaher.reshape(&ctx)
 }
 
-func (respaher *Reshaper) reshape(context *ReshapeContext) (ls.Node, error) {
+func (reshaper *Reshaper) reshape(context *ReshapeContext) (ls.Node, error) {
 	context = context.nestedContext()
 	schemaNode := context.CurrentSchemaNode()
-	properties := respaher.getProperties(schemaNode)
 	// Check conditionals first
-	conditionals := properties[ReshapeTerms.If]
-	v, err := checkConditionals(context, conditionals)
+	v, err := reshaper.checkConditionals(context, schemaNode)
 	if err != nil {
 		return nil, err
 	}
@@ -145,36 +104,35 @@ func (respaher *Reshaper) reshape(context *ReshapeContext) (ls.Node, error) {
 		return nil, nil
 	}
 	// Declare the variables
-	variables := properties[ReshapeTerms.Vars]
-	if err = setupVariables(context, variables); err != nil {
+	if err = reshaper.setupVariables(context, schemaNode); err != nil {
 		return nil, err
 	}
 	switch {
 	case schemaNode.GetTypes().Has(ls.AttributeTypes.Value):
-		return respaher.value(context)
+		return reshaper.value(context)
 	case schemaNode.GetTypes().Has(ls.AttributeTypes.Object):
-		return respaher.object(context)
+		return reshaper.object(context)
 	case schemaNode.GetTypes().Has(ls.AttributeTypes.Array):
 	case schemaNode.GetTypes().Has(ls.AttributeTypes.Polymorphic):
 	}
 	return nil, ErrInvalidSchemaNodeType(schemaNode.GetTypes().Slice())
 }
 
-func (respaher *Reshaper) object(context *ReshapeContext) (ls.Node, error) {
+func (reshaper *Reshaper) object(context *ReshapeContext) (ls.Node, error) {
 	schemaNode := context.CurrentSchemaNode()
-	properties := respaher.getProperties(schemaNode)
+	properties := schemaNode.GetProperties()
 	attributes := ls.SortEdgesItr(schemaNode.OutWith(ls.LayerTerms.Attributes)).Targets().All()
 	attributes = append(attributes, ls.SortEdgesItr(schemaNode.OutWith(ls.LayerTerms.AttributeList)).Targets().All()...)
 
 	// Create a target node for this object node. If the object turns
 	// out to be empty, this target node may be thrown away
-	targetNode := ls.NewNode(respaher.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm)
-	if respaher.AddInstanceOfEdges {
+	targetNode := ls.NewNode(reshaper.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm)
+	if reshaper.AddInstanceOfEdges {
 		ls.Connect(targetNode, schemaNode, ls.InstanceOfTerm)
 	}
 	context.docPath = append(context.docPath, targetNode)
 
-	source, err := getSource(context, properties[ReshapeTerms.Source])
+	source, err := getSource(context, schemaNode)
 	if err != nil {
 		return nil, err
 	}
@@ -199,7 +157,7 @@ func (respaher *Reshaper) object(context *ReshapeContext) (ls.Node, error) {
 	for _, a := range attributes {
 		schemaAttribute := a.(ls.Node)
 		context.schemaPath = append(context.schemaPath, schemaAttribute)
-		newNode, err := respaher.reshape(context)
+		newNode, err := reshaper.reshape(context)
 		context.schemaPath = context.schemaPath[:len(context.schemaPath)-1]
 		if err != nil {
 			return nil, err
@@ -219,18 +177,18 @@ func (respaher *Reshaper) object(context *ReshapeContext) (ls.Node, error) {
 	return targetNode, nil
 }
 
-func (respaher *Reshaper) value(context *ReshapeContext) (ls.Node, error) {
+func (reshaper *Reshaper) value(context *ReshapeContext) (ls.Node, error) {
 	schemaNode := context.CurrentSchemaNode()
-	properties := respaher.getProperties(schemaNode)
+	properties := schemaNode.GetProperties()
 	// Create a target node for this object node. If the object turns
 	// out to be empty, this target node may be thrown away
-	targetNode := ls.NewNode(respaher.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm)
-	if respaher.AddInstanceOfEdges {
+	targetNode := ls.NewNode(reshaper.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm)
+	if reshaper.AddInstanceOfEdges {
 		ls.Connect(targetNode, schemaNode, ls.InstanceOfTerm)
 	}
 	context.docPath = append(context.docPath, targetNode)
 
-	source, err := getSource(context, properties[ReshapeTerms.Source])
+	source, err := getSource(context, schemaNode)
 	if err != nil {
 		return nil, err
 	}
@@ -280,46 +238,42 @@ func (respaher *Reshaper) value(context *ReshapeContext) (ls.Node, error) {
 	return targetNode, nil
 }
 
-func getSource(context *ReshapeContext, source *ls.PropertyValue) (gl.Value, error) {
-	if source == nil {
+func getSource(context *ReshapeContext, schemaNode ls.Node) (gl.Value, error) {
+	data := schemaNode.GetCompiledDataMap()[ReshapeTerms.Source]
+	expr, ok := data.(gl.Evaluatable)
+	if !ok {
 		return nil, nil
 	}
-	if !source.IsString() {
-		return nil, ErrSourceMustBeString
-	}
-	value, err := gl.EvaluateWith(context.glContext, source.AsString())
+	value, err := expr.Evaluate(context.glContext)
 	if err != nil {
 		return nil, err
 	}
 	return value, nil
 }
 
-func setupVariables(context *ReshapeContext, variables *ls.PropertyValue) error {
-	if variables == nil {
+func (reshaper *Reshaper) setupVariables(context *ReshapeContext, schemaNode ls.Node) error {
+	data := schemaNode.GetCompiledDataMap()[ReshapeTerms.Vars]
+	slice, ok := data.([]gl.Evaluatable)
+	if !ok {
 		return nil
 	}
-	if variables.IsString() {
-		if _, err := gl.EvaluateWith(context.glContext, variables.AsString()); err != nil {
+	for _, x := range slice {
+		if _, err := x.Evaluate(context.glContext); err != nil {
 			return err
-		}
-	}
-	if variables.IsStringSlice() {
-		for _, x := range variables.AsStringSlice() {
-			if _, err := gl.EvaluateWith(context.glContext, x); err != nil {
-				return err
-			}
 		}
 	}
 	return nil
 }
 
-func checkConditionals(context *ReshapeContext, conditionals *ls.PropertyValue) (bool, error) {
-	if conditionals == nil {
+func (reshaper *Reshaper) checkConditionals(context *ReshapeContext, schemaNode ls.Node) (bool, error) {
+	data := schemaNode.GetCompiledDataMap()[ReshapeTerms.If]
+	slice, ok := data.([]gl.Evaluatable)
+	if !ok {
 		return true, nil
 	}
 	result := true
-	if conditionals.IsString() {
-		r, err := gl.EvaluateWith(context.glContext, conditionals.AsString())
+	for _, x := range slice {
+		r, err := x.Evaluate(context.glContext)
 		if err != nil {
 			return false, err
 		}
@@ -327,20 +281,8 @@ func checkConditionals(context *ReshapeContext, conditionals *ls.PropertyValue) 
 		if err != nil {
 			return false, err
 		}
-	}
-	if conditionals.IsStringSlice() {
-		for _, x := range conditionals.AsStringSlice() {
-			r, err := gl.EvaluateWith(context.glContext, x)
-			if err != nil {
-				return false, err
-			}
-			result, err = r.AsBool()
-			if err != nil {
-				return false, err
-			}
-			if result == false {
-				return false, nil
-			}
+		if result == false {
+			return false, nil
 		}
 	}
 	return result, nil

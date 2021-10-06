@@ -39,9 +39,10 @@ func (validator RequiredValidator) Validate(docNode, schemaNode ls.Node) error {
 }
 
 // Compile the required properties array
-func (validator RequiredValidator) CompileTerm(_ string, value *ls.PropertyValue) (interface{}, error) {
+func (validator RequiredValidator) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	if !value.IsStringSlice() {
-		return nil, ls.ErrValidatorCompile{Validator: RequiredTerm, Msg: "Array of required attributes expected"}
+		return ls.ErrValidatorCompile{Validator: RequiredTerm, Msg: "Array of required attributes expected"}
 	}
-	return value.AsStringSlice(), nil
+	target.GetCompiledDataMap()[term] = value.AsStringSlice()
+	return nil
 }

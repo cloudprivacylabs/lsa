@@ -117,7 +117,7 @@ func (compiler *Compiler) compile(ctx *compilerContext, ref string) (*Layer, err
 	if err := compiler.resolveCompositions(schema.GetSchemaRootNode()); err != nil {
 		return nil, err
 	}
-	if err := compiler.compileTerms(schema); err != nil {
+	if err := CompileTerms(schema); err != nil {
 		return nil, err
 	}
 	return schema, nil
@@ -280,7 +280,8 @@ func (compiler Compiler) resolveComposition(compositeNode Node, completed map[No
 	return nil
 }
 
-func (compiler Compiler) compileTerms(layer *Layer) error {
+// CompileTerms compiles all node and edge terms of the layer
+func CompileTerms(layer *Layer) error {
 	for _, n := range layer.GetIndex().NodesSlice() {
 		node := n.(Node)
 		// Compile all non-attribute nodes
@@ -290,12 +291,9 @@ func (compiler Compiler) compileTerms(layer *Layer) error {
 			}
 		}
 		for k, v := range node.GetProperties() {
-			result, err := GetTermCompiler(k).CompileTerm(k, v)
+			err := GetTermCompiler(k).CompileTerm(node, k, v)
 			if err != nil {
 				return err
-			}
-			if result != nil {
-				node.GetCompiledDataMap()[k] = result
 			}
 			for edges := node.Out(); edges.HasNext(); {
 				edge := edges.Next().(Edge)
@@ -303,12 +301,9 @@ func (compiler Compiler) compileTerms(layer *Layer) error {
 					return err
 				}
 				for k, v := range edge.GetProperties() {
-					result, err := GetTermCompiler(k).CompileTerm(k, v)
+					err := GetTermCompiler(k).CompileTerm(edge, k, v)
 					if err != nil {
 						return err
-					}
-					if result != nil {
-						edge.GetCompiledDataMap()[k] = result
 					}
 				}
 			}
