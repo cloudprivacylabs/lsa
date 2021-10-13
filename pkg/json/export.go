@@ -17,6 +17,7 @@ package json
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/bserdar/jsonom"
 	"github.com/cloudprivacylabs/lsa/pkg/gl"
@@ -27,6 +28,10 @@ import (
 type ExportOptions struct {
 	// BuildNodeKeyFunc builds a node key from the node
 	BuildNodeKeyFunc func(ls.Node) (string, bool, error)
+
+	// If ExportTypeProperty is set, exports "@type" properties that
+	// have non-LS related types
+	ExportTypeProperty bool
 }
 
 // GetBuildNodeKeyBySchemaNodeFunc returns a function that gets the
@@ -129,6 +134,16 @@ func (e ErrValueExpected) Error() string {
 	return fmt.Sprintf("Value expected at %s", e.NodeID)
 }
 
+func filterTypes(types []string) []string {
+	ret := make([]string, 0, len(types))
+	for _, x := range types {
+		if !strings.HasPrefix(x, ls.LS) {
+			ret = append(ret, x)
+		}
+	}
+	return ret
+}
+
 func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) (jsonom.Node, error) {
 	// Loop protection
 	if _, exists := seen[node]; exists {
@@ -142,9 +157,28 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 		return nil, nil
 	}
 	types := ls.CombineNodeTypes(ls.InstanceOf(node))
+
+	getTypes := func() jsonom.Node {
+		if !options.ExportTypeProperty {
+			return nil
+		}
+		nodeTypes := filterTypes(types.Slice())
+		if len(nodeTypes) == 0 {
+			return nil
+		}
+		arr := jsonom.NewArray()
+		for _, x := range nodeTypes {
+			arr.Append(jsonom.StringValue(x))
+		}
+		return arr
+	}
+
 	switch {
 	case types.Has(ls.AttributeTypes.Object):
 		ret := jsonom.NewObject()
+		if t := getTypes(); t != nil {
+			ret.Set("@type", t)
+		}
 		gnodes := node.OutWith(ls.HasTerm).Targets().All()
 		nodes := make([]ls.Node, 0, len(gnodes))
 		for _, node := range gnodes {

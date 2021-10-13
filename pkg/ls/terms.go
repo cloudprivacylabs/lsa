@@ -33,7 +33,7 @@ var (
 	DescriptionTerm = NewTerm(LS+"description", false, false, SetComposition, nil)
 
 	// AttributeNameTerm represents the name of an attribute
-	AttributeNameTerm = NewTerm(LS+"attributeName", false, false, ErrorComposition, nil)
+	AttributeNameTerm = NewTerm(LS+"attributeName", false, false, OverrideComposition, nil)
 
 	// AttributeIndexTerm represents the index of an array element
 	AttributeIndexTerm = NewTerm(LS+"attributeIndex", false, false, NoComposition, nil)

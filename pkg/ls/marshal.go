@@ -273,13 +273,17 @@ func unmarshalAnnotations(target *Layer, node *inputNode, allNodes map[string]*i
 			}
 			key = interner.Intern(key)
 			setValue := func(v string) {
-				value := node.graphNode.GetProperties()[key]
-				if value == nil {
+				if key == AttributeIndexTerm {
 					node.graphNode.GetProperties()[key] = StringPropertyValue(v)
-				} else if value.IsStringSlice() {
-					node.graphNode.GetProperties()[key] = StringSlicePropertyValue(append(value.AsStringSlice(), v))
 				} else {
-					node.graphNode.GetProperties()[key] = StringSlicePropertyValue([]string{value.AsString(), v})
+					value := node.graphNode.GetProperties()[key]
+					if value == nil {
+						node.graphNode.GetProperties()[key] = StringPropertyValue(v)
+					} else if value.IsStringSlice() {
+						node.graphNode.GetProperties()[key] = StringSlicePropertyValue(append(value.AsStringSlice(), v))
+					} else {
+						node.graphNode.GetProperties()[key] = StringSlicePropertyValue([]string{value.AsString(), v})
+					}
 				}
 			}
 			// If list, descend to its elements

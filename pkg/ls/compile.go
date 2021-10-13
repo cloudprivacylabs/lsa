@@ -61,6 +61,8 @@ type Compiler struct {
 type compilerContext struct {
 	loadedSchemas map[string]*Layer
 	blankNodeID   uint
+	// This layer will not be cached
+	doNotCache *Layer
 }
 
 func (c *compilerContext) blankNodeNamer(node Node) {
@@ -95,6 +97,16 @@ func (compiler *Compiler) Compile(ref string) (*Layer, error) {
 func (compiler *Compiler) CompileSchema(schema *Layer) (*Layer, error) {
 	ctx := &compilerContext{
 		loadedSchemas: map[string]*Layer{schema.GetID(): schema},
+	}
+	return compiler.compile(ctx, schema.GetID())
+}
+
+// RecompileSchema uses the cache to resolve the references of the
+// schema, but does not put the schema back into the cache
+func (compiler *Compiler) RecompileSchema(schema *Layer) (*Layer, error) {
+	ctx := &compilerContext{
+		loadedSchemas: map[string]*Layer{schema.GetID(): schema},
+		doNotCache:    schema,
 	}
 	return compiler.compile(ctx, schema.GetID())
 }
@@ -148,7 +160,9 @@ func (compiler *Compiler) compileRefs(ctx *compilerContext, ref string) (*Layer,
 		return nil, ErrNotFound(ref)
 	}
 	// Resolve all references
-	compiler.CGraph.PutCompiledSchema(ref, schema)
+	if schema != ctx.doNotCache {
+		compiler.CGraph.PutCompiledSchema(ref, schema)
+	}
 	if err := compiler.resolveReferences(ctx, schema.GetIndex().NodesSlice()); err != nil {
 		return nil, err
 	}

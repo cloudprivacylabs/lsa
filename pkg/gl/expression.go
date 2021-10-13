@@ -6,6 +6,12 @@ type Evaluatable interface {
 	Evaluate(*Scope) (Value, error)
 }
 
+type EvaluatableFunc func(*Scope) (Value, error)
+
+func (e EvaluatableFunc) Evaluate(s *Scope) (Value, error) {
+	return e(s)
+}
+
 type lValueExpression string
 
 func (l lValueExpression) Evaluate(*Scope) (Value, error) { return lValue{name: string(l)}, nil }

@@ -37,21 +37,29 @@ func nodeFirstReachableFunc(node NodeValue) (Value, error) {
 		MaxArgs: 2,
 		Name:    "firstReachable",
 		Closure: func(scope *Scope, args []Value) (Value, error) {
+			return firstReachableNodeImpl(scope, node, args)
+		},
+	}, nil
+}
+
+// firstDoc(nodeClosure|predicate)
+func nodeFirstReachableDocNodeFunc(node NodeValue) (Value, error) {
+	return FunctionValue{
+		MinArgs: 1,
+		MaxArgs: 1,
+		Name:    "firstDoc",
+		Closure: func(scope *Scope, args []Value) (Value, error) {
 			nodeClosure, err := closureOrBool(args[0])
 			if err != nil {
 				return nil, err
-			}
-			edgeClosure := trueClosure
-			if len(args) == 2 {
-				edgeClosure, err = closureOrBool(args[1])
-				if err != nil {
-					return nil, err
-				}
 			}
 			var closureError error
 			var found ls.Node
 			for _, nd := range node.Nodes.Slice() {
 				ls.FirstReachable(nd, func(node ls.Node, _ []ls.Node) bool {
+					if !node.GetTypes().Has(ls.DocumentNodeTerm) {
+						return true
+					}
 					b, err := AsBool(nodeClosure.Evaluate(ValueOf(node), scope))
 					if err != nil {
 						closureError = err
@@ -64,15 +72,10 @@ func nodeFirstReachableFunc(node NodeValue) (Value, error) {
 					return false
 				},
 					func(edge ls.Edge, _ []ls.Node) bool {
-						b, err := AsBool(edgeClosure.Evaluate(ValueOf(edge), scope))
-						if err != nil {
-							closureError = err
+						if edge.GetLabel() == ls.InstanceOfTerm {
 							return false
 						}
-						if b {
-							return true
-						}
-						return false
+						return true
 					})
 				if closureError != nil {
 					return nil, closureError
@@ -84,6 +87,54 @@ func nodeFirstReachableFunc(node NodeValue) (Value, error) {
 			return NewNodeValue(), nil
 		},
 	}, nil
+}
+
+func firstReachableNodeImpl(scope *Scope, root NodeValue, args []Value) (Value, error) {
+	nodeClosure, err := closureOrBool(args[0])
+	if err != nil {
+		return nil, err
+	}
+	edgeClosure := trueClosure
+	if len(args) == 2 {
+		edgeClosure, err = closureOrBool(args[1])
+		if err != nil {
+			return nil, err
+		}
+	}
+	var closureError error
+	var found ls.Node
+	for _, nd := range root.Nodes.Slice() {
+		ls.FirstReachable(nd, func(node ls.Node, _ []ls.Node) bool {
+			b, err := AsBool(nodeClosure.Evaluate(ValueOf(node), scope))
+			if err != nil {
+				closureError = err
+				return true
+			}
+			if b {
+				found = node
+				return true
+			}
+			return false
+		},
+			func(edge ls.Edge, _ []ls.Node) bool {
+				b, err := AsBool(edgeClosure.Evaluate(ValueOf(edge), scope))
+				if err != nil {
+					closureError = err
+					return false
+				}
+				if b {
+					return true
+				}
+				return false
+			})
+		if closureError != nil {
+			return nil, closureError
+		}
+		if found != nil {
+			return NewNodeValue(found), nil
+		}
+	}
+	return NewNodeValue(), nil
 }
 
 func nodeInstanceOfFunc(node NodeValue) (Value, error) {
