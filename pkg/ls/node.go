@@ -81,6 +81,26 @@ func (types Types) String() string {
 	return fmt.Sprint(types.slice)
 }
 
+// IsEqual compares the two types and returns true if they are equal
+func (types Types) IsEqual(t Types) bool {
+	if types.Len() != t.Len() {
+		return false
+	}
+	for _, x := range types.slice {
+		found := false
+		for _, y := range t.slice {
+			if x == y {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
+}
+
 // Node is the node type used for schema layer graphs
 type Node interface {
 	digraph.Node

@@ -170,3 +170,46 @@ func CopyPropertyMap(m map[string]*PropertyValue) map[string]*PropertyValue {
 	}
 	return ret
 }
+
+// IsEqual tests if two values are equal
+func (p *PropertyValue) IsEqual(q *PropertyValue) bool {
+	if p == nil && q == nil {
+		return true
+	}
+	if p == nil || q == nil {
+		return false
+	}
+	if p.IsString() && q.IsString() {
+		if p.value == q.value {
+			return true
+		}
+		return false
+	}
+	if p.IsStringSlice() && q.IsStringSlice() {
+		a1 := p.AsStringSlice()
+		a2 := q.AsStringSlice()
+		if len(a1) != len(a2) {
+			return false
+		}
+		for i := range a1 {
+			if a1[i] != a2[i] {
+				return false
+			}
+		}
+		return true
+	}
+	return false
+}
+
+// IsPropertiesEqual compares two property maps and returns true if they are equal
+func IsPropertiesEqual(p, q map[string]*PropertyValue) bool {
+	if len(p) != len(q) {
+		return false
+	}
+	for k, v := range p {
+		if !v.IsEqual(q[k]) {
+			return false
+		}
+	}
+	return true
+}
