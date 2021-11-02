@@ -75,9 +75,9 @@ var ingestCSVCmd = &cobra.Command{
 			fail("Header row is ahead of start row")
 		}
 		ingester := csvingest.Ingester{
-			Target:             digraph.New(),
-			Schema:             layer,
-			UseInstanceOfEdges: true,
+			Ingester: ls.Ingester{
+				Schema: layer,
+			},
 		}
 		idTemplate, _ := cmd.Flags().GetString("id")
 		if len(idTemplate) == 0 {
@@ -87,6 +87,7 @@ var ingestCSVCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
+		target := digraph.New()
 
 		for row := 0; ; row++ {
 			rowData, err := reader.Read()
@@ -111,17 +112,18 @@ var ingestCSVCmd = &cobra.Command{
 				if err := idTmp.Execute(&buf, templateData); err != nil {
 					failErr(err)
 				}
-				if _, err := ingester.Ingest(rowData, strings.TrimSpace(buf.String())); err != nil {
-					failErr(err)
-				}
-				outFormat, _ := cmd.Flags().GetString("format")
-				includeSchema, _ := cmd.Flags().GetBool("includeSchema")
-				err = OutputIngestedGraph(outFormat, ingester.Target, os.Stdout, includeSchema)
+				node, err := ingester.Ingest(rowData, strings.TrimSpace(buf.String()))
 				if err != nil {
 					failErr(err)
 				}
-				ingester.Target = digraph.New()
+				target.AddNode(node)
 			}
+		}
+		outFormat, _ := cmd.Flags().GetString("format")
+		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
+		err = OutputIngestedGraph(outFormat, target, os.Stdout, includeSchema)
+		if err != nil {
+			failErr(err)
 		}
 	},
 }
