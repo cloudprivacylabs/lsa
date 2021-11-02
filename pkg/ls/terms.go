@@ -145,6 +145,14 @@ var (
 	// their schema specifications
 	InstanceOfTerm = NewTerm(LS+"data/instanceOf", false, false, ErrorComposition, nil)
 
+	// PropertyOfTerm tells the ingestor that this attribute will be a
+	// property of the closest node that is the instance of the content
+	// of this property
+	PropertyOfTerm = NewTerm(LS+"propertyOf", true, false, OverrideComposition, nil)
+
+	// AsPropertyTerm gives the name of the property the ingestor should use to ingest the property
+	AsPropertyTerm = NewTerm(LS+"asProperty", false, false, OverrideComposition, nil)
+
 	BundleTerm     = NewTerm(LS+"SchemaManifest/bundle", false, false, ErrorComposition, nil)
 	SchemaBaseTerm = NewTerm(LS+"SchemaManifest/schema", true, false, ErrorComposition, nil)
 	OverlaysTerm   = NewTerm(LS+"SchemaManifest/overlays", true, true, ErrorComposition, nil)
