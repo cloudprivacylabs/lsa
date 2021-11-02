@@ -14,121 +14,99 @@
 
 package json
 
-// import (
-// 	"encoding/json"
-// 	"testing"
+import (
+	"encoding/json"
+	"testing"
 
-// 	"github.com/piprate/json-gold/ld"
+	"github.com/bserdar/digraph"
+	"github.com/piprate/json-gold/ld"
 
-// 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-// )
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
+)
 
-// func expand(t *testing.T, in string) []interface{} {
-// 	proc := ld.NewJsonLdProcessor()
-// 	var v interface{}
-// 	if err := json.Unmarshal([]byte(in), &v); err != nil {
-// 		t.Error(err)
-// 		t.Fail()
-// 	}
-// 	ret, err := proc.Expand(v, nil)
-// 	if err != nil {
-// 		t.Error(err)
-// 		t.Fail()
-// 	}
-// 	return ret
-// }
+func expand(t *testing.T, in string) []interface{} {
+	proc := ld.NewJsonLdProcessor()
+	var v interface{}
+	if err := json.Unmarshal([]byte(in), &v); err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+	ret, err := proc.Expand(v, nil)
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+	return ret
+}
 
-// func TestIngestFlat(t *testing.T) {
-// 	schStr := `{
-//  "@context": "../../schemas/layers.jsonld",
-//  "@type": "SchemaBase",
-//  "attributes": {
-//    "id1": {
-//      "attributeName":"field1"
-//    },
-//    "id2": {
-//      "attributeName":"field2",
-//      "required": true
-//    },
-//    "id3": {
-//      "attributeName": "field3"
-//    },
-//    "id4": {
-//     "attributeName":"field4"
-//   }
-//  }
-// }`
-// 	inputStr := `{
-//   "field1": "value1",
-//   "field2": 2,
-//   "field3": true,
-//   "field4": null,
-//   "field5": "extra"
-// }`
+func TestIngestFlat(t *testing.T) {
+	schStr := `{
+ "@context": "../../schemas/ls.json",
+ "@id":"http://example.org/id",
+ "@type": "Schema",
+ "layer": {
+  "@type": "Object",
+ "attributes": {
+   "id1": {
+     "attributeName":"field1"
+   },
+   "id2": {
+     "attributeName":"field2",
+     "required": true
+   },
+   "id3": {
+     "attributeName": "field3"
+   },
+   "id4": {
+    "attributeName":"field4"
+  }
+ }
+}
+}`
+	inputStr := `{
+  "field1": "value1",
+  "field2": 2,
+  "field3": true,
+  "field4": null,
+  "field5": "extra"
+}`
 
-// 	inputStr2 := `{
-//   "field1": "value1",
-//   "field3": true,
-//   "field4": null,
-//   "field5": "extra"
-// }`
+	var schMap interface{}
+	if err := json.Unmarshal([]byte(schStr), &schMap); err != nil {
+		t.Fatal(err)
+	}
+	schema, err := ls.UnmarshalLayer(schMap, nil)
+	if err != nil {
+		t.Error(err)
+	}
 
-// 	var input map[string]interface{}
-// 	if err := json.Unmarshal([]byte(inputStr), &input); err != nil {
-// 		t.Fatal(err)
-// 	}
-// 	schema, err := ls.NewSchemaLayer(expand(t, schStr))
-// 	if err != nil {
-// 		t.Error(err)
-// 	}
-// 	schemastr, _ := json.MarshalIndent(schema.MarshalExpanded(), "", "  ")
-// 	t.Logf("Schema: %s", string(schemastr))
-
-// 	merged, err := Ingest("http://base", input, schema)
-// 	if err != nil {
-// 		t.Error(err)
-// 	}
-// 	output := merged.ToMap()
-// 	t.Log(output)
-// 	processor := ld.NewJsonLdProcessor()
-// 	output, err = processor.Compact(output, nil, nil)
-// 	if err != nil {
-// 		t.Error(err)
-// 	}
-// 	{
-// 		x, _ := json.MarshalIndent(output, "", "  ")
-// 		t.Log(string(x))
-// 	}
-
-// 	attributes := output.(map[string]interface{})[ls.DocTerms.Attributes.ID].(map[string]interface{})
-// 	if attributes["http://base.field1"].(map[string]interface{})[ls.DocTerms.Value.ID] != "value1" {
-// 		t.Errorf("%+v", attributes)
-// 	}
-// 	if attributes["http://base.field1"].(map[string]interface{})[ls.AttributeAnnotations.Name.ID] != "field1" {
-// 		t.Errorf("%+v", attributes)
-// 	}
-// 	if attributes["http://base.field2"].(map[string]interface{})[ls.DocTerms.Value.ID] != float64(2) {
-// 		t.Errorf("%+v", attributes)
-// 	}
-// 	if attributes["http://base.field2"].(map[string]interface{})[ls.AttributeAnnotations.Name.ID] != "field2" {
-// 		t.Errorf("%+v", attributes)
-// 	}
-// 	if attributes["http://base.field2"].(map[string]interface{})[ls.AttributeAnnotations.Required.ID] != true {
-// 		t.Errorf("%+v", attributes)
-// 	}
-
-// 	input = nil
-// 	if err := json.Unmarshal([]byte(inputStr2), &input); err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	output, err = Ingest("base", input, schema)
-// 	if err == nil {
-// 		t.Errorf("Validation error expected")
-// 	}
-
-// 	t.Log(output)
-// }
+	ingester := Ingester{
+		Ingester: ls.Ingester{
+			Schema: schema,
+		},
+	}
+	root, err := IngestBytes(&ingester, "http://base", []byte(inputStr))
+	if err != nil {
+		t.Error(err)
+	}
+	target := digraph.New()
+	target.AddNode(root)
+	ix := target.GetIndex()
+	checkNodeValue := func(nodeId string, expected interface{}) {
+		nodes := ix.NodesByLabelSlice(nodeId)
+		if len(nodes) == 0 {
+			t.Errorf("node not found: %s", nodeId)
+		}
+		if nodes[0].(ls.Node).GetValue() != expected {
+			t.Errorf("Wrong value for %s: %s", nodeId, nodes[0].(ls.Node).GetValue())
+		}
+	}
+	checkNodeValue("http://base.field1", "value1")
+	checkNodeValue("http://base.field2", "2")
+	checkNodeValue("http://base.field3", "true")
+	checkNodeValue("http://base.field4", nil)
+	checkNodeValue("http://base.field5", "extra")
+}
 
 // func TestIngestObject(t *testing.T) {
 // 	schStr := `{

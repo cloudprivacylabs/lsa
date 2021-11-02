@@ -63,16 +63,18 @@ var ingestJSONCmd = &cobra.Command{
 			}
 		}
 		ingester := jsoningest.Ingester{
-			Schema:  layer,
-			KeyTerm: ls.AttributeNameTerm,
+			Ingester: ls.Ingester{
+				Schema: layer,
+			},
 		}
 
 		baseID, _ := cmd.Flags().GetString("id")
-		target := digraph.New()
-		root, err := jsoningest.IngestStream(&ingester, target, baseID, input)
+		root, err := jsoningest.IngestStream(&ingester, baseID, input)
 		if err != nil {
 			failErr(err)
 		}
+		target := digraph.New()
+		target.AddNode(root)
 		outFormat, _ := cmd.Flags().GetString("format")
 		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
 		output, _ := cmd.Flags().GetString("output")
