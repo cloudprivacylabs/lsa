@@ -156,6 +156,7 @@ func (ingester *Ingester) Object(path []interface{}, schemaNode Node, elements [
 	}
 	ret := ingester.NewNode(path, schemaNode)
 	ret.GetTypes().Add(types...)
+	ret.GetTypes().Add(AttributeTypes.Object)
 	for index := range elements {
 		elements[index].GetProperties()[AttributeIndexTerm] = StringPropertyValue(fmt.Sprint(index))
 		ingester.connect(ret, elements[index], HasTerm)
@@ -184,6 +185,7 @@ func (ingester *Ingester) Array(path []interface{}, schemaNode Node, elements []
 	}
 	ret := ingester.NewNode(path, schemaNode)
 	ret.GetTypes().Add(types...)
+	ret.GetTypes().Add(AttributeTypes.Array)
 	for index := range elements {
 		elements[index].GetProperties()[AttributeIndexTerm] = StringPropertyValue(fmt.Sprint(index))
 		ingester.connect(ret, elements[index], HasTerm)
@@ -204,6 +206,7 @@ func (ingester *Ingester) Value(path []interface{}, schemaNode Node, value inter
 		newNode.SetValue(value)
 	}
 	newNode.GetTypes().Add(types...)
+	newNode.GetTypes().Add(AttributeTypes.Value)
 	return newNode, nil
 }
 
