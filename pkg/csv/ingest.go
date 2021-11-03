@@ -17,110 +17,53 @@ package csv
 import (
 	"fmt"
 
-	"github.com/bserdar/digraph"
-
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 const CSV = ls.LS + "csv/"
 
-var (
-	ColumnIndexTerm = ls.NewTerm(CSV+"columnIndex", false, false, ls.OverrideComposition, nil)
-	ColumnNameTerm  = ls.NewTerm(CSV+"columnName", false, false, ls.OverrideComposition, nil)
-)
-
 type Ingester struct {
-	Schema      *ls.Layer
+	ls.Ingester
 	ColumnNames []string
-	Target      *digraph.Graph
-
-	UseInstanceOfEdges bool
-}
-
-func (ingester Ingester) getID(columnIndex int, columnData string) string {
-	if columnIndex < len(ingester.ColumnNames) {
-		return ingester.ColumnNames[columnIndex]
-	}
-	return fmt.Sprintf("col_%d", columnIndex)
 }
 
 func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
-	rootNode := ls.NewNode(ID, ls.DocumentNodeTerm)
-	ingester.Target.AddNode(rootNode)
+	path, schemaRoot := ingester.Start(ID)
+	attributes, err := ingester.GetObjectAttributeNodes(schemaRoot)
+	if err != nil {
+		return nil, err
+	}
+	children := make([]ls.Node, 0, len(data))
 	for columnIndex, columnData := range data {
 		var columnName string
 		if columnIndex < len(ingester.ColumnNames) {
 			columnName = ingester.ColumnNames[columnIndex]
 		}
 		var schemaNode ls.Node
-		if ingester.Schema != nil {
-			if len(columnName) > 0 {
-				schemaNode, _ = ingester.Schema.FindFirstAttribute(func(n ls.Node) bool {
-					p := n.GetProperties()[ColumnNameTerm]
-					if p == nil {
-						return false
-					}
-					return p.IsString() && p.AsString() == columnName
-				})
-			} else {
-				schemaNode, _ = ingester.Schema.FindFirstAttribute(func(n ls.Node) bool {
-					p := n.GetProperties()[ColumnIndexTerm]
-					if p == nil {
-						return false
-					}
-					return p.IsInt() && p.AsInt() == columnIndex
-				})
-			}
+		var newPath []interface{}
+		if len(columnName) > 0 {
+			schemaNode = attributes[columnName]
+			newPath = append(path, columnName)
+		} else {
+			schemaNode, _ = ingester.Schema.FindFirstAttribute(func(n ls.Node) bool {
+				p := n.GetProperties()[ls.AttributeIndexTerm]
+				if p == nil {
+					return false
+				}
+				return p.IsInt() && p.AsInt() == columnIndex
+			})
+			newPath = append(path, columnIndex)
 		}
-		newNode := ls.NewNode(ingester.getID(columnIndex, columnData), ls.DocumentNodeTerm)
-		ls.Connect(rootNode, newNode, ls.HasTerm)
-		newNode.SetValue(columnData)
-		if schemaNode != nil && ingester.UseInstanceOfEdges {
-			ls.Connect(newNode, schemaNode, ls.InstanceOfTerm)
+
+		newNode, err := ingester.Value(newPath, schemaNode, columnData)
+		if err != nil {
+			return nil, err
 		}
 		if len(columnName) > 0 {
-			newNode.GetProperties()[ColumnNameTerm] = ls.StringPropertyValue(columnName)
+			newNode.GetProperties()[ls.AttributeNameTerm] = ls.StringPropertyValue(columnName)
 		}
-		newNode.GetProperties()[ColumnIndexTerm] = ls.StringPropertyValue(fmt.Sprint(columnIndex))
+		newNode.GetProperties()[ls.AttributeIndexTerm] = ls.StringPropertyValue(fmt.Sprint(columnIndex))
+		children = append(children, newNode)
 	}
-	return rootNode, nil
+	return ingester.Object(path, schemaRoot, children)
 }
-
-// // IngestionProfile defines how CSV columns are mapped to data by
-// // providing JSON field names and JSON data types for each column
-// type IngestionProfile struct {
-// 	Columns []ColumnProfile `json:"columns" yaml:"columns"`
-// }
-
-// // ColumnProfile describes a CSV column
-// type ColumnProfile struct {
-// 	// The 0-based column index
-// 	Index int `json:"column" yaml:"column"`
-// 	// Name specifies the JSON field name during data ingestion/output
-// 	// and schema field name during schema import
-// 	Name string `json:"name" yaml:"column"`
-// }
-
-// // DefaultProfile creates a column profile using the colum names as
-// // field names
-// func DefaultProfile(row []string) ([]ColumnProfile, error) {
-// 	ret := make([]ColumnProfile, 0, len(row))
-// 	for index, c := range row {
-// 		if len(c) > 0 {
-// 			ret = append(ret, ColumnProfile{Index: index, Name: strings.TrimSpace(c)})
-// 		}
-// 	}
-// 	return ret, nil
-// }
-
-// // ToJSON converts the CSV row into a JSON document using the given profile
-// func (profile IngestionProfile) ToJSON(row []string) (map[string]interface{}, error) {
-// 	output := make(map[string]interface{}, len(profile.Columns))
-// 	for _, col := range profile.Columns {
-// 		if col.Index < len(row) {
-// 			data := row[col.Index]
-// 			output[col.Name] = data
-// 		}
-// 	}
-// 	return output, nil
-// }
