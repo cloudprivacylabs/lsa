@@ -281,8 +281,8 @@ func getValuesOrIDs(in interface{}) (value string, values, ids []string, err err
 	return
 }
 
-// Unmarshal a graph
-func UnmarshalGraph(input interface{}, interner Interner) (*digraph.Graph, error) {
+// UnmarshalJSONLDGraph Unmarshals a graph in JSON-LD format
+func UnmarshalJSONLDGraph(input interface{}, interner Interner) (*digraph.Graph, error) {
 	if interner == nil {
 		interner = NewInterner()
 	}

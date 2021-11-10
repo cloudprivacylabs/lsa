@@ -40,5 +40,5 @@ func ReadGraph(gfile []string, interner ls.Interner) (*digraph.Graph, error) {
 	if err := json.Unmarshal(data, &v); err != nil {
 		return nil, err
 	}
-	return ls.UnmarshalGraph(v, interner)
+	return ls.UnmarshalJSONLDGraph(v, interner)
 }

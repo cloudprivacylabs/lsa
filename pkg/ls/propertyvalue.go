@@ -15,6 +15,7 @@
 package ls
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -199,6 +200,48 @@ func (p *PropertyValue) IsEqual(q *PropertyValue) bool {
 		return true
 	}
 	return false
+}
+
+func (p PropertyValue) MarshalYAML() (interface{}, error) {
+	return p.value, nil
+}
+
+func (p PropertyValue) MarshalJSON() ([]byte, error) {
+	return json.Marshal(p.value)
+}
+
+func (p *PropertyValue) UnmarshalYAML(u func(interface{}) error) error {
+	var slice []string
+	var str string
+	if err := u(&str); err != nil {
+		if err = u(&slice); err != nil {
+			return err
+		}
+		p.value = slice
+		return nil
+	}
+	p.value = str
+	return nil
+}
+
+func (p *PropertyValue) UnmarshalJSON(in []byte) error {
+	if len(in) == 0 {
+		return fmt.Errorf("Invalid property value")
+	}
+	if in[0] == '[' {
+		var v []string
+		if err := json.Unmarshal(in, &v); err != nil {
+			return err
+		}
+		p.value = v
+		return nil
+	}
+	var v string
+	if err := json.Unmarshal(in, &v); err != nil {
+		return err
+	}
+	p.value = v
+	return nil
 }
 
 // IsPropertiesEqual compares two property maps and returns true if they are equal

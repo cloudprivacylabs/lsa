@@ -44,7 +44,7 @@ func (tc testCase) Run(t *testing.T) {
 		t.Errorf("Test case: %s Cannot compile: %v", tc.Name, err)
 		return
 	}
-	sourceGraph, err := ls.UnmarshalGraph(tc.SourceGraph, nil)
+	sourceGraph, err := ls.UnmarshalJSONLDGraph(tc.SourceGraph, nil)
 	if err != nil {
 		t.Errorf("Test case: %s Cannot unmarshal source graph: %v", tc.Name, err)
 		return
@@ -70,7 +70,7 @@ func (tc testCase) Run(t *testing.T) {
 	resultGraph := digraph.New()
 	resultGraph.AddNode(result)
 
-	expectedGraph, err := ls.UnmarshalGraph(tc.Expected, nil)
+	expectedGraph, err := ls.UnmarshalJSONLDGraph(tc.Expected, nil)
 	if err != nil {
 		t.Errorf("Test case: %s Cannot unmarshal expected graph: %v", tc.Name, err)
 		return

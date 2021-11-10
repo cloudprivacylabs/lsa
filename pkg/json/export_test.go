@@ -37,7 +37,7 @@ func TestExport(t *testing.T) {
 		return
 	}
 
-	graph, err := ls.UnmarshalGraph(v, nil)
+	graph, err := ls.UnmarshalJSONLDGraph(v, nil)
 	if err != nil {
 		t.Error(err)
 		return
