@@ -17,11 +17,39 @@ type jsonGraphNode struct {
 	Properties map[string]*PropertyValue `json:"properties,omitempty"`
 }
 
+func (node jsonGraphNode) makeNode(interner Interner) Node {
+	for i := range node.Type {
+		node.Type[i] = interner.Intern(node.Type[i])
+	}
+	newNode := NewNode(node.ID, node.Type...)
+	if node.Value != nil {
+		newNode.SetValue(node.Value)
+	}
+	if len(node.Properties) > 0 {
+		target := newNode.GetProperties()
+		for k, v := range node.Properties {
+			target[interner.Intern(k)] = v
+		}
+	}
+	return newNode
+}
+
 type jsonGraphEdge struct {
 	From       int                       `json:"fn"`
 	To         int                       `json:"tn"`
 	Label      string                    `json:"label,omitempty"`
 	Properties map[string]*PropertyValue `json:"properties,omitempty"`
+}
+
+func (edge jsonGraphEdge) makeEdge(interner Interner) Edge {
+	newEdge := NewEdge(interner.Intern(edge.Label))
+	if len(edge.Properties) > 0 {
+		target := newEdge.GetProperties()
+		for k, v := range edge.Properties {
+			target[interner.Intern(k)] = v
+		}
+	}
+	return newEdge
 }
 
 // MarshalGraphJSON marshals the graph as a JSON document
@@ -81,6 +109,11 @@ func EncodeGraphJSON(graph *digraph.Graph, w io.Writer) error {
 	index := 0
 	nodeIx := make(map[Node]int)
 	for nodes := graph.GetAllNodes(); nodes.HasNext(); {
+		if index > 0 {
+			if _, err := w.Write([]byte{','}); err != nil {
+				return err
+			}
+		}
 		node := nodes.Next().(Node)
 		nodeIx[node] = index
 		if err := encodeNode(node, index); err != nil {
@@ -91,9 +124,17 @@ func EncodeGraphJSON(graph *digraph.Graph, w io.Writer) error {
 	if _, err := io.WriteString(w, `],"edges":[`); err != nil {
 		return err
 	}
+	first := true
 	for node, _ := range nodeIx {
 		for edges := node.Out(); edges.HasNext(); {
 			edge := edges.Next().(Edge)
+			if !first {
+				if _, err := w.Write([]byte{','}); err != nil {
+					return err
+				}
+			} else {
+				first = false
+			}
 			if err := encodeEdge(edge, nodeIx); err != nil {
 				return err
 			}
@@ -106,10 +147,13 @@ func EncodeGraphJSON(graph *digraph.Graph, w io.Writer) error {
 }
 
 // UnmarshalGraphJSON unmarshals a graph from JSON input
-func UnmarshalGraphJSON(in []byte, targetGraph *digraph.Graph) error {
+func UnmarshalGraphJSON(in []byte, targetGraph *digraph.Graph, interner Interner) error {
 	type graph struct {
 		Nodes []jsonGraphNode `json:"nodes"`
 		Edges []jsonGraphEdge `json:"edges"`
+	}
+	if interner == nil {
+		interner = NewInterner()
 	}
 	var g graph
 	if err := json.Unmarshal(in, &g); err != nil {
@@ -117,30 +161,14 @@ func UnmarshalGraphJSON(in []byte, targetGraph *digraph.Graph) error {
 	}
 	nodeIx := make(map[int]Node)
 	for _, node := range g.Nodes {
-		newNode := NewNode(node.ID, node.Type...)
+		newNode := node.makeNode(interner)
 		nodeIx[node.N] = newNode
-		if node.Value != nil {
-			newNode.SetValue(node.Value)
-		}
-		if len(node.Properties) > 0 {
-			target := newNode.GetProperties()
-			for k, v := range node.Properties {
-				target[k] = v
-			}
-		}
-		targetGraph.AddNode(newNode)
 	}
 	for _, edge := range g.Edges {
-		newEdge := NewEdge(edge.Label)
-		if len(edge.Properties) > 0 {
-			target := newEdge.GetProperties()
-			for k, v := range edge.Properties {
-				target[k] = v
-			}
-		}
+		newEdge := edge.makeEdge(interner)
 		from := nodeIx[edge.From]
 		if from == nil {
-			return fmt.Errorf("Invalid surce node index: %d", edge.From)
+			return fmt.Errorf("Invalid source node index: %d", edge.From)
 		}
 		to := nodeIx[edge.To]
 		if to == nil {

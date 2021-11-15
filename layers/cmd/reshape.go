@@ -27,7 +27,8 @@ func init() {
 	rootCmd.AddCommand(reshapeCmd)
 	reshapeCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
 	reshapeCmd.Flags().String("repo", "", "Schema repository directory")
-	reshapeCmd.PersistentFlags().String("format", "json", "Output format, json(ld), rdf, or dot")
+	reshapeCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
+	reshapeCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
 	reshapeCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 }
 
@@ -37,7 +38,8 @@ var reshapeCmd = &cobra.Command{
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		interner := ls.NewInterner()
-		g, err := ReadGraph(args, interner)
+		input, _ := cmd.Flags().GetString("input")
+		g, err := readGraph(args, interner, input)
 		if err != nil {
 			failErr(err)
 		}

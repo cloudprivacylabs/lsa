@@ -26,14 +26,16 @@ import (
 
 func init() {
 	exportCmd.AddCommand(exportJSONCmd)
+	exportCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 }
 
 var exportJSONCmd = &cobra.Command{
 	Use:   "json",
-	Short: "Export a graoh as a JSON document",
+	Short: "Export a graph as a JSON document",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		graph, err := ReadGraph(args, nil)
+		input, _ := cmd.Flags().GetString("input")
+		graph, err := readGraph(args, nil, input)
 		if err != nil {
 			failErr(err)
 		}

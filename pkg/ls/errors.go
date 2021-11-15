@@ -67,6 +67,8 @@ func (e ErrNotFound) Error() string {
 }
 
 var ErrInvalidJsonLdGraph = errors.New("Invalid JsonLd graph")
+var ErrInvalidJsonGraph = errors.New("Invalid JSON graph")
+var ErrUnexpectedEOF = errors.New("Unexpected EOF")
 var ErrAttributeWithoutID = errors.New("Attribute without id")
 var ErrNotALayer = errors.New("Not a layer")
 var ErrCompositionSourceNotOverlay = errors.New("Composition source is not an overlay")

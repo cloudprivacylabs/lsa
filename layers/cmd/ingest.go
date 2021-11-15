@@ -23,7 +23,6 @@ import (
 	"github.com/bserdar/digraph"
 	"github.com/spf13/cobra"
 
-	"github.com/cloudprivacylabs/lsa/pkg/dot"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
@@ -31,7 +30,7 @@ import (
 func init() {
 	rootCmd.AddCommand(ingestCmd)
 	ingestCmd.PersistentFlags().String("repo", "", "Schema repository directory")
-	ingestCmd.PersistentFlags().String("format", "json", "Output format, json(ld), rdf, or dot")
+	ingestCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
 	ingestCmd.PersistentFlags().Bool("includeSchema", false, "Include schema in the output")
 }
 
@@ -144,18 +143,5 @@ func OutputIngestedGraph(outFormat string, target *digraph.Graph, wr io.Writer, 
 			})
 		target = newTarget
 	}
-	switch outFormat {
-	case "dot":
-		renderer := dot.Renderer{Options: dot.DefaultOptions()}
-		renderer.Render(target, "g", wr)
-	case "json", "jsonld":
-		marshaler := ls.LDMarshaler{}
-		out := marshaler.Marshal(target)
-		x, _ := json.MarshalIndent(out, "", "  ")
-		wr.Write(x)
-	case "rdf":
-	default:
-		return fmt.Errorf("unknown output format")
-	}
-	return nil
+	return writeGraph(target, outFormat, wr)
 }
