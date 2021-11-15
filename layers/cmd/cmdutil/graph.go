@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cmd
+package cmdutil
 
 import (
 	"encoding/json"
@@ -24,18 +24,18 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-func readGraph(gfile []string, interner ls.Interner, inputFormat string) (*digraph.Graph, error) {
+func ReadGraph(gfile []string, interner ls.Interner, inputFormat string) (*digraph.Graph, error) {
 	if inputFormat == "json" {
-		return readJSONGraph(gfile, interner)
+		return ReadJSONGraph(gfile, interner)
 	}
 	if inputFormat == "jsonld" {
-		return readJSONLDGraph(gfile, interner)
+		return ReadJSONLDGraph(gfile, interner)
 	}
 	return nil, fmt.Errorf("Unrecognized input format: %s", inputFormat)
 }
 
-func readJSONLDGraph(gfile []string, interner ls.Interner) (*digraph.Graph, error) {
-	data, err := readFileOrStdin(gfile)
+func ReadJSONLDGraph(gfile []string, interner ls.Interner) (*digraph.Graph, error) {
+	data, err := ReadFileOrStdin(gfile)
 	if err != nil {
 		return nil, err
 	}
@@ -46,8 +46,8 @@ func readJSONLDGraph(gfile []string, interner ls.Interner) (*digraph.Graph, erro
 	return ls.UnmarshalJSONLDGraph(v, interner)
 }
 
-func readJSONGraph(gfile []string, interner ls.Interner) (*digraph.Graph, error) {
-	data, err := readFileOrStdin(gfile)
+func ReadJSONGraph(gfile []string, interner ls.Interner) (*digraph.Graph, error) {
+	data, err := ReadFileOrStdin(gfile)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func readJSONGraph(gfile []string, interner ls.Interner) (*digraph.Graph, error)
 	return target, err
 }
 
-func writeGraph(graph *digraph.Graph, format string, out io.Writer) error {
+func WriteGraph(graph *digraph.Graph, format string, out io.Writer) error {
 	switch format {
 	case "json":
 		return ls.EncodeGraphJSON(graph, out)

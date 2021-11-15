@@ -22,6 +22,8 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
+
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 )
 
 func init() {
@@ -73,7 +75,7 @@ var compileCmd = &cobra.Command{
 				fail("Need schema")
 			}
 			var v interface{}
-			err := readJSON(args[0], &v)
+			err := cmdutil.ReadJSON(args[0], &v)
 			if err != nil {
 				failErr(err)
 			}

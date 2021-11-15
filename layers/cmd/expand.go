@@ -20,6 +20,8 @@ import (
 
 	"github.com/piprate/json-gold/ld"
 	"github.com/spf13/cobra"
+
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 )
 
 func init() {
@@ -33,7 +35,7 @@ var expandCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		processor := ld.NewJsonLdProcessor()
 		var input interface{}
-		if err := readJSONFileOrStdin(args, &input); err != nil {
+		if err := cmdutil.ReadJSONFileOrStdin(args, &input); err != nil {
 			failErr(err)
 		}
 		output, err := processor.Expand(input, nil)

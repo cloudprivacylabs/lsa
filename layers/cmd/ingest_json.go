@@ -21,6 +21,7 @@ import (
 	"github.com/bserdar/digraph"
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
@@ -51,12 +52,12 @@ var ingestJSONCmd = &cobra.Command{
 			if err != nil {
 				failErr(err)
 			}
-			input, err = streamJSONFileOrStdin(args, enc)
+			input, err = cmdutil.StreamJSONFileOrStdin(args, enc)
 			if err != nil {
 				failErr(err)
 			}
 		} else {
-			input, err = streamJSONFileOrStdin(args)
+			input, err = cmdutil.StreamJSONFileOrStdin(args)
 			if err != nil {
 				failErr(err)
 			}

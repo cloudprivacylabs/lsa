@@ -20,6 +20,7 @@ import (
 	"github.com/bserdar/digraph"
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
@@ -35,7 +36,7 @@ var exportJSONCmd = &cobra.Command{
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		input, _ := cmd.Flags().GetString("input")
-		graph, err := readGraph(args, nil, input)
+		graph, err := cmdutil.ReadGraph(args, nil, input)
 		if err != nil {
 			failErr(err)
 		}

@@ -20,6 +20,8 @@ import (
 
 	"github.com/piprate/json-gold/ld"
 	"github.com/spf13/cobra"
+
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 )
 
 func init() {
@@ -33,7 +35,7 @@ var flattenCmd = &cobra.Command{
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		var input interface{}
-		if err := readJSONFileOrStdin(args, &input); err != nil {
+		if err := cmdutil.ReadJSONFileOrStdin(args, &input); err != nil {
 			failErr(err)
 		}
 		contexts, _ := cmd.Flags().GetStringSlice("context")
@@ -51,7 +53,7 @@ func flatten(base interface{}, contexts []string) (interface{}, error) {
 	localContext := map[string]interface{}{}
 	for _, c := range contexts {
 		var m map[string]interface{}
-		if err := readJSON(c, &m); err != nil {
+		if err := cmdutil.ReadJSON(c, &m); err != nil {
 			return nil, err
 		}
 		ctx := m["@context"]

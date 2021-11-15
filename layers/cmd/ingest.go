@@ -23,6 +23,7 @@ import (
 	"github.com/bserdar/digraph"
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
@@ -91,7 +92,7 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string, intern
 				}
 			} else {
 				var v interface{}
-				err := readJSON(schemaName, &v)
+				err := cmdutil.ReadJSON(schemaName, &v)
 				if err != nil {
 					return nil, err
 				}
@@ -143,5 +144,5 @@ func OutputIngestedGraph(outFormat string, target *digraph.Graph, wr io.Writer, 
 			})
 		target = newTarget
 	}
-	return writeGraph(target, outFormat, wr)
+	return cmdutil.WriteGraph(target, outFormat, wr)
 }

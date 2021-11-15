@@ -20,6 +20,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -40,7 +41,7 @@ var composeCmd = &cobra.Command{
 		interner := ls.NewInterner()
 		var output *ls.Layer
 		if len(repoDir) == 0 {
-			inputs, err := readJSONMultiple(args)
+			inputs, err := cmdutil.ReadJSONMultiple(args)
 			if err != nil {
 				failErr(err)
 			}

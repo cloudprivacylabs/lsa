@@ -15,19 +15,11 @@
 package cmd
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"log"
-	"net/http"
-	"net/url"
 	"os"
 	"runtime/pprof"
-
-	"golang.org/x/text/encoding"
 
 	"github.com/spf13/cobra"
 
@@ -64,94 +56,6 @@ func Execute() error {
 
 func init() {
 	rootCmd.PersistentFlags().String("cpuprofile", "", "Write cpu profile to file")
-}
-
-func readURL(input string, enc ...encoding.Encoding) ([]byte, error) {
-	var data []byte
-	urlInput, err := url.Parse(input)
-	if err != nil {
-		return nil, err
-	}
-	if len(urlInput.Scheme) == 0 {
-		data, err = ioutil.ReadFile(urlInput.String())
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		rsp, err := http.Get(urlInput.String())
-		if err != nil {
-			return nil, err
-		}
-		if (rsp.StatusCode / 100) != 2 {
-			return nil, fmt.Errorf(rsp.Status)
-		}
-		data, err = ioutil.ReadAll(rsp.Body)
-		rsp.Body.Close()
-		if err != nil {
-			return nil, err
-		}
-	}
-	if len(enc) == 1 {
-		return enc[0].NewDecoder().Bytes(data)
-	}
-	return data, nil
-}
-
-func readJSON(input string, output interface{}, enc ...encoding.Encoding) error {
-	data, err := readURL(input, enc...)
-	if err != nil {
-		return err
-	}
-	return json.Unmarshal(data, output)
-}
-
-// reads input[0] if it exists, otherwise reads from stdin
-func readJSONFileOrStdin(input []string, output interface{}, enc ...encoding.Encoding) error {
-	if len(input) == 0 {
-		var rd io.Reader
-		rd = os.Stdin
-		if len(enc) == 1 {
-			rd = enc[0].NewDecoder().Reader(os.Stdin)
-		}
-		dec := json.NewDecoder(rd)
-		return dec.Decode(output)
-	}
-	return readJSON(input[0], output, enc...)
-}
-
-func streamJSONFileOrStdin(input []string, enc ...encoding.Encoding) (io.Reader, error) {
-	if len(input) == 0 {
-		var rd io.Reader
-		rd = os.Stdin
-		if len(enc) == 1 {
-			rd = enc[0].NewDecoder().Reader(os.Stdin)
-		}
-		return rd, nil
-	}
-	data, err := readURL(input[0], enc...)
-	if err != nil {
-		return nil, err
-	}
-	return bytes.NewReader(data), nil
-}
-
-func readFileOrStdin(input []string) ([]byte, error) {
-	if len(input) == 0 {
-		return ioutil.ReadAll(os.Stdin)
-	}
-	return ioutil.ReadFile(input[0])
-}
-
-func readJSONMultiple(input []string) ([]interface{}, error) {
-	out := make([]interface{}, 0, len(input))
-	for _, x := range input {
-		var o interface{}
-		if err := readJSON(x, &o); err != nil {
-			return nil, fmt.Errorf("While reading %s: %w", x, err)
-		}
-		out = append(out, o)
-	}
-	return out, nil
 }
 
 func failErr(err error) {

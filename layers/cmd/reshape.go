@@ -18,6 +18,7 @@ import (
 	"os"
 
 	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/transform"
 	"github.com/spf13/cobra"
@@ -39,7 +40,7 @@ var reshapeCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		interner := ls.NewInterner()
 		input, _ := cmd.Flags().GetString("input")
-		g, err := readGraph(args, interner, input)
+		g, err := cmdutil.ReadGraph(args, interner, input)
 		if err != nil {
 			failErr(err)
 		}

@@ -17,6 +17,8 @@ package cmd
 import (
 	"github.com/piprate/json-gold/ld"
 	"github.com/spf13/cobra"
+
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 )
 
 func init() {
@@ -31,12 +33,12 @@ var frameCmd = &cobra.Command{
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		var input interface{}
-		if err := readJSONFileOrStdin(args, &input); err != nil {
+		if err := cmdutil.ReadJSONFileOrStdin(args, &input); err != nil {
 			failErr(err)
 		}
 		var frame interface{}
 		frameFile, _ := cmd.Flags().GetString("frame")
-		if err := readJSON(frameFile, &frame); err != nil {
+		if err := cmdutil.ReadJSON(frameFile, &frame); err != nil {
 			failErr(err)
 		}
 		proc := ld.NewJsonLdProcessor()
