@@ -78,38 +78,3 @@ func StringSetToSlice(str map[string]struct{}) []string {
 	}
 	return ret
 }
-
-// Interner interface is used to keep a string table to reduce memory footprint by eliminated repeated keys
-type Interner interface {
-	Intern(string) string
-}
-
-// InternSlice interns all elements of a slice
-func InternSlice(interner Interner, slice []string) []string {
-	out := make([]string, 0, len(slice))
-	for _, x := range slice {
-		out = append(out, interner.Intern(x))
-	}
-	return out
-}
-
-// StringInterner is used to intern strings so multiple identical
-// copies of strings are minimized
-type StringInterner struct {
-	strings map[string]string
-}
-
-// Return a new interner
-func NewInterner() StringInterner {
-	return StringInterner{strings: make(map[string]string)}
-}
-
-// Intern a string and return the corresponding interned string
-func (s StringInterner) Intern(key string) string {
-	result, ok := s.strings[key]
-	if !ok {
-		result = key
-		s.strings[key] = result
-	}
-	return result
-}

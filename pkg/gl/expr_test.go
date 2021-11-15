@@ -375,7 +375,7 @@ func TestExpr1(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	graph, err := ls.UnmarshalGraph(v, nil)
+	graph, err := ls.UnmarshalJSONLDGraph(v, nil)
 	if err != nil {
 		panic(err)
 	}

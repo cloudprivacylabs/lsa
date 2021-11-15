@@ -16,22 +16,25 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
 
 	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/pkg/dot"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/spf13/cobra"
 )
 
-func init() {
-	rootCmd.AddCommand(graphCmd)
+func readGraph(gfile []string, interner ls.Interner, inputFormat string) (*digraph.Graph, error) {
+	if inputFormat == "json" {
+		return readJSONGraph(gfile, interner)
+	}
+	if inputFormat == "jsonld" {
+		return readJSONLDGraph(gfile, interner)
+	}
+	return nil, fmt.Errorf("Unrecognized input format: %s", inputFormat)
 }
 
-var graphCmd = &cobra.Command{
-	Use:   "graph",
-	Short: "Work with a graph",
-}
-
-func ReadGraph(gfile []string, interner ls.Interner) (*digraph.Graph, error) {
+func readJSONLDGraph(gfile []string, interner ls.Interner) (*digraph.Graph, error) {
 	data, err := readFileOrStdin(gfile)
 	if err != nil {
 		return nil, err
@@ -40,5 +43,33 @@ func ReadGraph(gfile []string, interner ls.Interner) (*digraph.Graph, error) {
 	if err := json.Unmarshal(data, &v); err != nil {
 		return nil, err
 	}
-	return ls.UnmarshalGraph(v, interner)
+	return ls.UnmarshalJSONLDGraph(v, interner)
+}
+
+func readJSONGraph(gfile []string, interner ls.Interner) (*digraph.Graph, error) {
+	data, err := readFileOrStdin(gfile)
+	if err != nil {
+		return nil, err
+	}
+	target := digraph.New()
+	err = ls.UnmarshalGraphJSON(data, target, interner)
+	return target, err
+}
+
+func writeGraph(graph *digraph.Graph, format string, out io.Writer) error {
+	switch format {
+	case "json":
+		return ls.EncodeGraphJSON(graph, out)
+	case "jsonld":
+		marshaler := ls.LDMarshaler{}
+		intf := marshaler.Marshal(graph)
+		enc := json.NewEncoder(out)
+		return enc.Encode(intf)
+	case "dot":
+		renderer := dot.Renderer{Options: dot.DefaultOptions()}
+		renderer.Render(graph, "g", out)
+		return nil
+	}
+
+	return fmt.Errorf("Unrecognized output format: %s", format)
 }
