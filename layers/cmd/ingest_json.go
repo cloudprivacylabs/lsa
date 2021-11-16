@@ -52,12 +52,12 @@ var ingestJSONCmd = &cobra.Command{
 			if err != nil {
 				failErr(err)
 			}
-			input, err = cmdutil.StreamJSONFileOrStdin(args, enc)
+			input, err = cmdutil.StreamFileOrStdin(args, enc)
 			if err != nil {
 				failErr(err)
 			}
 		} else {
-			input, err = cmdutil.StreamJSONFileOrStdin(args)
+			input, err = cmdutil.StreamFileOrStdin(args)
 			if err != nil {
 				failErr(err)
 			}

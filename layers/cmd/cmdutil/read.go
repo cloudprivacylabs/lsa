@@ -82,8 +82,8 @@ func ReadJSONFileOrStdin(input []string, output interface{}, enc ...encoding.Enc
 	return ReadJSON(input[0], output, enc...)
 }
 
-// StreamJSONFileOrStdin reads JSON file(s), or if there are none, reads frm stdin
-func StreamJSONFileOrStdin(input []string, enc ...encoding.Encoding) (io.Reader, error) {
+// StreamFileOrStdin reads  file(s), or if there are none, reads frm stdin
+func StreamFileOrStdin(input []string, enc ...encoding.Encoding) (io.Reader, error) {
 	if len(input) == 0 {
 		var rd io.Reader
 		rd = os.Stdin
