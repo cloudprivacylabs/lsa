@@ -145,6 +145,13 @@ func (ingester *Ingester) GetObjectAttributeNodes(objectSchemaNode Node) (map[st
 	return nextNodes, nil
 }
 
+func (ingester *Ingester) ConnectChildNodes(parent Node, children []Node) {
+	for index := range children {
+		children[index].GetProperties()[AttributeIndexTerm] = StringPropertyValue(fmt.Sprint(index))
+		ingester.connect(parent, children[index], HasTerm)
+	}
+}
+
 // Object creates a new object node
 func (ingester *Ingester) Object(path []interface{}, schemaNode Node, elements []Node, types ...string) (Node, error) {
 	// An object node
@@ -157,10 +164,7 @@ func (ingester *Ingester) Object(path []interface{}, schemaNode Node, elements [
 	ret := ingester.NewNode(path, schemaNode)
 	ret.GetTypes().Add(types...)
 	ret.GetTypes().Add(AttributeTypes.Object)
-	for index := range elements {
-		elements[index].GetProperties()[AttributeIndexTerm] = StringPropertyValue(fmt.Sprint(index))
-		ingester.connect(ret, elements[index], HasTerm)
-	}
+	ingester.ConnectChildNodes(ret, elements)
 	return ret, nil
 }
 
@@ -186,10 +190,7 @@ func (ingester *Ingester) Array(path []interface{}, schemaNode Node, elements []
 	ret := ingester.NewNode(path, schemaNode)
 	ret.GetTypes().Add(types...)
 	ret.GetTypes().Add(AttributeTypes.Array)
-	for index := range elements {
-		elements[index].GetProperties()[AttributeIndexTerm] = StringPropertyValue(fmt.Sprint(index))
-		ingester.connect(ret, elements[index], HasTerm)
-	}
+	ingester.ConnectChildNodes(ret, elements)
 	return ret, nil
 }
 
