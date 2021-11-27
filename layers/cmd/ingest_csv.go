@@ -119,7 +119,7 @@ var ingestCSVCmd = &cobra.Command{
 				target.AddNode(node)
 			}
 		}
-		outFormat, _ := cmd.Flags().GetString("format")
+		outFormat, _ := cmd.Flags().GetString("output")
 		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
 		err = OutputIngestedGraph(outFormat, target, os.Stdout, includeSchema)
 		if err != nil {
