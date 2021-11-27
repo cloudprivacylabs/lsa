@@ -32,7 +32,8 @@ func init() {
 	rootCmd.AddCommand(ingestCmd)
 	ingestCmd.PersistentFlags().String("repo", "", "Schema repository directory")
 	ingestCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
-	ingestCmd.PersistentFlags().Bool("includeSchema", false, "Include schema in the output")
+	ingestCmd.PersistentFlags().Bool("includeSchema", false, "Include all schema nodes in the output")
+	ingestCmd.PersistentFlags().Bool("combineSchema", false, "Combine schema nodes with document nodes")
 }
 
 var ingestCmd = &cobra.Command{
