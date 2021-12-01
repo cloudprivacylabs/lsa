@@ -145,12 +145,12 @@ var (
 	// their schema specifications
 	InstanceOfTerm = NewTerm(LS+"data/instanceOf", false, false, ErrorComposition, nil)
 
-	// PropertyOfTerm tells the ingestor that this attribute will be a
-	// property of the closest node that is the instance of the content
-	// of this property
-	PropertyOfTerm = NewTerm(LS+"propertyOf", true, false, OverrideComposition, nil)
-
-	// AsPropertyTerm gives the name of the property the ingestor should use to ingest the property
+	// AsPropertyOfTerm is optional. If specified, it gives the nearest
+	// node that is an instance of the given type. If not, it is the
+	// nearest document node
+	AsPropertyOfTerm = NewTerm(LS+"asPropertyOf", false, false, OverrideComposition, nil)
+	// AsPropertyTerm specifies the property name the data point
+	// should be added in the parent node
 	AsPropertyTerm = NewTerm(LS+"asProperty", false, false, OverrideComposition, nil)
 
 	BundleTerm     = NewTerm(LS+"SchemaManifest/bundle", false, false, ErrorComposition, nil)

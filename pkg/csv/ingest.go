@@ -27,6 +27,12 @@ type Ingester struct {
 	ColumnNames []string
 }
 
+type propertyValueItem struct {
+	of    string
+	name  string
+	value string
+}
+
 func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 	path, schemaRoot := ingester.Start(ID)
 	attributes, err := ingester.GetObjectAttributeNodes(schemaRoot)
@@ -34,6 +40,8 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 		return nil, err
 	}
 	children := make([]ls.Node, 0, len(data))
+	childrenSchemaNodes := make(map[ls.Node]ls.Node)
+	propertyValueQueue := make([]propertyValueItem, 0, len(data))
 	for columnIndex, columnData := range data {
 		var columnName string
 		if columnIndex < len(ingester.ColumnNames) {
@@ -55,15 +63,52 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 			newPath = append(path, columnIndex)
 		}
 
-		newNode, err := ingester.Value(newPath, schemaNode, columnData)
-		if err != nil {
-			return nil, err
+		propertyOf, propertyName := ls.GetAsProperty(schemaNode)
+		if len(propertyName) != 0 || len(propertyOf) != 0 {
+			if len(propertyName) == 0 {
+				propertyName = columnName
+			}
+			propertyValueQueue = append(propertyValueQueue, propertyValueItem{
+				of:    propertyOf,
+				name:  propertyName,
+				value: columnData,
+			})
+		} else {
+			newNode, err := ingester.Value(newPath, schemaNode, columnData)
+			if err != nil {
+				return nil, err
+			}
+			if len(columnName) > 0 {
+				newNode.GetProperties()[ls.AttributeNameTerm] = ls.StringPropertyValue(columnName)
+			}
+			newNode.GetProperties()[ls.AttributeIndexTerm] = ls.StringPropertyValue(fmt.Sprint(columnIndex))
+			children = append(children, newNode)
+			childrenSchemaNodes[newNode] = schemaNode
 		}
-		if len(columnName) > 0 {
-			newNode.GetProperties()[ls.AttributeNameTerm] = ls.StringPropertyValue(columnName)
-		}
-		newNode.GetProperties()[ls.AttributeIndexTerm] = ls.StringPropertyValue(fmt.Sprint(columnIndex))
-		children = append(children, newNode)
 	}
-	return ingester.Object(path, schemaRoot, children)
+
+	retNode, err := ingester.Object(path, schemaRoot, children)
+	if err != nil {
+		return nil, err
+	}
+	for _, pv := range propertyValueQueue {
+		var parentNode ls.Node
+		if len(pv.of) > 0 {
+			for child, sch := range childrenSchemaNodes {
+				if sch != nil && sch.GetID() == pv.of {
+					if parentNode != nil {
+						return nil, ls.ErrMultipleParentNodes{pv.of}
+					}
+					parentNode = child
+				}
+			}
+			if parentNode == nil {
+				return nil, ls.ErrNoParentNode{pv.of}
+			}
+		} else {
+			parentNode = retNode
+		}
+		parentNode.GetProperties()[pv.name] = ls.StringPropertyValue(pv.value)
+	}
+	return retNode, nil
 }

@@ -244,6 +244,18 @@ func (ingester *Ingester) EmbedSchemaNode(targetNode, schemaNode Node) {
 	targetNode.GetTypes().Add(FilterNonLayerTypes(schemaNode.GetTypes().Slice())...)
 }
 
+// GetAsPropertyValue returns if the node should be a property of a
+// predecessor node. If not, returns nil
+func GetAsProperty(schemaNode Node) (of string, name string) {
+	if schemaNode == nil {
+		return
+	}
+	properties := schemaNode.GetProperties()
+	of = properties[AsPropertyOfTerm].AsString()
+	name = properties[AsPropertyTerm].AsString()
+	return
+}
+
 func (ingester *Ingester) connect(srcNode, targetNode digraph.Node, edgeLabel string) digraph.Edge {
 	var edge digraph.Edge
 	if ingester.NewEdgeFunc != nil {
