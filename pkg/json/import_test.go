@@ -84,3 +84,24 @@ func TestRefs(t *testing.T) {
 		t.Errorf("Wrong ref: %v", itemNode.GetProperties())
 	}
 }
+
+func TestLoop(t *testing.T) {
+	td, err := ioutil.ReadFile("testdata/loop_sch.json")
+	if err != nil {
+		t.Fail()
+		return
+	}
+	compiler := jsonschema.NewCompiler()
+	compiler.AddResource("https://loop", bytes.NewReader(td))
+
+	compiled, err := CompileEntitiesWith(compiler, Entity{Ref: "https://loop#/definitions/Item", ID: "http://item"})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	_, err = BuildEntityGraph(ls.SchemaTerm, compiled...)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+}
