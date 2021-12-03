@@ -8,56 +8,63 @@
       {
         "@id": "http://hl7.org/fhir/Basic",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/Basic"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Basic#extension",
+            "@id": "http://hl7.org/fhir/Basic#meta",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Meta"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "meta"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Basic#code",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "code"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Basic#identifier",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Basic#extension.*",
+                "@id": "http://hl7.org/fhir/Basic#identifier.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/Identifier"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Basic#created",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "created"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A date or partial date (e.g. just year or year + month). There is no time zone. The format is a union of the schema types gYear, gYearMonth and date.  Dates SHALL be valid dates."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
+                "@value": "identifier"
               }
             ]
           },
@@ -78,18 +85,76 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Basic#_created",
+            "@id": "http://hl7.org/fhir/Basic#author",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_created"
+                "@value": "author"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Basic#language",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "language"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Basic#id",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Basic#text",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Narrative"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
               }
             ]
           },
@@ -144,34 +209,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Basic#author",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "author"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Basic#language",
+            "@id": "http://hl7.org/fhir/Basic#created",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "language"
+                "@value": "created"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                "@value": "A date or partial date (e.g. just year or year + month). There is no time zone. The format is a union of the schema types gYear, gYearMonth and date.  Dates SHALL be valid dates."
               }
             ],
             "https://lschema.org/targetType": [
@@ -181,55 +230,7 @@
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Basic#code",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "code"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Basic#meta",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Meta"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "meta"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Basic#_language",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_language"
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
               }
             ]
           },
@@ -255,18 +256,74 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Basic#text",
+            "@id": "http://hl7.org/fhir/Basic#_implicitRules",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Narrative"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "text"
+                "@value": "_implicitRules"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Basic#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Basic#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Basic#_created",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_created"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Basic#_language",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_language"
               }
             ]
           },
@@ -1898,62 +1955,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "contained"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Basic#identifier",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/Basic#identifier.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Identifier"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "identifier"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Basic#id",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Basic#_implicitRules",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_implicitRules"
               }
             ]
           }

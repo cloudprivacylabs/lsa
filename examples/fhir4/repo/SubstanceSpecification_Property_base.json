@@ -8,11 +8,28 @@
       {
         "@id": "http://hl7.org/fhir/SubstanceSpecification_Property",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/SubstanceSpecification_Property"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#_amountString",
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#amountQuantity",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Quantity"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "amountQuantity"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#_parameters",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -23,23 +40,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_amountString"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#code",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "code"
+                "@value": "_parameters"
               }
             ]
           },
@@ -56,74 +57,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "definingSubstanceCodeableConcept"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#amountString",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "amountString"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Quantitative value for this property."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#amountQuantity",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Quantity"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "amountQuantity"
               }
             ]
           },
@@ -154,7 +87,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#_parameters",
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#_amountString",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -165,7 +98,33 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_parameters"
+                "@value": "_amountString"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#amountString",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "amountString"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Quantitative value for this property."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -210,22 +169,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#category",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "category"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#extension",
             "@type": [
               "https://lschema.org/Array"
@@ -246,6 +189,64 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#category",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "category"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#code",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "code"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Property#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           }

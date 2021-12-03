@@ -8,176 +8,63 @@
       {
         "@id": "http://hl7.org/fhir/Invoice",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/Invoice"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Invoice#totalPriceComponent",
+            "@id": "http://hl7.org/fhir/Invoice#_date",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_date"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Invoice#participant",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Invoice#totalPriceComponent.*",
+                "@id": "http://hl7.org/fhir/Invoice#participant.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Invoice_PriceComponent"
+                    "@id": "http://hl7.org/fhir/Invoice_Participant"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "totalPriceComponent"
+                "@value": "participant"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Invoice#_cancelledReason",
+            "@id": "http://hl7.org/fhir/Invoice#id",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/id"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_cancelledReason"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Invoice#date",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "date"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Invoice#recipient",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "recipient"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Invoice#issuer",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "issuer"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Invoice#account",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "account"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Invoice#_implicitRules",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_implicitRules"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Invoice#_status",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_status"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Invoice#lineItem",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/Invoice#lineItem.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Invoice_LineItem"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "lineItem"
+                "@value": "id"
               }
             ]
           },
@@ -194,51 +81,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "totalGross"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Invoice#note",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/Invoice#note.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Annotation"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "note"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Invoice#resourceType",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "resourceType"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "This is a Invoice resource"
-              }
-            ],
-            "https://lschema.org/validation/enumeration": [
-              {
-                "@value": "Invoice"
               }
             ]
           },
@@ -1874,33 +1716,87 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Invoice#implicitRules",
+            "@id": "http://hl7.org/fhir/Invoice#totalPriceComponent",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Invoice#totalPriceComponent.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Invoice_PriceComponent"
+                  }
+                ]
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "implicitRules"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^\\S*$"
+                "@value": "totalPriceComponent"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Invoice#_paymentTerms",
+            "@id": "http://hl7.org/fhir/Invoice#meta",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Meta"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "meta"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Invoice#issuer",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "issuer"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Invoice#lineItem",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Invoice#lineItem.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Invoice_LineItem"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "lineItem"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Invoice#_cancelledReason",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -1911,31 +1807,55 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_paymentTerms"
+                "@value": "_cancelledReason"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Invoice#extension",
+            "@id": "http://hl7.org/fhir/Invoice#account",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array/elements": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Invoice#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "account"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Invoice#subject",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "subject"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Invoice#totalNet",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Money"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "totalNet"
               }
             ]
           },
@@ -1964,28 +1884,63 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Invoice#paymentTerms",
+            "@id": "http://hl7.org/fhir/Invoice#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Invoice#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Invoice#recipient",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "recipient"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Invoice#resourceType",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "paymentTerms"
+                "@value": "resourceType"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A string that may contain Github Flavored Markdown syntax for optional processing by a mark down presentation engine"
+                "@value": "This is a Invoice resource"
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/validation/enumeration": [
               {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "Invoice"
               }
             ]
           },
@@ -2023,18 +1978,116 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Invoice#text",
+            "@id": "http://hl7.org/fhir/Invoice#_implicitRules",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Narrative"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "text"
+                "@value": "_implicitRules"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Invoice#implicitRules",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "implicitRules"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "String of characters used to identify a name or a resource"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Invoice#_status",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_status"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Invoice#type",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "type"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Invoice#_language",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_language"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Invoice#note",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Invoice#note.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Annotation"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "note"
               }
             ]
           },
@@ -2065,34 +2118,70 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Invoice#_date",
+            "@id": "http://hl7.org/fhir/Invoice#date",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_date"
+                "@value": "date"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Invoice#type",
+            "@id": "http://hl7.org/fhir/Invoice#text",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/Narrative"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "type"
+                "@value": "text"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Invoice#paymentTerms",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "paymentTerms"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string that may contain Github Flavored Markdown syntax for optional processing by a mark down presentation engine"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -2147,7 +2236,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Invoice#_language",
+            "@id": "http://hl7.org/fhir/Invoice#_paymentTerms",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -2158,95 +2247,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_language"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Invoice#meta",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Meta"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "meta"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Invoice#totalNet",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Money"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "totalNet"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Invoice#participant",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/Invoice#participant.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Invoice_Participant"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "participant"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Invoice#subject",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "subject"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Invoice#id",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
+                "@value": "_paymentTerms"
               }
             ]
           }

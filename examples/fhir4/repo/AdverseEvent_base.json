@@ -8,62 +8,23 @@
       {
         "@id": "http://hl7.org/fhir/AdverseEvent",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/AdverseEvent"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/AdverseEvent#_date",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_date"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AdverseEvent#resultingCondition",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/AdverseEvent#resultingCondition.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "resultingCondition"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AdverseEvent#implicitRules",
+            "@id": "http://hl7.org/fhir/AdverseEvent#detected",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "implicitRules"
+                "@value": "detected"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "String of characters used to identify a name or a resource"
+                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
               }
             ],
             "https://lschema.org/targetType": [
@@ -73,7 +34,7 @@
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^\\S*$"
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
               }
             ]
           },
@@ -120,85 +81,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AdverseEvent#_implicitRules",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_implicitRules"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AdverseEvent#id",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AdverseEvent#resourceType",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "resourceType"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "This is a AdverseEvent resource"
-              }
-            ],
-            "https://lschema.org/validation/enumeration": [
-              {
-                "@value": "AdverseEvent"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AdverseEvent#detected",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "detected"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/AdverseEvent#referenceDocument",
             "@type": [
               "https://lschema.org/Array"
@@ -223,137 +105,23 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AdverseEvent#seriousness",
+            "@id": "http://hl7.org/fhir/AdverseEvent#text",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/Narrative"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "seriousness"
+                "@value": "text"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AdverseEvent#meta",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Meta"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "meta"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AdverseEvent#category",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/AdverseEvent#category.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "category"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AdverseEvent#suspectEntity",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/AdverseEvent#suspectEntity.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/AdverseEvent_SuspectEntity"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "suspectEntity"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AdverseEvent#date",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "date"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AdverseEvent#study",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/AdverseEvent#study.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "study"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AdverseEvent#_detected",
+            "@id": "http://hl7.org/fhir/AdverseEvent#_actuality",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -364,23 +132,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_detected"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AdverseEvent#severity",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "severity"
+                "@value": "_actuality"
               }
             ]
           },
@@ -409,18 +161,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AdverseEvent#_language",
+            "@id": "http://hl7.org/fhir/AdverseEvent#identifier",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Identifier"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_language"
+                "@value": "identifier"
               }
             ]
           },
@@ -441,18 +193,58 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AdverseEvent#text",
+            "@id": "http://hl7.org/fhir/AdverseEvent#outcome",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Narrative"
+                "@id": "http://hl7.org/fhir/CodeableConcept"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "text"
+                "@value": "outcome"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#suspectEntity",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/AdverseEvent#suspectEntity.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/AdverseEvent_SuspectEntity"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "suspectEntity"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#_language",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_language"
               }
             ]
           },
@@ -483,34 +275,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AdverseEvent#identifier",
+            "@id": "http://hl7.org/fhir/AdverseEvent#resultingCondition",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference/ref": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Identifier"
+                "@id": "http://hl7.org/fhir/AdverseEvent#resultingCondition.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "identifier"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AdverseEvent#outcome",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "outcome"
+                "@value": "resultingCondition"
               }
             ]
           },
@@ -531,31 +315,44 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AdverseEvent#extension",
+            "@id": "http://hl7.org/fhir/AdverseEvent#resourceType",
             "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/AdverseEvent#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "resourceType"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "This is a AdverseEvent resource"
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "AdverseEvent"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AdverseEvent#_actuality",
+            "@id": "http://hl7.org/fhir/AdverseEvent#id",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#_date",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -566,55 +363,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_actuality"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AdverseEvent#actuality",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "actuality"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Whether the event actually happened, or just had the potential to. Note that this is independent of whether anyone was affected or harmed or how severely."
-              }
-            ],
-            "https://lschema.org/validation/enumeration": [
-              {
-                "@value": "actual"
-              },
-              {
-                "@value": "potential"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AdverseEvent#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/AdverseEvent#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
+                "@value": "_date"
               }
             ]
           },
@@ -2250,22 +1999,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AdverseEvent#recorder",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "recorder"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/AdverseEvent#_recordedDate",
             "@type": [
               "https://lschema.org/Reference"
@@ -2306,6 +2039,96 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/AdverseEvent#category",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/AdverseEvent#category.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "category"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#seriousness",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "seriousness"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#date",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "date"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/AdverseEvent#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/AdverseEvent#subject",
             "@type": [
               "https://lschema.org/Reference"
@@ -2318,6 +2141,184 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "subject"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#recorder",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "recorder"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#meta",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Meta"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "meta"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#study",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/AdverseEvent#study.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "study"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#actuality",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "actuality"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Whether the event actually happened, or just had the potential to. Note that this is independent of whether anyone was affected or harmed or how severely."
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "actual"
+              },
+              {
+                "@value": "potential"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#_implicitRules",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_implicitRules"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#_detected",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_detected"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/AdverseEvent#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#implicitRules",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "implicitRules"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "String of characters used to identify a name or a resource"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AdverseEvent#severity",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "severity"
               }
             ]
           }

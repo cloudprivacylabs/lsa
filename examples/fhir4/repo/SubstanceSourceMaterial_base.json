@@ -8,17 +8,50 @@
       {
         "@id": "http://hl7.org/fhir/SubstanceSourceMaterial",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/SubstanceSourceMaterial"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#parentSubstanceName",
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#developmentStage",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "developmentStage"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#id",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#geographicalLocation",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#parentSubstanceName.*",
+                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#geographicalLocation.*",
                 "@type": [
                   "https://lschema.org/Value"
                 ],
@@ -41,71 +74,103 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "parentSubstanceName"
+                "@value": "geographicalLocation"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#_organismName",
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#meta",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Meta"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_organismName"
+                "@value": "meta"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#partDescription",
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#sourceMaterialType",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array/elements": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#partDescription.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_PartDescription"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/CodeableConcept"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "partDescription"
+                "@value": "sourceMaterialType"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#_parentSubstanceName",
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#organismId",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array/elements": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#_parentSubstanceName.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Element"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Identifier"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_parentSubstanceName"
+                "@value": "organismId"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#sourceMaterialClass",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "sourceMaterialClass"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#sourceMaterialState",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "sourceMaterialState"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#text",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Narrative"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
               }
             ]
           },
@@ -1741,22 +1806,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#sourceMaterialState",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "sourceMaterialState"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#organism",
             "@type": [
               "https://lschema.org/Reference"
@@ -1799,145 +1848,66 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#sourceMaterialClass",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "sourceMaterialClass"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#id",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#organismName",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "organismName"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#resourceType",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "resourceType"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "This is a SubstanceSourceMaterial resource"
-              }
-            ],
-            "https://lschema.org/validation/enumeration": [
-              {
-                "@value": "SubstanceSourceMaterial"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#modifierExtension",
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#parentSubstanceId",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#modifierExtension.*",
+                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#parentSubstanceId.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/Identifier"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
+                "@value": "parentSubstanceId"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#extension",
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#_language",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_language"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#countryOfOrigin",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#extension.*",
+                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#countryOfOrigin.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#sourceMaterialType",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "sourceMaterialType"
+                "@value": "countryOfOrigin"
               }
             ]
           },
@@ -1968,7 +1938,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#_language",
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#_implicitRules",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -1979,79 +1949,91 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_language"
+                "@value": "_implicitRules"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#text",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Narrative"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#parentSubstanceId",
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#partDescription",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#parentSubstanceId.*",
+                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#partDescription.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Identifier"
+                    "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_PartDescription"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "parentSubstanceId"
+                "@value": "partDescription"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#organismId",
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#parentSubstanceName",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference/ref": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Identifier"
+                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#parentSubstanceName.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/description": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ],
+                "https://lschema.org/validation/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "organismId"
+                "@value": "parentSubstanceName"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#meta",
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#organismName",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Meta"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "meta"
+                "@value": "organismName"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -2080,7 +2062,31 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#_implicitRules",
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#_organismName",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -2091,31 +2097,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_implicitRules"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#countryOfOrigin",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#countryOfOrigin.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "countryOfOrigin"
+                "@value": "_organismName"
               }
             ]
           },
@@ -2144,52 +2126,71 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#geographicalLocation",
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#extension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#geographicalLocation.*",
+                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#extension.*",
                 "@type": [
-                  "https://lschema.org/Value"
+                  "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/description": [
+                "https://lschema.org/Reference/ref": [
                   {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@id": "string"
-                  }
-                ],
-                "https://lschema.org/validation/pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
+                    "@id": "http://hl7.org/fhir/Extension"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "geographicalLocation"
+                "@value": "extension"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#developmentStage",
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#_parentSubstanceName",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference/ref": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#_parentSubstanceName.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Element"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "developmentStage"
+                "@value": "_parentSubstanceName"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "resourceType"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "This is a SubstanceSourceMaterial resource"
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "SubstanceSourceMaterial"
               }
             ]
           }

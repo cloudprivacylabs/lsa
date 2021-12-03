@@ -8,32 +8,71 @@
       {
         "@id": "http://hl7.org/fhir/List_Entry",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/List_Entry"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/List_Entry#deleted",
+            "@id": "http://hl7.org/fhir/List_Entry#_date",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "deleted"
+                "@value": "_date"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/List_Entry#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/List_Entry#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
-            "https://lschema.org/description": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "Value of \"true\" or \"false\""
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/List_Entry#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/List_Entry#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/attributeName": [
               {
-                "@id": "boolean"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^true|false$"
+                "@value": "extension"
               }
             ]
           },
@@ -70,96 +109,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/List_Entry#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/List_Entry#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/List_Entry#flag",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "flag"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/List_Entry#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/List_Entry#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/List_Entry#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/List_Entry#date",
             "@type": [
               "https://lschema.org/Value"
@@ -186,18 +135,70 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/List_Entry#_date",
+            "@id": "http://hl7.org/fhir/List_Entry#flag",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/CodeableConcept"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_date"
+                "@value": "flag"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/List_Entry#deleted",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "deleted"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Value of \"true\" or \"false\""
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "boolean"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^true|false$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/List_Entry#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           }

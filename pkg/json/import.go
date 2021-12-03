@@ -38,20 +38,14 @@ func (e ErrCyclicSchema) Error() string {
 	return "Cycle:" + strings.Join(items, " ")
 }
 
-// Entity gives an entity name to a location in a schema
+// Entity defines a location in the schema as an entity
 type Entity struct {
-	Name       string `json:"name"`
-	Ref        string `json:"ref"`
-	ID         string `json:"id"`
-	SchemaName string `json:"schema"`
-}
-
-// GetEntityName returns the ID if name is empty
-func (e Entity) GetEntityName() string {
-	if len(e.Name) == 0 {
-		return e.ID
-	}
-	return e.Name
+	// Reference to the  schema
+	Ref string `json:"ref"`
+	// ID of the entity
+	ID string `json:"id"`
+	// ID of the layer that will be generated
+	LayerID string `json:"layerId"`
 }
 
 // CompiledEntity contains the JSON schema for the entity
@@ -60,20 +54,17 @@ type CompiledEntity struct {
 	Schema *jsonschema.Schema
 }
 
-// CompileAndImport compiles the given entities and imports them as layers
-func CompileAndImport(entities []Entity, typeTerm string) ([]ImportedEntity, error) {
-	compiled, err := Compile(entities)
-	if err != nil {
-		return nil, err
-	}
-	return Import(compiled, typeTerm)
+// EntityLayer contains the layer for the entity
+type EntityLayer struct {
+	Entity CompiledEntity
+
+	Layer *ls.Layer `json:"-"`
 }
 
-// Compile all entities as a single unit.
-func Compile(entities []Entity) ([]CompiledEntity, error) {
+// CompileEntities compiles given entities
+func CompileEntities(entities ...Entity) ([]CompiledEntity, error) {
 	compiler := jsonschema.NewCompiler()
-	compiler.ExtractAnnotations = true
-	return CompileWith(compiler, entities)
+	return CompileEntitiesWith(compiler, entities...)
 }
 
 // The meta-schema for annotations
@@ -119,14 +110,15 @@ func (annotationsCompiler) Compile(ctx jsonschema.CompilerContext, m map[string]
 	return nil, nil
 }
 
-// CompileWith compiles all entities as a single unit using the given compiler
-func CompileWith(compiler *jsonschema.Compiler, entities []Entity) ([]CompiledEntity, error) {
+// CompileEntitiesWith compiles all entities as a single json schema unit using the given compiler
+func CompileEntitiesWith(compiler *jsonschema.Compiler, entities ...Entity) ([]CompiledEntity, error) {
 	ret := make([]CompiledEntity, 0, len(entities))
+	compiler.ExtractAnnotations = true
 	compiler.RegisterExtension(X_LS, annotationsMeta, annotationsCompiler{})
 	for _, e := range entities {
 		sch, err := compiler.Compile(e.Ref)
 		if err != nil {
-			return nil, fmt.Errorf("During %s: %w", e.GetEntityName(), err)
+			return nil, fmt.Errorf("During %s: %w", e.ID, err)
 		}
 		ret = append(ret, CompiledEntity{Entity: e, Schema: sch})
 	}
@@ -162,21 +154,15 @@ func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
 	return nil
 }
 
-type ImportedEntity struct {
-	Entity CompiledEntity
-
-	Layer *ls.Layer `json:"-"`
-}
-
-// Import a JSON schema or overlay
+// BuildEntityGraph imports  JSON schemas or overlays
 //
 // A JSON schema may include many object definitions. This import
-// algorithm creates a schema for each entity.
+// algorithm creates a layer for each entity.
 //
 // typeTerm should be either ls.SchemaTerm or ls.OverlayTerm
-func Import(entities []CompiledEntity, typeTerm string) ([]ImportedEntity, error) {
+func BuildEntityGraph(typeTerm string, entities ...CompiledEntity) ([]EntityLayer, error) {
 	ctx := importContext{entities: entities}
-	ret := make([]ImportedEntity, 0, len(ctx.entities))
+	ret := make([]EntityLayer, 0, len(ctx.entities))
 	for i := range ctx.entities {
 		ctx.currentEntity = &ctx.entities[i]
 
@@ -186,12 +172,16 @@ func Import(entities []CompiledEntity, typeTerm string) ([]ImportedEntity, error
 			return nil, err
 		}
 
-		imported := ImportedEntity{}
-		imported.Entity = ctx.entities[i]
+		imported := EntityLayer{}
+		imported.Entity = *ctx.currentEntity
 		imported.Layer = ls.NewLayer()
-		imported.Layer.SetLayerType(typeTerm)
-		imported.Layer.SetID(ctx.currentEntity.ID)
+
+		// Set the layer ID from the entity layer ID
+		imported.Layer.SetID(ctx.currentEntity.LayerID)
+		// Set the root node ID from the entity ID
 		rootNode := imported.Layer.NewNode(ctx.currentEntity.ID)
+		// Set the target type of the layer to root node ID
+		imported.Layer.SetTargetType(ctx.currentEntity.ID)
 		ls.Connect(imported.Layer.GetLayerInfoNode(), rootNode, ls.LayerRootTerm)
 		if s.object != nil {
 			rootNode.GetTypes().Add(ls.AttributeTypes.Object)
@@ -276,7 +266,12 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 		} else {
 			panic("Multiple item schemas not supported")
 		}
-		// TODO: additionalItems, etc
+	case sch.Items2020 != nil:
+		target.array = &arraySchema{}
+		err := importSchema(ctx, &target.array.items, sch.Items2020)
+		if err != nil {
+			return err
+		}
 	default:
 		if len(sch.Types) > 0 {
 			target.typ = sch.Types

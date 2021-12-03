@@ -8,6 +8,7 @@
       {
         "@id": "http://hl7.org/fhir/Signature",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/Signature"
         ],
         "https://lschema.org/Object/attributes": [
@@ -36,6 +37,88 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/Signature#when",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "when"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "An instant in time - known at least to the second"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Signature#type",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Signature#type.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Coding"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "type"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Signature#onBehalfOf",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "onBehalfOf"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Signature#_when",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_when"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/Signature#sigFormat",
             "@type": [
               "https://lschema.org/Value"
@@ -43,6 +126,64 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "sigFormat"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Signature#_sigFormat",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_sigFormat"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Signature#_data",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_data"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Signature#targetFormat",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "targetFormat"
               }
             ],
             "https://lschema.org/description": [
@@ -78,6 +219,22 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/Signature#_targetFormat",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_targetFormat"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/Signature#id",
             "@type": [
               "https://lschema.org/Value"
@@ -104,64 +261,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Signature#_sigFormat",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_sigFormat"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Signature#onBehalfOf",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "onBehalfOf"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Signature#when",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "when"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "An instant in time - known at least to the second"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))$"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/Signature#data",
             "@type": [
               "https://lschema.org/Value"
@@ -179,104 +278,6 @@
             "https://lschema.org/targetType": [
               {
                 "@id": "string"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Signature#_data",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_data"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Signature#type",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/Signature#type.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Coding"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "type"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Signature#targetFormat",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "targetFormat"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Signature#_when",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_when"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Signature#_targetFormat",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_targetFormat"
               }
             ]
           }

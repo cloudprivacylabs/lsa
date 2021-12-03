@@ -8,6 +8,7 @@
       {
         "@id": "http://hl7.org/fhir/MessageHeader",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/MessageHeader"
         ],
         "https://lschema.org/Object/attributes": [
@@ -38,7 +39,87 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader#enterer",
+            "@id": "http://hl7.org/fhir/MessageHeader#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#source",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader_Source"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "source"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#_eventUri",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_eventUri"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#sender",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -49,7 +130,187 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "enterer"
+                "@value": "sender"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#language",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "language"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#eventCoding",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Coding"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "eventCoding"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#focus",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader#focus.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "focus"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#response",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader_Response"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "response"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#destination",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MessageHeader#destination.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/MessageHeader_Destination"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "destination"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#definition",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "definition"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#meta",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Meta"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "meta"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#text",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Narrative"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#id",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
               }
             ]
           },
@@ -80,7 +341,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader#_implicitRules",
+            "@id": "http://hl7.org/fhir/MessageHeader#_language",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -91,23 +352,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_implicitRules"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#eventCoding",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Coding"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "eventCoding"
+                "@value": "_language"
               }
             ]
           },
@@ -1743,166 +1988,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MessageHeader#definition",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "definition"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#focus",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader#focus.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "focus"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#_language",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_language"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#resourceType",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "resourceType"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "This is a MessageHeader resource"
-              }
-            ],
-            "https://lschema.org/validation/enumeration": [
-              {
-                "@value": "MessageHeader"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#source",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader_Source"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "source"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#destination",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader#destination.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/MessageHeader_Destination"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "destination"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#_eventUri",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_eventUri"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#id",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#sender",
+            "@id": "http://hl7.org/fhir/MessageHeader#enterer",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -1913,47 +1999,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "sender"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#text",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Narrative"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
+                "@value": "enterer"
               }
             ]
           },
@@ -1970,88 +2016,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "author"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#response",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader_Response"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "response"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#language",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "language"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#meta",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Meta"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "meta"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MessageHeader#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MessageHeader#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
               }
             ]
           },
@@ -2084,6 +2048,43 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "reason"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "resourceType"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "This is a MessageHeader resource"
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "MessageHeader"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MessageHeader#_implicitRules",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_implicitRules"
               }
             ]
           }

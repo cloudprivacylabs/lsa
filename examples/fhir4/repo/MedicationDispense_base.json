@@ -8,22 +8,23 @@
       {
         "@id": "http://hl7.org/fhir/MedicationDispense",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/MedicationDispense"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#destination",
+            "@id": "http://hl7.org/fhir/MedicationDispense#category",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Reference"
+                "@id": "http://hl7.org/fhir/CodeableConcept"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "destination"
+                "@value": "category"
               }
             ]
           },
@@ -52,34 +53,58 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#_whenHandedOver",
+            "@id": "http://hl7.org/fhir/MedicationDispense#destination",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_whenHandedOver"
+                "@value": "destination"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#whenPrepared",
+            "@id": "http://hl7.org/fhir/MedicationDispense#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationDispense#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#implicitRules",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "whenPrepared"
+                "@value": "implicitRules"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+                "@value": "String of characters used to identify a name or a resource"
               }
             ],
             "https://lschema.org/targetType": [
@@ -89,23 +114,71 @@
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+                "@value": "^\\S*$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#medicationCodeableConcept",
+            "@id": "http://hl7.org/fhir/MedicationDispense#authorizingPrescription",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationDispense#authorizingPrescription.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "authorizingPrescription"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#identifier",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationDispense#identifier.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Identifier"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "identifier"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#location",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "medicationCodeableConcept"
+                "@value": "location"
               }
             ]
           },
@@ -126,7 +199,47 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#context",
+            "@id": "http://hl7.org/fhir/MedicationDispense#note",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationDispense#note.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Annotation"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "note"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#meta",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Meta"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "meta"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#statusReasonReference",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -137,55 +250,31 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "context"
+                "@value": "statusReasonReference"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#text",
+            "@id": "http://hl7.org/fhir/MedicationDispense#receiver",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference/ref": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Narrative"
+                "@id": "http://hl7.org/fhir/MedicationDispense#receiver.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#substitution",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationDispense_Substitution"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "substitution"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#location",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "location"
+                "@value": "receiver"
               }
             ]
           },
@@ -1821,80 +1910,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#_status",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_status"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#whenHandedOver",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "whenHandedOver"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#medicationReference",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "medicationReference"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#meta",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Meta"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "meta"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/MedicationDispense#_implicitRules",
             "@type": [
               "https://lschema.org/Reference"
@@ -1907,240 +1922,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_implicitRules"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#partOf",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationDispense#partOf.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "partOf"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#_language",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_language"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationDispense#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#status",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "status"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#id",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#quantity",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Quantity"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "quantity"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#receiver",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationDispense#receiver.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "receiver"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#_whenPrepared",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_whenPrepared"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#detectedIssue",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationDispense#detectedIssue.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "detectedIssue"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#note",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationDispense#note.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Annotation"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "note"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#authorizingPrescription",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationDispense#authorizingPrescription.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "authorizingPrescription"
               }
             ]
           },
@@ -2171,49 +1952,31 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#statusReasonReference",
+            "@id": "http://hl7.org/fhir/MedicationDispense#detectedIssue",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference/ref": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Reference"
+                "@id": "http://hl7.org/fhir/MedicationDispense#detectedIssue.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "statusReasonReference"
+                "@value": "detectedIssue"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#implicitRules",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "implicitRules"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationDispense#daysSupply",
+            "@id": "http://hl7.org/fhir/MedicationDispense#quantity",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -2224,23 +1987,23 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "daysSupply"
+                "@value": "quantity"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#subject",
+            "@id": "http://hl7.org/fhir/MedicationDispense#_status",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Reference"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "subject"
+                "@value": "_status"
               }
             ]
           },
@@ -2269,31 +2032,108 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#dosageInstruction",
+            "@id": "http://hl7.org/fhir/MedicationDispense#_language",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array/elements": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/MedicationDispense#dosageInstruction.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Dosage"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "dosageInstruction"
+                "@value": "_language"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#type",
+            "@id": "http://hl7.org/fhir/MedicationDispense#_whenHandedOver",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_whenHandedOver"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#context",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "context"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#substitution",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationDispense_Substitution"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "substitution"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "resourceType"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "This is a MedicationDispense resource"
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "MedicationDispense"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#daysSupply",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Quantity"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "daysSupply"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#medicationCodeableConcept",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -2304,7 +2144,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "type"
+                "@value": "medicationCodeableConcept"
               }
             ]
           },
@@ -2333,18 +2173,100 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#category",
+            "@id": "http://hl7.org/fhir/MedicationDispense#medicationReference",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "category"
+                "@value": "medicationReference"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#status",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "status"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#subject",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "subject"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#id",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#dosageInstruction",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationDispense#dosageInstruction.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Dosage"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "dosageInstruction"
               }
             ]
           },
@@ -2373,47 +2295,126 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#identifier",
+            "@id": "http://hl7.org/fhir/MedicationDispense#whenHandedOver",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "whenHandedOver"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#partOf",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/MedicationDispense#identifier.*",
+                "@id": "http://hl7.org/fhir/MedicationDispense#partOf.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Identifier"
+                    "@id": "http://hl7.org/fhir/Reference"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "identifier"
+                "@value": "partOf"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationDispense#resourceType",
+            "@id": "http://hl7.org/fhir/MedicationDispense#whenPrepared",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "resourceType"
+                "@value": "whenPrepared"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "This is a MedicationDispense resource"
+                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
               }
             ],
-            "https://lschema.org/validation/enumeration": [
+            "https://lschema.org/targetType": [
               {
-                "@value": "MedicationDispense"
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#text",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Narrative"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#_whenPrepared",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_whenPrepared"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationDispense#type",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "type"
               }
             ]
           }

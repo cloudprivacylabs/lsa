@@ -8,9 +8,132 @@
       {
         "@id": "http://hl7.org/fhir/PaymentReconciliation",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/PaymentReconciliation"
         ],
         "https://lschema.org/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/PaymentReconciliation#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#paymentDate",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "paymentDate"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A date or partial date (e.g. just year or year + month). There is no time zone. The format is a union of the schema types gYear, gYearMonth and date.  Dates SHALL be valid dates."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#_outcome",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_outcome"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#processNote",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/PaymentReconciliation#processNote.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/PaymentReconciliation_ProcessNote"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "processNote"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#paymentIssuer",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "paymentIssuer"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#text",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Narrative"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
+              }
+            ]
+          },
           {
             "@id": "http://hl7.org/fhir/PaymentReconciliation#modifierExtension",
             "@type": [
@@ -36,6 +159,38 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#_paymentDate",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_paymentDate"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#_language",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_language"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/PaymentReconciliation#_disposition",
             "@type": [
               "https://lschema.org/Reference"
@@ -52,34 +207,74 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#text",
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#detail",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/PaymentReconciliation#detail.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "detail"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#id",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Narrative"
+                "@id": "http://hl7.org/fhir/id"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "text"
+                "@value": "id"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#created",
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#requestor",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "requestor"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#implicitRules",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "created"
+                "@value": "implicitRules"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+                "@value": "String of characters used to identify a name or a resource"
               }
             ],
             "https://lschema.org/targetType": [
@@ -89,7 +284,7 @@
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+                "@value": "^\\S*$"
               }
             ]
           },
@@ -124,6 +319,225 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#paymentAmount",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Money"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "paymentAmount"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#meta",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Meta"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "meta"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#_implicitRules",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_implicitRules"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#paymentIdentifier",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Identifier"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "paymentIdentifier"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#status",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "status"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#identifier",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/PaymentReconciliation#identifier.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Identifier"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "identifier"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "resourceType"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "This is a PaymentReconciliation resource"
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "PaymentReconciliation"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#disposition",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "disposition"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#period",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "period"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#created",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "created"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#_created",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_created"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/PaymentReconciliation#_status",
             "@type": [
               "https://lschema.org/Reference"
@@ -136,6 +550,22 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_status"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/PaymentReconciliation#formCode",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "formCode"
               }
             ]
           },
@@ -1771,30 +2201,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#detail",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/PaymentReconciliation#detail.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/PaymentReconciliation_Detail"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "detail"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/PaymentReconciliation#request",
             "@type": [
               "https://lschema.org/Reference"
@@ -1807,162 +2213,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "request"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#processNote",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/PaymentReconciliation#processNote.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/PaymentReconciliation_ProcessNote"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "processNote"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#id",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#paymentAmount",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Money"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "paymentAmount"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#paymentIdentifier",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Identifier"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "paymentIdentifier"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#implicitRules",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "implicitRules"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#_paymentDate",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_paymentDate"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#status",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "status"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#requestor",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "requestor"
               }
             ]
           },
@@ -1989,255 +2239,6 @@
             "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#_implicitRules",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_implicitRules"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#_created",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_created"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/PaymentReconciliation#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#_outcome",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_outcome"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#identifier",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/PaymentReconciliation#identifier.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Identifier"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "identifier"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#disposition",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "disposition"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#_language",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_language"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#period",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "period"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#meta",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Meta"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "meta"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#paymentIssuer",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "paymentIssuer"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#paymentDate",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "paymentDate"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A date or partial date (e.g. just year or year + month). There is no time zone. The format is a union of the schema types gYear, gYearMonth and date.  Dates SHALL be valid dates."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#formCode",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "formCode"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/PaymentReconciliation#resourceType",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "resourceType"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "This is a PaymentReconciliation resource"
-              }
-            ],
-            "https://lschema.org/validation/enumeration": [
-              {
-                "@value": "PaymentReconciliation"
               }
             ]
           }
