@@ -15,13 +15,16 @@
 package json
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
-	"github.com/santhosh-tekuri/jsonschema/v3"
+	"github.com/santhosh-tekuri/jsonschema/v5"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
+
+const X_LS = "x-ls"
 
 type ErrCyclicSchema struct {
 	Loop []*jsonschema.Schema
@@ -30,7 +33,7 @@ type ErrCyclicSchema struct {
 func (e ErrCyclicSchema) Error() string {
 	items := make([]string, 0)
 	for _, x := range e.Loop {
-		items = append(items, x.Ptr)
+		items = append(items, x.Location)
 	}
 	return "Cycle:" + strings.Join(items, " ")
 }
@@ -58,12 +61,12 @@ type CompiledEntity struct {
 }
 
 // CompileAndImport compiles the given entities and imports them as layers
-func CompileAndImport(entities []Entity) ([]ImportedEntity, error) {
+func CompileAndImport(entities []Entity, typeTerm string) ([]ImportedEntity, error) {
 	compiled, err := Compile(entities)
 	if err != nil {
 		return nil, err
 	}
-	return Import(compiled)
+	return Import(compiled, typeTerm)
 }
 
 // Compile all entities as a single unit.
@@ -73,9 +76,53 @@ func Compile(entities []Entity) ([]CompiledEntity, error) {
 	return CompileWith(compiler, entities)
 }
 
+// The meta-schema for annotations
+var annotationsMeta = jsonschema.MustCompileString("annotations.json", `{}`)
+
+type annotationsCompiler struct{}
+
+type annotationExtSchema map[string]*ls.PropertyValue
+
+func (annotationExtSchema) Validate(ctx jsonschema.ValidationContext, v interface{}) error {
+	return nil
+}
+
+func (annotationsCompiler) Compile(ctx jsonschema.CompilerContext, m map[string]interface{}) (jsonschema.ExtSchema, error) {
+	if ext, ok := m[X_LS]; ok {
+		if extMap, ok := ext.(map[string]interface{}); ok {
+			propertyMap := make(map[string]*ls.PropertyValue)
+			for k, v := range extMap {
+				switch value := v.(type) {
+				case string, json.Number, float64, bool:
+					propertyMap[k] = ls.StringPropertyValue(fmt.Sprint(v))
+				case []interface{}:
+					arr := make([]string, 0, len(value))
+					for _, val := range value {
+						switch val.(type) {
+						case string, json.Number, float64, bool:
+							arr = append(arr, fmt.Sprint(val))
+						default:
+							return nil, fmt.Errorf("Invalid "+X_LS+" value: %s=%v", k, v)
+						}
+					}
+					propertyMap[k] = ls.StringSlicePropertyValue(arr)
+				default:
+					return nil, fmt.Errorf("Invalid "+X_LS+" value: %s=%v", k, v)
+				}
+			}
+			return annotationExtSchema(propertyMap), nil
+		} else if ext != nil {
+			return nil, fmt.Errorf(X_LS + " is not an object")
+		}
+	}
+	// nothing to compile, return nil
+	return nil, nil
+}
+
 // CompileWith compiles all entities as a single unit using the given compiler
 func CompileWith(compiler *jsonschema.Compiler, entities []Entity) ([]CompiledEntity, error) {
 	ret := make([]CompiledEntity, 0, len(entities))
+	compiler.RegisterExtension(X_LS, annotationsMeta, annotationsCompiler{})
 	for _, e := range entities {
 		sch, err := compiler.Compile(e.Ref)
 		if err != nil {
@@ -121,11 +168,13 @@ type ImportedEntity struct {
 	Layer *ls.Layer `json:"-"`
 }
 
-// Import a JSON schema
+// Import a JSON schema or overlay
 //
 // A JSON schema may include many object definitions. This import
 // algorithm creates a schema for each entity.
-func Import(entities []CompiledEntity) ([]ImportedEntity, error) {
+//
+// typeTerm should be either ls.SchemaTerm or ls.OverlayTerm
+func Import(entities []CompiledEntity, typeTerm string) ([]ImportedEntity, error) {
 	ctx := importContext{entities: entities}
 	ret := make([]ImportedEntity, 0, len(ctx.entities))
 	for i := range ctx.entities {
@@ -140,7 +189,7 @@ func Import(entities []CompiledEntity) ([]ImportedEntity, error) {
 		imported := ImportedEntity{}
 		imported.Entity = ctx.entities[i]
 		imported.Layer = ls.NewLayer()
-		imported.Layer.SetLayerType(ls.SchemaTerm)
+		imported.Layer.SetLayerType(typeTerm)
 		imported.Layer.SetID(ctx.currentEntity.ID)
 		rootNode := imported.Layer.NewNode(ctx.currentEntity.ID)
 		ls.Connect(imported.Layer.GetLayerInfoNode(), rootNode, ls.LayerRootTerm)
@@ -248,6 +297,12 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 		if sch.Default != nil {
 			s := fmt.Sprint(sch.Default)
 			target.defaultValue = &s
+		}
+		if ext, ok := sch.Extensions[X_LS]; ok {
+			mext, _ := ext.(annotationExtSchema)
+			if len(mext) > 0 {
+				target.annotations = map[string]*ls.PropertyValue(mext)
+			}
 		}
 	}
 
