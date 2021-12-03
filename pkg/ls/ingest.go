@@ -43,9 +43,18 @@ type Ingester struct {
 	EmbedSchemaNodes bool
 }
 
-type ErrSchemaValidation string
+type ErrSchemaValidation struct {
+	Msg  string
+	Path []interface{}
+}
 
-func (e ErrSchemaValidation) Error() string { return "Schema validation error: " + string(e) }
+func (e ErrSchemaValidation) Error() string {
+	ret := "Schema validation error: " + e.Msg
+	if e.Path != nil {
+		ret += " path:" + pathToString(e.Path)
+	}
+	return ret
+}
 
 type ErrInvalidSchema string
 
@@ -105,13 +114,13 @@ func (ingester *Ingester) Polymorphic(path []interface{}, schemaNode Node, inges
 		childNode, err := ingest(path, optionNode)
 		if err == nil {
 			if newChild != nil {
-				return nil, ErrSchemaValidation("Multiple options of the polymorphic node matched:" + schemaNode.GetID())
+				return nil, ErrSchemaValidation{Msg: "Multiple options of the polymorphic node matched:" + schemaNode.GetID(), Path: path}
 			}
 			newChild = childNode
 		}
 	}
 	if newChild == nil {
-		return nil, ErrSchemaValidation("None of the options of the polymorphic node matched:" + schemaNode.GetID())
+		return nil, ErrSchemaValidation{Msg: "None of the options of the polymorphic node matched:" + schemaNode.GetID(), Path: path}
 	}
 	return newChild, nil
 }
@@ -151,7 +160,7 @@ func (ingester *Ingester) Object(path []interface{}, schemaNode Node, elements [
 	// There is a schema node for this node. It must be an object
 	if schemaNode != nil {
 		if !schemaNode.GetTypes().Has(AttributeTypes.Object) {
-			return nil, ErrSchemaValidation("A JSON object is not expected here")
+			return nil, ErrSchemaValidation{Msg: "An object is not expected here", Path: path}
 		}
 	}
 	ret := ingester.NewNode(path, schemaNode)
@@ -180,7 +189,7 @@ func (ingester *Ingester) GetArrayElementNode(arraySchemaNode Node) Node {
 func (ingester *Ingester) Array(path []interface{}, schemaNode Node, elements []Node, types ...string) (Node, error) {
 	if schemaNode != nil {
 		if !schemaNode.GetTypes().Has(AttributeTypes.Array) {
-			return nil, ErrSchemaValidation("An array is not expected here")
+			return nil, ErrSchemaValidation{Msg: "An array is not expected here", Path: path}
 		}
 	}
 	ret := ingester.NewNode(path, schemaNode)
@@ -198,7 +207,7 @@ func (ingester *Ingester) Array(path []interface{}, schemaNode Node, elements []
 func (ingester *Ingester) Value(path []interface{}, schemaNode Node, value interface{}, types ...string) (Node, error) {
 	if schemaNode != nil {
 		if !schemaNode.GetTypes().Has(AttributeTypes.Value) {
-			return nil, ErrSchemaValidation("A value is not expected here")
+			return nil, ErrSchemaValidation{Msg: "A value is not expected here", Path: path}
 		}
 	}
 	newNode := ingester.NewNode(path, schemaNode)
