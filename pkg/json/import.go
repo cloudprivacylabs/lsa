@@ -145,14 +145,17 @@ func Import(entities []CompiledEntity) ([]ImportedEntity, error) {
 		rootNode := imported.Layer.NewNode(ctx.currentEntity.ID)
 		ls.Connect(imported.Layer.GetLayerInfoNode(), rootNode, ls.LayerRootTerm)
 		if s.object != nil {
+			rootNode.GetTypes().Add(ls.AttributeTypes.Object)
 			nodes := s.object.itr(ctx.currentEntity.ID, nil, imported.Layer)
 			for _, node := range nodes {
 				ls.Connect(rootNode, node, ls.LayerTerms.Attributes)
 			}
 		} else if s.array != nil {
+			rootNode.GetTypes().Add(ls.AttributeTypes.Array)
 			node := s.array.itr(ctx.currentEntity.ID, nil, imported.Layer)
 			ls.Connect(rootNode, node, ls.LayerTerms.ArrayItems)
 		} else {
+			rootNode.GetTypes().Add(ls.AttributeTypes.Value)
 			buildSchemaAttrs(ctx.currentEntity.ID, nil, s, imported.Layer, rootNode)
 		}
 
