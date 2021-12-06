@@ -162,6 +162,7 @@ func UnmarshalGraphJSON(in []byte, targetGraph *digraph.Graph, interner Interner
 	nodeIx := make(map[int]Node)
 	for _, node := range g.Nodes {
 		newNode := node.makeNode(interner)
+		targetGraph.AddNode(newNode)
 		nodeIx[node.N] = newNode
 	}
 	for _, edge := range g.Edges {
