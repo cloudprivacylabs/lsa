@@ -41,11 +41,31 @@ func (e ErrCyclicSchema) Error() string {
 // Entity defines a location in the schema as an entity
 type Entity struct {
 	// Reference to the  schema
-	Ref string `json:"ref"`
+	Ref string `json:"ref" bson:"ref" yaml:"ref"`
 	// ID of the entity
-	ID string `json:"id"`
+	ID string `json:"id" bson:"id" yaml:"id"`
 	// ID of the layer that will be generated
-	LayerID string `json:"layerId"`
+	LayerID string `json:"layerId" bson:"layerId" yaml:"layerId"`
+}
+
+// FindEntityByRef finds the entity by ref value
+func FindEntityByRef(entities []Entity, ref string) *Entity {
+	for i, x := range entities {
+		if x.Ref == ref {
+			return &entities[i]
+		}
+	}
+	return nil
+}
+
+// FindEntityByID finds the entity by ID value
+func FindEntityByID(entities []Entity, ID string) *Entity {
+	for i, x := range entities {
+		if x.ID == ID {
+			return &entities[i]
+		}
+	}
+	return nil
 }
 
 // CompiledEntity contains the JSON schema for the entity
