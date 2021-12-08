@@ -8,11 +8,36 @@
       {
         "@id": "http://hl7.org/fhir/OrganizationAffiliation",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/OrganizationAffiliation"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#participatingOrganization",
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/OrganizationAffiliation#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#organization",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -23,119 +48,31 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "participatingOrganization"
+                "@value": "organization"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#identifier",
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#specialty",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/OrganizationAffiliation#identifier.*",
+                "@id": "http://hl7.org/fhir/OrganizationAffiliation#specialty.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Identifier"
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "identifier"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#_active",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_active"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#meta",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Meta"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "meta"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#location",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/OrganizationAffiliation#location.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "location"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#_language",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_language"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#text",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Narrative"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "text"
+                "@value": "specialty"
               }
             ]
           },
@@ -164,69 +101,55 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#telecom",
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#implicitRules",
             "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/OrganizationAffiliation#telecom.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/ContactPoint"
-                  }
-                ]
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "telecom"
+                "@value": "implicitRules"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "String of characters used to identify a name or a resource"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^\\S*$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#_implicitRules",
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#id",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/id"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_implicitRules"
+                "@value": "id"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#organization",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "organization"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#extension",
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/OrganizationAffiliation#extension.*",
+                "@id": "http://hl7.org/fhir/OrganizationAffiliation#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
@@ -239,7 +162,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "modifierExtension"
               }
             ]
           },
@@ -1875,139 +1798,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#active",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "active"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Value of \"true\" or \"false\""
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "boolean"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^true|false$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#implicitRules",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "implicitRules"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#endpoint",
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#identifier",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/OrganizationAffiliation#endpoint.*",
+                "@id": "http://hl7.org/fhir/OrganizationAffiliation#identifier.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Reference"
+                    "@id": "http://hl7.org/fhir/Identifier"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "endpoint"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#resourceType",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "resourceType"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "This is a OrganizationAffiliation resource"
-              }
-            ],
-            "https://lschema.org/validation/enumeration": [
-              {
-                "@value": "OrganizationAffiliation"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#specialty",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/OrganizationAffiliation#specialty.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "specialty"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#period",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "period"
+                "@value": "identifier"
               }
             ]
           },
@@ -2036,26 +1846,111 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#modifierExtension",
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#period",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "period"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#meta",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Meta"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "meta"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#telecom",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/OrganizationAffiliation#modifierExtension.*",
+                "@id": "http://hl7.org/fhir/OrganizationAffiliation#telecom.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/ContactPoint"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
+                "@value": "telecom"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#_implicitRules",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_implicitRules"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#_language",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_language"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "resourceType"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "This is a OrganizationAffiliation resource"
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "OrganizationAffiliation"
               }
             ]
           },
@@ -2080,6 +1975,22 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "code"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#text",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Narrative"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
               }
             ]
           },
@@ -2110,18 +2021,108 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/OrganizationAffiliation#id",
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#endpoint",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/OrganizationAffiliation#endpoint.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "endpoint"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#active",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "active"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Value of \"true\" or \"false\""
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "boolean"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^true|false$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#participatingOrganization",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/id"
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
+                "@value": "participatingOrganization"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#location",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/OrganizationAffiliation#location.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "location"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/OrganizationAffiliation#_active",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_active"
               }
             ]
           }

@@ -8,11 +8,12 @@
       {
         "@id": "http://hl7.org/fhir/TestScript_Assert",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/TestScript_Assert"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_requestMethod",
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_path",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -23,113 +24,91 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_requestMethod"
+                "@value": "_path"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#navigationLinks",
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_operator",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_operator"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#sourceId",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "sourceId"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#value",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "navigationLinks"
+                "@value": "value"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "Value of \"true\" or \"false\""
+                "@value": "A sequence of Unicode characters"
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@id": "boolean"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^true|false$"
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_compareToSourceExpression",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_compareToSourceExpression"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/TestScript_Assert#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_warningOnly",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_warningOnly"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#direction",
+            "@id": "http://hl7.org/fhir/TestScript_Assert#headerField",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "direction"
+                "@value": "headerField"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "The direction to use for the assertion."
+                "@value": "A sequence of Unicode characters"
               }
             ],
-            "https://lschema.org/validation/enumeration": [
+            "https://lschema.org/targetType": [
               {
-                "@value": "response"
-              },
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
               {
-                "@value": "request"
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -150,13 +129,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#compareToSourceExpression",
+            "@id": "http://hl7.org/fhir/TestScript_Assert#compareToSourceId",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "compareToSourceExpression"
+                "@value": "compareToSourceId"
               }
             ],
             "https://lschema.org/description": [
@@ -192,13 +171,101 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#compareToSourceId",
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_direction",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_direction"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_value",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_value"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_response",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_response"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/TestScript_Assert#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_validateProfileId",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_validateProfileId"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#compareToSourceExpression",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "compareToSourceId"
+                "@value": "compareToSourceExpression"
               }
             ],
             "https://lschema.org/description": [
@@ -218,129 +285,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#value",
+            "@id": "http://hl7.org/fhir/TestScript_Assert#navigationLinks",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "value"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#validateProfileId",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "validateProfileId"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_compareToSourceId",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_compareToSourceId"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_minimumId",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_minimumId"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_contentType",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_contentType"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#requestURL",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "requestURL"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#warningOnly",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "warningOnly"
+                "@value": "navigationLinks"
               }
             ],
             "https://lschema.org/description": [
@@ -360,34 +311,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#sourceId",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "sourceId"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#contentType",
+            "@id": "http://hl7.org/fhir/TestScript_Assert#responseCode",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "contentType"
+                "@value": "responseCode"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                "@value": "A sequence of Unicode characters"
               }
             ],
             "https://lschema.org/targetType": [
@@ -397,23 +332,7 @@
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_navigationLinks",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_navigationLinks"
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -444,7 +363,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_label",
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_requestURL",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -455,136 +374,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_label"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#requestMethod",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "requestMethod"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The request method or HTTP operation code to compare against that used by the client system under test."
-              }
-            ],
-            "https://lschema.org/validation/enumeration": [
-              {
-                "@value": "delete"
-              },
-              {
-                "@value": "get"
-              },
-              {
-                "@value": "options"
-              },
-              {
-                "@value": "patch"
-              },
-              {
-                "@value": "post"
-              },
-              {
-                "@value": "put"
-              },
-              {
-                "@value": "head"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_headerField",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_headerField"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_expression",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_expression"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#expression",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "expression"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_path",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_path"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_resource",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_resource"
+                "@value": "_requestURL"
               }
             ]
           },
@@ -636,6 +426,153 @@
               },
               {
                 "@value": "eval"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#contentType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "contentType"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#requestMethod",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "requestMethod"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The request method or HTTP operation code to compare against that used by the client system under test."
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "delete"
+              },
+              {
+                "@value": "get"
+              },
+              {
+                "@value": "options"
+              },
+              {
+                "@value": "patch"
+              },
+              {
+                "@value": "post"
+              },
+              {
+                "@value": "put"
+              },
+              {
+                "@value": "head"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/TestScript_Assert#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#validateProfileId",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "validateProfileId"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#resource",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "resource"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_contentType",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_contentType"
               }
             ]
           },
@@ -692,7 +629,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_requestURL",
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_expression",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -703,18 +640,132 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_requestURL"
+                "@value": "_expression"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#path",
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_navigationLinks",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_navigationLinks"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#warningOnly",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "path"
+                "@value": "warningOnly"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Value of \"true\" or \"false\""
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "boolean"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^true|false$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_requestMethod",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_requestMethod"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_compareToSourceExpression",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_compareToSourceExpression"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_minimumId",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_minimumId"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#direction",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "direction"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The direction to use for the assertion."
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "response"
+              },
+              {
+                "@value": "request"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#expression",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "expression"
               }
             ],
             "https://lschema.org/description": [
@@ -730,106 +781,6 @@
             "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#minimumId",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "minimumId"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_description",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_description"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#headerField",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "headerField"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_response",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_response"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_direction",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_direction"
               }
             ]
           },
@@ -860,7 +811,33 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_value",
+            "@id": "http://hl7.org/fhir/TestScript_Assert#requestURL",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "requestURL"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_compareToSourceId",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -871,7 +848,87 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_value"
+                "@value": "_compareToSourceId"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_headerField",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_headerField"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_description",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_description"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_label",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_label"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_compareToSourcePath",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_compareToSourcePath"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_warningOnly",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_warningOnly"
               }
             ]
           },
@@ -930,55 +987,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_operator",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_operator"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#resource",
+            "@id": "http://hl7.org/fhir/TestScript_Assert#path",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "resource"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#responseCode",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "responseCode"
+                "@value": "path"
               }
             ],
             "https://lschema.org/description": [
@@ -998,7 +1013,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_validateProfileId",
+            "@id": "http://hl7.org/fhir/TestScript_Assert#_resource",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -1009,47 +1024,33 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_validateProfileId"
+                "@value": "_resource"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#extension",
+            "@id": "http://hl7.org/fhir/TestScript_Assert#minimumId",
             "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/TestScript_Assert#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/TestScript_Assert#_compareToSourcePath",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
+                "@value": "minimumId"
               }
             ],
-            "https://lschema.org/attributeName": [
+            "https://lschema.org/description": [
               {
-                "@value": "_compareToSourcePath"
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           }

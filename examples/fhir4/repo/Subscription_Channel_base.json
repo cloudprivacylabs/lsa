@@ -8,22 +8,31 @@
       {
         "@id": "http://hl7.org/fhir/Subscription_Channel",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/Subscription_Channel"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Subscription_Channel#_endpoint",
+            "@id": "http://hl7.org/fhir/Subscription_Channel#_header",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference/ref": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Subscription_Channel#_header.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Element"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_endpoint"
+                "@value": "_header"
               }
             ]
           },
@@ -54,26 +63,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Subscription_Channel#_header",
+            "@id": "http://hl7.org/fhir/Subscription_Channel#_type",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array/elements": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Subscription_Channel#_header.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Element"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_header"
+                "@value": "_type"
               }
             ]
           },
@@ -111,7 +112,33 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Subscription_Channel#_type",
+            "@id": "http://hl7.org/fhir/Subscription_Channel#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Subscription_Channel#_endpoint",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -122,7 +149,67 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_type"
+                "@value": "_endpoint"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Subscription_Channel#endpoint",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "endpoint"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A URI that is a literal reference"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Subscription_Channel#header",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Subscription_Channel#header.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/description": [
+                  {
+                    "@value": "A sequence of Unicode characters"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ],
+                "https://lschema.org/validation/pattern": [
+                  {
+                    "@value": "^[ \\r\\n\\t\\S]+$"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "header"
               }
             ]
           },
@@ -167,40 +254,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Subscription_Channel#header",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/Subscription_Channel#header.*",
-                "@type": [
-                  "https://lschema.org/Value"
-                ],
-                "https://lschema.org/description": [
-                  {
-                    "@value": "A sequence of Unicode characters"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@id": "string"
-                  }
-                ],
-                "https://lschema.org/validation/pattern": [
-                  {
-                    "@value": "^[ \\r\\n\\t\\S]+$"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "header"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/Subscription_Channel#extension",
             "@type": [
               "https://lschema.org/Array"
@@ -221,58 +274,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Subscription_Channel#endpoint",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "endpoint"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A URI that is a literal reference"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Subscription_Channel#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           }

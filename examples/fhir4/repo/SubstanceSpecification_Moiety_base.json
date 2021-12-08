@@ -8,11 +8,12 @@
       {
         "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/SubstanceSpecification_Moiety"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#role",
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#opticalActivity",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -23,7 +24,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "role"
+                "@value": "opticalActivity"
               }
             ]
           },
@@ -44,34 +45,42 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#_molecularFormula",
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#amountQuantity",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Quantity"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_molecularFormula"
+                "@value": "amountQuantity"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#stereochemistry",
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#modifierExtension",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference/ref": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "stereochemistry"
+                "@value": "modifierExtension"
               }
             ]
           },
@@ -102,13 +111,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#id",
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#molecularFormula",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
+                "@value": "molecularFormula"
               }
             ],
             "https://lschema.org/description": [
@@ -128,34 +137,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#opticalActivity",
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#identifier",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/Identifier"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "opticalActivity"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#amountQuantity",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Quantity"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "amountQuantity"
+                "@value": "identifier"
               }
             ]
           },
@@ -186,6 +179,38 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#role",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "role"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#stereochemistry",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "stereochemistry"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#_name",
             "@type": [
               "https://lschema.org/Reference"
@@ -198,6 +223,32 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_name"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -226,68 +277,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#molecularFormula",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "molecularFormula"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#identifier",
+            "@id": "http://hl7.org/fhir/SubstanceSpecification_Moiety#_molecularFormula",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Identifier"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "identifier"
+                "@value": "_molecularFormula"
               }
             ]
           }

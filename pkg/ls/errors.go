@@ -99,3 +99,15 @@ func (e ErrTerm) Error() string {
 func (e ErrTerm) Unwrap() error {
 	return e.Err
 }
+
+type ErrMultipleParentNodes struct {
+	Of string
+}
+
+func (e ErrMultipleParentNodes) Error() string { return "Multiple parent nodes for:" + e.Of }
+
+type ErrNoParentNode struct {
+	Of string
+}
+
+func (e ErrNoParentNode) Error() string { return "No parent node for:" + e.Of }

@@ -8,6 +8,7 @@
       {
         "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/SpecimenDefinition_TypeTested"
         ],
         "https://lschema.org/Object/attributes": [
@@ -36,98 +37,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#rejectionCriterion",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#rejectionCriterion.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "rejectionCriterion"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#_requirement",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_requirement"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#isDerived",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "isDerived"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Value of \"true\" or \"false\""
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "boolean"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^true|false$"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
@@ -152,18 +61,28 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#retentionTime",
+            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#requirement",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Duration"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "retentionTime"
+                "@value": "requirement"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -216,7 +135,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#_preference",
+            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#_isDerived",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -227,7 +146,47 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_preference"
+                "@value": "_isDerived"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#rejectionCriterion",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#rejectionCriterion.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "rejectionCriterion"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#retentionTime",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Duration"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "retentionTime"
               }
             ]
           },
@@ -264,29 +223,39 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#_isDerived",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_isDerived"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#requirement",
+            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#isDerived",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "requirement"
+                "@value": "isDerived"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Value of \"true\" or \"false\""
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "boolean"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^true|false$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
               }
             ],
             "https://lschema.org/description": [
@@ -302,6 +271,38 @@
             "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#_requirement",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_requirement"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SpecimenDefinition_TypeTested#_preference",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_preference"
               }
             ]
           }

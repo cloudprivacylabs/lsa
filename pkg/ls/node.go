@@ -77,6 +77,16 @@ func (types Types) Has(t string) bool {
 	return false
 }
 
+// HasAll checks if types has all of the given types
+func (types Types) HasAll(t ...string) bool {
+	for _, typ := range t {
+		if !types.Has(typ) {
+			return false
+		}
+	}
+	return true
+}
+
 func (types Types) String() string {
 	return fmt.Sprint(types.slice)
 }
@@ -487,4 +497,28 @@ func (n NodeSet) EqualSet(n2 NodeSet) bool {
 		}
 	}
 	return true
+}
+
+// DocumentNodesUnder returns all document nodes under the given node(s)
+func DocumentNodesUnder(node ...Node) []Node {
+	input := make([]digraph.Node, 0, len(node))
+	for _, x := range node {
+		input = append(input, x)
+	}
+	itr := digraph.NewNodeWalkIterator(input...).Select(func(n digraph.Node) bool {
+		lsnode, ok := n.(Node)
+		if !ok {
+			return false
+		}
+		if !lsnode.GetTypes().Has(DocumentNodeTerm) {
+			return false
+		}
+		return true
+	})
+	all := itr.All()
+	ret := make([]Node, 0, len(all))
+	for _, x := range all {
+		ret = append(ret, x.(Node))
+	}
+	return ret
 }

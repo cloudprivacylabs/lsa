@@ -8,52 +8,73 @@
       {
         "@id": "http://hl7.org/fhir/RelatedPerson",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/RelatedPerson"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/RelatedPerson#_birthDate",
+            "@id": "http://hl7.org/fhir/RelatedPerson#address",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson#address.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Address"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "address"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson#id",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/id"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_birthDate"
+                "@value": "id"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RelatedPerson#gender",
+            "@id": "http://hl7.org/fhir/RelatedPerson#implicitRules",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "gender"
+                "@value": "implicitRules"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "Administrative Gender - the gender that the person is considered to have for administration and record keeping purposes."
+                "@value": "String of characters used to identify a name or a resource"
               }
             ],
-            "https://lschema.org/validation/enumeration": [
+            "https://lschema.org/targetType": [
               {
-                "@value": "male"
-              },
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
               {
-                "@value": "female"
-              },
-              {
-                "@value": "other"
-              },
-              {
-                "@value": "unknown"
+                "@value": "^\\S*$"
               }
             ]
           },
@@ -79,66 +100,42 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RelatedPerson#_active",
+            "@id": "http://hl7.org/fhir/RelatedPerson#meta",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Meta"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_active"
+                "@value": "meta"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RelatedPerson#name",
+            "@id": "http://hl7.org/fhir/RelatedPerson#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson#name.*",
+                "@id": "http://hl7.org/fhir/RelatedPerson#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/HumanName"
+                    "@id": "http://hl7.org/fhir/Extension"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "name"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson#photo",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson#photo.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Attachment"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "photo"
+                "@value": "modifierExtension"
               }
             ]
           },
@@ -167,68 +164,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RelatedPerson#birthDate",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "birthDate"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A date or partial date (e.g. just year or year + month). There is no time zone. The format is a union of the schema types gYear, gYearMonth and date.  Dates SHALL be valid dates."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson#period",
+            "@id": "http://hl7.org/fhir/RelatedPerson#_birthDate",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Period"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "period"
+                "@value": "_birthDate"
               }
             ]
           },
@@ -1864,68 +1811,208 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RelatedPerson#id",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson#implicitRules",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "implicitRules"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson#communication",
+            "@id": "http://hl7.org/fhir/RelatedPerson#photo",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson#communication.*",
+                "@id": "http://hl7.org/fhir/RelatedPerson#photo.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/RelatedPerson_Communication"
+                    "@id": "http://hl7.org/fhir/Attachment"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "communication"
+                "@value": "photo"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson#_active",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_active"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson#patient",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "patient"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson#_gender",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_gender"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson#gender",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "gender"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Administrative Gender - the gender that the person is considered to have for administration and record keeping purposes."
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "male"
+              },
+              {
+                "@value": "female"
+              },
+              {
+                "@value": "other"
+              },
+              {
+                "@value": "unknown"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson#relationship",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson#relationship.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "relationship"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson#name",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson#name.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/HumanName"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "name"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/RelatedPerson#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson#period",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "period"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson#_implicitRules",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_implicitRules"
               }
             ]
           },
@@ -1954,110 +2041,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RelatedPerson#_implicitRules",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_implicitRules"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson#_language",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_language"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson#meta",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Meta"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "meta"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson#_gender",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_gender"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson#address",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson#address.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Address"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "address"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/RelatedPerson#patient",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "patient"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/RelatedPerson#text",
             "@type": [
               "https://lschema.org/Reference"
@@ -2074,18 +2057,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RelatedPerson#language",
+            "@id": "http://hl7.org/fhir/RelatedPerson#birthDate",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "language"
+                "@value": "birthDate"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                "@value": "A date or partial date (e.g. just year or year + month). There is no time zone. The format is a union of the schema types gYear, gYearMonth and date.  Dates SHALL be valid dates."
               }
             ],
             "https://lschema.org/targetType": [
@@ -2095,7 +2078,23 @@
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/RelatedPerson#_language",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_language"
               }
             ]
           },
@@ -2126,50 +2125,52 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RelatedPerson#modifierExtension",
+            "@id": "http://hl7.org/fhir/RelatedPerson#communication",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/RelatedPerson#modifierExtension.*",
+                "@id": "http://hl7.org/fhir/RelatedPerson#communication.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/RelatedPerson_Communication"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
+                "@value": "communication"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/RelatedPerson#relationship",
+            "@id": "http://hl7.org/fhir/RelatedPerson#language",
             "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/RelatedPerson#relationship.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "relationship"
+                "@value": "language"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
               }
             ]
           }

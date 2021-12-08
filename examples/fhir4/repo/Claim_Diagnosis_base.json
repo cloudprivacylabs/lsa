@@ -8,49 +8,18 @@
       {
         "@id": "http://hl7.org/fhir/Claim_Diagnosis",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/Claim_Diagnosis"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Claim_Diagnosis#packageCode",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "packageCode"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Claim_Diagnosis#onAdmission",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "onAdmission"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Claim_Diagnosis#modifierExtension",
+            "@id": "http://hl7.org/fhir/Claim_Diagnosis#extension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Claim_Diagnosis#modifierExtension.*",
+                "@id": "http://hl7.org/fhir/Claim_Diagnosis#extension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
@@ -63,7 +32,49 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Claim_Diagnosis#sequence",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "sequence"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "An integer with a value that is positive (e.g. \u003e0)"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[1-9][0-9]*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Claim_Diagnosis#_sequence",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_sequence"
               }
             ]
           },
@@ -100,6 +111,46 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/Claim_Diagnosis#packageCode",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "packageCode"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Claim_Diagnosis#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Claim_Diagnosis#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/Claim_Diagnosis#type",
             "@type": [
               "https://lschema.org/Array"
@@ -124,28 +175,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Claim_Diagnosis#sequence",
+            "@id": "http://hl7.org/fhir/Claim_Diagnosis#onAdmission",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "sequence"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "An integer with a value that is positive (e.g. \u003e0)"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[1-9][0-9]*$"
+                "@value": "onAdmission"
               }
             ]
           },
@@ -172,46 +213,6 @@
             "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Claim_Diagnosis#_sequence",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_sequence"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Claim_Diagnosis#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/Claim_Diagnosis#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
               }
             ]
           }
