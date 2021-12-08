@@ -46,6 +46,9 @@ var (
 
 	// DefaultValueTerm is the default value for an attribute if attribute is not present
 	DefaultValueTerm = NewTerm(LS+"defaultValue", false, false, OverrideComposition, nil)
+
+	// Format specifies a type-specific formatting directive, such as a date format
+	FormatTerm = NewTerm(LS+"format", false, false, OverrideComposition, nil)
 )
 
 // AttributeTypes defines the terms describing attribute types. Each
