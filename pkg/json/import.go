@@ -203,21 +203,7 @@ func BuildEntityGraph(typeTerm string, entities ...CompiledEntity) ([]EntityLaye
 		// Set the target type of the layer to root node ID
 		imported.Layer.SetTargetType(ctx.currentEntity.ID)
 		ls.Connect(imported.Layer.GetLayerInfoNode(), rootNode, ls.LayerRootTerm)
-		if s.object != nil {
-			rootNode.GetTypes().Add(ls.AttributeTypes.Object)
-			nodes := s.object.itr(ctx.currentEntity.ID, nil, imported.Layer)
-			for _, node := range nodes {
-				ls.Connect(rootNode, node, ls.LayerTerms.Attributes)
-			}
-		} else if s.array != nil {
-			rootNode.GetTypes().Add(ls.AttributeTypes.Array)
-			node := s.array.itr(ctx.currentEntity.ID, nil, imported.Layer)
-			ls.Connect(rootNode, node, ls.LayerTerms.ArrayItems)
-		} else {
-			rootNode.GetTypes().Add(ls.AttributeTypes.Value)
-			buildSchemaAttrs(ctx.currentEntity.ID, nil, s, imported.Layer, rootNode)
-		}
-
+		buildSchemaAttrs(ctx.currentEntity.ID, nil, s, imported.Layer, rootNode)
 		ret = append(ret, imported)
 	}
 	return ret, nil
@@ -313,11 +299,11 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 			s := fmt.Sprint(sch.Default)
 			target.defaultValue = &s
 		}
-		if ext, ok := sch.Extensions[X_LS]; ok {
-			mext, _ := ext.(annotationExtSchema)
-			if len(mext) > 0 {
-				target.annotations = map[string]*ls.PropertyValue(mext)
-			}
+	}
+	if ext, ok := sch.Extensions[X_LS]; ok {
+		mext, _ := ext.(annotationExtSchema)
+		if len(mext) > 0 {
+			target.annotations = map[string]*ls.PropertyValue(mext)
 		}
 	}
 
