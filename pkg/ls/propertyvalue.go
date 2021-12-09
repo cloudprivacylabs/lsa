@@ -149,6 +149,22 @@ func (p *PropertyValue) AsInt() int {
 	return i
 }
 
+// Slice returns the property value as a slice. If the property value
+// is a string, returns a slice containing that value. If the property
+// value is nil, returns an empty slice
+func (p *PropertyValue) Slice() []string {
+	if p == nil {
+		return []string{}
+	}
+	if p.IsString() {
+		return []string{p.AsString()}
+	}
+	if p.IsStringSlice() {
+		return p.AsStringSlice()
+	}
+	return []string{}
+}
+
 func (p PropertyValue) Clone() *PropertyValue {
 	return &PropertyValue{value: p.value}
 }

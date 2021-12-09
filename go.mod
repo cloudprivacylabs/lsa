@@ -14,8 +14,10 @@ require (
 
 require (
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/nleeper/goment v1.4.2 // indirect
 	github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 // indirect
 	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/stretchr/testify v1.5.1 // indirect
+	github.com/stretchr/testify v1.6.1 // indirect
+	github.com/tkuchiki/go-timezone v0.2.0 // indirect
 )
