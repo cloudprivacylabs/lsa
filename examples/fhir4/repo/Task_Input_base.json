@@ -8,17 +8,140 @@
       {
         "@id": "http://hl7.org/fhir/Task_Input",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/Task_Input"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valuePositiveInt",
+            "@id": "http://hl7.org/fhir/Task_Input#valueIdentifier",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Identifier"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueIdentifier"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueCode",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valuePositiveInt"
+                "@value": "valueCode"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The value of the input parameter as a basic type."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueSampledData",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/SampledData"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueSampledData"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueRatio",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Ratio"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueRatio"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#_valueTime",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_valueTime"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueUsageContext",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/UsageContext"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueUsageContext"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#_valueBase64Binary",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_valueBase64Binary"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueDecimal",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueDecimal"
               }
             ],
             "https://lschema.org/description": [
@@ -33,63 +156,71 @@
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^[1-9][0-9]*$"
+                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/Task_Input#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueQuantity",
+            "@id": "http://hl7.org/fhir/Task_Input#valuePeriod",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Quantity"
+                "@id": "http://hl7.org/fhir/Period"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueQuantity"
+                "@value": "valuePeriod"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueMarkdown",
+            "@id": "http://hl7.org/fhir/Task_Input#valueSignature",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Signature"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_valueMarkdown"
+                "@value": "valueSignature"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueContactPoint",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/ContactPoint"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueContactPoint"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueExpression",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Expression"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueExpression"
               }
             ]
           },
@@ -120,55 +251,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueRange",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Range"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueRange"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valuePeriod",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valuePeriod"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueCoding",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Coding"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueCoding"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueUrl",
+            "@id": "http://hl7.org/fhir/Task_Input#_valueMarkdown",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -179,39 +262,263 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_valueUrl"
+                "@value": "_valueMarkdown"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueParameterDefinition",
+            "@id": "http://hl7.org/fhir/Task_Input#valueBoolean",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueBoolean"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The value of the input parameter as a basic type."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "boolean"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^true|false$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueReference",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/ParameterDefinition"
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueParameterDefinition"
+                "@value": "valueReference"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueSampledData",
+            "@id": "http://hl7.org/fhir/Task_Input#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Task_Input#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#_valueCode",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/SampledData"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueSampledData"
+                "@value": "_valueCode"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#_valueDate",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_valueDate"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueCanonical",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueCanonical"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The value of the input parameter as a basic type."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueAttachment",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Attachment"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueAttachment"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueDuration",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Duration"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueDuration"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueContactDetail",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/ContactDetail"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueContactDetail"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueUri",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueUri"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The value of the input parameter as a basic type."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueQuantity",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Quantity"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueQuantity"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueUuid",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueUuid"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The value of the input parameter as a basic type."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#_valueUuid",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_valueUuid"
               }
             ]
           },
@@ -232,50 +539,44 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueBase64Binary",
+            "@id": "http://hl7.org/fhir/Task_Input#valueDataRequirement",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/DataRequirement"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_valueBase64Binary"
+                "@value": "valueDataRequirement"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueAge",
+            "@id": "http://hl7.org/fhir/Task_Input#valueDate",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Age"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueAge"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueCode",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
+                "@value": "valueDate"
               }
             ],
-            "https://lschema.org/attributeName": [
+            "https://lschema.org/description": [
               {
-                "@value": "_valueCode"
+                "@value": "The value of the input parameter as a basic type."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
               }
             ]
           },
@@ -332,28 +633,66 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueCode",
+            "@id": "http://hl7.org/fhir/Task_Input#_valueDateTime",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueCode"
+                "@value": "_valueDateTime"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueAddress",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Address"
               }
             ],
-            "https://lschema.org/description": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "The value of the input parameter as a basic type."
+                "@value": "valueAddress"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueRange",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Range"
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/attributeName": [
               {
-                "@id": "string"
+                "@value": "valueRange"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueCount",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Count"
               }
             ],
-            "https://lschema.org/validation/pattern": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                "@value": "valueCount"
               }
             ]
           },
@@ -374,91 +713,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueUri",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueUri"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The value of the input parameter as a basic type."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueCodeableConcept",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueCodeableConcept"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueTiming",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Timing"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueTiming"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueBoolean",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueBoolean"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The value of the input parameter as a basic type."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "boolean"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^true|false$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueDateTime",
+            "@id": "http://hl7.org/fhir/Task_Input#_valueUri",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -469,139 +724,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_valueDateTime"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueDate",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_valueDate"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueInteger",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_valueInteger"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueSignature",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Signature"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueSignature"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueOid",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueOid"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The value of the input parameter as a basic type."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^urn:oid:[0-2](\\.(0|[1-9][0-9]*))+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueIdentifier",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Identifier"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueIdentifier"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueDecimal",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_valueDecimal"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueMarkdown",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueMarkdown"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The value of the input parameter as a basic type."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "_valueUri"
               }
             ]
           },
@@ -632,74 +755,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueUuid",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueUuid"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The value of the input parameter as a basic type."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueInstant",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_valueInstant"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueString",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueString"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The value of the input parameter as a basic type."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/Task_Input#valueAnnotation",
             "@type": [
               "https://lschema.org/Reference"
@@ -712,302 +767,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "valueAnnotation"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueBoolean",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_valueBoolean"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueId",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_valueId"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueUuid",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_valueUuid"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueRelatedArtifact",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/RelatedArtifact"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueRelatedArtifact"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueAddress",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Address"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueAddress"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueOid",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_valueOid"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#type",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "type"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueUsageContext",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/UsageContext"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueUsageContext"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueCanonical",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueCanonical"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The value of the input parameter as a basic type."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueTime",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_valueTime"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueDate",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueDate"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The value of the input parameter as a basic type."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueCount",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Count"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueCount"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueId",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueId"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The value of the input parameter as a basic type."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueContributor",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Contributor"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueContributor"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueAttachment",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Attachment"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueAttachment"
               }
             ]
           },
@@ -1038,34 +797,166 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueMoney",
+            "@id": "http://hl7.org/fhir/Task_Input#valueDistance",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Money"
+                "@id": "http://hl7.org/fhir/Distance"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueMoney"
+                "@value": "valueDistance"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueReference",
+            "@id": "http://hl7.org/fhir/Task_Input#_valueDecimal",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Reference"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueReference"
+                "@value": "_valueDecimal"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueId",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueId"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The value of the input parameter as a basic type."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[A-Za-z0-9\\-\\.]{1,64}$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueDosage",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Dosage"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueDosage"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueMarkdown",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueMarkdown"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The value of the input parameter as a basic type."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueParameterDefinition",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/ParameterDefinition"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueParameterDefinition"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueTriggerDefinition",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/TriggerDefinition"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueTriggerDefinition"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueTiming",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Timing"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueTiming"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueCodeableConcept",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueCodeableConcept"
               }
             ]
           },
@@ -1086,82 +977,150 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueDistance",
+            "@id": "http://hl7.org/fhir/Task_Input#valuePositiveInt",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Distance"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueDistance"
+                "@value": "valuePositiveInt"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The value of the input parameter as a basic type."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[1-9][0-9]*$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueDataRequirement",
+            "@id": "http://hl7.org/fhir/Task_Input#type",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/DataRequirement"
+                "@id": "http://hl7.org/fhir/CodeableConcept"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueDataRequirement"
+                "@value": "type"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueContactPoint",
+            "@id": "http://hl7.org/fhir/Task_Input#valueAge",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/ContactPoint"
+                "@id": "http://hl7.org/fhir/Age"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueContactPoint"
+                "@value": "valueAge"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueContactDetail",
+            "@id": "http://hl7.org/fhir/Task_Input#valueHumanName",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/ContactDetail"
+                "@id": "http://hl7.org/fhir/HumanName"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueContactDetail"
+                "@value": "valueHumanName"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueRatio",
+            "@id": "http://hl7.org/fhir/Task_Input#_valueInstant",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Ratio"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueRatio"
+                "@value": "_valueInstant"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#_valueInteger",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_valueInteger"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueString",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueString"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The value of the input parameter as a basic type."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#_valueString",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_valueString"
               }
             ]
           },
@@ -1192,39 +1151,23 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueHumanName",
+            "@id": "http://hl7.org/fhir/Task_Input#valueMoney",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/HumanName"
+                "@id": "http://hl7.org/fhir/Money"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueHumanName"
+                "@value": "valueMoney"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueTriggerDefinition",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/TriggerDefinition"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueTriggerDefinition"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueUri",
+            "@id": "http://hl7.org/fhir/Task_Input#_valueId",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -1235,7 +1178,105 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_valueUri"
+                "@value": "_valueId"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueCoding",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Coding"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueCoding"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#_valueUrl",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_valueUrl"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#valueContributor",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Contributor"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "valueContributor"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Task_Input#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
               }
             ]
           },
@@ -1266,85 +1307,29 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueDosage",
+            "@id": "http://hl7.org/fhir/Task_Input#valueRelatedArtifact",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Dosage"
+                "@id": "http://hl7.org/fhir/RelatedArtifact"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueDosage"
+                "@value": "valueRelatedArtifact"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#valueDuration",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Duration"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueDuration"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueExpression",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Expression"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "valueExpression"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/Task_Input#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Task_Input#valueDecimal",
+            "@id": "http://hl7.org/fhir/Task_Input#valueOid",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "valueDecimal"
+                "@value": "valueOid"
               }
             ],
             "https://lschema.org/description": [
@@ -1354,17 +1339,17 @@
             ],
             "https://lschema.org/targetType": [
               {
-                "@id": "number"
+                "@id": "string"
               }
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+                "@value": "^urn:oid:[0-2](\\.(0|[1-9][0-9]*))+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Task_Input#_valueString",
+            "@id": "http://hl7.org/fhir/Task_Input#_valueBoolean",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -1375,7 +1360,23 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_valueString"
+                "@value": "_valueBoolean"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Task_Input#_valueOid",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_valueOid"
               }
             ]
           }

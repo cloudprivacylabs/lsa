@@ -8,81 +8,10 @@
       {
         "@id": "http://hl7.org/fhir/Appointment_Participant",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/Appointment_Participant"
         ],
         "https://lschema.org/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Appointment_Participant#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/Appointment_Participant#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Appointment_Participant#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/Appointment_Participant#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Appointment_Participant#type",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/Appointment_Participant#type.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "type"
-              }
-            ]
-          },
           {
             "@id": "http://hl7.org/fhir/Appointment_Participant#actor",
             "@type": [
@@ -100,60 +29,29 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Appointment_Participant#period",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "period"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Appointment_Participant#_status",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_status"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Appointment_Participant#id",
+            "@id": "http://hl7.org/fhir/Appointment_Participant#required",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
+                "@value": "required"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A sequence of Unicode characters"
+                "@value": "Whether this participant is required to be present at the meeting. This covers a use-case where two doctors need to meet to discuss the results for a specific patient, and the patient is not required to be present."
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/validation/enumeration": [
               {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
+                "@value": "required"
+              },
               {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "optional"
+              },
+              {
+                "@value": "information-only"
               }
             ]
           },
@@ -188,29 +86,84 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Appointment_Participant#required",
+            "@id": "http://hl7.org/fhir/Appointment_Participant#period",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "period"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Appointment_Participant#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Appointment_Participant#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Appointment_Participant#id",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "required"
+                "@value": "id"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "Whether this participant is required to be present at the meeting. This covers a use-case where two doctors need to meet to discuss the results for a specific patient, and the patient is not required to be present."
+                "@value": "A sequence of Unicode characters"
               }
             ],
-            "https://lschema.org/validation/enumeration": [
+            "https://lschema.org/targetType": [
               {
-                "@value": "required"
-              },
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
               {
-                "@value": "optional"
-              },
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Appointment_Participant#_status",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
               {
-                "@value": "information-only"
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_status"
               }
             ]
           },
@@ -227,6 +180,54 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_required"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Appointment_Participant#type",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Appointment_Participant#type.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "type"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Appointment_Participant#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/Appointment_Participant#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
               }
             ]
           }

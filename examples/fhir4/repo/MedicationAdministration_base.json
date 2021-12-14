@@ -8,56 +8,23 @@
       {
         "@id": "http://hl7.org/fhir/MedicationAdministration",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/MedicationAdministration"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#eventHistory",
+            "@id": "http://hl7.org/fhir/MedicationAdministration#dosage",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array/elements": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/MedicationAdministration#eventHistory.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/MedicationAdministration_Dosage"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "eventHistory"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#status",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "status"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                "@value": "dosage"
               }
             ]
           },
@@ -96,31 +63,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#reasonReference",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationAdministration#reasonReference.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "reasonReference"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#subject",
+            "@id": "http://hl7.org/fhir/MedicationAdministration#medicationReference",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -131,7 +74,31 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "subject"
+                "@value": "medicationReference"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#statusReason",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationAdministration#statusReason.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "statusReason"
               }
             ]
           },
@@ -162,104 +129,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#implicitRules",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "implicitRules"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#_status",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_status"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#medicationReference",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "medicationReference"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#context",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "context"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#_instantiates",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationAdministration#_instantiates.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Element"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_instantiates"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/MedicationAdministration#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
@@ -284,13 +153,69 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#device",
+            "@id": "http://hl7.org/fhir/MedicationAdministration#performer",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/MedicationAdministration#device.*",
+                "@id": "http://hl7.org/fhir/MedicationAdministration#performer.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/MedicationAdministration_Performer"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "performer"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#request",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "request"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#_implicitRules",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_implicitRules"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#partOf",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationAdministration#partOf.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
@@ -303,7 +228,31 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "device"
+                "@value": "partOf"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#reasonReference",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationAdministration#reasonReference.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "reasonReference"
               }
             ]
           },
@@ -1939,66 +1888,74 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#note",
+            "@id": "http://hl7.org/fhir/MedicationAdministration#_instantiates",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/MedicationAdministration#note.*",
+                "@id": "http://hl7.org/fhir/MedicationAdministration#_instantiates.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Annotation"
+                    "@id": "http://hl7.org/fhir/Element"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "note"
+                "@value": "_instantiates"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#category",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "category"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#reasonCode",
+            "@id": "http://hl7.org/fhir/MedicationAdministration#device",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/MedicationAdministration#reasonCode.*",
+                "@id": "http://hl7.org/fhir/MedicationAdministration#device.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                    "@id": "http://hl7.org/fhir/Reference"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "reasonCode"
+                "@value": "device"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#eventHistory",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationAdministration#eventHistory.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "eventHistory"
               }
             ]
           },
@@ -2019,26 +1976,34 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#supportingInformation",
+            "@id": "http://hl7.org/fhir/MedicationAdministration#text",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array/elements": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/MedicationAdministration#supportingInformation.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Narrative"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "supportingInformation"
+                "@value": "text"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#subject",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "subject"
               }
             ]
           },
@@ -2059,6 +2024,72 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationAdministration#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#status",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "status"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#context",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "context"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/MedicationAdministration#id",
             "@type": [
               "https://lschema.org/Reference"
@@ -2075,199 +2106,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#partOf",
+            "@id": "http://hl7.org/fhir/MedicationAdministration#note",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/MedicationAdministration#partOf.*",
+                "@id": "http://hl7.org/fhir/MedicationAdministration#note.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Reference"
+                    "@id": "http://hl7.org/fhir/Annotation"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "partOf"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#performer",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationAdministration#performer.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/MedicationAdministration_Performer"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "performer"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#request",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "request"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#identifier",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationAdministration#identifier.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Identifier"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "identifier"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#resourceType",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "resourceType"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "This is a MedicationAdministration resource"
-              }
-            ],
-            "https://lschema.org/validation/enumeration": [
-              {
-                "@value": "MedicationAdministration"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#statusReason",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MedicationAdministration#statusReason.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "statusReason"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#_implicitRules",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_implicitRules"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#_effectiveDateTime",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_effectiveDateTime"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#text",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Narrative"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#_language",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_language"
+                "@value": "note"
               }
             ]
           },
@@ -2298,6 +2156,115 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#_language",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_language"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#category",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "category"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#_effectiveDateTime",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_effectiveDateTime"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "resourceType"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "This is a MedicationAdministration resource"
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "MedicationAdministration"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#supportingInformation",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationAdministration#supportingInformation.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "supportingInformation"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#_status",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_status"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/MedicationAdministration#effectivePeriod",
             "@type": [
               "https://lschema.org/Reference"
@@ -2314,42 +2281,76 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#extension",
+            "@id": "http://hl7.org/fhir/MedicationAdministration#reasonCode",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/MedicationAdministration#extension.*",
+                "@id": "http://hl7.org/fhir/MedicationAdministration#reasonCode.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "reasonCode"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MedicationAdministration#dosage",
+            "@id": "http://hl7.org/fhir/MedicationAdministration#implicitRules",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Value"
             ],
-            "https://lschema.org/Reference/ref": [
+            "https://lschema.org/attributeName": [
               {
-                "@id": "http://hl7.org/fhir/MedicationAdministration_Dosage"
+                "@value": "implicitRules"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "String of characters used to identify a name or a resource"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^\\S*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MedicationAdministration#identifier",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MedicationAdministration#identifier.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Identifier"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "dosage"
+                "@value": "identifier"
               }
             ]
           }

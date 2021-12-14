@@ -8,9 +8,50 @@
       {
         "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid"
         ],
         "https://lschema.org/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#hybridType",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "hybridType"
+              }
+            ]
+          },
           {
             "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#_maternalOrganismId",
             "@type": [
@@ -28,22 +69,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#_maternalOrganismName",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_maternalOrganismName"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#paternalOrganismName",
             "@type": [
               "https://lschema.org/Value"
@@ -51,6 +76,32 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "paternalOrganismName"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
               }
             ],
             "https://lschema.org/description": [
@@ -86,13 +137,55 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#extension",
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#maternalOrganismName",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "maternalOrganismName"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#_paternalOrganismName",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_paternalOrganismName"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#extension.*",
+                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
@@ -105,7 +198,23 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#_maternalOrganismName",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_maternalOrganismName"
               }
             ]
           },
@@ -143,114 +252,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "paternalOrganismId"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#hybridType",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "hybridType"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#_paternalOrganismName",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_paternalOrganismName"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#maternalOrganismName",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "maternalOrganismName"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/SubstanceSourceMaterial_Hybrid#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
               }
             ],
             "https://lschema.org/description": [

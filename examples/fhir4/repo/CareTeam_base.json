@@ -8,9 +8,151 @@
       {
         "@id": "http://hl7.org/fhir/CareTeam",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/CareTeam"
         ],
         "https://lschema.org/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/CareTeam#text",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Narrative"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CareTeam#participant",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/CareTeam#participant.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/CareTeam_Participant"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "participant"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CareTeam#_implicitRules",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_implicitRules"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CareTeam#_language",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_language"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CareTeam#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/CareTeam#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CareTeam#managingOrganization",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/CareTeam#managingOrganization.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "managingOrganization"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CareTeam#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "resourceType"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "This is a CareTeam resource"
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "CareTeam"
+              }
+            ]
+          },
           {
             "@id": "http://hl7.org/fhir/CareTeam#status",
             "@type": [
@@ -45,26 +187,70 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/CareTeam#managingOrganization",
+            "@id": "http://hl7.org/fhir/CareTeam#name",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Value"
             ],
-            "https://lschema.org/Array/elements": [
+            "https://lschema.org/attributeName": [
               {
-                "@id": "http://hl7.org/fhir/CareTeam#managingOrganization.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
+                "@value": "name"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CareTeam#_status",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "managingOrganization"
+                "@value": "_status"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CareTeam#language",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "language"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
               }
             ]
           },
@@ -81,6 +267,22 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_name"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CareTeam#encounter",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "encounter"
               }
             ]
           },
@@ -109,213 +311,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/CareTeam#period",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "period"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CareTeam#participant",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/CareTeam#participant.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CareTeam_Participant"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "participant"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CareTeam#_language",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_language"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CareTeam#category",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/CareTeam#category.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "category"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CareTeam#note",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/CareTeam#note.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Annotation"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "note"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CareTeam#text",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Narrative"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CareTeam#resourceType",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "resourceType"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "This is a CareTeam resource"
-              }
-            ],
-            "https://lschema.org/validation/enumeration": [
-              {
-                "@value": "CareTeam"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CareTeam#name",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "name"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CareTeam#id",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CareTeam#identifier",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/CareTeam#identifier.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Identifier"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "identifier"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/CareTeam#reasonReference",
             "@type": [
               "https://lschema.org/Array"
@@ -336,54 +331,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "reasonReference"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CareTeam#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/CareTeam#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CareTeam#reasonCode",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/CareTeam#reasonCode.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "reasonCode"
               }
             ]
           },
@@ -412,44 +359,82 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/CareTeam#_status",
+            "@id": "http://hl7.org/fhir/CareTeam#identifier",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/CareTeam#identifier.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Identifier"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "identifier"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CareTeam#meta",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Meta"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_status"
+                "@value": "meta"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/CareTeam#implicitRules",
+            "@id": "http://hl7.org/fhir/CareTeam#id",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "implicitRules"
+                "@value": "id"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CareTeam#note",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/CareTeam#note.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Annotation"
+                  }
+                ]
               }
             ],
-            "https://lschema.org/description": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^\\S*$"
+                "@value": "note"
               }
             ]
           },
@@ -2085,6 +2070,54 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/CareTeam#category",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/CareTeam#category.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "category"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/CareTeam#reasonCode",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/CareTeam#reasonCode.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "reasonCode"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/CareTeam#subject",
             "@type": [
               "https://lschema.org/Reference"
@@ -2101,66 +2134,34 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/CareTeam#meta",
+            "@id": "http://hl7.org/fhir/CareTeam#period",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Meta"
+                "@id": "http://hl7.org/fhir/Period"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "meta"
+                "@value": "period"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/CareTeam#_implicitRules",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_implicitRules"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CareTeam#encounter",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "encounter"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/CareTeam#language",
+            "@id": "http://hl7.org/fhir/CareTeam#implicitRules",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "language"
+                "@value": "implicitRules"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                "@value": "String of characters used to identify a name or a resource"
               }
             ],
             "https://lschema.org/targetType": [
@@ -2170,7 +2171,7 @@
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                "@value": "^\\S*$"
               }
             ]
           }

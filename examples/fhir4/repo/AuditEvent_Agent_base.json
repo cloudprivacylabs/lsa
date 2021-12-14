@@ -8,17 +8,118 @@
       {
         "@id": "http://hl7.org/fhir/AuditEvent_Agent",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/AuditEvent_Agent"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/AuditEvent_Agent#extension",
+            "@id": "http://hl7.org/fhir/AuditEvent_Agent#role",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/AuditEvent_Agent#extension.*",
+                "@id": "http://hl7.org/fhir/AuditEvent_Agent#role.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "role"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent_Agent#_name",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_name"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent_Agent#policy",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent_Agent#policy.*",
+                "@type": [
+                  "https://lschema.org/Value"
+                ],
+                "https://lschema.org/description": [
+                  {
+                    "@value": "String of characters used to identify a name or a resource"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ],
+                "https://lschema.org/validation/pattern": [
+                  {
+                    "@value": "^\\S*$"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "policy"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent_Agent#altId",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "altId"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent_Agent#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/AuditEvent_Agent#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
@@ -31,7 +132,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "modifierExtension"
               }
             ]
           },
@@ -92,102 +193,42 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent_Agent#_altId",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_altId"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent_Agent#_policy",
+            "@id": "http://hl7.org/fhir/AuditEvent_Agent#extension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/AuditEvent_Agent#_policy.*",
+                "@id": "http://hl7.org/fhir/AuditEvent_Agent#extension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Element"
+                    "@id": "http://hl7.org/fhir/Extension"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_policy"
+                "@value": "extension"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent_Agent#policy",
+            "@id": "http://hl7.org/fhir/AuditEvent_Agent#who",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array/elements": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/AuditEvent_Agent#policy.*",
-                "@type": [
-                  "https://lschema.org/Value"
-                ],
-                "https://lschema.org/description": [
-                  {
-                    "@value": "String of characters used to identify a name or a resource"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@id": "string"
-                  }
-                ],
-                "https://lschema.org/validation/pattern": [
-                  {
-                    "@value": "^\\S*$"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "policy"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent_Agent#name",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "name"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "who"
               }
             ]
           },
@@ -218,34 +259,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent_Agent#location",
+            "@id": "http://hl7.org/fhir/AuditEvent_Agent#_policy",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference/ref": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Reference"
+                "@id": "http://hl7.org/fhir/AuditEvent_Agent#_policy.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Element"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "location"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent_Agent#type",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "type"
+                "@value": "_policy"
               }
             ]
           },
@@ -266,71 +299,7 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/AuditEvent_Agent#role",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent_Agent#role.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "role"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent_Agent#who",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "who"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent_Agent#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/AuditEvent_Agent#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent_Agent#_name",
+            "@id": "http://hl7.org/fhir/AuditEvent_Agent#_altId",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -341,33 +310,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_name"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/AuditEvent_Agent#altId",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "altId"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "_altId"
               }
             ]
           },
@@ -394,6 +337,64 @@
             "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent_Agent#type",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "type"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent_Agent#name",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "name"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/AuditEvent_Agent#location",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "location"
               }
             ]
           }

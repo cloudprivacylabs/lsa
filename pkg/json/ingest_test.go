@@ -16,10 +16,12 @@ package json
 
 import (
 	"encoding/json"
+	"strings"
 	"testing"
 
 	"github.com/bserdar/digraph"
 	"github.com/piprate/json-gold/ld"
+	"github.com/santhosh-tekuri/jsonschema/v5"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
@@ -106,6 +108,56 @@ func TestIngestFlat(t *testing.T) {
 	checkNodeValue("http://base.field3", "true")
 	checkNodeValue("http://base.field4", nil)
 	checkNodeValue("http://base.field5", "extra")
+}
+
+func TestIngestRootAnnotation(t *testing.T) {
+	schStr := `{
+   "definitions": {
+      "a": {
+         "type": "object",
+         "x-ls": {
+            "https://consentgrid.com/SmartConsent": "test"
+         },
+         "properties": {
+            "field1": {"type": "number"},
+           "field2":  {"type": "string"}
+      }
+   }
+  }
+}`
+	inputStr := `{
+  "field1": 1,
+  "field2": "2"
+}`
+
+	compiler := jsonschema.NewCompiler()
+	compiler.AddResource("http://test.json", strings.NewReader(schStr))
+	compiled, err := CompileEntitiesWith(compiler, Entity{Ref: "http://test.json#/definitions/a", ID: "id", LayerID: "lid"})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	layers, err := BuildEntityGraph(ls.SchemaTerm, compiled...)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	ingester := Ingester{
+		Ingester: ls.Ingester{
+			Schema:           layers[0].Layer,
+			EmbedSchemaNodes: true,
+		},
+	}
+	root, err := IngestBytes(&ingester, "http://base", []byte(inputStr))
+	if err != nil {
+		t.Error(err)
+	}
+	target := digraph.New()
+	target.AddNode(root)
+	ix := target.GetIndex()
+	nodes := ix.NodesByLabelSlice("http://base")
+	t.Logf("%+v", nodes[0].(ls.Node).GetProperties())
 }
 
 // func TestIngestObject(t *testing.T) {

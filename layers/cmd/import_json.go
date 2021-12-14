@@ -29,8 +29,14 @@ func init() {
 	importCmd.AddCommand(importJSONCmd)
 }
 
+type importEntity struct {
+	jsonsch.Entity
+	Name       string `json:"name"`
+	SchemaName string `json:"fileName"`
+}
+
 type ImportJSONSchemaRequest struct {
-	Entities   []jsonsch.Entity   `json:"entities"`
+	Entities   []importEntity     `json:"entities"`
 	SchemaID   string             `json:"schemaId"`
 	Schema     string             `json:"schemaManifest"`
 	ObjectType string             `json:"objectType"`
@@ -43,16 +49,24 @@ func (req *ImportJSONSchemaRequest) SetSchemaNames() {
 	}
 }
 
-func (req *ImportJSONSchemaRequest) CompileAndImport() ([]jsonsch.ImportedEntity, error) {
+func (req *ImportJSONSchemaRequest) CompileAndImport() ([]jsonsch.EntityLayer, error) {
 	req.SetSchemaNames()
-	return jsonsch.CompileAndImport(req.Entities)
+	e := make([]jsonsch.Entity, 0, len(req.Entities))
+	for _, x := range req.Entities {
+		e = append(e, x.Entity)
+	}
+	c, err := jsonsch.CompileEntities(e...)
+	if err != nil {
+		return nil, err
+	}
+	return jsonsch.BuildEntityGraph(ls.SchemaTerm, c...)
 }
 
-func (req *ImportJSONSchemaRequest) Slice(item jsonsch.ImportedEntity) ([]*ls.Layer, *ls.SchemaManifest, error) {
+func (req *ImportJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) ([]*ls.Layer, *ls.SchemaManifest, error) {
 	layerIDs := make([]string, 0)
 	baseID := ""
 	returnLayers := make([]*ls.Layer, 0)
-	tdata := map[string]interface{}{"name": item.Entity.Name, "ref": item.Entity.Ref}
+	tdata := map[string]interface{}{"name": req.Entities[index].Name, "ref": item.Entity.Ref}
 	for _, ovl := range req.Layers {
 		layer, err := ovl.Slice(item.Layer, execTemplate(req.ObjectType, tdata), tdata)
 		if err != nil {
@@ -86,7 +100,8 @@ var importJSONCmd = &cobra.Command{
   "entities": [
      {
        "ref": "<reference to schema>",
-       "name": "entity name"
+       "name": "entity name",
+       "id": "ID of the output type"
      },
     ...
    ],
@@ -95,7 +110,7 @@ var importJSONCmd = &cobra.Command{
   "objectType": "object type",
   "layers": [
      {
-         "@id": "output object id",
+         "@id": "output layer id",
          "type": "Schema" or "Overlay",
          "terms": [ terms to include in the layer ],
          "file": "output file"
@@ -127,12 +142,12 @@ are Go templates, you can reference entity names and references using {{.name}} 
 		if err != nil {
 			failErr(err)
 		}
-		for _, item := range results {
-			layers, sch, err := req.Slice(item)
+		for index, item := range results {
+			layers, sch, err := req.Slice(index, item)
 			if err != nil {
 				failErr(err)
 			}
-			tdata := map[string]interface{}{"name": item.Entity.Name, "ref": item.Entity.Ref}
+			tdata := map[string]interface{}{"name": req.Entities[index].Name, "ref": item.Entity.Ref}
 			for i := range layers {
 				data, err := json.MarshalIndent(ls.MarshalLayer(layers[i]), "", "  ")
 				if err != nil {

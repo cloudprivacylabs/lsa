@@ -8,9 +8,26 @@
       {
         "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/ClaimResponse_SubDetail1"
         ],
         "https://lschema.org/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#quantity",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Quantity"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "quantity"
+              }
+            ]
+          },
           {
             "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#unitPrice",
             "@type": [
@@ -28,26 +45,58 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#modifierExtension",
+            "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#productOrService",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "productOrService"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#modifier",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#modifierExtension.*",
+                "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#modifier.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
+                "@value": "modifier"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#net",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Money"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "net"
               }
             ]
           },
@@ -94,86 +143,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#productOrService",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "productOrService"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#modifier",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#modifier.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifier"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#quantity",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Quantity"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "quantity"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#_noteNumber",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#_noteNumber.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Element"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_noteNumber"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#adjudication",
             "@type": [
               "https://lschema.org/Array"
@@ -194,48 +163,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "adjudication"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#factor",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "factor"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A rational number with implicit precision"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#net",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Money"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "net"
               }
             ]
           },
@@ -294,6 +221,80 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#_noteNumber",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#_noteNumber.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Element"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_noteNumber"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ClaimResponse_SubDetail1#factor",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "factor"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A rational number with implicit precision"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
               }
             ]
           }

@@ -8,41 +8,10 @@
       {
         "@id": "http://hl7.org/fhir/Contract_ContentDefinition",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/Contract_ContentDefinition"
         ],
         "https://lschema.org/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#type",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "type"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#subType",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "subType"
-              }
-            ]
-          },
           {
             "@id": "http://hl7.org/fhir/Contract_ContentDefinition#publicationDate",
             "@type": [
@@ -66,6 +35,22 @@
             "https://lschema.org/validation/pattern": [
               {
                 "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#publisher",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "publisher"
               }
             ]
           },
@@ -96,18 +81,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#_publicationStatus",
+            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#extension",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference/ref": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Contract_ContentDefinition#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_publicationStatus"
+                "@value": "extension"
               }
             ]
           },
@@ -136,26 +129,92 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#extension",
+            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#_copyright",
             "@type": [
-              "https://lschema.org/Array"
+              "https://lschema.org/Reference"
             ],
-            "https://lschema.org/Array/elements": [
+            "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Contract_ContentDefinition#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "_copyright"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#_publicationDate",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_publicationDate"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#subType",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "subType"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#publicationStatus",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "publicationStatus"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#_publicationStatus",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_publicationStatus"
               }
             ]
           },
@@ -186,76 +245,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#publisher",
+            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#type",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Reference"
+                "@id": "http://hl7.org/fhir/CodeableConcept"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "publisher"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#_publicationDate",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_publicationDate"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#_copyright",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_copyright"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Contract_ContentDefinition#publicationStatus",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "publicationStatus"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                "@value": "type"
               }
             ]
           }

@@ -8,22 +8,114 @@
       {
         "@id": "http://hl7.org/fhir/ResearchSubject",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/ResearchSubject"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/ResearchSubject#consent",
+            "@id": "http://hl7.org/fhir/ResearchSubject#modifierExtension",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference/ref": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Reference"
+                "@id": "http://hl7.org/fhir/ResearchSubject#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "consent"
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject#status",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "status"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The current state of the subject."
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "candidate"
+              },
+              {
+                "@value": "eligible"
+              },
+              {
+                "@value": "follow-up"
+              },
+              {
+                "@value": "ineligible"
+              },
+              {
+                "@value": "not-registered"
+              },
+              {
+                "@value": "off-study"
+              },
+              {
+                "@value": "on-study"
+              },
+              {
+                "@value": "on-study-intervention"
+              },
+              {
+                "@value": "on-study-observation"
+              },
+              {
+                "@value": "pending-on-study"
+              },
+              {
+                "@value": "potential-candidate"
+              },
+              {
+                "@value": "screening"
+              },
+              {
+                "@value": "withdrawn"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject#actualArm",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "actualArm"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -1659,28 +1751,130 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ResearchSubject#assignedArm",
+            "@id": "http://hl7.org/fhir/ResearchSubject#_status",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "assignedArm"
+                "@value": "_status"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject#text",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Narrative"
               }
             ],
-            "https://lschema.org/description": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "A sequence of Unicode characters"
+                "@value": "text"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject#meta",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Meta"
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/attributeName": [
               {
-                "@id": "string"
+                "@value": "meta"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject#id",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
               }
             ],
-            "https://lschema.org/validation/pattern": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "id"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject#consent",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "consent"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject#_assignedArm",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_assignedArm"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject#individual",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "individual"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject#period",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "period"
               }
             ]
           },
@@ -1711,134 +1905,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ResearchSubject#individual",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "individual"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject#identifier",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ResearchSubject#identifier.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Identifier"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "identifier"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject#_implicitRules",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_implicitRules"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject#_language",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_language"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject#meta",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Meta"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "meta"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ResearchSubject#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject#id",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/ResearchSubject#resourceType",
             "@type": [
               "https://lschema.org/Value"
@@ -1860,7 +1926,31 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ResearchSubject#_assignedArm",
+            "@id": "http://hl7.org/fhir/ResearchSubject#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ResearchSubject#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject#_language",
             "@type": [
               "https://lschema.org/Reference"
             ],
@@ -1871,7 +1961,23 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_assignedArm"
+                "@value": "_language"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject#_implicitRules",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_implicitRules"
               }
             ]
           },
@@ -1902,85 +2008,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ResearchSubject#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ResearchSubject#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject#text",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Narrative"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject#_status",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_status"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject#period",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "period"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject#actualArm",
+            "@id": "http://hl7.org/fhir/ResearchSubject#assignedArm",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "actualArm"
+                "@value": "assignedArm"
               }
             ],
             "https://lschema.org/description": [
@@ -1996,6 +2030,30 @@
             "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ResearchSubject#identifier",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ResearchSubject#identifier.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Identifier"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "identifier"
               }
             ]
           },
@@ -2028,63 +2086,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_actualArm"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ResearchSubject#status",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "status"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The current state of the subject."
-              }
-            ],
-            "https://lschema.org/validation/enumeration": [
-              {
-                "@value": "candidate"
-              },
-              {
-                "@value": "eligible"
-              },
-              {
-                "@value": "follow-up"
-              },
-              {
-                "@value": "ineligible"
-              },
-              {
-                "@value": "not-registered"
-              },
-              {
-                "@value": "off-study"
-              },
-              {
-                "@value": "on-study"
-              },
-              {
-                "@value": "on-study-intervention"
-              },
-              {
-                "@value": "on-study-observation"
-              },
-              {
-                "@value": "pending-on-study"
-              },
-              {
-                "@value": "potential-candidate"
-              },
-              {
-                "@value": "screening"
-              },
-              {
-                "@value": "withdrawn"
               }
             ]
           }

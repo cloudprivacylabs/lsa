@@ -8,23 +8,24 @@
       {
         "@id": "http://hl7.org/fhir/ServiceRequest",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/ServiceRequest"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/ServiceRequest#instantiatesUri",
+            "@id": "http://hl7.org/fhir/ServiceRequest#instantiatesCanonical",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/ServiceRequest#instantiatesUri.*",
+                "@id": "http://hl7.org/fhir/ServiceRequest#instantiatesCanonical.*",
                 "@type": [
                   "https://lschema.org/Value"
                 ],
                 "https://lschema.org/description": [
                   {
-                    "@value": "String of characters used to identify a name or a resource"
+                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
                   }
                 ],
                 "https://lschema.org/targetType": [
@@ -41,79 +42,229 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "instantiatesUri"
+                "@value": "instantiatesCanonical"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ServiceRequest#subject",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "subject"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#_implicitRules",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_implicitRules"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#orderDetail",
+            "@id": "http://hl7.org/fhir/ServiceRequest#identifier",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/ServiceRequest#orderDetail.*",
+                "@id": "http://hl7.org/fhir/ServiceRequest#identifier.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                    "@id": "http://hl7.org/fhir/Identifier"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "orderDetail"
+                "@value": "identifier"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ServiceRequest#quantityRatio",
+            "@id": "http://hl7.org/fhir/ServiceRequest#modifierExtension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ServiceRequest#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#id",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Ratio"
+                "@id": "http://hl7.org/fhir/id"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "quantityRatio"
+                "@value": "id"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#quantityRange",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Range"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "quantityRange"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#occurrenceDateTime",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "occurrenceDateTime"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "The date/time at which the requested service should occur."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#meta",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Meta"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "meta"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#locationReference",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ServiceRequest#locationReference.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "locationReference"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#status",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "status"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#performer",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ServiceRequest#performer.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "performer"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#implicitRules",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "implicitRules"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "String of characters used to identify a name or a resource"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^\\S*$"
               }
             ]
           },
@@ -144,18 +295,314 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ServiceRequest#priority",
+            "@id": "http://hl7.org/fhir/ServiceRequest#_priority",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_priority"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#occurrenceTiming",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Timing"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "occurrenceTiming"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#encounter",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "encounter"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#locationCode",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ServiceRequest#locationCode.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "locationCode"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#_language",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_language"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#reasonCode",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ServiceRequest#reasonCode.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "reasonCode"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#occurrencePeriod",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Period"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "occurrencePeriod"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#supportingInfo",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ServiceRequest#supportingInfo.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "supportingInfo"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#orderDetail",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ServiceRequest#orderDetail.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "orderDetail"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#asNeededCodeableConcept",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "asNeededCodeableConcept"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#performerType",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "performerType"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#_patientInstruction",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_patientInstruction"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#reasonReference",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ServiceRequest#reasonReference.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "reasonReference"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#_doNotPerform",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_doNotPerform"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#requester",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "requester"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#_occurrenceDateTime",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_occurrenceDateTime"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#patientInstruction",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "priority"
+                "@value": "patientInstruction"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                "@value": "A sequence of Unicode characters"
               }
             ],
             "https://lschema.org/targetType": [
@@ -165,31 +612,177 @@
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ServiceRequest#extension",
+            "@id": "http://hl7.org/fhir/ServiceRequest#_instantiatesUri",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/ServiceRequest#extension.*",
+                "@id": "http://hl7.org/fhir/ServiceRequest#_instantiatesUri.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/Element"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "_instantiatesUri"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#quantityQuantity",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Quantity"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "quantityQuantity"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#_authoredOn",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_authoredOn"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#code",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "code"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#_status",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_status"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#text",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Narrative"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#note",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ServiceRequest#note.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Annotation"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "note"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#_implicitRules",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_implicitRules"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#doNotPerform",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "doNotPerform"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Value of \"true\" or \"false\""
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "boolean"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^true|false$"
               }
             ]
           },
@@ -1825,13 +2418,29 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ServiceRequest#replaces",
+            "@id": "http://hl7.org/fhir/ServiceRequest#subject",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "subject"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#specimen",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/ServiceRequest#replaces.*",
+                "@id": "http://hl7.org/fhir/ServiceRequest#specimen.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
@@ -1844,269 +2453,7 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "replaces"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#patientInstruction",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "patientInstruction"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#meta",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Meta"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "meta"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#doNotPerform",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "doNotPerform"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Value of \"true\" or \"false\""
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "boolean"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^true|false$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#note",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ServiceRequest#note.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Annotation"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "note"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#category",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ServiceRequest#category.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "category"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#_patientInstruction",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_patientInstruction"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#code",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "code"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#supportingInfo",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ServiceRequest#supportingInfo.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "supportingInfo"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#intent",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "intent"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#reasonReference",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ServiceRequest#reasonReference.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "reasonReference"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#occurrenceTiming",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Timing"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "occurrenceTiming"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#locationReference",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ServiceRequest#locationReference.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "locationReference"
+                "@value": "specimen"
               }
             ]
           },
@@ -2137,34 +2484,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ServiceRequest#asNeededCodeableConcept",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "asNeededCodeableConcept"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#status",
+            "@id": "http://hl7.org/fhir/ServiceRequest#authoredOn",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "status"
+                "@value": "authoredOn"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
               }
             ],
             "https://lschema.org/targetType": [
@@ -2174,7 +2505,7 @@
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
               }
             ]
           },
@@ -2200,127 +2531,13 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ServiceRequest#text",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Narrative"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#id",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#requester",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "requester"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#occurrenceDateTime",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "occurrenceDateTime"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The date/time at which the requested service should occur."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#encounter",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "encounter"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#_instantiatesUri",
+            "@id": "http://hl7.org/fhir/ServiceRequest#replaces",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/ServiceRequest#_instantiatesUri.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Element"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_instantiatesUri"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#performer",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ServiceRequest#performer.*",
+                "@id": "http://hl7.org/fhir/ServiceRequest#replaces.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
@@ -2333,7 +2550,31 @@
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "performer"
+                "@value": "replaces"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#category",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/ServiceRequest#category.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "category"
               }
             ]
           },
@@ -2362,104 +2603,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ServiceRequest#performerType",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "performerType"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#_asNeededBoolean",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_asNeededBoolean"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#occurrencePeriod",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "occurrencePeriod"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#implicitRules",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "implicitRules"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "String of characters used to identify a name or a resource"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#identifier",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ServiceRequest#identifier.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Identifier"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "identifier"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/ServiceRequest#requisition",
             "@type": [
               "https://lschema.org/Reference"
@@ -2476,106 +2619,86 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ServiceRequest#_authoredOn",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_authoredOn"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#bodySite",
+            "@id": "http://hl7.org/fhir/ServiceRequest#instantiatesUri",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/ServiceRequest#bodySite.*",
+                "@id": "http://hl7.org/fhir/ServiceRequest#instantiatesUri.*",
                 "@type": [
-                  "https://lschema.org/Reference"
+                  "https://lschema.org/Value"
                 ],
-                "https://lschema.org/Reference/ref": [
+                "https://lschema.org/description": [
                   {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
+                    "@value": "String of characters used to identify a name or a resource"
+                  }
+                ],
+                "https://lschema.org/targetType": [
+                  {
+                    "@id": "string"
+                  }
+                ],
+                "https://lschema.org/validation/pattern": [
+                  {
+                    "@value": "^\\S*$"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "bodySite"
+                "@value": "instantiatesUri"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ServiceRequest#_doNotPerform",
+            "@id": "http://hl7.org/fhir/ServiceRequest#intent",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_doNotPerform"
+                "@value": "intent"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ServiceRequest#_status",
+            "@id": "http://hl7.org/fhir/ServiceRequest#extension",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference/ref": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/ServiceRequest#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_status"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#_language",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_language"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#_priority",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_priority"
+                "@value": "extension"
               }
             ]
           },
@@ -2604,36 +2727,58 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ServiceRequest#instantiatesCanonical",
+            "@id": "http://hl7.org/fhir/ServiceRequest#quantityRatio",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Ratio"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "quantityRatio"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#bodySite",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/ServiceRequest#instantiatesCanonical.*",
+                "@id": "http://hl7.org/fhir/ServiceRequest#bodySite.*",
                 "@type": [
-                  "https://lschema.org/Value"
+                  "https://lschema.org/Reference"
                 ],
-                "https://lschema.org/description": [
+                "https://lschema.org/Reference/ref": [
                   {
-                    "@value": "A URI that is a reference to a canonical URL on a FHIR resource"
-                  }
-                ],
-                "https://lschema.org/targetType": [
-                  {
-                    "@id": "string"
-                  }
-                ],
-                "https://lschema.org/validation/pattern": [
-                  {
-                    "@value": "^\\S*$"
+                    "@id": "http://hl7.org/fhir/CodeableConcept"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "instantiatesCanonical"
+                "@value": "bodySite"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ServiceRequest#_asNeededBoolean",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_asNeededBoolean"
               }
             ]
           },
@@ -2662,6 +2807,32 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/ServiceRequest#priority",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "priority"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/ServiceRequest#_intent",
             "@type": [
               "https://lschema.org/Reference"
@@ -2674,176 +2845,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "_intent"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#_occurrenceDateTime",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_occurrenceDateTime"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#reasonCode",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ServiceRequest#reasonCode.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "reasonCode"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#locationCode",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ServiceRequest#locationCode.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/CodeableConcept"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "locationCode"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#quantityQuantity",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Quantity"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "quantityQuantity"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#specimen",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ServiceRequest#specimen.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "specimen"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#quantityRange",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Range"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "quantityRange"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#modifierExtension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/ServiceRequest#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ServiceRequest#authoredOn",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "authoredOn"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
               }
             ]
           }

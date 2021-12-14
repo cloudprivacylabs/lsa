@@ -8,32 +8,33 @@
       {
         "@id": "http://hl7.org/fhir/Claim_Insurance",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/Claim_Insurance"
         ],
         "https://lschema.org/Object/attributes": [
           {
-            "@id": "http://hl7.org/fhir/Claim_Insurance#id",
+            "@id": "http://hl7.org/fhir/Claim_Insurance#focal",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "id"
+                "@value": "focal"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A sequence of Unicode characters"
+                "@value": "Value of \"true\" or \"false\""
               }
             ],
             "https://lschema.org/targetType": [
               {
-                "@id": "string"
+                "@id": "boolean"
               }
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^[ \\r\\n\\t\\S]+$"
+                "@value": "^true|false$"
               }
             ]
           },
@@ -54,18 +55,26 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Claim_Insurance#_focal",
+            "@id": "http://hl7.org/fhir/Claim_Insurance#modifierExtension",
             "@type": [
-              "https://lschema.org/Reference"
+              "https://lschema.org/Array"
             ],
-            "https://lschema.org/Reference/ref": [
+            "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Claim_Insurance#modifierExtension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_focal"
+                "@value": "modifierExtension"
               }
             ]
           },
@@ -104,52 +113,42 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Claim_Insurance#focal",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "focal"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "Value of \"true\" or \"false\""
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "boolean"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^true|false$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Claim_Insurance#extension",
+            "@id": "http://hl7.org/fhir/Claim_Insurance#_preAuthRef",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Claim_Insurance#extension.*",
+                "@id": "http://hl7.org/fhir/Claim_Insurance#_preAuthRef.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/Element"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "extension"
+                "@value": "_preAuthRef"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Claim_Insurance#claimResponse",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "claimResponse"
               }
             ]
           },
@@ -180,26 +179,58 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Claim_Insurance#_preAuthRef",
+            "@id": "http://hl7.org/fhir/Claim_Insurance#_focal",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_focal"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Claim_Insurance#coverage",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "coverage"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Claim_Insurance#extension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/Claim_Insurance#_preAuthRef.*",
+                "@id": "http://hl7.org/fhir/Claim_Insurance#extension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Element"
+                    "@id": "http://hl7.org/fhir/Extension"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_preAuthRef"
+                "@value": "extension"
               }
             ]
           },
@@ -220,74 +251,28 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/Claim_Insurance#modifierExtension",
+            "@id": "http://hl7.org/fhir/Claim_Insurance#id",
             "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/Claim_Insurance#modifierExtension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Claim_Insurance#claimResponse",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
+                "@value": "id"
               }
             ],
-            "https://lschema.org/attributeName": [
+            "https://lschema.org/description": [
               {
-                "@value": "claimResponse"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Claim_Insurance#_businessArrangement",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
+                "@value": "A sequence of Unicode characters"
               }
             ],
-            "https://lschema.org/attributeName": [
+            "https://lschema.org/targetType": [
               {
-                "@value": "_businessArrangement"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/Claim_Insurance#coverage",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
+                "@id": "string"
               }
             ],
-            "https://lschema.org/attributeName": [
+            "https://lschema.org/validation/pattern": [
               {
-                "@value": "coverage"
+                "@value": "^[ \\r\\n\\t\\S]+$"
               }
             ]
           },
@@ -314,6 +299,22 @@
             "https://lschema.org/validation/pattern": [
               {
                 "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/Claim_Insurance#_businessArrangement",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_businessArrangement"
               }
             ]
           }

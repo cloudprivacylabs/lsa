@@ -8,51 +8,10 @@
       {
         "@id": "http://hl7.org/fhir/MeasureReport",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/MeasureReport"
         ],
         "https://lschema.org/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/MeasureReport#_date",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_date"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MeasureReport#date",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "date"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
-              }
-            ]
-          },
           {
             "@id": "http://hl7.org/fhir/MeasureReport#extension",
             "@type": [
@@ -94,6 +53,22 @@
             ]
           },
           {
+            "@id": "http://hl7.org/fhir/MeasureReport#_status",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_status"
+              }
+            ]
+          },
+          {
             "@id": "http://hl7.org/fhir/MeasureReport#resourceType",
             "@type": [
               "https://lschema.org/Value"
@@ -115,50 +90,85 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MeasureReport#subject",
+            "@id": "http://hl7.org/fhir/MeasureReport#period",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Reference"
+                "@id": "http://hl7.org/fhir/Period"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "subject"
+                "@value": "period"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MeasureReport#id",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MeasureReport#implicitRules",
+            "@id": "http://hl7.org/fhir/MeasureReport#status",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "implicitRules"
+                "@value": "status"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "String of characters used to identify a name or a resource"
+                "@value": "The MeasureReport status. No data will be available until the MeasureReport status is complete."
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "complete"
+              },
+              {
+                "@value": "pending"
+              },
+              {
+                "@value": "error"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MeasureReport#evaluatedResource",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MeasureReport#evaluatedResource.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Reference"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "evaluatedResource"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MeasureReport#language",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "language"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
               }
             ],
             "https://lschema.org/targetType": [
@@ -168,47 +178,7 @@
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^\\S*$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MeasureReport#group",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MeasureReport#group.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/MeasureReport_Group"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "group"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MeasureReport#_status",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_status"
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
               }
             ]
           },
@@ -243,58 +213,68 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MeasureReport#improvementNotation",
+            "@id": "http://hl7.org/fhir/MeasureReport#meta",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/CodeableConcept"
+                "@id": "http://hl7.org/fhir/Meta"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "improvementNotation"
+                "@value": "meta"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MeasureReport#identifier",
+            "@id": "http://hl7.org/fhir/MeasureReport#date",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "date"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A date, date-time or partial date (e.g. just year or year + month).  If hours and minutes are specified, a time zone SHALL be populated. The format is a union of the schema types gYear, gYearMonth, date and dateTime. Seconds must be provided due to schema type constraints but may be zero-filled and may be ignored.                 Dates SHALL be valid dates."
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MeasureReport#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/MeasureReport#identifier.*",
+                "@id": "http://hl7.org/fhir/MeasureReport#modifierExtension.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Identifier"
+                    "@id": "http://hl7.org/fhir/Extension"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "identifier"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MeasureReport#_type",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_type"
+                "@value": "modifierExtension"
               }
             ]
           },
@@ -325,45 +305,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MeasureReport#status",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "status"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "The MeasureReport status. No data will be available until the MeasureReport status is complete."
-              }
-            ],
-            "https://lschema.org/validation/enumeration": [
-              {
-                "@value": "complete"
-              },
-              {
-                "@value": "pending"
-              },
-              {
-                "@value": "error"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MeasureReport#reporter",
+            "@id": "http://hl7.org/fhir/MeasureReport#_type",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Reference"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "reporter"
+                "@value": "_type"
               }
             ]
           },
@@ -384,18 +337,50 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MeasureReport#language",
+            "@id": "http://hl7.org/fhir/MeasureReport#improvementNotation",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/CodeableConcept"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "improvementNotation"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MeasureReport#reporter",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "reporter"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MeasureReport#implicitRules",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "language"
+                "@value": "implicitRules"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                "@value": "String of characters used to identify a name or a resource"
               }
             ],
             "https://lschema.org/targetType": [
@@ -405,79 +390,23 @@
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                "@value": "^\\S*$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MeasureReport#evaluatedResource",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/MeasureReport#evaluatedResource.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Reference"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "evaluatedResource"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MeasureReport#text",
+            "@id": "http://hl7.org/fhir/MeasureReport#_date",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Narrative"
+                "@id": "http://hl7.org/fhir/Element"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MeasureReport#meta",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Meta"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "meta"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/MeasureReport#period",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Period"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "period"
+                "@value": "_date"
               }
             ]
           },
@@ -2113,26 +2042,98 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/MeasureReport#modifierExtension",
+            "@id": "http://hl7.org/fhir/MeasureReport#identifier",
             "@type": [
               "https://lschema.org/Array"
             ],
             "https://lschema.org/Array/elements": [
               {
-                "@id": "http://hl7.org/fhir/MeasureReport#modifierExtension.*",
+                "@id": "http://hl7.org/fhir/MeasureReport#identifier.*",
                 "@type": [
                   "https://lschema.org/Reference"
                 ],
                 "https://lschema.org/Reference/ref": [
                   {
-                    "@id": "http://hl7.org/fhir/Extension"
+                    "@id": "http://hl7.org/fhir/Identifier"
                   }
                 ]
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "modifierExtension"
+                "@value": "identifier"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MeasureReport#subject",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "subject"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MeasureReport#text",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Narrative"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "text"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MeasureReport#group",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/MeasureReport#group.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/MeasureReport_Group"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "group"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/MeasureReport#id",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
               }
             ]
           }

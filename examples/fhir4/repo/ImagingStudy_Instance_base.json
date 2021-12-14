@@ -8,9 +8,126 @@
       {
         "@id": "http://hl7.org/fhir/ImagingStudy_Instance",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/ImagingStudy_Instance"
         ],
         "https://lschema.org/Object/attributes": [
+          {
+            "@id": "http://hl7.org/fhir/ImagingStudy_Instance#sopClass",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Coding"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "sopClass"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ImagingStudy_Instance#id",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "id"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ImagingStudy_Instance#title",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "title"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A sequence of Unicode characters"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[ \\r\\n\\t\\S]+$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ImagingStudy_Instance#_title",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_title"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ImagingStudy_Instance#_uid",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_uid"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/ImagingStudy_Instance#_number",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_number"
+              }
+            ]
+          },
           {
             "@id": "http://hl7.org/fhir/ImagingStudy_Instance#uid",
             "@type": [
@@ -28,18 +145,28 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/ImagingStudy_Instance#_uid",
+            "@id": "http://hl7.org/fhir/ImagingStudy_Instance#number",
             "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
+              "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_uid"
+                "@value": "number"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "An integer with a value that is not negative (e.g. \u003e= 0)"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "number"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[0]|([1-9][0-9]*)$"
               }
             ]
           },
@@ -88,132 +215,6 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "modifierExtension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ImagingStudy_Instance#number",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "number"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "An integer with a value that is not negative (e.g. \u003e= 0)"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "number"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[0]|([1-9][0-9]*)$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ImagingStudy_Instance#_number",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_number"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ImagingStudy_Instance#title",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "title"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ImagingStudy_Instance#sopClass",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Coding"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "sopClass"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ImagingStudy_Instance#id",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A sequence of Unicode characters"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[ \\r\\n\\t\\S]+$"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/ImagingStudy_Instance#_title",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_title"
               }
             ]
           }

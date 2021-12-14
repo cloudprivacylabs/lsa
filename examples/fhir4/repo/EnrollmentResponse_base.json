@@ -8,25 +8,10 @@
       {
         "@id": "http://hl7.org/fhir/EnrollmentResponse",
         "@type": [
+          "https://lschema.org/Object",
           "http://hl7.org/fhir/EnrollmentResponse"
         ],
         "https://lschema.org/Object/attributes": [
-          {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#_disposition",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_disposition"
-              }
-            ]
-          },
           {
             "@id": "http://hl7.org/fhir/EnrollmentResponse#_language",
             "@type": [
@@ -44,18 +29,42 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#_created",
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#identifier",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/EnrollmentResponse#identifier.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Identifier"
+                  }
+                ]
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "identifier"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#text",
             "@type": [
               "https://lschema.org/Reference"
             ],
             "https://lschema.org/Reference/ref": [
               {
-                "@id": "http://hl7.org/fhir/Element"
+                "@id": "http://hl7.org/fhir/Narrative"
               }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "_created"
+                "@value": "text"
               }
             ]
           },
@@ -76,28 +85,74 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#implicitRules",
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#_implicitRules",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "implicitRules"
+                "@value": "_implicitRules"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#id",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/id"
               }
             ],
-            "https://lschema.org/description": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "String of characters used to identify a name or a resource"
+                "@value": "id"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#extension",
+            "@type": [
+              "https://lschema.org/Array"
+            ],
+            "https://lschema.org/Array/elements": [
+              {
+                "@id": "http://hl7.org/fhir/EnrollmentResponse#extension.*",
+                "@type": [
+                  "https://lschema.org/Reference"
+                ],
+                "https://lschema.org/Reference/ref": [
+                  {
+                    "@id": "http://hl7.org/fhir/Extension"
+                  }
+                ]
               }
             ],
-            "https://lschema.org/targetType": [
+            "https://lschema.org/attributeName": [
               {
-                "@id": "string"
+                "@value": "extension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#requestProvider",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
-            "https://lschema.org/validation/pattern": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "^\\S*$"
+                "@value": "requestProvider"
               }
             ]
           },
@@ -128,102 +183,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#request",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "request"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#_implicitRules",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Element"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "_implicitRules"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#requestProvider",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "requestProvider"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#extension",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/EnrollmentResponse#extension.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Extension"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "extension"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#identifier",
-            "@type": [
-              "https://lschema.org/Array"
-            ],
-            "https://lschema.org/Array/elements": [
-              {
-                "@id": "http://hl7.org/fhir/EnrollmentResponse#identifier.*",
-                "@type": [
-                  "https://lschema.org/Reference"
-                ],
-                "https://lschema.org/Reference/ref": [
-                  {
-                    "@id": "http://hl7.org/fhir/Identifier"
-                  }
-                ]
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "identifier"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/EnrollmentResponse#_status",
             "@type": [
               "https://lschema.org/Reference"
@@ -240,48 +199,18 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#outcome",
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#implicitRules",
             "@type": [
               "https://lschema.org/Value"
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "outcome"
+                "@value": "implicitRules"
               }
             ],
             "https://lschema.org/description": [
               {
-                "@value": "Processing status: error, complete."
-              }
-            ],
-            "https://lschema.org/validation/enumeration": [
-              {
-                "@value": "queued"
-              },
-              {
-                "@value": "complete"
-              },
-              {
-                "@value": "error"
-              },
-              {
-                "@value": "partial"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#language",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "language"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+                "@value": "String of characters used to identify a name or a resource"
               }
             ],
             "https://lschema.org/targetType": [
@@ -291,33 +220,39 @@
             ],
             "https://lschema.org/validation/pattern": [
               {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                "@value": "^\\S*$"
               }
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#status",
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#request",
             "@type": [
-              "https://lschema.org/Value"
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
+              }
             ],
             "https://lschema.org/attributeName": [
               {
-                "@value": "status"
+                "@value": "request"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#organization",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Reference"
               }
             ],
-            "https://lschema.org/description": [
+            "https://lschema.org/attributeName": [
               {
-                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-              }
-            ],
-            "https://lschema.org/targetType": [
-              {
-                "@id": "string"
-              }
-            ],
-            "https://lschema.org/validation/pattern": [
-              {
-                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+                "@value": "organization"
               }
             ]
           },
@@ -348,43 +283,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#resourceType",
-            "@type": [
-              "https://lschema.org/Value"
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "resourceType"
-              }
-            ],
-            "https://lschema.org/description": [
-              {
-                "@value": "This is a EnrollmentResponse resource"
-              }
-            ],
-            "https://lschema.org/validation/enumeration": [
-              {
-                "@value": "EnrollmentResponse"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#id",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/id"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "id"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/EnrollmentResponse#modifierExtension",
             "@type": [
               "https://lschema.org/Array"
@@ -405,6 +303,43 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "modifierExtension"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#_disposition",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_disposition"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#resourceType",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "resourceType"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "This is a EnrollmentResponse resource"
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "EnrollmentResponse"
               }
             ]
           },
@@ -2040,38 +1975,6 @@
             ]
           },
           {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#text",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Narrative"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "text"
-              }
-            ]
-          },
-          {
-            "@id": "http://hl7.org/fhir/EnrollmentResponse#organization",
-            "@type": [
-              "https://lschema.org/Reference"
-            ],
-            "https://lschema.org/Reference/ref": [
-              {
-                "@id": "http://hl7.org/fhir/Reference"
-              }
-            ],
-            "https://lschema.org/attributeName": [
-              {
-                "@value": "organization"
-              }
-            ]
-          },
-          {
             "@id": "http://hl7.org/fhir/EnrollmentResponse#meta",
             "@type": [
               "https://lschema.org/Reference"
@@ -2084,6 +1987,104 @@
             "https://lschema.org/attributeName": [
               {
                 "@value": "meta"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#outcome",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "outcome"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "Processing status: error, complete."
+              }
+            ],
+            "https://lschema.org/validation/enumeration": [
+              {
+                "@value": "queued"
+              },
+              {
+                "@value": "complete"
+              },
+              {
+                "@value": "error"
+              },
+              {
+                "@value": "partial"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#language",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "language"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#status",
+            "@type": [
+              "https://lschema.org/Value"
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "status"
+              }
+            ],
+            "https://lschema.org/description": [
+              {
+                "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
+              }
+            ],
+            "https://lschema.org/targetType": [
+              {
+                "@id": "string"
+              }
+            ],
+            "https://lschema.org/validation/pattern": [
+              {
+                "@value": "^[^\\s]+(\\s[^\\s]+)*$"
+              }
+            ]
+          },
+          {
+            "@id": "http://hl7.org/fhir/EnrollmentResponse#_created",
+            "@type": [
+              "https://lschema.org/Reference"
+            ],
+            "https://lschema.org/Reference/ref": [
+              {
+                "@id": "http://hl7.org/fhir/Element"
+              }
+            ],
+            "https://lschema.org/attributeName": [
+              {
+                "@value": "_created"
               }
             ]
           }

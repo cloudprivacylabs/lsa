@@ -74,11 +74,11 @@ var ingestCSVCmd = &cobra.Command{
 		if headerRow >= startRow {
 			fail("Header row is ahead of start row")
 		}
-		embed, _ := cmd.Flags().GetBool("combineSchema")
+		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
 		ingester := csvingest.Ingester{
 			Ingester: ls.Ingester{
 				Schema:           layer,
-				EmbedSchemaNodes: embed,
+				EmbedSchemaNodes: embedSchemaNodes,
 			},
 		}
 		idTemplate, _ := cmd.Flags().GetString("id")
@@ -121,7 +121,6 @@ var ingestCSVCmd = &cobra.Command{
 				target.AddNode(node)
 			}
 		}
-
 		outFormat, _ := cmd.Flags().GetString("output")
 		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
 		err = OutputIngestedGraph(outFormat, target, os.Stdout, includeSchema)
