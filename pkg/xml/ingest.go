@@ -28,6 +28,8 @@ var ErrExtraCharacters = errors.New("Extra characters before document")
 var ErrMultipleRoots = errors.New("Multiple roots")
 var ErrInvalidXML = errors.New("Invalid XML")
 
+const XSDNamespace = "http://www.w3.org/2001/XMLSchema"
+
 type ErrElementNodeNotTerminated struct {
 	Name xml.Name
 }
@@ -55,7 +57,7 @@ func IngestStream(ingester *Ingester, baseID string, input io.Reader) (ls.Node, 
 	return ingester.IngestDocument(baseID, decoder)
 }
 
-// IngestDocument inygests an XML using the schema. The output will have all input
+// IngestDocument ingests an XML using the schema. The output will have all input
 // nodes associated with schema nodes.
 //
 // BaseID is the ID of the root object. All other attribute names are
@@ -65,6 +67,7 @@ func (ingester *Ingester) IngestDocument(baseID string, decoder *xml.Decoder) (l
 		ingester.Interner = ls.NewInterner()
 	}
 	path, schemaRoot := ingester.Start(baseID)
+	wsFacet, _ := GetWhitespaceFacet("collapse")
 
 	filterBOM := func(in []byte) []byte {
 		if len(in) == 3 && in[0] == 0xEF && in[1] == 0xBB && in[2] == 0xBF {
@@ -101,7 +104,7 @@ func (ingester *Ingester) IngestDocument(baseID string, decoder *xml.Decoder) (l
 				return nil, ErrMultipleRoots
 			}
 			rootSeen = true
-			rootNode, err = ingester.parseElement(token, path, decoder, schemaRoot)
+			rootNode, err = ingester.parseElement(token, path, decoder, schemaRoot, wsFacet)
 			if err != nil {
 				return nil, err
 			}
@@ -124,12 +127,24 @@ func (ingester *Ingester) IngestDocument(baseID string, decoder *xml.Decoder) (l
 	return rootNode, err
 }
 
-func (ingester *Ingester) parseElement(data xml.StartElement, path []interface{}, decoder *xml.Decoder, schemaNode ls.Node) (ls.Node, error) {
+type parsedElement struct {
+	node  ls.Node
+	token xml.Token
+}
+
+func (ingester *Ingester) parseElement(data xml.StartElement, path []interface{}, decoder *xml.Decoder, schemaNode ls.Node, wsFacet WhitespaceFacet) (parsedElement, error) {
 
 	path = append(path, data.Name.Local)
 
 	attributeNodes := make([]ls.Node, 0)
 	for index, attribute := range data.Attr {
+		if IsWhitespaceFacet(attribute.Name) {
+			wf, err := GetWhitespaceFacet(attribute.Value)
+			if err != nil {
+				return nil, err
+			}
+			wsFacet = wf
+		}
 		attrNode, err := ingester.Value(append(path, fmt.Sprintf("attr-%d", index)), nil, attribute.Value)
 		if err != nil {
 			return nil, err
@@ -141,15 +156,6 @@ func (ingester *Ingester) parseElement(data xml.StartElement, path []interface{}
 		attrNode.SetValue(attribute.Value)
 		attributeNodes = append(attributeNodes, attrNode)
 	}
-	newNode, err := ingester.Object(path, schemaNode, attributeNodes)
-	if err != nil {
-		return nil, err
-	}
-	properties := newNode.GetProperties()
-	if len(data.Name.Space) > 0 {
-		properties[NamespaceTerm] = ls.StringPropertyValue(ingester.Interner.Intern(data.Name.Space))
-	}
-	properties[LocalNameTerm] = ls.StringPropertyValue(ingester.Interner.Intern(data.Name.Local))
 
 	children := make([]ls.Node, 0)
 
@@ -168,27 +174,62 @@ func (ingester *Ingester) parseElement(data xml.StartElement, path []interface{}
 		case xml.StartElement:
 			index := elementCounts[token.Name]
 			elementCounts[token.Name] = index + 1
-			node, err := ingester.parseElement(token, append(path, index), decoder, nil)
+			node, err := ingester.parseElement(token, append(path, index), decoder, nil, wsFacet)
 			if err != nil {
 				return nil, err
 			}
 			children = append(children, node)
 
 		case xml.EndElement:
-			ingester.ConnectChildNodes(newNode, children)
+			// Apply whitespace facet
+			w := 0
+			for i := range children {
+				if children[i].GetTypes().Has(ls.AttributeTypes.Value) {
+					str := wsFacet.Filter(children[i].GetValue().(string))
+					if len(str) != 0 {
+						children[w] = children[i]
+						w++
+					}
+				} else {
+					children[w] = children[i]
+					w++
+				}
+			}
+			hasNonTextChild := false
+			newNode, err := ingester.Object(path, schemaNode, append(attributeNodes, children[:w]...))
+			if err != nil {
+				return nil, err
+			}
+			properties := newNode.GetProperties()
+			if len(data.Name.Space) > 0 {
+				properties[NamespaceTerm] = ls.StringPropertyValue(ingester.Interner.Intern(data.Name.Space))
+			}
+			properties[LocalNameTerm] = ls.StringPropertyValue(ingester.Interner.Intern(data.Name.Local))
 			return newNode, nil
 
 		case xml.CharData:
 			data := string(token)
-			node, err := ingester.Value(append(path, textNodeIndex), nil, data)
-			textNodeIndex++
-			if err != nil {
-				return nil, err
+			// If last node is also chardata, merge
+			merged := false
+			if len(children) > 0 {
+				last := children[len(children)-1]
+				if last.GetTypes().Has(ls.AttributeTypes.Value) {
+					last.SetValue(last.GetValue().(string) + data)
+					merged = true
+				}
 			}
-			children = append(children, node)
+			if !merged {
+				node, err := ingester.Value(append(path, textNodeIndex), nil, data)
+				textNodeIndex++
+				if err != nil {
+					return nil, err
+				}
+				children = append(children, node)
+			}
 		case xml.ProcInst:
 		case xml.Directive:
 		case xml.Comment:
 		}
 	}
+
 }
