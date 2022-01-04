@@ -52,7 +52,7 @@ var (
 	ReferenceIDFieldTerm = NewTerm(LS+"Reference/idField", false, false, OverrideComposition, nil)
 
 	// ReferenceIDValueTerm is an annotation that can be a string or a
-	// []string, matching the IDs in ReferenceIDTerm. This annotation
+	// []string, matching the IDs in ReferenceIDFieldTerm. This annotation
 	// gives the IDs of the schema fields in the current object, whose
 	// values will be used to find the referenced object.
 	ReferenceIDValueTerm = NewTerm(LS+"Reference/idValue", false, false, OverrideComposition, nil)
