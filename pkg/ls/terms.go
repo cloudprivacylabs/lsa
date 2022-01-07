@@ -46,6 +46,11 @@ var (
 
 	// DefaultValueTerm is the default value for an attribute if attribute is not present
 	DefaultValueTerm = NewTerm(LS+"defaultValue", false, false, OverrideComposition, nil)
+
+	// EntityIDTerm marks a field of an entity as the entity unique
+	// ID. Fields contained within an entity will get IDs relative to
+	// this ID.
+	EntityIDTerm = NewTerm(LS+"entityId", false, false, OverrideComposition, nil)
 )
 
 // AttributeTypes defines the terms describing attribute types. Each
