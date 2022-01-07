@@ -43,15 +43,47 @@ type Ingester struct {
 	EmbedSchemaNodes bool
 }
 
+type ingestedID struct {
+	path []Node
+}
+
+// IngestionContext keeps contextual information during ingestion.
+type IngestionContext struct {
+	// BaseID contains the prefix for ID generation
+	BaseID string
+
+	// Path contains the string representation of the current full path up to current node
+	path []interface{}
+}
+
+// PushToPath adds the given path component to the path
+func (ictx *IngestionContext) AddToPath(v interface{}) {
+	ictx.path = append(ictx.path, v)
+}
+
+// PopPath removes the last path component
+func (ictx *IngestionContext) PopPath() {
+	ictx.path = ictx.path[:len(ictx.path)-1]
+}
+
+// GetPath returns a string representation of the path
+func (ictx *IngestionContext) GetPath() string {
+	path := make([]string, 0, len(ictx.path))
+	for _, x := range ictx.path {
+		path = append(path, fmt.Sprint(x))
+	}
+	return strings.Join(path, ".")
+}
+
 type ErrSchemaValidation struct {
 	Msg  string
-	Path []interface{}
+	Path string
 }
 
 func (e ErrSchemaValidation) Error() string {
 	ret := "Schema validation error: " + e.Msg
-	if e.Path != nil {
-		ret += " path:" + pathToString(e.Path)
+	if len(e.Path) > 0 {
+		ret += " path:" + e.Path
 	}
 	return ret
 }
@@ -71,24 +103,16 @@ func (e ErrDataIngestion) Error() string {
 
 func (e ErrDataIngestion) Unwrap() error { return e.Err }
 
-func pathToString(path []interface{}) string {
-	components := make([]string, 0, len(path)+1)
-	for _, x := range path {
-		components = append(components, fmt.Sprint(x))
-	}
-	return strings.Join(components, ".")
-}
-
-// DefaultNodeIDGenerator returns Ingester.Schema.ID + join(path,".")
-func DefaultNodeIDGenerator(path []interface{}, schemaNode Node) string {
-	return pathToString(path)
-}
-
 // Start ingestion. Returns the path initialized with the baseId, and
 // the schema root.
-func (ingester *Ingester) Start(baseID string) (path []interface{}, schemaRoot Node) {
-	path = make([]interface{}, 0, 16)
-	path = append(path, baseID)
+func (ingester *Ingester) Start(baseID string) (ictx *IngestionContext, schemaRoot Node) {
+	ictx = &IngestionContext{
+		BaseID: baseID,
+		path:   make([]interface{}, 0, 32),
+	}
+	if len(baseID) > 0 {
+		ictx.AddToPath(baseID)
+	}
 	if ingester.Schema != nil {
 		schemaRoot = ingester.Schema.GetSchemaRootNode()
 	}
@@ -106,21 +130,21 @@ func (ingester *Ingester) Validate(documentNode, schemaNode Node) error {
 }
 
 // Polymorphic tests all options in the schema by calling ingest func
-func (ingester *Ingester) Polymorphic(path []interface{}, schemaNode Node, ingest func(p []interface{}, optionNode Node) (Node, error)) (Node, error) {
+func (ingester *Ingester) Polymorphic(ictx *IngestionContext, schemaNode Node, ingest func(ictx IngestionContext, optionNode Node) (Node, error)) (Node, error) {
 	// Polymorphic node. Try each option
 	var newChild Node
 	for nodes := schemaNode.OutWith(LayerTerms.OneOf).Targets(); nodes.HasNext(); {
 		optionNode := nodes.Next().(Node)
-		childNode, err := ingest(path, optionNode)
+		childNode, err := ingest(ictx, optionNode)
 		if err == nil {
 			if newChild != nil {
-				return nil, ErrSchemaValidation{Msg: "Multiple options of the polymorphic node matched:" + schemaNode.GetID(), Path: path}
+				return nil, ErrSchemaValidation{Msg: "Multiple options of the polymorphic node matched:" + schemaNode.GetID(), Path: ictx.GetPath()}
 			}
 			newChild = childNode
 		}
 	}
 	if newChild == nil {
-		return nil, ErrSchemaValidation{Msg: "None of the options of the polymorphic node matched:" + schemaNode.GetID(), Path: path}
+		return nil, ErrSchemaValidation{Msg: "None of the options of the polymorphic node matched:" + schemaNode.GetID(), Path: ictx.GetPath()}
 	}
 	return newChild, nil
 }
@@ -155,15 +179,16 @@ func (ingester *Ingester) GetObjectAttributeNodes(objectSchemaNode Node) (map[st
 }
 
 // Object creates a new object node
-func (ingester *Ingester) Object(path []interface{}, schemaNode Node, elements []Node, types ...string) (Node, error) {
+func (ingester *Ingester) Object(ictx *IngestionContext, schemaNode Node, elements []Node, types ...string) (Node, error) {
 	// An object node
 	// There is a schema node for this node. It must be an object
 	if schemaNode != nil {
 		if !schemaNode.GetTypes().Has(AttributeTypes.Object) {
-			return nil, ErrSchemaValidation{Msg: "An object is not expected here", Path: path}
+			return nil, ErrSchemaValidation{Msg: "An object is not expected here", Path: ictx.GetPath()}
 		}
+
 	}
-	ret := ingester.NewNode(path, schemaNode)
+	ret := ingester.NewNode(ictx, schemaNode)
 	ret.GetTypes().Add(types...)
 	ret.GetTypes().Add(AttributeTypes.Object)
 	for index := range elements {
@@ -186,13 +211,13 @@ func (ingester *Ingester) GetArrayElementNode(arraySchemaNode Node) Node {
 }
 
 // Array creates a new array node.
-func (ingester *Ingester) Array(path []interface{}, schemaNode Node, elements []Node, types ...string) (Node, error) {
+func (ingester *Ingester) Array(ictx IngestionContext, schemaNode Node, elements []Node, types ...string) (Node, error) {
 	if schemaNode != nil {
 		if !schemaNode.GetTypes().Has(AttributeTypes.Array) {
-			return nil, ErrSchemaValidation{Msg: "An array is not expected here", Path: path}
+			return nil, ErrSchemaValidation{Msg: "An array is not expected here", Path: ictx.GetPath()}
 		}
 	}
-	ret := ingester.NewNode(path, schemaNode)
+	ret := ingester.NewNode(ictx, schemaNode)
 	ret.GetTypes().Add(types...)
 	ret.GetTypes().Add(AttributeTypes.Array)
 	for index := range elements {
@@ -204,13 +229,17 @@ func (ingester *Ingester) Array(path []interface{}, schemaNode Node, elements []
 
 // Value creates a new value node. The new node has the given value
 // and the types
-func (ingester *Ingester) Value(path []interface{}, schemaNode Node, value interface{}, types ...string) (Node, error) {
+func (ingester *Ingester) Value(ictx *IngestionContext, schemaNode Node, value interface{}, types ...string) (Node, error) {
 	if schemaNode != nil {
 		if !schemaNode.GetTypes().Has(AttributeTypes.Value) {
-			return nil, ErrSchemaValidation{Msg: "A value is not expected here", Path: path}
+			return nil, ErrSchemaValidation{Msg: "A value is not expected here", Path: ictx.path}
+		}
+		// Is this an entity ID node?
+		if _, exists := schemaNode.GetProperties()[EntityIDTerm]; exists {
+			ictx.SetCurrentEntityID(value)
 		}
 	}
-	newNode := ingester.NewNode(path, schemaNode)
+	newNode := ingester.NewNode(ictx, schemaNode)
 	if value != nil {
 		newNode.SetValue(value)
 	}
@@ -223,7 +252,7 @@ func (ingester *Ingester) Value(path []interface{}, schemaNode Node, value inter
 // or by creating a new node using DefaultNodeIDenerator. Then it
 // either merges schema properties into the new node, or creates an
 // instanceOf edge to the schema node.
-func (ingester *Ingester) NewNode(path []interface{}, schemaNode Node) Node {
+func (ingester *Ingester) NewNode(ictx IngestionContext, schemaNode Node) Node {
 	var node Node
 	if ingester.NewNodeFunc != nil {
 		node = ingester.NewNodeFunc(path, schemaNode)
@@ -263,6 +292,10 @@ func GetAsProperty(schemaNode Node) (of string, name string) {
 	of = properties[AsPropertyOfTerm].AsString()
 	name = properties[AsPropertyTerm].AsString()
 	return
+}
+
+// DefaultNodeIDGenerator returns Ingester.Schema.ID + join(path,".")
+func DefaultNodeIDGenerator(path []interface{}, schemaNode Node) string {
 }
 
 func (ingester *Ingester) connect(srcNode, targetNode digraph.Node, edgeLabel string) digraph.Edge {

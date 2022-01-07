@@ -522,3 +522,9 @@ func DocumentNodesUnder(node ...Node) []Node {
 	}
 	return ret
 }
+
+// IsNewEntityRoot checks if the node is the root of an entity by
+// seeing if the node has EntitySchemaTerm property, or an instance of
+// a schema node that has EntitySchemaTerm property
+func IsNewEntityRoot(node Node) (string, bool) {
+}
