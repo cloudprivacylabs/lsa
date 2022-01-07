@@ -569,4 +569,16 @@ func DocumentNodesUnder(node ...Node) []Node {
 // seeing if the node has EntitySchemaTerm property, or an instance of
 // a schema node that has EntitySchemaTerm property
 func IsNewEntityRoot(node Node) (string, bool) {
+	root, exists := node.GetProperties()[EntitySchemaTerm]
+	if exists {
+		return root.AsString(), true
+	}
+	ForEachInstanceOf(node, func(n Node) bool {
+		root, exists = node.GetProperties()[EntitySchemaTerm]
+		if exists {
+			return false
+		}
+		return true
+	})
+	return root.AsString(), exists
 }
