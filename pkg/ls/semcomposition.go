@@ -64,10 +64,13 @@ func (c CompositionType) Compose(target, src *PropertyValue) (*PropertyValue, er
 	case NoComposition:
 		return target, nil
 	case ErrorComposition:
-		if target != src && src != nil {
+		if target != nil && src != nil {
 			return nil, ErrInvalidComposition
 		}
-		return target, nil
+		if target != nil {
+			return target, nil
+		}
+		return src, nil
 	}
 	return SetUnion(target, src), nil
 }
