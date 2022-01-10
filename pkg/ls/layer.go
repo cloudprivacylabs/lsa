@@ -110,6 +110,34 @@ func (l *Layer) SetLayerType(t string) {
 	l.layerInfo.GetTypes().Add(t)
 }
 
+// GetEntityIDNodes returns the entity ID nodes for the layer.
+func (l *Layer) GetEntityIDNodes() []Node {
+	root := l.GetSchemaRootNode()
+	if root == nil {
+		return nil
+	}
+	return GetEntityIDNodes(root)
+}
+
+// GetEntityIDNodes returns the entity ID nodes under the root, by
+// following only attribute and polymorphic nodes
+func GetEntityIDNodes(root Node) []Node {
+	found := make([]Node, 0)
+	IterateDescendants(root, func(node Node, _ []Node) bool {
+		if _, ok := node.GetProperties()[EntityIDTerm]; ok {
+			found = append(found, node)
+		}
+		return true
+	}, func(edge Edge, _ []Node) EdgeFuncResult {
+		switch edge.GetLabel() {
+		case LayerTerms.Attributes, LayerTerms.AttributeList, LayerTerms.OneOf:
+			return FollowEdgeResult
+		}
+		return SkipEdgeResult
+	}, false)
+	return found
+}
+
 // GetEncoding returns the encoding that should be used to
 // ingest/export data using this layer. The encoding information is
 // taken from the schema root node characterEncoding annotation. If missing,

@@ -35,7 +35,6 @@ func init() {
 var compileCmd = &cobra.Command{
 	Use:   "compile",
 	Short: "Compile a schema",
-	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		var layer *ls.Layer
 		repoDir, _ := cmd.Flags().GetString("repo")
@@ -71,11 +70,8 @@ var compileCmd = &cobra.Command{
 				failErr(err)
 			}
 		} else {
-			if len(args) != 1 {
-				fail("Need schema")
-			}
 			var v interface{}
-			err := cmdutil.ReadJSON(args[0], &v)
+			err := cmdutil.ReadJSON(schemaName, &v)
 			if err != nil {
 				failErr(err)
 			}
