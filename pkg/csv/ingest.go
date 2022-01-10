@@ -33,7 +33,11 @@ type propertyValueItem struct {
 	value string
 }
 
+// Ingest a row of CSV data. The `data` slice is a row of data. The ID
+// is the assigned identifier for the resulting object. ID is empty,
+// IDs are assigned based on schema-dictated identifiers.
 func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
+	ingester.PreserveNodePaths = true
 	path, schemaRoot := ingester.Start(ID)
 	attributes, err := ingester.GetObjectAttributeNodes(schemaRoot)
 	if err != nil {
@@ -48,10 +52,10 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 			columnName = ingester.ColumnNames[columnIndex]
 		}
 		var schemaNode ls.Node
-		var newPath []interface{}
+		var newPath ls.NodePath
 		if len(columnName) > 0 {
 			schemaNode = attributes[columnName]
-			newPath = append(path, columnName)
+			newPath = path.AppendString(columnName)
 		} else if ingester.Schema != nil {
 			schemaNode, _ = ingester.Schema.FindFirstAttribute(func(n ls.Node) bool {
 				p := n.GetProperties()[ls.AttributeIndexTerm]
@@ -60,7 +64,7 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 				}
 				return p.IsInt() && p.AsInt() == columnIndex
 			})
-			newPath = append(path, columnIndex)
+			newPath = path.AppendInt(columnIndex)
 		}
 
 		propertyOf, propertyName := ls.GetAsProperty(schemaNode)
@@ -109,6 +113,17 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 			parentNode = retNode
 		}
 		parentNode.GetProperties()[pv.name] = ls.StringPropertyValue(pv.value)
+	}
+	// Assign node IDs
+	if ingester.Schema != nil {
+		ls.AssignEntityIDs(retNode, func(entity, ID string, node ls.Node, path []ls.Node) string {
+			nodePath := ingester.NodePaths[node]
+			eid := fmt.Sprintf("%s/%s", entity, ID)
+			if len(nodePath) > 1 {
+				eid += "/" + ls.NodePath(nodePath[1:]).String()
+			}
+			return eid
+		})
 	}
 	return retNode, nil
 }

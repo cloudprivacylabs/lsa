@@ -564,3 +564,20 @@ func DocumentNodesUnder(node ...Node) []Node {
 	}
 	return ret
 }
+
+// GetNodeOrSchemaProperty gets the node property with the key from
+// the node, or from the schema nodes it is attached to
+func GetNodeOrSchemaProperty(node Node, key string) (*PropertyValue, bool) {
+	prop, exists := node.GetProperties()[key]
+	if exists {
+		return prop, true
+	}
+	ForEachInstanceOf(node, func(n Node) bool {
+		prop, exists = n.GetProperties()[key]
+		if exists {
+			return false
+		}
+		return true
+	})
+	return prop, exists
+}

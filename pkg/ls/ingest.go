@@ -16,6 +16,7 @@ package ls
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/bserdar/digraph"
@@ -29,7 +30,7 @@ type Ingester struct {
 	// NewNodeFunc will create a new node for the data graph. If
 	// NewNodeFunc is nil, a ls.Node will be created using the default
 	// ID generator. The function should not add the node to the graph.
-	NewNodeFunc func(path []interface{}, schemaNode Node) Node
+	NewNodeFunc func(path NodePath, schemaNode Node) Node
 
 	// NewEdgeFunc will create a new edge for the data graph with the
 	// given label. If NewEdgeFunc is nil, a ls.Edge will be
@@ -41,17 +42,49 @@ type Ingester struct {
 	// with an instanceOf edge between the document node to the schema
 	// node.
 	EmbedSchemaNodes bool
+
+	// If true, a map[Node][]interface{} is populated to preserve the
+	// paths used to create nodes
+	PreserveNodePaths bool
+
+	// If PreserveNodePaths is true, this keeps the node paths after ingestion.
+	// This map is reset when Start is called.
+	NodePaths map[Node]NodePath
+}
+
+// NodePath contains the name components identifying a node. For JSON,
+// this is the components of a JSON pointer
+type NodePath []string
+
+// String returns '.' combined path components
+func (n NodePath) String() string {
+	return strings.Join([]string(n), ".")
+}
+
+// Create a deep-copy of the nodepath
+func (n NodePath) Copy() NodePath {
+	ret := make(NodePath, len(n))
+	copy(ret, n)
+	return ret
+}
+
+func (n NodePath) AppendString(s string) NodePath {
+	return append(n, s)
+}
+
+func (n NodePath) AppendInt(i int) NodePath {
+	return append(n, strconv.Itoa(i))
 }
 
 type ErrSchemaValidation struct {
 	Msg  string
-	Path []interface{}
+	Path NodePath
 }
 
 func (e ErrSchemaValidation) Error() string {
 	ret := "Schema validation error: " + e.Msg
 	if e.Path != nil {
-		ret += " path:" + pathToString(e.Path)
+		ret += " path:" + e.Path.String()
 	}
 	return ret
 }
@@ -80,18 +113,19 @@ func pathToString(path []interface{}) string {
 }
 
 // DefaultNodeIDGenerator returns Ingester.Schema.ID + join(path,".")
-func DefaultNodeIDGenerator(path []interface{}, schemaNode Node) string {
-	return pathToString(path)
+func DefaultNodeIDGenerator(path NodePath, schemaNode Node) string {
+	return path.String()
 }
 
 // Start ingestion. Returns the path initialized with the baseId, and
 // the schema root.
-func (ingester *Ingester) Start(baseID string) (path []interface{}, schemaRoot Node) {
-	path = make([]interface{}, 0, 16)
+func (ingester *Ingester) Start(baseID string) (path NodePath, schemaRoot Node) {
+	path = make(NodePath, 0, 16)
 	path = append(path, baseID)
 	if ingester.Schema != nil {
 		schemaRoot = ingester.Schema.GetSchemaRootNode()
 	}
+	ingester.NodePaths = make(map[Node]NodePath)
 	return
 }
 
@@ -106,7 +140,7 @@ func (ingester *Ingester) Validate(documentNode, schemaNode Node) error {
 }
 
 // Polymorphic tests all options in the schema by calling ingest func
-func (ingester *Ingester) Polymorphic(path []interface{}, schemaNode Node, ingest func(p []interface{}, optionNode Node) (Node, error)) (Node, error) {
+func (ingester *Ingester) Polymorphic(path NodePath, schemaNode Node, ingest func(p NodePath, optionNode Node) (Node, error)) (Node, error) {
 	// Polymorphic node. Try each option
 	var newChild Node
 	for nodes := schemaNode.OutWith(LayerTerms.OneOf).Targets(); nodes.HasNext(); {
@@ -155,7 +189,7 @@ func (ingester *Ingester) GetObjectAttributeNodes(objectSchemaNode Node) (map[st
 }
 
 // Object creates a new object node
-func (ingester *Ingester) Object(path []interface{}, schemaNode Node, elements []Node, types ...string) (Node, error) {
+func (ingester *Ingester) Object(path NodePath, schemaNode Node, elements []Node, types ...string) (Node, error) {
 	// An object node
 	// There is a schema node for this node. It must be an object
 	if schemaNode != nil {
@@ -164,6 +198,9 @@ func (ingester *Ingester) Object(path []interface{}, schemaNode Node, elements [
 		}
 	}
 	ret := ingester.NewNode(path, schemaNode)
+	if ingester.PreserveNodePaths {
+		ingester.NodePaths[ret] = path.Copy()
+	}
 	ret.GetTypes().Add(types...)
 	ret.GetTypes().Add(AttributeTypes.Object)
 	for index := range elements {
@@ -186,13 +223,16 @@ func (ingester *Ingester) GetArrayElementNode(arraySchemaNode Node) Node {
 }
 
 // Array creates a new array node.
-func (ingester *Ingester) Array(path []interface{}, schemaNode Node, elements []Node, types ...string) (Node, error) {
+func (ingester *Ingester) Array(path NodePath, schemaNode Node, elements []Node, types ...string) (Node, error) {
 	if schemaNode != nil {
 		if !schemaNode.GetTypes().Has(AttributeTypes.Array) {
 			return nil, ErrSchemaValidation{Msg: "An array is not expected here", Path: path}
 		}
 	}
 	ret := ingester.NewNode(path, schemaNode)
+	if ingester.PreserveNodePaths {
+		ingester.NodePaths[ret] = path.Copy()
+	}
 	ret.GetTypes().Add(types...)
 	ret.GetTypes().Add(AttributeTypes.Array)
 	for index := range elements {
@@ -204,13 +244,16 @@ func (ingester *Ingester) Array(path []interface{}, schemaNode Node, elements []
 
 // Value creates a new value node. The new node has the given value
 // and the types
-func (ingester *Ingester) Value(path []interface{}, schemaNode Node, value interface{}, types ...string) (Node, error) {
+func (ingester *Ingester) Value(path NodePath, schemaNode Node, value interface{}, types ...string) (Node, error) {
 	if schemaNode != nil {
 		if !schemaNode.GetTypes().Has(AttributeTypes.Value) {
 			return nil, ErrSchemaValidation{Msg: "A value is not expected here", Path: path}
 		}
 	}
 	newNode := ingester.NewNode(path, schemaNode)
+	if ingester.PreserveNodePaths {
+		ingester.NodePaths[newNode] = path.Copy()
+	}
 	if value != nil {
 		newNode.SetValue(value)
 	}
@@ -223,7 +266,7 @@ func (ingester *Ingester) Value(path []interface{}, schemaNode Node, value inter
 // or by creating a new node using DefaultNodeIDenerator. Then it
 // either merges schema properties into the new node, or creates an
 // instanceOf edge to the schema node.
-func (ingester *Ingester) NewNode(path []interface{}, schemaNode Node) Node {
+func (ingester *Ingester) NewNode(path NodePath, schemaNode Node) Node {
 	var node Node
 	if ingester.NewNodeFunc != nil {
 		node = ingester.NewNodeFunc(path, schemaNode)
@@ -231,10 +274,13 @@ func (ingester *Ingester) NewNode(path []interface{}, schemaNode Node) Node {
 		node = NewNode(DefaultNodeIDGenerator(path, schemaNode))
 	}
 	node.GetTypes().Add(DocumentNodeTerm)
-	if ingester.EmbedSchemaNodes && schemaNode != nil {
-		ingester.EmbedSchemaNode(node, schemaNode)
-	} else if schemaNode != nil {
-		ingester.connect(node, schemaNode, InstanceOfTerm)
+	if schemaNode != nil {
+		node.GetTypes().Add(FilterNonLayerTypes(schemaNode.GetTypes().Slice())...)
+		if ingester.EmbedSchemaNodes {
+			ingester.EmbedSchemaNode(node, schemaNode)
+		} else {
+			ingester.connect(node, schemaNode, InstanceOfTerm)
+		}
 	}
 	return node
 }
@@ -250,7 +296,6 @@ func (ingester *Ingester) EmbedSchemaNode(targetNode, schemaNode Node) {
 			targetProperties[k] = v
 		}
 	}
-	targetNode.GetTypes().Add(FilterNonLayerTypes(schemaNode.GetTypes().Slice())...)
 }
 
 // GetAsPropertyValue returns if the node should be a property of a
@@ -274,4 +319,65 @@ func (ingester *Ingester) connect(srcNode, targetNode digraph.Node, edgeLabel st
 	}
 	digraph.Connect(srcNode, targetNode, edge)
 	return edge
+}
+
+// AssignEntityIDs traverses all the nodes under root, and reassigns
+// IDs to the nodes based on the discovered entity boundaries and
+// entity IDs. If there is no schema information, or if there are no
+// entity IDs, the IDs are unchanges.
+func AssignEntityIDs(root Node, generateIDFunc func(entity string, ID string, node Node, path []Node) string) {
+	onlyDocNodes := func(edge Edge, _ []Node) EdgeFuncResult {
+		if !edge.GetTo().(Node).GetTypes().Has(DocumentNodeTerm) {
+			return SkipEdgeResult
+		}
+		return FollowEdgeResult
+	}
+	// entityMap: map of nodes to their schemas. These nodes are the entity roots
+	entityNodeMap := make(map[Node]string)
+	// entityIDMap: ID of the entity root
+	entityIDMap := make(map[Node]string)
+	IterateDescendants(root, func(node Node, path []Node) bool {
+		_, root := GetNodeOrSchemaProperty(node, EntitySchemaTerm)
+		if root {
+			types := Types{}
+			types.Add(FilterNonLayerTypes(node.GetTypes().Slice())...)
+			types.Remove(DocumentNodeTerm)
+			typesSlice := types.Slice()
+			if len(typesSlice) == 1 {
+				entityNodeMap[node] = typesSlice[0]
+			}
+		}
+		_, hasId := GetNodeOrSchemaProperty(node, EntityIDTerm)
+		var closest Node
+		if hasId {
+			// Find the closest entity root. Must be in entityNodeMap
+			for ix := len(path) - 1; ix >= 0; ix-- {
+				if _, root := entityNodeMap[path[ix]]; root {
+					closest = path[ix]
+					break
+				}
+			}
+			if closest != nil {
+				entityIDMap[closest] = fmt.Sprint(node.GetValue())
+			}
+		}
+		return true
+	}, onlyDocNodes, false)
+	if len(entityIDMap) == 0 {
+		return
+	}
+	// Iterate the nodes again and assign IDs
+	IterateDescendants(root, func(node Node, path []Node) bool {
+		for ix := len(path) - 1; ix >= 0; ix-- {
+			id, exists := entityIDMap[path[ix]]
+			if exists {
+				// Generate ID
+				// There must be an entity
+				entity := entityNodeMap[path[ix]]
+				node.SetID(generateIDFunc(entity, id, node, path))
+				break
+			}
+		}
+		return true
+	}, onlyDocNodes, false)
 }
