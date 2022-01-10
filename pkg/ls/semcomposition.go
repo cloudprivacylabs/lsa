@@ -62,6 +62,9 @@ func (c CompositionType) Compose(target, src *PropertyValue) (*PropertyValue, er
 	case ListComposition:
 		return ListAppend(target, src), nil
 	case NoComposition:
+		if target == nil {
+			return src, nil
+		}
 		return target, nil
 	case ErrorComposition:
 		if target != nil && src != nil {
