@@ -565,20 +565,19 @@ func DocumentNodesUnder(node ...Node) []Node {
 	return ret
 }
 
-// IsNewEntityRoot checks if the node is the root of an entity by
-// seeing if the node has EntitySchemaTerm property, or an instance of
-// a schema node that has EntitySchemaTerm property
-func IsNewEntityRoot(node Node) (string, bool) {
-	root, exists := node.GetProperties()[EntitySchemaTerm]
+// GetNodeOrSchemaProperty gets the node property with the key from
+// the node, or from the schema nodes it is attached to
+func GetNodeOrSchemaProperty(node Node, key string) (*PropertyValue, bool) {
+	prop, exists := node.GetProperties()[key]
 	if exists {
-		return root.AsString(), true
+		return prop, true
 	}
 	ForEachInstanceOf(node, func(n Node) bool {
-		root, exists = node.GetProperties()[EntitySchemaTerm]
+		prop, exists = n.GetProperties()[key]
 		if exists {
 			return false
 		}
 		return true
 	})
-	return root.AsString(), exists
+	return prop, exists
 }
