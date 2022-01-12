@@ -30,6 +30,17 @@ var ErrInvalidXML = errors.New("Invalid XML")
 
 const XSDNamespace = "http://www.w3.org/2001/XMLSchema"
 
+type ErrAmbiguousSchemaAttribute struct {
+	Attr xml.Name
+}
+
+func (e ErrAmbiguousSchemaAttribute) Error() string {
+	if len(e.Attr.Space) > 0 {
+		return fmt.Sprintf("Ambiguous schema attribute for %s:%s", e.Attr.Space, e.Attr.Local)
+	}
+	return fmt.Sprintf("Ambiguous schema attribute for %s", e.Attr.Local)
+}
+
 type ErrElementNodeNotTerminated struct {
 	Name xml.Name
 }
@@ -105,10 +116,11 @@ func (ingester *Ingester) IngestDocument(baseID string, decoder *xml.Decoder) (l
 				return nil, ErrMultipleRoots
 			}
 			rootSeen = true
-			rootNode, err = ingester.parseElement(token, path, decoder, schemaRoot, wsFacet)
+			rn, err := ingester.parseElement(token, path, decoder, schemaRoot, wsFacet)
 			if err != nil {
 				return nil, err
 			}
+			rootNode = rn.node
 			done = true
 
 		case xml.Comment:
@@ -126,7 +138,7 @@ func (ingester *Ingester) IngestDocument(baseID string, decoder *xml.Decoder) (l
 	}
 	// Assign node IDs
 	if ingester.Schema != nil {
-		ls.AssignEntityIDs(dn, func(entity, ID string, node ls.Node, path []ls.Node) string {
+		ls.AssignEntityIDs(rootNode, func(entity, ID string, node ls.Node, path []ls.Node) string {
 			nodePath := ingester.NodePaths[node]
 			eid := fmt.Sprintf("%s/%s", entity, ID)
 			if len(nodePath) > 1 {
@@ -146,7 +158,58 @@ type parsedElement struct {
 
 func (ingester *Ingester) parseElement(data xml.StartElement, path ls.NodePath, decoder *xml.Decoder, schemaNode ls.Node, wsFacet WhitespaceFacet) (parsedElement, error) {
 
-	path = append(path, data.Name.Local)
+	// Get all the possible child nodes from the schema. If the
+	// schemaNode is nil, the returned schemaNodes will be empty
+	schemaNodes, err := ingester.GetObjectAttributeNodes(schemaNode)
+	if err != nil {
+		return parsedElement{}, err
+	}
+
+	path = path.AppendString(data.Name.Local)
+
+	// This finds the best mathcing schema attribute. If a schema
+	// attribute is required for an XML attribute, requireAttr must be
+	// true. Then, if the name matches a schema attribute with namespace
+	// and lname, that attribute is returned. If there are no full-name
+	// matches, a lname matching attribute tha does not specify
+	// namespace will be returned.
+	//
+	// Example:
+	//    name: abc
+	//    schema attributes: ns:abc, abc -> abc will be returned
+	//    name: ns:abc
+	//    schema attributes: ns:abc, abc -> nc:abc will be returned
+	findBestMatch := func(name xml.Name, attrs []ls.Node, requireAttr bool) (ls.Node, error) {
+		var lnameMatch, fnameMatch ls.Node
+		for _, attr := range attrs {
+			_, attrTerm := attr.GetProperties()[AttributeTerm]
+			if requireAttr != attrTerm {
+				continue
+			}
+			ns := attr.GetProperties()[NamespaceTerm]
+			if ns == nil {
+				if lnameMatch != nil {
+					return nil, ErrAmbiguousSchemaAttribute{Attr: name}
+				}
+				lnameMatch = attr
+			} else if ns.IsString() {
+				if ns.AsString() == name.Space {
+					if fnameMatch != nil {
+						return nil, ErrAmbiguousSchemaAttribute{Attr: name}
+					}
+					fnameMatch = attr
+				}
+			}
+		}
+		if lnameMatch != nil && fnameMatch != nil {
+			return nil, ErrAmbiguousSchemaAttribute{Attr: name}
+		}
+		attrSchema := lnameMatch
+		if attrSchema == nil {
+			attrSchema = fnameMatch
+		}
+		return attrSchema, nil
+	}
 
 	attributeNodes := make([]ls.Node, 0)
 	for index, attribute := range data.Attr {
@@ -157,7 +220,16 @@ func (ingester *Ingester) parseElement(data xml.StartElement, path ls.NodePath, 
 			}
 			wsFacet = wf
 		}
-		attrNode, err := ingester.Value(append(path, fmt.Sprintf("attr-%d", index)), nil, attribute.Value)
+
+		var attrSchema ls.Node
+		if schemaNode != nil {
+			attrSchema, err = findBestMatch(attribute.Name, schemaNodes[attribute.Name.Local], true)
+			if err != nil {
+				return parsedElement{}, err
+			}
+		}
+
+		attrNode, err := ingester.Value(append(path, fmt.Sprintf("attr-%d", index)), attrSchema, attribute.Value)
 		if err != nil {
 			return parsedElement{}, err
 		}
@@ -169,7 +241,7 @@ func (ingester *Ingester) parseElement(data xml.StartElement, path ls.NodePath, 
 		attributeNodes = append(attributeNodes, attrNode)
 	}
 
-	children := make([]ls.Node, 0)
+	children := make([]parsedElement, 0)
 
 	elementCounts := make(map[xml.Name]int)
 	textNodeIndex := 0
@@ -186,57 +258,98 @@ func (ingester *Ingester) parseElement(data xml.StartElement, path ls.NodePath, 
 		case xml.StartElement:
 			index := elementCounts[token.Name]
 			elementCounts[token.Name] = index + 1
-			node, err := ingester.parseElement(token, append(path, index), decoder, nil, wsFacet)
+
+			var elemSchema ls.Node
+			if schemaNode != nil {
+				elemSchema, err = findBestMatch(token.Name, schemaNodes[token.Name.Local], false)
+				if err != nil {
+					return parsedElement{}, err
+				}
+			}
+
+			node, err := ingester.parseElement(token, path.AppendInt(index), decoder, elemSchema, wsFacet)
 			if err != nil {
-				return nil, err
+				return parsedElement{}, err
 			}
 			children = append(children, node)
 
 		case xml.EndElement:
-			// Apply whitespace facet
+			// Apply whitespace facet. At this point, all text nodes are
+			// normalized. That means, there cannot be consecutive value
+			// (text) nodes here
 			w := 0
+			hasNonTextNodes := false
+			hasTextNodes := false
 			for i := range children {
-				if children[i].GetTypes().Has(ls.AttributeTypes.Value) {
-					str := wsFacet.Filter(children[i].GetValue().(string))
+				if _, isCharData := children[i].token.(xml.CharData); isCharData {
+					str := wsFacet.Filter(children[i].node.GetValue().(string))
 					if len(str) != 0 {
+						hasTextNodes = true
+						children[i].node.SetValue(str)
 						children[w] = children[i]
 						w++
 					}
 				} else {
+					hasNonTextNodes = true
 					children[w] = children[i]
 					w++
 				}
 			}
-			hasNonTextChild := false
-			newNode, err := ingester.Object(path, schemaNode, append(attributeNodes, children[:w]...))
-			if err != nil {
-				return nil, err
+
+			var newNode ls.Node
+			switch {
+			case (hasNonTextNodes && hasTextNodes) || // Mixed content
+				(hasNonTextNodes && !hasTextNodes): // Object
+				childNodes := make([]ls.Node, 0, len(children))
+				for _, x := range children[:w] {
+					childNodes = append(childNodes, x.node)
+				}
+				newNode, err = ingester.Object(path, schemaNode, append(attributeNodes, childNodes...))
+
+			case !hasNonTextNodes && !hasTextNodes: // No content
+				if schemaNode != nil {
+					if schemaNode.GetTypes().Has(ls.AttributeTypes.Value) {
+						newNode, err = ingester.Value(path, schemaNode, nil)
+					} else {
+						newNode, err = ingester.Object(path, schemaNode, nil)
+					}
+				} else {
+					newNode, err = ingester.Value(path, schemaNode, nil)
+				}
+
+			case !hasNonTextNodes && hasTextNodes: // Value
+				newNode, err = ingester.Value(path, schemaNode, children[0].node.GetValue())
 			}
+			if err != nil {
+				return parsedElement{}, err
+			}
+
 			properties := newNode.GetProperties()
 			if len(data.Name.Space) > 0 {
 				properties[NamespaceTerm] = ls.StringPropertyValue(ingester.Interner.Intern(data.Name.Space))
 			}
 			properties[LocalNameTerm] = ls.StringPropertyValue(ingester.Interner.Intern(data.Name.Local))
-			return newNode, nil
+			return parsedElement{token: token, node: newNode}, nil
 
 		case xml.CharData:
 			data := string(token)
+			// Nornalize text nodes so there is only one text node child per parent node
 			// If last node is also chardata, merge
 			merged := false
 			if len(children) > 0 {
 				last := children[len(children)-1]
-				if last.GetTypes().Has(ls.AttributeTypes.Value) {
-					last.SetValue(last.GetValue().(string) + data)
+				if _, isCharData := last.token.(xml.CharData); isCharData {
+					last.node.SetValue(last.node.GetValue().(string) + data)
 					merged = true
 				}
 			}
 			if !merged {
-				node, err := ingester.Value(append(path, textNodeIndex), nil, data)
+				node, err := ingester.Value(path.AppendInt(textNodeIndex), nil, data)
 				textNodeIndex++
 				if err != nil {
-					return nil, err
+					return parsedElement{}, err
 				}
-				children = append(children, node)
+				children = append(children, parsedElement{token: token, node: node})
 			}
 		case xml.ProcInst:
 		case xml.Directive:

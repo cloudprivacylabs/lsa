@@ -159,18 +159,16 @@ func (ingester *Ingester) Polymorphic(path NodePath, schemaNode Node, ingest fun
 	return newChild, nil
 }
 
-// GetObjectAttributeNodes returns the schema attribute nodes under a schema object
-func (ingester *Ingester) GetObjectAttributeNodes(objectSchemaNode Node) (map[string]Node, error) {
-	nextNodes := make(map[string]Node)
+// GetObjectAttributeNodes returns the schema attribute nodes under a
+// schema object. The returned map is keyed by the AttributeNameTerm
+func (ingester *Ingester) GetObjectAttributeNodes(objectSchemaNode Node) (map[string][]Node, error) {
+	nextNodes := make(map[string][]Node)
 	addNextNode := func(node Node) error {
 		key := node.GetProperties()[AttributeNameTerm].AsString()
 		if len(key) == 0 {
 			return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema at %s", AttributeNameTerm, objectSchemaNode.GetID()))
 		}
-		if _, ok := nextNodes[key]; ok {
-			return ErrInvalidSchema(fmt.Sprintf("Multiple elements with key '%s'", key))
-		}
-		nextNodes[key] = node
+		nextNodes[key] = append(nextNodes[key], node)
 		return nil
 	}
 	if objectSchemaNode != nil {
