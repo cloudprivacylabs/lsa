@@ -15,6 +15,7 @@
 package xml
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -25,14 +26,38 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-func xmlIngestAndCheck(xmlname, graphname string) error {
+func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 	f, err := os.Open("testdata/" + xmlname + ".xml")
 	if err != nil {
 		return fmt.Errorf("%s: %w", xmlname, err)
 	}
 	defer f.Close()
 
+	var schema *ls.Layer
+	if schemaName != "" {
+		s, err := ioutil.ReadFile("testdata/" + schemaName + ".json")
+		if err != nil {
+			return fmt.Errorf("%s: %w", schemaName, err)
+		}
+		var v interface{}
+		if err := json.Unmarshal(s, &v); err != nil {
+			return fmt.Errorf("%s: %w", schemaName, err)
+		}
+		layer, err := ls.UnmarshalLayer(v, nil)
+		if err != nil {
+			return fmt.Errorf("%s: %w", schemaName, err)
+		}
+		c := ls.Compiler{}
+		layer, err = c.CompileSchema(layer)
+		if err != nil {
+			return fmt.Errorf("%s: %w", schemaName, err)
+		}
+		schema = layer
+	}
+
 	ingester := &Ingester{}
+	ingester.Schema = schema
+	ingester.EmbedSchemaNodes = true
 	root, err := IngestStream(ingester, "a", f)
 	if err != nil {
 		return fmt.Errorf("%s: %w", xmlname, err)
@@ -42,36 +67,53 @@ func xmlIngestAndCheck(xmlname, graphname string) error {
 	if err != nil {
 		return fmt.Errorf("%s: %w", graphname, err)
 	}
-	tgt := digraph.New()
-	if err := ls.UnmarshalGraphJSON(d, tgt, nil); err != nil {
+	expected := digraph.New()
+	if err := ls.UnmarshalGraphJSON(d, expected, nil); err != nil {
 		return fmt.Errorf("%s: %s", graphname, err)
 	}
 
-	src := digraph.New()
-	src.AddNode(root)
-	if !digraph.CheckIsomorphism(tgt.GetIndex(), src.GetIndex(), func(n1, n2 digraph.Node) bool {
+	got := digraph.New()
+	got.AddNode(root)
+	if !digraph.CheckIsomorphism(got.GetIndex(), expected.GetIndex(), func(n1, n2 digraph.Node) bool {
 		if n1.(ls.Node).GetValue() != n2.(ls.Node).GetValue() {
-			fmt.Printf("Not equal: '%v' '%v'\n", n1.(ls.Node).GetValue(), n2.(ls.Node).GetValue())
+			fmt.Printf("Different values: '%v' '%v'\n", n1.(ls.Node).GetValue(), n2.(ls.Node).GetValue())
+			return false
 		}
-		return n1.(ls.Node).GetTypes().IsEqual(*n2.(ls.Node).GetTypes()) &&
-			n1.(ls.Node).GetValue() == n2.(ls.Node).GetValue() &&
-			ls.IsPropertiesEqual(n1.(ls.Node).GetProperties(), n2.(ls.Node).GetProperties())
+		if !n1.(ls.Node).GetTypes().IsEqual(*n2.(ls.Node).GetTypes()) {
+			fmt.Printf("Different types: '%v' '%v'\n", n1.(ls.Node).GetTypes(), n2.(ls.Node).GetTypes())
+			return false
+		}
+		if !ls.IsPropertiesEqual(n1.(ls.Node).GetProperties(), n2.(ls.Node).GetProperties()) {
+			fmt.Printf("Different properties: '%v' '%v'\n", n1.(ls.Node).GetProperties(), n2.(ls.Node).GetProperties())
+			return false
+		}
+		return true
 	}, func(e1, e2 digraph.Edge) bool {
 		return ls.IsPropertiesEqual(e1.(ls.Edge).GetProperties(), e2.(ls.Edge).GetProperties())
 	}) {
+		d, _ := ls.MarshalGraphJSON(got)
+		fmt.Println("got:" + string(d))
+		d, _ = ls.MarshalGraphJSON(expected)
+		fmt.Println("expected:" + string(d))
 		return fmt.Errorf("%s: Not isomorphic", xmlname)
 	}
 	return nil
 }
 
 func TestBasicIngest(t *testing.T) {
-	if err := xmlIngestAndCheck("basicIngest", "basicIngest"); err != nil {
+	if err := xmlIngestAndCheck("basicIngest", "", "basicIngest"); err != nil {
 		t.Error(err)
 	}
 }
 
 func TestBasicIngestWS(t *testing.T) {
-	if err := xmlIngestAndCheck("basicIngest_ws", "basicIngest"); err != nil {
+	if err := xmlIngestAndCheck("basicIngest_ws", "", "basicIngest"); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestBasicIngestWithSchema1(t *testing.T) {
+	if err := xmlIngestAndCheck("basicIngest_ws", "basicIngestSchema1", "basicIngestSchema1Expected"); err != nil {
 		t.Error(err)
 	}
 }

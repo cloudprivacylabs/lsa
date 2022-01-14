@@ -299,17 +299,22 @@ func (ingester *Ingester) parseElement(data xml.StartElement, path ls.NodePath, 
 			var newNode ls.Node
 			switch {
 			case (hasNonTextNodes && hasTextNodes) || // Mixed content
-				(hasNonTextNodes && !hasTextNodes): // Object
+				(hasNonTextNodes && !hasTextNodes): // Object, Array
 				childNodes := make([]ls.Node, 0, len(children))
 				for _, x := range children[:w] {
 					childNodes = append(childNodes, x.node)
 				}
-				newNode, err = ingester.Object(path, schemaNode, append(attributeNodes, childNodes...))
-
+				if schemaNode != nil && schemaNode.GetTypes().Has(ls.AttributeTypes.Array) {
+					newNode, err = ingester.Array(path, schemaNode, append(attributeNodes, childNodes...))
+				} else {
+					newNode, err = ingester.Object(path, schemaNode, append(attributeNodes, childNodes...))
+				}
 			case !hasNonTextNodes && !hasTextNodes: // No content
 				if schemaNode != nil {
 					if schemaNode.GetTypes().Has(ls.AttributeTypes.Value) {
 						newNode, err = ingester.Value(path, schemaNode, nil)
+					} else if schemaNode.GetTypes().Has(ls.AttributeTypes.Array) {
+						newNode, err = ingester.Array(path, schemaNode, nil)
 					} else {
 						newNode, err = ingester.Object(path, schemaNode, nil)
 					}
@@ -318,7 +323,11 @@ func (ingester *Ingester) parseElement(data xml.StartElement, path ls.NodePath, 
 				}
 
 			case !hasNonTextNodes && hasTextNodes: // Value
-				newNode, err = ingester.Value(path, schemaNode, children[0].node.GetValue())
+				if schemaNode != nil && schemaNode.GetTypes().Has(ls.AttributeTypes.Array) {
+					newNode, err = ingester.Array(path, schemaNode, []ls.Node{children[0].node})
+				} else {
+					newNode, err = ingester.Value(path, schemaNode, children[0].node.GetValue())
+				}
 			}
 			if err != nil {
 				return parsedElement{}, err
