@@ -159,6 +159,9 @@ func (compiler *Compiler) compileRefs(ctx *compilerContext, ref string) (*Layer,
 	if compileRoot == nil {
 		return nil, ErrNotFound(ref)
 	}
+	// Record the schema ID in the entity root
+	compileRoot.GetProperties()[EntitySchemaTerm] = StringPropertyValue(schema.GetID())
+
 	// Resolve all references
 	if schema != ctx.doNotCache {
 		compiler.CGraph.PutCompiledSchema(ref, schema)
