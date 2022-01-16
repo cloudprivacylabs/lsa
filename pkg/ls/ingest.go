@@ -324,7 +324,7 @@ func (ingester *Ingester) connect(srcNode, targetNode digraph.Node, edgeLabel st
 // AssignEntityIDs traverses all the nodes under root, and reassigns
 // IDs to the nodes based on the discovered entity boundaries and
 // entity IDs. If there is no schema information, or if there are no
-// entity IDs, the IDs are unchanges.
+// entity IDs, the IDs are unchanged.
 func AssignEntityIDs(root Node, generateIDFunc func(entity string, ID string, node Node, path []Node) string) {
 	onlyDocNodes := func(edge Edge, _ []Node) EdgeFuncResult {
 		if !edge.GetTo().(Node).GetTypes().Has(DocumentNodeTerm) {
