@@ -71,7 +71,8 @@ func TestIngest(t *testing.T) {
 
 	ingester := Ingester{
 		Ingester: ls.Ingester{
-			Schema: schema,
+			Schema:               schema,
+			OnlySchemaAttributes: true,
 		},
 	}
 

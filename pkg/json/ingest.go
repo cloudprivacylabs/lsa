@@ -17,6 +17,7 @@ package json
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"strconv"
@@ -98,17 +99,21 @@ func (ingester *Ingester) ingest(input jsonom.Node, path ls.NodePath, schemaNode
 		}
 		return node, dp, nil
 	}
-
-	if schemaNode != nil && schemaNode.GetTypes().Has(ls.AttributeTypes.Polymorphic) {
-		return validate(ingester.ingestPolymorphicNode(input, path, schemaNode))
+	// only ingest nodes that have a matching schema attribute
+	if ingester.OnlySchemaAttributes {
+		if schemaNode != nil && schemaNode.GetTypes().Has(ls.AttributeTypes.Polymorphic) {
+			return validate(ingester.ingestPolymorphicNode(input, path, schemaNode))
+		}
+		switch next := input.(type) {
+		case *jsonom.Object:
+			return validate(ingester.ingestObject(next, path, schemaNode))
+		case *jsonom.Array:
+			return validate(ingester.ingestArray(next, path, schemaNode))
+		}
+		return validate(ingester.ingestValue(input.(*jsonom.Value), path, schemaNode))
+	} else {
+		return nil, nil, errors.New("ingested data must have matching schema node")
 	}
-	switch next := input.(type) {
-	case *jsonom.Object:
-		return validate(ingester.ingestObject(next, path, schemaNode))
-	case *jsonom.Array:
-		return validate(ingester.ingestArray(next, path, schemaNode))
-	}
-	return validate(ingester.ingestValue(input.(*jsonom.Value), path, schemaNode))
 }
 
 func (ingester *Ingester) ingestPolymorphicNode(input jsonom.Node, path ls.NodePath, schemaNode ls.Node) (ls.Node, []deferredProperty, error) {
