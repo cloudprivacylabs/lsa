@@ -84,7 +84,8 @@ func TestIngestFlat(t *testing.T) {
 
 	ingester := Ingester{
 		Ingester: ls.Ingester{
-			Schema: schema,
+			Schema:               schema,
+			OnlySchemaAttributes: true,
 		},
 	}
 	root, err := IngestBytes(&ingester, "http://base", []byte(inputStr))
@@ -145,8 +146,9 @@ func TestIngestRootAnnotation(t *testing.T) {
 
 	ingester := Ingester{
 		Ingester: ls.Ingester{
-			Schema:           layers[0].Layer,
-			EmbedSchemaNodes: true,
+			Schema:               layers[0].Layer,
+			EmbedSchemaNodes:     true,
+			OnlySchemaAttributes: true,
 		},
 	}
 	root, err := IngestBytes(&ingester, "http://base", []byte(inputStr))
