@@ -56,7 +56,8 @@ func (p *PropertyValue) AsString() string {
 	return ""
 }
 
-// AsStringSlice returns the value as string slice
+// AsStringSlice returns the value as string slice. If the underlying
+// value is not a string slice, returns nil
 func (p *PropertyValue) AsStringSlice() []string {
 	if p == nil {
 		return nil
@@ -67,7 +68,20 @@ func (p *PropertyValue) AsStringSlice() []string {
 	return nil
 }
 
-// AsInterfaceSlice returns an interface slice of the underlying value if it is a []string
+// MustStringSlice returns the value as a string slice. If the
+// underlying value is not a string slice, returns a string slice
+// containing one element. If p is nil, returns nil
+func (p *PropertyValue) MustStringSlice() []string {
+	if p == nil {
+		return nil
+	}
+	if s, ok := p.value.([]string); ok {
+		return s
+	}
+	return []string{p.value.(string)}
+}
+
+// AsInterfaceSlice returns an interface slice of the underlying value if it is a []string.
 func (p *PropertyValue) AsInterfaceSlice() []interface{} {
 	if !p.IsStringSlice() {
 		return nil

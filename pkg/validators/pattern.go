@@ -26,7 +26,8 @@ func (validator PatternValidator) Validate(docNode, schemaNode ls.Node) error {
 	if value == nil {
 		return nil
 	}
-	pattern := schemaNode.GetCompiledDataMap()[PatternTerm].(*regexp.Regexp)
+	ipattern, _ := schemaNode.GetCompiledProperties().GetCompiledProperty(PatternTerm)
+	pattern := ipattern.(*regexp.Regexp)
 	if pattern.MatchString(fmt.Sprint(value)) {
 		return nil
 	}
@@ -42,6 +43,6 @@ func (validator PatternValidator) CompileTerm(target ls.CompilablePropertyContai
 	if err != nil {
 		return ls.ErrValidatorCompile{Validator: PatternTerm, Msg: "Invalid pattern", Err: err}
 	}
-	target.GetCompiledDataMap()[term] = pattern
+	target.GetCompiledProperties().SetCompiledProperty(term, pattern)
 	return nil
 }

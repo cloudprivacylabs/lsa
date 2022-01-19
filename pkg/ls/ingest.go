@@ -276,6 +276,7 @@ func (ingester *Ingester) NewNode(path NodePath, schemaNode Node) Node {
 	node.GetTypes().Add(DocumentNodeTerm)
 	if schemaNode != nil {
 		node.GetTypes().Add(FilterNonLayerTypes(schemaNode.GetTypes().Slice())...)
+		node.GetProperties()[SchemaNodeIDTerm] = StringPropertyValue(schemaNode.GetID())
 		if ingester.EmbedSchemaNodes {
 			ingester.EmbedSchemaNode(node, schemaNode)
 		} else {
@@ -296,6 +297,7 @@ func (ingester *Ingester) EmbedSchemaNode(targetNode, schemaNode Node) {
 			targetProperties[k] = v
 		}
 	}
+	schemaNode.GetCompiledProperties().CopyTo(targetNode.GetCompiledProperties())
 }
 
 // GetAsPropertyValue returns if the node should be a property of a

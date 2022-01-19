@@ -15,121 +15,184 @@
 package ls
 
 import (
-	"errors"
-
-	"github.com/bserdar/digraph"
+	"fmt"
 )
 
-var ErrInvalidLink = errors.New("Invalid link")
-var ErrMultipleLinkMatch = errors.New("Multiple values match for link")
-var ErrMultipleValuesForLink = errors.New("Link ID vector has multiple values")
+var (
+	// ReferenceFieldsTerm specifies the id matching vector based on the
+	// values in this entity. For instance ["$field"] will create a
+	// vector using the contents of the field `field`. A vector
+	// `["$field","value"]` will use the value of `field` and the string
+	// "value" as the id vector
+	ReferenceFieldsTerm = NewTerm(LS+"Reference/fields", false, false, OverrideComposition, nil)
 
-// LinkField links an ingested document node to the node it is linked
-// to in the graph.The `documentRoot` is the root node of the document
-// containing this link. The `referenceSchemaNode` is the compiled
-// schema node that has the reference annotations. This function
-// creates a node that is linked to the instance of the target
-// object. The target object is found by constructing a vector
-// []referenceIDValue from the document, and then locating an object
-// whose contents of []referenceIDField matched []referenceIDValue.
-func LinkField(documentRoot, documentNode Node, referenceSchemaNode Node, graph *digraph.Graph) error {
-	referenceIDField := referenceSchemaNode.GetProperties()[ReferenceIDFieldTerm]
-	if referenceIDField == nil {
-		return nil
-	}
-	referenceIDValue := referenceSchemaNode.GetProperties()[ReferenceIDValueTerm]
-	if referenceIDValue == nil {
-		return nil
-	}
-	var idFields []string
-	if referenceIDField.IsString() {
-		idFields = []string{referenceIDField.AsString()}
-	} else {
-		idFields = referenceIDField.AsStringSlice()
-	}
-	var idValueFields []string
-	if referenceIDValue.IsString() {
-		idValueFields = []string{referenceIDValue.AsString()}
-	} else {
-		idValueFields = referenceIDValue.AsStringSlice()
-	}
-	if len(idValueFields) != len(idFields) {
-		return ErrInvalidLink
-	}
+	// ReferenceTargetFieldsTerm is a string of slice whose elements
+	// match the elements of ReferenceFieldsTerm. The referenced object
+	// is found by finding an instance whose id vector is obtained by
+	// the fields in this property. The field values are access by
+	// `$field` notation
+	ReferenceTargetFieldsTerm = NewTerm(LS+"Reference/targetFields", false, false, OverrideComposition, nil)
 
-	idVector, err := GetLinkIDVector(documentRoot, idValueFields...)
-	if err != nil {
-		return err
-	}
+	// ReferenceLabelTerm specifies the edge label between the referenced nodes
+	ReferenceLabelTerm = NewTerm(LS+"Reference/label", false, false, OverrideComposition, nil)
 
-	var foundNode Node
-	types := FilterNonLayerTypes(referenceSchemaNode.GetTypes().Slice())
-	for nodes := graph.GetAllNodes(); nodes.HasNext(); {
-		node := nodes.Next().(Node)
-		nodeTypes := node.GetTypes()
-		if !nodeTypes.Has(DocumentNodeTerm) {
-			continue
-		}
-		// If the node has all the types of 'types', then check the ID vector
-		found := false
-		for _, t := range types {
-			found = true
-			if !nodeTypes.Has(t) {
-				found = false
-				break
-			}
-		}
-		if !found {
-			continue
-		}
-		id, err := GetLinkIDVector(node, idFields...)
-		if err != nil {
-			return err
-		}
-		eq := true
-		for i := range id {
-			if id[i] != idVector[i] {
-				eq = false
-				break
-			}
-		}
-		if eq {
-			if foundNode != nil {
-				return ErrMultipleLinkMatch
-			}
-			foundNode = node
-		}
-	}
-	if foundNode != nil {
-		digraph.Connect(documentNode, foundNode, NewEdge(HasTerm))
-	}
-	return nil
+	// ReferenceDirectionTerm specifies the direction of the edge. If
+	// ->, the edge points to the target entity. If <-, the edge points
+	// to this entity.
+	ReferenceDirectionTerm = NewTerm(LS+"Reference/direction", false, false, OverrideComposition, nil)
+
+	// ReferenceMultiTerm specifies if there can be more than one link targets
+	ReferenceMultiTerm = NewTerm(LS+"Reference/multi", false, false, OverrideComposition, nil)
+)
+
+type ErrInvalidLinkSpec struct {
+	ID  string
+	Msg string
 }
 
-// GetLinkIDVector returns a vector of values filled in from
-// idValueFields, each of which are schema node IDs. The nodes under
-// documentRoot that are instance of these schema node IDs are used to
-// construct the link ID vector
-func GetLinkIDVector(documentRoot Node, idValueFields ...string) ([]string, error) {
-	idVector := make([]string, len(idValueFields))
+func (err ErrInvalidLinkSpec) Error() string {
+	return fmt.Sprintf("Invalid link spec at %s: %s", err.ID, err.Msg)
+}
+
+// LinkSpec contains the link field information
+type LinkSpec struct {
+	// The target schema/entity reference, populated from the
+	// `reference` property of the node
+	TargetEntity string
+	// The field IDs, or values in this entity to create an ID vector
+	IDFields []string
+	// The field IDs in the remote entity that when all values are equal
+	// to the ID vector, a link will be created
+	TargetFields []string
+	// The label of the link
+	Label string
+	// If true, the link is from this entity to the target. If false,
+	// the link is from the target to this.
+	Forward bool
+	// If true, the reference can have more than one links
+	Multi bool
+}
+
+type linkSpecKeyType struct{}
+
+var linkSpecKey linkSpecKeyType
+
+// GetCompiledReferenceLinkSpec returns the compiled reference link
+// spec if there is one
+func GetCompiledReferenceLinkSpec(node Node) (LinkSpec, bool) {
+	spec, exists := node.GetCompiledProperties().GetCompiledProperty(linkSpecKey)
+	if exists {
+		return spec.(LinkSpec), true
+	}
+	return LinkSpec{}, false
+}
+
+// CompileReferenceLinkSpec gets an uncompiled reference node, and
+// puts a LinkSpec into compiled data map of the node if the node
+// specifies a link. It also returns the LinkSpec and true. If the
+// node is not a reference node, or if the node does not specify a
+// link, returns false
+func CompileReferenceLinkSpec(node Node) (LinkSpec, bool, error) {
+	if !node.GetTypes().HasAll(AttributeTypes.Attribute, AttributeTypes.Reference) {
+		return LinkSpec{}, false, nil
+	}
+	properties := node.GetProperties()
+	ref := properties[LayerTerms.Reference].AsString()
+	if len(ref) == 0 {
+		return LinkSpec{}, false, nil
+	}
+	fields := properties[ReferenceFieldsTerm].MustStringSlice()
+	targetFields := properties[ReferenceTargetFieldsTerm].MustStringSlice()
+	label := properties[ReferenceLabelTerm].AsString()
+	dir := properties[ReferenceDirectionTerm].AsString()
+	multi := properties[ReferenceMultiTerm].AsString()
+	if len(fields) == 0 && len(targetFields) == 0 {
+		return LinkSpec{}, false, nil
+	}
+	if len(fields) != len(targetFields) {
+		return LinkSpec{}, false, ErrInvalidLinkSpec{ID: node.GetID(), Msg: "fields and targetFields have different lengths"}
+	}
+	if len(label) == 0 {
+		label = HasTerm
+	}
+	spec := LinkSpec{
+		TargetEntity: ref,
+		IDFields:     fields,
+		TargetFields: targetFields,
+		Label:        label,
+		Multi:        multi == "true",
+	}
+	switch dir {
+	case "->", "":
+		spec.Forward = true
+	case "<-":
+		spec.Forward = false
+	default:
+		return LinkSpec{}, true, ErrInvalidLinkSpec{ID: node.GetID(), Msg: "Direction is not one of: ->, <-"}
+	}
+	node.GetCompiledProperties().SetCompiledProperty(linkSpecKey, spec)
+	return spec, true, nil
+}
+
+// IDVectorElement contains either a node or a value
+type IDVectorElement struct {
+	Node  Node
+	Value string
+}
+
+// GetIDVectorNodes collects the schema nodes specified in the
+// vector. The value of a schema node is specified as $attrId, where
+// attrId is the schema node ID. This function fills the vector by
+// finding document nodes that are an instance of that schema
+// node. The returned array contains either Node or string values
+func GetIDVectorNodes(schemaRoot Node, idVector []string) ([]IDVectorElement, error) {
+	ret := make([]IDVectorElement, len(idVector))
+	searchFieldSet := make(map[string]int)
+	nFound := 0
+	// Fill values first
+	for i, val := range idVector {
+		if len(val) > 0 && val[0] != '$' {
+			ret[i] = IDVectorElement{Value: val}
+			nFound++
+		} else {
+			searchFieldSet[val[1:]] = i
+		}
+	}
+	if nFound == len(idVector) {
+		return ret, nil
+	}
+	zero := IDVectorElement{}
 	var err error
-	IterateDescendants(documentRoot, func(node Node, _ []Node) bool {
-		// If this node is an instance of one of the referenceIDValues, get its value
+	IterateDescendants(schemaRoot, func(node Node, _ []Node) bool {
+		// If this node is an instance of one of the idVector values, get its value
 		inst := InstanceOfID(node)
 		for _, t := range inst {
-			for i := range idValueFields {
-				if t == idValueFields[i] {
-					value := node.GetValue()
-					if value != nil {
-						if len(idVector[i]) > 0 {
-							err = ErrMultipleValuesForLink
-							return false
-						}
-						idVector[i] = node.GetValue().(string)
-					}
+			if ix, has := searchFieldSet[t]; has {
+				if ret[ix] != zero {
+					err = ErrInvalidLinkSpec{ID: t, Msg: "Node has multiple id vector values"}
+					return false
 				}
+				ret[ix] = IDVectorElement{Node: node}
+				nFound++
+				break
 			}
 		}
+		return nFound < len(idVector)
+	}, func(_ Edge, _ []Node) EdgeFuncResult { return FollowEdgeResult }, false)
+
+	return ret, err
+}
+
+// GetIDVector finds the ID vector for the document at the given root,
+// based on the ID vector elements
+func GetIDVector(docRoot Node, elements []IDVectorElement) ([][]string, error) {
+	ret := make([][]string, 0)
+
+	IterateDescendants(docRoot, func(node Node, _ []Node) bool {
+		if !node.GetTypes().Has(DocumentNodeTerm) {
+			return true
+		}
+
 		return true
 	}, func(edge Edge, _ []Node) EdgeFuncResult {
 		if edge.GetLabel() == HasTerm {
@@ -137,8 +200,5 @@ func GetLinkIDVector(documentRoot Node, idValueFields ...string) ([]string, erro
 		}
 		return SkipEdgeResult
 	}, false)
-	if err != nil {
-		return nil, err
-	}
-	return idVector, nil
+	return ret, nil
 }

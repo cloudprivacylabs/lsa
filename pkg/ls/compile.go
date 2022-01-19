@@ -193,6 +193,11 @@ func (compiler *Compiler) resolveReferences(ctx *compilerContext, nodes []digrap
 func (compiler *Compiler) resolveReference(ctx *compilerContext, node Node) error {
 	properties := node.GetProperties()
 	ref := properties[LayerTerms.Reference].AsString()
+	// If the reference node specifies a link, deal with it here
+	_, _, err := CompileReferenceLinkSpec(node)
+	if err != nil {
+		return err
+	}
 	delete(properties, LayerTerms.Reference)
 	// already compiled, or being compiled?
 	compiledSchema := compiler.CGraph.GetCompiledSchema(ref)
@@ -237,12 +242,6 @@ func (compiler Compiler) resolveCompositions(root Node) error {
 	return err
 }
 
-func copyCompiled(target, source map[interface{}]interface{}) {
-	for k, v := range source {
-		target[k] = v
-	}
-}
-
 func (compiler Compiler) resolveComposition(compositeNode Node, completed map[Node]struct{}) error {
 	completed[compositeNode] = struct{}{}
 	// At the end of this process, composite node will be converted into an object node
@@ -272,7 +271,7 @@ func (compiler Compiler) resolveComposition(compositeNode Node, completed map[No
 			// Copy all types
 			compositeNode.GetTypes().Add(component.GetTypes().Slice()...)
 			// Copy compiled items
-			copyCompiled(compositeNode.GetCompiledDataMap(), component.GetCompiledDataMap())
+			component.GetCompiledProperties().CopyTo(compositeNode.GetCompiledProperties())
 
 		case component.GetTypes().Has(AttributeTypes.Value) ||
 			component.GetTypes().Has(AttributeTypes.Array) ||

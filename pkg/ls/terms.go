@@ -47,15 +47,6 @@ var (
 	// DefaultValueTerm is the default value for an attribute if attribute is not present
 	DefaultValueTerm = NewTerm(LS+"defaultValue", false, false, OverrideComposition, nil)
 
-	// ReferenceIDFieldTerm is an annotation that can be a string or a
-	// []string, giving the IDs of the fields that identify the referenced object.
-	ReferenceIDFieldTerm = NewTerm(LS+"Reference/idField", false, false, OverrideComposition, nil)
-
-	// ReferenceIDValueTerm is an annotation that can be a string or a
-	// []string, matching the IDs in ReferenceIDFieldTerm. This annotation
-	// gives the IDs of the schema fields in the current object, whose
-	// values will be used to find the referenced object.
-	ReferenceIDValueTerm = NewTerm(LS+"Reference/idValue", false, false, OverrideComposition, nil)
 	// EntityIDTerm marks a field of an entity as the entity unique
 	// ID. Fields contained within an entity will get IDs relative to
 	// this ID.
@@ -166,6 +157,9 @@ var (
 	// InstanceOfTerm is an edge term that is used to connect values with
 	// their schema specifications
 	InstanceOfTerm = NewTerm(LS+"data/instanceOf", false, false, ErrorComposition, nil)
+
+	// SchemaNodeIDTerm denotes the schema node ID for ingested nodes
+	SchemaNodeIDTerm = NewTerm(LS+"deta/schemaNodeId", false, false, ErrorComposition, nil)
 
 	// AsPropertyOfTerm is optional. If specified, it gives the nearest
 	// node that is an instance of the given type. If not, it is the

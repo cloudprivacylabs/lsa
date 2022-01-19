@@ -43,7 +43,7 @@ type EdgeCompiler interface {
 // CompilablePropertyContainer contains properties and a compiled data map
 type CompilablePropertyContainer interface {
 	PropertyContainer
-	GetCompiledDataMap() map[interface{}]interface{}
+	GetCompiledProperties() *CompiledProperties
 }
 
 // TermCompiler interface represents term compilation algorithm. This
@@ -107,4 +107,45 @@ func GetTermCompiler(term string) TermCompiler {
 		return c
 	}
 	return emptyCompiler{}
+}
+
+// CompiledProperties is a lazy-initialized map
+type CompiledProperties struct {
+	m map[interface{}]interface{}
+}
+
+func (p *CompiledProperties) GetCompiledProperty(key interface{}) (interface{}, bool) {
+	if p.m == nil {
+		return nil, false
+	}
+	property, exists := p.m[key]
+	return property, exists
+}
+
+func (p *CompiledProperties) SetCompiledProperty(key, value interface{}) {
+	if p.m == nil {
+		p.m = make(map[interface{}]interface{})
+	}
+	p.m[key] = value
+}
+
+func (p *CompiledProperties) CopyCompiledToMap(target map[interface{}]interface{}) {
+	if p.m == nil {
+		return
+	}
+	for k, v := range p.m {
+		target[k] = v
+	}
+}
+
+func (p *CompiledProperties) CopyTo(target *CompiledProperties) {
+	if p.m == nil {
+		return
+	}
+	if target.m == nil {
+		target.m = make(map[interface{}]interface{})
+	}
+	for k, v := range p.m {
+		target.m[k] = v
+	}
 }

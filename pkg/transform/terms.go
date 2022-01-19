@@ -81,7 +81,7 @@ func (ifSemantics) CompileTerm(target ls.CompilablePropertyContainer, term strin
 		}
 		out = append(out, r)
 	}
-	target.GetCompiledDataMap()[term] = out
+	target.GetCompiledProperties().SetCompiledProperty(term, out)
 	return nil
 }
 
@@ -106,7 +106,7 @@ func (varsSemantics) CompileTerm(target ls.CompilablePropertyContainer, term str
 		}
 		out = append(out, r)
 	}
-	target.GetCompiledDataMap()[term] = out
+	target.GetCompiledProperties().SetCompiledProperty(term, out)
 	return nil
 }
 
@@ -122,6 +122,6 @@ func (sourceSemantics) CompileTerm(target ls.CompilablePropertyContainer, term s
 	if err != nil {
 		return err
 	}
-	target.GetCompiledDataMap()[term] = e
+	target.GetCompiledProperties().SetCompiledProperty(term, e)
 	return nil
 }

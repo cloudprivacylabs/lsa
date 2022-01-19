@@ -87,6 +87,16 @@ func (types Types) HasAll(t ...string) bool {
 	return true
 }
 
+// HasAny checks if types has any of the given types
+func (types Types) HasAny(t ...string) bool {
+	for _, typ := range t {
+		if types.Has(typ) {
+			return true
+		}
+	}
+	return false
+}
+
 func (types Types) String() string {
 	return fmt.Sprint(types.slice)
 }
@@ -141,11 +151,10 @@ type Node interface {
 	// receives a deep copy of the map
 	GetProperties() map[string]*PropertyValue
 
-	// Returns the compiled data map. This map is used to store
-	// compilation information related to the node, and its contents are
-	// unspecified. If the node is cloned with compiled data map, the
-	// new node will get a shallow copy of the compiled data
-	GetCompiledDataMap() map[interface{}]interface{}
+	// Compiled properties can be set during schema compilation to store
+	// additional information about the node. Node clone operation
+	// shallow-copies such properties
+	GetCompiledProperties() *CompiledProperties
 }
 
 // node is either an attribute node, document node, or an annotation
@@ -165,14 +174,11 @@ type node struct {
 	// Properties associated with the node. These are assumed to be JSON-types
 	properties map[string]*PropertyValue
 	// These can be set during compilation. They are shallow-cloned
-	compiled map[interface{}]interface{}
+	compiled CompiledProperties
 }
 
-func (a *node) GetCompiledDataMap() map[interface{}]interface{} {
-	if a.compiled == nil {
-		a.compiled = make(map[interface{}]interface{})
-	}
-	return a.compiled
+func (a *node) GetCompiledProperties() *CompiledProperties {
+	return &a.compiled
 }
 
 func (a *node) GetProperties() map[string]*PropertyValue {

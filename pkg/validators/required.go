@@ -43,6 +43,6 @@ func (validator RequiredValidator) CompileTerm(target ls.CompilablePropertyConta
 	if !value.IsStringSlice() {
 		return ls.ErrValidatorCompile{Validator: RequiredTerm, Msg: "Array of required attributes expected"}
 	}
-	target.GetCompiledDataMap()[term] = value.AsStringSlice()
+	target.GetCompiledProperties().SetCompiledProperty(term, value.AsStringSlice())
 	return nil
 }
