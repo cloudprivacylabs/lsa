@@ -2,6 +2,7 @@ package csv
 
 import (
 	"encoding/json"
+	"strconv"
 	"testing"
 
 	"github.com/bserdar/digraph"
@@ -57,7 +58,7 @@ func TestIngest(t *testing.T) {
 		{"data1", "data2", "data3", "data4", "data5", "data6", "data7"},
 		{"data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9"},
 		{"data1", "data2", "data3", "data4", "data5"},
-		{"data1", "data2", "data3"},
+		{"data1", "data2", "data3", "data4", "data5"},
 	}
 
 	var schMap interface{}
@@ -78,25 +79,21 @@ func TestIngest(t *testing.T) {
 
 	ingester.PreserveNodePaths = true
 	target := digraph.New()
-	for _, tt := range inputStrColData {
-		node, err := ingester.Ingest(tt, "http://base")
+	for idx, tt := range inputStrColData {
+		node, err := ingester.Ingest(tt, "https://www.example.com/id")
+		expectedNodes := make([][]string, 0, len(inputStrColData))
 		require.NoError(t, err)
 		target.AddNode(node)
 		ix := target.GetIndex()
-		checkNodeValue := func(nodeId string, expected interface{}) {
-			nodes := ix.NodesByLabelSlice(nodeId)
-
+		const nodeID = "https://www.example.com/id"
+		for i := 0; i < len(tt); i++ {
+			nodes := ix.NodesByLabelSlice(nodeID + "." + strconv.Itoa(idx))
 			if len(nodes) == 0 {
-				t.Errorf("node not found: %s", nodeId)
+				t.Errorf("node not found: %s", nodeID)
 			}
-			if nodes[0].(ls.Node).GetValue() != expected {
-				t.Errorf("Wrong value for %s: %v", nodeId, nodes[0].(ls.Node).GetValue())
-			}
+			expectedNodes = append(expectedNodes, inputStrColData[nodes[idx].(ls.Node).GetIndex()])
 		}
-		checkNodeValue("http://base.0", "data1")
-		checkNodeValue("http://base.1", "data2")
-		checkNodeValue("http://base.2", "data3")
-		checkNodeValue("http://base.3", "data4")
-		checkNodeValue("http://base.4", "data5")
+		defer t.Fatal()
+		require.Equalf(t, expectedNodes[idx], inputStrColData[idx], "inequal data, expected: %s, received: %s", expectedNodes[idx], inputStrColData[idx])
 	}
 }

@@ -82,7 +82,7 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 				name:  propertyName,
 				value: columnData,
 			})
-		} else if ingester.OnlySchemaAttributes {
+		} else if schemaNode != nil || !ingester.OnlySchemaAttributes {
 			// create a new value node only if there is a matching schema node
 			newNode, err := ingester.Value(newPath, schemaNode, columnData)
 			if err != nil {
