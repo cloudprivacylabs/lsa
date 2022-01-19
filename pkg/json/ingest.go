@@ -17,7 +17,6 @@ package json
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"strconv"
@@ -100,7 +99,7 @@ func (ingester *Ingester) ingest(input jsonom.Node, path ls.NodePath, schemaNode
 		return node, dp, nil
 	}
 	// only ingest nodes that have a matching schema attribute
-	if ingester.OnlySchemaAttributes {
+	if schemaNode != nil || !ingester.OnlySchemaAttributes {
 		if schemaNode != nil && schemaNode.GetTypes().Has(ls.AttributeTypes.Polymorphic) {
 			return validate(ingester.ingestPolymorphicNode(input, path, schemaNode))
 		}
@@ -112,7 +111,7 @@ func (ingester *Ingester) ingest(input jsonom.Node, path ls.NodePath, schemaNode
 		}
 		return validate(ingester.ingestValue(input.(*jsonom.Value), path, schemaNode))
 	} else {
-		return nil, nil, errors.New("ingested data must have matching schema node")
+		return nil, nil, nil
 	}
 }
 

@@ -51,7 +51,8 @@ type Ingester struct {
 	// This map is reset when Start is called.
 	NodePaths map[Node]NodePath
 
-	// If OnlySchemaAttributes is true, only nodes specified in the schema will be ingested.
+	// If OnlySchemaAttributes is true, only ingest data points if there is a schema for it.
+	// If OnlySchemaAttributes is false, ingest whether or not there is a schema for it.
 	OnlySchemaAttributes bool
 }
 
