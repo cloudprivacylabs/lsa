@@ -49,6 +49,18 @@ var (
 
 	// Format specifies a type-specific formatting directive, such as a date format
 	FormatTerm = NewTerm(LS+"format", false, false, OverrideComposition, nil)
+	// EntityIDTerm marks a field of an entity as the entity unique
+	// ID. Fields contained within an entity will get IDs relative to
+	// this ID.
+	//
+	// This is a marker term. The contents are ignored. Existance of
+	// entityId term on a field marks it as entity id.
+	EntityIDTerm = NewTerm(LS+"entityId", false, false, OverrideComposition, nil)
+
+	// EntitySchemaTerm is inserted by the schema compilation to mark
+	// entity roots. It records the schema ID containing the entity
+	// definition.
+	EntitySchemaTerm = NewTerm(LS+"entitySchema", false, false, ErrorComposition, nil)
 )
 
 // AttributeTypes defines the terms describing attribute types. Each

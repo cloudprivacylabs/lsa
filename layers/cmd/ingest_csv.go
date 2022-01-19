@@ -35,7 +35,7 @@ func init() {
 	ingestCSVCmd.Flags().Int("startRow", 1, "Start row 0-based (default 1)")
 	ingestCSVCmd.Flags().Int("endRow", -1, "End row 0-based")
 	ingestCSVCmd.Flags().Int("headerRow", -1, "Header row 0-based (default: no header)")
-	ingestCSVCmd.Flags().String("id", "", "Object ID Go template for ingested data.")
+	ingestCSVCmd.Flags().String("id", "row_{{.rowIndex}}", "Object ID Go template for ingested data if no ID is declared in the schema")
 	ingestCSVCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 }
 
@@ -82,9 +82,6 @@ var ingestCSVCmd = &cobra.Command{
 			},
 		}
 		idTemplate, _ := cmd.Flags().GetString("id")
-		if len(idTemplate) == 0 {
-			idTemplate = `row_{{.rowIndex}}`
-		}
 		idTmp, err := template.New("id").Parse(idTemplate)
 		if err != nil {
 			failErr(err)
