@@ -28,38 +28,38 @@ func (e ErrCannotParseTemporalValue) Error() string {
 	return "Cannot parse temporal value: " + string(e)
 }
 
-const XSD = "http://www.w3.org/2001/XMLSchema"
+const XSD = "http://www.w3.org/2001/XMLSchema/"
 const JSON = "https:/json-schema.org/"
 
 // XSDGday can be used as a node-type to interpret the underlying value as a day (int)
-var XSDGday = ls.NewTerm(XSD+":gDay", false, false, ls.OverrideComposition, nil)
+var XSDGday = ls.NewTerm(XSD+"gDay", false, false, ls.OverrideComposition, nil)
 
 // XSDGMonth can be used as node-type to interpret the underlying value as a month (int)
-var XSDGMonth = ls.NewTerm(XSD+":gMonth", false, false, ls.OverrideComposition, nil)
+var XSDGMonth = ls.NewTerm(XSD+"gMonth", false, false, ls.OverrideComposition, nil)
 
 // XSDGYear can be used as a node-type to interpret the underlying value as a year value (int)
-var XSDGYear = ls.NewTerm(XSD+":gYear", false, false, ls.OverrideComposition, nil)
+var XSDGYear = ls.NewTerm(XSD+"gYear", false, false, ls.OverrideComposition, nil)
 
 // XSDMonthDay can be used as a node-type to interpret the underlying value as a MM-DD
-var XSDGMonthDay = ls.NewTerm(XSD+":gMonthDay", false, false, ls.OverrideComposition, nil)
+var XSDGMonthDay = ls.NewTerm(XSD+"gMonthDay", false, false, ls.OverrideComposition, nil)
 
 // XSDGYearMonth can be used as a node-type to interpret the underlying value as a YYYY-MM
-var XSDGYearMonth = ls.NewTerm(XSD+":gYearMonth", false, false, ls.OverrideComposition, nil)
+var XSDGYearMonth = ls.NewTerm(XSD+"gYearMonth", false, false, ls.OverrideComposition, nil)
 
 // XSDDate is a node-type that identifies the underlying value as an XML date. The format is:
 //
 //  [-]CCYY-MM-DD[Z|(+|-)hh:mm]
-var XSDDate = ls.NewTerm(XSD+":date", false, false, ls.OverrideComposition, struct {
+var XSDDate = ls.NewTerm(XSD+"date", false, false, ls.OverrideComposition, struct {
 	XSDDateParser
 }{
 	XSDDateParser: XSDDateParser{},
 })
 
 // XSDTime is a node-type that identifies the underlying value as an XML time.
-var XSDTime = ls.NewTerm(XSD+":time", false, false, ls.OverrideComposition, nil)
+var XSDTime = ls.NewTerm(XSD+"time", false, false, ls.OverrideComposition, nil)
 
 // XSDDateTime is a node-type that identifies the underlying value as an XML date-time value
-var XSDDateTime = ls.NewTerm(XSD+":dateTime", false, false, ls.OverrideComposition, nil)
+var XSDDateTime = ls.NewTerm(XSD+"dateTime", false, false, ls.OverrideComposition, nil)
 
 // JSONDate is a node-type that identifies the underlying value as a JSON date value
 //
