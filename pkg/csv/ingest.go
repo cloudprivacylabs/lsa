@@ -61,7 +61,7 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 		if len(columnName) > 0 {
 			schemaNode = attributes[columnName]
 			newPath = path.AppendString(columnName)
-		} else if ingester.Schema != nil {
+		} else if ingester.Schema != nil || !ingester.OnlySchemaAttributes {
 			schemaNode, _ = ingester.Schema.FindFirstAttribute(func(n ls.Node) bool {
 				p := n.GetProperties()[ls.AttributeIndexTerm]
 				if p == nil {
