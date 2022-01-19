@@ -31,7 +31,10 @@ func (e ErrCannotParseTemporalValue) Error() string {
 const XSD = "http://www.w3.org/2001/XMLSchema/"
 const JSON = "https:/json-schema.org/"
 
-// XSDGday can be used as a node-type to interpret the underlying value as a day (int)
+// GDay is XML Gregorian day part of date
+type GDay int
+
+// XSDGday can be used as a node-type to interpret the underlying value as a day (GDay)
 var XSDGday = ls.NewTerm(XSD+"gDay", false, false, ls.OverrideComposition, nil)
 
 // XSDGMonth can be used as node-type to interpret the underlying value as a month (int)
@@ -39,6 +42,11 @@ var XSDGMonth = ls.NewTerm(XSD+"gMonth", false, false, ls.OverrideComposition, n
 
 // XSDGYear can be used as a node-type to interpret the underlying value as a year value (int)
 var XSDGYear = ls.NewTerm(XSD+"gYear", false, false, ls.OverrideComposition, nil)
+
+type GMonthDay struct {
+	Day   int
+	Month int
+}
 
 // XSDMonthDay can be used as a node-type to interpret the underlying value as a MM-DD
 var XSDGMonthDay = ls.NewTerm(XSD+"gMonthDay", false, false, ls.OverrideComposition, nil)

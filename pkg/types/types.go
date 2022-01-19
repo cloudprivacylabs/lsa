@@ -22,6 +22,12 @@ type Parser interface {
 	ParseValue(ls.Node) (interface{}, error)
 }
 
+type Formatter interface {
+	// Set the value of target node using the Go native value, but based
+	// on the annotations of the target node
+	SetValue(ls.Node, interface{}) error
+}
+
 // getStringValue tries to get a string value from the node. If the
 // node value is nil, returns "", false, nil
 func getStringNodeValue(node ls.Node) (string, bool, error) {
