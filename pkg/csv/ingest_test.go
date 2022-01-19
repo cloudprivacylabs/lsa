@@ -93,7 +93,6 @@ func TestIngest(t *testing.T) {
 			}
 			expectedNodes = append(expectedNodes, inputStrColData[nodes[idx].(ls.Node).GetIndex()])
 		}
-		defer t.Fatal()
 		require.Equalf(t, expectedNodes[idx], inputStrColData[idx], "inequal data, expected: %s, received: %s", expectedNodes[idx], inputStrColData[idx])
 	}
 }
