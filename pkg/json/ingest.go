@@ -121,9 +121,6 @@ func (ingester *Ingester) ingestPolymorphicNode(input jsonom.Node, path ls.NodeP
 		if err != nil {
 			return nil, err
 		}
-		if n == nil {
-			return nil, ls.ErrSchemaValidation{Msg: "invalid schema validation", Path: path}
-		}
 		if x != nil {
 			dp = x
 		}
@@ -148,9 +145,6 @@ func (ingester *Ingester) ingestObject(input *jsonom.Object, path ls.NodePath, s
 		childNode, props, err := ingester.ingest(keyValue.Value(), append(path, keyValue.Key()), schNode)
 		if err != nil {
 			return nil, nil, ls.ErrDataIngestion{Key: keyValue.Key(), Err: err}
-		}
-		if childNode == nil {
-			return nil, nil, ls.ErrSchemaValidation{Msg: "invalid schema validation", Path: path}
 		}
 		if childNode != nil {
 			schemaNodes[childNode] = schNode
@@ -214,9 +208,6 @@ func (ingester *Ingester) ingestArray(input *jsonom.Array, path ls.NodePath, sch
 		if err != nil {
 			return nil, nil, ls.ErrDataIngestion{Key: fmt.Sprint(index), Err: err}
 		}
-		if childNode == nil {
-			return nil, nil, ls.ErrSchemaValidation{Msg: "invalid schema validation", Path: path}
-		}
 		if prop != nil {
 			dp = append(dp, prop...)
 		}
@@ -240,9 +231,6 @@ func (ingester *Ingester) ingestArray(input *jsonom.Array, path ls.NodePath, sch
 }
 
 func (ingester *Ingester) ingestValue(input *jsonom.Value, path ls.NodePath, schemaNode ls.Node) (ls.Node, []deferredProperty, error) {
-	if input == nil || path == nil || schemaNode == nil {
-		return nil, nil, nil
-	}
 	var value interface{}
 	var typ string
 	if input.Value() != nil {
