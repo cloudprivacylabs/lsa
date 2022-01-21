@@ -39,8 +39,11 @@ type Date struct {
 	Location *time.Location
 }
 
-func ToGoTime(t interface{}) time.Time {
-	return t.(time.Time)
+func (d Date) ToTime() time.Time {
+	if d.Location == nil {
+		return time.Date(d.Year, time.Month(d.Month), d.Day, 0, 0, 0, 0, time.UTC)
+	}
+	return time.Date(d.Year, time.Month(d.Month), d.Day, 0, 0, 0, 0, d.Location)
 }
 
 // try to convert to go native time with function ToGoTime then pass result as parameter
@@ -62,11 +65,25 @@ type DateTime struct {
 	Location    *time.Location
 }
 
+func (dt DateTime) ToTime() time.Time {
+	if dt.Location == nil {
+		return time.Date(dt.Year, time.Month(dt.Month), dt.Day, int(dt.Hour), int(dt.Minute), int(dt.Nanoseconds)/1000000000, int(dt.Nanoseconds), time.UTC)
+	}
+	return time.Date(dt.Year, time.Month(dt.Month), dt.Day, int(dt.Hour), int(dt.Minute), int(dt.Nanoseconds)/1000000000, int(dt.Nanoseconds), dt.Location)
+}
+
 type TimeOfDay struct {
 	Nanoseconds int64
 	Minute      int64
 	Hour        int64
 	Location    *time.Location
+}
+
+func (t TimeOfDay) ToTime() time.Time {
+	if t.Location == nil {
+		return time.Date(0, 0, 0, int(t.Hour), int(t.Minute), int(t.Nanoseconds)/1000000000, int(t.Nanoseconds), time.UTC)
+	}
+	return time.Date(0, 0, 0, int(t.Hour), int(t.Minute), int(t.Nanoseconds)/1000000000, int(t.Nanoseconds), t.Location)
 }
 
 func (t TimeOfDay) GetHour() int64 {
@@ -240,13 +257,17 @@ func (XSDDateFormatter) SetValue(target ls.Node, val interface{}) error {
 		target.SetValue(value)
 	case Date:
 		if value.Location == nil {
-			target.SetValue(fmt.Sprintf("%04d-%02d-%02d", value.Year, value.Month, value.Day))
+			target.SetValue(value.ToTime().Format("2006-01-02"))
 		} else {
-			target.SetValue("")
+			target.SetValue(value.ToTime().In(value.Location).Format("2006-01-02Z0700"))
 		}
 	case DateTime:
 		if value.Location == nil {
-			target.SetValue(fmt.Sprintf("%04d-%02d-%02d"+"T"+"%02d:%02d:%02d", value.Year, value.Month, value.Day, value.Hour, value.Minute, (value.Nanoseconds / 1000000000)))
+			target.SetValue(value.ToTime().Format("2006-01-02T15:04:05"))
+			// target.SetValue(fmt.Sprintf("%04d-%02d-%02d"+"T"+"%02d:%02d:%02d", value.Year, value.Month, value.Day, value.Hour, value.Minute, (value.Nanoseconds / 1000000000)))
+		} else {
+			// 2006-01-02T15:04:05Z07:00
+			target.SetValue(value.ToTime().In(value.Location).Format(time.RFC3339))
 		}
 	case GDay:
 		target.SetValue(timeToString(value))
@@ -290,9 +311,9 @@ func (JSONDateFormatter) SetValue(target ls.Node, val interface{}) error {
 		target.SetValue(value)
 	case Date:
 		if value.Location == nil {
-			target.SetValue(fmt.Sprintf("%04d-%02d-%02d", value.Year, value.Month, value.Day))
+			target.SetValue(value.ToTime().Format("2006-01-02"))
 		} else {
-			target.SetValue("")
+			target.SetValue(value.ToTime().In(value.Location).Format("2006-01-02"))
 		}
 	}
 	return nil
@@ -323,14 +344,19 @@ func (JSONDateTimeFormatter) SetValue(target ls.Node, val interface{}) error {
 	switch value := val.(type) {
 	case time.Time:
 		target.SetValue(value)
-	case DateTime:
-		if value.Nanoseconds != 0 {
-			target.SetValue(fmt.Sprintf("%04d-%02d-%02dT%02d:%02d:%02d.%09dZ", value.Year, value.Month, value.Day,
-				value.Hour, value.Minute, (value.Nanoseconds / 1000000000), value.Nanoseconds))
-		}
+	case Date:
 		if value.Location == nil {
-			target.SetValue(fmt.Sprintf("%04d-%02d-%02dT%02d:%02d:%02dZ", value.Year, value.Month, value.Day,
-				value.Hour, value.Minute, (value.Nanoseconds / 1000000000)))
+			target.SetValue(value.ToTime().Format("2006-01-02"))
+		} else {
+			target.SetValue(value.ToTime().In(value.Location).Format("2006-01-02"))
+		}
+	case DateTime:
+		if value.Location == nil && value.Nanoseconds == 0 {
+			target.SetValue(value.ToTime().Format("2006-01-02T15:04:05"))
+		} else if value.Location != nil && value.Nanoseconds != 0 {
+			target.SetValue(value.ToTime().In(value.Location).Format(time.RFC3339Nano))
+		} else {
+			target.SetValue(value.ToTime().In(value.Location).Format(time.RFC3339))
 		}
 	}
 	return nil
@@ -365,12 +391,19 @@ func (JSONTimeFormatter) SetValue(target ls.Node, val interface{}) error {
 	case time.Time:
 		target.SetValue(value)
 	case TimeOfDay:
-		if value.Location != nil {
-			target.SetValue(fmt.Sprintf("%02d:%02d:%02dZ", value.Hour, value.Minute, (value.Nanoseconds / 1000000000)))
-		} else if value.Nanoseconds != 0 {
-			target.SetValue(fmt.Sprintf("%02d:%02d:%02d", value.Hour, value.Minute, (value.Nanoseconds / 1000000000)))
+		// if value.Location != nil {
+		// 	target.SetValue(fmt.Sprintf("%02d:%02d:%02dZ", value.Hour, value.Minute, (value.Nanoseconds / 1000000000)))
+		// } else if value.Nanoseconds != 0 {
+		// 	target.SetValue(fmt.Sprintf("%02d:%02d:%02d", value.Hour, value.Minute, (value.Nanoseconds / 1000000000)))
+		// } else {
+		// 	target.SetValue(fmt.Sprintf("%02d:%02d", value.Hour, value.Minute))
+		// }
+		if value.Location == nil && value.Nanoseconds == 0 {
+			target.SetValue(value.ToTime().Format("HH:mm"))
+		} else if value.Location == nil && value.Nanoseconds != 0 {
+			target.SetValue(value.ToTime().Format("HH:mm:ss"))
 		} else {
-			target.SetValue(fmt.Sprintf("%02d:%02d", value.Hour, value.Minute))
+			target.SetValue(value.ToTime().In(value.Location).Format("HH:mm:ssZ"))
 		}
 	}
 	return nil
