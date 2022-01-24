@@ -34,6 +34,7 @@ func init() {
 	ingestCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
 	ingestCmd.PersistentFlags().Bool("includeSchema", false, "Include schema in the output")
 	ingestCmd.PersistentFlags().Bool("embedSchemaNodes", false, "Embed schema nodes into document nodes")
+	ingestCmd.PersistentFlags().Bool("onlySchemaAttributes", false, "Only ingest nodes that have an associated schema attribute")
 }
 
 var ingestCmd = &cobra.Command{

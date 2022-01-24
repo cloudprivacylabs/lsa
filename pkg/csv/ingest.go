@@ -59,7 +59,13 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 		var newPath ls.NodePath
 		// if column header exists, assign schemaNode to corresponding value in attributes map
 		if len(columnName) > 0 {
-			schemaNode = attributes[columnName]
+			schemaNodes := attributes[columnName]
+			if len(schemaNodes) > 1 {
+				return nil, ls.ErrInvalidSchema(fmt.Sprintf("Multiple elements with key '%s'", columnName))
+			}
+			if len(schemaNodes) == 1 {
+				schemaNode = schemaNodes[0]
+			}
 			newPath = path.AppendString(columnName)
 		} else if ingester.Schema != nil || !ingester.OnlySchemaAttributes {
 			schemaNode, _ = ingester.Schema.FindFirstAttribute(func(n ls.Node) bool {

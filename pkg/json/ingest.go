@@ -141,7 +141,14 @@ func (ingester *Ingester) ingestObject(input *jsonom.Object, path ls.NodePath, s
 	dp := make([]deferredProperty, 0)
 	for i := 0; i < input.Len(); i++ {
 		keyValue := input.N(i)
-		schNode := nextNodes[keyValue.Key()]
+		schNodes := nextNodes[keyValue.Key()]
+		if len(schNodes) > 1 {
+			return nil, nil, ls.ErrInvalidSchema(fmt.Sprintf("Multiple elements with key '%s'", keyValue.Key()))
+		}
+		var schNode ls.Node
+		if len(schNodes) == 1 {
+			schNode = schNodes[0]
+		}
 		childNode, props, err := ingester.ingest(keyValue.Value(), append(path, keyValue.Key()), schNode)
 		if err != nil {
 			return nil, nil, ls.ErrDataIngestion{Key: keyValue.Key(), Err: err}

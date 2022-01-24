@@ -22,20 +22,20 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
-	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	xmlingest "github.com/cloudprivacylabs/lsa/pkg/xml"
 )
 
 func init() {
-	ingestCmd.AddCommand(ingestJSONCmd)
-	ingestJSONCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
-	ingestJSONCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
-	ingestJSONCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
+	ingestCmd.AddCommand(ingestXMLCmd)
+	ingestXMLCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
+	ingestXMLCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
+	ingestXMLCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 }
 
-var ingestJSONCmd = &cobra.Command{
-	Use:   "json",
-	Short: "Ingest a JSON document and enrich it with a schema",
+var ingestXMLCmd = &cobra.Command{
+	Use:   "xml",
+	Short: "Ingest an XML document and enrich it with a schema",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		interner := ls.NewInterner()
@@ -62,9 +62,9 @@ var ingestJSONCmd = &cobra.Command{
 				failErr(err)
 			}
 		}
-		onlySchemaAttributes, _ := cmd.Flags().GetBool("onlySchemaAttributes")
 		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
-		ingester := jsoningest.Ingester{
+		onlySchemaAttributes, _ := cmd.Flags().GetBool("onlySchemaAttributes")
+		ingester := xmlingest.Ingester{
 			Ingester: ls.Ingester{
 				Schema:               layer,
 				EmbedSchemaNodes:     embedSchemaNodes,
@@ -73,7 +73,7 @@ var ingestJSONCmd = &cobra.Command{
 		}
 
 		baseID, _ := cmd.Flags().GetString("id")
-		root, err := jsoningest.IngestStream(&ingester, baseID, input)
+		root, err := xmlingest.IngestStream(&ingester, baseID, input)
 		if err != nil {
 			failErr(err)
 		}
