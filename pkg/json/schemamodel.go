@@ -35,7 +35,7 @@ type schemaProperty struct {
 	pattern      string
 	description  string
 	defaultValue *string
-	annotations  map[string]*ls.PropertyValue
+	annotations  map[string]interface{}
 }
 
 type arraySchema struct {
@@ -47,26 +47,30 @@ type objectSchema struct {
 	required   []string
 }
 
-func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer) ls.Node {
-	return schemaAttrs(entityId, append(name, "*"), a.items, layer)
+func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer, interner ls.Interner) (ls.Node, error) {
+	return schemaAttrs(entityId, append(name, "*"), a.items, layer, interner)
 }
 
-func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer) []ls.Node {
+func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer, interner ls.Interner) ([]ls.Node, error) {
 	ret := make([]ls.Node, 0, len(obj.properties))
 	for k, v := range obj.properties {
 		nm := append(name, k)
-		ret = append(ret, schemaAttrs(entityId, nm, v, layer))
+		node, err := schemaAttrs(entityId, nm, v, layer, interner)
+		if err != nil {
+			return nil, err
+		}
+		ret = append(ret, node)
 	}
-	return ret
+	return ret, nil
 }
 
-func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer) ls.Node {
+func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer, interner ls.Interner) (ls.Node, error) {
 	id := entityId + "#" + strings.Join(name, ".")
 	newNode := layer.NewNode(id)
-	return buildSchemaAttrs(entityId, name, attr, layer, newNode)
+	return buildSchemaAttrs(entityId, name, attr, layer, newNode, interner)
 }
 
-func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer, newNode ls.Node) ls.Node {
+func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer, newNode ls.Node, interner ls.Interner) (ls.Node, error) {
 	properties := newNode.GetProperties()
 	if len(attr.format) > 0 {
 		properties[validators.JsonFormatTerm] = ls.StringPropertyValue(attr.format)
@@ -86,7 +90,7 @@ func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer
 	if len(attr.enum) > 0 {
 		elements := make([]string, 0, len(attr.enum))
 		for _, v := range attr.enum {
-			elements = append(elements, fmt.Sprint(v))
+			elements = append(elements, interner.Intern(fmt.Sprint(v)))
 		}
 		properties[validators.EnumTerm] = ls.StringSlicePropertyValue(elements)
 	}
@@ -94,56 +98,75 @@ func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer
 		properties[ls.DefaultValueTerm] = ls.StringPropertyValue(*attr.defaultValue)
 	}
 	for k, v := range attr.annotations {
-		properties[k] = v
+		if err := ls.GetTermMarshaler(k).UnmarshalJSON(layer, k, v, newNode, interner); err != nil {
+			return nil, err
+		}
 	}
 
 	if len(attr.reference) > 0 {
 		newNode.GetTypes().Add(ls.AttributeTypes.Reference)
 		properties[ls.LayerTerms.Reference] = ls.StringPropertyValue(attr.reference)
-		return newNode
+		return newNode, nil
 	}
 
 	if attr.object != nil {
 		newNode.GetTypes().Add(ls.AttributeTypes.Object)
-		attrs := attr.object.itr(entityId, name, layer)
+		attrs, err := attr.object.itr(entityId, name, layer, interner)
+		if err != nil {
+			return nil, err
+		}
 		for _, x := range attrs {
 			ls.Connect(newNode, x, ls.LayerTerms.AttributeList)
 		}
 		if len(attr.object.required) > 0 {
 			properties[validators.RequiredTerm] = ls.StringSlicePropertyValue(attr.object.required)
 		}
-		return newNode
+		return newNode, nil
 	}
 	if attr.array != nil {
 		newNode.GetTypes().Add(ls.AttributeTypes.Array)
-		n := attr.array.itr(entityId, name, layer)
+		n, err := attr.array.itr(entityId, name, layer, interner)
+		if err != nil {
+			return nil, err
+		}
 		ls.Connect(newNode, n, ls.LayerTerms.ArrayItems)
-		return newNode
+		return newNode, nil
 	}
 
-	buildChoices := func(arr []schemaProperty) []ls.Node {
+	buildChoices := func(arr []schemaProperty) ([]ls.Node, error) {
 		elements := make([]ls.Node, 0, len(arr))
 		for i, x := range arr {
 			newName := append(name, fmt.Sprint(i))
-			node := schemaAttrs(entityId, newName, x, layer)
+			node, err := schemaAttrs(entityId, newName, x, layer, interner)
+			if err != nil {
+				return nil, err
+			}
 			elements = append(elements, node)
 		}
-		return elements
+		return elements, nil
 	}
 	if len(attr.oneOf) > 0 {
 		newNode.GetTypes().Add(ls.AttributeTypes.Polymorphic)
-		for _, x := range buildChoices(attr.oneOf) {
+		choices, err := buildChoices(attr.oneOf)
+		if err != nil {
+			return nil, err
+		}
+		for _, x := range choices {
 			ls.Connect(newNode, x, ls.LayerTerms.OneOf)
 		}
-		return newNode
+		return newNode, nil
 	}
 	if len(attr.allOf) > 0 {
 		newNode.GetTypes().Add(ls.AttributeTypes.Composite)
-		for _, x := range buildChoices(attr.oneOf) {
+		choices, err := buildChoices(attr.oneOf)
+		if err != nil {
+			return nil, err
+		}
+		for _, x := range choices {
 			ls.Connect(newNode, x, ls.LayerTerms.AllOf)
 		}
-		return newNode
+		return newNode, nil
 	}
 	newNode.GetTypes().Add(ls.AttributeTypes.Value)
-	return newNode
+	return newNode, nil
 }
