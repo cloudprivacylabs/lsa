@@ -62,11 +62,13 @@ var ingestJSONCmd = &cobra.Command{
 				failErr(err)
 			}
 		}
+		onlySchemaAttributes, _ := cmd.Flags().GetBool("onlySchemaAttributes")
 		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
 		ingester := jsoningest.Ingester{
 			Ingester: ls.Ingester{
-				Schema:           layer,
-				EmbedSchemaNodes: embedSchemaNodes,
+				Schema:               layer,
+				EmbedSchemaNodes:     embedSchemaNodes,
+				OnlySchemaAttributes: onlySchemaAttributes,
 			},
 		}
 

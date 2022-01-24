@@ -157,6 +157,10 @@ type parsedElement struct {
 }
 
 func (ingester *Ingester) parseElement(data xml.StartElement, path ls.NodePath, decoder *xml.Decoder, schemaNode ls.Node, wsFacet WhitespaceFacet) (parsedElement, error) {
+	// If schemaNode is nil and we are only ingesting known nodes, ignore this node
+	if schemaNode == nil && ingester.OnlySchemaAttributes {
+		return parsedElement{}, nil
+	}
 
 	// Get all the possible child nodes from the schema. If the
 	// schemaNode is nil, the returned schemaNodes will be empty
@@ -271,7 +275,9 @@ func (ingester *Ingester) parseElement(data xml.StartElement, path ls.NodePath, 
 			if err != nil {
 				return parsedElement{}, err
 			}
-			children = append(children, node)
+			if node.node != nil {
+				children = append(children, node)
+			}
 
 		case xml.EndElement:
 			// Apply whitespace facet. At this point, all text nodes are
