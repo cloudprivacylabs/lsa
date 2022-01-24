@@ -98,17 +98,20 @@ func (ingester *Ingester) ingest(input jsonom.Node, path ls.NodePath, schemaNode
 		}
 		return node, dp, nil
 	}
-
-	if schemaNode != nil && schemaNode.GetTypes().Has(ls.AttributeTypes.Polymorphic) {
-		return validate(ingester.ingestPolymorphicNode(input, path, schemaNode))
+	// only ingest nodes that have a matching schema attribute
+	if schemaNode != nil || !ingester.OnlySchemaAttributes {
+		if schemaNode != nil && schemaNode.GetTypes().Has(ls.AttributeTypes.Polymorphic) {
+			return validate(ingester.ingestPolymorphicNode(input, path, schemaNode))
+		}
+		switch next := input.(type) {
+		case *jsonom.Object:
+			return validate(ingester.ingestObject(next, path, schemaNode))
+		case *jsonom.Array:
+			return validate(ingester.ingestArray(next, path, schemaNode))
+		}
+		return validate(ingester.ingestValue(input.(*jsonom.Value), path, schemaNode))
 	}
-	switch next := input.(type) {
-	case *jsonom.Object:
-		return validate(ingester.ingestObject(next, path, schemaNode))
-	case *jsonom.Array:
-		return validate(ingester.ingestArray(next, path, schemaNode))
-	}
-	return validate(ingester.ingestValue(input.(*jsonom.Value), path, schemaNode))
+	return nil, nil, nil
 }
 
 func (ingester *Ingester) ingestPolymorphicNode(input jsonom.Node, path ls.NodePath, schemaNode ls.Node) (ls.Node, []deferredProperty, error) {
@@ -118,7 +121,9 @@ func (ingester *Ingester) ingestPolymorphicNode(input jsonom.Node, path ls.NodeP
 		if err != nil {
 			return nil, err
 		}
-		dp = x
+		if x != nil {
+			dp = x
+		}
 		return n, nil
 	})
 	return node, dp, err
@@ -153,7 +158,9 @@ func (ingester *Ingester) ingestObject(input *jsonom.Object, path ls.NodePath, s
 			childNode.GetProperties()[ls.AttributeNameTerm] = ls.StringPropertyValue(keyValue.Key())
 			elements = append(elements, childNode)
 		}
-		dp = append(dp, props...)
+		if props != nil {
+			dp = append(dp, props...)
+		}
 	}
 	node, err := ingester.Object(path, schemaNode, elements, ObjectTypeTerm)
 	if err != nil {
@@ -208,7 +215,9 @@ func (ingester *Ingester) ingestArray(input *jsonom.Array, path ls.NodePath, sch
 		if err != nil {
 			return nil, nil, ls.ErrDataIngestion{Key: fmt.Sprint(index), Err: err}
 		}
-		dp = append(dp, prop...)
+		if prop != nil {
+			dp = append(dp, prop...)
+		}
 		if childNode != nil {
 			childNode.GetProperties()[ls.AttributeIndexTerm] = ls.StringPropertyValue(fmt.Sprint(index))
 			elements = append(elements, childNode)
