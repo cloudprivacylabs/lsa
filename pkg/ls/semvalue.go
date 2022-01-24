@@ -29,6 +29,17 @@ func (e ErrInconsistentTypes) Error() string {
 	return fmt.Sprintf("Inconsistent types at '%s': %v", e.ID, e.TypeNames)
 }
 
+type ErrInvalidValue struct {
+	ID    string
+	Type  string
+	Value interface{}
+	Msg   string
+}
+
+func (e ErrInvalidValue) Error() string {
+	return fmt.Sprintf("Invalid value at '%s': Type: %s, Value: %v, %s", e.ID, e.Type, e.Value, e.Msg)
+}
+
 // A ValueAccessor gets node values in native type, and sets node values
 type ValueAccessor interface {
 	GetNodeValue(Node) (interface{}, error)
