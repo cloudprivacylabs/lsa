@@ -302,8 +302,8 @@ func UnmarshalJSONLDGraph(input interface{}, interner Interner) (*digraph.Graph,
 
 	// Generate a graph node for each input node to populate the graph
 	for _, inode := range inputNodes {
-		inode.graphNode = NewNode(inode.id, inode.types...)
-		target.AddNode(inode.graphNode)
+		inode.GraphNode = NewNode(inode.ID, inode.Types...)
+		target.AddNode(inode.GraphNode)
 	}
 
 	// Deal with properties and edges
@@ -312,9 +312,9 @@ func UnmarshalJSONLDGraph(input interface{}, interner Interner) (*digraph.Graph,
 	}
 	for _, inode := range inputNodes {
 		switch {
-		case hasType(DocumentNodeTerm, inode.types):
+		case hasType(DocumentNodeTerm, inode.Types):
 			// A document node
-			for k, v := range inode.node {
+			for k, v := range inode.Node {
 				if v == nil {
 					continue
 				}
@@ -326,9 +326,9 @@ func UnmarshalJSONLDGraph(input interface{}, interner Interner) (*digraph.Graph,
 						return nil, err
 					}
 					if len(vals) == 1 {
-						inode.graphNode.SetValue(vals[0])
+						inode.GraphNode.SetValue(vals[0])
 					} else {
-						inode.graphNode.SetValue(val)
+						inode.GraphNode.SetValue(val)
 					}
 				default:
 					value, values, ids, err := getValuesOrIDs(v)
@@ -336,14 +336,14 @@ func UnmarshalJSONLDGraph(input interface{}, interner Interner) (*digraph.Graph,
 						return nil, err
 					}
 					if values == nil && ids == nil {
-						inode.graphNode.GetProperties()[k] = StringPropertyValue(value)
+						inode.GraphNode.GetProperties()[k] = StringPropertyValue(value)
 					} else if values != nil {
-						inode.graphNode.GetProperties()[k] = StringSlicePropertyValue(values)
+						inode.GraphNode.GetProperties()[k] = StringSlicePropertyValue(values)
 					} else if ids != nil {
 						for _, id := range ids {
 							tgt := inputNodes[id]
 							if tgt != nil {
-								digraph.Connect(inode.graphNode, tgt.graphNode, NewEdge(k))
+								digraph.Connect(inode.GraphNode, tgt.GraphNode, NewEdge(k))
 							}
 						}
 					}
@@ -351,20 +351,20 @@ func UnmarshalJSONLDGraph(input interface{}, interner Interner) (*digraph.Graph,
 			}
 
 		default:
-			for k, v := range inode.node {
+			for k, v := range inode.Node {
 				value, values, ids, err := getValuesOrIDs(v)
 				if err != nil {
 					return nil, err
 				}
 				if values == nil && ids == nil {
-					inode.graphNode.GetProperties()[k] = StringPropertyValue(value)
+					inode.GraphNode.GetProperties()[k] = StringPropertyValue(value)
 				} else if values != nil {
-					inode.graphNode.GetProperties()[k] = StringSlicePropertyValue(values)
+					inode.GraphNode.GetProperties()[k] = StringSlicePropertyValue(values)
 				} else if ids != nil {
 					for _, id := range ids {
 						tgt := inputNodes[id]
 						if tgt != nil {
-							digraph.Connect(inode.graphNode, tgt.graphNode, NewEdge(k))
+							digraph.Connect(inode.GraphNode, tgt.GraphNode, NewEdge(k))
 						}
 					}
 				}

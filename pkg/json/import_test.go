@@ -42,8 +42,17 @@ func TestAnnotations(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if compiled[0].Schema.Properties["p1"].Extensions[X_LS].(annotationExtSchema)["field"].AsString() != "value" {
+	if compiled[0].Schema.Properties["p1"].Extensions[X_LS].(annotationExtSchema)["field"].(string) != "value" {
 		t.Errorf("No extension")
+	}
+	layers, err := BuildEntityGraph(ls.SchemaTerm, compiled[0])
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	node := layers[0].Layer.GetSchemaRootNode().NextWith(ls.LayerTerms.AttributeList)[0].(ls.Node)
+	if node.GetProperties()["field"].AsString() != "value" {
+		t.Errorf("Wrong value: %+v", node)
 	}
 }
 
