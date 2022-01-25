@@ -78,7 +78,7 @@ type linkSpecKeyType struct{}
 var linkSpecKey linkSpecKeyType
 
 // GetCompiledReferenceLinkSpec returns the compiled reference link
-// spec if there is one
+// spec if there is one in the compiled property map of the node
 func GetCompiledReferenceLinkSpec(node Node) (LinkSpec, bool) {
 	spec, exists := node.GetCompiledProperties().GetCompiledProperty(linkSpecKey)
 	if exists {
