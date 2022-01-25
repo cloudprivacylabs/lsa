@@ -321,6 +321,25 @@ const (
 	StopEdgeResult
 )
 
+// SkipEdgesToNodeWithType returns a function that skips edges that go
+// to a node with the given type
+func SkipEdgesToNodeWithType(typ string) func(Edge, []Node) EdgeFuncResult {
+	return func(edge Edge, _ []Node) EdgeFuncResult {
+		if edge.GetTo().(Node).GetTypes().Has(typ) {
+			return SkipEdgeResult
+		}
+		return FollowEdgeResult
+	}
+}
+
+// SkipSchemaNodes can be used in IterateDescendants edge func
+// to skip all edges that go to a schema node
+var SkipSchemaNodes = SkipEdgesToNodeWithType(AttributeTypes.Attribute)
+
+// SkipDocumentNodes can be used in IterateDescendants edge func
+// to skip all edges that go to a document node
+var SkipDocumentNodes = SkipEdgesToNodeWithType(DocumentNodeTerm)
+
 // IterateDescendants iterates the descendants of the node based on
 // the results of nodeFunc and edgeFunc.
 //

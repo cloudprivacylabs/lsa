@@ -166,13 +166,13 @@ func (compiler *Compiler) compileRefs(ctx *compilerContext, ref string) (*Layer,
 	if schema != ctx.doNotCache {
 		compiler.CGraph.PutCompiledSchema(ref, schema)
 	}
-	if err := compiler.resolveReferences(ctx, schema.GetIndex().NodesSlice()); err != nil {
+	if err := compiler.resolveReferences(ctx, schema, schema.GetIndex().NodesSlice()); err != nil {
 		return nil, err
 	}
 	return schema, nil
 }
 
-func (compiler *Compiler) resolveReferences(ctx *compilerContext, nodes []digraph.Node) error {
+func (compiler *Compiler) resolveReferences(ctx *compilerContext, layer *Layer, nodes []digraph.Node) error {
 	// Collect all reference nodes
 	references := make([]Node, 0)
 	for _, n := range nodes {
@@ -183,18 +183,18 @@ func (compiler *Compiler) resolveReferences(ctx *compilerContext, nodes []digrap
 	}
 	// Resolve each reference
 	for _, node := range references {
-		if err := compiler.resolveReference(ctx, node); err != nil {
+		if err := compiler.resolveReference(ctx, layer, node); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (compiler *Compiler) resolveReference(ctx *compilerContext, node Node) error {
+func (compiler *Compiler) resolveReference(ctx *compilerContext, layer *Layer, node Node) error {
 	properties := node.GetProperties()
 	ref := properties[LayerTerms.Reference].AsString()
 	// If the reference node specifies a link, deal with it here
-	_, _, err := CompileReferenceLinkSpec(node)
+	_, _, err := CompileReferenceLinkSpec(layer, node)
 	if err != nil {
 		return err
 	}
@@ -298,32 +298,39 @@ func (compiler Compiler) resolveComposition(compositeNode Node, completed map[No
 
 // CompileTerms compiles all node and edge terms of the layer
 func CompileTerms(layer *Layer) error {
-	for _, n := range layer.GetIndex().NodesSlice() {
-		node := n.(Node)
+	var err error
+	IterateDescendants(layer.GetSchemaRootNode(), func(node Node, _ []Node) bool {
 		// Compile all non-attribute nodes
 		if !IsAttributeNode(node) {
-			if err := GetNodeCompiler(node.GetID()).CompileNode(node); err != nil {
-				return err
+			if err = GetNodeCompiler(node.GetID()).CompileNode(layer, node); err != nil {
+				return false
 			}
 		}
 		for k, v := range node.GetProperties() {
-			err := GetTermCompiler(k).CompileTerm(node, k, v)
+			err = GetTermCompiler(k).CompileTerm(node, k, v)
 			if err != nil {
-				return err
+				return false
 			}
 			for edges := node.Out(); edges.HasNext(); {
 				edge := edges.Next().(Edge)
-				if err := GetEdgeCompiler(edge.GetLabelStr()).CompileEdge(edge); err != nil {
-					return err
+				if err = GetEdgeCompiler(edge.GetLabelStr()).CompileEdge(layer, edge); err != nil {
+					return false
 				}
 				for k, v := range edge.GetProperties() {
-					err := GetTermCompiler(k).CompileTerm(edge, k, v)
+					err = GetTermCompiler(k).CompileTerm(edge, k, v)
 					if err != nil {
-						return err
+						return false
 					}
 				}
 			}
 		}
-	}
-	return nil
+		return true
+	}, func(edge Edge, _ []Node) EdgeFuncResult {
+		// Do not cross entity boundaries
+		if _, ok := edge.GetTo().(Node).GetProperties()[EntitySchemaTerm]; ok {
+			return SkipEdgeResult
+		}
+		return FollowEdgeResult
+	}, false)
+	return err
 }

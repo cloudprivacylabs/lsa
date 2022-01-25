@@ -14,22 +14,22 @@
 
 package ls
 
-import (
-	"testing"
-)
+// import (
+// 	"testing"
+// )
 
-func TestGetIDVectorNodes(t *testing.T) {
-	testGetID := func(schema string, expected []IDVectorElement) {
-	}
+// func TestGetIDVectorNodes(t *testing.T) {
+// 	testGetID := func(schema string, expected []IDVectorElement) {
+// 	}
 
-	testGetID(`{
-"@type": "https://lschema.org/Schema",
-"@id": "http://test",
-"https://lschema.org/layer": {
-  "@type": "https://lschema.org/Object",
-  "https://lschema.org/Object/attributes": {
-  }
-}
-}`, "")
+// 	testGetID(`{
+// "@type": "https://lschema.org/Schema",
+// "@id": "http://test",
+// "https://lschema.org/layer": {
+//   "@type": "https://lschema.org/Object",
+//   "https://lschema.org/Object/attributes": {
+//   }
+// }
+// }`, "")
 
-}
+// }
