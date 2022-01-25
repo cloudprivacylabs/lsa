@@ -98,19 +98,19 @@ func timeToString(time interface{}) string {
 type GDay int
 
 // XSDGday can be used as a node-type to interpret the underlying value as a day (GDay)
-var XSDGday = ls.NewTerm(XSD+"gDay", false, false, ls.OverrideComposition, nil)
+var XSDGdayTerm = ls.NewTerm(XSD+"gDay", false, false, ls.OverrideComposition, nil)
 
 // GMonth is XML Gregorian month part of date
 type GMonth int
 
 // XSDGMonth can be used as node-type to interpret the underlying value as a month (int)
-var XSDGMonth = ls.NewTerm(XSD+"gMonth", false, false, ls.OverrideComposition, nil)
+var XSDGMonthTerm = ls.NewTerm(XSD+"gMonth", false, false, ls.OverrideComposition, nil)
 
 // GMonth is XML Gregorian year part of date
 type GYear int
 
 // XSDGYear can be used as a node-type to interpret the underlying value as a year value (int)
-var XSDGYear = ls.NewTerm(XSD+"gYear", false, false, ls.OverrideComposition, nil)
+var XSDGYearTerm = ls.NewTerm(XSD+"gYear", false, false, ls.OverrideComposition, nil)
 
 // GMonthDay is XML Gregorian part of Month/Day
 type GMonthDay struct {
@@ -119,7 +119,7 @@ type GMonthDay struct {
 }
 
 // XSDMonthDay can be used as a node-type to interpret the underlying value as a MM-DD
-var XSDGMonthDay = ls.NewTerm(XSD+"gMonthDay", false, false, ls.OverrideComposition, nil)
+var XSDGMonthDayTerm = ls.NewTerm(XSD+"gMonthDay", false, false, ls.OverrideComposition, nil)
 
 // GYearMonth is XML Gregorian part of Year/Month
 type GYearMonth struct {
@@ -128,27 +128,27 @@ type GYearMonth struct {
 }
 
 // XSDGYearMonth can be used as a node-type to interpret the underlying value as a YYYY-MM
-var XSDGYearMonth = ls.NewTerm(XSD+"gYearMonth", false, false, ls.OverrideComposition, nil)
+var XSDGYearMonthTerm = ls.NewTerm(XSD+"gYearMonth", false, false, ls.OverrideComposition, nil)
 
 // XSDDate is a node-type that identifies the underlying value as an XML date. The format is:
 //
 //  [-]CCYY-MM-DD[Z|(+|-)hh:mm]
-var XSDDate = ls.NewTerm(XSD+"date", false, false, ls.OverrideComposition, struct {
+var XSDDateTerm = ls.NewTerm(XSD+"date", false, false, ls.OverrideComposition, struct {
 	XSDDateParser
 }{
 	XSDDateParser: XSDDateParser{},
 })
 
 // XSDTime is a node-type that identifies the underlying value as an XML time.
-var XSDTime = ls.NewTerm(XSD+"time", false, false, ls.OverrideComposition, nil)
+var XSDTimeTerm = ls.NewTerm(XSD+"time", false, false, ls.OverrideComposition, nil)
 
 // XSDDateTime is a node-type that identifies the underlying value as an XML date-time value
-var XSDDateTime = ls.NewTerm(XSD+"dateTime", false, false, ls.OverrideComposition, nil)
+var XSDDateTimeTerm = ls.NewTerm(XSD+"dateTime", false, false, ls.OverrideComposition, nil)
 
 // JSONDate is a node-type that identifies the underlying value as a JSON date value
 //
 //  YYYY-MM-DD
-var JSONDate = ls.NewTerm(JSON+"date", false, false, ls.OverrideComposition, struct {
+var JSONDateTerm = ls.NewTerm(JSON+"date", false, false, ls.OverrideComposition, struct {
 	JSONDateParser
 }{
 	JSONDateParser: JSONDateParser{},
@@ -159,7 +159,7 @@ var JSONDate = ls.NewTerm(JSON+"date", false, false, ls.OverrideComposition, str
 //
 // YYYY-MM-DDTHH:mm:ssZ
 // YYYY-MM-DDTHH:mm:ss.00000Z
-var JSONDateTime = ls.NewTerm(JSON+"date-time", false, false, ls.OverrideComposition, struct {
+var JSONDateTimeTerm = ls.NewTerm(JSON+"date-time", false, false, ls.OverrideComposition, struct {
 	JSONDateTimeParser
 }{
 	JSONDateTimeParser: JSONDateTimeParser{},
@@ -171,13 +171,13 @@ var JSONDateTime = ls.NewTerm(JSON+"date-time", false, false, ls.OverrideComposi
 //   HH:mm
 //   HH:mm:ss
 //   HH:mm:ssZ
-var JSONTime = ls.NewTerm(JSON+"time", false, false, ls.OverrideComposition, struct {
+var JSONTimeTerm = ls.NewTerm(JSON+"time", false, false, ls.OverrideComposition, struct {
 	JSONTimeParser
 }{
 	JSONTimeParser: JSONTimeParser{},
 })
 
-var PatternDateTime = ls.NewTerm(ls.LS+"dateTime", false, false, ls.OverrideComposition, struct {
+var PatternDateTimeTerm = ls.NewTerm(ls.LS+"dateTime", false, false, ls.OverrideComposition, struct {
 	PatternDateTimeParser
 }{
 	PatternDateTimeParser: PatternDateTimeParser{},
@@ -187,7 +187,6 @@ var GoTimeFormatTerm = ls.NewTerm(ls.LS+"goTimeFormat", false, false, ls.SetComp
 var MomentTimeFormatTerm = ls.NewTerm(ls.LS+"momentTimeFormat", false, false, ls.SetComposition, nil)
 
 type XSDDateParser struct{}
-type XSDDateFormatter struct{}
 
 type goFormat string
 type gomentFormat string
@@ -215,7 +214,7 @@ func (f gomentFormat) parse(s string) (Date, error) {
 // ParseValue parses an XSDDate value.
 //
 //  [-]CCYY-MM-DD[Z|(+|-)hh:mm]
-func (XSDDateParser) ParseValue(node ls.Node) (interface{}, error) {
+func (XSDDateParser) GetNodeValue(node ls.Node) (interface{}, error) {
 	value, exists, err := getStringNodeValue(node)
 	if err != nil {
 		return nil, err
@@ -231,44 +230,47 @@ func (XSDDateParser) ParseValue(node ls.Node) (interface{}, error) {
 
 // SetValue gets a target node and it's go native value, and sets
 // the value of the target node to an XSDDate
-func (XSDDateFormatter) SetValue(target ls.Node, val interface{}) error {
-	switch value := val.(type) {
+func (XSDDateParser) SetNodeValue(node ls.Node, value interface{}) error {
+	if value == nil {
+		node.SetValue(nil)
+		return nil
+	}
+	switch v := value.(type) {
 	case time.Time:
-		target.SetValue(value.Format("2006-01-2"))
+		node.SetValue(v.Format("2006-01-2"))
 	case Date:
-		if value.Location == nil {
-			target.SetValue(value.ToTime().Format("2006-01-2"))
+		if v.Location == nil {
+			node.SetValue(v.ToTime().Format("2006-01-2"))
 		} else {
-			target.SetValue(value.ToTime().In(value.Location).Format("2006-01-2Z0700"))
+			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-2Z0700"))
 		}
 	case DateTime:
-		if value.Location == nil {
-			target.SetValue(value.ToTime().Format("2006-01-2"))
+		if v.Location == nil {
+			node.SetValue(v.ToTime().Format("2006-01-2"))
 			// target.SetValue(fmt.Sprintf("%04d-%02d-%02d"+"T"+"%02d:%02d:%02d", value.Year, value.Month, value.Day, value.Hour, value.Minute, (value.Nanoseconds / 1000000000)))
 		} else {
-			target.SetValue(value.ToTime().In(value.Location).Format("2006-01-2Z0700"))
+			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-2Z0700"))
 		}
 	case GDay:
-		target.SetValue(timeToString(value))
+		node.SetValue(timeToString(v))
 	case GMonth:
-		target.SetValue(timeToString(value))
+		node.SetValue(timeToString(v))
 	case GYear:
-		target.SetValue(timeToString(value))
+		node.SetValue(timeToString(v))
 	case GMonthDay:
-		target.SetValue(fmt.Sprintf("%02d-%02d", value.Month, value.Day))
+		node.SetValue(fmt.Sprintf("%02d-%02d", v.Month, v.Day))
 	case GYearMonth:
-		target.SetValue(fmt.Sprintf("%04d-%02d", value.Year, value.Month))
+		node.SetValue(fmt.Sprintf("%04d-%02d", v.Year, v.Month))
 	}
-	return nil
+	return ls.ErrInvalidValue{ID: node.GetID(), Type: XSDDateTerm, Value: value}
 }
 
 type JSONDateParser struct{}
-type JSONDateFormatter struct{}
 
 // ParseValue parses a JSON date
 //
 //   YYYY-MM-DD
-func (JSONDateParser) ParseValue(node ls.Node) (interface{}, error) {
+func (JSONDateParser) GetNodeValue(node ls.Node) (interface{}, error) {
 	value, exists, err := getStringNodeValue(node)
 	if err != nil {
 		return nil, err
@@ -284,44 +286,47 @@ func (JSONDateParser) ParseValue(node ls.Node) (interface{}, error) {
 
 // SetValue gets a target node and it's go native value, and sets
 // the value of the target node to an JSONDate
-func (JSONDateFormatter) SetValue(target ls.Node, val interface{}) error {
-	switch value := val.(type) {
+func (JSONDateParser) SetNodeValue(node ls.Node, value interface{}) error {
+	if value == nil {
+		node.SetValue(nil)
+		return nil
+	}
+	switch v := value.(type) {
 	case time.Time:
-		target.SetValue(value.Format("2006-01-02"))
+		node.SetValue(v.Format("2006-01-02"))
 	case Date:
-		if value.Location == nil {
-			target.SetValue(value.ToTime().Format("2006-01-02"))
+		if v.Location == nil {
+			node.SetValue(v.ToTime().Format("2006-01-02"))
 		} else {
-			target.SetValue(value.ToTime().In(value.Location).Format("2006-01-02"))
+			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-02"))
 		}
 	case DateTime:
-		if value.Location == nil {
-			target.SetValue(value.ToTime().Format("2006-01-02"))
+		if v.Location == nil {
+			node.SetValue(v.ToTime().Format("2006-01-02"))
 			// target.SetValue(fmt.Sprintf("%04d-%02d-%02d"+"T"+"%02d:%02d:%02d", value.Year, value.Month, value.Day, value.Hour, value.Minute, (value.Nanoseconds / 1000000000)))
 		} else {
-			target.SetValue(value.ToTime().In(value.Location).Format("2006-01-02Z0700"))
+			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-02Z0700"))
 		}
 	case GDay:
-		target.SetValue(timeToString(value))
+		node.SetValue(timeToString(v))
 	case GMonth:
-		target.SetValue(timeToString(value))
+		node.SetValue(timeToString(v))
 	case GYear:
-		target.SetValue(timeToString(value))
+		node.SetValue(timeToString(v))
 	case GMonthDay:
-		target.SetValue(fmt.Sprintf("%02d-%02d", value.Month, value.Day))
+		node.SetValue(fmt.Sprintf("%02d-%02d", v.Month, v.Day))
 	case GYearMonth:
-		target.SetValue(fmt.Sprintf("%04d-%02d", value.Year, value.Month))
+		node.SetValue(fmt.Sprintf("%04d-%02d", v.Year, v.Month))
 	}
-	return nil
+	return ls.ErrInvalidValue{ID: node.GetID(), Type: JSONDateTerm, Value: value}
 }
 
 type JSONDateTimeParser struct{}
-type JSONDateTimeFormatter struct{}
 
 // ParseValue parses a JSON date-time
 //
 //   YYYY-MM-DD
-func (JSONDateTimeParser) ParseValue(node ls.Node) (interface{}, error) {
+func (JSONDateTimeParser) GetNodeValue(node ls.Node) (interface{}, error) {
 	value, exists, err := getStringNodeValue(node)
 	if err != nil {
 		return nil, err
@@ -336,37 +341,40 @@ func (JSONDateTimeParser) ParseValue(node ls.Node) (interface{}, error) {
 }
 
 // "2006-01-02T15:04:05Z07:00" -> Note: uses a 24Hour based clock   "2006-01-02T15:04:05.999999999Z07:00"
-func (JSONDateTimeFormatter) SetValue(target ls.Node, val interface{}) error {
-	switch value := val.(type) {
+func (JSONDateTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
+	if value == nil {
+		node.SetValue(nil)
+		return nil
+	}
+	switch v := value.(type) {
 	case time.Time:
-		target.SetValue(value.Format(time.RFC3339))
+		node.SetValue(v.Format(time.RFC3339))
 	case Date:
-		if value.Location == nil {
-			target.SetValue(value.ToTime().Format("2006-01-02"))
+		if v.Location == nil {
+			node.SetValue(v.ToTime().Format("2006-01-02"))
 		} else {
-			target.SetValue(value.ToTime().In(value.Location).Format("2006-01-02"))
+			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-02"))
 		}
 	case DateTime:
-		if value.Location == nil && value.Nanoseconds == 0 {
-			target.SetValue(value.ToTime().Format("2006-01-02T15:04:05"))
-		} else if value.Location != nil && value.Nanoseconds != 0 {
-			target.SetValue(value.ToTime().In(value.Location).Format(time.RFC3339Nano))
+		if v.Location == nil && v.Nanoseconds == 0 {
+			node.SetValue(v.ToTime().Format("2006-01-02T15:04:05"))
+		} else if v.Location != nil && v.Nanoseconds != 0 {
+			node.SetValue(v.ToTime().In(v.Location).Format(time.RFC3339Nano))
 		} else {
-			target.SetValue(value.ToTime().In(value.Location).Format(time.RFC3339))
+			node.SetValue(v.ToTime().In(v.Location).Format(time.RFC3339))
 		}
 	}
-	return nil
+	return ls.ErrInvalidValue{ID: node.GetID(), Type: JSONDateTimeTerm, Value: value}
 }
 
 type JSONTimeParser struct{}
-type JSONTimeFormatter struct{}
 
 // ParseValue parses a JSON time
 //
 //   HH:mm
 //   HH:mm:ss
 //   HH:mm:ssZ
-func (JSONTimeParser) ParseValue(node ls.Node) (interface{}, error) {
+func (JSONTimeParser) GetNodeValue(node ls.Node) (interface{}, error) {
 	value, exists, err := getStringNodeValue(node)
 	if err != nil {
 		return nil, err
@@ -382,36 +390,32 @@ func (JSONTimeParser) ParseValue(node ls.Node) (interface{}, error) {
 		gomentFormat("HH:mm"))
 }
 
-func (JSONTimeFormatter) SetValue(target ls.Node, val interface{}) error {
-	switch value := val.(type) {
+func (JSONTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
+	if value == nil {
+		node.SetValue(nil)
+		return nil
+	}
+	switch v := value.(type) {
 	case time.Time:
-		target.SetValue(value.Format("HH:mm:ssZ"))
+		node.SetValue(v.Format("HH:mm:ssZ"))
 	case TimeOfDay:
-		// if value.Location != nil {
-		// 	target.SetValue(fmt.Sprintf("%02d:%02d:%02dZ", value.Hour, value.Minute, (value.Nanoseconds / 1000000000)))
-		// } else if value.Nanoseconds != 0 {
-		// 	target.SetValue(fmt.Sprintf("%02d:%02d:%02d", value.Hour, value.Minute, (value.Nanoseconds / 1000000000)))
-		// } else {
-		// 	target.SetValue(fmt.Sprintf("%02d:%02d", value.Hour, value.Minute))
-		// }
-		if value.Location == nil && value.Nanoseconds == 0 {
-			target.SetValue(value.ToTime().Format("HH:mm"))
-		} else if value.Location == nil && value.Nanoseconds != 0 {
-			target.SetValue(value.ToTime().Format("HH:mm:ss"))
+		if v.Location == nil && v.Nanoseconds == 0 {
+			node.SetValue(v.ToTime().Format("HH:mm"))
+		} else if v.Location == nil && v.Nanoseconds != 0 {
+			node.SetValue(v.ToTime().Format("HH:mm:ss"))
 		} else {
-			target.SetValue(value.ToTime().In(value.Location).Format("HH:mm:ssZ"))
+			node.SetValue(v.ToTime().In(v.Location).Format("HH:mm:ssZ"))
 		}
 	}
-	return nil
+	return ls.ErrInvalidValue{ID: node.GetID(), Type: JSONTimeTerm, Value: value}
 }
 
 type PatternDateTimeParser struct{}
-type PatternDateTimeFormatter struct{}
 
 // ParseValue looks at the goTimeFormat, momentTimeFormat properties
 // in the node, and parses the datetime using that. The format
 // property can be an array, giving all possible formats
-func (PatternDateTimeParser) ParseValue(node ls.Node) (interface{}, error) {
+func (PatternDateTimeParser) GetNodeValue(node ls.Node) (interface{}, error) {
 	value, exists, err := getStringNodeValue(node)
 	if err != nil {
 		return nil, err
@@ -434,27 +438,26 @@ func (PatternDateTimeParser) ParseValue(node ls.Node) (interface{}, error) {
 	return genericDateParse(value, garr...)
 }
 
-func (PatternDateTimeFormatter) SetValue(target ls.Node, val interface{}) error {
-	switch value := val.(type) {
+func (PatternDateTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
+	if value == nil {
+		node.SetValue(nil)
+		return nil
+	}
+	switch v := value.(type) {
 	case time.Time:
-		target.SetValue(value.Format(target.GetProperties()[value.String()].AsString()))
+		node.SetValue(v.Format(node.GetProperties()[v.String()].AsString()))
 	case Date:
 	case DateTime:
 	case TimeOfDay:
-		if value.Location == nil && value.Nanoseconds == 0 {
-			target.SetValue(value.ToTime().Format(target.GetProperties()[value.ToTime().String()].AsString()))
-		} else if value.Location == nil && value.Nanoseconds != 0 {
-			target.SetValue(value.ToTime().Format("HH:mm:ss"))
+		if v.Location == nil && v.Nanoseconds == 0 {
+			node.SetValue(v.ToTime().Format(node.GetProperties()[v.ToTime().String()].AsString()))
+		} else if v.Location == nil && v.Nanoseconds != 0 {
+			node.SetValue(v.ToTime().Format("HH:mm:ss"))
 		} else {
-			target.SetValue(value.ToTime().In(value.Location).Format("HH:mm:ssZ"))
+			node.SetValue(v.ToTime().In(v.Location).Format("HH:mm:ssZ"))
 		}
 	}
-	// value, err := p.ParseValue(target)
-	// if err != nil {
-	// 	return err
-	// }
-	// target.SetValue(value.(time.Time).String())
-	return nil
+	return ls.ErrInvalidValue{ID: node.GetID(), Type: PatternDateTimeTerm, Value: value}
 }
 
 // genericDateParse parses a node value using the given format(s)
