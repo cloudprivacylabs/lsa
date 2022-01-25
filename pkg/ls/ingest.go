@@ -37,7 +37,7 @@ type Ingester struct {
 	// created. The function should not add the edge to the graph.
 	NewEdgeFunc func(string) Edge
 
-	// If true, schame node properties are embedded into document
+	// If true, schema node properties are embedded into document
 	// nodes. If false, schema nodes are preserved as separate nodes,
 	// with an instanceOf edge between the document node to the schema
 	// node.
@@ -50,6 +50,10 @@ type Ingester struct {
 	// If PreserveNodePaths is true, this keeps the node paths after ingestion.
 	// This map is reset when Start is called.
 	NodePaths map[Node]NodePath
+
+	// If OnlySchemaAttributes is true, only ingest data points if there is a schema for it.
+	// If OnlySchemaAttributes is false, ingest whether or not there is a schema for it.
+	OnlySchemaAttributes bool
 }
 
 // NodePath contains the name components identifying a node. For JSON,
@@ -143,6 +147,7 @@ func (ingester *Ingester) Validate(documentNode, schemaNode Node) error {
 func (ingester *Ingester) Polymorphic(path NodePath, schemaNode Node, ingest func(p NodePath, optionNode Node) (Node, error)) (Node, error) {
 	// Polymorphic node. Try each option
 	var newChild Node
+	// iterate through all edges of the schema node which have a polymorphic attribute
 	for nodes := schemaNode.OutWith(LayerTerms.OneOf).Targets(); nodes.HasNext(); {
 		optionNode := nodes.Next().(Node)
 		childNode, err := ingest(path, optionNode)
@@ -159,18 +164,16 @@ func (ingester *Ingester) Polymorphic(path NodePath, schemaNode Node, ingest fun
 	return newChild, nil
 }
 
-// GetObjectAttributeNodes returns the schema attribute nodes under a schema object
-func (ingester *Ingester) GetObjectAttributeNodes(objectSchemaNode Node) (map[string]Node, error) {
-	nextNodes := make(map[string]Node)
+// GetObjectAttributeNodes returns the schema attribute nodes under a
+// schema object. The returned map is keyed by the AttributeNameTerm
+func (ingester *Ingester) GetObjectAttributeNodes(objectSchemaNode Node) (map[string][]Node, error) {
+	nextNodes := make(map[string][]Node)
 	addNextNode := func(node Node) error {
 		key := node.GetProperties()[AttributeNameTerm].AsString()
 		if len(key) == 0 {
 			return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema at %s", AttributeNameTerm, objectSchemaNode.GetID()))
 		}
-		if _, ok := nextNodes[key]; ok {
-			return ErrInvalidSchema(fmt.Sprintf("Multiple elements with key '%s'", key))
-		}
-		nextNodes[key] = node
+		nextNodes[key] = append(nextNodes[key], node)
 		return nil
 	}
 	if objectSchemaNode != nil {
@@ -188,6 +191,13 @@ func (ingester *Ingester) GetObjectAttributeNodes(objectSchemaNode Node) (map[st
 	return nextNodes, nil
 }
 
+func (ingester *Ingester) ConnectChildNodes(parent Node, children []Node) {
+	for index := range children {
+		children[index].GetProperties()[AttributeIndexTerm] = StringPropertyValue(fmt.Sprint(index))
+		ingester.connect(parent, children[index], HasTerm)
+	}
+}
+
 // Object creates a new object node
 func (ingester *Ingester) Object(path NodePath, schemaNode Node, elements []Node, types ...string) (Node, error) {
 	// An object node
@@ -202,11 +212,9 @@ func (ingester *Ingester) Object(path NodePath, schemaNode Node, elements []Node
 		ingester.NodePaths[ret] = path.Copy()
 	}
 	ret.GetTypes().Add(types...)
+	// define that ret is an object
 	ret.GetTypes().Add(AttributeTypes.Object)
-	for index := range elements {
-		elements[index].GetProperties()[AttributeIndexTerm] = StringPropertyValue(fmt.Sprint(index))
-		ingester.connect(ret, elements[index], HasTerm)
-	}
+	ingester.ConnectChildNodes(ret, elements)
 	return ret, nil
 }
 
@@ -235,10 +243,7 @@ func (ingester *Ingester) Array(path NodePath, schemaNode Node, elements []Node,
 	}
 	ret.GetTypes().Add(types...)
 	ret.GetTypes().Add(AttributeTypes.Array)
-	for index := range elements {
-		elements[index].GetProperties()[AttributeIndexTerm] = StringPropertyValue(fmt.Sprint(index))
-		ingester.connect(ret, elements[index], HasTerm)
-	}
+	ingester.ConnectChildNodes(ret, elements)
 	return ret, nil
 }
 
@@ -263,7 +268,7 @@ func (ingester *Ingester) Value(path NodePath, schemaNode Node, value interface{
 }
 
 // NewNode creates a new graph node, either by using the NewNodeFunc
-// or by creating a new node using DefaultNodeIDenerator. Then it
+// or by creating a new node using DefaultNodeIDGenerator. Then it
 // either merges schema properties into the new node, or creates an
 // instanceOf edge to the schema node.
 func (ingester *Ingester) NewNode(path NodePath, schemaNode Node) Node {

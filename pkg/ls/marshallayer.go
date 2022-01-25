@@ -38,6 +38,9 @@ func getNodesFromGraph(in interface{}, interner Interner) (map[string]*inputNode
 	if err != nil {
 		return nil, err
 	}
+	if m, ok := flattened.(map[string]interface{}); ok {
+		flattened = m["@graph"]
+	}
 	// In a flattened graph, the root object is the layer, with a link to attributes
 	nodes, _ := flattened.([]interface{})
 	if len(nodes) == 0 {

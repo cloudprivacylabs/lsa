@@ -35,7 +35,7 @@ func ReadURL(input string, enc ...encoding.Encoding) ([]byte, error) {
 		return nil, err
 	}
 	if len(urlInput.Scheme) == 0 {
-		data, err = ioutil.ReadFile(urlInput.String())
+		data, err = ioutil.ReadFile(input)
 		if err != nil {
 			return nil, err
 		}
