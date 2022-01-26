@@ -15,7 +15,6 @@
 package json
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -92,7 +91,7 @@ var annotationsMeta = jsonschema.MustCompileString("annotations.json", `{}`)
 
 type annotationsCompiler struct{}
 
-type annotationExtSchema map[string]*ls.PropertyValue
+type annotationExtSchema map[string]interface{}
 
 func (annotationExtSchema) Validate(ctx jsonschema.ValidationContext, v interface{}) error {
 	return nil
@@ -101,25 +100,9 @@ func (annotationExtSchema) Validate(ctx jsonschema.ValidationContext, v interfac
 func (annotationsCompiler) Compile(ctx jsonschema.CompilerContext, m map[string]interface{}) (jsonschema.ExtSchema, error) {
 	if ext, ok := m[X_LS]; ok {
 		if extMap, ok := ext.(map[string]interface{}); ok {
-			propertyMap := make(map[string]*ls.PropertyValue)
+			propertyMap := make(map[string]interface{})
 			for k, v := range extMap {
-				switch value := v.(type) {
-				case string, json.Number, float64, bool:
-					propertyMap[k] = ls.StringPropertyValue(fmt.Sprint(v))
-				case []interface{}:
-					arr := make([]string, 0, len(value))
-					for _, val := range value {
-						switch val.(type) {
-						case string, json.Number, float64, bool:
-							arr = append(arr, fmt.Sprint(val))
-						default:
-							return nil, fmt.Errorf("Invalid "+X_LS+" value: %s=%v", k, v)
-						}
-					}
-					propertyMap[k] = ls.StringSlicePropertyValue(arr)
-				default:
-					return nil, fmt.Errorf("Invalid "+X_LS+" value: %s=%v", k, v)
-				}
+				propertyMap[k] = v
 			}
 			return annotationExtSchema(propertyMap), nil
 		} else if ext != nil {
@@ -149,6 +132,7 @@ type importContext struct {
 	entities      []CompiledEntity
 	loop          []*jsonschema.Schema
 	currentEntity *CompiledEntity
+	interner      ls.Interner
 }
 
 func (ctx *importContext) checkLoopAndPush(sch *jsonschema.Schema) bool {
@@ -181,7 +165,7 @@ func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
 //
 // typeTerm should be either ls.SchemaTerm or ls.OverlayTerm
 func BuildEntityGraph(typeTerm string, entities ...CompiledEntity) ([]EntityLayer, error) {
-	ctx := importContext{entities: entities}
+	ctx := importContext{entities: entities, interner: ls.NewInterner()}
 	ret := make([]EntityLayer, 0, len(ctx.entities))
 	for i := range ctx.entities {
 		ctx.currentEntity = &ctx.entities[i]
@@ -203,7 +187,7 @@ func BuildEntityGraph(typeTerm string, entities ...CompiledEntity) ([]EntityLaye
 		// Set the target type of the layer to root node ID
 		imported.Layer.SetTargetType(ctx.currentEntity.ID)
 		ls.Connect(imported.Layer.GetLayerInfoNode(), rootNode, ls.LayerRootTerm)
-		buildSchemaAttrs(ctx.currentEntity.ID, nil, s, imported.Layer, rootNode)
+		buildSchemaAttrs(ctx.currentEntity.ID, nil, s, imported.Layer, rootNode, ctx.interner)
 		ret = append(ret, imported)
 	}
 	return ret, nil
@@ -303,7 +287,7 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 	if ext, ok := sch.Extensions[X_LS]; ok {
 		mext, _ := ext.(annotationExtSchema)
 		if len(mext) > 0 {
-			target.annotations = map[string]*ls.PropertyValue(mext)
+			target.annotations = map[string]interface{}(mext)
 		}
 	}
 

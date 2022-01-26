@@ -155,6 +155,11 @@ type Node interface {
 	// additional information about the node. Node clone operation
 	// shallow-copies such properties
 	GetCompiledProperties() *CompiledProperties
+
+	// If this is a document node, GetEntityRoot returns the nearest
+	// entity boundary node containing this node.
+	GetEntityRoot() Node
+	SetEntityRoot(Node)
 }
 
 // node is either an attribute node, document node, or an annotation
@@ -175,6 +180,8 @@ type node struct {
 	properties map[string]*PropertyValue
 	// These can be set during compilation. They are shallow-cloned
 	compiled CompiledProperties
+
+	entityRoot Node
 }
 
 func (a *node) GetCompiledProperties() *CompiledProperties {
@@ -191,6 +198,10 @@ func (a *node) GetProperties() map[string]*PropertyValue {
 func (a *node) GetValue() interface{} { return a.value }
 
 func (a *node) SetValue(value interface{}) { a.value = value }
+
+func (a *node) GetEntityRoot() Node { return a.entityRoot }
+
+func (a *node) SetEntityRoot(node Node) { a.entityRoot = node }
 
 func (a *node) GetIndex() int {
 	properties := a.GetProperties()
@@ -282,25 +293,73 @@ func GetLayerEdgeBetweenNodes(source, target Node) Edge {
 	return nil
 }
 
-// GetNodeFilteredValue returns the field value processed by the schema
-// value filters, and then the node value filters
-func GetNodeFilteredValue(node Node) interface{} {
-	var schemaNode Node
-	iedges := node.OutWith(InstanceOfTerm).All()
-	if len(iedges) == 1 {
-		schemaNode = iedges[0].GetTo().(Node)
+// GetNodeValue returns the field value processed by the schema type
+// information. The returned object is a Go native object based on the
+// node type
+func GetNodeValue(node Node) (interface{}, error) {
+	accessor, err := GetNodeValueAccessor(node)
+	if err != nil {
+		return nil, err
 	}
-	return GetFilteredValue(schemaNode, node)
+	if accessor == nil {
+		return node.GetValue(), nil
+	}
+	return accessor.GetNodeValue(node)
 }
 
-// GetFilteredValue filters the value through the schema properties
-// and then through the node properties before returning
-func GetFilteredValue(schemaNode, docNode Node) interface{} {
-	value := docNode.GetValue()
-	if schemaNode != nil {
-		value = FilterValue(value, docNode, schemaNode.GetProperties())
+// SetNodeValue sets the node value using the given native Go
+// value. The value is expected to be interpreted by the node types
+// and converted to string. If there are no value accessors specified
+// for the node, the value will be fmt.Sprint(value)
+func SetNodeValue(node Node, value interface{}) error {
+	accessor, err := GetNodeValueAccessor(node)
+	if err != nil {
+		return nil
 	}
-	return FilterValue(value, docNode, docNode.GetProperties())
+	if accessor == nil {
+		if value == nil {
+			node.SetValue(nil)
+			return nil
+		}
+		node.SetValue(fmt.Sprint(value))
+		return nil
+	}
+	return accessor.SetNodeValue(node, value)
+}
+
+// GetNodeValueAccessor returns the value accessor for the node based
+// on the node type. If there is none, returns nil
+func GetNodeValueAccessor(node Node) (ValueAccessor, error) {
+	var (
+		accessor ValueAccessor
+		typeName string
+	)
+
+	setAccessor := func(term string) error {
+		a := GetValueAccessor(term)
+		if a != nil {
+			if accessor != nil && typeName != term {
+				return ErrInconsistentTypes{ID: node.GetID(), TypeNames: []string{typeName, term}}
+			}
+			accessor = a
+			typeName = term
+		}
+		return nil
+	}
+	iedges := node.OutWith(InstanceOfTerm).All()
+	if len(iedges) == 1 {
+		for _, t := range iedges[0].GetTo().(Node).GetTypes().Slice() {
+			if err := setAccessor(t); err != nil {
+				return nil, err
+			}
+		}
+	}
+	for _, t := range node.GetTypes().Slice() {
+		if err := setAccessor(t); err != nil {
+			return nil, err
+		}
+	}
+	return accessor, nil
 }
 
 // IsDocumentEdge returns true if the edge is a data edge term
@@ -332,6 +391,17 @@ func SkipEdgesToNodeWithType(typ string) func(Edge, []Node) EdgeFuncResult {
 	}
 }
 
+// FollowEdgesToNodeWithType returns a function that only follows edges that go
+// to a node with the given type
+func FollowEdgesToNodeWithType(typ string) func(Edge, []Node) EdgeFuncResult {
+	return func(edge Edge, _ []Node) EdgeFuncResult {
+		if edge.GetTo().(Node).GetTypes().Has(typ) {
+			return FollowEdgeResult
+		}
+		return SkipEdgeResult
+	}
+}
+
 // SkipSchemaNodes can be used in IterateDescendants edge func
 // to skip all edges that go to a schema node
 var SkipSchemaNodes = SkipEdgesToNodeWithType(AttributeTypes.Attribute)
@@ -339,6 +409,10 @@ var SkipSchemaNodes = SkipEdgesToNodeWithType(AttributeTypes.Attribute)
 // SkipDocumentNodes can be used in IterateDescendants edge func
 // to skip all edges that go to a document node
 var SkipDocumentNodes = SkipEdgesToNodeWithType(DocumentNodeTerm)
+
+// OnlyDocumentNodes can be used in IterateDescendants edge func to
+// follow edges that reach to document nodes
+var OnlyDocumentNodes = FollowEdgesToNodeWithType(DocumentNodeTerm)
 
 // IterateDescendants iterates the descendants of the node based on
 // the results of nodeFunc and edgeFunc.

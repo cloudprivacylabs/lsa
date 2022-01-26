@@ -27,6 +27,7 @@ import (
 func init() {
 	rootCmd.AddCommand(flattenCmd)
 	flattenCmd.Flags().StringSlice("context", nil, "Use the given context files")
+	flattenCmd.Flags().Bool("nocontext", false, "Flatten without context")
 }
 
 var flattenCmd = &cobra.Command{
@@ -39,7 +40,8 @@ var flattenCmd = &cobra.Command{
 			failErr(err)
 		}
 		contexts, _ := cmd.Flags().GetStringSlice("context")
-		output, err := flatten(input, contexts)
+		noContext, _ := cmd.Flags().GetBool("nocontext")
+		output, err := flatten(input, contexts, noContext)
 		if err != nil {
 			failErr(err)
 		}
@@ -48,7 +50,7 @@ var flattenCmd = &cobra.Command{
 	},
 }
 
-func flatten(base interface{}, contexts []string) (interface{}, error) {
+func flatten(base interface{}, contexts []string, noContext bool) (interface{}, error) {
 	processor := ld.NewJsonLdProcessor()
 	localContext := map[string]interface{}{}
 	for _, c := range contexts {
@@ -63,9 +65,8 @@ func flatten(base interface{}, contexts []string) (interface{}, error) {
 			}
 		}
 	}
-	output, err := processor.Flatten(base, map[string]interface{}{"@context": localContext}, nil)
-	if err != nil {
-		return nil, err
+	if !noContext {
+		return processor.Flatten(base, map[string]interface{}{"@context": localContext}, nil)
 	}
-	return output, nil
+	return processor.Flatten(base, nil, nil)
 }

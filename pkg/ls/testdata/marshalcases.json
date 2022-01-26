@@ -150,5 +150,50 @@
                 ]
             }]
         }]
+    },
+    {
+        "name": "SimpleAnnotations",
+        "input": {
+            "@context": {
+                "ls":"https://lschema.org/"
+            },
+            "@type":"ls:Schema",
+            "@id": "http://testschema",
+            "https://lschema.org/layer": {
+                "@type": ["https://lschema.org/Object",
+                          "https://lschema.org/targetType"],
+                "ls:Object/attributes": [
+                    {
+                        "@type": ["https://lschema.org/Attribute",
+                                  "https://lschema.org/Object"],
+                        "@id": "http://attr1",
+                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
+                        "http://test.org/stringValue":"value"
+                    }
+                ]
+            }
+        },
+        "marshaled":[ {
+            "@id": "http://testschema",
+            "@type": [
+                "https://lschema.org/Schema"
+            ],
+            "https://lschema.org/layer": [{
+                "@type": ["https://lschema.org/Attribute",
+                          "https://lschema.org/Object",
+                          "https://lschema.org/targetType"],
+                "https://lschema.org/Object/attributes": [
+                    {
+                        "@id": "http://attr1",
+                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
+                        "https://lschema.org/attributeIndex": [ {"@value":"0"}],
+                        "http://test.org/stringValue": [
+                            {"@value":"value"}
+                        ]
+                    }
+                ]
+            }]
+        }]
     }
+
 ]

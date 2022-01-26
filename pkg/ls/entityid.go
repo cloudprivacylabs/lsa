@@ -31,7 +31,7 @@ func GetEntityIDNodes(entityRoot Node) []Node {
 			return true
 		}
 		for _, schemaNode := range InstanceOf(node) {
-			if _, exists := node.GetProperties()[EntityIDTerm]; exists {
+			if _, exists := schemaNode.GetProperties()[EntityIDTerm]; exists {
 				ret = append(ret, node)
 				return true
 			}

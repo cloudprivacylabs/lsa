@@ -50,3 +50,19 @@ func RunTestsFromFile(t *testing.T, file string, unmarshal func(json.RawMessage)
 		}
 	}
 }
+
+func ReadLayerFromFile(f string) (*Layer, error) {
+	data, err := ioutil.ReadFile(f)
+	if err != nil {
+		return nil, err
+	}
+	return UnmarshalLayerFromSlice(data)
+}
+
+func UnmarshalLayerFromSlice(in []byte) (*Layer, error) {
+	var v interface{}
+	if err := json.Unmarshal(in, &v); err != nil {
+		return nil, err
+	}
+	return UnmarshalLayer(v, nil)
+}

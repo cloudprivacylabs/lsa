@@ -97,27 +97,29 @@ func GetCompiledReferenceLinkSpec(node Node) (LinkSpec, bool) {
 // node is not a reference node, or if the node does not specify a
 // link, returns false
 func CompileReferenceLinkSpec(layer *Layer, node Node) (LinkSpec, bool, error) {
+	// Already processed?
+	if _, ok := GetCompiledReferenceLinkSpec(node); ok {
+		return LinkSpec{}, false, nil
+	}
 	if !node.GetTypes().Has(AttributeTypes.Attribute) {
 		return LinkSpec{}, false, nil
 	}
-	var ref string
+	var ref, fk string
 	if node.GetTypes().Has(AttributeTypes.Reference) {
 		ref = node.GetProperties()[LayerTerms.Reference].AsString()
+		fk = node.GetProperties()[ReferenceFKTerm].AsString()
 	} else {
 		ref = node.GetProperties()[ReferenceTargetTerm].AsString()
+		fk = node.GetID()
 	}
-	if len(ref) == 0 {
+	if len(ref) == 0 || len(fk) == 0 {
 		return LinkSpec{}, false, nil
 	}
 	properties := node.GetProperties()
-	fk := properties[ReferenceFKTerm].AsString()
 	targetID := properties[ReferenceTargetIDTerm].AsString()
 	label := properties[ReferenceLabelTerm].AsString()
 	dir := properties[ReferenceDirectionTerm].AsString()
 	multi := properties[ReferenceMultiTerm].AsString()
-	if len(fk) == 0 {
-		return LinkSpec{}, false, nil
-	}
 	if len(label) == 0 {
 		label = HasTerm
 	}
@@ -141,7 +143,7 @@ func CompileReferenceLinkSpec(layer *Layer, node Node) (LinkSpec, bool, error) {
 }
 
 // GetAllLinkSpecs returns all linkspecs under the given root node
-func GetAllLinksSpecs(root Node) map[Node]LinkSpec {
+func GetAllLinkSpecs(root Node) map[Node]LinkSpec {
 	ret := make(map[Node]LinkSpec)
 	IterateDescendants(root, func(node Node, _ []Node) bool {
 		spec, exists := GetCompiledReferenceLinkSpec(node)
@@ -187,27 +189,35 @@ func GetDocumentEntityInfo(docRoot Node) map[Node]DocumentEntityInfo {
 }
 
 // Link the given node
-func (spec LinkSpec) Link(entityRoot, node Node, entityInfo map[Node]DocumentEntityInfo) error {
+func (spec LinkSpec) Link(node Node, entityInfo map[Node]DocumentEntityInfo) error {
 	// Get the ID
 	// Is this the ID node?
 	var fk interface{}
+	var err error
 	if node.GetProperties()[SchemaNodeIDTerm].AsString() == spec.FK {
-		fk = GetNodeValue()
+		fk, err = GetNodeValue(node)
 	} else {
-		IterateDescendants(entityRoot, func(n Node, _ []Node) bool {
+		IterateDescendants(node.GetEntityRoot(), func(n Node, _ []Node) bool {
 			if n.GetProperties()[SchemaNodeIDTerm].AsString() == spec.FK {
-				fk = GetNodeValue(n)
+				fk, err = GetNodeValue(n)
 				return false
 			}
 			return true
 		}, SkipSchemaNodes, false)
+	}
+	if err != nil {
+		return err
 	}
 	linkTo := make([]Node, 0)
 	for _, info := range entityInfo {
 		if len(info.IDNodes) != 1 {
 			continue
 		}
-		if fk == GetNodeValue(info.IDNodes[0]) {
+		nv, err := GetNodeValue(info.IDNodes[0])
+		if err != nil {
+			return err
+		}
+		if fk == nv {
 			linkTo = append(linkTo, info.Root)
 		}
 	}
@@ -217,8 +227,24 @@ func (spec LinkSpec) Link(entityRoot, node Node, entityInfo map[Node]DocumentEnt
 	if len(linkTo) > 1 && !spec.Multi {
 		return ErrMultipleTargetsFound{ID: node.GetID()}
 	}
+
+	// Find the parent node of this node
+	var parent Node
+	IterateDescendants(node.GetEntityRoot(), func(n Node, path []Node) bool {
+		if n == node {
+			if len(path) > 1 {
+				parent = path[len(path)-2]
+			}
+			return false
+		}
+		return true
+	}, SkipSchemaNodes, false)
+	if parent == nil {
+		return ErrInvalidLinkSpec{ID: node.GetID(), Msg: "Node has no parent"}
+	}
+
 	for _, target := range linkTo {
-		digraph.Connect(node, target, NewEdge(spec.Label))
+		digraph.Connect(parent, target, NewEdge(spec.Label))
 	}
 	return nil
 }

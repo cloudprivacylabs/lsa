@@ -166,7 +166,14 @@ func (compiler *Compiler) compileRefs(ctx *compilerContext, ref string) (*Layer,
 	if schema != ctx.doNotCache {
 		compiler.CGraph.PutCompiledSchema(ref, schema)
 	}
-	if err := compiler.resolveReferences(ctx, schema, schema.GetIndex().NodesSlice()); err != nil {
+	schemaNodes := schema.GetIndex().NodesSlice()
+	for _, node := range schemaNodes {
+		_, _, err := CompileReferenceLinkSpec(schema, node.(Node))
+		if err != nil {
+			return nil, err
+		}
+	}
+	if err := compiler.resolveReferences(ctx, schema, schemaNodes); err != nil {
 		return nil, err
 	}
 	return schema, nil
@@ -193,11 +200,6 @@ func (compiler *Compiler) resolveReferences(ctx *compilerContext, layer *Layer, 
 func (compiler *Compiler) resolveReference(ctx *compilerContext, layer *Layer, node Node) error {
 	properties := node.GetProperties()
 	ref := properties[LayerTerms.Reference].AsString()
-	// If the reference node specifies a link, deal with it here
-	_, _, err := CompileReferenceLinkSpec(layer, node)
-	if err != nil {
-		return err
-	}
 	delete(properties, LayerTerms.Reference)
 	// already compiled, or being compiled?
 	compiledSchema := compiler.CGraph.GetCompiledSchema(ref)
