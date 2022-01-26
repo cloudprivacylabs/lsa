@@ -239,7 +239,7 @@ func (reshaper *Reshaper) value(context *ReshapeContext) (ls.Node, error) {
 }
 
 func getSource(context *ReshapeContext, schemaNode ls.Node) (gl.Value, error) {
-	data := schemaNode.GetCompiledDataMap()[ReshapeTerms.Source]
+	data, _ := schemaNode.GetCompiledProperties().GetCompiledProperty(ReshapeTerms.Source)
 	expr, ok := data.(gl.Evaluatable)
 	if !ok {
 		return nil, nil
@@ -252,7 +252,7 @@ func getSource(context *ReshapeContext, schemaNode ls.Node) (gl.Value, error) {
 }
 
 func (reshaper *Reshaper) setupVariables(context *ReshapeContext, schemaNode ls.Node) error {
-	data := schemaNode.GetCompiledDataMap()[ReshapeTerms.Vars]
+	data, _ := schemaNode.GetCompiledProperties().GetCompiledProperty(ReshapeTerms.Vars)
 	slice, ok := data.([]gl.Evaluatable)
 	if !ok {
 		return nil
@@ -266,7 +266,7 @@ func (reshaper *Reshaper) setupVariables(context *ReshapeContext, schemaNode ls.
 }
 
 func (reshaper *Reshaper) checkConditionals(context *ReshapeContext, schemaNode ls.Node) (bool, error) {
-	data := schemaNode.GetCompiledDataMap()[ReshapeTerms.If]
+	data, _ := schemaNode.GetCompiledProperties().GetCompiledProperty(ReshapeTerms.If)
 	slice, ok := data.([]gl.Evaluatable)
 	if !ok {
 		return true, nil

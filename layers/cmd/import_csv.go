@@ -120,7 +120,11 @@ where termSpec is:
 		if len(spec.TargetType) > 0 {
 			layer.SetTargetType(spec.TargetType)
 		}
-		data, err = json.MarshalIndent(ls.MarshalLayer(layer), "", "  ")
+		marshaled, err := ls.MarshalLayer(layer)
+		if err != nil {
+			failErr(err)
+		}
+		data, err = json.MarshalIndent(marshaled, "", "  ")
 		if err != nil {
 			failErr(err)
 		}

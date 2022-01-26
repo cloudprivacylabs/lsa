@@ -36,7 +36,10 @@ func (tc sliceTestCase) Run(t *testing.T) {
 		return
 	}
 	slice := sch.Slice(OverlayTerm, GetSliceByTermsFunc(tc.Terms, false))
-	marshaled := MarshalLayer(slice)
+	marshaled, err := MarshalLayer(slice)
+	if err != nil {
+		t.Error(err)
+	}
 	if err := DeepEqual(ToMap(marshaled), ToMap(tc.Expected)); err != nil {
 		expected, _ := json.MarshalIndent(ToMap(tc.Expected), "", "  ")
 		got, _ := json.MarshalIndent(ToMap(marshaled), "", "  ")

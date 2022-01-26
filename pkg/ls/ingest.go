@@ -281,6 +281,7 @@ func (ingester *Ingester) NewNode(path NodePath, schemaNode Node) Node {
 	node.GetTypes().Add(DocumentNodeTerm)
 	if schemaNode != nil {
 		node.GetTypes().Add(FilterNonLayerTypes(schemaNode.GetTypes().Slice())...)
+		node.GetProperties()[SchemaNodeIDTerm] = StringPropertyValue(schemaNode.GetID())
 		if ingester.EmbedSchemaNodes {
 			ingester.EmbedSchemaNode(node, schemaNode)
 		} else {
@@ -301,6 +302,7 @@ func (ingester *Ingester) EmbedSchemaNode(targetNode, schemaNode Node) {
 			targetProperties[k] = v
 		}
 	}
+	schemaNode.GetCompiledProperties().CopyTo(targetNode.GetCompiledProperties())
 }
 
 // GetAsPropertyValue returns if the node should be a property of a
@@ -326,17 +328,61 @@ func (ingester *Ingester) connect(srcNode, targetNode digraph.Node, edgeLabel st
 	return edge
 }
 
+func (ingester *Ingester) DefaultEntityNodeIDGenerationFunc(entity string, ID string, node Node, path []Node) string {
+	nodePath := ingester.NodePaths[node]
+	eid := fmt.Sprintf("%s/%s", entity, ID)
+	if len(nodePath) > 1 {
+		eid += "/" + NodePath(nodePath[1:]).String()
+	}
+	return eid
+}
+
+// Finish ingesting by assigning node IDs and linking nodes to their
+// entity root nodes. If generateIDFunc is nil, the default ID
+// generation function is used
+func (ingester *Ingester) Finish(root Node, generateIDFunc func(entity string, ID string, node Node, path []Node) string) {
+	AssignEntityRoots(root)
+	if ingester.Schema != nil {
+		if generateIDFunc == nil {
+			generateIDFunc = ingester.DefaultEntityNodeIDGenerationFunc
+		}
+		AssignEntityIDs(root, generateIDFunc)
+	}
+}
+
+// AssignEntityRoots will iterate the document and assign entity roots to each node
+func AssignEntityRoots(root Node) {
+	entityBoundaries := make(map[Node]struct{})
+	// If there are no schemas, link everything to root
+	entityBoundaries[root] = struct{}{}
+	IterateDescendants(root, func(node Node, path []Node) bool {
+		// Pass root
+		if node == root {
+			return true
+		}
+
+		// Is this an entity boundary
+		_, boundary := GetNodeOrSchemaProperty(node, EntitySchemaTerm)
+		if boundary {
+			// Put node into boundaries
+			entityBoundaries[node] = struct{}{}
+		}
+		// Skip last entry in path, thats the node
+		for ix := len(path) - 2; ix >= 0; ix-- {
+			if _, boundary := entityBoundaries[path[ix]]; boundary {
+				node.SetEntityRoot(path[ix])
+				break
+			}
+		}
+		return true
+	}, OnlyDocumentNodes, false)
+}
+
 // AssignEntityIDs traverses all the nodes under root, and reassigns
 // IDs to the nodes based on the discovered entity boundaries and
 // entity IDs. If there is no schema information, or if there are no
 // entity IDs, the IDs are unchanged.
 func AssignEntityIDs(root Node, generateIDFunc func(entity string, ID string, node Node, path []Node) string) {
-	onlyDocNodes := func(edge Edge, _ []Node) EdgeFuncResult {
-		if !edge.GetTo().(Node).GetTypes().Has(DocumentNodeTerm) {
-			return SkipEdgeResult
-		}
-		return FollowEdgeResult
-	}
 	// entityMap: map of nodes to their schemas. These nodes are the entity roots
 	entityNodeMap := make(map[Node]string)
 	// entityIDMap: ID of the entity root
@@ -367,7 +413,7 @@ func AssignEntityIDs(root Node, generateIDFunc func(entity string, ID string, no
 			}
 		}
 		return true
-	}, onlyDocNodes, false)
+	}, OnlyDocumentNodes, false)
 	if len(entityIDMap) == 0 {
 		return
 	}
@@ -384,5 +430,5 @@ func AssignEntityIDs(root Node, generateIDFunc func(entity string, ID string, no
 			}
 		}
 		return true
-	}, onlyDocNodes, false)
+	}, OnlyDocumentNodes, false)
 }

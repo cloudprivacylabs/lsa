@@ -14,31 +14,40 @@
 
 package ls
 
-import ()
+import (
+	"fmt"
+)
 
-// A ValueFilter applies a filter to the node value
-type ValueFilter interface {
-	FilterValue(interface{}, Node) interface{}
+// ErrInconsistentTypes is returned if a node has multiple types that
+// can interpret the value
+type ErrInconsistentTypes struct {
+	ID        string
+	TypeNames []string
 }
 
-// NopFilter does not modify the underlying value
-type NopFilter struct{}
-
-func (NopFilter) FilterValue(in interface{}, _ Node) interface{} { return in }
-
-// GetValueFilter returns the value filter for the term. If the term has none, returns NopFilter
-func GetValueFilter(term string) ValueFilter {
-	flt, ok := GetTermMetadata(term).(ValueFilter)
-	if ok {
-		return flt
-	}
-	return NopFilter{}
+func (e ErrInconsistentTypes) Error() string {
+	return fmt.Sprintf("Inconsistent types at '%s': %v", e.ID, e.TypeNames)
 }
 
-// FilterValue computes the processed node value
-func FilterValue(value interface{}, docnode Node, properties map[string]*PropertyValue) interface{} {
-	for k := range properties {
-		value = GetValueFilter(k).FilterValue(value, docnode)
-	}
-	return value
+type ErrInvalidValue struct {
+	ID    string
+	Type  string
+	Value interface{}
+	Msg   string
+}
+
+func (e ErrInvalidValue) Error() string {
+	return fmt.Sprintf("Invalid value at '%s': Type: %s, Value: %v, %s", e.ID, e.Type, e.Value, e.Msg)
+}
+
+// A ValueAccessor gets node values in native type, and sets node values
+type ValueAccessor interface {
+	GetNodeValue(Node) (interface{}, error)
+	SetNodeValue(Node, interface{}) error
+}
+
+// GetValueAccessor returns the value accessor for the term. If the term has none, returns nil
+func GetValueAccessor(term string) ValueAccessor {
+	acc, _ := GetTermMetadata(term).(ValueAccessor)
+	return acc
 }

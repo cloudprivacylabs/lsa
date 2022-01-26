@@ -32,21 +32,22 @@ type Edge interface {
 
 	GetProperties() map[string]*PropertyValue
 
-	GetCompiledDataMap() map[interface{}]interface{}
+	//
+	// Compiled properties can be set during schema compilation to store
+	// additional information about the node. Node clone operation
+	// shallow-copies such properties
+	GetCompiledProperties() *CompiledProperties
 }
 
 // edge is a labeled graph edge between two nodes
 type edge struct {
 	digraph.EdgeHeader
 	properties map[string]*PropertyValue
-	compiled   map[interface{}]interface{}
+	compiled   CompiledProperties
 }
 
-func (edge *edge) GetCompiledDataMap() map[interface{}]interface{} {
-	if edge.compiled == nil {
-		edge.compiled = make(map[interface{}]interface{})
-	}
-	return edge.compiled
+func (edge *edge) GetCompiledProperties() *CompiledProperties {
+	return &edge.compiled
 }
 
 func (edge *edge) GetProperties() map[string]*PropertyValue {
@@ -122,25 +123,4 @@ func SortEdgesItr(edges digraph.Edges) digraph.Edges {
 		arr = append(arr, x)
 	}
 	return digraph.NewEdges(arr...)
-}
-
-// An EdgeSet is a set of edges
-type EdgeSet map[Edge]struct{}
-
-// NewEdgeSet creates a new edge set containing the given edges
-func NewEdgeSet(edge ...Edge) EdgeSet {
-	ret := make(EdgeSet, len(edge))
-	for _, k := range edge {
-		ret[k] = struct{}{}
-	}
-	return ret
-}
-
-// Slice returns edges in the set as a slice
-func (set EdgeSet) Slice() []Edge {
-	ret := make([]Edge, 0, len(set))
-	for k := range set {
-		ret = append(ret, k)
-	}
-	return ret
 }

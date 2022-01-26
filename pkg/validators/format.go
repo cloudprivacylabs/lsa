@@ -37,7 +37,8 @@ func (validator JsonFormatValidator) Validate(docNode, schemaNode ls.Node) error
 	if value == nil {
 		return nil
 	}
-	return validator.ValidateValue(value, schemaNode.GetCompiledDataMap()[JsonFormatTerm].(string))
+	c, _ := schemaNode.GetCompiledProperties().GetCompiledProperty(JsonFormatTerm)
+	return validator.ValidateValue(value, c.(string))
 }
 
 func (validator JsonFormatValidator) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
@@ -47,6 +48,6 @@ func (validator JsonFormatValidator) CompileTerm(target ls.CompilablePropertyCon
 	if jsonschema.Formats[value.AsString()] == nil {
 		return ls.ErrValidatorCompile{Validator: JsonFormatTerm, Msg: "Invalid format value"}
 	}
-	target.GetCompiledDataMap()[term] = value.AsString()
+	target.GetCompiledProperties().SetCompiledProperty(term, value.AsString())
 	return nil
 }

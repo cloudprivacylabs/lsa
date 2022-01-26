@@ -25,7 +25,7 @@ type NodeCompiler interface {
 	// CompileNode gets a node and compiles the associated term on that
 	// node. It should store the compiled state into node.Compiled with
 	// the an opaque key
-	CompileNode(Node) error
+	CompileNode(*Layer, Node) error
 }
 
 // EdgeCompiler interface represents term compilation algorithm when
@@ -37,13 +37,13 @@ type EdgeCompiler interface {
 	// CompileEdge gets an edge and compiles the associated term on that
 	// edge. It should store tje compiled state into edge.Compiled with
 	// an opaque key
-	CompileEdge(Edge) error
+	CompileEdge(*Layer, Edge) error
 }
 
 // CompilablePropertyContainer contains properties and a compiled data map
 type CompilablePropertyContainer interface {
 	PropertyContainer
-	GetCompiledDataMap() map[interface{}]interface{}
+	GetCompiledProperties() *CompiledProperties
 }
 
 // TermCompiler interface represents term compilation algorithm. This
@@ -61,8 +61,8 @@ type TermCompiler interface {
 type emptyCompiler struct{}
 
 // CompileNode returns the value unmodified
-func (emptyCompiler) CompileNode(Node) error { return nil }
-func (emptyCompiler) CompileEdge(Edge) error { return nil }
+func (emptyCompiler) CompileNode(*Layer, Node) error { return nil }
+func (emptyCompiler) CompileEdge(*Layer, Edge) error { return nil }
 func (emptyCompiler) CompileTerm(CompilablePropertyContainer, string, *PropertyValue) error {
 	return nil
 }
@@ -107,4 +107,45 @@ func GetTermCompiler(term string) TermCompiler {
 		return c
 	}
 	return emptyCompiler{}
+}
+
+// CompiledProperties is a lazy-initialized map
+type CompiledProperties struct {
+	m map[interface{}]interface{}
+}
+
+func (p *CompiledProperties) GetCompiledProperty(key interface{}) (interface{}, bool) {
+	if p.m == nil {
+		return nil, false
+	}
+	property, exists := p.m[key]
+	return property, exists
+}
+
+func (p *CompiledProperties) SetCompiledProperty(key, value interface{}) {
+	if p.m == nil {
+		p.m = make(map[interface{}]interface{})
+	}
+	p.m[key] = value
+}
+
+func (p *CompiledProperties) CopyCompiledToMap(target map[interface{}]interface{}) {
+	if p.m == nil {
+		return
+	}
+	for k, v := range p.m {
+		target[k] = v
+	}
+}
+
+func (p *CompiledProperties) CopyTo(target *CompiledProperties) {
+	if p.m == nil {
+		return
+	}
+	if target.m == nil {
+		target.m = make(map[interface{}]interface{})
+	}
+	for k, v := range p.m {
+		target.m[k] = v
+	}
 }

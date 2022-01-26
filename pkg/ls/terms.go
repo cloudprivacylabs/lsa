@@ -47,14 +47,8 @@ var (
 	// DefaultValueTerm is the default value for an attribute if attribute is not present
 	DefaultValueTerm = NewTerm(LS+"defaultValue", false, false, OverrideComposition, nil)
 
-	// EntityIDTerm marks a field of an entity as the entity unique
-	// ID. Fields contained within an entity will get IDs relative to
-	// this ID.
-	//
-	// This is a marker term. The contents are ignored. Existance of
-	// entityId term on a field marks it as entity id.
-	EntityIDTerm = NewTerm(LS+"entityId", false, false, OverrideComposition, nil)
-
+	// Format specifies a type-specific formatting directive, such as a date format
+	FormatTerm = NewTerm(LS+"format", false, false, OverrideComposition, nil)
 	// EntitySchemaTerm is inserted by the schema compilation to mark
 	// entity roots. It records the schema ID containing the entity
 	// definition.
@@ -157,6 +151,9 @@ var (
 	// InstanceOfTerm is an edge term that is used to connect values with
 	// their schema specifications
 	InstanceOfTerm = NewTerm(LS+"data/instanceOf", false, false, ErrorComposition, nil)
+
+	// SchemaNodeIDTerm denotes the schema node ID for ingested nodes
+	SchemaNodeIDTerm = NewTerm(LS+"deta/schemaNodeId", false, false, ErrorComposition, nil)
 
 	// AsPropertyOfTerm is optional. If specified, it gives the nearest
 	// node that is an instance of the given type. If not, it is the

@@ -136,18 +136,7 @@ func (ingester *Ingester) IngestDocument(baseID string, decoder *xml.Decoder) (l
 	if err == io.EOF {
 		err = nil
 	}
-	// Assign node IDs
-	if ingester.Schema != nil {
-		ls.AssignEntityIDs(rootNode, func(entity, ID string, node ls.Node, path []ls.Node) string {
-			nodePath := ingester.NodePaths[node]
-			eid := fmt.Sprintf("%s/%s", entity, ID)
-			if len(nodePath) > 1 {
-				eid += "/" + ls.NodePath(nodePath[1:]).String()
-			}
-			return eid
-		})
-	}
-
+	ingester.Finish(rootNode, nil)
 	return rootNode, err
 }
 

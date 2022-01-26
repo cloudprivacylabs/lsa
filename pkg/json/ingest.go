@@ -72,18 +72,7 @@ func (ingester *Ingester) Ingest(baseID string, input jsonom.Node) (ls.Node, err
 	if len(dp) > 0 {
 		return nil, ls.ErrNoParentNode{dp[0].of}
 	}
-	// Assign node IDs
-	if ingester.Schema != nil {
-		ls.AssignEntityIDs(dn, func(entity, ID string, node ls.Node, path []ls.Node) string {
-			nodePath := ingester.NodePaths[node]
-			eid := fmt.Sprintf("%s/%s", entity, ID)
-			if len(nodePath) > 1 {
-				eid += "/" + ls.NodePath(nodePath[1:]).String()
-			}
-			return eid
-		})
-	}
-
+	ingester.Finish(dn, nil)
 	return dn, err
 }
 

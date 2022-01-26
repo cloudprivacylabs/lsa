@@ -85,7 +85,7 @@ func TestIngestFlat(t *testing.T) {
 	ingester := Ingester{
 		Ingester: ls.Ingester{
 			Schema:               schema,
-			OnlySchemaAttributes: true,
+			OnlySchemaAttributes: false,
 		},
 	}
 	root, err := IngestBytes(&ingester, "http://base", []byte(inputStr))
@@ -109,6 +109,28 @@ func TestIngestFlat(t *testing.T) {
 	checkNodeValue("http://base.field3", "true")
 	checkNodeValue("http://base.field4", nil)
 	checkNodeValue("http://base.field5", "extra")
+
+	ingester = Ingester{
+		Ingester: ls.Ingester{
+			Schema:               schema,
+			OnlySchemaAttributes: true,
+		},
+	}
+	root, err = IngestBytes(&ingester, "http://base", []byte(inputStr))
+	if err != nil {
+		t.Error(err)
+	}
+	target = digraph.New()
+	target.AddNode(root)
+	ix = target.GetIndex()
+	checkNodeValue("http://base.field1", "value1")
+	checkNodeValue("http://base.field2", "2")
+	checkNodeValue("http://base.field3", "true")
+	checkNodeValue("http://base.field4", nil)
+	if len(ix.NodesByLabelSlice("http://base.field5")) != 0 {
+		t.Errorf("Unexpected node found")
+	}
+
 }
 
 func TestIngestRootAnnotation(t *testing.T) {

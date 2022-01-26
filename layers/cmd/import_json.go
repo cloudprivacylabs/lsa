@@ -149,7 +149,11 @@ are Go templates, you can reference entity names and references using {{.name}} 
 			}
 			tdata := map[string]interface{}{"name": req.Entities[index].Name, "ref": item.Entity.Ref}
 			for i := range layers {
-				data, err := json.MarshalIndent(ls.MarshalLayer(layers[i]), "", "  ")
+				marshaled, err := ls.MarshalLayer(layers[i])
+				if err != nil {
+					failErr(err)
+				}
+				data, err := json.MarshalIndent(marshaled, "", "  ")
 				if err != nil {
 					failErr(err)
 				}

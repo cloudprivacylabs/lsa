@@ -56,7 +56,8 @@ func (p *PropertyValue) AsString() string {
 	return ""
 }
 
-// AsStringSlice returns the value as string slice
+// AsStringSlice returns the value as string slice. If the underlying
+// value is not a string slice, returns nil
 func (p *PropertyValue) AsStringSlice() []string {
 	if p == nil {
 		return nil
@@ -67,7 +68,20 @@ func (p *PropertyValue) AsStringSlice() []string {
 	return nil
 }
 
-// AsInterfaceSlice returns an interface slice of the underlying value if it is a []string
+// MustStringSlice returns the value as a string slice. If the
+// underlying value is not a string slice, returns a string slice
+// containing one element. If p is nil, returns nil
+func (p *PropertyValue) MustStringSlice() []string {
+	if p == nil {
+		return nil
+	}
+	if s, ok := p.value.([]string); ok {
+		return s
+	}
+	return []string{p.value.(string)}
+}
+
+// AsInterfaceSlice returns an interface slice of the underlying value if it is a []string.
 func (p *PropertyValue) AsInterfaceSlice() []interface{} {
 	if !p.IsStringSlice() {
 		return nil
@@ -147,6 +161,22 @@ func (p *PropertyValue) IsInt() bool {
 func (p *PropertyValue) AsInt() int {
 	i, _ := strconv.Atoi(p.value.(string))
 	return i
+}
+
+// Slice returns the property value as a slice. If the property value
+// is a string, returns a slice containing that value. If the property
+// value is nil, returns an empty slice
+func (p *PropertyValue) Slice() []string {
+	if p == nil {
+		return []string{}
+	}
+	if p.IsString() {
+		return []string{p.AsString()}
+	}
+	if p.IsStringSlice() {
+		return p.AsStringSlice()
+	}
+	return []string{}
 }
 
 func (p PropertyValue) Clone() *PropertyValue {

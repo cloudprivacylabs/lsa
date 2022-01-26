@@ -38,7 +38,12 @@
                 "reference": {
                     "@id":"ls:Reference/ref",
                     "@type": "@id"
-                }
+                },
+                "fields": "ls:Reference/fields",
+                "targetFields": "ls:Reference/targetFields",
+                "label": "ls:Reference/label",
+                "direction": "ls:Reference/direction",
+                "multi": "ls:Reference/multi"
             }
         },
         "Composite": {
@@ -108,6 +113,25 @@
             }
         },
 
+        "lookupTable": {
+            "@id": "ls:lookupTable",
+            "@context": {
+                "id": "@id",
+                "ref": "@id",
+                "elements": {
+                    "@id": "ls:lookupTable/elements",
+                    "@container": "@list",
+                    "@context": {
+                        "options": "ls:lookupTable/element/options",
+                        "caseSensitive": "ls:lookupTable/element/caseSensitive",
+                        "value": "ls:lookupTable/element/value",
+                        "error": "ls:lookupTable/element/error"
+                    }
+                }
+            }
+        },
+
+
         "entityId": "ls:entityId",
 
         "characterEncoding":"ls:characterEncoding",
@@ -124,9 +148,13 @@
         "jsonFormat": "ls:validation/jsonFormat",
         "enumeration": "ls:validation/enumeration",
 
+        "goTimeFormat": "ls:goTimeFormat",
+        "momentTimeFormat": "ls:momentTimeFormat",
+
         "has": "ls:data/has",
         "instanceOf":"ls:data/instanceOf",
         "asPropertyOf" : "ls:asPropertyOf",
         "asProperty": "ls:asProperty"
+
     }
 }

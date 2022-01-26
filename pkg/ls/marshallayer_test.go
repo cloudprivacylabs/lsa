@@ -35,7 +35,10 @@ func (tc marshalTestCase) Run(t *testing.T) {
 		t.Errorf("%s: Cannot unmarshal layer: %v", tc.Name, err)
 		return
 	}
-	marshaled := MarshalLayer(layer)
+	marshaled, err := MarshalLayer(layer)
+	if err != nil {
+		t.Error(err)
+	}
 	if err := DeepEqual(ToMap(marshaled), ToMap(tc.Marshaled)); err != nil {
 		expected, _ := json.MarshalIndent(ToMap(tc.Marshaled), "", "  ")
 		got, _ := json.MarshalIndent(ToMap(marshaled), "", "  ")

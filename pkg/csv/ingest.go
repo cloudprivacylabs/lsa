@@ -128,16 +128,6 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 		}
 		parentNode.GetProperties()[pv.name] = ls.StringPropertyValue(pv.value)
 	}
-	// Assign node IDs
-	if ingester.Schema != nil {
-		ls.AssignEntityIDs(retNode, func(entity, ID string, node ls.Node, path []ls.Node) string {
-			nodePath := ingester.NodePaths[node]
-			eid := fmt.Sprintf("%s/%s", entity, ID)
-			if len(nodePath) > 1 {
-				eid += "/" + ls.NodePath(nodePath[1:]).String()
-			}
-			return eid
-		})
-	}
+	ingester.Finish(retNode, nil)
 	return retNode, nil
 }
