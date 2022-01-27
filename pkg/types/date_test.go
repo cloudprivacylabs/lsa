@@ -20,6 +20,9 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
+// testDate -> expects Date
+// testDate
+// testTimeOfDay
 func testTime(t *testing.T, expected, got interface{}) {
 	if expected == nil && got == nil {
 		return
@@ -96,29 +99,53 @@ var dateTests = []getSetTestCase{
 		targetTypes:   []string{XSDDateTerm},
 		expectedValue: "2006-01-2",
 	},
+	// jsondatetime -> xsddate
+	// jsonTime -> timeofday
+	// jsonDatetime -> timeofday
+	// ....
+	//
+	{
+		srcTypes:      []string{XSDDateTerm},
+		srcValue:      "2006-01-2",
+		targetTypes:   []string{JSONDateTerm},
+		expectedValue: "2006-01-02",
+	},
 	// {
-	// 	srcTypes:      []string{JSONBooleanTerm},
-	// 	srcValue:      "false",
-	// 	targetTypes:   []string{JSONBooleanTerm},
-	// 	expectedValue: "false",
+	// 	srcTypes:      []string{JSONDateTimeTerm}, //
+	// 	srcValue:      time.RFC3339,
+	// 	targetTypes:   []string{XSDDateTimeTerm},
+	// 	expectedValue: "2006-01-2",
 	// },
 	// {
-	// 	srcTypes:       []string{JSONBooleanTerm},
-	// 	srcValue:       "False",
-	// 	expectGetError: true,
+	// 	srcTypes:      []string{JSONDateTimeTerm}, //
+	// 	srcValue:      time.RFC3339,
+	// 	targetTypes:   []string{JSONTimeTerm},
+	// 	expectedValue: "HH:mm:ss",
 	// },
-	// {
-	// 	srcTypes:      []string{XMLBooleanTerm},
-	// 	srcValue:      "1",
-	// 	targetTypes:   []string{JSONBooleanTerm},
-	// 	expectedValue: "true",
-	// },
-	// {
-	// 	srcTypes:      []string{XMLBooleanTerm},
-	// 	srcValue:      "0",
-	// 	targetTypes:   []string{JSONBooleanTerm},
-	// 	expectedValue: "false",
-	// },
+	{
+		srcTypes:      []string{XSDDateTerm},
+		srcValue:      "2006-01-2",
+		targetTypes:   []string{XSDGDayTerm},
+		expectedValue: "{1 2 2006 UTC}",
+	},
+	{
+		srcTypes:      []string{XSDDateTerm},
+		srcValue:      "2006-01-2",
+		targetTypes:   []string{XSDGMonthTerm},
+		expectedValue: "{1 2 2006 UTC}",
+	},
+	{
+		srcTypes:      []string{XSDDateTerm},
+		srcValue:      "2006-01-2",
+		targetTypes:   []string{XSDGYearTerm},
+		expectedValue: "{1 2 2006 UTC}",
+	},
+	{
+		srcTypes:      []string{XSDDateTerm},
+		srcValue:      "2006-01-2",
+		targetTypes:   []string{XSDGMonthDayTerm},
+		expectedValue: "{1 2 2006 UTC}",
+	},
 }
 
 func TestDate(t *testing.T) {
