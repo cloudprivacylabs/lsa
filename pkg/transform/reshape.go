@@ -126,7 +126,7 @@ func (reshaper *Reshaper) object(context *ReshapeContext) (ls.Node, error) {
 
 	// Create a target node for this object node. If the object turns
 	// out to be empty, this target node may be thrown away
-	targetNode := ls.NewNode(reshaper.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm)
+	targetNode := ls.NewNode(reshaper.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm, ls.AttributeTypes.Object)
 	if reshaper.AddInstanceOfEdges {
 		ls.Connect(targetNode, schemaNode, ls.InstanceOfTerm)
 	}
@@ -182,7 +182,7 @@ func (reshaper *Reshaper) value(context *ReshapeContext) (ls.Node, error) {
 	properties := schemaNode.GetProperties()
 	// Create a target node for this object node. If the object turns
 	// out to be empty, this target node may be thrown away
-	targetNode := ls.NewNode(reshaper.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm)
+	targetNode := ls.NewNode(reshaper.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm, ls.AttributeTypes.Value)
 	if reshaper.AddInstanceOfEdges {
 		ls.Connect(targetNode, schemaNode, ls.InstanceOfTerm)
 	}
