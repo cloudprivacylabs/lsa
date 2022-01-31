@@ -1248,6 +1248,14 @@ func (UnixTimeNanoParser) SetNodeValue(node ls.Node, value interface{}) error {
 		} else {
 			node.SetValue(strconv.FormatInt(v.ToTime().In(v.Location).UnixNano(), 10))
 		}
+	case TimeOfDay:
+		if v.Location == nil {
+			t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), time.UTC)
+			node.SetValue(strconv.FormatInt(t.UnixNano(), 10))
+		} else {
+			t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), v.Location)
+			node.SetValue(strconv.FormatInt(t.UnixNano(), 10))
+		}
 	case UnixTimeNano:
 		if v.Location == nil {
 			node.SetValue(v.ToTime().Format(time.RFC3339Nano))

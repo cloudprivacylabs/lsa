@@ -384,6 +384,20 @@ var dateTests = []getSetTestCase{
 		targetTypes:   []string{UnixTimeTerm},
 		expectedValue: "54245",
 	},
+	{
+		name:          "source: XSDTime, target: UnixTimeNano",
+		srcTypes:      []string{XSDTimeTerm},
+		srcValue:      "15:04:05Z",
+		targetTypes:   []string{UnixTimeNanoTerm},
+		expectedValue: "54245000000000",
+	},
+	{
+		name:          "source: JSONTime, target: UnixTimeNano",
+		srcTypes:      []string{JSONTimeTerm},
+		srcValue:      "15:04:05Z",
+		targetTypes:   []string{UnixTimeNanoTerm},
+		expectedValue: "54245000000000",
+	},
 	// {
 	// 	srcTypes:      []string{XSDDateTerm},
 	// 	srcValue:      "2006-01-2",
