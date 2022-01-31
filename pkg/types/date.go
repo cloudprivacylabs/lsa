@@ -1169,19 +1169,19 @@ func (UnixTimeParser) GetNodeValue(node ls.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
-	// x, err := strconv.Atoi(value)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	//return UnixTime{int64(x), nil}, nil
-	return genericUnixParse(value,
-		goFormat("1000000000"),
-		goFormat("1000000000000000000"),
-		goFormat("1970-01-01 00:00:00"),
-		goFormat("1970-01-01 00:00:00 +0000 UTC"),
-		goFormat(time.RFC3339),
-		goFormat(time.RFC3339Nano),
-	)
+	x, err := strconv.Atoi(value)
+	if err != nil {
+		return nil, err
+	}
+	return UnixTime{int64(x), nil}, nil
+	// return genericUnixParse(value,
+	// 	goFormat("1000000000"),
+	// 	goFormat("1000000000000000000"),
+	// 	goFormat("1970-01-01 00:00:00"),
+	// 	goFormat("1970-01-01 00:00:00 +0000 UTC"),
+	// 	goFormat(time.RFC3339),
+	// 	goFormat(time.RFC3339Nano),
+	// )
 }
 
 func (UnixTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
@@ -1256,12 +1256,8 @@ func (UnixTimeNanoParser) SetNodeValue(node ls.Node, value interface{}) error {
 			t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), v.Location)
 			node.SetValue(strconv.FormatInt(t.UnixNano(), 10))
 		}
-	case UnixTimeNano:
-		if v.Location == nil {
-			node.SetValue(v.ToTime().Format(time.RFC3339Nano))
-		} else {
-			node.SetValue(v.ToTime().In(v.Location).Format(time.RFC3339Nano))
-		}
+	case UnixTime:
+		node.SetValue(strconv.FormatInt(v.Seconds*1e9, 10))
 	default:
 		return ls.ErrInvalidValue{ID: node.GetID(), Type: UnixTimeTerm, Value: value}
 	}
