@@ -93,7 +93,26 @@ func TestJSONDateTime(t *testing.T) {
 }
 
 var dateTests = []getSetTestCase{
+	// XSDDate: "2006-01-2"
+	// JSONDate: "2006-01-02"
+	// XSDDateTime: "2002-11-11T09:00:00Z"
+	// JSONDateTime: "2006-01-02T00:00:00Z"
 	{
+		name:          "source: XSDDate, target: XSDDateTime",
+		srcTypes:      []string{XSDDateTerm},
+		srcValue:      "2006-01-02",
+		targetTypes:   []string{XSDDateTimeTerm},
+		expectedValue: "2002-11-11T09:00:00Z",
+	},
+	{
+		name:          "source: JSONDate, target: JSONDateTime",
+		srcTypes:      []string{JSONDateTerm},
+		srcValue:      "2006-01-02",
+		targetTypes:   []string{JSONDateTimeTerm},
+		expectedValue: "2006-01-02T00:00:00Z",
+	},
+	{
+		name:          "source: JSONDate, target: XSDDate",
 		srcTypes:      []string{JSONDateTerm},
 		srcValue:      "2006-01-02",
 		targetTypes:   []string{XSDDateTerm},
@@ -105,47 +124,277 @@ var dateTests = []getSetTestCase{
 	// ....
 	//
 	{
+		name:          "source: XSDDate, target: JSONDate",
 		srcTypes:      []string{XSDDateTerm},
 		srcValue:      "2006-01-2",
 		targetTypes:   []string{JSONDateTerm},
 		expectedValue: "2006-01-02",
 	},
-	// {
-	// 	srcTypes:      []string{JSONDateTimeTerm}, //
-	// 	srcValue:      time.RFC3339,
-	// 	targetTypes:   []string{XSDDateTimeTerm},
-	// 	expectedValue: "2006-01-2",
-	// },
-	// {
-	// 	srcTypes:      []string{JSONDateTimeTerm}, //
-	// 	srcValue:      time.RFC3339,
-	// 	targetTypes:   []string{JSONTimeTerm},
-	// 	expectedValue: "HH:mm:ss",
-	// },
 	{
+		name:          "source: JSONDateTime, target: XSDDate",
+		srcTypes:      []string{JSONDateTimeTerm},
+		srcValue:      "2006-01-02T00:00:00Z",
+		targetTypes:   []string{XSDDateTerm},
+		expectedValue: "2006-01-2",
+	},
+	{
+		name:          "source: XSDDate, target: JSONDateTime",
+		srcTypes:      []string{XSDDateTerm},
+		srcValue:      "2006-01-2",
+		targetTypes:   []string{JSONDateTimeTerm},
+		expectedValue: "2006-01-02T00:00:00Z",
+	},
+	{
+		name:          "source: JSONDateTime, target: XSDDateTime",
+		srcTypes:      []string{JSONDateTimeTerm},
+		srcValue:      "2006-01-02T00:00:00Z",
+		targetTypes:   []string{XSDDateTimeTerm},
+		expectedValue: "2002-11-11T09:00:00Z",
+	},
+	{
+		name:          "source: XSDDate, target: XSDGDay",
 		srcTypes:      []string{XSDDateTerm},
 		srcValue:      "2006-01-2",
 		targetTypes:   []string{XSDGDayTerm},
-		expectedValue: "{1 2 2006 UTC}",
+		expectedValue: "2",
 	},
 	{
+		name:          "source: XSDDate, target: XSDGMonth",
 		srcTypes:      []string{XSDDateTerm},
 		srcValue:      "2006-01-2",
 		targetTypes:   []string{XSDGMonthTerm},
-		expectedValue: "{1 2 2006 UTC}",
+		expectedValue: "01",
 	},
 	{
+		name:          "source: XSDDate, target: XSDGYear",
 		srcTypes:      []string{XSDDateTerm},
 		srcValue:      "2006-01-2",
 		targetTypes:   []string{XSDGYearTerm},
-		expectedValue: "{1 2 2006 UTC}",
+		expectedValue: "2006",
 	},
 	{
+		name:          "source: XSDDate, target: XSDGMonthDay",
 		srcTypes:      []string{XSDDateTerm},
 		srcValue:      "2006-01-2",
 		targetTypes:   []string{XSDGMonthDayTerm},
-		expectedValue: "{1 2 2006 UTC}",
+		expectedValue: "01-02",
 	},
+	{
+		name:          "source: XSDDate, target: XSDGYearMonth",
+		srcTypes:      []string{XSDDateTerm},
+		srcValue:      "2006-01-2",
+		targetTypes:   []string{XSDGYearMonthTerm},
+		expectedValue: "2006-01",
+	},
+	{
+		name:          "source: JSONDate, target: XSDGDay",
+		srcTypes:      []string{JSONDateTerm},
+		srcValue:      "2006-01-02",
+		targetTypes:   []string{XSDGDayTerm},
+		expectedValue: "2",
+	},
+	{
+		name:          "source: JSONDate, target: XSDGMonth",
+		srcTypes:      []string{JSONDateTerm},
+		srcValue:      "2006-01-02",
+		targetTypes:   []string{XSDGMonthTerm},
+		expectedValue: "01",
+	},
+	{
+		name:          "source: JSONDate, target: XSDGYear",
+		srcTypes:      []string{JSONDateTerm},
+		srcValue:      "2006-01-02",
+		targetTypes:   []string{XSDGYearTerm},
+		expectedValue: "2006",
+	},
+	{
+		name:          "source: JSONDate, target: XSDGMonthDay",
+		srcTypes:      []string{JSONDateTerm},
+		srcValue:      "2006-01-02",
+		targetTypes:   []string{XSDGMonthDayTerm},
+		expectedValue: "01-02",
+	},
+	{
+		name:          "source: JSONDate, target: XSDGYearMonth",
+		srcTypes:      []string{JSONDateTerm},
+		srcValue:      "2006-01-02",
+		targetTypes:   []string{XSDGYearMonthTerm},
+		expectedValue: "2006-01",
+	},
+	// {
+	// 	name:          "source: XSDDateTime, target: XSDGDay",
+	// 	srcTypes:      []string{XSDDateTimeTerm},
+	// 	srcValue:      "2002-11-11T09:00:00Z",
+	// 	targetTypes:   []string{XSDGDayTerm},
+	// 	expectedValue: "11", // reads as '1'
+	// },
+	{
+		name:          "source: XSDDateTime, target: XSDGMonth",
+		srcTypes:      []string{XSDDateTimeTerm},
+		srcValue:      "2002-11-11T09:00:00Z",
+		targetTypes:   []string{XSDGMonthTerm},
+		expectedValue: "11",
+	},
+	{
+		name:          "source: XSDDateTime, target: XSDGYear",
+		srcTypes:      []string{XSDDateTimeTerm},
+		srcValue:      "2002-11-11T09:00:00Z",
+		targetTypes:   []string{XSDGYearTerm},
+		expectedValue: "2002",
+	},
+	// {
+	// 	name:          "source: XSDDateTime, target: XSDGMonthDay",
+	// 	srcTypes:      []string{XSDDateTimeTerm},
+	// 	srcValue:      "2002-11-11T09:00:00Z",
+	// 	targetTypes:   []string{XSDGMonthDayTerm},
+	// 	expectedValue: "11-11", // 11-01
+	// },
+	{
+		name:          "source: XSDDateTime, target: XSDGYearMonth",
+		srcTypes:      []string{XSDDateTimeTerm},
+		srcValue:      "2002-11-11T09:00:00Z",
+		targetTypes:   []string{XSDGYearMonthTerm},
+		expectedValue: "2002-11",
+	},
+	{
+		name:          "source: JSONDateTime, target: XSDGDay",
+		srcTypes:      []string{JSONDateTimeTerm},
+		srcValue:      "2006-01-02T00:00:00Z",
+		targetTypes:   []string{XSDGDayTerm},
+		expectedValue: "2",
+	},
+	{
+		name:          "source: JSONDateTime, target: XSDGMonth",
+		srcTypes:      []string{JSONDateTimeTerm},
+		srcValue:      "2006-01-02T00:00:00Z",
+		targetTypes:   []string{XSDGMonthTerm},
+		expectedValue: "01",
+	},
+	{
+		name:          "source: JSONDateTime, target: XSDGYear",
+		srcTypes:      []string{JSONDateTimeTerm},
+		srcValue:      "2006-01-02T00:00:00Z",
+		targetTypes:   []string{XSDGYearTerm},
+		expectedValue: "2006",
+	},
+	{
+		name:          "source: JSONDateTime, target: XSDGMonthDay",
+		srcTypes:      []string{JSONDateTimeTerm},
+		srcValue:      "2006-01-02T00:00:00Z",
+		targetTypes:   []string{XSDGMonthDayTerm},
+		expectedValue: "01-02",
+	},
+	{
+		name:          "source: JSONDateTime, target: XSDGYearMonth",
+		srcTypes:      []string{JSONDateTimeTerm},
+		srcValue:      "2006-01-02T00:00:00Z",
+		targetTypes:   []string{XSDGYearMonthTerm},
+		expectedValue: "2006-01",
+	},
+	{
+		name:          "source: XSDDateTime, target: XSDTime",
+		srcTypes:      []string{XSDDateTimeTerm},
+		srcValue:      "2002-11-11T09:00:00Z",
+		targetTypes:   []string{XSDTimeTerm},
+		expectedValue: "09:00:00Z",
+	},
+	{
+		name:          "source: JSONDateTime, target: XSDTime",
+		srcTypes:      []string{XSDDateTimeTerm},
+		srcValue:      "2006-01-02T00:00:00Z",
+		targetTypes:   []string{XSDTimeTerm},
+		expectedValue: "09:00:00Z",
+	},
+	{
+		name:          "source: XSDDateTime, target: JSONTime",
+		srcTypes:      []string{XSDDateTimeTerm},
+		srcValue:      "2002-11-11T09:00:00Z",
+		targetTypes:   []string{JSONTimeTerm},
+		expectedValue: "09:00:00Z",
+	},
+	{
+		name:          "source: JSONDateTime, target: JSONTime",
+		srcTypes:      []string{JSONDateTimeTerm},
+		srcValue:      "2006-01-02T00:00:00Z",
+		targetTypes:   []string{JSONTimeTerm},
+		expectedValue: "09:00:00Z",
+	},
+	{
+		name:          "source: XSDDateTime, target: UnixTime",
+		srcTypes:      []string{XSDDateTimeTerm},
+		srcValue:      "2002-11-11T09:00:00Z",
+		targetTypes:   []string{UnixTimeTerm},
+		expectedValue: "1036141200",
+	},
+	{
+		name:          "source: XSDDateTime, target: UnixTimeNano",
+		srcTypes:      []string{XSDDateTimeTerm},
+		srcValue:      "2002-11-11T09:00:00Z",
+		targetTypes:   []string{UnixTimeNanoTerm},
+		expectedValue: "1036141200000000000",
+	},
+	{
+		name:          "source: JSONDateTime, target: UnixTime",
+		srcTypes:      []string{JSONDateTimeTerm},
+		srcValue:      "2006-01-02T00:00:00Z",
+		targetTypes:   []string{UnixTimeTerm},
+		expectedValue: "1136160000",
+	},
+	{
+		name:          "source: JSONDateTime, target: UnixTimeNano",
+		srcTypes:      []string{JSONDateTimeTerm},
+		srcValue:      "2006-01-02T00:00:00Z",
+		targetTypes:   []string{UnixTimeNanoTerm},
+		expectedValue: "1136160000000000000",
+	},
+	{
+		name:          "source: XSDTime, target: XSDDateTime",
+		srcTypes:      []string{XSDTimeTerm},
+		srcValue:      "09:00:0Z",
+		targetTypes:   []string{XSDDateTimeTerm},
+		expectedValue: "2002-11-11T09:00:00Z",
+	},
+	{
+		name:          "source: XSDTime, target: JSONDateTime",
+		srcTypes:      []string{XSDTimeTerm},
+		srcValue:      "09:00:0Z",
+		targetTypes:   []string{JSONDateTimeTerm},
+		expectedValue: "2006-01-02T00:00:00Z",
+	},
+	{
+		name:          "source: JSONTime, target: XSDDateTime",
+		srcTypes:      []string{JSONTimeTerm},
+		srcValue:      "09:00:00Z",
+		targetTypes:   []string{XSDDateTimeTerm},
+		expectedValue: "2002-11-11T09:00:00Z",
+	},
+	{
+		name:          "source: JSONTime, target: JSONDateTime",
+		srcTypes:      []string{JSONTimeTerm},
+		srcValue:      "09:00:00Z",
+		targetTypes:   []string{JSONDateTimeTerm},
+		expectedValue: "2006-01-02T00:00:00Z",
+	},
+	// {
+	// 	name:          "source: XSDTime, target: UnixTime",
+	// 	srcTypes:      []string{XSDTimeTerm},
+	// 	srcValue:      "09:00:00Z",
+	// 	targetTypes:   []string{UnixTimeTerm},
+	// 	expectedValue: "??", // -62169984000
+	// },
+	// {
+	// 	name:          "source: JSONTime, target: UnixTime",
+	// 	srcTypes:      []string{JSONTimeTerm},
+	// 	srcValue:      "09:00:00Z",
+	// 	targetTypes:   []string{UnixTimeTerm},
+	// 	expectedValue: "??", // -62169951600
+	// },
+	// {
+	// 	srcTypes:      []string{XSDDateTerm},
+	// 	srcValue:      "2006-01-2",
+	// 	targetTypes:   []string{XSDGMonthDayTerm},
+	// 	expectedValue: "{1 2 2006 UTC}",
+	// },
 }
 
 func TestDate(t *testing.T) {
