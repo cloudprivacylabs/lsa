@@ -116,16 +116,6 @@ func (t TimeOfDay) ToTime() time.Time {
 	return time.Date(0, 0, 0, int(t.Hour), int(t.Minute), int(t.Seconds), int(t.Nanoseconds), t.Location)
 }
 
-func timeToString(time interface{}) string {
-	switch v := time.(type) {
-	case int:
-		return strconv.Itoa(v)
-	case int64:
-		return strconv.FormatInt(v, 10)
-	}
-	return ""
-}
-
 // GDay is XML Gregorian day part of date
 type GDay int
 
@@ -398,42 +388,71 @@ func (XSDDateParser) SetNodeValue(node ls.Node, value interface{}) error {
 	}
 	switch v := value.(type) {
 	case time.Time:
-		node.SetValue(v.Format("2006-01-2"))
+		node.SetValue(v.Format("2006-01-02"))
 	case Date:
 		if v.Location == nil {
-			node.SetValue(v.ToTime().Format("2006-01-2"))
+			node.SetValue(v.ToTime().Format("2006-01-02"))
 		} else {
-			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-2Z0700"))
+			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-02Z0700"))
 		}
 	case DateTime:
 		if v.Location == nil {
-			node.SetValue(v.ToTime().Format("2006-01-2"))
-			// target.SetValue(fmt.Sprintf("%04d-%02d-%02d"+"T"+"%02d:%02d:%02d", value.Year, value.Month, value.Day, value.Hour, value.Minute, (value.Nanoseconds / 1000000000)))
+			node.SetValue(v.ToTime().Format("2006-01-02"))
 		} else {
-			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-2Z0700"))
+			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-02Z0700"))
 		}
 	case GDay:
-		node.SetValue(time.Date(0, 0, int(v), 0, 0, 0, 0, time.UTC).Format("2006-01-2"))
+		date, err := XSDDateParser.GetNodeValue(XSDDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Day = int(v)
+		node.SetValue(x.ToTime().Format("2006-01-02"))
 	case GMonth:
-		node.SetValue(time.Date(0, time.Month(v), 0, 0, 0, 0, 0, time.UTC).Format("2006-01-2"))
+		date, err := XSDDateParser.GetNodeValue(XSDDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Month = int(v)
+		node.SetValue(x.ToTime().Format("2006-01-02"))
 	case GYear:
-		node.SetValue(time.Date(int(v), 0, 0, 0, 0, 0, 0, time.UTC).Format("2006-01-2"))
-		//node.SetValue(timeToString(v))
+		date, err := XSDDateParser.GetNodeValue(XSDDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Year = int(v)
+		node.SetValue(x.ToTime().Format("2006-01-02"))
 	case GMonthDay:
-		node.SetValue(fmt.Sprintf("%02d-%02d", v.Month, v.Day))
+		date, err := XSDDateParser.GetNodeValue(XSDDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Month = int(v.Month)
+		x.Day = int(v.Day)
+		node.SetValue(x.ToTime().Format("2006-01-02"))
 	case GYearMonth:
-		node.SetValue(fmt.Sprintf("%04d-%02d", v.Year, v.Month))
+		date, err := XSDDateParser.GetNodeValue(XSDDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Month = int(v.Month)
+		x.Year = int(v.Year)
 	case UnixTime:
 		if v.Location == nil {
-			node.SetValue(v.ToTime().Format("2006-01-2"))
+			node.SetValue(v.ToTime().Format("2006-01-02"))
 		} else {
-			node.SetValue(v.ToTime().Format("2006-01-2Z0700"))
+			node.SetValue(v.ToTime().Format("2006-01-02Z0700"))
 		}
 	case UnixTimeNano:
 		if v.Location == nil {
-			node.SetValue(v.ToTime().Format("2006-01-2"))
+			node.SetValue(v.ToTime().Format("2006-01-02"))
 		} else {
-			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-2Z0700"))
+			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-02Z0700"))
 		}
 
 	default:
@@ -456,13 +475,13 @@ func (XSDDateTimeParser) GetNodeValue(node ls.Node) (interface{}, error) {
 		return nil, nil
 	}
 	return genericDateTimeParse(value,
-		goFormat("2002-11-11T09:00:00"),
-		goFormat("2002-11-11T09:00:00Z"),
-		goFormat("2002-11-11T09:00:00:10-06:00"),
-		goFormat("2002-11-11T09:00:00:10+06:00"),
-		goFormat("2002-11-11T09:00:00:10.5"),
+		goFormat("2006-1-2T15:04:05"),
+		goFormat("2006-1-2T15:04:05Z"),
+		// goFormat("2002-11-11T09:00:00:10-06:00"),
+		// goFormat("2002-11-11T09:00:00:10+06:00"),
+		// goFormat("2002-11-11T09:00:00:10.5"),
 		gomentFormat("YYYY-MM-DDThh:mm:ss"),
-		gomentFormat("YYYY-MM-DDThh:mm:ssZ"),
+		// gomentFormat("YYYY-MM-DDThh:mm:ssZ"),
 	)
 }
 
@@ -473,35 +492,67 @@ func (XSDDateTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
 	}
 	switch v := value.(type) {
 	case time.Time:
-		node.SetValue(v.Format("2002-11-110T09:00:00"))
+		node.SetValue(v.Format("2006-01-02T15:04:05Z"))
 	case Date:
 		if v.Location == nil {
-			node.SetValue(v.ToTime().Format("2002-11-11T09:00:00Z"))
+			node.SetValue(v.ToTime().Format("2006-01-02T15:04:05Z"))
 		} else {
-			node.SetValue(v.ToTime().In(v.Location).Format("2002-11-11T09:00:00Z"))
+			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-02T15:04:05Z"))
 		}
 	case DateTime:
 		if v.Location == nil {
-			node.SetValue(v.ToTime().Format("2002-11-11T09:00:00Z"))
+			node.SetValue(v.ToTime().Format("2006-01-02T15:04:05Z"))
 		} else {
-			node.SetValue(v.ToTime().In(v.Location).Format("2002-11-11T09:00:00Z")) //2002-05-30T09:30:10-06:00
+			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-02T15:04:05Z")) //2002-05-30T09:30:10-06:00
 		}
 	case TimeOfDay:
 		if v.Location == nil {
-			node.SetValue("2002-11-11T" + v.ToTime().Format("09:00:00Z"))
+			node.SetValue("2006-01-02T" + v.ToTime().Format("15:04:05Z"))
 		} else {
-			node.SetValue(v.ToTime().Format("2002-11-11T09:00:00Z"))
+			node.SetValue("2006-01-02T" + v.ToTime().In(v.Location).Format("15:04:05Z"))
 		}
 	case GDay:
-		node.SetValue(timeToString(v))
+		dateTime, err := XSDDateTimeParser.GetNodeValue(XSDDateTimeParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := dateTime.(DateTime)
+		x.Day = int(v)
+		node.SetValue(x.ToTime().Format("2006-01-02T15:04:05Z"))
 	case GMonth:
-		node.SetValue(timeToString(v))
+		dateTime, err := XSDDateTimeParser.GetNodeValue(XSDDateTimeParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := dateTime.(DateTime)
+		x.Month = int(v)
+		node.SetValue(x.ToTime().Format("2006-01-02T15:04:05Z"))
 	case GYear:
-		node.SetValue(timeToString(v))
+		dateTime, err := XSDDateTimeParser.GetNodeValue(XSDDateTimeParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := dateTime.(DateTime)
+		x.Year = int(v)
+		node.SetValue(x.ToTime().Format("2006-01-02T15:04:05Z"))
 	case GMonthDay:
-		node.SetValue(fmt.Sprintf("%02d-%02d", v.Month, v.Day))
+		dateTime, err := XSDDateTimeParser.GetNodeValue(XSDDateTimeParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := dateTime.(DateTime)
+		x.Month = int(v.Month)
+		x.Day = int(v.Day)
+		node.SetValue(x.ToTime().Format("2006-01-02T15:04:05Z"))
 	case GYearMonth:
-		node.SetValue(fmt.Sprintf("%04d-%02d", v.Year, v.Month))
+		dateTime, err := XSDDateTimeParser.GetNodeValue(XSDDateTimeParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := dateTime.(DateTime)
+		x.Year = int(v.Year)
+		x.Month = int(v.Month)
+		node.SetValue(x.ToTime().Format("2006-01-02T15:04:05Z"))
 	case UnixTime:
 		if v.Location == nil {
 			node.SetValue(fmt.Sprintf("%02d", v.Seconds))
@@ -549,7 +600,7 @@ func (XSDTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
 	}
 	switch v := value.(type) {
 	case time.Time:
-		node.SetValue(timeToString(v))
+		node.SetValue(v.Format("15:04:05"))
 	case DateTime:
 		if v.Location == nil {
 			node.SetValue(v.ToTime().Format("09:00:00Z"))
@@ -558,9 +609,9 @@ func (XSDTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
 		}
 	case UnixTime:
 		if v.Location == nil {
-			node.SetValue(timeToString(v.ToTime().Unix()))
+			node.SetValue(strconv.FormatInt(v.ToTime().Unix(), 10))
 		} else {
-			node.SetValue(timeToString(v.ToTime().In(v.Location).Unix()))
+			node.SetValue(strconv.FormatInt((v.ToTime().In(v.Location).Unix()), 10))
 		}
 	case UnixTimeNano:
 	default:
@@ -618,15 +669,47 @@ func (JSONDateParser) SetNodeValue(node ls.Node, value interface{}) error {
 			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-02Z0700"))
 		}
 	case GDay:
-		node.SetValue(timeToString(v))
+		date, err := JSONDateParser.GetNodeValue(JSONDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Day = int(v)
+		node.SetValue(x.ToTime().Format("2006-01-02"))
 	case GMonth:
-		node.SetValue(timeToString(v))
+		date, err := JSONDateParser.GetNodeValue(JSONDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Month = int(v)
+		node.SetValue(x.ToTime().Format("2006-01-02"))
 	case GYear:
-		node.SetValue(timeToString(v))
+		date, err := JSONDateParser.GetNodeValue(JSONDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Year = int(v)
+		node.SetValue(x.ToTime().Format("2006-01-02"))
 	case GMonthDay:
-		node.SetValue(fmt.Sprintf("%02d-%02d", v.Month, v.Day))
+		date, err := JSONDateParser.GetNodeValue(JSONDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Month = int(v.Month)
+		x.Day = int(v.Day)
+		node.SetValue(x.ToTime().Format("2006-01-02"))
 	case GYearMonth:
-		node.SetValue(fmt.Sprintf("%04d-%02d", v.Year, v.Month))
+		date, err := JSONDateParser.GetNodeValue(JSONDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Year = int(v.Year)
+		x.Month = int(v.Month)
+		node.SetValue(x.ToTime().Format("2006-01-02"))
 	case UnixTime:
 		if v.Location == nil {
 			node.SetValue(v.ToTime().Format("2006-01-02"))
@@ -675,13 +758,13 @@ func (JSONDateTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
 		node.SetValue(v.Format(time.RFC3339))
 	case Date:
 		if v.Location == nil {
-			node.SetValue(v.ToTime().Format("2006-01-02T00:00:00Z"))
+			node.SetValue(v.ToTime().Format("2006-01-02T15:04:05Z"))
 		} else {
-			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-02T11:11:11Z"))
+			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-02T15:04:05Z"))
 		}
 	case DateTime:
 		if v.Location == nil && v.Nanoseconds == 0 {
-			node.SetValue(v.ToTime().Format("2006-01-02T00:00:00Z"))
+			node.SetValue(v.ToTime().Format("2006-01-02T15:04:05Z"))
 		} else if v.Location != nil && v.Nanoseconds != 0 {
 			node.SetValue(v.ToTime().In(v.Location).Format(time.RFC3339Nano))
 		} else {
@@ -689,19 +772,19 @@ func (JSONDateTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
 		}
 	case TimeOfDay:
 		if v.Location == nil {
-			node.SetValue("2006-01-02T" + v.ToTime().Format("00:00:00Z"))
+			node.SetValue("2006-01-02T" + v.ToTime().Format("15:04:05Z"))
 		} else {
-			node.SetValue("2006-01-02T" + v.ToTime().In(v.Location).Format("00:00:00Z"))
+			node.SetValue("2006-01-02T" + v.ToTime().In(v.Location).Format("15:04:05Z"))
 		}
 	case UnixTime:
 		if v.Location == nil {
-			node.SetValue(v.ToTime().Format("2006-01-02"))
+			node.SetValue(v.ToTime().Format("2006-01-02T15:04:05Z"))
 		} else {
 			node.SetValue(v.ToTime().In(v.Location).Format(time.RFC3339))
 		}
 	case UnixTimeNano:
 		if v.Location == nil {
-			node.SetValue(v.ToTime().Format("2006-01-02"))
+			node.SetValue(v.ToTime().Format("2006-01-02T15:04:05Z"))
 		} else {
 			node.SetValue(v.ToTime().In(v.Location).Format(time.RFC3339Nano))
 		}
@@ -883,7 +966,12 @@ func (XSDGDayParser) GetNodeValue(node ls.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
-	return genericDateParse(value, goFormat("02"), goFormat("2"), gomentFormat("DD"))
+	x, err := strconv.Atoi(value)
+	if err != nil {
+		return nil, err
+	}
+	return GDay(x), nil
+	//return genericDateParse(value, goFormat("02"), goFormat("2"), gomentFormat("DD"))
 }
 
 func (XSDGDayParser) SetNodeValue(node ls.Node, value interface{}) error {
@@ -895,22 +983,13 @@ func (XSDGDayParser) SetNodeValue(node ls.Node, value interface{}) error {
 	// case time.Time:
 	// 	node.SetValue(v.Format("02")) // DD
 	case Date:
-		//node.SetValue(fmt.Sprintf("%02d", v.ToTime().Day()))
-		if v.ToTime().Day() >= 10 {
-			node.SetValue(v.ToTime().Format("02"))
-		} else {
-			node.SetValue(v.ToTime().Format("2"))
-		}
+		node.SetValue(strconv.Itoa((v.Day)))
 	case DateTime:
-		if v.ToTime().Day() >= 10 {
-			node.SetValue(v.ToTime().Format("02"))
-		} else {
-			node.SetValue(v.ToTime().Format("2"))
-		}
+		node.SetValue(strconv.Itoa((v.Day)))
 	case GDay:
-		node.SetValue(timeToString(v))
+		node.SetValue(strconv.Itoa(int(v)))
 	case GMonthDay:
-		node.SetValue(timeToString(v.Day))
+		node.SetValue(strconv.Itoa(int(v.Day)))
 	default:
 		return ls.ErrInvalidValue{ID: node.GetID(), Type: XSDGDayTerm, Value: value}
 	}
@@ -946,11 +1025,11 @@ func (XSDGMonthParser) SetNodeValue(node ls.Node, value interface{}) error {
 	case DateTime:
 		node.SetValue(v.ToTime().Format("01"))
 	case GMonth:
-		node.SetValue(timeToString(v))
+		node.SetValue(strconv.Itoa(int(v)))
 	case GMonthDay:
-		node.SetValue(timeToString(v.Month))
+		node.SetValue(strconv.Itoa(int(v.Month)))
 	case GYearMonth:
-		node.SetValue(timeToString(v.Month))
+		node.SetValue(strconv.Itoa(int(v.Month)))
 	default:
 		return ls.ErrInvalidValue{ID: node.GetID(), Type: XSDGMonthTerm, Value: value}
 	}
@@ -970,7 +1049,7 @@ func (XSDGMonthDayParser) GetNodeValue(node ls.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
-	return genericDateParse(value, goFormat("01-2"), gomentFormat("MM-DD"))
+	return genericDateParse(value, goFormat("1-2"), goFormat("01-2"), goFormat("01-02"), gomentFormat("MM-DD"))
 }
 
 func (XSDGMonthDayParser) SetNodeValue(node ls.Node, value interface{}) error {
@@ -986,13 +1065,13 @@ func (XSDGMonthDayParser) SetNodeValue(node ls.Node, value interface{}) error {
 	case DateTime:
 		node.SetValue(v.ToTime().Format("01-02"))
 	case GDay:
-		node.SetValue(timeToString(v))
+		node.SetValue(strconv.Itoa(int(v)))
 	case GMonth:
-		node.SetValue(timeToString(v))
+		node.SetValue(strconv.Itoa(int(v)))
 	case GMonthDay:
 		node.SetValue(fmt.Sprintf("%02d-%02d", v.Month, v.Day))
 	case GYearMonth:
-		node.SetValue(timeToString(v.Month))
+		node.SetValue(strconv.Itoa(int(v.Month)))
 	default:
 		return ls.ErrInvalidValue{ID: node.GetID(), Type: XSDGMonthDayTerm, Value: value}
 	}
@@ -1028,9 +1107,9 @@ func (XSDGYearParser) SetNodeValue(node ls.Node, value interface{}) error {
 	case DateTime:
 		node.SetValue(v.ToTime().Format("2006"))
 	case GYear:
-		node.SetValue(timeToString(v))
+		node.SetValue(strconv.Itoa(int(v)))
 	case GYearMonth:
-		node.SetValue(timeToString(v.Year))
+		node.SetValue(strconv.Itoa(int(v.Year)))
 	default:
 		return ls.ErrInvalidValue{ID: node.GetID(), Type: XSDGYearTerm, Value: value}
 	}
@@ -1066,9 +1145,9 @@ func (XSDGYearMonthParser) SetNodeValue(node ls.Node, value interface{}) error {
 	case DateTime:
 		node.SetValue(v.ToTime().Format("2006-01"))
 	case GMonth:
-		node.SetValue(timeToString(v))
+		node.SetValue(strconv.Itoa(int(v)))
 	case GYear:
-		node.SetValue(timeToString(v))
+		node.SetValue(strconv.Itoa(int(v)))
 	case GYearMonth:
 		node.SetValue(fmt.Sprintf("%02d-%02d", v.Year, v.Month))
 	default:
@@ -1090,7 +1169,14 @@ func (UnixTimeParser) GetNodeValue(node ls.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
+	// x, err := strconv.Atoi(value)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	//return UnixTime{int64(x), nil}, nil
 	return genericUnixParse(value,
+		goFormat("1000000000"),
+		goFormat("1000000000000000000"),
 		goFormat("1970-01-01 00:00:00"),
 		goFormat("1970-01-01 00:00:00 +0000 UTC"),
 		goFormat(time.RFC3339),
@@ -1105,26 +1191,26 @@ func (UnixTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
 	}
 	switch v := value.(type) {
 	case time.Time:
-		node.SetValue(timeToString(v.Unix()))
+		node.SetValue(strconv.FormatInt(v.Unix(), 10))
 	case DateTime:
 		if v.Location == nil {
-			node.SetValue(timeToString(v.ToTime().Unix()))
-			//node.SetValue(v.ToTime().Format("1970-01-01 00:00:00"))
+			node.SetValue(strconv.FormatInt(v.ToTime().Unix(), 10))
 		} else {
-			node.SetValue(v.ToTime().In(v.Location).Format("1970-01-01 00:00:00"))
+			node.SetValue(strconv.FormatInt(v.ToTime().In(v.Location).Unix(), 10))
 		}
 	case TimeOfDay:
 		if v.Location == nil {
-			node.SetValue(timeToString(v.ToTime().Unix()))
+			t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), time.UTC)
+			node.SetValue(strconv.FormatInt(t.Unix(), 10))
 		} else {
-			node.SetValue(timeToString(v.ToTime().In(v.Location).Unix()))
+			t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), v.Location)
+			node.SetValue(strconv.FormatInt(t.Unix(), 10))
 		}
 	case UnixTimeNano:
 		if v.Location == nil {
-			//node.SetValue(timeToString(v.ToTime().Unix()))
 			node.SetValue(fmt.Sprintf("%d", v.ToTime().UnixNano()))
 		} else {
-			node.SetValue(timeToString(v.ToTime().In(v.Location).UnixNano()))
+			node.SetValue(strconv.FormatInt(v.ToTime().In(v.Location).UnixNano(), 10))
 		}
 	default:
 		return ls.ErrInvalidValue{ID: node.GetID(), Type: UnixTimeTerm, Value: value}
@@ -1155,12 +1241,12 @@ func (UnixTimeNanoParser) SetNodeValue(node ls.Node, value interface{}) error {
 	}
 	switch v := value.(type) {
 	case time.Time:
-		node.SetValue(timeToString(v.UnixNano()))
+		node.SetValue(strconv.FormatInt(v.UnixNano(), 10))
 	case DateTime:
 		if v.Location == nil {
-			node.SetValue(timeToString(v.ToTime().UnixNano()))
+			node.SetValue(strconv.FormatInt(v.ToTime().UnixNano(), 10))
 		} else {
-			node.SetValue(timeToString(v.ToTime().In(v.Location).UnixNano()))
+			node.SetValue(strconv.FormatInt(v.ToTime().In(v.Location).UnixNano(), 10))
 		}
 	case UnixTimeNano:
 		if v.Location == nil {
