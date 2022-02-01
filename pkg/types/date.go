@@ -26,8 +26,16 @@ import (
 
 type ErrCannotParseTemporalValue string
 
+type ErrIncompatibleTypes struct {
+	cmp1, cmp2 interface{}
+}
+
 func (e ErrCannotParseTemporalValue) Error() string {
 	return "Cannot parse temporal value: " + string(e)
+}
+
+func (e ErrIncompatibleTypes) Error() string {
+	return fmt.Sprintf("Incompatible types: %v, %v", e.cmp1, e.cmp2)
 }
 
 const XSD = "http://www.w3.org/2001/XMLSchema/"
@@ -245,6 +253,18 @@ var PatternDateTimeTerm = ls.NewTerm(ls.LS+"dateTime", false, false, ls.Override
 	PatternDateTimeParser: PatternDateTimeParser{},
 })
 
+var PatternDateTerm = ls.NewTerm(ls.LS+"date", false, false, ls.OverrideComposition, struct {
+	PatternDateParser
+}{
+	PatternDateParser: PatternDateParser{},
+})
+
+var PatternTimeTerm = ls.NewTerm(ls.LS+"time", false, false, ls.OverrideComposition, struct {
+	PatternTimeParser
+}{
+	PatternTimeParser: PatternTimeParser{},
+})
+
 var GoTimeFormatTerm = ls.NewTerm(ls.LS+"goTimeFormat", false, false, ls.SetComposition, nil)
 var MomentTimeFormatTerm = ls.NewTerm(ls.LS+"momentTimeFormat", false, false, ls.SetComposition, nil)
 
@@ -265,13 +285,13 @@ type timeFormatter interface {
 	parseTime(string) (TimeOfDay, error)
 }
 
-type unixFormatter interface {
-	parseUnix(string) (UnixTime, error)
-}
+// type unixFormatter interface {
+// 	parseUnix(string) (UnixTime, error)
+// }
 
-type unixNanoFormatter interface {
-	parseUnixNano(string) (UnixTimeNano, error)
-}
+// type unixNanoFormatter interface {
+// 	parseUnixNano(string) (UnixTimeNano, error)
+// }
 
 // Time?
 // Unix?
@@ -330,37 +350,37 @@ func (f gomentFormat) parseTime(s string) (TimeOfDay, error) {
 		Seconds: int64(t.Second()), Minute: int64(t.Minute()), Hour: int64(t.Hour())}, nil
 }
 
-func (f goFormat) parseUnix(s string) (UnixTime, error) {
-	t, err := time.Parse(string(f), s)
-	if err != nil {
-		return UnixTime{}, err
-	}
-	return UnixTime{Seconds: int64(t.Second())}, nil
-}
+// func (f goFormat) parseUnix(s string) (UnixTime, error) {
+// 	t, err := time.Parse(string(f), s)
+// 	if err != nil {
+// 		return UnixTime{}, err
+// 	}
+// 	return UnixTime{Seconds: int64(t.Second())}, nil
+// }
 
-func (f gomentFormat) parseUnix(s string) (UnixTime, error) {
-	t, err := time.Parse(string(f), s)
-	if err != nil {
-		return UnixTime{}, err
-	}
-	return UnixTime{Seconds: int64(t.Second())}, nil
-}
+// func (f gomentFormat) parseUnix(s string) (UnixTime, error) {
+// 	t, err := time.Parse(string(f), s)
+// 	if err != nil {
+// 		return UnixTime{}, err
+// 	}
+// 	return UnixTime{Seconds: int64(t.Second())}, nil
+// }
 
-func (f goFormat) parseUnixNano(s string) (UnixTimeNano, error) {
-	t, err := time.Parse(string(f), s)
-	if err != nil {
-		return UnixTimeNano{}, err
-	}
-	return UnixTimeNano{Nanoseconds: int64(t.Nanosecond())}, nil
-}
+// func (f goFormat) parseUnixNano(s string) (UnixTimeNano, error) {
+// 	t, err := time.Parse(string(f), s)
+// 	if err != nil {
+// 		return UnixTimeNano{}, err
+// 	}
+// 	return UnixTimeNano{Nanoseconds: int64(t.Nanosecond())}, nil
+// }
 
-func (f gomentFormat) parseUnixNano(s string) (UnixTimeNano, error) {
-	t, err := time.Parse(string(f), s)
-	if err != nil {
-		return UnixTimeNano{}, err
-	}
-	return UnixTimeNano{Nanoseconds: int64(t.Nanosecond())}, nil
-}
+// func (f gomentFormat) parseUnixNano(s string) (UnixTimeNano, error) {
+// 	t, err := time.Parse(string(f), s)
+// 	if err != nil {
+// 		return UnixTimeNano{}, err
+// 	}
+// 	return UnixTimeNano{Nanoseconds: int64(t.Nanosecond())}, nil
+// }
 
 // ParseValue parses an XSDDate value.
 //
@@ -454,7 +474,6 @@ func (XSDDateParser) SetNodeValue(node ls.Node, value interface{}) error {
 		} else {
 			node.SetValue(v.ToTime().In(v.Location).Format("2006-01-02Z0700"))
 		}
-
 	default:
 		return ls.ErrInvalidValue{ID: node.GetID(), Type: XSDDateTerm, Value: value}
 	}
@@ -601,6 +620,8 @@ func (XSDTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
 	switch v := value.(type) {
 	case time.Time:
 		node.SetValue(v.Format("15:04:05"))
+	case Date:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
 	case DateTime:
 		if v.Location == nil {
 			node.SetValue(v.ToTime().Format("09:00:00Z"))
@@ -614,6 +635,11 @@ func (XSDTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
 			node.SetValue(strconv.FormatInt((v.ToTime().In(v.Location).Unix()), 10))
 		}
 	case UnixTimeNano:
+		if v.Location == nil {
+			node.SetValue(strconv.FormatInt(v.ToTime().UnixNano(), 10))
+		} else {
+			node.SetValue(strconv.FormatInt((v.ToTime().In(v.Location).UnixNano()), 10))
+		}
 	default:
 		return ls.ErrInvalidValue{ID: node.GetID(), Type: XSDTimeTerm, Value: value}
 	}
@@ -883,14 +909,14 @@ func (PatternDateTimeParser) GetNodeValue(node ls.Node) (interface{}, error) {
 	}
 	gf := node.GetProperties()[GoTimeFormatTerm].Slice()
 	mf := node.GetProperties()[MomentTimeFormatTerm].Slice()
-	garr := make([]dateFormatter, 0, len(gf)+len(mf))
+	garr := make([]dateTimeFormatter, 0, len(gf)+len(mf))
 	for _, x := range gf {
 		garr = append(garr, goFormat(x))
 	}
 	for _, x := range mf {
 		garr = append(garr, gomentFormat(x))
 	}
-	return genericDateParse(value, garr...)
+	return genericDateTimeParse(value, garr...)
 }
 
 func (PatternDateTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
@@ -947,8 +973,422 @@ func (PatternDateTimeParser) SetNodeValue(node ls.Node, value interface{}) error
 				node.SetValue(v.ToTime().In(v.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
 			}
 		}
+	case GDay:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Day = int(v)
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	case GMonth:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Month = int(v)
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	case GYear:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Year = int(v)
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	case GMonthDay:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Month = int(v.Month)
+		x.Day = int(v.Day)
+		node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+	case GYearMonth:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Year = int(v.Year)
+		x.Month = int(v.Month)
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
 	default:
 		return ls.ErrInvalidValue{ID: node.GetID(), Type: PatternDateTimeTerm, Value: value}
+	}
+	return nil
+}
+
+type PatternDateParser struct{}
+
+// ParseValue looks at the goTimeFormat, momentTimeFormat properties
+// in the node, and parses the datetime using that. The format
+// property can be an array, giving all possible formats
+func (PatternDateParser) GetNodeValue(node ls.Node) (interface{}, error) {
+	value, exists, err := getStringNodeValue(node)
+	if err != nil {
+		return nil, err
+	}
+	if !exists {
+		return nil, nil
+	}
+	if len(value) == 0 {
+		return nil, nil
+	}
+	gf := node.GetProperties()[GoTimeFormatTerm].Slice()
+	mf := node.GetProperties()[MomentTimeFormatTerm].Slice()
+	garr := make([]dateFormatter, 0, len(gf)+len(mf))
+	for _, x := range gf {
+		garr = append(garr, goFormat(x))
+	}
+	for _, x := range mf {
+		garr = append(garr, gomentFormat(x))
+	}
+	return genericDateParse(value, garr...)
+}
+
+func (PatternDateParser) SetNodeValue(node ls.Node, value interface{}) error {
+	if value == nil {
+		node.SetValue(nil)
+		return nil
+	}
+	switch v := value.(type) {
+	case time.Time:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
+	case Date:
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if v.Location == nil {
+				node.SetValue(v.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(v.ToTime().In(v.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if v.Location == nil {
+				node.SetValue(v.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(v.ToTime().In(v.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	case DateTime:
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if v.Location == nil {
+				node.SetValue(v.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(v.ToTime().In(v.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if v.Location == nil {
+				node.SetValue(v.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(v.ToTime().In(v.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	case TimeOfDay:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
+	case GDay:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Day = int(v)
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	case GMonth:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Month = int(v)
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	case GYear:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Year = int(v)
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	case GMonthDay:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Month = int(v.Month)
+		x.Day = int(v.Day)
+		node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+	case GYearMonth:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Year = int(v.Year)
+		x.Month = int(v.Month)
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	default:
+		return ls.ErrInvalidValue{ID: node.GetID(), Type: PatternDateTerm, Value: value}
+	}
+	return nil
+}
+
+type PatternTimeParser struct{}
+
+// ParseValue looks at the goTimeFormat, momentTimeFormat properties
+// in the node, and parses the datetime using that. The format
+// property can be an array, giving all possible formats
+func (PatternTimeParser) GetNodeValue(node ls.Node) (interface{}, error) {
+	value, exists, err := getStringNodeValue(node)
+	if err != nil {
+		return nil, err
+	}
+	if !exists {
+		return nil, nil
+	}
+	if len(value) == 0 {
+		return nil, nil
+	}
+	gf := node.GetProperties()[GoTimeFormatTerm].Slice()
+	mf := node.GetProperties()[MomentTimeFormatTerm].Slice()
+	garr := make([]timeFormatter, 0, len(gf)+len(mf))
+	for _, x := range gf {
+		garr = append(garr, goFormat(x))
+	}
+	for _, x := range mf {
+		garr = append(garr, gomentFormat(x))
+	}
+	return genericTimeParse(value, garr...)
+}
+
+func (PatternTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
+	if value == nil {
+		node.SetValue(nil)
+		return nil
+	}
+	switch v := value.(type) {
+	case time.Time:
+
+	case Date:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
+	case DateTime:
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if v.Location == nil {
+				node.SetValue(v.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(v.ToTime().In(v.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if v.Location == nil {
+				node.SetValue(v.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(v.ToTime().In(v.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	case TimeOfDay:
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if v.Location == nil {
+				node.SetValue(v.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(v.ToTime().In(v.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if v.Location == nil {
+				node.SetValue(v.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(v.ToTime().In(v.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	case GDay:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Day = int(v)
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	case GMonth:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Month = int(v)
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	case GYear:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Year = int(v)
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	case GMonthDay:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Month = int(v.Month)
+		x.Day = int(v.Day)
+		node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+	case GYearMonth:
+		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
+		if err != nil {
+			return err
+		}
+		x := date.(Date)
+		x.Year = int(v.Year)
+		x.Month = int(v.Month)
+		if _, ok := node.GetProperties()[GoTimeFormatTerm]; ok {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
+			}
+		} else {
+			if x.Location == nil {
+				node.SetValue(x.ToTime().Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			} else {
+				node.SetValue(x.ToTime().In(x.Location).Format(node.GetProperties()[MomentTimeFormatTerm].AsString()))
+			}
+		}
+	default:
+		return ls.ErrInvalidValue{ID: node.GetID(), Type: PatternDateTerm, Value: value}
 	}
 	return nil
 }
@@ -1192,6 +1632,12 @@ func (UnixTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
 	switch v := value.(type) {
 	case time.Time:
 		node.SetValue(strconv.FormatInt(v.Unix(), 10))
+	case Date:
+		if v.Location == nil {
+			node.SetValue(strconv.FormatInt(v.ToTime().Unix(), 10))
+		} else {
+			node.SetValue(strconv.FormatInt(v.ToTime().In(v.Location).Unix(), 10))
+		}
 	case DateTime:
 		if v.Location == nil {
 			node.SetValue(strconv.FormatInt(v.ToTime().Unix(), 10))
@@ -1200,6 +1646,7 @@ func (UnixTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
 		}
 	case TimeOfDay:
 		if v.Location == nil {
+			//node.SetValue(strconv.FormatInt(v.ToTime().Unix(), 10))
 			t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), time.UTC)
 			node.SetValue(strconv.FormatInt(t.Unix(), 10))
 		} else {
@@ -1231,7 +1678,12 @@ func (UnixTimeNanoParser) GetNodeValue(node ls.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
-	return genericUnixNanoParse(value, goFormat(time.RFC3339), goFormat(time.RFC3339Nano))
+	x, err := strconv.Atoi(value)
+	if err != nil {
+		return nil, err
+	}
+	return UnixTimeNano{int64(x), nil}, nil
+	//return genericUnixNanoParse(value, goFormat(time.RFC3339), goFormat(time.RFC3339Nano))
 }
 
 func (UnixTimeNanoParser) SetNodeValue(node ls.Node, value interface{}) error {
@@ -1242,6 +1694,12 @@ func (UnixTimeNanoParser) SetNodeValue(node ls.Node, value interface{}) error {
 	switch v := value.(type) {
 	case time.Time:
 		node.SetValue(strconv.FormatInt(v.UnixNano(), 10))
+	case Date:
+		if v.Location == nil {
+			node.SetValue(strconv.FormatInt(v.ToTime().UnixNano(), 10))
+		} else {
+			node.SetValue(strconv.FormatInt(v.ToTime().In(v.Location).UnixNano(), 10))
+		}
 	case DateTime:
 		if v.Location == nil {
 			node.SetValue(strconv.FormatInt(v.ToTime().UnixNano(), 10))
@@ -1256,6 +1714,16 @@ func (UnixTimeNanoParser) SetNodeValue(node ls.Node, value interface{}) error {
 			t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), v.Location)
 			node.SetValue(strconv.FormatInt(t.UnixNano(), 10))
 		}
+	case GDay:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
+	case GMonth:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
+	case GYear:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
+	case GMonthDay:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
+	case GYearMonth:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
 	case UnixTime:
 		node.SetValue(strconv.FormatInt(v.Seconds*1e9, 10))
 	default:
@@ -1295,22 +1763,22 @@ func genericTimeParse(value string, format ...timeFormatter) (TimeOfDay, error) 
 	return TimeOfDay{}, ErrCannotParseTemporalValue(value)
 }
 
-func genericUnixParse(value string, format ...unixFormatter) (UnixTime, error) {
-	for _, f := range format {
-		t, err := f.parseUnix(value)
-		if err == nil {
-			return t, nil
-		}
-	}
-	return UnixTime{}, ErrCannotParseTemporalValue(value)
-}
+// func genericUnixParse(value string, format ...unixFormatter) (UnixTime, error) {
+// 	for _, f := range format {
+// 		t, err := f.parseUnix(value)
+// 		if err == nil {
+// 			return t, nil
+// 		}
+// 	}
+// 	return UnixTime{}, ErrCannotParseTemporalValue(value)
+// }
 
-func genericUnixNanoParse(value string, format ...unixNanoFormatter) (UnixTimeNano, error) {
-	for _, f := range format {
-		t, err := f.parseUnixNano(value)
-		if err == nil {
-			return t, nil
-		}
-	}
-	return UnixTimeNano{}, ErrCannotParseTemporalValue(value)
-}
+// func genericUnixNanoParse(value string, format ...unixNanoFormatter) (UnixTimeNano, error) {
+// 	for _, f := range format {
+// 		t, err := f.parseUnixNano(value)
+// 		if err == nil {
+// 			return t, nil
+// 		}
+// 	}
+// 	return UnixTimeNano{}, ErrCannotParseTemporalValue(value)
+// }
