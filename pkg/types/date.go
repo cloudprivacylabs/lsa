@@ -1266,7 +1266,7 @@ func (PatternTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
 	}
 	switch v := value.(type) {
 	case time.Time:
-
+		node.SetValue(v.Format(node.GetProperties()[GoTimeFormatTerm].AsString()))
 	case Date:
 		return ErrIncompatibleTypes{node.GetTypes().String(), v}
 	case DateTime:
@@ -1388,7 +1388,7 @@ func (PatternTimeParser) SetNodeValue(node ls.Node, value interface{}) error {
 			}
 		}
 	default:
-		return ls.ErrInvalidValue{ID: node.GetID(), Type: PatternDateTerm, Value: value}
+		return ls.ErrInvalidValue{ID: node.GetID(), Type: PatternTimeTerm, Value: value}
 	}
 	return nil
 }
@@ -1420,8 +1420,8 @@ func (XSDGDayParser) SetNodeValue(node ls.Node, value interface{}) error {
 		return nil
 	}
 	switch v := value.(type) {
-	// case time.Time:
-	// 	node.SetValue(v.Format("02")) // DD
+	case time.Time:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
 	case Date:
 		node.SetValue(strconv.Itoa((v.Day)))
 	case DateTime:
@@ -1430,6 +1430,12 @@ func (XSDGDayParser) SetNodeValue(node ls.Node, value interface{}) error {
 		node.SetValue(strconv.Itoa(int(v)))
 	case GMonthDay:
 		node.SetValue(strconv.Itoa(int(v.Day)))
+	case GYearMonth:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
+	case UnixTime:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
+	case UnixTimeNano:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
 	default:
 		return ls.ErrInvalidValue{ID: node.GetID(), Type: XSDGDayTerm, Value: value}
 	}
@@ -1458,8 +1464,8 @@ func (XSDGMonthParser) SetNodeValue(node ls.Node, value interface{}) error {
 		return nil
 	}
 	switch v := value.(type) {
-	// case time.Time:
-	// 	node.SetValue(v.Format("01")) // MM
+	case time.Time:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
 	case Date:
 		node.SetValue(v.ToTime().Format("01"))
 	case DateTime:
@@ -1498,8 +1504,8 @@ func (XSDGMonthDayParser) SetNodeValue(node ls.Node, value interface{}) error {
 		return nil
 	}
 	switch v := value.(type) {
-	// case time.Time:
-	// 	node.SetValue(v.Format("01")) // MM
+	case time.Time:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
 	case Date:
 		node.SetValue(v.ToTime().Format("01-02"))
 	case DateTime:
@@ -1512,6 +1518,10 @@ func (XSDGMonthDayParser) SetNodeValue(node ls.Node, value interface{}) error {
 		node.SetValue(fmt.Sprintf("%02d-%02d", v.Month, v.Day))
 	case GYearMonth:
 		node.SetValue(strconv.Itoa(int(v.Month)))
+	case UnixTime:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
+	case UnixTimeNano:
+		return ErrIncompatibleTypes{node.GetTypes().String(), v}
 	default:
 		return ls.ErrInvalidValue{ID: node.GetID(), Type: XSDGMonthDayTerm, Value: value}
 	}
