@@ -15,12 +15,12 @@
 package cmd
 
 import (
-	"bytes"
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -30,7 +30,6 @@ func init() {
 	getschemaCSVCmd.Flags().Int("headerRow", 0, "Header row 0-based (default: 1st row)")
 }
 
-// go run main.go getschema csv ../examples/ghp/GHP_data_capture_global-en-ca.csv
 var getschemaCSVCmd = &cobra.Command{
 	Use:   "csv",
 	Short: "Write layered schema from CSV file",
@@ -59,53 +58,11 @@ var getschemaCSVCmd = &cobra.Command{
 			} else if row < headerRow {
 				continue
 			} else {
-				// var jsObj map[string]interface{}
-				// for i := range rowData {
-				// 	jsObj = map[string]interface{}{
-				// 		"@id":           rowData[i],
-				// 		"@type":         "Value",
-				// 		"attributeName": rowData[i],
-				// 	}
-				// }
-				// attributes := []interface{}{}
-				// for _, hdr := range jsObj {
-				// 	attributes = append(attributes, hdr)
-				// }
-				// attributeList := make(map[string]interface{})
-				// attributeList["attributesList"] = attributes
-				// layer := make(map[string]interface{})
-				// layer["layer"] = attributeList
-				// var LS struct {
-				// 	Layer struct {
-				// 		AttributeList []struct {
-				// 			ID            string `json:"@id"`
-				// 			AttributeName string `json:"attributeName"`
-				// 			Type          string `json:"@type"`
-				// 		} `json:"attributeList"`
-				// 	} `json:"layer"`
-				// }
-
-				type AttributeList struct {
-					Id            string `json:"@id"`
-					AttributeName string `json:"attributeName"`
-					Types         string `json:"@type"`
-				}
-
-				type Layer struct {
-					AttributeList []AttributeList `json:"attributeList"`
-				}
-
-				type LS struct {
-					Context string `json:"@context"`
-					Type    string `json:"@type"`
-					Layer   Layer  `json:"layer"`
-				}
-
-				attHeaders := []AttributeList{}
+				attHeaders := []Attribute{}
 				for i := range rowData {
-					attHeaders = append(attHeaders, AttributeList{
-						Id:            rowData[i],
-						AttributeName: rowData[i],
+					attHeaders = append(attHeaders, Attribute{
+						Id:            strings.TrimSpace(rowData[i]),
+						AttributeName: strings.TrimSpace(rowData[i]),
 						Types:         "Value",
 					})
 				}
@@ -118,64 +75,11 @@ var getschemaCSVCmd = &cobra.Command{
 					},
 				}
 
-				// // for i := range rowData {
-				// // }
-				// // marshal csv to json, unmarshal json to LS struct
-				// js, err := json.Marshal(rowData)
-				// if err != nil {
-				// 	failErr(err)
-				// }
-
-				// json.Unmarshal(js, &test)
-				//buffer := &bytes.Buffer{}
-				//fmt.Println(test)
-
-				// gob.NewEncoder(buffer).Encode(rowData[0])
-				// byteSlice := buffer.Bytes()
-				// fmt.Println(string(byteSlice))
-				//json.Unmarshal(byteSlice, &LS)
-
-				// type Inner struct {
-				// 	Object map[string]interface{} `json:"attributes"`
-				// 	// AttributeName map[string]interface{} `json:"@attributeName"`
-				// 	// Type          map[string]interface{} `json:"@type"`
-				// }
-				// type Outer struct {
-				// 	AttributeList []Inner `json:"attributeList"`
-				// }
-				// type Outmost struct {
-				// 	Layer Outer `json:"layer"`
-				// }
-				// var cont Outmost
-				// templateData := map[string]interface{}{
-				// 	"layer": map[string]interface{}{
-				// 		"attributeList": map[string]interface{}{
-				// 			"@id":           rowData,
-				// 			"attributeName": rowData,
-				// 			"Value":         rowData,
-				// 		},
-				// 	},
-				// }
-
-				//json.Unmarshal(byteSlice, &LS)
-
-				// cont.Layer.AttributeList = append(cont.Layer.AttributeList, Inner{Object: map[string]interface{}{
-				// 	"@id":            rowData[0],
-				// 	"@attributeName": rowData[0],
-				// 	"@type":          rowData[0],
-				// }})
-
-				// json.Unmarshal(byteSlice, &cont)
-
 				js, err := json.MarshalIndent(test, "", "\t")
 				if err != nil {
 					failErr(err)
 				}
-				var buf bytes.Buffer
-				buf.Write(js)
-				str := buf.String()
-				fmt.Println(str)
-				//fmt.Println(string(js))
+				fmt.Println(string(js))
 			}
 		}
 	},

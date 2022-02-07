@@ -18,7 +18,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// type data map[string]interface{}
+// Following structs are used to define a Layered Schema
+type Attribute struct {
+	Id            string `json:"@id"`
+	AttributeName string `json:"attributeName"`
+	Types         string `json:"@type"`
+}
+
+type Layer struct {
+	AttributeList []Attribute `json:"attributeList"`
+}
+
+type LS struct {
+	Context string `json:"@context"`
+	Type    string `json:"@type"`
+	Layer   Layer  `json:"layer"`
+}
 
 func init() {
 	rootCmd.AddCommand(getschemaCmd)
