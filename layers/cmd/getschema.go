@@ -20,7 +20,7 @@ import (
 
 // Following structs are used to define a Layered Schema
 type Attribute struct {
-	Id            string `json:"@id"`
+	ID            string `json:"@id"`
 	AttributeName string `json:"attributeName"`
 	Types         string `json:"@type"`
 }
@@ -31,6 +31,7 @@ type Layer struct {
 
 type LS struct {
 	Context string `json:"@context"`
+	ID      string `json:"@id"`
 	Type    string `json:"@type"`
 	Layer   Layer  `json:"layer"`
 }

@@ -28,6 +28,8 @@ import (
 func init() {
 	getschemaCmd.AddCommand(getschemaCSVCmd)
 	getschemaCSVCmd.Flags().Int("headerRow", 0, "Header row 0-based (default: 1st row)")
+	getschemaCSVCmd.Flags().String("schemaId", "", "Schema ID")
+	getschemaCSVCmd.MarkFlagRequired("schemaId")
 }
 
 var getschemaCSVCmd = &cobra.Command{
@@ -35,6 +37,7 @@ var getschemaCSVCmd = &cobra.Command{
 	Short: "Write layered schema from CSV file",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		schemaId, _ := cmd.Flags().GetString("schemaId")
 		f, err := os.Open(args[0])
 		if err != nil {
 			failErr(err)
@@ -61,7 +64,7 @@ var getschemaCSVCmd = &cobra.Command{
 				attHeaders := []Attribute{}
 				for i := range rowData {
 					attHeaders = append(attHeaders, Attribute{
-						Id:            strings.TrimSpace(rowData[i]),
+						ID:            strings.TrimSpace(rowData[i]),
 						AttributeName: strings.TrimSpace(rowData[i]),
 						Types:         "Value",
 					})
@@ -69,6 +72,7 @@ var getschemaCSVCmd = &cobra.Command{
 
 				test := LS{
 					Context: "https://lschema.org",
+					ID:      schemaId,
 					Type:    "Schema",
 					Layer: Layer{
 						AttributeList: attHeaders,
