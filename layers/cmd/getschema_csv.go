@@ -118,15 +118,15 @@ var getschemaCSVCmd = &cobra.Command{
 					},
 				}
 
-				// for i := range rowData {
+				// // for i := range rowData {
+				// // }
+				// // marshal csv to json, unmarshal json to LS struct
+				// js, err := json.Marshal(rowData)
+				// if err != nil {
+				// 	failErr(err)
 				// }
-				// marshal csv to json, unmarshal json to LS struct
-				js, err := json.Marshal(rowData)
-				if err != nil {
-					failErr(err)
-				}
 
-				json.Unmarshal(js, &test)
+				// json.Unmarshal(js, &test)
 				//buffer := &bytes.Buffer{}
 				//fmt.Println(test)
 
@@ -167,7 +167,7 @@ var getschemaCSVCmd = &cobra.Command{
 
 				// json.Unmarshal(byteSlice, &cont)
 
-				js, err = json.MarshalIndent(test, "", "\t")
+				js, err := json.MarshalIndent(test, "", "\t")
 				if err != nil {
 					failErr(err)
 				}
