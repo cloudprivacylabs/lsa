@@ -96,7 +96,9 @@ var getschemaCSVCmd = &cobra.Command{
 				}
 
 				type LS struct {
-					Layer Layer `json:"layer"`
+					Context string `json:"@context"`
+					Type    string `json:"@type"`
+					Layer   Layer  `json:"layer"`
 				}
 
 				attHeaders := []AttributeList{}
@@ -109,6 +111,8 @@ var getschemaCSVCmd = &cobra.Command{
 				}
 
 				test := LS{
+					Context: "https://lschema.org",
+					Type:    "Schema",
 					Layer: Layer{
 						AttributeList: attHeaders,
 					},
