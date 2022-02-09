@@ -7,6 +7,7 @@ import (
 )
 
 type getSetTestCase struct {
+	name           string
 	srcTypes       []string
 	srcValue       interface{}
 	targetTypes    []string
@@ -21,6 +22,7 @@ func (tc getSetTestCase) run(t *testing.T) {
 	targetNode := ls.NewNode("idtarget", tc.targetTypes...)
 	v, err := ls.GetNodeValue(srcNode)
 	if err != nil {
+		t.Log(tc.name)
 		if tc.expectGetError {
 			return
 		}
@@ -28,11 +30,13 @@ func (tc getSetTestCase) run(t *testing.T) {
 		return
 	}
 	if err == nil && tc.expectGetError {
+		t.Log(tc.name)
 		t.Errorf("Expecting get error, got none in %+v", tc)
 		return
 	}
 	err = ls.SetNodeValue(targetNode, v)
 	if err != nil {
+		t.Log(tc.name)
 		if tc.expectSetError {
 			return
 		}
@@ -44,6 +48,7 @@ func (tc getSetTestCase) run(t *testing.T) {
 		return
 	}
 	if tc.expectedValue != targetNode.GetValue() {
+		t.Log(tc.name)
 		t.Errorf("Expecting %v got %v in %+v", tc.expectedValue, targetNode.GetValue(), tc)
 	}
 }
