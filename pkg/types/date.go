@@ -276,17 +276,14 @@ type gomentFormat string
 
 type dateFormatter interface {
 	parseDate(string) (Date, error)
-	//formatDate(string)
 }
 
 type dateTimeFormatter interface {
 	parseDateTime(string) (DateTime, error)
-	formatDateTime(string) (string, error)
 }
 
 type timeFormatter interface {
 	parseTime(string) (TimeOfDay, error)
-	formatTime(string) (string, error)
 }
 
 // type unixFormatter interface {
@@ -324,43 +321,6 @@ func (f goFormat) parseDateTime(s string) (DateTime, error) {
 	return DateTime{Month: int(t.Month()), Day: t.Day(), Year: t.Year(),
 		Nanoseconds: int64(t.Nanosecond()), Milliseconds: int64(t.Second() * 1000), Seconds: int64(t.Second()),
 		Minute: int64(t.Minute()), Hour: int64(t.Hour())}, nil
-}
-
-func (f goFormat) formatDateTime(s string) (string, error) {
-	const bufSize = 64
-	var b []byte
-	max := len(s) + 10
-	if max < bufSize {
-		var buf [bufSize]byte
-		b = buf[:0]
-	} else {
-		b = make([]byte, 0, max)
-	}
-	t, _ := f.parseDateTime(s)
-	x := t.ToTime()
-	b = x.AppendFormat(b, s)
-	return string(b), nil
-}
-
-func (f gomentFormat) formatDateTime(s string) (string, error) {
-	// const bufSize = 64
-	// var b []byte
-	// max := len(s) + 10
-	// if max < bufSize {
-	// 	var buf [bufSize]byte
-	// 	b = buf[:0]
-	// } else {
-	// 	b = make([]byte, 0, max)
-	// }
-	// t, _ := f.parseDateTime(s)
-	// x := t.ToTime()
-	// b = x.AppendFormat(b, s)
-	// return string(b)
-	t, err := goment.New(s, string(f))
-	if err != nil {
-		return "err", err
-	}
-	return t.Format("2013-02-08 09:30:26"), nil
 }
 
 func (f gomentFormat) parseDateTime(s string) (DateTime, error) {
@@ -982,12 +942,11 @@ func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) er
 		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
 			ls.SetRawNodeValue(node, v.Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 		} else {
-			x, err := ToGomentTime(v)
+			goment, err := ToGomentTime(v)
 			if err != nil {
 				return err
 			}
-			ls.SetRawNodeValue(node, x.Format(x.ToString(), ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			//ls.SetRawNodeValue(node, v.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+			ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 		}
 	case Date:
 		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
@@ -997,10 +956,14 @@ func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) er
 				ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 			}
 		} else {
+			goment, err := ToGomentTime(v.ToTime())
+			if err != nil {
+				return err
+			}
 			if v.Location == nil {
-				ls.SetRawNodeValue(node, v.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 			} else {
-				ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				ls.SetRawNodeValue(node, goment.Format(v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString())))
 			}
 		}
 	case DateTime:
@@ -1011,18 +974,15 @@ func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) er
 				ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 			}
 		} else {
+			goment, err := ToGomentTime(v.ToTime())
+			if err != nil {
+				return err
+			}
 			if v.Location == nil {
-				x, err := ToGomentTime(v.ToTime())
-				if err != nil {
-					return err
-				}
-				ls.SetRawNodeValue(node, x.Format("MM-DD-YYYY HH:mm:ss", ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 			} else {
-				x, err := ToGomentTime(v.ToTime())
-				if err != nil {
-					return err
-				}
-				ls.SetRawNodeValue(node, x.ToTime().In(v.Location).Format(x.Format("MM-DD-YYYY HH:mm:ssZ", ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString())))
+				ls.SetRawNodeValue(node, goment.Format(v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString())))
+				//ls.SetRawNodeValue(node, x.ToTime().In(v.Location).Format(x.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString())))
 			}
 		}
 	case TimeOfDay:
@@ -1033,20 +993,15 @@ func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) er
 				ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 			}
 		} else {
+			goment, err := ToGomentTime(v.ToTime())
+			if err != nil {
+				return err
+			}
 			if v.Location == nil {
-				x, err := ToGomentTime(v.ToTime())
-				if err != nil {
-					return err
-				}
-				ls.SetRawNodeValue(node, x.Format("HH:mm:ss", ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-				//ls.SetRawNodeValue(node, v.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 			} else {
-				x, err := ToGomentTime(v.ToTime())
-				if err != nil {
-					return err
-				}
-				ls.SetRawNodeValue(node, x.ToTime().In(v.Location).Format(x.Format("MM-DD-YYYY HH:mm:ssZ", ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString())))
-				//ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				ls.SetRawNodeValue(node, goment.Format(v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString())))
+				//ls.SetRawNodeValue(node, x.ToTime().In(v.Location).Format(x.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString())))
 			}
 		}
 	case GDay:
@@ -1057,17 +1012,13 @@ func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) er
 		x := date.(Date)
 		x.Day = int(v)
 		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			}
+			ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 		} else {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+			goment, err := ToGomentTime(x.ToTime())
+			if err != nil {
+				return err
 			}
+			ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 		}
 	case GMonth:
 		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
@@ -1077,17 +1028,13 @@ func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) er
 		x := date.(Date)
 		x.Month = int(v)
 		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			}
+			ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 		} else {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+			goment, err := ToGomentTime(x.ToTime())
+			if err != nil {
+				return err
 			}
+			ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 		}
 	case GYear:
 		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
@@ -1097,17 +1044,13 @@ func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) er
 		x := date.(Date)
 		x.Year = int(v)
 		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			}
+			ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 		} else {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+			goment, err := ToGomentTime(x.ToTime())
+			if err != nil {
+				return err
 			}
+			ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 		}
 	case GMonthDay:
 		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
@@ -1117,7 +1060,15 @@ func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) er
 		x := date.(Date)
 		x.Month = int(v.Month)
 		x.Day = int(v.Day)
-		ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
+			ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
+		} else {
+			goment, err := ToGomentTime(x.ToTime())
+			if err != nil {
+				return err
+			}
+			ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+		}
 	case GYearMonth:
 		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
 		if err != nil {
@@ -1127,17 +1078,13 @@ func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) er
 		x.Year = int(v.Year)
 		x.Month = int(v.Month)
 		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			}
+			ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 		} else {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+			goment, err := ToGomentTime(x.ToTime())
+			if err != nil {
+				return err
 			}
+			ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 		}
 	default:
 		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: value}
@@ -1189,10 +1136,14 @@ func (PatternDateParser) SetNodeValue(node graph.Node, value interface{}) error 
 				ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 			}
 		} else {
+			goment, err := ToGomentTime(v.ToTime())
+			if err != nil {
+				return err
+			}
 			if v.Location == nil {
-				ls.SetRawNodeValue(node, v.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 			} else {
-				ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				ls.SetRawNodeValue(node, goment.Format(v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString())))
 			}
 		}
 	case DateTime:
@@ -1203,10 +1154,14 @@ func (PatternDateParser) SetNodeValue(node graph.Node, value interface{}) error 
 				ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 			}
 		} else {
+			goment, err := ToGomentTime(v.ToTime())
+			if err != nil {
+				return err
+			}
 			if v.Location == nil {
-				ls.SetRawNodeValue(node, v.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 			} else {
-				ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				ls.SetRawNodeValue(node, goment.Format(v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString())))
 			}
 		}
 	case TimeOfDay:
@@ -1219,17 +1174,13 @@ func (PatternDateParser) SetNodeValue(node graph.Node, value interface{}) error 
 		x := date.(Date)
 		x.Day = int(v)
 		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			}
+			ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 		} else {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+			goment, err := ToGomentTime(x.ToTime())
+			if err != nil {
+				return err
 			}
+			ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 		}
 	case GMonth:
 		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
@@ -1239,17 +1190,13 @@ func (PatternDateParser) SetNodeValue(node graph.Node, value interface{}) error 
 		x := date.(Date)
 		x.Month = int(v)
 		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			}
+			ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 		} else {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+			goment, err := ToGomentTime(x.ToTime())
+			if err != nil {
+				return err
 			}
+			ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 		}
 	case GYear:
 		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
@@ -1259,17 +1206,13 @@ func (PatternDateParser) SetNodeValue(node graph.Node, value interface{}) error 
 		x := date.(Date)
 		x.Year = int(v)
 		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			}
+			ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 		} else {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+			goment, err := ToGomentTime(x.ToTime())
+			if err != nil {
+				return err
 			}
+			ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 		}
 	case GMonthDay:
 		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
@@ -1279,7 +1222,15 @@ func (PatternDateParser) SetNodeValue(node graph.Node, value interface{}) error 
 		x := date.(Date)
 		x.Month = int(v.Month)
 		x.Day = int(v.Day)
-		ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
+			ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
+		} else {
+			goment, err := ToGomentTime(x.ToTime())
+			if err != nil {
+				return err
+			}
+			ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+		}
 	case GYearMonth:
 		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
 		if err != nil {
@@ -1289,17 +1240,13 @@ func (PatternDateParser) SetNodeValue(node graph.Node, value interface{}) error 
 		x.Year = int(v.Year)
 		x.Month = int(v.Month)
 		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			}
+			ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 		} else {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+			goment, err := ToGomentTime(x.ToTime())
+			if err != nil {
+				return err
 			}
+			ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 		}
 	default:
 		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTerm, Value: value}
@@ -1342,7 +1289,15 @@ func (PatternTimeParser) SetNodeValue(node graph.Node, value interface{}) error 
 	}
 	switch v := value.(type) {
 	case time.Time:
-		ls.SetRawNodeValue(node, v.Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
+		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
+			ls.SetRawNodeValue(node, v.Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
+		} else {
+			goment, err := ToGomentTime(v)
+			if err != nil {
+				return err
+			}
+			ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm))))
+		}
 	case Date:
 		return ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case DateTime:
@@ -1353,10 +1308,14 @@ func (PatternTimeParser) SetNodeValue(node graph.Node, value interface{}) error 
 				ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 			}
 		} else {
+			goment, err := ToGomentTime(v.ToTime())
+			if err != nil {
+				return err
+			}
 			if v.Location == nil {
-				ls.SetRawNodeValue(node, v.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 			} else {
-				ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				ls.SetRawNodeValue(node, goment.Format(v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString())))
 			}
 		}
 	case TimeOfDay:
@@ -1367,102 +1326,26 @@ func (PatternTimeParser) SetNodeValue(node graph.Node, value interface{}) error 
 				ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 			}
 		} else {
+			goment, err := ToGomentTime(v.ToTime())
+			if err != nil {
+				return err
+			}
 			if v.Location == nil {
-				ls.SetRawNodeValue(node, v.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				ls.SetRawNodeValue(node, goment.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 			} else {
-				ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				ls.SetRawNodeValue(node, goment.Format(v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString())))
 			}
 		}
 	case GDay:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
-		}
-		x := date.(Date)
-		x.Day = int(v)
-		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			}
-		} else {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			}
-		}
+		return ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case GMonth:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
-		}
-		x := date.(Date)
-		x.Month = int(v)
-		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			}
-		} else {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			}
-		}
+		return ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case GYear:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
-		}
-		x := date.(Date)
-		x.Year = int(v)
-		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			}
-		} else {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			}
-		}
+		return ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case GMonthDay:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
-		}
-		x := date.(Date)
-		x.Month = int(v.Month)
-		x.Day = int(v.Day)
-		ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+		return ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case GYearMonth:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
-		}
-		x := date.(Date)
-		x.Year = int(v.Year)
-		x.Month = int(v.Month)
-		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
-			}
-		} else {
-			if x.Location == nil {
-				ls.SetRawNodeValue(node, x.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			} else {
-				ls.SetRawNodeValue(node, x.ToTime().In(x.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
-			}
-		}
+		return ErrIncompatibleTypes{node.GetLabels().String(), v}
 	default:
 		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternTimeTerm, Value: value}
 	}

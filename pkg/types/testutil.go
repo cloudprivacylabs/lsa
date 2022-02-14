@@ -8,20 +8,22 @@ import (
 )
 
 type getSetTestCase struct {
-	name           string
-	srcTypes       []string
-	srcValue       interface{}
-	targetTypes    []string
-	expectedValue  interface{}
-	expectGetError bool
-	expectSetError bool
+	name             string
+	srcTypes         []string
+	srcValue         interface{}
+	targetTypes      []string
+	expectedValue    interface{}
+	expectGetError   bool
+	expectSetError   bool
+	srcProperties    map[string]interface{}
+	targetProperties map[string]interface{}
 }
 
 func (tc getSetTestCase) run(t *testing.T) {
 	g := graph.NewOCGraph()
-	srcNode := g.NewNode(tc.srcTypes, nil)
+	srcNode := g.NewNode(tc.srcTypes, tc.srcProperties)
 	ls.SetRawNodeValue(srcNode, tc.srcValue)
-	targetNode := g.NewNode(tc.targetTypes, nil)
+	targetNode := g.NewNode(tc.targetTypes, tc.targetProperties)
 	v, err := ls.GetNodeValue(srcNode)
 	if err != nil {
 		t.Log(tc.name)
