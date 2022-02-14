@@ -19,15 +19,16 @@ import (
 	"strings"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
-var JSONBooleanTerm = ls.NewTerm(JSON+"boolean", false, false, ls.OverrideComposition, struct {
+var JSONBooleanTerm = ls.NewTerm(JSON, "boolean", false, false, ls.OverrideComposition, struct {
 	JSONBooleanParser
 }{
 	JSONBooleanParser{},
 })
 
-var XMLBooleanTerm = ls.NewTerm(XSD+"boolean", false, false, ls.OverrideComposition, struct {
+var XMLBooleanTerm = ls.NewTerm(XSD, "boolean", false, false, ls.OverrideComposition, struct {
 	XMLBooleanParser
 }{
 	XMLBooleanParser{},
@@ -35,7 +36,7 @@ var XMLBooleanTerm = ls.NewTerm(XSD+"boolean", false, false, ls.OverrideComposit
 
 type JSONBooleanParser struct{}
 
-func (JSONBooleanParser) GetNodeValue(node ls.Node) (interface{}, error) {
+func (JSONBooleanParser) GetNodeValue(node graph.Node) (interface{}, error) {
 	value, exists, err := getStringNodeValue(node)
 	if err != nil {
 		return nil, err
@@ -49,36 +50,36 @@ func (JSONBooleanParser) GetNodeValue(node ls.Node) (interface{}, error) {
 	if value == "true" {
 		return true, nil
 	}
-	return nil, ls.ErrInvalidValue{ID: node.GetID(), Type: JSONBooleanTerm, Value: value}
+	return nil, ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm, Value: value}
 }
 
-func (JSONBooleanParser) SetNodeValue(node ls.Node, value interface{}) error {
+func (JSONBooleanParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		node.SetValue(nil)
+		ls.SetRawNodeValue(node, nil)
 		return nil
 	}
 	switch v := value.(type) {
 	case bool:
-		node.SetValue(fmt.Sprint(v))
+		ls.SetRawNodeValue(node, fmt.Sprint(v))
 		return nil
 	case string:
 		if value == "true" || value == "false" {
-			node.SetValue(value)
+			ls.SetRawNodeValue(node, value)
 			return nil
 		}
 	case int:
 		if value == 0 {
-			node.SetValue("false")
+			ls.SetRawNodeValue(node, "false")
 		} else {
-			node.SetValue("true")
+			ls.SetRawNodeValue(node, "true")
 		}
 	}
-	return ls.ErrInvalidValue{ID: node.GetID(), Type: JSONBooleanTerm, Value: value}
+	return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm, Value: value}
 }
 
 type XMLBooleanParser struct{}
 
-func (XMLBooleanParser) GetNodeValue(node ls.Node) (interface{}, error) {
+func (XMLBooleanParser) GetNodeValue(node graph.Node) (interface{}, error) {
 	value, exists, err := getStringNodeValue(node)
 	if err != nil {
 		return nil, err
@@ -92,33 +93,33 @@ func (XMLBooleanParser) GetNodeValue(node ls.Node) (interface{}, error) {
 	if strings.ToLower(value) == "true" || value == "1" {
 		return true, nil
 	}
-	return nil, ls.ErrInvalidValue{ID: node.GetID(), Type: XMLBooleanTerm, Value: value}
+	return nil, ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XMLBooleanTerm, Value: value}
 }
 
-func (XMLBooleanParser) SetNodeValue(node ls.Node, value interface{}) error {
+func (XMLBooleanParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		node.SetValue(nil)
+		ls.SetRawNodeValue(node, nil)
 		return nil
 	}
 	switch v := value.(type) {
 	case bool:
-		node.SetValue(fmt.Sprint(v))
+		ls.SetRawNodeValue(node, fmt.Sprint(v))
 		return nil
 	case string:
 		if strings.ToLower(v) == "true" || v == "1" {
-			node.SetValue("true")
+			ls.SetRawNodeValue(node, "true")
 			return nil
 		}
 		if strings.ToLower(v) == "false" || v == "0" {
-			node.SetValue("false")
+			ls.SetRawNodeValue(node, "false")
 			return nil
 		}
 	case int:
 		if value == 0 {
-			node.SetValue("false")
+			ls.SetRawNodeValue(node, "false")
 		} else {
-			node.SetValue("true")
+			ls.SetRawNodeValue(node, "true")
 		}
 	}
-	return ls.ErrInvalidValue{ID: node.GetID(), Type: JSONBooleanTerm, Value: value}
+	return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm, Value: value}
 }

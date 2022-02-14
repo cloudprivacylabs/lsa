@@ -20,9 +20,9 @@ import (
 
 const JSON = "https://json.org#"
 
-var StringTypeTerm = ls.NewTerm(JSON+"string", false, false, ls.OverrideComposition, nil)
-var NumberTypeTerm = ls.NewTerm(JSON+"number", false, false, ls.OverrideComposition, nil)
-var IntegerTypeTerm = ls.NewTerm(JSON+"integer", false, false, ls.OverrideComposition, nil)
-var BooleanTypeTerm = ls.NewTerm(JSON+"boolean", false, false, ls.OverrideComposition, nil)
-var ObjectTypeTerm = ls.NewTerm(JSON+"object", false, false, ls.OverrideComposition, nil)
-var ArrayTypeTerm = ls.NewTerm(JSON+"array", false, false, ls.OverrideComposition, nil)
+var StringTypeTerm = ls.NewTerm(JSON, "string", false, false, ls.OverrideComposition, nil)
+var NumberTypeTerm = ls.NewTerm(JSON, "number", false, false, ls.OverrideComposition, nil)
+var IntegerTypeTerm = ls.NewTerm(JSON, "integer", false, false, ls.OverrideComposition, nil)
+var BooleanTypeTerm = ls.NewTerm(JSON, "boolean", false, false, ls.OverrideComposition, nil)
+var ObjectTypeTerm = ls.NewTerm(JSON, "object", false, false, ls.OverrideComposition, nil)
+var ArrayTypeTerm = ls.NewTerm(JSON, "array", false, false, ls.OverrideComposition, nil)

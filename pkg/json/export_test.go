@@ -20,8 +20,8 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/bserdar/digraph"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func TestExport(t *testing.T) {
@@ -37,12 +37,13 @@ func TestExport(t *testing.T) {
 		return
 	}
 
-	graph, err := ls.UnmarshalJSONLDGraph(v, nil)
+	target := graph.NewOCGraph()
+	err = ls.UnmarshalJSONLDGraph(v, target, nil)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	source := digraph.Sources(graph.GetIndex())[0].(ls.Node)
+	source := graph.Sources(target)[0]
 	node, err := Export(source, ExportOptions{})
 	if err != nil {
 		t.Error(err)

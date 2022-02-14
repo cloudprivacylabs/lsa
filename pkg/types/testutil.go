@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 type getSetTestCase struct {
@@ -17,9 +18,10 @@ type getSetTestCase struct {
 }
 
 func (tc getSetTestCase) run(t *testing.T) {
-	srcNode := ls.NewNode("idsrc", tc.srcTypes...)
-	srcNode.SetValue(tc.srcValue)
-	targetNode := ls.NewNode("idtarget", tc.targetTypes...)
+	g := graph.NewOCGraph()
+	srcNode := g.NewNode(tc.srcTypes, nil)
+	ls.SetRawNodeValue(srcNode, tc.srcValue)
+	targetNode := g.NewNode(tc.targetTypes, nil)
 	v, err := ls.GetNodeValue(srcNode)
 	if err != nil {
 		t.Log(tc.name)
@@ -47,9 +49,9 @@ func (tc getSetTestCase) run(t *testing.T) {
 		t.Errorf("Expecting set error, got none in %+v", tc)
 		return
 	}
-	if tc.expectedValue != targetNode.GetValue() {
+	if tc.expectedValue != ls.GetRawNodeValue(targetNode) {
 		t.Log(tc.name)
-		t.Errorf("Expecting %v got %v in %+v", tc.expectedValue, targetNode.GetValue(), tc)
+		t.Errorf("Expecting %v got %v in %+v", tc.expectedValue, ls.GetRawNodeValue(targetNode), tc)
 	}
 }
 

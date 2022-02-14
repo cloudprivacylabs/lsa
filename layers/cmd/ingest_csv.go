@@ -22,11 +22,11 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/bserdar/digraph"
 	"github.com/spf13/cobra"
 
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func init() {
@@ -88,7 +88,7 @@ var ingestCSVCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		target := digraph.New()
+		target := graph.NewOCGraph()
 
 		for row := 0; ; row++ {
 			rowData, err := reader.Read()
@@ -113,11 +113,10 @@ var ingestCSVCmd = &cobra.Command{
 				if err := idTmp.Execute(&buf, templateData); err != nil {
 					failErr(err)
 				}
-				node, err := ingester.Ingest(rowData, strings.TrimSpace(buf.String()))
+				_, err := ingester.Ingest(target, rowData, strings.TrimSpace(buf.String()))
 				if err != nil {
 					failErr(err)
 				}
-				target.AddNode(node)
 			}
 		}
 		outFormat, _ := cmd.Flags().GetString("output")

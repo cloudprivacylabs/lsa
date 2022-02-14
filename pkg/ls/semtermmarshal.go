@@ -18,7 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 // TermMarshaler interface defines JSON and JSONLD unmarshalers for a
@@ -27,8 +27,8 @@ type TermMarshaler interface {
 	// Unmarshal a flattened json-ld object.
 	UnmarshalLd(target *Layer, key string, value interface{}, node *LDNode, allNodes map[string]*LDNode, interner Interner) error
 	// Marshal a property of a node as expanded json-ld
-	MarshalLd(source *Layer, sourceNode Node, key string) (interface{}, error)
-	UnmarshalJSON(target *Layer, key string, value interface{}, node Node, interner Interner) error
+	MarshalLd(source *Layer, sourceNode graph.Node, key string) (interface{}, error)
+	UnmarshalJSON(target *Layer, key string, value interface{}, node graph.Node, interner Interner) error
 }
 
 // GetTermMarshaler returns the custom marshaler for the term. If
@@ -54,20 +54,25 @@ func (defaultTermMarshaler) UnmarshalLd(target *Layer, key string, value interfa
 	}
 	setValue := func(v string) {
 		if key == AttributeIndexTerm {
-			node.GraphNode.GetProperties()[key] = StringPropertyValue(v)
+			node.GraphNode.SetProperty(key, StringPropertyValue(v))
 		} else {
-			value := node.GraphNode.GetProperties()[key]
+			value, _ := node.GraphNode.GetProperty(key)
 			if value == nil {
-				node.GraphNode.GetProperties()[key] = StringPropertyValue(v)
-			} else if value.IsStringSlice() {
-				node.GraphNode.GetProperties()[key] = StringSlicePropertyValue(append(value.AsStringSlice(), v))
+				node.GraphNode.SetProperty(key, StringPropertyValue(v))
 			} else {
-				node.GraphNode.GetProperties()[key] = StringSlicePropertyValue([]string{value.AsString(), v})
+				pvalue, _ := value.(*PropertyValue)
+				if pvalue == nil {
+					node.GraphNode.SetProperty(key, value)
+				} else if pvalue.IsStringSlice() {
+					node.GraphNode.SetProperty(key, StringSlicePropertyValue(append(pvalue.AsStringSlice(), v)))
+				} else {
+					node.GraphNode.SetProperty(key, StringSlicePropertyValue([]string{pvalue.AsString(), v}))
+				}
 			}
 		}
 	}
 	// If list, descend to its elements
-	arr = DescendToListElements(arr)
+	arr = LDDescendToListElements(arr)
 	for _, element := range arr {
 		m, ok := element.(map[string]interface{})
 		if !ok {
@@ -84,7 +89,7 @@ func (defaultTermMarshaler) UnmarshalLd(target *Layer, key string, value interfa
 					if referencedNode == nil {
 						setValue(id)
 					} else {
-						digraph.Connect(node.GraphNode, referencedNode.GraphNode, NewEdge(key))
+						target.NewEdge(node.GraphNode, referencedNode.GraphNode, key, nil)
 					}
 				}
 			}
@@ -94,32 +99,34 @@ func (defaultTermMarshaler) UnmarshalLd(target *Layer, key string, value interfa
 }
 
 // MarshalLd marshals an annotation term of a node as expanded json-ld
-func (defaultTermMarshaler) MarshalLd(source *Layer, sourceNode Node, key string) (interface{}, error) {
+func (defaultTermMarshaler) MarshalLd(source *Layer, sourceNode graph.Node, key string) (interface{}, error) {
 	var k string
 	if GetTermInfo(key).IsID {
 		k = "@id"
 	} else {
 		k = "@value"
 	}
-	v := sourceNode.GetProperties()[key]
-	if v.IsString() {
-		return []interface{}{map[string]interface{}{k: v.AsString()}}, nil
-	} else if v.IsStringSlice() {
-		arr := make([]interface{}, 0)
-		for _, elem := range v.AsStringSlice() {
-			arr = append(arr, map[string]interface{}{k: elem})
+	propv, _ := sourceNode.GetProperty(key)
+	if v, ok := propv.(*PropertyValue); ok {
+		if v.IsString() {
+			return []interface{}{map[string]interface{}{k: v.AsString()}}, nil
+		} else if v.IsStringSlice() {
+			arr := make([]interface{}, 0)
+			for _, elem := range v.AsStringSlice() {
+				arr = append(arr, map[string]interface{}{k: elem})
+			}
+			return arr, nil
 		}
-		return arr, nil
 	}
 	return nil, nil
 }
 
 // UnmarshalJSON for the default marshaler tries to unmarshal terms as property values
-func (defaultTermMarshaler) UnmarshalJSON(target *Layer, key string, value interface{}, node Node, interner Interner) error {
+func (defaultTermMarshaler) UnmarshalJSON(target *Layer, key string, value interface{}, node graph.Node, interner Interner) error {
 	key = interner.Intern(key)
 	switch val := value.(type) {
 	case string, json.Number, float64, bool:
-		node.GetProperties()[key] = StringPropertyValue(fmt.Sprint(val))
+		node.SetProperty(key, StringPropertyValue(fmt.Sprint(val)))
 	case []interface{}:
 		arr := make([]string, 0, len(val))
 		for _, v := range val {
@@ -130,7 +137,7 @@ func (defaultTermMarshaler) UnmarshalJSON(target *Layer, key string, value inter
 				return fmt.Errorf("Invalid value: %s=%v", key, value)
 			}
 		}
-		node.GetProperties()[key] = StringSlicePropertyValue(arr)
+		node.SetProperty(key, StringSlicePropertyValue(arr))
 	default:
 		return fmt.Errorf("Invalid  value: %s=%v", key, value)
 	}

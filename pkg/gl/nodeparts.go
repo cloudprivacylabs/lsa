@@ -2,9 +2,10 @@ package gl
 
 import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
-func oneNode(f func(node ls.Node) (Value, error)) func(NodeValue) (Value, error) {
+func oneNode(f func(node graph.Node) (Value, error)) func(NodeValue) (Value, error) {
 	return func(n NodeValue) (Value, error) {
 		on, err := n.oneNode()
 		if err != nil {
@@ -54,10 +55,10 @@ func nodeFirstReachableDocNodeFunc(node NodeValue) (Value, error) {
 				return nil, err
 			}
 			var closureError error
-			var found ls.Node
+			var found graph.Node
 			for _, nd := range node.Nodes.Slice() {
-				ls.FirstReachable(nd, func(node ls.Node, _ []ls.Node) bool {
-					if !node.GetTypes().Has(ls.DocumentNodeTerm) {
+				ls.FirstReachable(nd, func(node graph.Node, _ []graph.Node) bool {
+					if !node.GetLabels().Has(ls.DocumentNodeTerm) {
 						return true
 					}
 					b, err := AsBool(nodeClosure.Evaluate(ValueOf(node), scope))
@@ -71,7 +72,7 @@ func nodeFirstReachableDocNodeFunc(node NodeValue) (Value, error) {
 					}
 					return false
 				},
-					func(edge ls.Edge, _ []ls.Node) bool {
+					func(edge graph.Edge, _ []graph.Node) bool {
 						if edge.GetLabel() == ls.InstanceOfTerm {
 							return false
 						}
@@ -102,9 +103,9 @@ func firstReachableNodeImpl(scope *Scope, root NodeValue, args []Value) (Value, 
 		}
 	}
 	var closureError error
-	var found ls.Node
+	var found graph.Node
 	for _, nd := range root.Nodes.Slice() {
-		ls.FirstReachable(nd, func(node ls.Node, _ []ls.Node) bool {
+		ls.FirstReachable(nd, func(node graph.Node, _ []graph.Node) bool {
 			b, err := AsBool(nodeClosure.Evaluate(ValueOf(node), scope))
 			if err != nil {
 				closureError = err
@@ -116,7 +117,7 @@ func firstReachableNodeImpl(scope *Scope, root NodeValue, args []Value) (Value, 
 			}
 			return false
 		},
-			func(edge ls.Edge, _ []ls.Node) bool {
+			func(edge graph.Edge, _ []graph.Node) bool {
 				b, err := AsBool(edgeClosure.Evaluate(ValueOf(edge), scope))
 				if err != nil {
 					closureError = err
@@ -150,7 +151,7 @@ func nodeInstanceOfFunc(node NodeValue) (Value, error) {
 			}
 			for n := range node.Nodes.Map() {
 				for _, instanceOfNode := range ls.InstanceOf(n) {
-					if instanceOfNode.GetID() == id {
+					if ls.GetNodeID(instanceOfNode) == id {
 						result.Nodes.Add(n)
 						break
 					}
@@ -168,9 +169,9 @@ func nodeWalk(node NodeValue) (Value, error) {
 		Name:    "walk",
 		Closure: func(scope *Scope, args []Value) (Value, error) {
 			result := NewNodeValue()
-			walk := ls.NewWalk()
-			var edgePredicate func(ls.Edge) bool
-			var nodePredicate func(ls.Node) bool
+			walk := NewWalk()
+			var edgePredicate func(graph.Edge) bool
+			var nodePredicate func(graph.Node) bool
 			var err error
 			for i, arg := range args {
 				arg := arg
@@ -204,7 +205,7 @@ func nodeWalk(node NodeValue) (Value, error) {
 							edgeClosure = Closure{F: boolLiteral(b)}
 						}
 					}
-					edgePredicate = func(e ls.Edge) bool {
+					edgePredicate = func(e graph.Edge) bool {
 						var b bool
 						b, err = AsBool(edgeClosure.Evaluate(ValueOf(e), scope))
 						return b
@@ -236,7 +237,7 @@ func nodeWalk(node NodeValue) (Value, error) {
 							nodeClosure = Closure{F: boolLiteral(b)}
 						}
 					}
-					nodePredicate = func(n ls.Node) bool {
+					nodePredicate = func(n graph.Node) bool {
 						var b bool
 						b, err = AsBool(nodeClosure.Evaluate(ValueOf(n), scope))
 						return b
@@ -247,7 +248,7 @@ func nodeWalk(node NodeValue) (Value, error) {
 				}
 			}
 			if edgePredicate != nil && nodePredicate == nil {
-				walk.Step(edgePredicate, ls.AnyNodePredicate)
+				walk.Step(edgePredicate, AnyNodePredicate)
 			}
 
 			result.Nodes.Add(walk.Walk(node.Nodes.Slice())...)

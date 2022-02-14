@@ -19,6 +19,7 @@ import (
 	"testing"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func TestExpr1(t *testing.T) {
@@ -375,12 +376,13 @@ func TestExpr1(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	graph, err := ls.UnmarshalJSONLDGraph(v, nil)
+	g := graph.NewOCGraph()
+	err = ls.UnmarshalJSONLDGraph(v, g, nil)
 	if err != nil {
 		panic(err)
 	}
 	scope := NewScope()
-	scope.Set("source", graph)
+	scope.Set("source", g)
 	expr, err := Parse("source.first(node->(node.walk('https://lschema.org/data/instanceOf','https://pulseconnect.net/vaccination/test/input#firstName'))).value")
 	if err != nil {
 		t.Error(err)

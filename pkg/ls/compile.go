@@ -17,20 +17,26 @@ package ls
 import (
 	"fmt"
 
-	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 // A CompiledGraph is a graph of compiled schemas
 type CompiledGraph interface {
 	GetCompiledSchema(string) *Layer
-	PutCompiledSchema(string, *Layer)
+	PutCompiledSchema(string, *Layer) *Layer
+	GetLayerNodes(string) []graph.Node
+	GetGraph() graph.Graph
 }
 
 // DefaultCompiledGraph keeps compiled graphs in a map. Zero value of
 // DefaultCompiledGraph is ready to use
 type DefaultCompiledGraph struct {
-	layers map[string]*Layer
+	layers     map[string]*Layer
+	g          graph.Graph
+	layerNodes map[string][]graph.Node
 }
+
+func (d DefaultCompiledGraph) GetGraph() graph.Graph { return d.g }
 
 // GetCompiledSchema returns a compiled schema for the reference if known
 func (d DefaultCompiledGraph) GetCompiledSchema(ref string) *Layer {
@@ -40,12 +46,27 @@ func (d DefaultCompiledGraph) GetCompiledSchema(ref string) *Layer {
 	return d.layers[ref]
 }
 
-// PutCompiledSchema adds the schema
-func (d *DefaultCompiledGraph) PutCompiledSchema(ref string, layer *Layer) {
+// PutCompiledSchema adds the copy of the schema to the common graph
+func (d *DefaultCompiledGraph) PutCompiledSchema(ref string, layer *Layer) *Layer {
 	if d.layers == nil {
 		d.layers = make(map[string]*Layer)
+		d.layerNodes = make(map[string][]graph.Node)
 	}
-	d.layers[ref] = layer
+	if d.g == nil {
+		d.g = graph.NewOCGraph()
+	}
+	newLayer, nodeMap := layer.CloneInto(d.g)
+	d.layers[ref] = newLayer
+	nodes := make([]graph.Node, 0, len(nodeMap))
+	for _, x := range nodeMap {
+		nodes = append(nodes, x)
+	}
+	d.layerNodes[ref] = nodes
+	return newLayer
+}
+
+func (d *DefaultCompiledGraph) GetLayerNodes(ref string) []graph.Node {
+	return d.layerNodes[ref]
 }
 
 type Compiler struct {
@@ -65,8 +86,8 @@ type compilerContext struct {
 	doNotCache *Layer
 }
 
-func (c *compilerContext) blankNodeNamer(node Node) {
-	node.SetID(fmt.Sprintf("_b:%d", c.blankNodeID))
+func (c *compilerContext) blankNodeNamer(node graph.Node) {
+	SetNodeID(node, fmt.Sprintf("_b:%d", c.blankNodeID))
 	c.blankNodeID++
 }
 
@@ -125,7 +146,6 @@ func (compiler *Compiler) compile(ctx *compilerContext, ref string) (*Layer, err
 	if err != nil {
 		return nil, err
 	}
-	schema.ResetIndex()
 	if err := compiler.resolveCompositions(schema.GetSchemaRootNode()); err != nil {
 		return nil, err
 	}
@@ -149,26 +169,24 @@ func (compiler *Compiler) compileRefs(ctx *compilerContext, ref string) (*Layer,
 	if schema == nil {
 		return nil, ErrNotFound(ref)
 	}
-
 	// Here, schema is loaded but not compiled
 	// If this is the top-level, we set the target layer as this schema
-	var compileRoot Node
+	var compileRoot graph.Node
 	schema.RenameBlankNodes(ctx.blankNodeNamer)
-	schema.ResetIndex()
 	compileRoot = schema.GetSchemaRootNode()
 	if compileRoot == nil {
 		return nil, ErrNotFound(ref)
 	}
 	// Record the schema ID in the entity root
-	compileRoot.GetProperties()[EntitySchemaTerm] = StringPropertyValue(schema.GetID())
+	compileRoot.SetProperty(EntitySchemaTerm, StringPropertyValue(schema.GetID()))
 
 	// Resolve all references
 	if schema != ctx.doNotCache {
-		compiler.CGraph.PutCompiledSchema(ref, schema)
+		schema = compiler.CGraph.PutCompiledSchema(ref, schema)
 	}
-	schemaNodes := schema.GetIndex().NodesSlice()
+	schemaNodes := compiler.CGraph.GetLayerNodes(ref)
 	for _, node := range schemaNodes {
-		_, _, err := CompileReferenceLinkSpec(schema, node.(Node))
+		_, _, err := CompileReferenceLinkSpec(schema, node)
 		if err != nil {
 			return nil, err
 		}
@@ -179,12 +197,11 @@ func (compiler *Compiler) compileRefs(ctx *compilerContext, ref string) (*Layer,
 	return schema, nil
 }
 
-func (compiler *Compiler) resolveReferences(ctx *compilerContext, layer *Layer, nodes []digraph.Node) error {
+func (compiler *Compiler) resolveReferences(ctx *compilerContext, layer *Layer, nodes []graph.Node) error {
 	// Collect all reference nodes
-	references := make([]Node, 0)
-	for _, n := range nodes {
-		nd := n.(Node)
-		if nd.GetTypes().Has(AttributeTypes.Reference) {
+	references := make([]graph.Node, 0)
+	for _, nd := range nodes {
+		if nd.GetLabels().Has(AttributeTypeReference) {
 			references = append(references, nd)
 		}
 	}
@@ -197,10 +214,9 @@ func (compiler *Compiler) resolveReferences(ctx *compilerContext, layer *Layer, 
 	return nil
 }
 
-func (compiler *Compiler) resolveReference(ctx *compilerContext, layer *Layer, node Node) error {
-	properties := node.GetProperties()
-	ref := properties[LayerTerms.Reference].AsString()
-	delete(properties, LayerTerms.Reference)
+func (compiler *Compiler) resolveReference(ctx *compilerContext, layer *Layer, node graph.Node) error {
+	ref := AsPropertyValue(node.GetProperty(ReferenceTerm)).AsString()
+	node.RemoveProperty(ReferenceTerm)
 	// already compiled, or being compiled?
 	compiledSchema := compiler.CGraph.GetCompiledSchema(ref)
 	if compiledSchema == nil {
@@ -212,26 +228,28 @@ func (compiler *Compiler) resolveReference(ctx *compilerContext, layer *Layer, n
 	}
 	rootNode := compiledSchema.GetSchemaRootNode()
 	// This is no longer a reference node
-	node.GetTypes().Remove(AttributeTypes.Reference)
-	node.GetTypes().Add(rootNode.GetTypes().Slice()...)
+	types := node.GetLabels()
+	types.Remove(AttributeTypeReference)
+	types.Add(rootNode.GetLabels().Slice()...)
+	node.SetLabels(types)
 	// Compose the properties of the compiled root node with the referenced node
-	if err := ComposeProperties(properties, rootNode.GetProperties()); err != nil {
+	if err := ComposeProperties(node, rootNode); err != nil {
 		return err
 	}
 	// Attach the node to all the children of the compiled node
-	for edges := rootNode.Out(); edges.HasNext(); {
-		edge := edges.Next().(Edge)
-		digraph.Connect(node, edge.GetTo(), edge.Clone())
+	for edges := rootNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		edge := edges.Edge()
+		CloneEdge(node, edge.GetTo(), edge, compiler.CGraph.GetGraph())
 	}
 	return nil
 }
 
-func (compiler Compiler) resolveCompositions(root Node) error {
+func (compiler Compiler) resolveCompositions(root graph.Node) error {
 	// Process all composition nodes
-	completed := map[Node]struct{}{}
+	completed := map[graph.Node]struct{}{}
 	var err error
-	ForEachAttributeNode(root, func(n Node, _ []Node) bool {
-		if n.GetTypes().Has(AttributeTypes.Composite) {
+	ForEachAttributeNode(root, func(n graph.Node, _ []graph.Node) bool {
+		if n.GetLabels().Has(AttributeTypeComposite) {
 			if _, processed := completed[n]; !processed {
 				if x := compiler.resolveComposition(n, completed); x != nil {
 					err = x
@@ -244,46 +262,52 @@ func (compiler Compiler) resolveCompositions(root Node) error {
 	return err
 }
 
-func (compiler Compiler) resolveComposition(compositeNode Node, completed map[Node]struct{}) error {
+func (compiler Compiler) resolveComposition(compositeNode graph.Node, completed map[graph.Node]struct{}) error {
 	completed[compositeNode] = struct{}{}
 	// At the end of this process, composite node will be converted into an object node
-	for edges := compositeNode.OutWith(LayerTerms.AllOf); edges.HasNext(); {
-		allOfEdge := edges.Next().(Edge)
+	for edges := compositeNode.GetEdgesWithLabel(graph.OutgoingEdge, AllOfTerm); edges.Next(); {
+		allOfEdge := edges.Edge()
 	top:
-		component := allOfEdge.GetTo().(Node)
+		component := allOfEdge.GetTo()
 		switch {
-		case component.GetTypes().Has(AttributeTypes.Object):
+		case component.GetLabels().Has(AttributeTypeObject):
 			//  Input:
 			//    compositeNode ---> component --> attributes
 			//  Output:
 			//    compositeNode --> attributes
-			rmv := make([]Edge, 0)
-			for edges := component.Out(); edges.HasNext(); {
-				edge := edges.Next().(Edge)
-				digraph.Connect(compositeNode, edge.GetTo(), edge.Clone())
+			rmv := make([]graph.Edge, 0)
+			for edges := component.GetEdges(graph.OutgoingEdge); edges.Next(); {
+				edge := edges.Edge()
+				CloneEdge(compositeNode, edge.GetTo(), edge, compiler.CGraph.GetGraph())
 				rmv = append(rmv, edge)
 			}
 			for _, e := range rmv {
-				e.Disconnect()
+				e.Remove()
 			}
 			// Copy all properties of the component node to the composite node
-			if err := ComposeProperties(compositeNode.GetProperties(), component.GetProperties()); err != nil {
+			if err := ComposeProperties(compositeNode, component); err != nil {
 				return err
 			}
 			// Copy all types
-			compositeNode.GetTypes().Add(component.GetTypes().Slice()...)
-			// Copy compiled items
-			component.GetCompiledProperties().CopyTo(compositeNode.GetCompiledProperties())
+			types := compositeNode.GetLabels()
+			types.AddSet(component.GetLabels())
+			compositeNode.SetLabels(types)
+			// Copy non-property items
+			component.ForEachProperty(func(key string, value interface{}) bool {
+				if _, ok := value.(*PropertyValue); !ok {
+					compositeNode.SetProperty(key, value)
+				}
+				return true
+			})
 
-		case component.GetTypes().Has(AttributeTypes.Value) ||
-			component.GetTypes().Has(AttributeTypes.Array) ||
-			component.GetTypes().Has(AttributeTypes.Polymorphic):
+		case component.GetLabels().Has(AttributeTypeValue) ||
+			component.GetLabels().Has(AttributeTypeArray) ||
+			component.GetLabels().Has(AttributeTypePolymorphic):
 			// This node becomes an attribute of the main node.
-			newEdge := CloneWithLabel(allOfEdge, LayerTerms.AttributeList)
-			allOfEdge.Disconnect()
-			digraph.Connect(compositeNode, component, newEdge)
+			allOfEdge.Remove()
+			compiler.CGraph.GetGraph().NewEdge(compositeNode, component, ObjectAttributeListTerm, nil)
 
-		case component.GetTypes().Has(AttributeTypes.Composite):
+		case component.GetLabels().Has(AttributeTypeComposite):
 			if err := compiler.resolveComposition(component, completed); err != nil {
 				return err
 			}
@@ -293,45 +317,55 @@ func (compiler Compiler) resolveComposition(compositeNode Node, completed map[No
 		}
 	}
 	// Convert the node to an object
-	compositeNode.GetTypes().Remove(AttributeTypes.Composite)
-	compositeNode.GetTypes().Add(AttributeTypes.Object)
+	types := compositeNode.GetLabels()
+	types.Remove(AttributeTypeComposite)
+	types.Add(AttributeTypeObject)
+	compositeNode.SetLabels(types)
 	return nil
 }
 
 // CompileTerms compiles all node and edge terms of the layer
 func CompileTerms(layer *Layer) error {
 	var err error
-	IterateDescendants(layer.GetSchemaRootNode(), func(node Node, _ []Node) bool {
+	IterateDescendants(layer.GetSchemaRootNode(), func(node graph.Node, _ []graph.Node) bool {
 		// Compile all non-attribute nodes
 		if !IsAttributeNode(node) {
-			if err = GetNodeCompiler(node.GetID()).CompileNode(layer, node); err != nil {
+			if err = GetNodeCompiler(GetNodeID(node)).CompileNode(layer, node); err != nil {
 				return false
 			}
 		}
-		for k, v := range node.GetProperties() {
-			err = GetTermCompiler(k).CompileTerm(node, k, v)
-			if err != nil {
-				return false
-			}
-			for edges := node.Out(); edges.HasNext(); {
-				edge := edges.Next().(Edge)
-				if err = GetEdgeCompiler(edge.GetLabelStr()).CompileEdge(layer, edge); err != nil {
+		node.ForEachProperty(func(k string, val interface{}) bool {
+			if v, ok := val.(*PropertyValue); ok {
+				err = GetTermCompiler(k).CompileTerm(node, k, v)
+				if err != nil {
 					return false
 				}
-				for k, v := range edge.GetProperties() {
+			}
+			return true
+		})
+		if err != nil {
+			return false
+		}
+		for edges := node.GetEdges(graph.OutgoingEdge); edges.Next(); {
+			edge := edges.Edge()
+			if err = GetEdgeCompiler(edge.GetLabel()).CompileEdge(layer, edge); err != nil {
+				return false
+			}
+			edge.ForEachProperty(func(k string, val interface{}) bool {
+				if v, ok := val.(*PropertyValue); ok {
 					err = GetTermCompiler(k).CompileTerm(edge, k, v)
 					if err != nil {
 						return false
 					}
 				}
-			}
+				return true
+			})
+		}
+		if err != nil {
+			return false
 		}
 		return true
-	}, func(edge Edge, _ []Node) EdgeFuncResult {
-		// Do not cross entity boundaries
-		if _, ok := edge.GetTo().(Node).GetProperties()[EntitySchemaTerm]; ok {
-			return SkipEdgeResult
-		}
+	}, func(edge graph.Edge, _ []graph.Node) EdgeFuncResult {
 		return FollowEdgeResult
 	}, false)
 	return err

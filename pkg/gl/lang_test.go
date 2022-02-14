@@ -19,6 +19,7 @@ import (
 	"testing"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func TestExprParse(t *testing.T) {
@@ -61,9 +62,12 @@ func TestExprParse(t *testing.T) {
 	}
 	check(`x:=1`, scope, ValueOf(1))
 
-	node1 := ls.NewNode("id1")
-	node2 := ls.NewNode("id2")
-	ls.Connect(node1, node2, "edgeLabel")
+	g := graph.NewOCGraph()
+	node1 := g.NewNode(nil, nil)
+	ls.SetNodeID(node1, "id1")
+	node2 := g.NewNode(nil, nil)
+	ls.SetNodeID(node2, "id2")
+	g.NewEdge(node1, node2, "edgeLabel", nil)
 	scope.Set("node", ValueOf(node1))
 	check("node.firstReachable(n->n.id=='id2').length", scope, ValueOf(1))
 	check("node.firstReachable(n->n.id=='id2'&&n.id=='id2').length", scope, ValueOf(1))

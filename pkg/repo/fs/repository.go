@@ -156,14 +156,14 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 			if arr, ok := obj.([]interface{}); ok {
 				if len(arr) == 1 {
 					if m, ok := arr[0].(map[string]interface{}); ok {
-						typeNames = ls.GetNodeTypes(m)
+						typeNames = ls.LDGetNodeTypes(m)
 					}
 				}
 			} else if m, ok := obj.(map[string]interface{}); ok {
 				if s, ok := m["@type"].(string); ok {
 					typeNames = []string{s}
 				} else {
-					typeNames = ls.GetNodeTypes(m)
+					typeNames = ls.LDGetNodeTypes(m)
 				}
 			}
 			hasType := func(t string) bool {

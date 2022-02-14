@@ -5,10 +5,11 @@ import (
 	"reflect"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 // EnumTerm is used for enumeration validator
-var EnumTerm = ls.NewTerm(ls.LS+"validation/enumeration", false, false, ls.OverrideComposition, struct {
+var EnumTerm = ls.NewTerm(ls.LS, "validation/enumeration", false, false, ls.OverrideComposition, struct {
 	EnumValidator
 }{
 	EnumValidator{},
@@ -35,15 +36,15 @@ func (validator EnumValidator) ValidateValue(value interface{}, options []interf
 }
 
 // Validate validates the node value if it is non-nil
-func (validator EnumValidator) Validate(docNode, schemaNode ls.Node) error {
+func (validator EnumValidator) Validate(docNode, schemaNode graph.Node) error {
 	if docNode == nil {
 		return nil
 	}
-	value := docNode.GetValue()
+	value := ls.GetRawNodeValue(docNode)
 	if value == nil {
 		return nil
 	}
-	options := schemaNode.GetProperties()[EnumTerm]
+	options := ls.AsPropertyValue(schemaNode.GetProperty(EnumTerm))
 	if options == nil {
 		return ls.ErrInvalidValidator{Validator: EnumTerm, Msg: "Invalid enum options"}
 	}

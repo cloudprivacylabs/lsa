@@ -53,22 +53,26 @@ var compileCmd = &cobra.Command{
 		}
 		if repo != nil {
 			var err error
+			logf("Loading composed schema for %s", schemaName)
 			layer, err = repo.GetComposedSchema(schemaName)
 			if err != nil {
 				failErr(err)
 			}
 			compiler := ls.Compiler{
 				Loader: func(x string) (*ls.Layer, error) {
+					logf("Loading %s", x)
 					if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
 						x = manifest.ID
 					}
 					return repo.LoadAndCompose(x)
 				},
 			}
+			logf("Compiling schema %s", schemaName)
 			layer, err = compiler.Compile(schemaName)
 			if err != nil {
 				failErr(err)
 			}
+			logf("Compilation complete")
 		} else {
 			var v interface{}
 			err := cmdutil.ReadJSON(schemaName, &v)

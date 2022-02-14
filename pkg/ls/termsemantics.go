@@ -18,33 +18,72 @@ package ls
 // layered schemas framework.
 type TermSemantics struct {
 	// The term
-	Term string `json:"term" yaml:"term"`
+	Term string
+
+	Namespace string
+	LName     string
 
 	// If true, the term value is an @id (IRI). In JSON-LD, the values for
 	// this term will be marshalled as @id
-	IsID bool `json:"isId" yaml:"isId"`
+	IsID bool
 
 	// If true, the term is a list. In JSON-LD, its elements will be
 	// marshaled under @list
-	IsList bool `json:"isList" yaml:"isList"`
+	IsList bool
 
-	Composition CompositionType `json:"composition,omitempty" yaml:"composition,omitempty"`
+	Composition CompositionType
 
-	Metadata interface{} `json:"metadata,omitempty" yaml:"metadata,omitempty"`
+	Metadata interface{}
 }
 
 // NewTerm registers a term with given semantics, and returns the term.
-func NewTerm(term string, isID, isList bool, comp CompositionType, md interface{}) string {
-	t := TermSemantics{Term: term,
+func NewTerm(ns, lname string, isID, isList bool, comp CompositionType, md interface{}) string {
+	t := TermSemantics{Term: ns + lname,
+		Namespace:   ns,
+		LName:       lname,
 		IsID:        isID,
 		IsList:      isList,
 		Composition: comp,
 		Metadata:    md,
 	}
 	RegisterTerm(t)
-	return term
+	return t.Term
 }
 
 func (t TermSemantics) Compose(target, src *PropertyValue) (*PropertyValue, error) {
 	return t.Composition.Compose(target, src)
+}
+
+var registeredTerms = map[string]TermSemantics{}
+
+// If a term is know, using this function avoids duplicate string
+// copies
+func knownTerm(s string) string {
+	x, ok := registeredTerms[s]
+	if ok {
+		return x.Term
+	}
+	return s
+}
+
+func RegisterTerm(t TermSemantics) {
+	_, ok := registeredTerms[t.Term]
+	if ok {
+		panic("Duplicate term :" + t.Term)
+	}
+	registeredTerms[t.Term] = t
+}
+
+func GetTermInfo(term string) TermSemantics {
+	t, ok := registeredTerms[term]
+	if !ok {
+		return TermSemantics{Term: term, Composition: SetComposition}
+	}
+	return t
+}
+
+// GetTermMetadata returns metadata about a term
+func GetTermMetadata(term string) interface{} {
+	t := GetTermInfo(term)
+	return t.Metadata
 }

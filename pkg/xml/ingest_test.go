@@ -21,9 +21,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/bserdar/digraph"
-
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
@@ -58,7 +57,8 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 	ingester := &Ingester{}
 	ingester.Schema = schema
 	ingester.EmbedSchemaNodes = true
-	root, err := IngestStream(ingester, "a", f)
+	got := graph.NewOCGraph()
+	_, err = IngestStream(ingester, got, "a", f)
 	if err != nil {
 		return fmt.Errorf("%s: %w", xmlname, err)
 	}
@@ -67,33 +67,25 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 	if err != nil {
 		return fmt.Errorf("%s: %w", graphname, err)
 	}
-	expected := digraph.New()
-	if err := ls.UnmarshalGraphJSON(d, expected, nil); err != nil {
+	expected := graph.NewOCGraph()
+	m := ls.JSONMarshaler{}
+	if err := m.Unmarshal(d, expected); err != nil {
 		return fmt.Errorf("%s: %s", graphname, err)
 	}
-
-	got := digraph.New()
-	got.AddNode(root)
-	if !digraph.CheckIsomorphism(got.GetIndex(), expected.GetIndex(), func(n1, n2 digraph.Node) bool {
-		if n1.(ls.Node).GetValue() != n2.(ls.Node).GetValue() {
-			fmt.Printf("Different values: '%v' '%v'\n", n1.(ls.Node).GetValue(), n2.(ls.Node).GetValue())
+	if !graph.CheckIsomorphism(got, expected, func(n1, n2 graph.Node) bool {
+		if ls.GetRawNodeValue(n1) != ls.GetRawNodeValue(n2) {
 			return false
 		}
-		if !n1.(ls.Node).GetTypes().IsEqual(*n2.(ls.Node).GetTypes()) {
-			fmt.Printf("Different types: '%v' '%v'\n", n1.(ls.Node).GetTypes(), n2.(ls.Node).GetTypes())
-			return false
-		}
-		if !ls.IsPropertiesEqual(n1.(ls.Node).GetProperties(), n2.(ls.Node).GetProperties()) {
-			fmt.Printf("Different properties: '%v' '%v'\n", n1.(ls.Node).GetProperties(), n2.(ls.Node).GetProperties())
+		if !ls.IsPropertiesEqual(ls.PropertiesAsMap(n1), ls.PropertiesAsMap(n2)) {
 			return false
 		}
 		return true
-	}, func(e1, e2 digraph.Edge) bool {
-		return ls.IsPropertiesEqual(e1.(ls.Edge).GetProperties(), e2.(ls.Edge).GetProperties())
+	}, func(e1, e2 graph.Edge) bool {
+		return ls.IsPropertiesEqual(ls.PropertiesAsMap(e1), ls.PropertiesAsMap(e2))
 	}) {
-		d, _ := ls.MarshalGraphJSON(got)
+		d, _ := m.Marshal(got)
 		fmt.Println("got:" + string(d))
-		d, _ = ls.MarshalGraphJSON(expected)
+		d, _ = m.Marshal(expected)
 		fmt.Println("expected:" + string(d))
 		return fmt.Errorf("%s: Not isomorphic", xmlname)
 	}

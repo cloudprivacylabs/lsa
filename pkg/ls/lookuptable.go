@@ -17,7 +17,7 @@ package ls
 import (
 	"fmt"
 
-	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 type ErrInvalidLookupTable struct {
@@ -50,28 +50,28 @@ type LookupTable struct {
 	Elements []LookupTableElement `json:"elements"`
 }
 
-var LookupTableTerm = NewTerm(LS+"lookupTable", false, false, OverrideComposition, struct {
+var LookupTableTerm = NewTerm(LS, "lookupTable", false, false, OverrideComposition, struct {
 	lookupTableMarshaler
 }{
 	lookupTableMarshaler{},
 })
 
-var LookupTableElementsTerm = NewTerm(LS+"lookupTable/elements", false, true, NoComposition, nil)
+var LookupTableElementsTerm = NewTerm(LS, "lookupTable/elements", false, true, NoComposition, nil)
 
 // LookupTableReferenceTerm is used as a node type for nodes whose
 // lookup table references are not resolved. These nodes should be
 // resolved to real lookup tables during compilation
-var LookupTableReferenceTerm = NewTerm(LS+"lookupTable/ref", true, false, NoComposition, nil)
+var LookupTableReferenceTerm = NewTerm(LS, "lookupTable/ref", true, false, NoComposition, nil)
 
-var LookupTableElementOptionsTerm = NewTerm(LS+"lookupTable/element/options", false, false, NoComposition, nil)
-var LookupTableElementCaseSensitiveTerm = NewTerm(LS+"lookupTable/element/caseSensitive", false, false, NoComposition, nil)
-var LookupTableElementValueTerm = NewTerm(LS+"lookupTable/element/value", false, false, NoComposition, nil)
-var LookupTableElementErrorTerm = NewTerm(LS+"lookupTable/element/error", false, false, NoComposition, nil)
+var LookupTableElementOptionsTerm = NewTerm(LS, "lookupTable/element/options", false, false, NoComposition, nil)
+var LookupTableElementCaseSensitiveTerm = NewTerm(LS, "lookupTable/element/caseSensitive", false, false, NoComposition, nil)
+var LookupTableElementValueTerm = NewTerm(LS, "lookupTable/element/value", false, false, NoComposition, nil)
+var LookupTableElementErrorTerm = NewTerm(LS, "lookupTable/element/error", false, false, NoComposition, nil)
 
 type lookupTableMarshaler struct{}
 
 func (lookupTableMarshaler) UnmarshalLd(target *Layer, key string, value interface{}, node *LDNode, allNodes map[string]*LDNode, interner Interner) error {
-	return lookupTableMarshaler.unmarshalLookupTable(lookupTableMarshaler{}, key, value, node, allNodes)
+	return lookupTableMarshaler.unmarshalLookupTable(lookupTableMarshaler{}, target, key, value, node, allNodes)
 }
 
 // unmarshalLookupTable flattened jsonld lookup table
@@ -103,19 +103,20 @@ func (lookupTableMarshaler) UnmarshalLd(target *Layer, key string, value interfa
 //   ],
 //   "https://lschema.org/lookupTable/element/value": "a"
 // },
-func (lookupTableMarshaler) unmarshalLookupTable(key string, value interface{}, node *LDNode, allNodes map[string]*LDNode) error {
+func (lookupTableMarshaler) unmarshalLookupTable(target *Layer, key string, value interface{}, node *LDNode, allNodes map[string]*LDNode) error {
 	// key-value is:
 	//   "https://lschema.org/lookupTable": [{
 	//     "@id": "_:b1"
 	//   }]
-	id := GetNodeID(value)
+	id := LDGetNodeID(value)
 	if len(id) == 0 {
 		return ErrInvalidLookupTable{ID: node.ID, Msg: "Expecting to see @id under `lookupTable` term value"}
 	}
 	lookupContents := allNodes[id]
 	if lookupContents == nil {
 		// This is an external lookup table. Create a reference node for it
-		referenceNode := NewNode(id, LookupTableReferenceTerm)
+		referenceNode := target.NewNode([]string{LookupTableReferenceTerm}, nil)
+		SetNodeID(referenceNode, id)
 		// Put that into allNodes
 		newNode := &LDNode{
 			ID:        id,
@@ -124,15 +125,15 @@ func (lookupTableMarshaler) unmarshalLookupTable(key string, value interface{}, 
 		}
 		allNodes[id] = newNode
 		// Connect the attribute node to the reference node
-		digraph.Connect(node.GraphNode, referenceNode, NewEdge(LookupTableTerm))
+		target.NewEdge(node.GraphNode, referenceNode, LookupTableTerm, nil)
 		return nil
 	}
 
 	// The lookup table contents (or reference) is in this schema If we
 	// are referring to an already processed lookup table, simply
 	// connect this node to the table
-	if lookupContents.GraphNode != nil && lookupContents.GraphNode.GetTypes().Has(LookupTableTerm) {
-		digraph.Connect(node.GraphNode, lookupContents.GraphNode, NewEdge(LookupTableTerm))
+	if lookupContents.GraphNode != nil && lookupContents.GraphNode.GetLabels().Has(LookupTableTerm) {
+		target.NewEdge(node.GraphNode, lookupContents.GraphNode, LookupTableTerm, nil)
 		return nil
 	}
 
@@ -141,21 +142,25 @@ func (lookupTableMarshaler) unmarshalLookupTable(key string, value interface{}, 
 	// Create the root node
 	lookupTableNode := lookupContents.GraphNode
 	if lookupTableNode == nil {
-		lookupTableNode := NewNode(id)
+		lookupTableNode := target.NewNode(nil, nil)
+		SetNodeID(lookupTableNode, id)
 		lookupContents.GraphNode = lookupTableNode
 	}
-	lookupTableNode.GetTypes().Add(LookupTableTerm)
-	digraph.Connect(node.GraphNode, lookupTableNode, NewEdge(LookupTableTerm))
+	types := lookupTableNode.GetLabels()
+	types.Add(LookupTableTerm)
+	lookupTableNode.SetLabels(types)
+	target.NewEdge(node.GraphNode, lookupTableNode, LookupTableTerm, nil)
 
 	// Create options
-	for index, element := range GetLDListElements(lookupContents.Node[LookupTableElementsTerm]) {
-		elementNodeID := GetNodeID(element)
+	for index, element := range LDGetListElements(lookupContents.Node[LookupTableElementsTerm]) {
+		elementNodeID := LDGetNodeID(element)
 		elementLDNode := allNodes[elementNodeID]
 		if elementLDNode == nil {
 			return ErrInvalidLookupTable{ID: node.ID, Msg: fmt.Sprintf("Cannot find element node with '%s'", elementNodeID)}
 		}
-		elementNode := NewNode(elementNodeID, LookupTableElementsTerm)
-		elementNode.SetIndex(index)
+		elementNode := target.NewNode([]string{LookupTableElementsTerm}, nil)
+		SetNodeID(elementNode, elementNodeID)
+		SetNodeIndex(elementNode, index)
 		for k, v := range elementLDNode.Node {
 			if k[0] == '@' {
 				continue
@@ -171,14 +176,14 @@ func (lookupTableMarshaler) unmarshalLookupTable(key string, value interface{}, 
 			case LookupTableElementOptionsTerm:
 				val := make([]string, 0, len(arr))
 				for _, x := range arr {
-					val = append(val, GetStringValue("@value", x))
+					val = append(val, LDGetStringValue("@value", x))
 				}
-				elementNode.GetProperties()[k] = StringSlicePropertyValue(val)
+				elementNode.SetProperty(k, StringSlicePropertyValue(val))
 			default:
-				elementNode.GetProperties()[k] = StringPropertyValue(GetStringValue("@value", arr[0]))
+				elementNode.SetProperty(k, StringPropertyValue(LDGetStringValue("@value", arr[0])))
 			}
 		}
-		digraph.Connect(lookupTableNode, elementNode, NewEdge(LookupTableElementsTerm))
+		target.NewEdge(lookupTableNode, elementNode, LookupTableElementsTerm, nil)
 	}
 	return nil
 }
@@ -274,7 +279,7 @@ func unmarshalLookupTable(in interface{}) (LookupTable, error) {
 	return ret, nil
 }
 
-func (lookupTableMarshaler) UnmarshalJSON(target *Layer, key string, value interface{}, node Node, interner Interner) error {
+func (lookupTableMarshaler) UnmarshalJSON(target *Layer, key string, value interface{}, node graph.Node, interner Interner) error {
 	table, err := unmarshalLookupTable(value)
 	if err != nil {
 		return err
@@ -283,34 +288,36 @@ func (lookupTableMarshaler) UnmarshalJSON(target *Layer, key string, value inter
 		if len(table.ID) > 0 || len(table.Elements) > 0 {
 			return ErrInvalidLookupTable{ID: table.ID, Msg: "ref specified along with other attributes"}
 		}
-		referenceNode := NewNode(table.ID, LookupTableReferenceTerm)
+		referenceNode := target.NewNode([]string{LookupTableReferenceTerm}, nil)
+		SetNodeID(referenceNode, table.ID)
 		// Connect the attribute node to the reference node
-		digraph.Connect(node, referenceNode, NewEdge(LookupTableTerm))
+		target.NewEdge(node, referenceNode, LookupTableTerm, nil)
 		return nil
 	}
 	// Non-reference table
-	rootNode := NewNode(table.ID, LookupTableTerm)
-	digraph.Connect(node, rootNode, NewEdge(LookupTableTerm))
+	rootNode := target.NewNode([]string{LookupTableTerm}, nil)
+	SetNodeID(rootNode, table.ID)
+	target.NewEdge(node, rootNode, LookupTableTerm, nil)
 	for index, element := range table.Elements {
-		elementNode := NewNode("", LookupTableElementsTerm)
-		elementNode.SetIndex(index)
+		elementNode := target.NewNode([]string{LookupTableElementsTerm}, nil)
+		SetNodeIndex(elementNode, index)
 		if len(element.Options) > 0 {
-			elementNode.GetProperties()[LookupTableElementOptionsTerm] = StringSlicePropertyValue(element.Options)
+			elementNode.SetProperty(LookupTableElementOptionsTerm, StringSlicePropertyValue(element.Options))
 		}
 		if element.CaseSensitive {
-			elementNode.GetProperties()[LookupTableElementCaseSensitiveTerm] = StringPropertyValue("true")
+			elementNode.SetProperty(LookupTableElementCaseSensitiveTerm, StringPropertyValue("true"))
 		}
 		if len(element.Value) > 0 {
-			elementNode.GetProperties()[LookupTableElementValueTerm] = StringPropertyValue(element.Value)
+			elementNode.SetProperty(LookupTableElementValueTerm, StringPropertyValue(element.Value))
 		}
 		if len(element.Error) > 0 {
-			elementNode.GetProperties()[LookupTableElementErrorTerm] = StringPropertyValue(element.Error)
+			elementNode.SetProperty(LookupTableElementErrorTerm, StringPropertyValue(element.Error))
 		}
-		digraph.Connect(rootNode, elementNode, NewEdge(LookupTableElementsTerm))
+		target.NewEdge(rootNode, elementNode, LookupTableElementsTerm, nil)
 	}
 	return nil
 }
 
-func (lookupTableMarshaler) MarshalLd(source *Layer, sourceNode Node, key string) (interface{}, error) {
+func (lookupTableMarshaler) MarshalLd(source *Layer, sourceNode graph.Node, key string) (interface{}, error) {
 	return nil, nil
 }

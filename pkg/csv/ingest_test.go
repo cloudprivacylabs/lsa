@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/bserdar/digraph"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 	"github.com/stretchr/testify/require"
 )
 
@@ -93,40 +93,48 @@ func TestIngest(t *testing.T) {
 	// Test with OnlySchemaAttributes flag set to false (ingest all nodes)
 	ingester.PreserveNodePaths = true
 	ingester.OnlySchemaAttributes = false
-	target := digraph.New()
+	target := graph.NewOCGraph()
 	for idx, tt := range inputStrColData {
-		node, err := ingester.Ingest(tt, "https://www.example.com/id")
+		_, err := ingester.Ingest(target, tt, "https://www.example.com/id")
 		nodesRow := make([][]string, 0, len(inputStrColData))
 		require.NoError(t, err)
-		target.AddNode(node)
-		ix := target.GetIndex()
 		const nodeID = "https://www.example.com/id"
 		for i := 0; i < len(tt); i++ {
-			nodes := ix.NodesByLabelSlice(nodeID + "." + strconv.Itoa(idx))
+			nodes := make([]graph.Node, 0)
+			for nx := target.GetNodes(); nx.Next(); {
+				node := nx.Node()
+				if ls.GetNodeID(node) == (nodeID + "." + strconv.Itoa(idx)) {
+					nodes = append(nodes, node)
+				}
+			}
 			if len(nodes) == 0 {
 				t.Errorf("node not found: %s", nodeID)
 			}
-			nodesRow = append(nodesRow, expectedNodes_OSA_FlagFalse[nodes[idx].(ls.Node).GetIndex()])
+			nodesRow = append(nodesRow, expectedNodes_OSA_FlagFalse[ls.GetNodeIndex(nodes[idx])])
 		}
 		require.Equalf(t, expectedNodes_OSA_FlagFalse[idx], nodesRow[idx], "inequal data, expected: %s, received: %s", expectedNodes_OSA_FlagFalse[idx], nodesRow[idx])
 	}
 
 	// Test with OnlySchemaAttributes flag set
 	ingester.OnlySchemaAttributes = true
-	target = digraph.New()
+	target = graph.NewOCGraph()
 	for idx, tt := range inputStrColData {
-		node, err := ingester.Ingest(tt, "https://www.example.com/id")
+		_, err := ingester.Ingest(target, tt, "https://www.example.com/id")
 		nodesRow := make([][]string, 0, len(inputStrColData))
 		require.NoError(t, err)
-		target.AddNode(node)
-		ix := target.GetIndex()
 		const nodeID = "https://www.example.com/id"
 		for i := 0; i < len(tt); i++ {
-			nodes := ix.NodesByLabelSlice(nodeID + "." + strconv.Itoa(idx))
+			nodes := make([]graph.Node, 0)
+			for nx := target.GetNodes(); nx.Next(); {
+				node := nx.Node()
+				if ls.GetNodeID(node) == (nodeID + "." + strconv.Itoa(idx)) {
+					nodes = append(nodes, node)
+				}
+			}
 			if len(nodes) == 0 {
 				t.Errorf("node not found: %s", nodeID)
 			}
-			nodesRow = append(nodesRow, expectedNodes_OSA_FlagTrue[nodes[idx].(ls.Node).GetIndex()])
+			nodesRow = append(nodesRow, expectedNodes_OSA_FlagTrue[ls.GetNodeIndex(nodes[idx])])
 		}
 		require.Equalf(t, expectedNodes_OSA_FlagTrue[idx], nodesRow[idx], "inequal data, expected: %s, received: %s", expectedNodes_OSA_FlagTrue[idx], nodesRow[idx])
 	}

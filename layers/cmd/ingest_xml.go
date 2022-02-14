@@ -18,11 +18,11 @@ import (
 	"io"
 	"os"
 
-	"github.com/bserdar/digraph"
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 	xmlingest "github.com/cloudprivacylabs/lsa/pkg/xml"
 )
 
@@ -73,12 +73,11 @@ var ingestXMLCmd = &cobra.Command{
 		}
 
 		baseID, _ := cmd.Flags().GetString("id")
-		root, err := xmlingest.IngestStream(&ingester, baseID, input)
+		target := graph.NewOCGraph()
+		_, err = xmlingest.IngestStream(&ingester, target, baseID, input)
 		if err != nil {
 			failErr(err)
 		}
-		target := digraph.New()
-		target.AddNode(root)
 		outFormat, _ := cmd.Flags().GetString("output")
 		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
 		err = OutputIngestedGraph(outFormat, target, os.Stdout, includeSchema)

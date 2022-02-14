@@ -17,12 +17,11 @@ package cmd
 import (
 	"os"
 
-	"github.com/bserdar/digraph"
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func init() {
@@ -36,14 +35,13 @@ var exportJSONCmd = &cobra.Command{
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		input, _ := cmd.Flags().GetString("input")
-		graph, err := cmdutil.ReadGraph(args, nil, input)
+		g, err := cmdutil.ReadGraph(args, nil, input)
 		if err != nil {
 			failErr(err)
 		}
-		ix := graph.GetIndex()
-		for _, node := range digraph.Sources(ix) {
+		for _, node := range graph.Sources(g) {
 			exportOptions := jsoningest.ExportOptions{}
-			data, err := jsoningest.Export(node.(ls.Node), exportOptions)
+			data, err := jsoningest.Export(node, exportOptions)
 			if err != nil {
 				failErr(err)
 			}

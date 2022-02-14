@@ -12,7 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ls
+package gl
+
+import (
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+)
 
 // A Walk specifies an edge-node-edge-node... predicate sequence. The
 // predicates alter, it starts with an edge predicate, and then
@@ -24,14 +29,14 @@ type Walk struct {
 }
 
 // AnyEdgePredicate accepts all edges
-var AnyEdgePredicate = func(Edge) bool { return true }
+var AnyEdgePredicate = func(graph.Edge) bool { return true }
 
 // AnyNodePredicate accepts all nodes
-var AnyNodePredicate = func(Node) bool { return true }
+var AnyNodePredicate = func(graph.Node) bool { return true }
 
 type stepPredicate struct {
-	nodePredicate func(Node) bool
-	edgePredicate func(Edge) bool
+	nodePredicate func(graph.Node) bool
+	edgePredicate func(graph.Edge) bool
 }
 
 // NewWalk creates a new walk
@@ -40,7 +45,7 @@ func NewWalk() *Walk {
 }
 
 // Step adds a new edge and node to the walk
-func (w *Walk) Step(edge func(Edge) bool, node func(Node) bool) *Walk {
+func (w *Walk) Step(edge func(graph.Edge) bool, node func(graph.Node) bool) *Walk {
 	w.steps = append(w.steps, stepPredicate{edgePredicate: edge, nodePredicate: node})
 	return w
 }
@@ -53,17 +58,17 @@ type walkState struct {
 func (w *walkState) next(set NodeSet) NodeSet {
 	// Follow sorted edges
 	ret := NewNodeSet()
-	edges := make([]Edge, 0)
+	edges := make([]graph.Edge, 0)
 	for _, node := range set.Slice() {
-		for outgoing := node.Out(); outgoing.HasNext(); {
-			edge := outgoing.Next().(Edge)
+		for outgoing := node.GetEdges(graph.OutgoingEdge); outgoing.Next(); {
+			edge := outgoing.Edge()
 			if w.walk.steps[w.at].edgePredicate(edge) {
 				edges = append(edges, edge)
 			}
 		}
-		SortEdges(edges)
+		ls.SortEdges(edges)
 		for _, e := range edges {
-			node := e.GetTo().(Node)
+			node := e.GetTo()
 			if !ret.Has(node) && w.walk.steps[w.at].nodePredicate(node) {
 				ret.Add(node)
 			}
@@ -74,7 +79,7 @@ func (w *walkState) next(set NodeSet) NodeSet {
 }
 
 // Walk the walk starting at the given nodes, and return all the nodes arrived
-func (w *Walk) Walk(start []Node) []Node {
+func (w *Walk) Walk(start []graph.Node) []graph.Node {
 	set := NewNodeSet(start...)
 	state := walkState{walk: w, at: 0}
 	for state.at = range w.steps {

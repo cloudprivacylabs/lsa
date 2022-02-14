@@ -20,6 +20,7 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/pkg/gl"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 type Reshaper struct {
@@ -29,16 +30,16 @@ type Reshaper struct {
 	AddInstanceOfEdges bool
 
 	// GenerateID will generate a node ID given schema path and target document path up to the new node
-	GenerateID func(schemaPath, docPath []ls.Node) string
+	GenerateID func(schemaPath, docPath []graph.Node) string
 }
 
 // GenerateID gets the schema path for the new field, and the path to
 // the parent container of the generated node
-func (respaher *Reshaper) generateID(schemaPath, docPath []ls.Node) string {
+func (respaher *Reshaper) generateID(schemaPath, docPath []graph.Node) string {
 	if respaher.GenerateID != nil {
 		return respaher.GenerateID(schemaPath, docPath)
 	}
-	return schemaPath[len(schemaPath)-1].GetID() + "d"
+	return ls.GetNodeID(schemaPath[len(schemaPath)-1])
 }
 
 // ErrInvalidSchemaNodeType is returned if the schema node type cannot
@@ -60,15 +61,17 @@ type ReshapeContext struct {
 	// The expression language interpreter context
 	glContext *gl.Scope
 	// All schema nodes from the root to the current node
-	schemaPath []ls.Node
+	schemaPath []graph.Node
 	// Generated document paths from the root to the parent of the current node
-	docPath []ls.Node
+	docPath []graph.Node
 
 	// The root node to be used to reshape
-	sourceNode ls.Node
+	sourceNode graph.Node
+
+	targetGraph graph.Graph
 }
 
-func (p *ReshapeContext) CurrentSchemaNode() ls.Node {
+func (p *ReshapeContext) CurrentSchemaNode() graph.Node {
 	return p.schemaPath[len(p.schemaPath)-1]
 }
 
@@ -81,18 +84,19 @@ func (p *ReshapeContext) nestedContext() *ReshapeContext {
 // Reshape the graph rooted at the rootNode to the targetSchema, using
 // the getReshapeProperties function that will return reshaping
 // properties for given schema nodes
-func (respaher *Reshaper) Reshape(rootNode ls.Node) (ls.Node, error) {
+func (respaher *Reshaper) Reshape(rootNode graph.Node, targetGraph graph.Graph) (graph.Node, error) {
 	ctx := ReshapeContext{
-		glContext:  gl.NewScope(),
-		schemaPath: []ls.Node{respaher.TargetSchema.GetSchemaRootNode()},
-		docPath:    []ls.Node{},
-		sourceNode: rootNode,
+		glContext:   gl.NewScope(),
+		schemaPath:  []graph.Node{respaher.TargetSchema.GetSchemaRootNode()},
+		docPath:     []graph.Node{},
+		sourceNode:  rootNode,
+		targetGraph: targetGraph,
 	}
 	ctx.glContext.Set("source", rootNode)
 	return respaher.reshape(&ctx)
 }
 
-func (reshaper *Reshaper) reshape(context *ReshapeContext) (ls.Node, error) {
+func (reshaper *Reshaper) reshape(context *ReshapeContext) (graph.Node, error) {
 	context = context.nestedContext()
 	schemaNode := context.CurrentSchemaNode()
 	// Check conditionals first
@@ -108,27 +112,27 @@ func (reshaper *Reshaper) reshape(context *ReshapeContext) (ls.Node, error) {
 		return nil, err
 	}
 	switch {
-	case schemaNode.GetTypes().Has(ls.AttributeTypes.Value):
+	case schemaNode.GetLabels().Has(ls.AttributeTypeValue):
 		return reshaper.value(context)
-	case schemaNode.GetTypes().Has(ls.AttributeTypes.Object):
+	case schemaNode.GetLabels().Has(ls.AttributeTypeObject):
 		return reshaper.object(context)
-	case schemaNode.GetTypes().Has(ls.AttributeTypes.Array):
-	case schemaNode.GetTypes().Has(ls.AttributeTypes.Polymorphic):
+	case schemaNode.GetLabels().Has(ls.AttributeTypeArray):
+	case schemaNode.GetLabels().Has(ls.AttributeTypePolymorphic):
 	}
-	return nil, ErrInvalidSchemaNodeType(schemaNode.GetTypes().Slice())
+	return nil, ErrInvalidSchemaNodeType(schemaNode.GetLabels().Slice())
 }
 
-func (reshaper *Reshaper) object(context *ReshapeContext) (ls.Node, error) {
+func (reshaper *Reshaper) object(context *ReshapeContext) (graph.Node, error) {
 	schemaNode := context.CurrentSchemaNode()
-	properties := schemaNode.GetProperties()
-	attributes := ls.SortEdgesItr(schemaNode.OutWith(ls.LayerTerms.Attributes)).Targets().All()
-	attributes = append(attributes, ls.SortEdgesItr(schemaNode.OutWith(ls.LayerTerms.AttributeList)).Targets().All()...)
+	attributes := graph.TargetNodes(ls.SortEdgesItr(schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.ObjectAttributesTerm)))
+	attributes = append(attributes, graph.TargetNodes(ls.SortEdgesItr(schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.ObjectAttributeListTerm)))...)
 
 	// Create a target node for this object node. If the object turns
 	// out to be empty, this target node may be thrown away
-	targetNode := ls.NewNode(reshaper.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm, ls.AttributeTypes.Object)
+	targetNode := context.targetGraph.NewNode([]string{ls.DocumentNodeTerm, ls.AttributeTypeObject}, nil)
+	ls.SetNodeID(targetNode, reshaper.generateID(context.schemaPath, context.docPath))
 	if reshaper.AddInstanceOfEdges {
-		ls.Connect(targetNode, schemaNode, ls.InstanceOfTerm)
+		context.targetGraph.NewEdge(targetNode, schemaNode, ls.InstanceOfTerm, nil)
 	}
 	context.docPath = append(context.docPath, targetNode)
 
@@ -155,7 +159,7 @@ func (reshaper *Reshaper) object(context *ReshapeContext) (ls.Node, error) {
 
 	empty := true
 	for _, a := range attributes {
-		schemaAttribute := a.(ls.Node)
+		schemaAttribute := a.(graph.Node)
 		context.schemaPath = append(context.schemaPath, schemaAttribute)
 		newNode, err := reshaper.reshape(context)
 		context.schemaPath = context.schemaPath[:len(context.schemaPath)-1]
@@ -163,12 +167,12 @@ func (reshaper *Reshaper) object(context *ReshapeContext) (ls.Node, error) {
 			return nil, err
 		}
 		if newNode != nil {
-			ls.Connect(targetNode, newNode, ls.HasTerm)
+			context.targetGraph.NewEdge(targetNode, newNode, ls.HasTerm, nil)
 			empty = false
 		}
 	}
 	if empty {
-		ifEmpty := properties[ReshapeTerms.IfEmpty]
+		ifEmpty := ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.IfEmpty))
 		if ifEmpty != nil && ifEmpty.IsString() && ifEmpty.AsString() == "true" {
 			return targetNode, nil
 		}
@@ -177,14 +181,14 @@ func (reshaper *Reshaper) object(context *ReshapeContext) (ls.Node, error) {
 	return targetNode, nil
 }
 
-func (reshaper *Reshaper) value(context *ReshapeContext) (ls.Node, error) {
+func (reshaper *Reshaper) value(context *ReshapeContext) (graph.Node, error) {
 	schemaNode := context.CurrentSchemaNode()
-	properties := schemaNode.GetProperties()
 	// Create a target node for this object node. If the object turns
 	// out to be empty, this target node may be thrown away
-	targetNode := ls.NewNode(reshaper.generateID(context.schemaPath, context.docPath), ls.DocumentNodeTerm, ls.AttributeTypes.Value)
+	targetNode := context.targetGraph.NewNode([]string{ls.DocumentNodeTerm, ls.AttributeTypeValue}, nil)
+	ls.SetNodeID(targetNode, reshaper.generateID(context.schemaPath, context.docPath))
 	if reshaper.AddInstanceOfEdges {
-		ls.Connect(targetNode, schemaNode, ls.InstanceOfTerm)
+		context.targetGraph.NewEdge(targetNode, schemaNode, ls.InstanceOfTerm, nil)
 	}
 	context.docPath = append(context.docPath, targetNode)
 
@@ -198,16 +202,17 @@ func (reshaper *Reshaper) value(context *ReshapeContext) (ls.Node, error) {
 		case gl.NodeValue:
 			switch {
 			case sourceValue.Nodes.Len() == 1:
-				targetNode.SetValue(sourceValue.Nodes.Slice()[0].GetValue())
+				v, _ := ls.GetNodeValue(sourceValue.Nodes.Slice()[0])
+				ls.SetNodeValue(targetNode, v)
 				empty = false
 			case sourceValue.Nodes.Len() > 1:
 				joinMethod := "join"
-				prop := properties[ReshapeTerms.JoinMethod]
+				prop := ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.JoinMethod))
 				if prop != nil && prop.IsString() {
 					joinMethod = prop.AsString()
 				}
 				joinDelimiter := " "
-				prop = properties[ReshapeTerms.JoinDelimiter]
+				prop = ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.JoinDelimiter))
 				if prop != nil && prop.IsString() {
 					joinDelimiter = prop.AsString()
 				}
@@ -215,7 +220,7 @@ func (reshaper *Reshaper) value(context *ReshapeContext) (ls.Node, error) {
 				if err != nil {
 					return nil, err
 				}
-				targetNode.SetValue(result)
+				ls.SetNodeValue(targetNode, result)
 				empty = false
 			}
 		case gl.BoolValue, gl.NumberValue, gl.StringValue:
@@ -223,13 +228,13 @@ func (reshaper *Reshaper) value(context *ReshapeContext) (ls.Node, error) {
 			if err != nil {
 				return nil, err
 			}
-			targetNode.SetValue(str)
+			ls.SetNodeValue(targetNode, str)
 			empty = false
 		}
 	}
 
 	if empty {
-		ifEmpty := properties[ReshapeTerms.IfEmpty]
+		ifEmpty := ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.IfEmpty))
 		if ifEmpty != nil && ifEmpty.IsString() && ifEmpty.AsString() == "true" {
 			return targetNode, nil
 		}
@@ -238,8 +243,8 @@ func (reshaper *Reshaper) value(context *ReshapeContext) (ls.Node, error) {
 	return targetNode, nil
 }
 
-func getSource(context *ReshapeContext, schemaNode ls.Node) (gl.Value, error) {
-	data, _ := schemaNode.GetCompiledProperties().GetCompiledProperty(ReshapeTerms.Source)
+func getSource(context *ReshapeContext, schemaNode graph.Node) (gl.Value, error) {
+	data, _ := schemaNode.GetProperty(ReshapeTerms.Source)
 	expr, ok := data.(gl.Evaluatable)
 	if !ok {
 		return nil, nil
@@ -251,8 +256,8 @@ func getSource(context *ReshapeContext, schemaNode ls.Node) (gl.Value, error) {
 	return value, nil
 }
 
-func (reshaper *Reshaper) setupVariables(context *ReshapeContext, schemaNode ls.Node) error {
-	data, _ := schemaNode.GetCompiledProperties().GetCompiledProperty(ReshapeTerms.Vars)
+func (reshaper *Reshaper) setupVariables(context *ReshapeContext, schemaNode graph.Node) error {
+	data, _ := schemaNode.GetProperty(ReshapeTerms.Vars)
 	slice, ok := data.([]gl.Evaluatable)
 	if !ok {
 		return nil
@@ -265,8 +270,8 @@ func (reshaper *Reshaper) setupVariables(context *ReshapeContext, schemaNode ls.
 	return nil
 }
 
-func (reshaper *Reshaper) checkConditionals(context *ReshapeContext, schemaNode ls.Node) (bool, error) {
-	data, _ := schemaNode.GetCompiledProperties().GetCompiledProperty(ReshapeTerms.If)
+func (reshaper *Reshaper) checkConditionals(context *ReshapeContext, schemaNode graph.Node) (bool, error) {
+	data, _ := schemaNode.GetProperty(ReshapeTerms.If)
 	slice, ok := data.([]gl.Evaluatable)
 	if !ok {
 		return true, nil

@@ -3,8 +3,8 @@ package gl
 import (
 	"fmt"
 
-	"github.com/bserdar/digraph"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 // Value represents a value on the evaluation stack
@@ -95,32 +95,32 @@ func ValueOf(value interface{}) Value {
 		return StringSliceValue(t)
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64:
 		return NumberValue(fmt.Sprint(t))
-	case ls.Node:
-		return NodeValue{Nodes: ls.NewNodeSet(t)}
-	case []ls.Node:
-		return NodeValue{Nodes: ls.NewNodeSet(t...)}
-	case ls.Edge:
-		return EdgeValue{Edges: map[ls.Edge]struct{}{t: struct{}{}}}
-	case []ls.Edge:
-		ret := EdgeValue{Edges: make(map[ls.Edge]struct{}, len(t))}
+	case graph.Node:
+		return NodeValue{Nodes: NewNodeSet(t)}
+	case []graph.Node:
+		return NodeValue{Nodes: NewNodeSet(t...)}
+	case graph.Edge:
+		return EdgeValue{Edges: map[graph.Edge]struct{}{t: struct{}{}}}
+	case []graph.Edge:
+		ret := EdgeValue{Edges: make(map[graph.Edge]struct{}, len(t))}
 		for _, x := range t {
 			ret.Edges[x] = struct{}{}
 		}
 		return ret
-	case digraph.NodeIterator:
-		ret := NodeValue{Nodes: ls.NewNodeSet()}
-		for t.HasNext() {
-			ret.Nodes.Add(t.Next().(ls.Node))
+	case graph.NodeIterator:
+		ret := NodeValue{Nodes: NewNodeSet()}
+		for t.Next() {
+			ret.Nodes.Add(t.Node())
 		}
 		return ret
-	case digraph.EdgeIterator:
-		ret := EdgeValue{Edges: make(map[ls.Edge]struct{})}
-		for t.HasNext() {
-			ret.Edges[t.Next().(ls.Edge)] = struct{}{}
+	case graph.EdgeIterator:
+		ret := EdgeValue{Edges: make(map[graph.Edge]struct{})}
+		for t.Next() {
+			ret.Edges[t.Edge()] = struct{}{}
 		}
 		return ret
-	case *digraph.Graph:
-		return ValueOf(t.GetAllNodes())
+	case graph.Graph:
+		return ValueOf(t.GetNodes())
 	case []Value:
 		return ValueArrayValue(t)
 	case map[string]*ls.PropertyValue:

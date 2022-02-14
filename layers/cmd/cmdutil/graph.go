@@ -19,12 +19,12 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/bserdar/digraph"
 	"github.com/cloudprivacylabs/lsa/pkg/dot"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
-func ReadGraph(gfile []string, interner ls.Interner, inputFormat string) (*digraph.Graph, error) {
+func ReadGraph(gfile []string, interner ls.Interner, inputFormat string) (graph.Graph, error) {
 	if inputFormat == "json" {
 		return ReadJSONGraph(gfile, interner)
 	}
@@ -34,7 +34,7 @@ func ReadGraph(gfile []string, interner ls.Interner, inputFormat string) (*digra
 	return nil, fmt.Errorf("Unrecognized input format: %s", inputFormat)
 }
 
-func ReadJSONLDGraph(gfile []string, interner ls.Interner) (*digraph.Graph, error) {
+func ReadJSONLDGraph(gfile []string, interner ls.Interner) (graph.Graph, error) {
 	data, err := ReadFileOrStdin(gfile)
 	if err != nil {
 		return nil, err
@@ -43,23 +43,27 @@ func ReadJSONLDGraph(gfile []string, interner ls.Interner) (*digraph.Graph, erro
 	if err := json.Unmarshal(data, &v); err != nil {
 		return nil, err
 	}
-	return ls.UnmarshalJSONLDGraph(v, interner)
+	g := graph.NewOCGraph()
+	err = ls.UnmarshalJSONLDGraph(v, g, interner)
+	return g, err
 }
 
-func ReadJSONGraph(gfile []string, interner ls.Interner) (*digraph.Graph, error) {
+func ReadJSONGraph(gfile []string, interner ls.Interner) (graph.Graph, error) {
 	data, err := ReadFileOrStdin(gfile)
 	if err != nil {
 		return nil, err
 	}
-	target := digraph.New()
-	err = ls.UnmarshalGraphJSON(data, target, interner)
+	target := graph.NewOCGraph()
+	m := ls.JSONMarshaler{}
+	err = m.Unmarshal(data, target)
 	return target, err
 }
 
-func WriteGraph(graph *digraph.Graph, format string, out io.Writer) error {
+func WriteGraph(graph graph.Graph, format string, out io.Writer) error {
 	switch format {
 	case "json":
-		return ls.EncodeGraphJSON(graph, out)
+		m := ls.JSONMarshaler{}
+		return m.Encode(graph, out)
 	case "jsonld":
 		marshaler := ls.LDMarshaler{}
 		intf := marshaler.Marshal(graph)

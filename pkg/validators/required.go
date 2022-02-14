@@ -2,10 +2,11 @@ package validators
 
 import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 // RequiredTerm validates if a required properties exist
-var RequiredTerm = ls.NewTerm(ls.LS+"validation/required", false, false, ls.OverrideComposition, struct {
+var RequiredTerm = ls.NewTerm(ls.LS, "validation/required", false, false, ls.OverrideComposition, struct {
 	RequiredValidator
 }{
 	RequiredValidator{},
@@ -15,16 +16,15 @@ var RequiredTerm = ls.NewTerm(ls.LS+"validation/required", false, false, ls.Over
 type RequiredValidator struct{}
 
 // Validate checks if value is nil. If value is nil and it is required, returns an error
-func (validator RequiredValidator) Validate(docNode, schemaNode ls.Node) error {
+func (validator RequiredValidator) Validate(docNode, schemaNode graph.Node) error {
 	if docNode == nil {
 		return nil
 	}
-	required := schemaNode.GetProperties()[RequiredTerm].AsStringSlice()
+	required := ls.AsPropertyValue(schemaNode.GetProperty(RequiredTerm)).AsStringSlice()
 	if len(required) > 0 {
 		names := make(map[string]struct{})
-		for nodes := docNode.OutWith(ls.HasTerm).Targets(); nodes.HasNext(); {
-			node := nodes.Next().(ls.Node)
-			name, _ := node.GetProperties()[ls.AttributeNameTerm]
+		for _, node := range graph.TargetNodes(docNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.HasTerm)) {
+			name := ls.AsPropertyValue(node.GetProperty(ls.AttributeNameTerm))
 			if name.IsString() {
 				names[name.AsString()] = struct{}{}
 			}
@@ -43,6 +43,5 @@ func (validator RequiredValidator) CompileTerm(target ls.CompilablePropertyConta
 	if !value.IsStringSlice() {
 		return ls.ErrValidatorCompile{Validator: RequiredTerm, Msg: "Array of required attributes expected"}
 	}
-	target.GetCompiledProperties().SetCompiledProperty(term, value.AsStringSlice())
 	return nil
 }

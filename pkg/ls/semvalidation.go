@@ -16,18 +16,20 @@ package ls
 
 import (
 	"fmt"
+
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 // A Validator is used to validate document nodes based on their
 // schema. The Validate function is called with the document node that
 // needs to be validated, and the associated schema node.
 type Validator interface {
-	Validate(docNode, layerNode Node) error
+	Validate(docNode, layerNode graph.Node) error
 }
 
 type nopValidator struct{}
 
-func (nopValidator) Validate(docNode, layerNode Node) error { return nil }
+func (nopValidator) Validate(docNode, layerNode graph.Node) error { return nil }
 
 // GetAttributeValidator returns a validator implementation for the given validation term
 func GetAttributeValidator(term string) Validator {
@@ -43,27 +45,29 @@ func GetAttributeValidator(term string) Validator {
 }
 
 // ValidateDocumentNode runs the validators for the document node
-func ValidateDocumentNode(node Node) error {
+func ValidateDocumentNode(node graph.Node) error {
 	// Get the schema
-	var schemaNode Node
-	schemaNodes := node.NextWith(InstanceOfTerm)
+	var schemaNode graph.Node
+	schemaNodes := graph.NextNodesWith(node, InstanceOfTerm)
 	if len(schemaNodes) == 1 {
-		schemaNode = schemaNodes[0].(Node)
+		schemaNode = schemaNodes[0]
 	}
 	return ValidateDocumentNodeBySchema(node, schemaNode)
 }
 
 // ValidateDocumentNodeBySchema runs the validators for the document node
-func ValidateDocumentNodeBySchema(node, schemaNode Node) error {
+func ValidateDocumentNodeBySchema(node, schemaNode graph.Node) error {
 	if schemaNode == nil {
 		return nil
 	}
-	for key := range schemaNode.GetProperties() {
-		if err := GetAttributeValidator(key).Validate(node, schemaNode); err != nil {
-			return err
+	var err error
+	schemaNode.ForEachProperty(func(key string, value interface{}) bool {
+		if err = GetAttributeValidator(key).Validate(node, schemaNode); err != nil {
+			return false
 		}
-	}
-	return nil
+		return true
+	})
+	return err
 }
 
 // ErrValidatorCompile is returned for validator compilation errors

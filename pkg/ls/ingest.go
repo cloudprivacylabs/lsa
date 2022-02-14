@@ -19,23 +19,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 // Ingester keeps the schema and the ingestion options
 type Ingester struct {
 	// The schema variant to use during ingestion
 	Schema *Layer
-
-	// NewNodeFunc will create a new node for the data graph. If
-	// NewNodeFunc is nil, a ls.Node will be created using the default
-	// ID generator. The function should not add the node to the graph.
-	NewNodeFunc func(path NodePath, schemaNode Node) Node
-
-	// NewEdgeFunc will create a new edge for the data graph with the
-	// given label. If NewEdgeFunc is nil, a ls.Edge will be
-	// created. The function should not add the edge to the graph.
-	NewEdgeFunc func(string) Edge
 
 	// If true, schema node properties are embedded into document
 	// nodes. If false, schema nodes are preserved as separate nodes,
@@ -49,7 +39,7 @@ type Ingester struct {
 
 	// If PreserveNodePaths is true, this keeps the node paths after ingestion.
 	// This map is reset when Start is called.
-	NodePaths map[Node]NodePath
+	NodePaths map[graph.Node]NodePath
 
 	// If OnlySchemaAttributes is true, only ingest data points if there is a schema for it.
 	// If OnlySchemaAttributes is false, ingest whether or not there is a schema for it.
@@ -117,24 +107,24 @@ func pathToString(path []interface{}) string {
 }
 
 // DefaultNodeIDGenerator returns Ingester.Schema.ID + join(path,".")
-func DefaultNodeIDGenerator(path NodePath, schemaNode Node) string {
+func DefaultNodeIDGenerator(path NodePath, schemaNode graph.Node) string {
 	return path.String()
 }
 
 // Start ingestion. Returns the path initialized with the baseId, and
 // the schema root.
-func (ingester *Ingester) Start(baseID string) (path NodePath, schemaRoot Node) {
+func (ingester *Ingester) Start(baseID string) (path NodePath, schemaRoot graph.Node) {
 	path = make(NodePath, 0, 16)
 	path = append(path, baseID)
 	if ingester.Schema != nil {
 		schemaRoot = ingester.Schema.GetSchemaRootNode()
 	}
-	ingester.NodePaths = make(map[Node]NodePath)
+	ingester.NodePaths = make(map[graph.Node]NodePath)
 	return
 }
 
 // Validate the document node with the schema node
-func (ingester *Ingester) Validate(documentNode, schemaNode Node) error {
+func (ingester *Ingester) Validate(documentNode, schemaNode graph.Node) error {
 	if schemaNode != nil {
 		if err := ValidateDocumentNodeBySchema(documentNode, schemaNode); err != nil {
 			return err
@@ -144,46 +134,48 @@ func (ingester *Ingester) Validate(documentNode, schemaNode Node) error {
 }
 
 // Polymorphic tests all options in the schema by calling ingest func
-func (ingester *Ingester) Polymorphic(path NodePath, schemaNode Node, ingest func(p NodePath, optionNode Node) (Node, error)) (Node, error) {
+func (ingester *Ingester) Polymorphic(g graph.Graph, path NodePath, schemaNode graph.Node, ingest func(targetGraph graph.Graph, p NodePath, optionNode graph.Node) (graph.Node, error)) (graph.Graph, graph.Node, error) {
 	// Polymorphic node. Try each option
-	var newChild Node
+	var newChild graph.Node
 	// iterate through all edges of the schema node which have a polymorphic attribute
-	for nodes := schemaNode.OutWith(LayerTerms.OneOf).Targets(); nodes.HasNext(); {
-		optionNode := nodes.Next().(Node)
-		childNode, err := ingest(path, optionNode)
+	for edges := schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, OneOfTerm); edges.Next(); {
+		edge := edges.Edge()
+		optionNode := edge.GetTo()
+		newGraph := graph.NewOCGraph()
+		childNode, err := ingest(newGraph, path, optionNode)
 		if err == nil {
 			if newChild != nil {
-				return nil, ErrSchemaValidation{Msg: "Multiple options of the polymorphic node matched:" + schemaNode.GetID(), Path: path}
+				return nil, nil, ErrSchemaValidation{Msg: "Multiple options of the polymorphic node matched:" + GetNodeID(schemaNode), Path: path}
 			}
 			newChild = childNode
 		}
 	}
 	if newChild == nil {
-		return nil, ErrSchemaValidation{Msg: "None of the options of the polymorphic node matched:" + schemaNode.GetID(), Path: path}
+		return nil, nil, ErrSchemaValidation{Msg: "None of the options of the polymorphic node matched:" + GetNodeID(schemaNode), Path: path}
 	}
-	return newChild, nil
+	return newChild.GetGraph(), newChild, nil
 }
 
 // GetObjectAttributeNodes returns the schema attribute nodes under a
 // schema object. The returned map is keyed by the AttributeNameTerm
-func (ingester *Ingester) GetObjectAttributeNodes(objectSchemaNode Node) (map[string][]Node, error) {
-	nextNodes := make(map[string][]Node)
-	addNextNode := func(node Node) error {
-		key := node.GetProperties()[AttributeNameTerm].AsString()
+func (ingester *Ingester) GetObjectAttributeNodes(objectSchemaNode graph.Node) (map[string][]graph.Node, error) {
+	nextNodes := make(map[string][]graph.Node)
+	addNextNode := func(node graph.Node) error {
+		key := AsPropertyValue(node.GetProperty(AttributeNameTerm)).AsString()
 		if len(key) == 0 {
-			return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema at %s", AttributeNameTerm, objectSchemaNode.GetID()))
+			return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema at %s", AttributeNameTerm, GetNodeID(objectSchemaNode)))
 		}
 		nextNodes[key] = append(nextNodes[key], node)
 		return nil
 	}
 	if objectSchemaNode != nil {
-		for nodes := objectSchemaNode.OutWith(LayerTerms.Attributes).Targets(); nodes.HasNext(); {
-			if err := addNextNode(nodes.Next().(Node)); err != nil {
+		for _, node := range graph.TargetNodes(objectSchemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ObjectAttributesTerm)) {
+			if err := addNextNode(node); err != nil {
 				return nil, err
 			}
 		}
-		for nodes := objectSchemaNode.OutWith(LayerTerms.AttributeList).Targets(); nodes.HasNext(); {
-			if err := addNextNode(nodes.Next().(Node)); err != nil {
+		for _, node := range graph.TargetNodes(objectSchemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ObjectAttributeListTerm)) {
+			if err := addNextNode(node); err != nil {
 				return nil, err
 			}
 		}
@@ -191,79 +183,85 @@ func (ingester *Ingester) GetObjectAttributeNodes(objectSchemaNode Node) (map[st
 	return nextNodes, nil
 }
 
-func (ingester *Ingester) ConnectChildNodes(parent Node, children []Node) {
+func (ingester *Ingester) ConnectChildNodes(parent graph.Node, children []graph.Node) {
 	for index := range children {
-		children[index].GetProperties()[AttributeIndexTerm] = StringPropertyValue(fmt.Sprint(index))
+		SetNodeIndex(children[index], index)
 		ingester.connect(parent, children[index], HasTerm)
 	}
 }
 
 // Object creates a new object node
-func (ingester *Ingester) Object(path NodePath, schemaNode Node, elements []Node, types ...string) (Node, error) {
+func (ingester *Ingester) Object(g graph.Graph, path NodePath, schemaNode graph.Node, elements []graph.Node, types ...string) (graph.Node, error) {
 	// An object node
 	// There is a schema node for this node. It must be an object
 	if schemaNode != nil {
-		if !schemaNode.GetTypes().Has(AttributeTypes.Object) {
+		if !schemaNode.GetLabels().Has(AttributeTypeObject) {
 			return nil, ErrSchemaValidation{Msg: "An object is not expected here", Path: path}
 		}
 	}
-	ret := ingester.NewNode(path, schemaNode)
+	ret := ingester.NewNode(g, path, schemaNode)
 	if ingester.PreserveNodePaths {
 		ingester.NodePaths[ret] = path.Copy()
 	}
-	ret.GetTypes().Add(types...)
+	t := ret.GetLabels()
+	t.Add(types...)
 	// define that ret is an object
-	ret.GetTypes().Add(AttributeTypes.Object)
+	t.Add(AttributeTypeObject)
+	ret.SetLabels(t)
 	ingester.ConnectChildNodes(ret, elements)
 	return ret, nil
 }
 
 // GetArrayElementNode returns the array element node from an array node
-func (ingester *Ingester) GetArrayElementNode(arraySchemaNode Node) Node {
+func (ingester *Ingester) GetArrayElementNode(arraySchemaNode graph.Node) graph.Node {
 	if arraySchemaNode == nil {
 		return nil
 	}
-	n := arraySchemaNode.NextWith(LayerTerms.ArrayItems)
+	n := graph.TargetNodes(arraySchemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ArrayItemsTerm))
 	if len(n) == 1 {
-		return n[0].(Node)
+		return n[0]
 	}
 	return nil
 }
 
 // Array creates a new array node.
-func (ingester *Ingester) Array(path NodePath, schemaNode Node, elements []Node, types ...string) (Node, error) {
+func (ingester *Ingester) Array(g graph.Graph, path NodePath, schemaNode graph.Node, elements []graph.Node, types ...string) (graph.Node, error) {
 	if schemaNode != nil {
-		if !schemaNode.GetTypes().Has(AttributeTypes.Array) {
+		if !schemaNode.GetLabels().Has(AttributeTypeArray) {
 			return nil, ErrSchemaValidation{Msg: "An array is not expected here", Path: path}
 		}
 	}
-	ret := ingester.NewNode(path, schemaNode)
+	ret := ingester.NewNode(g, path, schemaNode)
 	if ingester.PreserveNodePaths {
 		ingester.NodePaths[ret] = path.Copy()
 	}
-	ret.GetTypes().Add(types...)
-	ret.GetTypes().Add(AttributeTypes.Array)
+	t := ret.GetLabels()
+	t.Add(types...)
+	t.Add(AttributeTypeArray)
+	ret.SetLabels(t)
 	ingester.ConnectChildNodes(ret, elements)
 	return ret, nil
 }
 
 // Value creates a new value node. The new node has the given value
 // and the types
-func (ingester *Ingester) Value(path NodePath, schemaNode Node, value interface{}, types ...string) (Node, error) {
+func (ingester *Ingester) Value(g graph.Graph, path NodePath, schemaNode graph.Node, value interface{}, types ...string) (graph.Node, error) {
 	if schemaNode != nil {
-		if !schemaNode.GetTypes().Has(AttributeTypes.Value) {
+		if !schemaNode.GetLabels().Has(AttributeTypeValue) {
 			return nil, ErrSchemaValidation{Msg: "A value is not expected here", Path: path}
 		}
 	}
-	newNode := ingester.NewNode(path, schemaNode)
+	newNode := ingester.NewNode(g, path, schemaNode)
 	if ingester.PreserveNodePaths {
 		ingester.NodePaths[newNode] = path.Copy()
 	}
 	if value != nil {
-		newNode.SetValue(value)
+		SetRawNodeValue(newNode, value)
 	}
-	newNode.GetTypes().Add(types...)
-	newNode.GetTypes().Add(AttributeTypes.Value)
+	t := newNode.GetLabels()
+	t.Add(types...)
+	t.Add(AttributeTypeValue)
+	newNode.SetLabels(t)
 	return newNode, nil
 }
 
@@ -271,17 +269,14 @@ func (ingester *Ingester) Value(path NodePath, schemaNode Node, value interface{
 // or by creating a new node using DefaultNodeIDGenerator. Then it
 // either merges schema properties into the new node, or creates an
 // instanceOf edge to the schema node.
-func (ingester *Ingester) NewNode(path NodePath, schemaNode Node) Node {
-	var node Node
-	if ingester.NewNodeFunc != nil {
-		node = ingester.NewNodeFunc(path, schemaNode)
-	} else {
-		node = NewNode(DefaultNodeIDGenerator(path, schemaNode))
-	}
-	node.GetTypes().Add(DocumentNodeTerm)
+func (ingester *Ingester) NewNode(g graph.Graph, path NodePath, schemaNode graph.Node) graph.Node {
+	node := g.NewNode([]string{DocumentNodeTerm}, nil)
+	SetNodeID(node, DefaultNodeIDGenerator(path, schemaNode))
 	if schemaNode != nil {
-		node.GetTypes().Add(FilterNonLayerTypes(schemaNode.GetTypes().Slice())...)
-		node.GetProperties()[SchemaNodeIDTerm] = StringPropertyValue(schemaNode.GetID())
+		types := node.GetLabels()
+		types.Add(FilterNonLayerTypes(schemaNode.GetLabels().Slice())...)
+		node.SetLabels(types)
+		node.SetProperty(SchemaNodeIDTerm, StringPropertyValue(GetNodeID(schemaNode)))
 		if ingester.EmbedSchemaNodes {
 			ingester.EmbedSchemaNode(node, schemaNode)
 		} else {
@@ -295,40 +290,35 @@ func (ingester *Ingester) NewNode(path NodePath, schemaNode Node) Node {
 // node properties. No properties are overwritten in the target
 // node. The schema node types that are not schema node types are also
 // merged with the target node types.
-func (ingester *Ingester) EmbedSchemaNode(targetNode, schemaNode Node) {
-	targetProperties := targetNode.GetProperties()
-	for k, v := range schemaNode.GetProperties() {
-		if _, exists := targetProperties[k]; !exists {
-			targetProperties[k] = v
+func (ingester *Ingester) EmbedSchemaNode(targetNode, schemaNode graph.Node) {
+	schemaNode.ForEachProperty(func(k string, v interface{}) bool {
+		if _, exists := targetNode.GetProperty(k); !exists {
+			if pv, ok := v.(*PropertyValue); ok {
+				targetNode.SetProperty(k, pv.Clone())
+			} else {
+				targetNode.SetProperty(k, v)
+			}
 		}
-	}
-	schemaNode.GetCompiledProperties().CopyTo(targetNode.GetCompiledProperties())
+		return true
+	})
 }
 
 // GetAsPropertyValue returns if the node should be a property of a
 // predecessor node. If not, returns nil
-func GetAsProperty(schemaNode Node) (of string, name string) {
+func GetAsProperty(schemaNode graph.Node) (of string, name string) {
 	if schemaNode == nil {
 		return
 	}
-	properties := schemaNode.GetProperties()
-	of = properties[AsPropertyOfTerm].AsString()
-	name = properties[AsPropertyTerm].AsString()
+	of = AsPropertyValue(schemaNode.GetProperty(AsPropertyOfTerm)).AsString()
+	name = AsPropertyValue(schemaNode.GetProperty(AsPropertyTerm)).AsString()
 	return
 }
 
-func (ingester *Ingester) connect(srcNode, targetNode digraph.Node, edgeLabel string) digraph.Edge {
-	var edge digraph.Edge
-	if ingester.NewEdgeFunc != nil {
-		edge = ingester.NewEdgeFunc(edgeLabel)
-	} else {
-		edge = NewEdge(edgeLabel)
-	}
-	digraph.Connect(srcNode, targetNode, edge)
-	return edge
+func (ingester *Ingester) connect(srcNode, targetNode graph.Node, edgeLabel string) graph.Edge {
+	return srcNode.GetGraph().NewEdge(srcNode, targetNode, edgeLabel, nil)
 }
 
-func (ingester *Ingester) DefaultEntityNodeIDGenerationFunc(entity string, ID string, node Node, path []Node) string {
+func (ingester *Ingester) DefaultEntityNodeIDGenerationFunc(entity string, ID string, node graph.Node, path []graph.Node) string {
 	nodePath := ingester.NodePaths[node]
 	eid := fmt.Sprintf("%s/%s", entity, ID)
 	if len(nodePath) > 1 {
@@ -340,8 +330,7 @@ func (ingester *Ingester) DefaultEntityNodeIDGenerationFunc(entity string, ID st
 // Finish ingesting by assigning node IDs and linking nodes to their
 // entity root nodes. If generateIDFunc is nil, the default ID
 // generation function is used
-func (ingester *Ingester) Finish(root Node, generateIDFunc func(entity string, ID string, node Node, path []Node) string) {
-	AssignEntityRoots(root)
+func (ingester *Ingester) Finish(root graph.Node, generateIDFunc func(entity string, ID string, node graph.Node, path []graph.Node) string) {
 	if ingester.Schema != nil {
 		if generateIDFunc == nil {
 			generateIDFunc = ingester.DefaultEntityNodeIDGenerationFunc
@@ -350,48 +339,48 @@ func (ingester *Ingester) Finish(root Node, generateIDFunc func(entity string, I
 	}
 }
 
-// AssignEntityRoots will iterate the document and assign entity roots to each node
-func AssignEntityRoots(root Node) {
-	entityBoundaries := make(map[Node]struct{})
-	// If there are no schemas, link everything to root
-	entityBoundaries[root] = struct{}{}
-	IterateDescendants(root, func(node Node, path []Node) bool {
-		// Pass root
-		if node == root {
-			return true
-		}
+// // AssignEntityRoots will iterate the document and assign entity roots to each node
+// func AssignEntityRoots(root graph.Node) {
+// 	entityBoundaries := make(map[graph.Node]struct{})
+// 	// If there are no schemas, link everything to root
+// 	entityBoundaries[root] = struct{}{}
+// 	IterateDescendants(root, func(node graph.Node, path []graph.Node) bool {
+// 		// Pass root
+// 		if node == root {
+// 			return true
+// 		}
 
-		// Is this an entity boundary
-		_, boundary := GetNodeOrSchemaProperty(node, EntitySchemaTerm)
-		if boundary {
-			// Put node into boundaries
-			entityBoundaries[node] = struct{}{}
-		}
-		// Skip last entry in path, thats the node
-		for ix := len(path) - 2; ix >= 0; ix-- {
-			if _, boundary := entityBoundaries[path[ix]]; boundary {
-				node.SetEntityRoot(path[ix])
-				break
-			}
-		}
-		return true
-	}, OnlyDocumentNodes, false)
-}
+// 		// Is this an entity boundary
+// 		_, boundary := GetNodeOrSchemaProperty(node, EntitySchemaTerm)
+// 		if boundary {
+// 			// Put node into boundaries
+// 			entityBoundaries[node] = struct{}{}
+// 		}
+// 		// Skip last entry in path, thats the node
+// 		for ix := len(path) - 2; ix >= 0; ix-- {
+// 			if _, boundary := entityBoundaries[path[ix]]; boundary {
+// 				node.SetProperty(entityRootTerm, path[ix])
+// 				break
+// 			}
+// 		}
+// 		return true
+// 	}, OnlyDocumentNodes, false)
+// }
 
 // AssignEntityIDs traverses all the nodes under root, and reassigns
 // IDs to the nodes based on the discovered entity boundaries and
 // entity IDs. If there is no schema information, or if there are no
 // entity IDs, the IDs are unchanged.
-func AssignEntityIDs(root Node, generateIDFunc func(entity string, ID string, node Node, path []Node) string) {
+func AssignEntityIDs(root graph.Node, generateIDFunc func(entity string, ID string, node graph.Node, path []graph.Node) string) {
 	// entityMap: map of nodes to their schemas. These nodes are the entity roots
-	entityNodeMap := make(map[Node]string)
+	entityNodeMap := make(map[graph.Node]string)
 	// entityIDMap: ID of the entity root
-	entityIDMap := make(map[Node]string)
-	IterateDescendants(root, func(node Node, path []Node) bool {
+	entityIDMap := make(map[graph.Node]string)
+	IterateDescendants(root, func(node graph.Node, path []graph.Node) bool {
 		_, root := GetNodeOrSchemaProperty(node, EntitySchemaTerm)
 		if root {
-			types := Types{}
-			types.Add(FilterNonLayerTypes(node.GetTypes().Slice())...)
+			types := graph.NewStringSet()
+			types.Add(FilterNonLayerTypes(node.GetLabels().Slice())...)
 			types.Remove(DocumentNodeTerm)
 			typesSlice := types.Slice()
 			if len(typesSlice) == 1 {
@@ -399,7 +388,7 @@ func AssignEntityIDs(root Node, generateIDFunc func(entity string, ID string, no
 			}
 		}
 		_, hasId := GetNodeOrSchemaProperty(node, EntityIDTerm)
-		var closest Node
+		var closest graph.Node
 		if hasId {
 			// Find the closest entity root. Must be in entityNodeMap
 			for ix := len(path) - 1; ix >= 0; ix-- {
@@ -409,7 +398,7 @@ func AssignEntityIDs(root Node, generateIDFunc func(entity string, ID string, no
 				}
 			}
 			if closest != nil {
-				entityIDMap[closest] = fmt.Sprint(node.GetValue())
+				entityIDMap[closest] = fmt.Sprint(GetRawNodeValue(node))
 			}
 		}
 		return true
@@ -418,14 +407,14 @@ func AssignEntityIDs(root Node, generateIDFunc func(entity string, ID string, no
 		return
 	}
 	// Iterate the nodes again and assign IDs
-	IterateDescendants(root, func(node Node, path []Node) bool {
+	IterateDescendants(root, func(node graph.Node, path []graph.Node) bool {
 		for ix := len(path) - 1; ix >= 0; ix-- {
 			id, exists := entityIDMap[path[ix]]
 			if exists {
 				// Generate ID
 				// There must be an entity
 				entity := entityNodeMap[path[ix]]
-				node.SetID(generateIDFunc(entity, id, node, path))
+				SetNodeID(node, generateIDFunc(entity, id, node, path))
 				break
 			}
 		}

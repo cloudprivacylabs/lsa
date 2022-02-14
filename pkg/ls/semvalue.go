@@ -16,6 +16,8 @@ package ls
 
 import (
 	"fmt"
+
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 // ErrInconsistentTypes is returned if a node has multiple types that
@@ -42,8 +44,8 @@ func (e ErrInvalidValue) Error() string {
 
 // A ValueAccessor gets node values in native type, and sets node values
 type ValueAccessor interface {
-	GetNodeValue(Node) (interface{}, error)
-	SetNodeValue(Node, interface{}) error
+	GetNodeValue(graph.Node) (interface{}, error)
+	SetNodeValue(graph.Node, interface{}) error
 }
 
 // GetValueAccessor returns the value accessor for the term. If the term has none, returns nil

@@ -5,10 +5,11 @@ import (
 	"regexp"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 // PatternTerm validates agains a regex
-var PatternTerm = ls.NewTerm(ls.LS+"validation/pattern", false, false, ls.OverrideComposition, struct {
+var PatternTerm = ls.NewTerm(ls.LS, "validation/pattern", false, false, ls.OverrideComposition, struct {
 	PatternValidator
 }{
 	PatternValidator{},
@@ -17,16 +18,18 @@ var PatternTerm = ls.NewTerm(ls.LS+"validation/pattern", false, false, ls.Overri
 // PatternValidator validates a string value agains a regex
 type PatternValidator struct{}
 
+const compiledPatternTerm = "$compiledPattern"
+
 // Validate validates the node value if it is non-nil
-func (validator PatternValidator) Validate(docNode, schemaNode ls.Node) error {
+func (validator PatternValidator) Validate(docNode, schemaNode graph.Node) error {
 	if docNode == nil {
 		return nil
 	}
-	value := docNode.GetValue()
+	value := ls.GetRawNodeValue(docNode)
 	if value == nil {
 		return nil
 	}
-	ipattern, _ := schemaNode.GetCompiledProperties().GetCompiledProperty(PatternTerm)
+	ipattern, _ := schemaNode.GetProperty(compiledPatternTerm)
 	pattern := ipattern.(*regexp.Regexp)
 	if pattern.MatchString(fmt.Sprint(value)) {
 		return nil
@@ -43,6 +46,6 @@ func (validator PatternValidator) CompileTerm(target ls.CompilablePropertyContai
 	if err != nil {
 		return ls.ErrValidatorCompile{Validator: PatternTerm, Msg: "Invalid pattern", Err: err}
 	}
-	target.GetCompiledProperties().SetCompiledProperty(term, pattern)
+	target.SetProperty(compiledPatternTerm, pattern)
 	return nil
 }

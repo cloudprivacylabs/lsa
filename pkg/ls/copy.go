@@ -15,30 +15,29 @@
 package ls
 
 import (
-	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
-// Copy in to target using the node selectors. Return a node map from the in to target nodes
-func Copy(in, target *digraph.Graph, nodeSelector func(Node) bool, edgeSelector func(Edge) bool) map[Node]Node {
-	nodeMap := make(map[Node]Node)
-	for n := in.GetAllNodes(); n.HasNext(); {
-		node := n.Next().(Node)
-		if nodeSelector == nil || nodeSelector(node) {
-			newNode := node.Clone()
+// CopyGraph source to target using the optional node/edge selectors. Return a node map from the in to target nodes
+func CopyGraph(target, source graph.Graph, nodeSelector func(graph.Node) bool, edgeSelector func(graph.Edge) bool) map[graph.Node]graph.Node {
+	if nodeSelector == nil {
+		nodeSelector = func(graph.Node) bool { return true }
+	}
+	if edgeSelector == nil {
+		edgeSelector = func(graph.Edge) bool { return true }
+	}
+	nodeMap := make(map[graph.Node]graph.Node)
+	for n := source.GetNodes(); n.Next(); {
+		node := n.Node()
+		if nodeSelector(node) {
+			newNode := CloneNode(node, target)
 			nodeMap[node] = newNode
-			target.AddNode(newNode)
 		}
 	}
-	for src, dest := range nodeMap {
-		edges := src.Out()
-		for edges.HasNext() {
-			edge := edges.Next().(Edge)
-			newTo := nodeMap[edge.GetTo().(Node)]
-			if newTo != nil {
-				if edgeSelector == nil || edgeSelector(edge) {
-					digraph.Connect(dest, newTo, edge.Clone())
-				}
-			}
+	for edges := source.GetEdges(); edges.Next(); {
+		edge := edges.Edge()
+		if edgeSelector(edge) {
+			CloneEdge(nodeMap[edge.GetFrom()], nodeMap[edge.GetTo()], edge, target)
 		}
 	}
 	return nodeMap

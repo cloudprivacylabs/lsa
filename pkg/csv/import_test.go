@@ -18,8 +18,6 @@ import (
 	"encoding/csv"
 	"os"
 	"testing"
-
-	"github.com/bserdar/digraph"
 )
 
 func TestCSVImport(t *testing.T) {
@@ -50,8 +48,8 @@ func TestCSVImport(t *testing.T) {
 	}
 
 	for _, s := range []string{"photo", "givenName", "middleName", "familyName", "birthDate", "linkedVaccineCertificate", "recipient", "disease", "vaccineDescription", "vaccineType", "medicinalProductName", "cvxCode", "marketingAuthorizationHolder", "doseNumber", "dosesPerCycle", "dateOfVaccination", "stateOfVaccination", "countryOfVaccination", "certificateIssuer", "certificateNumber"} {
-		nodes := layer.GetAllNodes().Select(digraph.NodesByLabelPredicate(s)).All()
-		if len(nodes) != 1 {
+		node, _ := layer.FindAttributeByID(s)
+		if node == nil {
 			t.Errorf("Cannot find %s", s)
 		}
 	}

@@ -18,12 +18,12 @@ import (
 	"io"
 	"os"
 
-	"github.com/bserdar/digraph"
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func init() {
@@ -73,12 +73,11 @@ var ingestJSONCmd = &cobra.Command{
 		}
 
 		baseID, _ := cmd.Flags().GetString("id")
-		root, err := jsoningest.IngestStream(&ingester, baseID, input)
+		target := graph.NewOCGraph()
+		_, err = jsoningest.IngestStream(&ingester, target, baseID, input)
 		if err != nil {
 			failErr(err)
 		}
-		target := digraph.New()
-		target.AddNode(root)
 		outFormat, _ := cmd.Flags().GetString("output")
 		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
 		err = OutputIngestedGraph(outFormat, target, os.Stdout, includeSchema)

@@ -22,12 +22,13 @@ import (
 	"github.com/bserdar/jsonom"
 	"github.com/cloudprivacylabs/lsa/pkg/gl"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 // ExportOptions are used to produce the output from the document
 type ExportOptions struct {
 	// BuildNodeKeyFunc builds a node key from the node
-	BuildNodeKeyFunc func(ls.Node) (string, bool, error)
+	BuildNodeKeyFunc func(graph.Node) (string, bool, error)
 
 	// If ExportTypeProperty is set, exports "@type" properties that
 	// have non-LS related types
@@ -38,21 +39,21 @@ type ExportOptions struct {
 // schema node and the doc node. If the doc node does not have a
 // schema node, it is not exported. The function `f` should decide
 // what key to use
-func GetBuildNodeKeyBySchemaNodeFunc(f func(schemaNode, docNode ls.Node) (string, bool, error)) func(ls.Node) (string, bool, error) {
-	return func(node ls.Node) (string, bool, error) {
-		schemaNodes := node.OutWith(ls.InstanceOfTerm).Targets().All()
+func GetBuildNodeKeyBySchemaNodeFunc(f func(schemaNode, docNode graph.Node) (string, bool, error)) func(graph.Node) (string, bool, error) {
+	return func(node graph.Node) (string, bool, error) {
+		schemaNodes := graph.TargetNodes(node.GetEdgesWithLabel(graph.OutgoingEdge, ls.InstanceOfTerm))
 		if len(schemaNodes) != 1 {
 			return "", false, nil
 		}
-		return f(schemaNodes[0].(ls.Node), node)
+		return f(schemaNodes[0].(graph.Node), node)
 	}
 }
 
 // GetBuildNodeKeyExprFunc returns a function that builds node keys
 // using an expression. The expression should be a closure getting a
 // node argument
-func GetBuildNodeKeyExprFunc(closure gl.Closure) func(ls.Node) (string, bool, error) {
-	return func(node ls.Node) (string, bool, error) {
+func GetBuildNodeKeyExprFunc(closure gl.Closure) func(graph.Node) (string, bool, error) {
+	return func(node graph.Node) (string, bool, error) {
 		value, err := closure.Evaluate(gl.ValueOf(node), gl.NewScope())
 		if err != nil {
 			return "", false, err
@@ -69,7 +70,7 @@ func GetBuildNodeKeyExprFunc(closure gl.Closure) func(ls.Node) (string, bool, er
 	}
 }
 
-func (options ExportOptions) BuildNodeKey(node ls.Node) (string, bool, error) {
+func (options ExportOptions) BuildNodeKey(node graph.Node) (string, bool, error) {
 	if options.BuildNodeKeyFunc != nil {
 		return options.BuildNodeKeyFunc(node)
 	}
@@ -79,8 +80,8 @@ func (options ExportOptions) BuildNodeKey(node ls.Node) (string, bool, error) {
 // DefaultBuildNodeKeyFunc returns the attribute name term property
 // from the node if it exists. If not, it looks at the attributeName
 // of the node reached by instanceOf edge. If none found it return false
-func DefaultBuildNodeKeyFunc(node ls.Node) (string, bool, error) {
-	v := node.GetProperties()[ls.AttributeNameTerm]
+func DefaultBuildNodeKeyFunc(node graph.Node) (string, bool, error) {
+	v := ls.AsPropertyValue(node.GetProperty(ls.AttributeNameTerm))
 	if v != nil {
 		if v.IsString() {
 			return v.AsString(), true, nil
@@ -92,7 +93,7 @@ func DefaultBuildNodeKeyFunc(node ls.Node) (string, bool, error) {
 	found := false
 	foundLabel := ""
 	for _, inst := range ls.InstanceOf(node) {
-		v := inst.GetProperties()[ls.AttributeNameTerm]
+		v := ls.AsPropertyValue(inst.GetProperty(ls.AttributeNameTerm))
 		if v != nil {
 			if found {
 				return "", false, nil
@@ -122,8 +123,8 @@ func (e ErrInvalidBooleanValue) Error() string {
 
 // Export the document subtree to the target. The returned result is
 // OM, which respects element ordering
-func Export(node ls.Node, options ExportOptions) (jsonom.Node, error) {
-	return exportJSON(node, options, map[ls.Node]struct{}{})
+func Export(node graph.Node, options ExportOptions) (jsonom.Node, error) {
+	return exportJSON(node, options, map[graph.Node]struct{}{})
 }
 
 type ErrValueExpected struct {
@@ -144,14 +145,14 @@ func filterTypes(types []string) []string {
 	return ret
 }
 
-func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) (jsonom.Node, error) {
+func exportJSON(node graph.Node, options ExportOptions, seen map[graph.Node]struct{}) (jsonom.Node, error) {
 	// Loop protection
 	if _, exists := seen[node]; exists {
 		return nil, nil
 	}
 	seen[node] = struct{}{}
 
-	nodeType := node.GetTypes()
+	nodeType := node.GetLabels()
 	if !nodeType.Has(ls.DocumentNodeTerm) {
 		// Not a document node
 		return nil, nil
@@ -174,15 +175,15 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 	}
 
 	switch {
-	case types.Has(ls.AttributeTypes.Object):
+	case types.Has(ls.AttributeTypeObject):
 		ret := jsonom.NewObject()
 		if t := getTypes(); t != nil {
 			ret.Set("@type", t)
 		}
-		gnodes := node.OutWith(ls.HasTerm).Targets().All()
-		nodes := make([]ls.Node, 0, len(gnodes))
+		gnodes := graph.TargetNodes(node.GetEdgesWithLabel(graph.OutgoingEdge, ls.HasTerm))
+		nodes := make([]graph.Node, 0, len(gnodes))
 		for _, node := range gnodes {
-			nodes = append(nodes, node.(ls.Node))
+			nodes = append(nodes, node.(graph.Node))
 		}
 		ls.SortNodes(nodes)
 		for _, nextNode := range nodes {
@@ -200,12 +201,12 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 		}
 		return ret, nil
 
-	case types.Has(ls.AttributeTypes.Array):
+	case types.Has(ls.AttributeTypeArray):
 		ret := jsonom.NewArray()
-		gnodes := node.OutWith(ls.HasTerm).Targets().All()
-		nodes := make([]ls.Node, 0, len(gnodes))
+		gnodes := graph.TargetNodes(node.GetEdgesWithLabel(graph.OutgoingEdge, ls.HasTerm))
+		nodes := make([]graph.Node, 0, len(gnodes))
 		for _, node := range gnodes {
-			nodes = append(nodes, node.(ls.Node))
+			nodes = append(nodes, node.(graph.Node))
 		}
 		ls.SortNodes(nodes)
 		for _, nextNode := range nodes {
@@ -217,8 +218,8 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 		}
 		return ret, nil
 
-	case types.Has(ls.AttributeTypes.Value):
-		value := node.GetValue()
+	case types.Has(ls.AttributeTypeValue):
+		value := ls.GetRawNodeValue(node)
 		if value == nil {
 			return nil, nil
 		}
@@ -231,13 +232,13 @@ func exportJSON(node ls.Node, options ExportOptions, seen map[ls.Node]struct{}) 
 			if valueStr == "false" {
 				return jsonom.BoolValue(false), nil
 			}
-			return nil, ErrInvalidBooleanValue{NodeID: node.GetID(), Value: valueStr}
+			return nil, ErrInvalidBooleanValue{NodeID: ls.GetNodeID(node), Value: valueStr}
 		case types.Has(StringTypeTerm):
 			return jsonom.StringValue(valueStr), nil
 		case types.Has(NumberTypeTerm), types.Has(IntegerTypeTerm):
 			return jsonom.NewValue(json.Number(valueStr)), nil
 		case types.Has(ObjectTypeTerm), types.Has(ArrayTypeTerm):
-			return nil, ErrValueExpected{NodeID: node.GetID()}
+			return nil, ErrValueExpected{NodeID: ls.GetNodeID(node)}
 		default:
 			return jsonom.NewValue(valueStr), nil
 		}

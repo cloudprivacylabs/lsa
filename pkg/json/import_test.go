@@ -23,6 +23,7 @@ import (
 	"github.com/santhosh-tekuri/jsonschema/v5"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func TestAnnotations(t *testing.T) {
@@ -50,8 +51,8 @@ func TestAnnotations(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	node := layers[0].Layer.GetSchemaRootNode().NextWith(ls.LayerTerms.AttributeList)[0].(ls.Node)
-	if node.GetProperties()["field"].AsString() != "value" {
+	node := graph.NextNodesWith(layers[0].Layer.GetSchemaRootNode(), ls.ObjectAttributeListTerm)[0]
+	if ls.AsPropertyValue(node.GetProperty("field")).AsString() != "value" {
 		t.Errorf("Wrong value: %+v", node)
 	}
 }
@@ -78,19 +79,19 @@ func TestRefs(t *testing.T) {
 	}
 	// Array must have a reference to item
 	root := graphs[0].Layer.GetSchemaRootNode()
-	if !root.GetTypes().Has(ls.AttributeTypes.Array) {
-		t.Errorf("%s: Not an array", root.GetID())
+	if !root.GetLabels().Has(ls.AttributeTypeArray) {
+		t.Errorf("%s: Not an array", ls.GetNodeID(root))
 	}
-	items := root.OutWith(ls.LayerTerms.ArrayItems).Targets().All()
+	items := graph.NextNodesWith(root, ls.ArrayItemsTerm)
 	if len(items) != 1 {
 		t.Errorf("Wrong items")
 	}
-	itemNode := items[0].(ls.Node)
-	if !itemNode.GetTypes().Has(ls.AttributeTypes.Reference) {
+	itemNode := items[0]
+	if !itemNode.GetLabels().Has(ls.AttributeTypeReference) {
 		t.Errorf("Items not a ref")
 	}
-	if itemNode.GetProperties()[ls.LayerTerms.Reference].AsString() != "http://item" {
-		t.Errorf("Wrong ref: %v", itemNode.GetProperties())
+	if ls.AsPropertyValue(itemNode.GetProperty(ls.ReferenceTerm)).AsString() != "http://item" {
+		t.Errorf("Wrong ref: %v", itemNode)
 	}
 }
 

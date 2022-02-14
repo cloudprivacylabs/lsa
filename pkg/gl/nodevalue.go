@@ -2,19 +2,20 @@ package gl
 
 import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 // NodeValue is zero or mode nodes on the stack
 type NodeValue struct {
 	basicValue
-	Nodes ls.NodeSet
+	Nodes NodeSet
 }
 
-func NewNodeValue(nodes ...ls.Node) NodeValue {
-	return NodeValue{Nodes: ls.NewNodeSet(nodes...)}
+func NewNodeValue(nodes ...graph.Node) NodeValue {
+	return NodeValue{Nodes: NewNodeSet(nodes...)}
 }
 
-func (n NodeValue) oneNode() (ls.Node, error) {
+func (n NodeValue) oneNode() (graph.Node, error) {
 	switch n.Nodes.Len() {
 	case 0:
 		return nil, ErrNoNodesInResult
@@ -25,11 +26,10 @@ func (n NodeValue) oneNode() (ls.Node, error) {
 }
 
 var nodeSelectors = map[string]func(NodeValue) (Value, error){
-	"id":             oneNode(func(node ls.Node) (Value, error) { return StringValue(node.GetID()), nil }),
+	"id":             oneNode(func(node graph.Node) (Value, error) { return StringValue(ls.GetNodeID(node)), nil }),
 	"length":         func(node NodeValue) (Value, error) { return ValueOf(node.Nodes.Len()), nil },
-	"type":           oneNode(func(node ls.Node) (Value, error) { return StringSliceValue(node.GetTypes().Slice()), nil }),
-	"value":          oneNode(func(node ls.Node) (Value, error) { return ValueOf(node.GetValue()), nil }),
-	"properties":     oneNode(func(node ls.Node) (Value, error) { return PropertiesValue{Properties: node.GetProperties()}, nil }),
+	"type":           oneNode(func(node graph.Node) (Value, error) { return StringSliceValue(node.GetLabels().Slice()), nil }),
+	"value":          oneNode(func(node graph.Node) (Value, error) { v, _ := ls.GetNodeValue(node); return ValueOf(v), nil }),
 	"firstReachable": nodeFirstReachableFunc,
 	"first":          nodeFirstReachableFunc,
 	"firstDoc":       nodeFirstReachableDocNodeFunc,

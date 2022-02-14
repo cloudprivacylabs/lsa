@@ -15,32 +15,38 @@
 package ls
 
 import (
-	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 // GetSliceByTermsFunc is used in the Slice function to select nodes
 // by the properties it contains. If includeAttributeNodes is true,
 // attributes nodes are included unconditionally even though the node
 // does not contain any of the terms.
-func GetSliceByTermsFunc(includeTerms []string, includeAttributeNodes bool) func(*Layer, Node) Node {
+func GetSliceByTermsFunc(includeTerms []string, includeAttributeNodes bool) func(*Layer, graph.Node) graph.Node {
 	incl := make(map[string]struct{})
 	for _, x := range includeTerms {
 		incl[x] = struct{}{}
 	}
-	return func(layer *Layer, nd Node) Node {
+	return func(layer *Layer, nd graph.Node) graph.Node {
 		includeNode := false
 		if includeAttributeNodes && IsAttributeNode(nd) {
 			includeNode = true
 		}
-		properties := make(map[string]*PropertyValue)
-		for k, v := range nd.GetProperties() {
-			if _, ok := incl[k]; ok {
+		properties := make(map[string]interface{})
+		hasProperties := false
+		nd.ForEachProperty(func(k string, v interface{}) bool {
+			if prop, ok := v.(*PropertyValue); ok {
+				if _, ok := incl[k]; ok {
+					properties[k] = prop
+					hasProperties = true
+				}
+			} else {
 				properties[k] = v
 			}
-		}
-		if len(properties) > 0 || includeNode {
-			newNode := nd.Clone().(*node)
-			newNode.properties = properties
+			return true
+		})
+		if hasProperties || includeNode {
+			newNode := layer.NewNode(nd.GetLabels().Slice(), properties)
 			return newNode
 		}
 		return nil
@@ -48,42 +54,36 @@ func GetSliceByTermsFunc(includeTerms []string, includeAttributeNodes bool) func
 }
 
 // IncludeAllNodesInSliceFunc includes all the nodes in the slice
-var IncludeAllNodesInSliceFunc = func(layer *Layer, nd Node) Node {
-	return nd.Clone().(*node)
+var IncludeAllNodesInSliceFunc = func(layer *Layer, nd graph.Node) graph.Node {
+	return CloneNode(nd, layer)
 }
 
-func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, Node) Node) *Layer {
+func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, graph.Node) graph.Node) *Layer {
 	ret := NewLayer()
 	ret.SetLayerType(layerType)
+
 	sourceRoot := layer.GetSchemaRootNode()
-	var rootNode Node
-	if sourceRoot != nil {
-		rootNode = nodeFilter(ret, layer.GetSchemaRootNode())
+	if sourceRoot == nil {
+		return ret
 	}
+	rootNode := nodeFilter(ret, sourceRoot)
 	if rootNode == nil {
-		rootNode = NewNode("")
-		ret.AddNode(rootNode)
-		if sourceRoot != nil {
-			rootNode.SetID(sourceRoot.GetID())
-			rootNode.GetTypes().Set(sourceRoot.GetTypes().Slice()...)
-		}
+		rootNode = CloneNode(sourceRoot, ret)
 	}
-	if sourceRoot != nil {
-		for targets := sourceRoot.Out(); targets.HasNext(); {
-			edge := targets.Next().(Edge)
-			if IsAttributeTreeEdge(edge) {
-				newNode := slice(ret, edge.GetTo().(Node), nodeFilter, map[Node]struct{}{})
-				if newNode != nil {
-					Connect(rootNode, newNode, edge.GetLabelStr())
-				}
+	for targets := sourceRoot.GetEdges(graph.OutgoingEdge); targets.Next(); {
+		edge := targets.Edge()
+		if IsAttributeTreeEdge(edge) {
+			newNode := slice(ret, edge.GetTo(), nodeFilter, map[graph.Node]struct{}{})
+			if newNode != nil {
+				ret.NewEdge(rootNode, newNode, edge.GetLabel(), nil)
 			}
 		}
 	}
-	Connect(ret.GetLayerInfoNode(), rootNode, LayerRootTerm)
+	ret.NewEdge(ret.GetLayerRootNode(), rootNode, LayerRootTerm, nil)
 	return ret
 }
 
-func slice(targetLayer *Layer, sourceNode Node, nodeFilter func(*Layer, Node) Node, ctx map[Node]struct{}) Node {
+func slice(targetLayer *Layer, sourceNode graph.Node, nodeFilter func(*Layer, graph.Node) graph.Node, ctx map[graph.Node]struct{}) graph.Node {
 	// Avoid loops
 	if _, seen := ctx[sourceNode]; seen {
 		return nil
@@ -96,15 +96,18 @@ func slice(targetLayer *Layer, sourceNode Node, nodeFilter func(*Layer, Node) No
 	// Try to filter first. This may return nil
 	targetNode := nodeFilter(targetLayer, sourceNode)
 
-	for edges := sourceNode.Out(); edges.HasNext(); {
-		edge := edges.Next().(Edge)
-		newTo := slice(targetLayer, edge.GetTo().(Node), nodeFilter, ctx)
+	for edges := sourceNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		edge := edges.Edge()
+		newTo := slice(targetLayer, edge.GetTo(), nodeFilter, ctx)
 		if newTo != nil {
 			// If targetNode was filtered out, it has to be included now
 			if targetNode == nil {
-				targetNode = targetLayer.NewNode(sourceNode.GetID(), sourceNode.GetTypes().Slice()...)
+				targetNode = targetLayer.NewNode(sourceNode.GetLabels().Slice(), nil)
+				if len(GetAttributeID(sourceNode)) > 0 {
+					SetAttributeID(targetNode, GetAttributeID(sourceNode))
+				}
 			}
-			digraph.Connect(targetNode, newTo, edge.Clone())
+			targetLayer.NewEdge(targetNode, newTo, edge.GetLabel(), CloneProperties(edge))
 		}
 	}
 	return targetNode

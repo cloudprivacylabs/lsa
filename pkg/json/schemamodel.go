@@ -19,6 +19,7 @@ import (
 	"strings"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 	"github.com/cloudprivacylabs/lsa/pkg/validators"
 )
 
@@ -47,12 +48,12 @@ type objectSchema struct {
 	required   []string
 }
 
-func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer, interner ls.Interner) (ls.Node, error) {
+func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer, interner ls.Interner) (graph.Node, error) {
 	return schemaAttrs(entityId, append(name, "*"), a.items, layer, interner)
 }
 
-func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer, interner ls.Interner) ([]ls.Node, error) {
-	ret := make([]ls.Node, 0, len(obj.properties))
+func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer, interner ls.Interner) ([]graph.Node, error) {
+	ret := make([]graph.Node, 0, len(obj.properties))
 	for k, v := range obj.properties {
 		nm := append(name, k)
 		node, err := schemaAttrs(entityId, nm, v, layer, interner)
@@ -64,38 +65,38 @@ func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer, int
 	return ret, nil
 }
 
-func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer, interner ls.Interner) (ls.Node, error) {
+func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer, interner ls.Interner) (graph.Node, error) {
 	id := entityId + "#" + strings.Join(name, ".")
-	newNode := layer.NewNode(id)
+	newNode := layer.NewNode(nil, nil)
+	ls.SetNodeID(newNode, id)
 	return buildSchemaAttrs(entityId, name, attr, layer, newNode, interner)
 }
 
-func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer, newNode ls.Node, interner ls.Interner) (ls.Node, error) {
-	properties := newNode.GetProperties()
+func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer, newNode graph.Node, interner ls.Interner) (graph.Node, error) {
 	if len(attr.format) > 0 {
-		properties[validators.JsonFormatTerm] = ls.StringPropertyValue(attr.format)
+		newNode.SetProperty(validators.JsonFormatTerm, ls.StringPropertyValue(attr.format))
 	}
 	if len(attr.pattern) > 0 {
-		properties[validators.PatternTerm] = ls.StringPropertyValue(attr.pattern)
+		newNode.SetProperty(validators.PatternTerm, ls.StringPropertyValue(attr.pattern))
 	}
 	if len(attr.description) > 0 {
-		properties[ls.DescriptionTerm] = ls.StringPropertyValue(attr.description)
+		newNode.SetProperty(ls.DescriptionTerm, ls.StringPropertyValue(attr.description))
 	}
 	if len(attr.typ) > 0 {
-		properties[ls.TargetType] = ls.StringSlicePropertyValue(attr.typ)
+		newNode.SetProperty(ls.TargetType, ls.StringSlicePropertyValue(attr.typ))
 	}
 	if len(attr.key) > 0 {
-		properties[ls.AttributeNameTerm] = ls.StringPropertyValue(attr.key)
+		newNode.SetProperty(ls.AttributeNameTerm, ls.StringPropertyValue(attr.key))
 	}
 	if len(attr.enum) > 0 {
 		elements := make([]string, 0, len(attr.enum))
 		for _, v := range attr.enum {
 			elements = append(elements, interner.Intern(fmt.Sprint(v)))
 		}
-		properties[validators.EnumTerm] = ls.StringSlicePropertyValue(elements)
+		newNode.SetProperty(validators.EnumTerm, ls.StringSlicePropertyValue(elements))
 	}
 	if attr.defaultValue != nil {
-		properties[ls.DefaultValueTerm] = ls.StringPropertyValue(*attr.defaultValue)
+		newNode.SetProperty(ls.DefaultValueTerm, ls.StringPropertyValue(*attr.defaultValue))
 	}
 	for k, v := range attr.annotations {
 		if err := ls.GetTermMarshaler(k).UnmarshalJSON(layer, k, v, newNode, interner); err != nil {
@@ -104,37 +105,37 @@ func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer
 	}
 
 	if len(attr.reference) > 0 {
-		newNode.GetTypes().Add(ls.AttributeTypes.Reference)
-		properties[ls.LayerTerms.Reference] = ls.StringPropertyValue(attr.reference)
+		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeReference))
+		newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(attr.reference))
 		return newNode, nil
 	}
 
 	if attr.object != nil {
-		newNode.GetTypes().Add(ls.AttributeTypes.Object)
+		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeObject))
 		attrs, err := attr.object.itr(entityId, name, layer, interner)
 		if err != nil {
 			return nil, err
 		}
 		for _, x := range attrs {
-			ls.Connect(newNode, x, ls.LayerTerms.AttributeList)
+			layer.NewEdge(newNode, x, ls.ObjectAttributeListTerm, nil)
 		}
 		if len(attr.object.required) > 0 {
-			properties[validators.RequiredTerm] = ls.StringSlicePropertyValue(attr.object.required)
+			newNode.SetProperty(validators.RequiredTerm, ls.StringSlicePropertyValue(attr.object.required))
 		}
 		return newNode, nil
 	}
 	if attr.array != nil {
-		newNode.GetTypes().Add(ls.AttributeTypes.Array)
+		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeArray))
 		n, err := attr.array.itr(entityId, name, layer, interner)
 		if err != nil {
 			return nil, err
 		}
-		ls.Connect(newNode, n, ls.LayerTerms.ArrayItems)
+		layer.NewEdge(newNode, n, ls.ArrayItemsTerm, nil)
 		return newNode, nil
 	}
 
-	buildChoices := func(arr []schemaProperty) ([]ls.Node, error) {
-		elements := make([]ls.Node, 0, len(arr))
+	buildChoices := func(arr []schemaProperty) ([]graph.Node, error) {
+		elements := make([]graph.Node, 0, len(arr))
 		for i, x := range arr {
 			newName := append(name, fmt.Sprint(i))
 			node, err := schemaAttrs(entityId, newName, x, layer, interner)
@@ -146,27 +147,27 @@ func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer
 		return elements, nil
 	}
 	if len(attr.oneOf) > 0 {
-		newNode.GetTypes().Add(ls.AttributeTypes.Polymorphic)
+		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypePolymorphic))
 		choices, err := buildChoices(attr.oneOf)
 		if err != nil {
 			return nil, err
 		}
 		for _, x := range choices {
-			ls.Connect(newNode, x, ls.LayerTerms.OneOf)
+			layer.NewEdge(newNode, x, ls.OneOfTerm, nil)
 		}
 		return newNode, nil
 	}
 	if len(attr.allOf) > 0 {
-		newNode.GetTypes().Add(ls.AttributeTypes.Composite)
+		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeComposite))
 		choices, err := buildChoices(attr.oneOf)
 		if err != nil {
 			return nil, err
 		}
 		for _, x := range choices {
-			ls.Connect(newNode, x, ls.LayerTerms.AllOf)
+			layer.NewEdge(newNode, x, ls.AllOfTerm, nil)
 		}
 		return newNode, nil
 	}
-	newNode.GetTypes().Add(ls.AttributeTypes.Value)
+	newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeValue))
 	return newNode, nil
 }

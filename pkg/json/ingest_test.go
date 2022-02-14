@@ -19,11 +19,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bserdar/digraph"
 	"github.com/piprate/json-gold/ld"
 	"github.com/santhosh-tekuri/jsonschema/v5"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func expand(t *testing.T, in string) []interface{} {
@@ -88,20 +88,30 @@ func TestIngestFlat(t *testing.T) {
 			OnlySchemaAttributes: false,
 		},
 	}
-	root, err := IngestBytes(&ingester, "http://base", []byte(inputStr))
+	target := graph.NewOCGraph()
+	_, err = IngestBytes(&ingester, target, "http://base", []byte(inputStr))
 	if err != nil {
 		t.Error(err)
 	}
-	target := digraph.New()
-	target.AddNode(root)
-	ix := target.GetIndex()
+
+	findNodes := func(nodeId string) []graph.Node {
+		nodes := []graph.Node{}
+		for nx := target.GetNodes(); nx.Next(); {
+			node := nx.Node()
+			if ls.GetNodeID(node) == nodeId {
+				nodes = append(nodes, node)
+			}
+		}
+		return nodes
+	}
+
 	checkNodeValue := func(nodeId string, expected interface{}) {
-		nodes := ix.NodesByLabelSlice(nodeId)
+		nodes := findNodes(nodeId)
 		if len(nodes) == 0 {
 			t.Errorf("node not found: %s", nodeId)
 		}
-		if nodes[0].(ls.Node).GetValue() != expected {
-			t.Errorf("Wrong value for %s: %s", nodeId, nodes[0].(ls.Node).GetValue())
+		if ls.GetRawNodeValue(nodes[0]) != expected {
+			t.Errorf("Wrong value for %s: %s", nodeId, ls.GetRawNodeValue(nodes[0]))
 		}
 	}
 	checkNodeValue("http://base.field1", "value1")
@@ -116,18 +126,17 @@ func TestIngestFlat(t *testing.T) {
 			OnlySchemaAttributes: true,
 		},
 	}
-	root, err = IngestBytes(&ingester, "http://base", []byte(inputStr))
+	target = graph.NewOCGraph()
+	_, err = IngestBytes(&ingester, target, "http://base", []byte(inputStr))
 	if err != nil {
 		t.Error(err)
 	}
-	target = digraph.New()
-	target.AddNode(root)
-	ix = target.GetIndex()
 	checkNodeValue("http://base.field1", "value1")
 	checkNodeValue("http://base.field2", "2")
 	checkNodeValue("http://base.field3", "true")
 	checkNodeValue("http://base.field4", nil)
-	if len(ix.NodesByLabelSlice("http://base.field5")) != 0 {
+
+	if len(findNodes("http://base.field5")) != 0 {
 		t.Errorf("Unexpected node found")
 	}
 
@@ -173,15 +182,24 @@ func TestIngestRootAnnotation(t *testing.T) {
 			OnlySchemaAttributes: true,
 		},
 	}
-	root, err := IngestBytes(&ingester, "http://base", []byte(inputStr))
+	target := graph.NewOCGraph()
+	_, err = IngestBytes(&ingester, target, "http://base", []byte(inputStr))
 	if err != nil {
 		t.Error(err)
 	}
-	target := digraph.New()
-	target.AddNode(root)
-	ix := target.GetIndex()
-	nodes := ix.NodesByLabelSlice("http://base")
-	t.Logf("%+v", nodes[0].(ls.Node).GetProperties())
+
+	findNodes := func(nodeId string) []graph.Node {
+		nodes := []graph.Node{}
+		for nx := target.GetNodes(); nx.Next(); {
+			node := nx.Node()
+			if ls.GetNodeID(node) == nodeId {
+				nodes = append(nodes, node)
+			}
+		}
+		return nodes
+	}
+	nodes := findNodes("http://base")
+	t.Logf("%+v", nodes[0])
 }
 
 // func TestIngestObject(t *testing.T) {

@@ -14,6 +14,10 @@
 
 package ls
 
+import (
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+)
+
 // NodeCompiler interface represents term compilation algorithm when
 // the term is a node.
 //
@@ -25,7 +29,7 @@ type NodeCompiler interface {
 	// CompileNode gets a node and compiles the associated term on that
 	// node. It should store the compiled state into node.Compiled with
 	// the an opaque key
-	CompileNode(*Layer, Node) error
+	CompileNode(*Layer, graph.Node) error
 }
 
 // EdgeCompiler interface represents term compilation algorithm when
@@ -37,13 +41,13 @@ type EdgeCompiler interface {
 	// CompileEdge gets an edge and compiles the associated term on that
 	// edge. It should store tje compiled state into edge.Compiled with
 	// an opaque key
-	CompileEdge(*Layer, Edge) error
+	CompileEdge(*Layer, graph.Edge) error
 }
 
 // CompilablePropertyContainer contains properties and a compiled data map
 type CompilablePropertyContainer interface {
-	PropertyContainer
-	GetCompiledProperties() *CompiledProperties
+	GetProperty(string) (interface{}, bool)
+	SetProperty(string, interface{})
 }
 
 // TermCompiler interface represents term compilation algorithm. This
@@ -61,8 +65,8 @@ type TermCompiler interface {
 type emptyCompiler struct{}
 
 // CompileNode returns the value unmodified
-func (emptyCompiler) CompileNode(*Layer, Node) error { return nil }
-func (emptyCompiler) CompileEdge(*Layer, Edge) error { return nil }
+func (emptyCompiler) CompileNode(*Layer, graph.Node) error { return nil }
+func (emptyCompiler) CompileEdge(*Layer, graph.Edge) error { return nil }
 func (emptyCompiler) CompileTerm(CompilablePropertyContainer, string, *PropertyValue) error {
 	return nil
 }

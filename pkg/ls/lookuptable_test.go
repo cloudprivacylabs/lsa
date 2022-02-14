@@ -17,6 +17,8 @@ package ls
 import (
 	"encoding/json"
 	"testing"
+
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func TestLDMarshal(t *testing.T) {
@@ -55,27 +57,27 @@ func TestLDMarshal(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	ix := layer.GetIndex()
-	attr := ix.NodesByLabelSlice("a1")[0]
-	tableRoot := attr.NextWith(LookupTableTerm)[0]
+	attr, _ := layer.FindAttributeByID("a1")
+	tableRoot := graph.NextNodesWith(attr, LookupTableTerm)[0]
 	t.Log(tableRoot)
 	// Expect two elements
-	elements := tableRoot.NextWith(LookupTableElementsTerm)
+	elements := graph.NextNodesWith(tableRoot, LookupTableElementsTerm)
 	if len(elements) != 2 {
 		t.Errorf("Expecting 2 elements: %d", len(elements))
 	}
-	if elements[0].(Node).GetProperties()[LookupTableElementOptionsTerm].AsStringSlice()[0] != "a" {
-		t.Errorf("Wrong options: %v", elements[0].(Node).GetProperties())
+	SortNodes(elements)
+	if AsPropertyValue(elements[0].GetProperty(LookupTableElementOptionsTerm)).AsStringSlice()[0] != "a" {
+		t.Errorf("Wrong options: %v", elements[0])
 	}
-	if elements[0].(Node).GetProperties()[LookupTableElementValueTerm].AsString() != "a" {
-		t.Errorf("Wrong value: %v", elements[0].(Node).GetProperties())
+	if AsPropertyValue(elements[0].GetProperty(LookupTableElementValueTerm)).AsString() != "a" {
+		t.Errorf("Wrong value: %v", elements[0])
 	}
-	if elements[1].(Node).GetProperties()[LookupTableElementOptionsTerm].AsStringSlice()[0] != "b" ||
-		elements[1].(Node).GetProperties()[LookupTableElementOptionsTerm].AsStringSlice()[1] != "c" {
-		t.Errorf("Wrong options: %v", elements[1].(Node).GetProperties())
+	if AsPropertyValue(elements[1].GetProperty(LookupTableElementOptionsTerm)).AsStringSlice()[0] != "b" ||
+		AsPropertyValue(elements[1].GetProperty(LookupTableElementOptionsTerm)).AsStringSlice()[1] != "c" {
+		t.Errorf("Wrong options: %v", elements[1])
 	}
-	if elements[1].(Node).GetProperties()[LookupTableElementValueTerm].AsString() != "b" {
-		t.Errorf("Wrong value: %v", elements[1].(Node).GetProperties())
+	if AsPropertyValue(elements[1].GetProperty(LookupTableElementValueTerm)).AsString() != "b" {
+		t.Errorf("Wrong value: %v", elements[1])
 	}
 }
 
@@ -121,27 +123,27 @@ func TestLDMarshalTables(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	ix := layer.GetIndex()
-	attr := ix.NodesByLabelSlice("a1")[0]
-	tableRoot := attr.NextWith(LookupTableTerm)[0]
+	attr, _ := layer.FindAttributeByID("a1")
+	tableRoot := graph.NextNodesWith(attr, LookupTableTerm)[0]
 	t.Log(tableRoot)
 	// Expect two elements
-	elements := tableRoot.NextWith(LookupTableElementsTerm)
+	elements := graph.NextNodesWith(tableRoot, LookupTableElementsTerm)
 	if len(elements) != 2 {
 		t.Errorf("Expecting 2 elements: %d", len(elements))
 	}
-	if elements[0].(Node).GetProperties()[LookupTableElementOptionsTerm].AsStringSlice()[0] != "a" {
-		t.Errorf("Wrong options: %v", elements[0].(Node).GetProperties())
+	SortNodes(elements)
+	if AsPropertyValue(elements[0].GetProperty(LookupTableElementOptionsTerm)).AsStringSlice()[0] != "a" {
+		t.Errorf("Wrong options: %v", elements[0])
 	}
-	if elements[0].(Node).GetProperties()[LookupTableElementValueTerm].AsString() != "a" {
-		t.Errorf("Wrong value: %v", elements[0].(Node).GetProperties())
+	if AsPropertyValue(elements[0].GetProperty(LookupTableElementValueTerm)).AsString() != "a" {
+		t.Errorf("Wrong value: %v", elements[0])
 	}
-	if elements[1].(Node).GetProperties()[LookupTableElementOptionsTerm].AsStringSlice()[0] != "b" ||
-		elements[1].(Node).GetProperties()[LookupTableElementOptionsTerm].AsStringSlice()[1] != "c" {
-		t.Errorf("Wrong options: %v", elements[1].(Node).GetProperties())
+	if AsPropertyValue(elements[1].GetProperty(LookupTableElementOptionsTerm)).AsStringSlice()[0] != "b" ||
+		AsPropertyValue(elements[1].GetProperty(LookupTableElementOptionsTerm)).AsStringSlice()[1] != "c" {
+		t.Errorf("Wrong options: %v", elements[1])
 	}
-	if elements[1].(Node).GetProperties()[LookupTableElementValueTerm].AsString() != "b" {
-		t.Errorf("Wrong value: %v", elements[1].(Node).GetProperties())
+	if AsPropertyValue(elements[1].GetProperty(LookupTableElementValueTerm)).AsString() != "b" {
+		t.Errorf("Wrong value: %v", elements[1])
 	}
 }
 
@@ -172,16 +174,15 @@ func TestLDMarshalExt(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	ix := layer.GetIndex()
-	attr := ix.NodesByLabelSlice("a1")[0]
-	tableRoot := attr.NextWith(LookupTableTerm)[0]
+	attr, _ := layer.FindAttributeByID("a1")
+	tableRoot := graph.NextNodesWith(attr, LookupTableTerm)[0]
 	t.Log(tableRoot)
 	// Expect no elements
-	elements := tableRoot.NextWith(LookupTableElementsTerm)
+	elements := graph.NextNodesWith(tableRoot, LookupTableElementsTerm)
 	if len(elements) != 0 {
 		t.Errorf("Expecting 0 elements: %d", len(elements))
 	}
-	if tableRoot.(Node).GetID() != "http://tbl1" {
+	if GetNodeID(tableRoot) != "http://tbl1" {
 		t.Errorf("Wrong ID: %+v", tableRoot)
 	}
 }

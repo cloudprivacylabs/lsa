@@ -21,9 +21,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/bserdar/digraph"
-
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 type HorizontalAlignment string
@@ -121,7 +120,7 @@ func DefaultOptions() Options {
 }
 
 // SchemaNodeRenderer renders the node as an HTML table
-func SchemaNodeRenderer(ID string, node ls.Node, options *Options) string {
+func SchemaNodeRenderer(ID string, node graph.Node, options *Options) string {
 	to := options.Table
 	to.ID = ID
 	wr := &bytes.Buffer{}
@@ -130,19 +129,22 @@ func SchemaNodeRenderer(ID string, node ls.Node, options *Options) string {
 
 	io.WriteString(wr, "<TR>")
 	io.WriteString(wr, options.TD.String())
-	io.WriteString(wr, node.GetID())
+	io.WriteString(wr, ls.GetNodeID(node))
 	io.WriteString(wr, "</TD></TR>")
 
 	io.WriteString(wr, "<TR>")
 	io.WriteString(wr, options.TD.String())
-	for k, v := range node.GetProperties() {
-		io.WriteString(wr, fmt.Sprintf("%s=%v<br/>", k, v))
-	}
+	node.ForEachProperty(func(k string, v interface{}) bool {
+		if pv, ok := v.(*ls.PropertyValue); ok {
+			io.WriteString(wr, fmt.Sprintf("%s=%v<br/>", k, pv))
+		}
+		return true
+	})
 	io.WriteString(wr, "</TD></TR></TABLE>>];\n")
 	return wr.String()
 }
 
-func DocNodeRenderer(ID string, node ls.Node, options *Options) string {
+func DocNodeRenderer(ID string, node graph.Node, options *Options) string {
 	to := options.Table
 	to.ID = ID
 	wr := &bytes.Buffer{}
@@ -151,21 +153,23 @@ func DocNodeRenderer(ID string, node ls.Node, options *Options) string {
 
 	io.WriteString(wr, "<TR>")
 	io.WriteString(wr, options.TD.String())
-	io.WriteString(wr, node.GetID())
+	io.WriteString(wr, ls.GetNodeID(node))
 
 	io.WriteString(wr, "</TD></TR>")
 
 	io.WriteString(wr, "<TR>")
 	io.WriteString(wr, options.TD.String())
-	if node.GetValue() == nil {
+	if ls.GetRawNodeValue(node) == nil {
 		io.WriteString(wr, "@value=null<br/>")
 	} else {
-		io.WriteString(wr, fmt.Sprintf("@value=%v<br/>", node.GetValue()))
+		io.WriteString(wr, fmt.Sprintf("@value=%v<br/>", ls.GetRawNodeValue(node)))
 	}
-	properties := node.GetProperties()
-	for k, v := range properties {
-		io.WriteString(wr, fmt.Sprintf("%s=%v<br/>", k, v))
-	}
+	node.ForEachProperty(func(k string, v interface{}) bool {
+		if pv, ok := v.(*ls.PropertyValue); ok {
+			io.WriteString(wr, fmt.Sprintf("%s=%v<br/>", k, pv))
+		}
+		return true
+	})
 	io.WriteString(wr, "</TD></TR>")
 	io.WriteString(wr, "</TABLE>>];\n")
 	return wr.String()
@@ -173,34 +177,34 @@ func DocNodeRenderer(ID string, node ls.Node, options *Options) string {
 
 type Renderer struct {
 	Options          Options
-	NodeSelectorFunc func(ls.Node) bool
-	EdgeSelectorFunc func(ls.Edge) bool
+	NodeSelectorFunc func(graph.Node) bool
+	EdgeSelectorFunc func(graph.Edge) bool
 }
 
-func (r Renderer) NodeRenderer(ID string, n digraph.Node, wr io.Writer) (bool, error) {
-	node := n.(ls.Node)
+func (r Renderer) NodeRenderer(ID string, n graph.Node, wr io.Writer) (bool, error) {
+	node := n.(graph.Node)
 	if r.NodeSelectorFunc != nil && !r.NodeSelectorFunc(node) {
 		return false, nil
 	}
-	if node.GetTypes().Has(ls.AttributeTypes.Attribute) {
+	if node.GetLabels().Has(ls.AttributeNodeTerm) {
 		_, err := io.WriteString(wr, SchemaNodeRenderer(ID, node, &r.Options))
 		return true, err
 	}
-	if node.GetTypes().Has(ls.DocumentNodeTerm) {
+	if node.GetLabels().Has(ls.DocumentNodeTerm) {
 		_, err := io.WriteString(wr, DocNodeRenderer(ID, node, &r.Options))
 		return true, err
 	}
-	return true, digraph.DefaultDOTNodeRender(ID, node, wr)
+	return true, graph.DefaultDOTNodeRender(ID, node, wr)
 }
 
-func (r Renderer) EdgeRenderer(fromID, toID string, edge digraph.Edge, w io.Writer) (bool, error) {
-	if r.EdgeSelectorFunc == nil || r.EdgeSelectorFunc(edge.(ls.Edge)) {
-		return true, digraph.DefaultDOTEdgeRender(fromID, toID, edge, w)
+func (r Renderer) EdgeRenderer(fromID, toID string, edge graph.Edge, w io.Writer) (bool, error) {
+	if r.EdgeSelectorFunc == nil || r.EdgeSelectorFunc(edge) {
+		return true, graph.DefaultDOTEdgeRender(fromID, toID, edge, w)
 	}
 	return false, nil
 }
 
-func (r Renderer) Render(g *digraph.Graph, graphName string, out io.Writer) error {
-	dr := digraph.DOTRenderer{NodeRenderer: r.NodeRenderer, EdgeRenderer: r.EdgeRenderer}
+func (r Renderer) Render(g graph.Graph, graphName string, out io.Writer) error {
+	dr := graph.DOTRenderer{NodeRenderer: r.NodeRenderer, EdgeRenderer: r.EdgeRenderer}
 	return dr.Render(g, graphName, out)
 }

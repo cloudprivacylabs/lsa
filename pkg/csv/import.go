@@ -20,8 +20,8 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/bserdar/digraph"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 type ImportSpec struct {
@@ -87,9 +87,8 @@ func (e ErrInvalidID) Error() string {
 // of Layer objects
 func Import(attributeID AttributeSpec, terms []TermSpec, startRow, nRows int, input [][]string) (*ls.Layer, error) {
 	layer := ls.NewLayer()
-	root := ls.NewNode("", ls.AttributeTypes.Object, ls.AttributeTypes.Attribute)
-	layer.AddNode(root)
-	digraph.Connect(layer.GetLayerInfoNode(), root, ls.NewEdge(ls.LayerRootTerm))
+	root := layer.NewNode([]string{ls.AttributeTypeObject, ls.AttributeNodeTerm}, nil)
+	layer.NewEdge(layer.GetLayerRootNode(), root, ls.LayerRootTerm, nil)
 
 	var idTemplate, arrayIdTemplate, arrayTypeTemplate *template.Template
 
@@ -156,34 +155,36 @@ func Import(attributeID AttributeSpec, terms []TermSpec, startRow, nRows int, in
 			if len(id) == 0 {
 				return nil, ErrInvalidID{rowIndex}
 			}
-			var attr ls.Node
+			var attr graph.Node
 			if arrayIdTemplate != nil {
-				attr = ls.NewNode(id, ls.AttributeTypes.Attribute, ls.AttributeTypes.Array)
+				attr = layer.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeArray}, nil)
+				ls.SetNodeID(attr, id)
 				arrId, err := runtmp(arrayIdTemplate, "@id", id)
 				if err != nil {
 					return nil, err
 				}
 				if len(arrId) == 0 {
-					attr = ls.NewNode(id, ls.AttributeTypes.Attribute, ls.AttributeTypes.Value)
+					attr = layer.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeValue}, nil)
+					ls.SetNodeID(attr, id)
 				} else {
 					typ, err := runtmp(arrayTypeTemplate, "@id", id)
 					if err != nil {
 						return nil, err
 					}
 					if len(typ) == 0 {
-						typ = ls.AttributeTypes.Value
+						typ = ls.AttributeTypeValue
 					}
-					elems := ls.NewNode(arrId, ls.AttributeTypes.Attribute, typ)
-					ls.Connect(attr, elems, ls.LayerTerms.ArrayItems)
+					elems := layer.NewNode([]string{ls.AttributeNodeTerm, typ}, nil)
+					ls.SetNodeID(elems, arrId)
+					layer.NewEdge(attr, elems, ls.ArrayItemsTerm, nil)
 				}
 			} else {
-				attr = ls.NewNode(id, ls.AttributeTypes.Attribute, ls.AttributeTypes.Value)
+				attr = layer.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeValue}, nil)
+				ls.SetNodeID(attr, id)
 			}
-			layer.AddNode(attr)
-			edge := ls.NewEdge(ls.LayerTerms.AttributeList)
-			attr.SetIndex(index)
+			layer.NewEdge(root, attr, ls.ObjectAttributeListTerm, nil)
+			ls.SetNodeIndex(attr, index)
 			index++
-			digraph.Connect(root, attr, edge)
 			for ti, term := range terms {
 				nTerms[ti]++
 				if term.TermCol < 0 || term.TermCol >= len(row) {
@@ -197,9 +198,9 @@ func Import(attributeID AttributeSpec, terms []TermSpec, startRow, nRows int, in
 				if len(data) > 0 {
 					if term.Array {
 						elems := strings.Split(data, term.ArraySeparator)
-						attr.GetProperties()[term.Term] = ls.StringSlicePropertyValue(elems)
+						attr.SetProperty(term.Term, ls.StringSlicePropertyValue(elems))
 					} else {
-						attr.GetProperties()[term.Term] = ls.StringPropertyValue(data)
+						attr.SetProperty(term.Term, ls.StringPropertyValue(data))
 					}
 				}
 			}

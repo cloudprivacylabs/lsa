@@ -183,10 +183,11 @@ func BuildEntityGraph(typeTerm string, entities ...CompiledEntity) ([]EntityLaye
 		// Set the layer ID from the entity layer ID
 		imported.Layer.SetID(ctx.currentEntity.LayerID)
 		// Set the root node ID from the entity ID
-		rootNode := imported.Layer.NewNode(ctx.currentEntity.ID)
+		rootNode := imported.Layer.NewNode(nil, nil)
+		ls.SetNodeID(rootNode, ctx.currentEntity.ID)
 		// Set the target type of the layer to root node ID
 		imported.Layer.SetTargetType(ctx.currentEntity.ID)
-		ls.Connect(imported.Layer.GetLayerInfoNode(), rootNode, ls.LayerRootTerm)
+		imported.Layer.NewEdge(imported.Layer.GetLayerRootNode(), rootNode, ls.LayerRootTerm, nil)
 		buildSchemaAttrs(ctx.currentEntity.ID, nil, s, imported.Layer, rootNode, ctx.interner)
 		ret = append(ret, imported)
 	}

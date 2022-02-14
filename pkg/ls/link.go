@@ -17,29 +17,29 @@ package ls
 import (
 	"fmt"
 
-	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 var (
 	// ReferenceFKTerm specifies the foreign key attribute ID
-	ReferenceFKTerm = NewTerm(LS+"Reference/fk", false, false, OverrideComposition, nil)
+	ReferenceFKTerm = NewTerm(LS+"Reference/", "fk", false, false, OverrideComposition, nil)
 
 	// ReferenceTargetTerm specifies the target entity if the node is not a reference node
-	ReferenceTargetTerm = NewTerm(LS+"Reference/target", false, false, OverrideComposition, nil)
+	ReferenceTargetTerm = NewTerm(LS+"Reference/", "target", false, false, OverrideComposition, nil)
 
 	// ReferenceTargetIDTerm is the target schema ID field. If not specified, entity ID is used
-	ReferenceTargetIDTerm = NewTerm(LS+"Reference/targetId", false, false, OverrideComposition, nil)
+	ReferenceTargetIDTerm = NewTerm(LS+"Reference/", "targetId", false, false, OverrideComposition, nil)
 
 	// ReferenceLabelTerm specifies the edge label between the referenced nodes
-	ReferenceLabelTerm = NewTerm(LS+"Reference/label", false, false, OverrideComposition, nil)
+	ReferenceLabelTerm = NewTerm(LS+"Reference/", "label", false, false, OverrideComposition, nil)
 
 	// ReferenceDirectionTerm specifies the direction of the edge. If
 	// ->, the edge points to the target entity. If <-, the edge points
 	// to this entity.
-	ReferenceDirectionTerm = NewTerm(LS+"Reference/direction", false, false, OverrideComposition, nil)
+	ReferenceDirectionTerm = NewTerm(LS+"Reference/", "direction", false, false, OverrideComposition, nil)
 
 	// ReferenceMultiTerm specifies if there can be more than one link targets
-	ReferenceMultiTerm = NewTerm(LS+"Reference/multi", false, false, OverrideComposition, nil)
+	ReferenceMultiTerm = NewTerm(LS+"Reference/", "multi", false, false, OverrideComposition, nil)
 )
 
 type ErrInvalidLinkSpec struct {
@@ -57,6 +57,12 @@ type ErrMultipleTargetsFound struct {
 
 func (err ErrMultipleTargetsFound) Error() string {
 	return fmt.Sprintf("Multiple targets found for %s", err.ID)
+}
+
+type ErrCannotResolveLink LinkSpec
+
+func (err ErrCannotResolveLink) Error() string {
+	return fmt.Sprintf("Cannot resolve link: %+v", LinkSpec(err))
 }
 
 // LinkSpec contains the link field information
@@ -77,18 +83,52 @@ type LinkSpec struct {
 	Multi bool
 }
 
-type linkSpecKeyType struct{}
-
-var linkSpecKey linkSpecKeyType
+const linkSpecKey = "_linkSpec"
 
 // GetCompiledReferenceLinkSpec returns the compiled reference link
 // spec if there is one in the compiled property map of the node
-func GetCompiledReferenceLinkSpec(node Node) (LinkSpec, bool) {
-	spec, exists := node.GetCompiledProperties().GetCompiledProperty(linkSpecKey)
+func GetCompiledReferenceLinkSpec(node graph.Node) (LinkSpec, bool) {
+	spec, exists := node.GetProperty(linkSpecKey)
 	if exists {
 		return spec.(LinkSpec), true
 	}
 	return LinkSpec{}, false
+}
+
+// GetEntityRoot tries to find the closes entity containing this
+// node. It stops searching when there are more than one incoming
+// document node edge
+func GetEntityRoot(node graph.Node) graph.Node {
+	var movePrev func(graph.Node) graph.Node
+
+	seen := make(map[graph.Node]struct{})
+	movePrev = func(start graph.Node) graph.Node {
+		var prevNode graph.Node
+		for edges := start.GetEdges(graph.IncomingEdge); edges.Next(); {
+			edge := edges.Edge()
+			if IsDocumentNode(edge.GetFrom()) {
+				if prevNode != nil {
+					return nil
+				}
+				prevNode = edge.GetFrom()
+			}
+		}
+		return prevNode
+	}
+
+	for {
+		trc := movePrev(node)
+		if trc == nil {
+			return nil
+		}
+		if _, ok := seen[trc]; ok {
+			return nil
+		}
+		seen[trc] = struct{}{}
+		if _, boundary := GetNodeOrSchemaProperty(trc, EntitySchemaTerm); boundary {
+			return trc
+		}
+	}
 }
 
 // CompileReferenceLinkSpec gets an uncompiled reference node, and
@@ -96,30 +136,29 @@ func GetCompiledReferenceLinkSpec(node Node) (LinkSpec, bool) {
 // specifies a link. It also returns the LinkSpec and true. If the
 // node is not a reference node, or if the node does not specify a
 // link, returns false
-func CompileReferenceLinkSpec(layer *Layer, node Node) (LinkSpec, bool, error) {
+func CompileReferenceLinkSpec(layer *Layer, node graph.Node) (LinkSpec, bool, error) {
 	// Already processed?
 	if _, ok := GetCompiledReferenceLinkSpec(node); ok {
 		return LinkSpec{}, false, nil
 	}
-	if !node.GetTypes().Has(AttributeTypes.Attribute) {
+	if !node.GetLabels().Has(AttributeNodeTerm) {
 		return LinkSpec{}, false, nil
 	}
 	var ref, fk string
-	if node.GetTypes().Has(AttributeTypes.Reference) {
-		ref = node.GetProperties()[LayerTerms.Reference].AsString()
-		fk = node.GetProperties()[ReferenceFKTerm].AsString()
+	if node.GetLabels().Has(AttributeTypeReference) {
+		ref = AsPropertyValue(node.GetProperty(ReferenceTerm)).AsString()
+		fk = AsPropertyValue(node.GetProperty(ReferenceFKTerm)).AsString()
 	} else {
-		ref = node.GetProperties()[ReferenceTargetTerm].AsString()
-		fk = node.GetID()
+		ref = AsPropertyValue(node.GetProperty(ReferenceTargetTerm)).AsString()
+		fk = GetNodeID(node)
 	}
 	if len(ref) == 0 || len(fk) == 0 {
 		return LinkSpec{}, false, nil
 	}
-	properties := node.GetProperties()
-	targetID := properties[ReferenceTargetIDTerm].AsString()
-	label := properties[ReferenceLabelTerm].AsString()
-	dir := properties[ReferenceDirectionTerm].AsString()
-	multi := properties[ReferenceMultiTerm].AsString()
+	targetID := AsPropertyValue(node.GetProperty(ReferenceTargetIDTerm)).AsString()
+	label := AsPropertyValue(node.GetProperty(ReferenceLabelTerm)).AsString()
+	dir := AsPropertyValue(node.GetProperty(ReferenceDirectionTerm)).AsString()
+	multi := AsPropertyValue(node.GetProperty(ReferenceMultiTerm)).AsString()
 	if len(label) == 0 {
 		label = HasTerm
 	}
@@ -136,16 +175,16 @@ func CompileReferenceLinkSpec(layer *Layer, node Node) (LinkSpec, bool, error) {
 	case "<-":
 		spec.Forward = false
 	default:
-		return LinkSpec{}, true, ErrInvalidLinkSpec{ID: node.GetID(), Msg: "Direction is not one of: ->, <-"}
+		return LinkSpec{}, true, ErrInvalidLinkSpec{ID: GetNodeID(node), Msg: "Direction is not one of: ->, <-"}
 	}
-	node.GetCompiledProperties().SetCompiledProperty(linkSpecKey, spec)
+	node.SetProperty(linkSpecKey, spec)
 	return spec, true, nil
 }
 
 // GetAllLinkSpecs returns all linkspecs under the given root node
-func GetAllLinkSpecs(root Node) map[Node]LinkSpec {
-	ret := make(map[Node]LinkSpec)
-	IterateDescendants(root, func(node Node, _ []Node) bool {
+func GetAllLinkSpecs(root graph.Node) map[graph.Node]LinkSpec {
+	ret := make(map[graph.Node]LinkSpec)
+	IterateDescendants(root, func(node graph.Node, _ []graph.Node) bool {
 		spec, exists := GetCompiledReferenceLinkSpec(node)
 		if exists {
 			ret[node] = spec
@@ -157,16 +196,16 @@ func GetAllLinkSpecs(root Node) map[Node]LinkSpec {
 
 // DocumentEntityInfo describes an entity in a document
 type DocumentEntityInfo struct {
-	Root    Node
+	Root    graph.Node
 	Schema  string
-	IDNodes []Node
+	IDNodes []graph.Node
 }
 
 // GetDocumentEntityInfo returns a map containing all entity root
 // nodes, with entity info as map values
-func GetDocumentEntityInfo(docRoot Node) map[Node]DocumentEntityInfo {
-	ret := make(map[Node]DocumentEntityInfo)
-	IterateDescendants(docRoot, func(node Node, path []Node) bool {
+func GetDocumentEntityInfo(docRoot graph.Node) map[graph.Node]DocumentEntityInfo {
+	ret := make(map[graph.Node]DocumentEntityInfo)
+	IterateDescendants(docRoot, func(node graph.Node, path []graph.Node) bool {
 		prop, root := GetNodeOrSchemaProperty(node, EntitySchemaTerm)
 		if root {
 			ret[node] = DocumentEntityInfo{Root: node,
@@ -189,16 +228,20 @@ func GetDocumentEntityInfo(docRoot Node) map[Node]DocumentEntityInfo {
 }
 
 // Link the given node
-func (spec LinkSpec) Link(node Node, entityInfo map[Node]DocumentEntityInfo) error {
+func (spec LinkSpec) Link(node graph.Node, entityInfo map[graph.Node]DocumentEntityInfo) error {
 	// Get the ID
 	// Is this the ID node?
 	var fk interface{}
 	var err error
-	if node.GetProperties()[SchemaNodeIDTerm].AsString() == spec.FK {
+	if AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString() == spec.FK {
 		fk, err = GetNodeValue(node)
 	} else {
-		IterateDescendants(node.GetEntityRoot(), func(n Node, _ []Node) bool {
-			if n.GetProperties()[SchemaNodeIDTerm].AsString() == spec.FK {
+		root := GetEntityRoot(node)
+		if root != nil {
+			return ErrCannotResolveLink(spec)
+		}
+		IterateDescendants(root, func(n graph.Node, _ []graph.Node) bool {
+			if AsPropertyValue(n.GetProperty(SchemaNodeIDTerm)).AsString() == spec.FK {
 				fk, err = GetNodeValue(n)
 				return false
 			}
@@ -208,7 +251,7 @@ func (spec LinkSpec) Link(node Node, entityInfo map[Node]DocumentEntityInfo) err
 	if err != nil {
 		return err
 	}
-	linkTo := make([]Node, 0)
+	linkTo := make([]graph.Node, 0)
 	for _, info := range entityInfo {
 		if len(info.IDNodes) != 1 {
 			continue
@@ -225,26 +268,26 @@ func (spec LinkSpec) Link(node Node, entityInfo map[Node]DocumentEntityInfo) err
 		return nil
 	}
 	if len(linkTo) > 1 && !spec.Multi {
-		return ErrMultipleTargetsFound{ID: node.GetID()}
+		return ErrMultipleTargetsFound{ID: GetNodeID(node)}
 	}
 
 	// Find the parent node of this node
-	var parent Node
-	IterateDescendants(node.GetEntityRoot(), func(n Node, path []Node) bool {
-		if n == node {
-			if len(path) > 1 {
-				parent = path[len(path)-2]
+	var parent graph.Node
+	for edges := node.GetEdges(graph.IncomingEdge); edges.Next(); {
+		edge := edges.Edge()
+		if IsDocumentNode(edge.GetFrom()) {
+			if parent != nil {
+				return ErrInvalidLinkSpec{ID: GetNodeID(node), Msg: "Node has multiple parents"}
 			}
-			return false
+			parent = edge.GetFrom()
 		}
-		return true
-	}, SkipSchemaNodes, false)
+	}
 	if parent == nil {
-		return ErrInvalidLinkSpec{ID: node.GetID(), Msg: "Node has no parent"}
+		return ErrInvalidLinkSpec{ID: GetNodeID(node), Msg: "Node has no parent"}
 	}
 
 	for _, target := range linkTo {
-		digraph.Connect(parent, target, NewEdge(spec.Label))
+		parent.GetGraph().NewEdge(parent, target, spec.Label, nil)
 	}
 	return nil
 }

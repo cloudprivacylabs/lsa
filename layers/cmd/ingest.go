@@ -20,11 +20,11 @@ import (
 	"io"
 	"io/ioutil"
 
-	"github.com/bserdar/digraph"
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
 
@@ -120,19 +120,19 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string, intern
 	return layer, nil
 }
 
-func OutputIngestedGraph(outFormat string, target *digraph.Graph, wr io.Writer, includeSchema bool) error {
+func OutputIngestedGraph(outFormat string, target graph.Graph, wr io.Writer, includeSchema bool) error {
 	if !includeSchema {
-		schemaNodes := make(map[ls.Node]struct{})
-		for nodes := target.GetAllNodes(); nodes.HasNext(); {
-			node := nodes.Next().(ls.Node)
+		schemaNodes := make(map[graph.Node]struct{})
+		for nodes := target.GetNodes(); nodes.Next(); {
+			node := nodes.Node()
 			if ls.IsDocumentNode(node) {
-				for _, edge := range node.OutWith(ls.InstanceOfTerm).All() {
-					schemaNodes[edge.GetTo().(ls.Node)] = struct{}{}
+				for _, edge := range graph.EdgeSlice(node.GetEdgesWithLabel(graph.OutgoingEdge, ls.InstanceOfTerm)) {
+					schemaNodes[edge.GetTo()] = struct{}{}
 				}
 			}
 		}
-		newTarget := digraph.New()
-		ls.Copy(target, newTarget, func(n ls.Node) bool {
+		newTarget := graph.NewOCGraph()
+		ls.CopyGraph(newTarget, target, func(n graph.Node) bool {
 			if !ls.IsAttributeNode(n) {
 				return true
 			}
@@ -141,7 +141,7 @@ func OutputIngestedGraph(outFormat string, target *digraph.Graph, wr io.Writer, 
 			}
 			return false
 		},
-			func(edge ls.Edge) bool {
+			func(edge graph.Edge) bool {
 				return !ls.IsAttributeTreeEdge(edge)
 			})
 		target = newTarget

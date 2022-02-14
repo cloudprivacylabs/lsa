@@ -1,18 +1,18 @@
 package gl
 
 import (
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 // EdgeValue is zero or more edges
 type EdgeValue struct {
 	basicValue
-	Edges map[ls.Edge]struct{}
+	Edges map[graph.Edge]struct{}
 }
 
 // oneEdge is a convenience function that returns the edge if there is
 // one, and that returns an error otherwise
-func (e EdgeValue) oneEdge() (ls.Edge, error) {
+func (e EdgeValue) oneEdge() (graph.Edge, error) {
 	switch len(e.Edges) {
 	case 0:
 		return nil, ErrNoEdgesInResult
@@ -43,7 +43,7 @@ var edgeSelectors = map[string]func(EdgeValue) (Value, error){
 		if err != nil {
 			return nil, err
 		}
-		return ValueOf(e.GetFrom().(ls.Node)), nil
+		return ValueOf(e.GetFrom()), nil
 	},
 	// edge.to
 	//
@@ -53,17 +53,7 @@ var edgeSelectors = map[string]func(EdgeValue) (Value, error){
 		if err != nil {
 			return nil, err
 		}
-		return ValueOf(e.GetTo().(ls.Node)), nil
-	},
-	// edge.properties
-	//
-	// The properties of the edge, a Properties value
-	"properties": func(edge EdgeValue) (Value, error) {
-		e, err := edge.oneEdge()
-		if err != nil {
-			return nil, err
-		}
-		return ValueOf(e.GetProperties()), nil
+		return ValueOf(e.GetTo()), nil
 	},
 }
 
@@ -82,7 +72,7 @@ func (e EdgeValue) Add(v2 Value) (Value, error) {
 	if !ok {
 		return nil, ErrIncompatibleValue
 	}
-	ret := EdgeValue{Edges: map[ls.Edge]struct{}{}}
+	ret := EdgeValue{Edges: map[graph.Edge]struct{}{}}
 	for k := range e.Edges {
 		ret.Edges[k] = struct{}{}
 	}

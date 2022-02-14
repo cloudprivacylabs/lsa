@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 const CSV = ls.LS + "csv/"
@@ -37,7 +38,7 @@ type propertyValueItem struct {
 // Ingest a row of CSV data. The `data` slice is a row of data. The ID
 // is the assigned identifier for the resulting object. ID is empty,
 // IDs are assigned based on schema-dictated identifiers.
-func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
+func (ingester Ingester) Ingest(targetGraph graph.Graph, data []string, ID string) (graph.Node, error) {
 	ingester.PreserveNodePaths = true
 	path, schemaRoot := ingester.Start(ID)
 	// Retrieve map of schema attribute nodes from schemaRoot
@@ -46,8 +47,8 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 		return nil, err
 	}
 	// initialize slice for storing children nodes
-	children := make([]ls.Node, 0, len(data))
-	childrenSchemaNodes := make(map[ls.Node]ls.Node)
+	children := make([]graph.Node, 0, len(data))
+	childrenSchemaNodes := make(map[graph.Node]graph.Node)
 	propertyValueQueue := make([]propertyValueItem, 0, len(data))
 	// Iterate through each column of the CSV row
 	for columnIndex, columnData := range data {
@@ -55,7 +56,7 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 		if columnIndex < len(ingester.ColumnNames) {
 			columnName = ingester.ColumnNames[columnIndex]
 		}
-		var schemaNode ls.Node
+		var schemaNode graph.Node
 		var newPath ls.NodePath
 		// if column header exists, assign schemaNode to corresponding value in attributes map
 		if len(columnName) > 0 {
@@ -68,8 +69,8 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 			}
 			newPath = path.AppendString(columnName)
 		} else if ingester.Schema != nil || !ingester.OnlySchemaAttributes {
-			schemaNode, _ = ingester.Schema.FindFirstAttribute(func(n ls.Node) bool {
-				p := n.GetProperties()[ls.AttributeIndexTerm]
+			schemaNode, _ = ingester.Schema.FindFirstAttribute(func(n graph.Node) bool {
+				p := ls.AsPropertyValue(n.GetProperty(ls.AttributeIndexTerm))
 				if p == nil {
 					return false
 				}
@@ -90,14 +91,14 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 			})
 		} else if schemaNode != nil || !ingester.OnlySchemaAttributes {
 			// create a new value node only if there is a matching schema node
-			newNode, err := ingester.Value(newPath, schemaNode, columnData)
+			newNode, err := ingester.Value(targetGraph, newPath, schemaNode, columnData)
 			if err != nil {
 				return nil, err
 			}
 			if len(columnName) > 0 {
-				newNode.GetProperties()[ls.AttributeNameTerm] = ls.StringPropertyValue(columnName)
+				newNode.SetProperty(ls.AttributeNameTerm, ls.StringPropertyValue(columnName))
 			}
-			newNode.GetProperties()[ls.AttributeIndexTerm] = ls.StringPropertyValue(fmt.Sprint(columnIndex))
+			newNode.SetProperty(ls.AttributeIndexTerm, ls.StringPropertyValue(fmt.Sprint(columnIndex)))
 			children = append(children, newNode)
 			// keep a reference to the schemaNode
 			childrenSchemaNodes[newNode] = schemaNode
@@ -105,15 +106,15 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 	}
 
 	// create a new object node
-	retNode, err := ingester.Object(path, schemaRoot, children)
+	retNode, err := ingester.Object(targetGraph, path, schemaRoot, children)
 	if err != nil {
 		return nil, err
 	}
 	for _, pv := range propertyValueQueue {
-		var parentNode ls.Node
+		var parentNode graph.Node
 		if len(pv.of) > 0 {
 			for child, sch := range childrenSchemaNodes {
-				if sch != nil && sch.GetID() == pv.of {
+				if sch != nil && ls.GetNodeID(sch) == pv.of {
 					if parentNode != nil {
 						return nil, ls.ErrMultipleParentNodes{pv.of}
 					}
@@ -126,7 +127,7 @@ func (ingester Ingester) Ingest(data []string, ID string) (ls.Node, error) {
 		} else {
 			parentNode = retNode
 		}
-		parentNode.GetProperties()[pv.name] = ls.StringPropertyValue(pv.value)
+		parentNode.SetProperty(pv.name, ls.StringPropertyValue(pv.value))
 	}
 	ingester.Finish(retNode, nil)
 	return retNode, nil

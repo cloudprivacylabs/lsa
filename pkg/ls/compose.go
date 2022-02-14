@@ -15,7 +15,7 @@
 package ls
 
 import (
-	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 // Compose schema layers. Directly modifies the source and the
@@ -36,13 +36,13 @@ func (layer *Layer) Compose(source *Layer) error {
 	var err error
 	// Process attributes of the source layer depth-first
 	// Compose the source attribute nodes with the target attribute nodes, ignoring any nodes attached to them
-	processedSourceNodes := make(map[Node]struct{})
-	source.ForEachAttribute(func(sourceNode Node, sourcePath []Node) bool {
+	processedSourceNodes := make(map[graph.Node]struct{})
+	source.ForEachAttribute(func(sourceNode graph.Node, sourcePath []graph.Node) bool {
 		if _, processed := processedSourceNodes[sourceNode]; processed {
 			return true
 		}
 		// If node exists in target, merge
-		targetNode, targetPath := layer.FindAttributeByID(sourceNode.GetID())
+		targetNode, targetPath := layer.FindAttributeByID(GetAttributeID(sourceNode))
 		if targetNode != nil {
 			// Target node exists. Merge if paths match
 			if pathsMatch(targetPath, sourcePath) {
@@ -58,14 +58,18 @@ func (layer *Layer) Compose(source *Layer) error {
 				return false
 			}
 			parent := sourcePath[len(sourcePath)-2]
-			parentInLayer, _ := layer.FindAttributeByID(parent.GetID())
+			parentInLayer, _ := layer.FindAttributeByID(GetAttributeID(parent))
 			if parentInLayer == nil {
 				err = ErrInvalidComposition
 				return false
 			}
-			edge := GetLayerEdgeBetweenNodes(parent, sourceNode)
-			if edge != nil {
-				digraph.Connect(parentInLayer, sourceNode, edge.Clone())
+
+			newNode := layer.NewNode(sourceNode.GetLabels().Slice(), CloneProperties(sourceNode))
+			for edges := sourceNode.GetEdges(graph.IncomingEdge); edges.Next(); {
+				edge := edges.Edge()
+				if edge.GetFrom() == parent {
+					layer.NewEdge(parentInLayer, newNode, edge.GetLabel(), CloneProperties(edge))
+				}
 			}
 		}
 		processedSourceNodes[sourceNode] = struct{}{}
@@ -74,12 +78,11 @@ func (layer *Layer) Compose(source *Layer) error {
 	if err != nil {
 		return err
 	}
-	layer.ResetIndex()
 	return nil
 }
 
 // Merge source into target.
-func mergeNodes(targetLayer *Layer, target, source Node, processedSourceNodes map[Node]struct{}) error {
+func mergeNodes(targetLayer *Layer, target, source graph.Node, processedSourceNodes map[graph.Node]struct{}) error {
 	if _, processed := processedSourceNodes[source]; processed {
 		return nil
 	}
@@ -88,28 +91,44 @@ func mergeNodes(targetLayer *Layer, target, source Node, processedSourceNodes ma
 		return nil
 	}
 
-	if err := ComposeProperties(target.GetProperties(), source.GetProperties()); err != nil {
+	if err := ComposeProperties(target, source); err != nil {
 		return err
 	}
 	return nil
 }
 
+// ComposeProperty composes targetValue and sourceValue for key
+func ComposeProperty(key string, targetValue, sourceValue *PropertyValue) (*PropertyValue, error) {
+	newValue := targetValue
+	newValue, err := GetComposerForTerm(key).Compose(newValue, sourceValue)
+	if err != nil {
+		return nil, ErrTerm{Term: key, Err: err}
+	}
+	return newValue, nil
+}
+
 // ComposeProperties will combine the properties in source to
 // target. The target properties will be modified directly
-func ComposeProperties(target, source map[string]*PropertyValue) error {
-	for k, v := range source {
-		newValue, _ := target[k]
-		newValue, err := GetComposerForTerm(k).Compose(newValue, v)
-		if err != nil {
-			return ErrTerm{Term: k, Err: err}
+func ComposeProperties(target, source graph.Node) error {
+	var retErr error
+	source.ForEachProperty(func(key string, value interface{}) bool {
+		if p, ok := value.(*PropertyValue); ok {
+			tp, _ := target.GetProperty(key)
+			targetProperty, _ := tp.(*PropertyValue)
+			newValue, err := ComposeProperty(key, targetProperty, p)
+			if err != nil {
+				retErr = err
+				return false
+			}
+			target.SetProperty(key, newValue)
 		}
-		target[k] = newValue
-	}
-	return nil
+		return true
+	})
+	return retErr
 }
 
 // pathsMatch returns true if the attribute predecessors of source matches target's
-func pathsMatch(targetPath, sourcePath []Node) bool {
+func pathsMatch(targetPath, sourcePath []graph.Node) bool {
 	tn := len(targetPath)
 	sn := len(sourcePath)
 	for {
@@ -119,13 +138,13 @@ func pathsMatch(targetPath, sourcePath []Node) bool {
 		if sn == 0 {
 			return false
 		}
-		if sourcePath[sn-1].GetTypes().Has(SchemaTerm) || sourcePath[sn-1].GetTypes().Has(OverlayTerm) {
+		if sourcePath[sn-1].GetLabels().Has(SchemaTerm) || sourcePath[sn-1].GetLabels().Has(OverlayTerm) {
 			return true
 		}
-		if targetPath[tn-1].GetTypes().Has(SchemaTerm) || targetPath[tn-1].GetTypes().Has(OverlayTerm) {
+		if targetPath[tn-1].GetLabels().Has(SchemaTerm) || targetPath[tn-1].GetLabels().Has(OverlayTerm) {
 			return false
 		}
-		if targetPath[tn-1].GetID() != sourcePath[sn-1].GetID() {
+		if GetAttributeID(targetPath[tn-1]) != GetAttributeID(sourcePath[sn-1]) {
 			return false
 		}
 		tn--

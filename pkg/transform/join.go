@@ -20,6 +20,7 @@ import (
 	"strings"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 const (
@@ -29,10 +30,10 @@ const (
 
 var ErrJoinFailure = errors.New("Join failure")
 
-func JoinValues(nodes []ls.Node, method, delimiter string) (string, error) {
+func JoinValues(nodes []graph.Node, method, delimiter string) (string, error) {
 	values := make([]string, 0, len(nodes))
 	for _, n := range nodes {
-		v := n.GetValue()
+		v, _ := ls.GetNodeValue(n)
 		if v != nil {
 			values = append(values, fmt.Sprint(v))
 		}

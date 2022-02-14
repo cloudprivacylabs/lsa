@@ -17,9 +17,9 @@ package cmd
 import (
 	"os"
 
-	"github.com/bserdar/digraph"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 	"github.com/cloudprivacylabs/lsa/pkg/transform"
 	"github.com/spf13/cobra"
 )
@@ -53,20 +53,18 @@ var reshapeCmd = &cobra.Command{
 		}
 
 		reshaper := transform.Reshaper{TargetSchema: layer}
-		nix := g.GetIndex()
-		sources := digraph.Sources(nix)
+		sources := graph.Sources(g)
 		if len(sources) != 1 {
 			fail("Cannot determine the root of the graph")
 		}
 		rootNode := sources[0]
-		result, err := reshaper.Reshape(rootNode.(ls.Node))
+		target := graph.NewOCGraph()
+		_, err = reshaper.Reshape(rootNode, target)
 		if err != nil {
 			failErr(err)
 		}
 		outFormat, _ := cmd.Flags().GetString("format")
-		gr := digraph.New()
-		gr.AddNode(result)
-		err = OutputIngestedGraph(outFormat, gr, os.Stdout, false)
+		err = OutputIngestedGraph(outFormat, target, os.Stdout, false)
 		if err != nil {
 			failErr(err)
 		}

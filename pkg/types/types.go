@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 type ErrNotAStringValue struct {
@@ -16,14 +17,14 @@ func (e ErrNotAStringValue) Error() string {
 
 // getStringValue tries to get a string value from the node. If the
 // node value is nil, returns "", false, nil
-func getStringNodeValue(node ls.Node) (string, bool, error) {
-	v := node.GetValue()
+func getStringNodeValue(node graph.Node) (string, bool, error) {
+	v := ls.GetRawNodeValue(node)
 	if v == nil {
 		return "", false, nil
 	}
 	str, ok := v.(string)
 	if !ok {
-		return "", true, ErrNotAStringValue{node.GetID()}
+		return "", true, ErrNotAStringValue{ls.GetNodeID(node)}
 	}
 	return str, true, nil
 }

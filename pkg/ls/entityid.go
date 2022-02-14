@@ -14,24 +14,28 @@
 
 package ls
 
+import (
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+)
+
 // EntityIDTerm marks a field of an entity as the entity unique
 // ID. Fields contained within an entity will get IDs relative to
 // this ID.
 //
 // This is a marker term. The contents are ignored. Existance of
 // entityId term on a field marks it as entity id.
-var EntityIDTerm = NewTerm(LS+"entityId", false, false, OverrideComposition, nil)
+var EntityIDTerm = NewTerm(LS, "entityId", false, false, OverrideComposition, nil)
 
 // GetEntityIDNodes returns all the nodes under entityRoot that are marked with EntityIDTerm
-func GetEntityIDNodes(entityRoot Node) []Node {
-	ret := make([]Node, 0)
-	IterateDescendants(entityRoot, func(node Node, _ []Node) bool {
-		if _, exists := node.GetProperties()[EntityIDTerm]; exists {
+func GetEntityIDNodes(entityRoot graph.Node) []graph.Node {
+	ret := make([]graph.Node, 0)
+	IterateDescendants(entityRoot, func(node graph.Node, _ []graph.Node) bool {
+		if _, exists := node.GetProperty(EntityIDTerm); exists {
 			ret = append(ret, node)
 			return true
 		}
 		for _, schemaNode := range InstanceOf(node) {
-			if _, exists := schemaNode.GetProperties()[EntityIDTerm]; exists {
+			if _, exists := schemaNode.GetProperty(EntityIDTerm); exists {
 				ret = append(ret, node)
 				return true
 			}

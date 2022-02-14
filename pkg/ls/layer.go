@@ -15,7 +15,7 @@
 package ls
 
 import (
-	"github.com/bserdar/digraph"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 	"golang.org/x/text/encoding"
 )
 
@@ -26,76 +26,77 @@ import (
 // root node is connected to the schema node which contains the actual
 // object defined by the layer.
 type Layer struct {
-	*digraph.Graph
-	layerInfo Node
-	index     *digraph.Index
+	graph.Graph
+	layerInfo graph.Node
 }
 
 // NewLayer returns a new empty layer
 func NewLayer() *Layer {
-	ret := &Layer{Graph: digraph.New()}
-	ret.layerInfo = NewNode("")
-	ret.AddNode(ret.layerInfo)
+	ret := &Layer{Graph: graph.NewOCGraph()}
+	ret.layerInfo = ret.NewNode(nil, nil)
 	return ret
-}
-
-// ResetIndex must be used after modifying the layer to reset the layer index
-func (l *Layer) ResetIndex() {
-	l.index = nil
-}
-
-// GetIndex returns a graph index for the layer. The layer must not be
-// modified after the index is retrieved
-func (l *Layer) GetIndex() *digraph.Index {
-	if l.index == nil {
-		l.index = l.Graph.GetIndex()
-	}
-	return l.index
 }
 
 // Clone returns a copy of the layer
 func (l *Layer) Clone() *Layer {
-	ret := &Layer{Graph: digraph.New()}
-	nodeMap := digraph.CopyGraph(ret.Graph, l.Graph, func(node digraph.Node) digraph.Node {
-		return node.(Node).Clone()
-	},
-		func(edge digraph.Edge) digraph.Edge {
-			return edge.(Edge).Clone()
-		})
-	if x := nodeMap[l.layerInfo]; x != nil {
-		ret.layerInfo = x.(Node)
+	targetGraph := graph.NewOCGraph()
+	nodeMap := graph.CopyGraph(l.Graph, targetGraph, func(key string, value interface{}) interface{} {
+		if p, ok := value.(*PropertyValue); ok {
+			return p.Clone()
+		}
+		return value
+	})
+	ret := &Layer{
+		Graph:     targetGraph,
+		layerInfo: nodeMap[l.layerInfo],
 	}
 	return ret
 }
 
-// GetLayerInfoNode returns the root node of the schema
-func (l *Layer) GetLayerInfoNode() Node { return l.layerInfo }
+// CloneInto clones the layer into the targetgraph
+func (l *Layer) CloneInto(targetGraph graph.Graph) (*Layer, map[graph.Node]graph.Node) {
+	ret := &Layer{Graph: targetGraph}
+	nodeMap := graph.CopyGraph(l.Graph, targetGraph, func(key string, value interface{}) interface{} {
+		if p, ok := value.(*PropertyValue); ok {
+			return p.Clone()
+		}
+		return value
+	})
+	ret.layerInfo = nodeMap[l.layerInfo]
+	return ret, nodeMap
+}
+
+// GetLayerRootNode returns the root node of the schema
+func (l *Layer) GetLayerRootNode() graph.Node { return l.layerInfo }
 
 // GetSchemaRootNode returns the root node of the object defined by the schema
-func (l *Layer) GetSchemaRootNode() Node {
-	x := l.layerInfo.NextWith(LayerRootTerm)
+func (l *Layer) GetSchemaRootNode() graph.Node {
+	x := graph.TargetNodes(l.layerInfo.GetEdgesWithLabel(graph.OutgoingEdge, LayerRootTerm))
 	if len(x) != 1 {
 		return nil
 	}
-	return x[0].(Node)
+	return x[0]
 }
 
 // GetID returns the ID of the layer
 func (l *Layer) GetID() string {
-	return l.layerInfo.GetLabel().(string)
+	v, _ := l.layerInfo.GetProperty(LayerIDTerm)
+	s, _ := v.(string)
+	return s
 }
 
 // SetID sets the ID of the layer
 func (l *Layer) SetID(ID string) {
-	l.layerInfo.SetLabel(ID)
+	l.layerInfo.SetProperty(LayerIDTerm, ID)
 }
 
 // GetLayerType returns the layer type, SchemaTerm or OverlayTerm.
 func (l *Layer) GetLayerType() string {
-	if l.layerInfo.GetTypes().Has(SchemaTerm) {
+	labels := l.layerInfo.GetLabels()
+	if labels.Has(SchemaTerm) {
 		return SchemaTerm
 	}
-	if l.layerInfo.GetTypes().Has(OverlayTerm) {
+	if labels.Has(OverlayTerm) {
 		return OverlayTerm
 	}
 	return ""
@@ -106,17 +107,10 @@ func (l *Layer) SetLayerType(t string) {
 	if t != SchemaTerm && t != OverlayTerm {
 		panic("Invalid layer type:" + t)
 	}
-	l.layerInfo.GetTypes().Remove(SchemaTerm, OverlayTerm)
-	l.layerInfo.GetTypes().Add(t)
-}
-
-// GetEntityIDNodes returns the entity ID nodes for the layer.
-func (l *Layer) GetEntityIDNodes() []Node {
-	root := l.GetSchemaRootNode()
-	if root == nil {
-		return nil
-	}
-	return GetEntityIDNodes(root)
+	labels := l.layerInfo.GetLabels()
+	labels.Remove(SchemaTerm, OverlayTerm)
+	labels.Add(t)
+	l.layerInfo.SetLabels(labels)
 }
 
 // GetEncoding returns the encoding that should be used to
@@ -128,7 +122,7 @@ func (l *Layer) GetEncoding() (encoding.Encoding, error) {
 	oi := l.GetSchemaRootNode()
 	var enc string
 	if oi != nil {
-		enc = oi.GetProperties()[CharacterEncodingTerm].AsString()
+		enc = AsPropertyValue(oi.GetProperty(CharacterEncodingTerm)).AsString()
 		if len(enc) == 0 {
 			return encoding.Nop, nil
 		}
@@ -136,40 +130,43 @@ func (l *Layer) GetEncoding() (encoding.Encoding, error) {
 	return UnknownEncodingIndex.Encoding(enc)
 }
 
-// NewNode creates a new node for the layer with the given ID and
-// types, and adds the node to the layer
-func (l *Layer) NewNode(ID string, types ...string) Node {
-	ret := NewNode(ID, types...)
-	l.AddNode(ret)
-	return ret
-}
-
 // GetTargetType returns the value of the targetType field from the
 // layer information node
 func (l *Layer) GetTargetType() string {
-	v := l.layerInfo.GetProperties()[TargetType]
-	if v == nil {
-		return ""
-	}
-	return v.AsString()
+	return AsPropertyValue(l.layerInfo.GetProperty(TargetType)).AsString()
 }
 
 // SetTargetType sets the targe types of the layer
 func (l *Layer) SetTargetType(t string) {
 	if oldT := l.GetTargetType(); len(oldT) > 0 {
 		if oin := l.GetSchemaRootNode(); oin != nil {
-			oin.GetTypes().Remove(oldT)
+			labels := oin.GetLabels()
+			labels.Remove(oldT)
+			oin.SetLabels(labels)
 		}
 	}
-	l.layerInfo.GetProperties()[TargetType] = StringPropertyValue(t)
-	if oin := l.GetSchemaRootNode(); oin != nil {
-		oin.GetTypes().Add(t)
+	if len(t) > 0 {
+		l.layerInfo.SetProperty(TargetType, StringPropertyValue(t))
+		if oin := l.GetSchemaRootNode(); oin != nil {
+			labels := oin.GetLabels()
+			labels.Add(t)
+			oin.SetLabels(labels)
+		}
 	}
+}
+
+// GetEntityIDNodes returns the entity ID nodes for the layer.
+func (l *Layer) GetEntityIDNodes() []graph.Node {
+	root := l.GetSchemaRootNode()
+	if root == nil {
+		return nil
+	}
+	return GetEntityIDNodes(root)
 }
 
 // ForEachAttribute calls f with each attribute node, depth first. If
 // f returns false, iteration stops
-func (l *Layer) ForEachAttribute(f func(Node, []Node) bool) bool {
+func (l *Layer) ForEachAttribute(f func(graph.Node, []graph.Node) bool) bool {
 	oi := l.GetSchemaRootNode()
 	if oi != nil {
 		return ForEachAttributeNode(oi, f)
@@ -179,7 +176,7 @@ func (l *Layer) ForEachAttribute(f func(Node, []Node) bool) bool {
 
 // ForEachAttributeOrdered calls f with each attribute node, depth
 // first and in order. If f returns false, iteration stops
-func (l *Layer) ForEachAttributeOrdered(f func(Node, []Node) bool) bool {
+func (l *Layer) ForEachAttributeOrdered(f func(graph.Node, []graph.Node) bool) bool {
 	oi := l.GetSchemaRootNode()
 	if oi != nil {
 		return ForEachAttributeNodeOrdered(oi, f)
@@ -189,10 +186,10 @@ func (l *Layer) ForEachAttributeOrdered(f func(Node, []Node) bool) bool {
 
 // RenameBlankNodes will call namerFunc for each blank node, so they
 // can be renamed and won't cause name clashes
-func (l *Layer) RenameBlankNodes(namer func(Node)) {
-	for nodes := l.GetAllNodes(); nodes.HasNext(); {
-		node := nodes.Next().(Node)
-		id := node.GetID()
+func (l *Layer) RenameBlankNodes(namer func(graph.Node)) {
+	for nodes := l.GetNodes(); nodes.Next(); {
+		node := nodes.Node()
+		id := GetAttributeID(node)
 		if len(id) == 0 || id[0] == '_' {
 			namer(node)
 		}
@@ -200,9 +197,9 @@ func (l *Layer) RenameBlankNodes(namer func(Node)) {
 }
 
 // GetPath returns the path to the given attribute node
-func (l *Layer) GetAttributePath(node Node) []Node {
-	var ret []Node
-	ForEachAttributeNode(l.GetSchemaRootNode(), func(n Node, path []Node) bool {
+func (l *Layer) GetAttributePath(node graph.Node) []graph.Node {
+	var ret []graph.Node
+	ForEachAttributeNode(l.GetSchemaRootNode(), func(n graph.Node, path []graph.Node) bool {
 		if n == node {
 			ret = path
 			return false
@@ -213,15 +210,15 @@ func (l *Layer) GetAttributePath(node Node) []Node {
 }
 
 // FindAttributeByID returns the attribute and the path to it
-func (l *Layer) FindAttributeByID(id string) (Node, []Node) {
-	return l.FindFirstAttribute(func(n Node) bool { return n.GetID() == id })
+func (l *Layer) FindAttributeByID(id string) (graph.Node, []graph.Node) {
+	return l.FindFirstAttribute(func(n graph.Node) bool { return GetAttributeID(n) == id })
 }
 
 // FindFirstAttribute returns the first attribute for which the predicate holds
-func (l *Layer) FindFirstAttribute(predicate func(Node) bool) (Node, []Node) {
-	var node Node
-	var path []Node
-	ForEachAttributeNode(l.GetSchemaRootNode(), func(n Node, p []Node) bool {
+func (l *Layer) FindFirstAttribute(predicate func(graph.Node) bool) (graph.Node, []graph.Node) {
+	var node graph.Node
+	var path []graph.Node
+	ForEachAttributeNode(l.GetSchemaRootNode(), func(n graph.Node, p []graph.Node) bool {
 		if predicate(n) {
 			node = n
 			path = p
@@ -236,11 +233,11 @@ func (l *Layer) FindFirstAttribute(predicate func(Node) bool) (Node, []Node) {
 // first. Path contains all the nodes from root to the current
 // node. If f returns false, iteration stops. This function visits
 // each node only once
-func ForEachAttributeNode(root Node, f func(node Node, path []Node) bool) bool {
-	return forEachAttributeNode(root, make([]Node, 0, 32), f, map[Node]struct{}{}, false)
+func ForEachAttributeNode(root graph.Node, f func(node graph.Node, path []graph.Node) bool) bool {
+	return forEachAttributeNode(root, make([]graph.Node, 0, 32), f, map[graph.Node]struct{}{}, false)
 }
 
-func forEachAttributeNode(root Node, path []Node, f func(Node, []Node) bool, loop map[Node]struct{}, ordered bool) bool {
+func forEachAttributeNode(root graph.Node, path []graph.Node, f func(graph.Node, []graph.Node) bool, loop map[graph.Node]struct{}, ordered bool) bool {
 	if _, exists := loop[root]; exists {
 		return true
 	}
@@ -253,18 +250,18 @@ func forEachAttributeNode(root Node, path []Node, f func(Node, []Node) bool, loo
 		}
 	}
 
-	outgoing := root.Out()
+	outgoing := root.GetEdges(graph.OutgoingEdge)
 	if ordered {
 		outgoing = SortEdgesItr(outgoing)
 	}
 
-	for outgoing.HasNext() {
-		edge := outgoing.Next().(Edge)
+	for outgoing.Next() {
+		edge := outgoing.Edge()
 		if !IsAttributeTreeEdge(edge) {
 			continue
 		}
-		next := edge.GetTo().(Node)
-		if next.GetTypes().Has(AttributeTypes.Attribute) {
+		next := edge.GetTo()
+		if next.GetLabels().Has(AttributeNodeTerm) {
 			if !forEachAttributeNode(next, path, f, loop, ordered) {
 				return false
 			}
@@ -277,6 +274,18 @@ func forEachAttributeNode(root Node, path []Node, f func(Node, []Node) bool, loo
 // first, preserving order. Path contains all the nodes from root to the current
 // node. If f returns false, iteration stops. This function visits
 // each node only once
-func ForEachAttributeNodeOrdered(root Node, f func(node Node, path []Node) bool) bool {
-	return forEachAttributeNode(root, make([]Node, 0, 32), f, map[Node]struct{}{}, true)
+func ForEachAttributeNodeOrdered(root graph.Node, f func(node graph.Node, path []graph.Node) bool) bool {
+	return forEachAttributeNode(root, make([]graph.Node, 0, 32), f, map[graph.Node]struct{}{}, true)
+}
+
+// GetAttributeID returns the attributeID
+func GetAttributeID(node graph.Node) string {
+	v, _ := node.GetProperty(NodeIDTerm)
+	s, _ := v.(string)
+	return s
+}
+
+// SetAttrributeID sets the attribute ID
+func SetAttributeID(node graph.Node, ID string) {
+	node.SetProperty(NodeIDTerm, ID)
 }

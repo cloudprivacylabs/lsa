@@ -42,18 +42,18 @@ var ReshapeTerms = struct {
 	// JoinDelimiter specifies the join delimiter if there are multiple values to be combined
 	JoinDelimiter string
 }{
-	If: ls.NewTerm(RS+"if", false, false, ls.OverrideComposition, struct {
+	If: ls.NewTerm(RS, "if", false, false, ls.OverrideComposition, struct {
 		ifSemantics
 	}{}),
-	Vars: ls.NewTerm(RS+"vars", false, true, ls.OverrideComposition, struct {
+	Vars: ls.NewTerm(RS, "vars", false, true, ls.OverrideComposition, struct {
 		varsSemantics
 	}{}),
-	Source: ls.NewTerm(RS+"source", false, false, ls.OverrideComposition, struct {
+	Source: ls.NewTerm(RS, "source", false, false, ls.OverrideComposition, struct {
 		sourceSemantics
 	}{}),
-	IfEmpty:       ls.NewTerm(RS+"ifEmpty", false, false, ls.OverrideComposition, nil),
-	JoinMethod:    ls.NewTerm(RS+"joinMethod", false, false, ls.OverrideComposition, nil),
-	JoinDelimiter: ls.NewTerm(RS+"joinDelimiter", false, false, ls.OverrideComposition, nil),
+	IfEmpty:       ls.NewTerm(RS, "ifEmpty", false, false, ls.OverrideComposition, nil),
+	JoinMethod:    ls.NewTerm(RS, "joinMethod", false, false, ls.OverrideComposition, nil),
+	JoinDelimiter: ls.NewTerm(RS, "joinDelimiter", false, false, ls.OverrideComposition, nil),
 }
 
 type ifSemantics struct{}
@@ -81,7 +81,7 @@ func (ifSemantics) CompileTerm(target ls.CompilablePropertyContainer, term strin
 		}
 		out = append(out, r)
 	}
-	target.GetCompiledProperties().SetCompiledProperty(term, out)
+	target.SetProperty(term, out)
 	return nil
 }
 
@@ -106,7 +106,7 @@ func (varsSemantics) CompileTerm(target ls.CompilablePropertyContainer, term str
 		}
 		out = append(out, r)
 	}
-	target.GetCompiledProperties().SetCompiledProperty(term, out)
+	target.SetProperty(term, out)
 	return nil
 }
 
@@ -122,6 +122,6 @@ func (sourceSemantics) CompileTerm(target ls.CompilablePropertyContainer, term s
 	if err != nil {
 		return err
 	}
-	target.GetCompiledProperties().SetCompiledProperty(term, e)
+	target.SetProperty(term, e)
 	return nil
 }

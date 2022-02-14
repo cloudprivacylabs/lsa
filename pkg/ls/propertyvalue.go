@@ -31,6 +31,17 @@ type PropertyValue struct {
 	value interface{}
 }
 
+func AsPropertyValue(in interface{}, exists bool) *PropertyValue {
+	if !exists || in == nil {
+		return nil
+	}
+	p, ok := in.(*PropertyValue)
+	if !ok {
+		return nil
+	}
+	return p
+}
+
 // IntPropertyValue converts the int value to string, and returns a string value
 func IntPropertyValue(i int) *PropertyValue { return &PropertyValue{value: fmt.Sprint(i)} }
 
@@ -285,4 +296,33 @@ func IsPropertiesEqual(p, q map[string]*PropertyValue) bool {
 		}
 	}
 	return true
+}
+
+// CloneProperties can be used to clone edge and node properties
+func CloneProperties(iterator interface {
+	ForEachProperty(func(string, interface{}) bool) bool
+}) map[string]interface{} {
+	newProperties := make(map[string]interface{})
+	iterator.ForEachProperty(func(key string, value interface{}) bool {
+		if p, ok := value.(*PropertyValue); ok {
+			newProperties[key] = p.Clone()
+		} else {
+			newProperties[key] = value
+		}
+		return true
+	})
+	return newProperties
+}
+
+func PropertiesAsMap(iterator interface {
+	ForEachProperty(func(string, interface{}) bool) bool
+}) map[string]*PropertyValue {
+	ret := make(map[string]*PropertyValue)
+	iterator.ForEachProperty(func(key string, value interface{}) bool {
+		if p, ok := value.(*PropertyValue); ok {
+			ret[key] = p.Clone()
+		}
+		return true
+	})
+	return ret
 }
