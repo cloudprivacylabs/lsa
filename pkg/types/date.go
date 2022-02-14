@@ -82,12 +82,12 @@ func (u UnixTimeNano) ToTime() time.Time {
 }
 
 // try to convert to go native time with function ToGoTime then pass result as parameter
-func ToGomentTime(time time.Time) interface{} {
+func ToGomentTime(time time.Time) (*goment.Goment, error) {
 	t, err := goment.New(time)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return t
+	return t, nil
 }
 
 type DateTime struct {
@@ -276,14 +276,17 @@ type gomentFormat string
 
 type dateFormatter interface {
 	parseDate(string) (Date, error)
+	//formatDate(string)
 }
 
 type dateTimeFormatter interface {
 	parseDateTime(string) (DateTime, error)
+	formatDateTime(string) (string, error)
 }
 
 type timeFormatter interface {
 	parseTime(string) (TimeOfDay, error)
+	formatTime(string) (string, error)
 }
 
 // type unixFormatter interface {
@@ -323,6 +326,43 @@ func (f goFormat) parseDateTime(s string) (DateTime, error) {
 		Minute: int64(t.Minute()), Hour: int64(t.Hour())}, nil
 }
 
+func (f goFormat) formatDateTime(s string) (string, error) {
+	const bufSize = 64
+	var b []byte
+	max := len(s) + 10
+	if max < bufSize {
+		var buf [bufSize]byte
+		b = buf[:0]
+	} else {
+		b = make([]byte, 0, max)
+	}
+	t, _ := f.parseDateTime(s)
+	x := t.ToTime()
+	b = x.AppendFormat(b, s)
+	return string(b), nil
+}
+
+func (f gomentFormat) formatDateTime(s string) (string, error) {
+	// const bufSize = 64
+	// var b []byte
+	// max := len(s) + 10
+	// if max < bufSize {
+	// 	var buf [bufSize]byte
+	// 	b = buf[:0]
+	// } else {
+	// 	b = make([]byte, 0, max)
+	// }
+	// t, _ := f.parseDateTime(s)
+	// x := t.ToTime()
+	// b = x.AppendFormat(b, s)
+	// return string(b)
+	t, err := goment.New(s, string(f))
+	if err != nil {
+		return "err", err
+	}
+	return t.Format("2013-02-08 09:30:26"), nil
+}
+
 func (f gomentFormat) parseDateTime(s string) (DateTime, error) {
 	t, err := goment.New(s, string(f))
 	if err != nil {
@@ -349,6 +389,18 @@ func (f gomentFormat) parseTime(s string) (TimeOfDay, error) {
 	}
 	return TimeOfDay{Nanoseconds: int64(t.Nanosecond()), Milliseconds: int64(t.Second()) * 1000,
 		Seconds: int64(t.Second()), Minute: int64(t.Minute()), Hour: int64(t.Hour())}, nil
+}
+
+func (f goFormat) formatTime(s string) (string, error) {
+	return "", nil
+}
+
+func (f gomentFormat) formatTime(s string) (string, error) {
+	t, err := goment.New(s, string(f))
+	if err != nil {
+		return "err", err
+	}
+	return t.Format("09:30:26"), nil
 }
 
 // func (f goFormat) parseUnix(s string) (UnixTime, error) {
@@ -930,7 +982,12 @@ func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) er
 		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
 			ls.SetRawNodeValue(node, v.Format(ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).AsString()))
 		} else {
-			ls.SetRawNodeValue(node, v.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+			x, err := ToGomentTime(v)
+			if err != nil {
+				return err
+			}
+			ls.SetRawNodeValue(node, x.Format(x.ToString(), ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+			//ls.SetRawNodeValue(node, v.Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 		}
 	case Date:
 		if _, ok := node.GetProperty(GoTimeFormatTerm); ok {
@@ -955,9 +1012,17 @@ func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) er
 			}
 		} else {
 			if v.Location == nil {
-				ls.SetRawNodeValue(node, v.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				x, err := ToGomentTime(v.ToTime())
+				if err != nil {
+					return err
+				}
+				ls.SetRawNodeValue(node, x.Format("MM-DD-YYYY HH:mm:ss", ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 			} else {
-				ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				x, err := ToGomentTime(v.ToTime())
+				if err != nil {
+					return err
+				}
+				ls.SetRawNodeValue(node, x.ToTime().In(v.Location).Format(x.Format("MM-DD-YYYY HH:mm:ssZ", ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString())))
 			}
 		}
 	case TimeOfDay:
@@ -969,9 +1034,19 @@ func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) er
 			}
 		} else {
 			if v.Location == nil {
-				ls.SetRawNodeValue(node, v.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				x, err := ToGomentTime(v.ToTime())
+				if err != nil {
+					return err
+				}
+				ls.SetRawNodeValue(node, x.Format("HH:mm:ss", ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				//ls.SetRawNodeValue(node, v.ToTime().Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 			} else {
-				ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
+				x, err := ToGomentTime(v.ToTime())
+				if err != nil {
+					return err
+				}
+				ls.SetRawNodeValue(node, x.ToTime().In(v.Location).Format(x.Format("MM-DD-YYYY HH:mm:ssZ", ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString())))
+				//ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).AsString()))
 			}
 		}
 	case GDay:
