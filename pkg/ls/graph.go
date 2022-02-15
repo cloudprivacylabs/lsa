@@ -332,29 +332,28 @@ func CombineNodeTypes(nodes []graph.Node) graph.StringSet {
 	return ret
 }
 
-// // DocumentNodesUnder returns all document nodes under the given node(s)
-// func DocumentNodesUnder(node ...Node) []Node {
-// 	input := make([]digraph.Node, 0, len(node))
-// 	for _, x := range node {
-// 		input = append(input, x)
-// 	}
-// 	itr := digraph.NewNodeWalkIterator(input...).Select(func(n digraph.Node) bool {
-// 		lsnode, ok := n.(Node)
-// 		if !ok {
-// 			return false
-// 		}
-// 		if !lsnode.GetTypes().Has(DocumentNodeTerm) {
-// 			return false
-// 		}
-// 		return true
-// 	})
-// 	all := itr.All()
-// 	ret := make([]Node, 0, len(all))
-// 	for _, x := range all {
-// 		ret = append(ret, x.(Node))
-// 	}
-// 	return ret
-// }
+// DocumentNodesUnder returns all document nodes under the given node(s)
+func DocumentNodesUnder(node ...graph.Node) []graph.Node {
+	set := make(map[graph.Node]struct{})
+	for _, x := range node {
+		IterateDescendants(x, func(n graph.Node, _ []graph.Node) bool {
+			if IsDocumentNode(n) {
+				set[n] = struct{}{}
+			}
+			return true
+		}, func(e graph.Edge, _ []graph.Node) EdgeFuncResult {
+			if IsDocumentNode(e.GetTo()) {
+				return FollowEdgeResult
+			}
+			return SkipEdgeResult
+		}, false)
+	}
+	ret := make([]graph.Node, 0, len(set))
+	for x := range set {
+		ret = append(ret, x)
+	}
+	return ret
+}
 
 // GetNodeOrSchemaProperty gets the node property with the key from
 // the node, or from the schema nodes it is attached to
