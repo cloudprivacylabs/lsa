@@ -92,7 +92,7 @@ func DefaultBuildNodeKeyFunc(node graph.Node) (string, bool, error) {
 	}
 	found := false
 	foundLabel := ""
-	for _, inst := range ls.InstanceOf(node) {
+	for _, inst := range append(ls.InstanceOf(node), node) {
 		v := ls.AsPropertyValue(inst.GetProperty(ls.AttributeNameTerm))
 		if v != nil {
 			if found {
@@ -157,7 +157,7 @@ func exportJSON(node graph.Node, options ExportOptions, seen map[graph.Node]stru
 		// Not a document node
 		return nil, nil
 	}
-	types := ls.CombineNodeTypes(ls.InstanceOf(node))
+	types := node.GetLabels()
 
 	getTypes := func() jsonom.Node {
 		if !options.ExportTypeProperty {
