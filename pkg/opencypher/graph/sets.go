@@ -22,7 +22,7 @@ import (
 // insertion/deletion, with iterator support
 type FastSet struct {
 	m map[interface{}]*list.Element
-	l list.List
+	l *list.List
 }
 
 func NewFastSet() *FastSet {
@@ -34,6 +34,7 @@ func (f FastSet) Len() int { return len(f.m) }
 func (f *FastSet) Add(item interface{}) {
 	if f.m == nil {
 		f.m = make(map[interface{}]*list.Element)
+		f.l = list.New()
 	}
 	_, exists := f.m[item]
 	if exists {
