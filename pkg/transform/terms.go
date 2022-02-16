@@ -81,7 +81,7 @@ func (ifSemantics) CompileTerm(target ls.CompilablePropertyContainer, term strin
 		}
 		out = append(out, r)
 	}
-	target.SetProperty(term, out)
+	target.SetProperty("$compiled_"+term, out)
 	return nil
 }
 
@@ -106,7 +106,7 @@ func (varsSemantics) CompileTerm(target ls.CompilablePropertyContainer, term str
 		}
 		out = append(out, r)
 	}
-	target.SetProperty(term, out)
+	target.SetProperty("$compiled_"+term, out)
 	return nil
 }
 
@@ -122,6 +122,6 @@ func (sourceSemantics) CompileTerm(target ls.CompilablePropertyContainer, term s
 	if err != nil {
 		return err
 	}
-	target.SetProperty(term, e)
+	target.SetProperty("$compiled_"+term, e)
 	return nil
 }
