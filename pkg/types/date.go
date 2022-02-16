@@ -359,20 +359,11 @@ func (f gomentFormat) parseTime(s string) (TimeOfDay, error) {
 }
 
 func (f goFormat) formatDate(in Date) (string, error) {
-	if in.Location == nil {
-		return in.ToTime().Format(string(f)), nil
-	}
-	return in.ToTime().In(in.Location).Format(string(f)), nil
+	return in.ToTime().Format(string(f)), nil
 }
 
 func (f gomentFormat) formatDate(in Date) (string, error) {
-	var gmt *goment.Goment
-	var err error
-	if in.Location == nil {
-		gmt, err = goment.New(in.ToTime())
-	} else {
-		gmt, err = goment.New(in.ToTime().In(in.Location))
-	}
+	gmt, err := goment.New(in.ToTime())
 	if err != nil {
 		return "", err
 	}
@@ -380,20 +371,11 @@ func (f gomentFormat) formatDate(in Date) (string, error) {
 }
 
 func (f goFormat) formatDateTime(in DateTime) (string, error) {
-	if in.Location == nil {
-		return in.ToTime().Format(string(f)), nil
-	}
-	return in.ToTime().In(in.Location).Format(string(f)), nil
+	return in.ToTime().Format(string(f)), nil
 }
 
 func (f gomentFormat) formatDateTime(in DateTime) (string, error) {
-	var gmt *goment.Goment
-	var err error
-	if in.Location == nil {
-		gmt, err = goment.New(in.ToTime())
-	} else {
-		gmt, err = goment.New(in.ToTime().In(in.Location))
-	}
+	gmt, err := goment.New(in.ToTime())
 	if err != nil {
 		return "", err
 	}
@@ -401,27 +383,17 @@ func (f gomentFormat) formatDateTime(in DateTime) (string, error) {
 }
 
 func (f goFormat) formatTime(in TimeOfDay) (string, error) {
-	if in.Location == nil {
-		return in.ToTime().Format(string(f)), nil
-	}
-	return in.ToTime().In(in.Location).Format(string(f)), nil
+	return in.ToTime().Format(string(f)), nil
+
 }
 
 func (f goFormat) formatGoTime(in time.Time) (string, error) {
-	if in.Location() == nil {
-		return in.Format(string(f)), nil
-	}
-	return in.In(in.Location()).Format(string(f)), nil
+	return in.Format(string(f)), nil
+
 }
 
 func (f gomentFormat) formatGoTime(in time.Time) (string, error) {
-	var gmt *goment.Goment
-	var err error
-	if in.Location() == nil {
-		gmt, err = goment.New(in)
-	} else {
-		gmt, err = goment.New(in.Location())
-	}
+	gmt, err := goment.New(in)
 	if err != nil {
 		return "", err
 	}
