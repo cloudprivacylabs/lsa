@@ -16,6 +16,7 @@ package graph
 
 import (
 	"fmt"
+	"strings"
 )
 
 type Properties map[string]interface{}
@@ -186,4 +187,12 @@ func ComparePropertyValue(a, b interface{}) int {
 		}
 	}
 	panic(fmt.Sprintf("Incomparable values: %v (%T) vs %v (%T)", a, a, b, b))
+}
+
+func (p Properties) String() string {
+	elements := make([]string, 0, len(p))
+	for k, v := range p {
+		elements = append(elements, fmt.Sprintf("%s:%s", k, v))
+	}
+	return "{" + strings.Join(elements, " ") + "}"
 }

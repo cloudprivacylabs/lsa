@@ -2,6 +2,7 @@ package opencypher
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 
@@ -149,3 +150,23 @@ func (v Value) IsSame(v2 Value) bool {
 }
 
 func (v Value) Evaluate(ctx *EvalContext) (Value, error) { return v, nil }
+
+func (v Value) String() string {
+	if v.Value == nil {
+		return "null"
+	}
+	if v.IsPrimitive() {
+		return fmt.Sprint(v.Value)
+	}
+	switch val := v.Value.(type) {
+	case []Value:
+		return fmt.Sprint(val)
+	case map[string]Value:
+		result := make([]string, 0)
+		for k, v := range val {
+			result = append(result, fmt.Sprintf("%s: %s", k, v))
+		}
+		return fmt.Sprintf("{%s}", strings.Join(result, " "))
+	}
+	return fmt.Sprint(v.Value)
+}

@@ -783,6 +783,10 @@ func oC_SchemaName(ctx *parser.OC_SchemaNameContext) SchemaName {
 }
 
 func oC_SymbolicName(ctx *parser.OC_SymbolicNameContext) SymbolicName {
+	if node := ctx.EscapedSymbolicName(); node != nil {
+		text := node.GetText()
+		return SymbolicName(text[1 : len(text)-1])
+	}
 	return SymbolicName(ctx.GetText())
 }
 

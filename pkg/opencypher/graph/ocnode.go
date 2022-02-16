@@ -14,6 +14,11 @@
 
 package graph
 
+import (
+	"fmt"
+	"strings"
+)
+
 type OCNode struct {
 	id     int
 	labels StringSet
@@ -59,4 +64,12 @@ func (node *OCNode) DetachAndRemove() {
 // Remove all connected edges
 func (node *OCNode) Detach() {
 	node.graph.DetachNode(node)
+}
+
+func (node OCNode) String() string {
+	labels := strings.Join(node.labels.Slice(), ":")
+	if len(node.labels) > 0 {
+		labels = ":" + labels
+	}
+	return fmt.Sprintf("(%s %s)", labels, node.Properties)
 }

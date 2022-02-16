@@ -47,3 +47,11 @@ func Parse(input string) (Evaluatable, error) {
 	out := oC_Cypher(c.(*parser.OC_CypherContext))
 	return out, nil
 }
+
+func ParseAndEvaluate(input string, ctx *EvalContext) (Value, error) {
+	e, err := Parse(input)
+	if err != nil {
+		return Value{}, err
+	}
+	return e.Evaluate(ctx)
+}

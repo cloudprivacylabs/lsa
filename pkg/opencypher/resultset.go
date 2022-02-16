@@ -1,7 +1,10 @@
 package opencypher
 
 import (
+	"bytes"
 	"errors"
+	"fmt"
+	"io"
 	"reflect"
 
 	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
@@ -114,4 +117,15 @@ func (r *ResultSet) Union(src ResultSet, all bool) error {
 		}
 	}
 	return nil
+}
+
+func (r ResultSet) String() string {
+	out := bytes.Buffer{}
+	for _, row := range r.Rows {
+		for k, v := range row {
+			io.WriteString(&out, fmt.Sprintf("%s: %s ", k, v))
+		}
+		io.WriteString(&out, "\n")
+	}
+	return out.String()
 }
