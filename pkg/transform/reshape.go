@@ -18,8 +18,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/cloudprivacylabs/lsa/pkg/gl"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher"
 	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
@@ -59,7 +59,7 @@ var (
 
 type ReshapeContext struct {
 	// The expression language interpreter context
-	glContext *gl.Scope
+	symbols map[string]interface{}
 	// All schema nodes from the root to the current node
 	schemaPath []graph.Node
 	// Generated document paths from the root to the parent of the current node
@@ -77,7 +77,7 @@ func (p *ReshapeContext) CurrentSchemaNode() graph.Node {
 
 func (p *ReshapeContext) nestedContext() *ReshapeContext {
 	ret := *p
-	ret.glContext = p.glContext.NewScope()
+	ret.ectx = p.ectx.SubContext()
 	return &ret
 }
 
@@ -86,13 +86,12 @@ func (p *ReshapeContext) nestedContext() *ReshapeContext {
 // properties for given schema nodes
 func (respaher *Reshaper) Reshape(rootNode graph.Node, targetGraph graph.Graph) (graph.Node, error) {
 	ctx := ReshapeContext{
-		glContext:   gl.NewScope(),
 		schemaPath:  []graph.Node{respaher.TargetSchema.GetSchemaRootNode()},
 		docPath:     []graph.Node{},
 		sourceNode:  rootNode,
 		targetGraph: targetGraph,
 	}
-	ctx.glContext.Set("source", rootNode)
+	ctx.ectx = opencypher.NewEvalContext(rootNode.GetGraph())
 	return respaher.reshape(&ctx)
 }
 
@@ -243,27 +242,27 @@ func (reshaper *Reshaper) value(context *ReshapeContext) (graph.Node, error) {
 	return targetNode, nil
 }
 
-func getSource(context *ReshapeContext, schemaNode graph.Node) (gl.Value, error) {
+func getSource(context *ReshapeContext, schemaNode graph.Node) (opencypher.Value, error) {
 	data, _ := schemaNode.GetProperty(ReshapeTerms.Source)
-	expr, ok := data.(gl.Evaluatable)
+	expr, ok := data.(opencypher.Evaluatable)
 	if !ok {
-		return nil, nil
+		return opencypher.Value{}, nil
 	}
-	value, err := expr.Evaluate(context.glContext)
+	value, err := expr.Evaluate(context.ectx)
 	if err != nil {
-		return nil, err
+		return opencypher.Value{}, err
 	}
 	return value, nil
 }
 
 func (reshaper *Reshaper) setupVariables(context *ReshapeContext, schemaNode graph.Node) error {
 	data, _ := schemaNode.GetProperty(ReshapeTerms.Vars)
-	slice, ok := data.([]gl.Evaluatable)
+	slice, ok := data.([]opencypher.Evaluatable)
 	if !ok {
 		return nil
 	}
 	for _, x := range slice {
-		if _, err := x.Evaluate(context.glContext); err != nil {
+		if _, err := x.Evaluate(context.ectx); err != nil {
 			return err
 		}
 	}
@@ -272,19 +271,19 @@ func (reshaper *Reshaper) setupVariables(context *ReshapeContext, schemaNode gra
 
 func (reshaper *Reshaper) checkConditionals(context *ReshapeContext, schemaNode graph.Node) (bool, error) {
 	data, _ := schemaNode.GetProperty(ReshapeTerms.If)
-	slice, ok := data.([]gl.Evaluatable)
+	slice, ok := data.([]opencypher.Evaluatable)
 	if !ok {
 		return true, nil
 	}
 	result := true
 	for _, x := range slice {
-		r, err := x.Evaluate(context.glContext)
+		r, err := x.Evaluate(context.ectx)
 		if err != nil {
 			return false, err
 		}
-		result, err = r.AsBool()
-		if err != nil {
-			return false, err
+		result, ok = r.AsBool()
+		if !ok {
+			return false, nil
 		}
 		if result == false {
 			return false, nil

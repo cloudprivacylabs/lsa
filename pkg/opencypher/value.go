@@ -41,6 +41,14 @@ func (v Value) IsPrimitive() bool {
 	return false
 }
 
+// AsBool returns the bool value, or if it is not bool, false,false
+func (v Value) AsBool() (bool, bool) {
+	if b, ok := v.Value.(bool); ok {
+		return b, true
+	}
+	return false, false
+}
+
 func ValueOf(in interface{}) Value {
 	switch v := in.(type) {
 	case int8:
