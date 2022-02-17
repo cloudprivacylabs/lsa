@@ -16,11 +16,9 @@ package transform
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher"
 )
 
 const (
@@ -30,19 +28,16 @@ const (
 
 var ErrJoinFailure = errors.New("Join failure")
 
-func JoinValues(nodes []graph.Node, method, delimiter string) (string, error) {
-	values := make([]string, 0, len(nodes))
-	for _, n := range nodes {
-		v, _ := ls.GetNodeValue(n)
-		if v != nil {
-			values = append(values, fmt.Sprint(v))
-		}
+func JoinValues(values []opencypher.Value, method, delimiter string) (string, error) {
+	strs := make([]string, 0, len(values))
+	for _, n := range values {
+		strs = append(strs, n.String())
 	}
-	if len(values) > 1 && method == JoinMethodError {
+	if len(strs) > 1 && method == JoinMethodError {
 		return "", ErrJoinFailure
 	}
 	if method == JoinMethodJoin {
-		return strings.Join(values, delimiter), nil
+		return strings.Join(strs, delimiter), nil
 	}
 	return "", ErrJoinFailure
 }

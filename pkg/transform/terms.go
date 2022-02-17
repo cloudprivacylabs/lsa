@@ -33,6 +33,8 @@ var ReshapeTerms = struct {
 	// Export defines a list of symbols that will be exported from the
 	// opencypher expressions run in this node
 	Export string
+	// Expressions specify one or more expression to evaluate
+	Expressions string
 	// ValueExpr specifies the query to be used to generate the target value
 	ValueExpr string
 	// IfEmpty determines whether to reshape the node even if it has no value
@@ -48,6 +50,9 @@ var ReshapeTerms = struct {
 	Export: ls.NewTerm(RS, "export", false, true, ls.OverrideComposition, struct {
 		exportSemantics
 	}{}),
+	Expressions: ls.NewTerm(RS, "expr", false, true, ls.OverrideComposition, struct {
+		exprSemantics
+	}{}),
 	ValueExpr: ls.NewTerm(RS, "valueExpr", false, false, ls.OverrideComposition, struct {
 		valueExprSemantics
 	}{}),
@@ -59,6 +64,7 @@ var ReshapeTerms = struct {
 type ifSemantics struct{}
 type exportSemantics struct{}
 type valueExprSemantics struct{}
+type exprSemantics struct{}
 
 // CompileTerm compiles the if conditional
 func (ifSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
@@ -81,7 +87,7 @@ func (ifSemantics) CompileTerm(target ls.CompilablePropertyContainer, term strin
 		}
 		out = append(out, r)
 	}
-	target.SetProperty(term, out)
+	target.SetProperty("$compiled_"+term, out)
 	return nil
 }
 
@@ -98,12 +104,36 @@ func (exportSemantics) CompileTerm(target ls.CompilablePropertyContainer, term s
 	} else {
 		return ErrInvalidVariables
 	}
-	target.SetProperty("$"+term, out)
+	target.SetProperty("$compiled_"+term, val)
 	return nil
 }
 
-// CompileTerm compiles the source expression
-func (sourceSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
+func (exprSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
+	if value == nil {
+		return nil
+	}
+	expr := make([]opencypher.Evaluatable, 0)
+	if value.IsString() {
+		e, err := opencypher.Parse(value.AsString())
+		if err != nil {
+			return err
+		}
+		expr = append(expr, e)
+	} else if value.IsStringSlice() {
+		for _, x := range value.AsStringSlice() {
+			e, err := opencypher.Parse(x)
+			if err != nil {
+				return err
+			}
+			expr = append(expr, e)
+		}
+	}
+	target.SetProperty("$compiled_"+term, expr)
+	return nil
+}
+
+// CompileTerm compiles the value expressions
+func (valueExprSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	if value == nil {
 		return nil
 	}
@@ -114,6 +144,6 @@ func (sourceSemantics) CompileTerm(target ls.CompilablePropertyContainer, term s
 	if err != nil {
 		return err
 	}
-	target.SetProperty(term, e)
+	target.SetProperty("$compiled_"+term, e)
 	return nil
 }

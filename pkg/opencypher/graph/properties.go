@@ -55,7 +55,21 @@ func (p *Properties) ForEachProperty(f func(string, interface{}) bool) bool {
 //   []interface
 //
 // The []interface must have one of the supported types as its elements
+//
+// If one of the values implement GetNativeValue() method, then it is
+// called to get the underlying value
 func ComparePropertyValue(a, b interface{}) int {
+
+	type withNativeValue interface {
+		GetNativeValue() interface{}
+	}
+	if n, ok := a.(withNativeValue); ok {
+		return ComparePropertyValue(n.GetNativeValue(), b)
+	}
+	if n, ok := b.(withNativeValue); ok {
+		return ComparePropertyValue(a, n.GetNativeValue())
+	}
+
 	switch v1 := a.(type) {
 	case string:
 		if v2, ok := b.(string); ok {

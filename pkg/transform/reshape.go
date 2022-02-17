@@ -28,18 +28,6 @@ type Reshaper struct {
 
 	// If true, adds the references to the target schema
 	AddInstanceOfEdges bool
-
-	// GenerateID will generate a node ID given schema path and target document path up to the new node
-	GenerateID func(schemaPath, docPath []graph.Node) string
-}
-
-// GenerateID gets the schema path for the new field, and the path to
-// the parent container of the generated node
-func (respaher *Reshaper) generateID(schemaPath, docPath []graph.Node) string {
-	if respaher.GenerateID != nil {
-		return respaher.GenerateID(schemaPath, docPath)
-	}
-	return ls.GetNodeID(schemaPath[len(schemaPath)-1])
 }
 
 // ErrInvalidSchemaNodeType is returned if the schema node type cannot
@@ -55,15 +43,15 @@ var (
 	ErrInvalidSource                = errors.New("Invalid source")
 	ErrMultipleSourceNodesForObject = errors.New("Multiple source nodes specified for an object")
 	ErrSourceMustBeString           = errors.New("source term value must be a string")
+	ErrMultipleValues               = errors.New("Multiple values specified")
 )
 
 type ReshapeContext struct {
+	parent *ReshapeContext
 	// The expression language interpreter context
-	symbols map[string]interface{}
+	symbols map[string]opencypher.Value
 	// All schema nodes from the root to the current node
 	schemaPath []graph.Node
-	// Generated document paths from the root to the parent of the current node
-	docPath []graph.Node
 
 	// The root node to be used to reshape
 	sourceNode graph.Node
@@ -75,10 +63,56 @@ func (p *ReshapeContext) CurrentSchemaNode() graph.Node {
 	return p.schemaPath[len(p.schemaPath)-1]
 }
 
+func (p *ReshapeContext) setSymbols(ctx *opencypher.EvalContext) {
+	if p.parent != nil {
+		p.parent.setSymbols(ctx)
+	}
+	for k, v := range p.symbols {
+		ctx.SetVar(k, v)
+	}
+}
+
+func (p *ReshapeContext) getEvalContext() *opencypher.EvalContext {
+	ctx := opencypher.NewEvalContext(p.sourceNode.GetGraph())
+	p.setSymbols(ctx)
+	return ctx
+}
+
 func (p *ReshapeContext) nestedContext() *ReshapeContext {
 	ret := *p
-	ret.ectx = p.ectx.SubContext()
+	ret.parent = p
+	ret.symbols = make(map[string]opencypher.Value)
 	return &ret
+}
+
+func (p *ReshapeContext) SetSymbolValue(name string, value opencypher.Value) {
+	trc := p.parent
+	for trc != nil {
+		if _, ok := trc.symbols[name]; ok {
+			trc.symbols[name] = value
+			return
+		}
+		trc = trc.parent
+	}
+	p.symbols[name] = value
+}
+
+// Export the variables in the resultsets whose name match the given name
+func (p *ReshapeContext) exportVar(name string, values []opencypher.Value) {
+	for _, val := range values {
+		resultSet, ok := val.Value.(opencypher.ResultSet)
+		if !ok {
+			continue
+		}
+		for _, row := range resultSet.Rows {
+			rowValue, ok := row[name]
+			if !ok {
+				continue
+			}
+
+			p.SetSymbolValue(name, rowValue)
+		}
+	}
 }
 
 // Reshape the graph rooted at the rootNode to the targetSchema, using
@@ -87,18 +121,35 @@ func (p *ReshapeContext) nestedContext() *ReshapeContext {
 func (respaher *Reshaper) Reshape(rootNode graph.Node, targetGraph graph.Graph) (graph.Node, error) {
 	ctx := ReshapeContext{
 		schemaPath:  []graph.Node{respaher.TargetSchema.GetSchemaRootNode()},
-		docPath:     []graph.Node{},
 		sourceNode:  rootNode,
 		targetGraph: targetGraph,
+		symbols:     make(map[string]opencypher.Value),
 	}
-	ctx.ectx = opencypher.NewEvalContext(rootNode.GetGraph())
 	return respaher.reshape(&ctx)
 }
 
 func (reshaper *Reshaper) reshape(context *ReshapeContext) (graph.Node, error) {
-	context = context.nestedContext()
 	schemaNode := context.CurrentSchemaNode()
-	// Check conditionals first
+
+	// If this is not a value node, create a sub-context
+	if !schemaNode.GetLabels().Has(ls.AttributeTypeValue) {
+		context = context.nestedContext()
+	}
+
+	// Evaluate expressions
+	// Export values
+	// Check conditionals
+
+	expressionValues, err := reshaper.getExprs(context, schemaNode)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, varname := range reshaper.getExportVars(schemaNode) {
+		context.exportVar(varname, expressionValues)
+	}
+
+	// Check conditionals
 	v, err := reshaper.checkConditionals(context, schemaNode)
 	if err != nil {
 		return nil, err
@@ -106,10 +157,7 @@ func (reshaper *Reshaper) reshape(context *ReshapeContext) (graph.Node, error) {
 	if !v {
 		return nil, nil
 	}
-	// Declare the variables
-	if err = reshaper.setupVariables(context, schemaNode); err != nil {
-		return nil, err
-	}
+
 	switch {
 	case schemaNode.GetLabels().Has(ls.AttributeTypeValue):
 		return reshaper.value(context)
@@ -126,37 +174,7 @@ func (reshaper *Reshaper) object(context *ReshapeContext) (graph.Node, error) {
 	attributes := graph.TargetNodes(ls.SortEdgesItr(schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.ObjectAttributesTerm)))
 	attributes = append(attributes, graph.TargetNodes(ls.SortEdgesItr(schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.ObjectAttributeListTerm)))...)
 
-	// Create a target node for this object node. If the object turns
-	// out to be empty, this target node may be thrown away
-	targetNode := context.targetGraph.NewNode([]string{ls.DocumentNodeTerm, ls.AttributeTypeObject}, nil)
-	ls.SetNodeID(targetNode, reshaper.generateID(context.schemaPath, context.docPath))
-	if reshaper.AddInstanceOfEdges {
-		context.targetGraph.NewEdge(targetNode, schemaNode, ls.InstanceOfTerm, nil)
-	}
-	context.docPath = append(context.docPath, targetNode)
-
-	source, err := getSource(context, schemaNode)
-	if err != nil {
-		return nil, err
-	}
-	// If there is a source node, there can be at most one
-	if source != nil {
-		sourceNodes, ok := source.(gl.NodeValue)
-		if !ok {
-			return nil, ErrInvalidSource
-		}
-		if sourceNodes.Nodes.Len() > 1 {
-			return nil, ErrMultipleSourceNodesForObject
-		}
-		if sourceNodes.Nodes.Len() == 1 {
-			for _, k := range sourceNodes.Nodes.Slice() {
-				context.sourceNode = k
-				context.glContext.Set("source", context.sourceNode)
-			}
-		}
-	}
-
-	empty := true
+	children := make([]graph.Node, 0)
 	for _, a := range attributes {
 		schemaAttribute := a.(graph.Node)
 		context.schemaPath = append(context.schemaPath, schemaAttribute)
@@ -166,45 +184,73 @@ func (reshaper *Reshaper) object(context *ReshapeContext) (graph.Node, error) {
 			return nil, err
 		}
 		if newNode != nil {
-			context.targetGraph.NewEdge(targetNode, newNode, ls.HasTerm, nil)
-			empty = false
+			children = append(children, newNode)
 		}
 	}
+
+	empty := len(children) == 0
 	if empty {
 		ifEmpty := ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.IfEmpty))
-		if ifEmpty != nil && ifEmpty.IsString() && ifEmpty.AsString() == "true" {
-			return targetNode, nil
+		if !(ifEmpty != nil && ifEmpty.IsString() && ifEmpty.AsString() == "true") {
+			return nil, nil
 		}
-		return nil, nil
+	}
+
+	targetNode := context.targetGraph.NewNode([]string{ls.DocumentNodeTerm, ls.AttributeTypeObject}, nil)
+	types := targetNode.GetLabels()
+	types.Add(ls.FilterNonLayerTypes(schemaNode.GetLabels().Slice())...)
+	targetNode.SetLabels(types)
+	if reshaper.AddInstanceOfEdges {
+		context.targetGraph.NewEdge(targetNode, schemaNode, ls.InstanceOfTerm, nil)
+	}
+	for _, c := range children {
+		context.targetGraph.NewEdge(targetNode, c, ls.HasTerm, nil)
 	}
 	return targetNode, nil
 }
 
 func (reshaper *Reshaper) value(context *ReshapeContext) (graph.Node, error) {
 	schemaNode := context.CurrentSchemaNode()
-	// Create a target node for this object node. If the object turns
-	// out to be empty, this target node may be thrown away
-	targetNode := context.targetGraph.NewNode([]string{ls.DocumentNodeTerm, ls.AttributeTypeValue}, nil)
-	ls.SetNodeID(targetNode, reshaper.generateID(context.schemaPath, context.docPath))
-	if reshaper.AddInstanceOfEdges {
-		context.targetGraph.NewEdge(targetNode, schemaNode, ls.InstanceOfTerm, nil)
-	}
-	context.docPath = append(context.docPath, targetNode)
 
 	source, err := getSource(context, schemaNode)
 	if err != nil {
 		return nil, err
 	}
 	empty := true
-	if source != nil {
-		switch sourceValue := source.(type) {
-		case gl.NodeValue:
-			switch {
-			case sourceValue.Nodes.Len() == 1:
-				v, _ := ls.GetNodeValue(sourceValue.Nodes.Slice()[0])
-				ls.SetNodeValue(targetNode, v)
-				empty = false
-			case sourceValue.Nodes.Len() > 1:
+	var nodeValue interface{}
+	getNodeValue := func(in interface{}) (interface{}, error) {
+		if node, ok := in.(graph.Node); ok {
+			return ls.GetNodeValue(node)
+		}
+		return in, nil
+	}
+	if source.Value != nil {
+		if source.IsPrimitive() {
+			nodeValue = source.Value
+			empty = false
+		} else if node, ok := source.Value.(graph.Node); ok {
+			val, err := ls.GetNodeValue(node)
+			if err != nil {
+				return nil, err
+			}
+			nodeValue = val
+			empty = false
+		} else if rs, ok := source.Value.(opencypher.ResultSet); ok {
+			switch len(rs.Rows) {
+			case 0:
+			case 1:
+				if len(rs.Rows[0]) == 1 {
+					for _, v := range rs.Rows[0] {
+						nodeValue, err = getNodeValue(v.Value)
+						if err != nil {
+							return nil, err
+						}
+					}
+					empty = false
+				} else if len(rs.Rows[0]) > 1 {
+					return nil, ErrMultipleValues
+				}
+			default:
 				joinMethod := "join"
 				prop := ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.JoinMethod))
 				if prop != nil && prop.IsString() {
@@ -215,69 +261,101 @@ func (reshaper *Reshaper) value(context *ReshapeContext) (graph.Node, error) {
 				if prop != nil && prop.IsString() {
 					joinDelimiter = prop.AsString()
 				}
-				result, err := JoinValues(sourceValue.Nodes.Slice(), joinMethod, joinDelimiter)
+
+				values := make([]opencypher.Value, 0)
+				for _, row := range rs.Rows {
+					if len(row) > 1 {
+						return nil, ErrMultipleValues
+					}
+					for _, v := range row {
+						value, err := getNodeValue(v.Value)
+						if err != nil {
+							return nil, err
+						}
+						values = append(values, opencypher.ValueOf(value))
+					}
+				}
+				result, err := JoinValues(values, joinMethod, joinDelimiter)
 				if err != nil {
 					return nil, err
 				}
-				ls.SetNodeValue(targetNode, result)
+				nodeValue = result
 				empty = false
 			}
-		case gl.BoolValue, gl.NumberValue, gl.StringValue:
-			str, err := source.AsString()
-			if err != nil {
-				return nil, err
-			}
-			ls.SetNodeValue(targetNode, str)
-			empty = false
 		}
 	}
 
 	if empty {
 		ifEmpty := ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.IfEmpty))
-		if ifEmpty != nil && ifEmpty.IsString() && ifEmpty.AsString() == "true" {
-			return targetNode, nil
+		if !(ifEmpty != nil && ifEmpty.IsString() && ifEmpty.AsString() == "true") {
+			empty = false
 		}
+	}
+	if empty {
 		return nil, nil
+	}
+	targetNode := context.targetGraph.NewNode([]string{ls.DocumentNodeTerm, ls.AttributeTypeValue}, nil)
+	if reshaper.AddInstanceOfEdges {
+		context.targetGraph.NewEdge(targetNode, schemaNode, ls.InstanceOfTerm, nil)
+	}
+	types := targetNode.GetLabels()
+	types.Add(ls.FilterNonLayerTypes(schemaNode.GetLabels().Slice())...)
+	targetNode.SetLabels(types)
+	if nodeValue != nil {
+		ls.SetNodeValue(targetNode, nodeValue)
 	}
 	return targetNode, nil
 }
 
 func getSource(context *ReshapeContext, schemaNode graph.Node) (opencypher.Value, error) {
-	data, _ := schemaNode.GetProperty(ReshapeTerms.Source)
+	data, _ := schemaNode.GetProperty("$compiled_" + ReshapeTerms.ValueExpr)
 	expr, ok := data.(opencypher.Evaluatable)
 	if !ok {
 		return opencypher.Value{}, nil
 	}
-	value, err := expr.Evaluate(context.ectx)
+	value, err := expr.Evaluate(context.getEvalContext())
 	if err != nil {
 		return opencypher.Value{}, err
 	}
 	return value, nil
 }
 
-func (reshaper *Reshaper) setupVariables(context *ReshapeContext, schemaNode graph.Node) error {
-	data, _ := schemaNode.GetProperty(ReshapeTerms.Vars)
-	slice, ok := data.([]opencypher.Evaluatable)
+func (reshaper *Reshaper) getExprs(context *ReshapeContext, schemaNode graph.Node) ([]opencypher.Value, error) {
+	data, _ := schemaNode.GetProperty("$compiled_" + ReshapeTerms.Expressions)
+	expr, ok := data.([]opencypher.Evaluatable)
+	if !ok {
+		return nil, nil
+	}
+	ret := make([]opencypher.Value, 0, len(expr))
+	for _, x := range expr {
+		evctx := context.getEvalContext()
+		v, err := x.Evaluate(evctx)
+		if err != nil {
+			return nil, err
+		}
+		ret = append(ret, v)
+	}
+	return ret, nil
+}
+
+func (reshaper *Reshaper) getExportVars(schemaNode graph.Node) []string {
+	data, _ := schemaNode.GetProperty("$compiled_" + ReshapeTerms.Export)
+	slice, ok := data.([]string)
 	if !ok {
 		return nil
 	}
-	for _, x := range slice {
-		if _, err := x.Evaluate(context.ectx); err != nil {
-			return err
-		}
-	}
-	return nil
+	return slice
 }
 
 func (reshaper *Reshaper) checkConditionals(context *ReshapeContext, schemaNode graph.Node) (bool, error) {
-	data, _ := schemaNode.GetProperty(ReshapeTerms.If)
+	data, _ := schemaNode.GetProperty("$compiled_" + ReshapeTerms.If)
 	slice, ok := data.([]opencypher.Evaluatable)
 	if !ok {
 		return true, nil
 	}
 	result := true
 	for _, x := range slice {
-		r, err := x.Evaluate(context.ectx)
+		r, err := x.Evaluate(context.getEvalContext())
 		if err != nil {
 			return false, err
 		}

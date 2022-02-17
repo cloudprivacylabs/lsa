@@ -96,6 +96,10 @@ func (set NodeSet) Iterator() NodeIterator {
 	return &nodeIterator{withSize(i, set.set.Len())}
 }
 
+func (set NodeSet) Slice() []Node {
+	return NodeSlice(set.Iterator())
+}
+
 // EdgeSet keeps an unordered set of edges
 type EdgeSet struct {
 	set FastSet
@@ -116,4 +120,8 @@ func (set EdgeSet) Len() int {
 func (set EdgeSet) Iterator() EdgeIterator {
 	i := set.set.Iterator()
 	return &edgeIterator{withSize(i, set.set.Len())}
+}
+
+func (set EdgeSet) Slice() []Edge {
+	return EdgeSlice(set.Iterator())
 }

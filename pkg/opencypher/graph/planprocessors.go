@@ -13,6 +13,14 @@
 // limitations under the License.
 package graph
 
+import (
+	"fmt"
+)
+
+func logf(pattern string, args ...interface{}) {
+	fmt.Printf(pattern, args...)
+}
+
 type iterateNodes struct {
 	itr         NodeIterator
 	patternItem PatternItem
@@ -57,6 +65,7 @@ func (processor *iterateNodes) Run(ctx *MatchContext, next matchAccumulator) err
 	for processor.itr.Next() {
 		processor.result = processor.itr.Node()
 		ctx.recordStepResult(processor)
+		logf("iterateNodes: %+v\n", processor.result)
 		if err := next.Run(ctx); err != nil {
 			return err
 		}
@@ -149,6 +158,7 @@ func (processor *iterateConnectedEdges) Run(ctx *MatchContext, next matchAccumul
 		for processor.edgeItr.Next() {
 			processor.result = []Edge{processor.edgeItr.Edge()}
 			ctx.recordStepResult(processor)
+			logf("IterateConnectedEdges len=1 %+v\n", processor.result)
 			if err := next.Run(ctx); err != nil {
 				return err
 			}
@@ -159,6 +169,7 @@ func (processor *iterateConnectedEdges) Run(ctx *MatchContext, next matchAccumul
 	var err error
 	CollectAllPaths(ctx.Graph, processor.edgeItr, processor.edgeFilter, processor.dir, processor.patternItem.Min, processor.patternItem.Max, func(path []Edge) bool {
 		processor.result = path
+		logf("IterateConnectedEdges len>1 %+v\n", processor.result)
 		ctx.recordStepResult(processor)
 		if err = next.Run(ctx); err != nil {
 			return false
@@ -207,6 +218,7 @@ func (processor *iterateConnectedNodes) Run(ctx *MatchContext, next matchAccumul
 	} else {
 		node = edge.GetFrom()
 	}
+	logf("Iterate connected nodes with node=%+v\n", node)
 	if processor.nodeFilter(node) {
 
 		constraints, err := processor.patternItem.isConstrainedNodes(ctx)
@@ -222,6 +234,7 @@ func (processor *iterateConnectedNodes) Run(ctx *MatchContext, next matchAccumul
 		processor.result = node
 		processor.done = true
 		ctx.recordStepResult(processor)
+		logf("Iterate connected nodes goes deeper\n")
 		if err := next.Run(ctx); err != nil {
 			return err
 		}

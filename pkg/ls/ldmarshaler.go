@@ -146,6 +146,9 @@ func getValuesOrIDs(in interface{}) (value string, values, ids []string, err err
 		return
 	}
 	if arr, ok := in.([]interface{}); ok {
+		if len(arr) == 1 {
+			return getValuesOrIDs(arr[0])
+		}
 		for _, el := range arr {
 			val, vals, i, e := getValuesOrIDs(el)
 			if e != nil {

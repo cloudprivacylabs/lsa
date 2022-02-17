@@ -11,7 +11,7 @@
                     {
                         "@id": "val1",
                         "@type": "ls:Value",
-                        "ls:reshape/source": "'literal'"
+                        "ls:reshape/valueExpr": "return 'literal'"
                     }
                 ]
             }
@@ -21,7 +21,7 @@
             "@graph": [
                 {
                     "@id": "http://example.org/obj1",
-                    "@type": "https://lschema.org/DocumentNode",
+                    "@type": ["https://lschema.org/DocumentNode","http://example.org/TargetType"],
                     "https://lschema.org/has": [
                         {"@id": "http://example.org/attr1"},
                         {"@id": "http://example.org/attr2"}
@@ -43,7 +43,7 @@
             "@graph": [
                 {
                     "@id": "root",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object"],
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","http://example.org/TargetType"],
                     "https://lschema.org/has": [
                         {"@id": "val1"}
                     ]
@@ -68,7 +68,7 @@
                     {
                         "@id": "val1",
                         "@type": "ls:Value",
-                        "ls:reshape/source": "source.firstReachable(node->(node.id=='http://example.org/attr1'))"
+                        "ls:reshape/valueExpr": "match (n) where n.`https://prop`=\"propValue\" return n"
                     }
                 ]
             }
@@ -78,7 +78,7 @@
             "@graph": [
                 {
                     "@id": "http://example.org/obj1",
-                    "@type": "https://lschema.org/DocumentNode",
+                    "@type": ["https://lschema.org/DocumentNode"],
                     "https://lschema.org/has": [
                         {"@id": "http://example.org/attr1"},
                         {"@id": "http://example.org/attr2"}
@@ -86,6 +86,7 @@
                 },
                 {
                     "@id": "http://example.org/attr1",
+                    "https://prop": "propValue",
                     "@type": "https://lschema.org/DocumentNode",
                     "https://lschema.org/attributeValue": "123"
                 },
@@ -100,7 +101,7 @@
             "@graph": [
                 {
                     "@id": "root",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object"],
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","http://example.org/TargetType"],
                     "https://lschema.org/has": [
                         {"@id": "val1"}
                     ]
@@ -120,21 +121,21 @@
             "@type": "ls:Schema",
             "@id": "http://example.org/TestTarget",
             "ls:layer": {
-                "@type": ["ls:Object","http://example.org/TargetType"],
+                "@type": ["ls:Object","http://example.org/TargetType","https://1"],
                 "ls:Object/attributes": [
                     {
                         "@id": "val1",
                         "@type": "ls:Value",
-                        "ls:reshape/source": "source.firstReachable(node->(node.id=='http://example.org/attr1'))"
+                        "ls:reshape/valueExpr": "match (n:`https://test1`) return n"
                     },
                     {
                         "@id": "obj1",
-                        "@type": "ls:Object",
+                        "@type": ["ls:Object","https://2"],
                         "ls:Object/attributes": [
                             {
                                 "@id": "val2",
                                 "@type": "ls:Value",
-                                "ls:reshape/source": "source.firstReachable(node->(node.id=='http://example.org/attr2'))"
+                                "ls:reshape/valueExpr": "match (n:`https://test2`) return n"
                             }
                         ]
                     }
@@ -146,7 +147,7 @@
             "@graph": [
                 {
                     "@id": "http://example.org/obj1",
-                    "@type": "https://lschema.org/DocumentNode",
+                    "@type": ["https://lschema.org/DocumentNode"],
                     "https://lschema.org/has": [
                         {"@id": "http://example.org/attr1"},
                         {"@id": "http://example.org/attr2"}
@@ -154,12 +155,12 @@
                 },
                 {
                     "@id": "http://example.org/attr1",
-                    "@type": "https://lschema.org/DocumentNode",
+                    "@type": ["https://lschema.org/DocumentNode","https://test1"],
                     "https://lschema.org/attributeValue": "123"
                 },
                 {
                     "@id": "http://example.org/attr2",
-                    "@type": "https://lschema.org/DocumentNode",
+                    "@type": ["https://lschema.org/DocumentNode","https://test2"],
                     "https://lschema.org/attributeValue": "true"
                 }
             ]
@@ -168,7 +169,7 @@
             "@graph": [
                 {
                     "@id": "root",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object"],
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","https://1","http://example.org/TargetType"],
                     "https://lschema.org/has": [
                         {"@id": "val1"},
                         {"@id": "obj1"}
@@ -181,7 +182,7 @@
                 },
                 {
                     "@id":"obj1",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object"],
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","https://2"],
                     "https://lschema.org/has": [
                         {"@id": "val2"}
                     ]

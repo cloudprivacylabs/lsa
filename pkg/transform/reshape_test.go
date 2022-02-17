@@ -85,9 +85,6 @@ func (tc testCase) Run(t *testing.T) {
 		if ls.GetRawNodeValue(n1) != ls.GetRawNodeValue(n2) {
 			return false
 		}
-		if ls.GetNodeID(n1) != ls.GetNodeID(n2) {
-			return false
-		}
 		if !ls.IsPropertiesEqual(ls.PropertiesAsMap(n1), ls.PropertiesAsMap(n2)) {
 			return false
 		}

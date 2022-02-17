@@ -38,14 +38,31 @@ type matchResultAccumulator struct {
 	where   Expression
 	evalCtx *EvalContext
 	result  ResultSet
+	err     error
 }
 
-func (acc *matchResultAccumulator) StoreResult(path interface{}, symbols map[string]interface{}) {
+func (acc *matchResultAccumulator) StoreResult(ctx *graph.MatchContext, path interface{}, symbols map[string]interface{}) {
+	if acc.err != nil {
+		return
+	}
 	if acc.where != nil {
-		// Evaluate the where clause
-		// for k, v := range symbols {
-
-		// }
+		evalContext := acc.evalCtx.SubContext()
+		for k, v := range ctx.LocalSymbols {
+			if nodes := v.NodeSlice(); len(nodes) == 1 {
+				evalContext.SetVar(k, ValueOf(nodes[0]))
+			}
+			if edges := v.EdgeSlice(); edges != nil {
+				evalContext.SetVar(k, ValueOf(edges))
+			}
+		}
+		rs, err := acc.where.Evaluate(evalContext)
+		if err != nil {
+			acc.err = err
+			return
+		}
+		if b, _ := rs.AsBool(); !b {
+			return
+		}
 	}
 	// Record results in the context
 	if node, ok := path.(graph.Node); ok {
@@ -137,9 +154,15 @@ func (np NodePattern) getPattern(ctx *EvalContext) (graph.PatternItem, error) {
 	}
 	ret.Labels = np.Labels.getPattern()
 	var err error
-	ret.Properties, err = np.Properties.getPattern(ctx)
+	props, err := np.Properties.getPattern(ctx)
 	if err != nil {
 		return graph.PatternItem{}, err
+	}
+	if len(props) > 0 {
+		ret.Properties = make(map[string]interface{})
+		for k, v := range props {
+			ret.Properties[k] = v.Value
+		}
 	}
 	return ret, nil
 }
@@ -158,12 +181,12 @@ func (rp RelationshipPattern) getPattern(ctx *EvalContext) (graph.PatternItem, e
 		if from != nil {
 			ret.Min = *from
 		} else {
-			ret.Min = 1
+			ret.Min = -1
 		}
 		if to != nil {
 			ret.Max = *to
 		} else {
-			ret.Max = 1
+			ret.Max = -1
 		}
 	} else {
 		ret.Min, ret.Max = 1, 1
@@ -172,9 +195,15 @@ func (rp RelationshipPattern) getPattern(ctx *EvalContext) (graph.PatternItem, e
 		ret.Backwards = true
 	}
 	var err error
-	ret.Properties, err = rp.Properties.getPattern(ctx)
+	props, err := rp.Properties.getPattern(ctx)
 	if err != nil {
 		return graph.PatternItem{}, err
+	}
+	if len(props) > 0 {
+		ret.Properties = make(map[string]interface{})
+		for k, v := range props {
+			ret.Properties[k] = v.Value
+		}
 	}
 	return ret, nil
 }
@@ -216,7 +245,7 @@ func (nl *NodeLabels) getPattern() graph.StringSet {
 	return ret
 }
 
-func (p *Properties) getPattern(ctx *EvalContext) (map[string]interface{}, error) {
+func (p *Properties) getPattern(ctx *EvalContext) (map[string]Value, error) {
 	if p == nil {
 		return nil, nil
 	}
@@ -225,7 +254,7 @@ func (p *Properties) getPattern(ctx *EvalContext) (map[string]interface{}, error
 		if err != nil {
 			return nil, err
 		}
-		m, ok := value.Value.(map[string]interface{})
+		m, ok := value.Value.(map[string]Value)
 		if !ok {
 			return nil, ErrPropertiesParameterExpected
 		}
@@ -236,7 +265,7 @@ func (p *Properties) getPattern(ctx *EvalContext) (map[string]interface{}, error
 		if err != nil {
 			return nil, err
 		}
-		m, ok := value.Value.(map[string]interface{})
+		m, ok := value.Value.(map[string]Value)
 		if !ok {
 			return nil, ErrPropertiesExpected
 		}

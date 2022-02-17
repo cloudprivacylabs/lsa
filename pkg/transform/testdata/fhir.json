@@ -46,6 +46,7 @@
                     "@id": "http://example.org/root.entry.1.resource.name.0.given",
                     "@type": "https://lschema.org/DocumentNode",
                     "https://lschema.org/attributeName": "given",
+                    "https://lschema.org/schemaNodeId": "http://hl7.org/fhir/HumanName#given",
                     "https://lschema.org/instanceOf": {
                         "@id": "http://hl7.org/fhir/HumanName#given"
                     },
@@ -179,6 +180,7 @@
                     "@type": "https://lschema.org/DocumentNode",
                     "https://lschema.org/attributeIndex": "0",
                     "https://lschema.org/attributeValue": "Cary",
+                    "https://lschema.org/schemaNodeId": "http://hl7.org/fhir/HumanName#given.*",
                     "https://lschema.org/instanceOf": {
                         "@id": "http://hl7.org/fhir/HumanName#given.*"
                     }
@@ -473,6 +475,7 @@
                     "@type": "https://lschema.org/DocumentNode",
                     "https://lschema.org/attributeName": "birthDate",
                     "https://lschema.org/attributeValue": "1971-02-13",
+                    "https://lschema.org/schemaNodeId":"http://hl7.org/fhir/Patient#birthDate",
                     "https://lschema.org/instanceOf": {
                         "@id": "http://hl7.org/fhir/Patient#birthDate"
                     }
@@ -702,6 +705,7 @@
                     "@type": "https://lschema.org/DocumentNode",
                     "https://lschema.org/attributeName": "family",
                     "https://lschema.org/attributeValue": "Boyer",
+                    "https://lschema.org/schemaNodeId":"http://hl7.org/fhir/HumanName#family",
                     "https://lschema.org/instanceOf": {
                         "@id": "http://hl7.org/fhir/HumanName#family"
                     }
@@ -1070,6 +1074,7 @@
                     "@type": "https://lschema.org/DocumentNode",
                     "https://lschema.org/attributeIndex": "1",
                     "https://lschema.org/attributeValue": "b",
+                    "https://lschema.org/schemaNodeId": "http://hl7.org/fhir/HumanName#given.*",
                     "https://lschema.org/instanceOf": {
                         "@id": "http://hl7.org/fhir/HumanName#given.*"
                     }
@@ -1402,6 +1407,7 @@
                     "@type": "https://lschema.org/DocumentNode",
                     "https://lschema.org/attributeName": "lotNumber",
                     "https://lschema.org/attributeValue": "AZ45402",
+                    "https://lschema.org/schemaNodeId": "http://hl7.org/fhir/Immunization#lotNumber",
                     "https://lschema.org/instanceOf": {
                         "@id": "http://hl7.org/fhir/Immunization#lotNumber"
                     }
@@ -1422,6 +1428,7 @@
                     "@type": "https://lschema.org/DocumentNode",
                     "https://lschema.org/attributeName": "gender",
                     "https://lschema.org/attributeValue": "male",
+                    "https://lschema.org/schemaNodeId": "http://hl7.org/fhir/Patient#gender",
                     "https://lschema.org/instanceOf": {
                         "@id": "http://hl7.org/fhir/Patient#gender"
                     }
@@ -1530,44 +1537,45 @@
                     {
                         "@id": "https://www.w3.org/2018/credentials/v1/name",
                         "@type": "ls:Value",
-                        "ls:reshape/source": "'COVID-19 Vaccination Certificate'"
+                        "ls:reshape/valueExpr": "return 'COVID-19 Vaccination Certificate'"
                     },
                     {
                         "@id":"https://www.w3.org/2018/credentials/v1/credentialSubject",
-                        "@type": "ls:Object",
-                        "ls:reshape/vars": [
-                            "immunization:=source.firstReachable(node->(node.type.hasAll('http://hl7.org/fhir/Immunization','https://lschema.org/DocumentNode')))",
-                            "patient:=source.firstReachable(node->(node.type.hasAll('http://hl7.org/fhir/Patient','https://lschema.org/DocumentNode')))"
+                        "@type": ["ls:Object","ls:1"],
+                        "ls:reshape/export": [ "immunization", "patient"],
+                        "ls:reshape/expr": [
+                            "match (n:`http://hl7.org/fhir/Immunization`:`https://lschema.org/DocumentNode`) return n as immunization",
+                            "match (n:`http://hl7.org/fhir/Patient`:`https://lschema.org/DocumentNode`) return n as patient"
                         ],
                         "ls:Object/attributes": [
                             {
                                 "@id": "https://w3id.org/vaccination#batchNumber",
                                 "@type": "ls:Value",
-                                "ls:reshape/source": "immunization.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/Immunization#lotNumber')))"
+                                "ls:reshape/valueExpr": "match (immunization)-[*]->(k {`https://lschema.org/schemaNodeId`:'http://hl7.org/fhir/Immunization#lotNumber'}) return k"
                             },
                             {
                                 "@id": "https://w3id.org/vaccination#recipient",
-                                "@type": "ls:Object",
+                                "@type": ["ls:Object","ls:2"],
                                 "ls:Object/attributes": [
                                     {
                                         "@id": "http://schema.org/givenName",
                                         "@type": "ls:Value",
-                                        "ls:reshape/source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/HumanName#given'))).walk('https://lschema.org/has')"
+                                        "ls:reshape/valueExpr": "match (patient)-[*]->(k {`https://lschema.org/schemaNodeId`:'http://hl7.org/fhir/HumanName#given.*'}) return k"
                                     },
                                     {
                                         "@id": "http://schema.org/familyName",
                                         "@type": "ls:Value",
-                                        "ls:reshape/source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/HumanName#family')))"
+                                        "ls:reshape/valueExpr": "match (patient)-[*]->(k {`https://lschema.org/schemaNodeId`: 'http://hl7.org/fhir/HumanName#family'}) return k"
                                     },
                                     {
                                         "@id": "http://schema.org/gender",
                                         "@type": "ls:Value",
-                                        "ls:reshape/source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/Patient#gender')))"
+                                        "ls:reshape/valueExpr": "match (patient)-[*]->(k {`https://lschema.org/schemaNodeId`:'http://hl7.org/fhir/Patient#gender'}) return k"
                                     },
                                     {
                                         "@id": "http://schema.org/birthDate",
                                         "@type": "ls:Value",
-                                        "ls:reshape/source": "patient.firstReachable(node->(node.instanceOf('http://hl7.org/fhir/Patient#birthDate')))"
+                                        "ls:reshape/valueExpr": "match (patient)-[*]->(k {`https://lschema.org/schemaNodeId`:'http://hl7.org/fhir/Patient#birthDate'}) return k"
                                     }
                                 ]
                             }
@@ -1580,7 +1588,7 @@
             "@graph": [
                 {
                     "@id": "root",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object"],
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","http://example.org/TargetType"],
                     "https://lschema.org/has": [
                         {"@id": "https://www.w3.org/2018/credentials/v1/name"},
                         {"@id": "https://www.w3.org/2018/credentials/v1/credentialSubject"}
@@ -1593,7 +1601,7 @@
                 },
                 {
                     "@id": "https://www.w3.org/2018/credentials/v1/credentialSubject",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object"],
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","https://lschema.org/1"],
                     "https://lschema.org/has": [
                         {"@id": "https://w3id.org/vaccination#batchNumber"},
                         {"@id": "https://w3id.org/vaccination#recipient"}
@@ -1606,7 +1614,7 @@
                 },
                 {
                     "@id": "https://w3id.org/vaccination#recipient",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object"],
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","https://lschema.org/2"],
                     "https://lschema.org/has": [
                         {"@id": "http://schema.org/familyName"},
                         {"@id": "http://schema.org/givenName"},

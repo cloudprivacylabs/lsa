@@ -36,7 +36,7 @@ func CollectAllPaths(graph Graph, firstLeg EdgeIterator, edgeFilter func(Edge) b
 
 	recurse = func(prefix []Edge) bool {
 
-		if len(prefix) >= min && len(prefix) <= max {
+		if (min == -1 || len(prefix) >= min) && (max == -1 || len(prefix) <= max) {
 			// A valid path
 			entry := make([]Edge, len(prefix))
 			copy(entry, prefix)
@@ -45,7 +45,7 @@ func CollectAllPaths(graph Graph, firstLeg EdgeIterator, edgeFilter func(Edge) b
 			}
 		}
 
-		if len(prefix) >= max {
+		if max != -1 && len(prefix) >= max {
 			return true
 		}
 
