@@ -14,11 +14,11 @@
 package graph
 
 import (
-	"fmt"
+//	"fmt"
 )
 
 func logf(pattern string, args ...interface{}) {
-	fmt.Printf(pattern, args...)
+	//fmt.Printf(pattern, args...)
 }
 
 type iterateNodes struct {
