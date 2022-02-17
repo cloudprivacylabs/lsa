@@ -25,6 +25,8 @@ import (
 //    []Value
 //    map[string]Value
 //    graph.StringSet
+//    Node
+//    []Edge
 //    ResultSet
 type Value struct {
 	Value    interface{}
@@ -41,8 +43,18 @@ func (v Value) IsPrimitive() bool {
 	return false
 }
 
+// AsBool returns the bool value, or if it is not bool, false,false
+func (v Value) AsBool() (bool, bool) {
+	if b, ok := v.Value.(bool); ok {
+		return b, true
+	}
+	return false, false
+}
+
 func ValueOf(in interface{}) Value {
 	switch v := in.(type) {
+	case Value:
+		return v
 	case int8:
 		return Value{Value: int(v)}
 	case int16:
@@ -74,6 +86,10 @@ func ValueOf(in interface{}) Value {
 	case neo4j.LocalDateTime:
 		return Value{Value: v}
 	case neo4j.LocalTime:
+		return Value{Value: v}
+	case graph.Node:
+		return Value{Value: v}
+	case []graph.Edge:
 		return Value{Value: v}
 	case []Value:
 		return Value{Value: v}
@@ -145,6 +161,27 @@ func (v Value) IsSame(v2 Value) bool {
 		}
 		return true
 
+	case graph.Node:
+		val2, ok := v2.Value.(graph.Node)
+		if !ok {
+			return false
+		}
+		return val1 == val2
+
+	case []graph.Edge:
+		val2, ok := v2.Value.([]graph.Edge)
+		if !ok {
+			return false
+		}
+		if len(val1) != len(val2) {
+			return false
+		}
+		for i, x := range val1 {
+			if x != val2[i] {
+				return false
+			}
+		}
+		return true
 	}
 	return false
 }

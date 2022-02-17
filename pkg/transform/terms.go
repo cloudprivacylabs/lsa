@@ -17,8 +17,8 @@ package transform
 import (
 	"errors"
 
-	"github.com/cloudprivacylabs/lsa/pkg/gl"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher"
 )
 
 var ErrInvalidConditional = errors.New("Invalid conditional")
@@ -30,11 +30,13 @@ const RS = ls.LS + "reshape/"
 var ReshapeTerms = struct {
 	// If given, the If term specifies a predicate that should be true to reshape the node
 	If string
-	// Vars defines a list of expressions that pull values from the
-	// source graph and define them as variables
-	Vars string
-	// Source specifies the source value to be used to generate the target value
-	Source string
+	// Export defines a list of symbols that will be exported from the
+	// opencypher expressions run in this node
+	Export string
+	// Expressions specify one or more expression to evaluate
+	Expressions string
+	// ValueExpr specifies the query to be used to generate the target value
+	ValueExpr string
 	// IfEmpty determines whether to reshape the node even if it has no value
 	IfEmpty string
 	// JoinMethod determines how to join multiple values to generate a single value
@@ -45,11 +47,14 @@ var ReshapeTerms = struct {
 	If: ls.NewTerm(RS, "if", false, false, ls.OverrideComposition, struct {
 		ifSemantics
 	}{}),
-	Vars: ls.NewTerm(RS, "vars", false, true, ls.OverrideComposition, struct {
-		varsSemantics
+	Export: ls.NewTerm(RS, "export", false, true, ls.OverrideComposition, struct {
+		exportSemantics
 	}{}),
-	Source: ls.NewTerm(RS, "source", false, false, ls.OverrideComposition, struct {
-		sourceSemantics
+	Expressions: ls.NewTerm(RS, "expr", false, true, ls.OverrideComposition, struct {
+		exprSemantics
+	}{}),
+	ValueExpr: ls.NewTerm(RS, "valueExpr", false, false, ls.OverrideComposition, struct {
+		valueExprSemantics
 	}{}),
 	IfEmpty:       ls.NewTerm(RS, "ifEmpty", false, false, ls.OverrideComposition, nil),
 	JoinMethod:    ls.NewTerm(RS, "joinMethod", false, false, ls.OverrideComposition, nil),
@@ -57,8 +62,9 @@ var ReshapeTerms = struct {
 }
 
 type ifSemantics struct{}
-type varsSemantics struct{}
-type sourceSemantics struct{}
+type exportSemantics struct{}
+type valueExprSemantics struct{}
+type exprSemantics struct{}
 
 // CompileTerm compiles the if conditional
 func (ifSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
@@ -73,9 +79,9 @@ func (ifSemantics) CompileTerm(target ls.CompilablePropertyContainer, term strin
 	} else {
 		return ErrInvalidConditional
 	}
-	out := make([]gl.Evaluatable, 0, len(val))
+	out := make([]opencypher.Evaluatable, 0, len(val))
 	for _, x := range val {
-		r, err := gl.Parse(x)
+		r, err := opencypher.Parse(x)
 		if err != nil {
 			return err
 		}
@@ -85,8 +91,8 @@ func (ifSemantics) CompileTerm(target ls.CompilablePropertyContainer, term strin
 	return nil
 }
 
-// CompileTerm compiles the variable expressions
-func (varsSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
+// CompileTerm compiles the export list
+func (exportSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	if value == nil {
 		return nil
 	}
@@ -98,27 +104,43 @@ func (varsSemantics) CompileTerm(target ls.CompilablePropertyContainer, term str
 	} else {
 		return ErrInvalidVariables
 	}
-	out := make([]gl.Evaluatable, 0, len(val))
-	for _, x := range val {
-		r, err := gl.Parse(x)
-		if err != nil {
-			return err
-		}
-		out = append(out, r)
-	}
-	target.SetProperty("$compiled_"+term, out)
+	target.SetProperty("$compiled_"+term, val)
 	return nil
 }
 
-// CompileTerm compiles the source expression
-func (sourceSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
+func (exprSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
+	if value == nil {
+		return nil
+	}
+	expr := make([]opencypher.Evaluatable, 0)
+	if value.IsString() {
+		e, err := opencypher.Parse(value.AsString())
+		if err != nil {
+			return err
+		}
+		expr = append(expr, e)
+	} else if value.IsStringSlice() {
+		for _, x := range value.AsStringSlice() {
+			e, err := opencypher.Parse(x)
+			if err != nil {
+				return err
+			}
+			expr = append(expr, e)
+		}
+	}
+	target.SetProperty("$compiled_"+term, expr)
+	return nil
+}
+
+// CompileTerm compiles the value expressions
+func (valueExprSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	if value == nil {
 		return nil
 	}
 	if !value.IsString() {
 		return ErrSourceMustBeString
 	}
-	e, err := gl.Parse(value.AsString())
+	e, err := opencypher.Parse(value.AsString())
 	if err != nil {
 		return err
 	}

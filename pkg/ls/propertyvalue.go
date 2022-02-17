@@ -56,6 +56,10 @@ func StringSlicePropertyValue(s []string) *PropertyValue {
 	return &PropertyValue{value: s}
 }
 
+// GetNativeValue is used bythe expression evaluators to access the
+// native value of the property
+func (p PropertyValue) GetNativeValue() interface{} { return p.value }
+
 // AsString returns the value as string
 func (p *PropertyValue) AsString() string {
 	if p == nil {

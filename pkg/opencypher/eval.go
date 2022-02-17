@@ -34,6 +34,7 @@ var (
 	ErrExpectingResultSet             = errors.New("Expecting a result set")
 	ErrPropertiesParameterExpected    = errors.New("Parameter value cannot be used for properties")
 	ErrPropertiesExpected             = errors.New("Value cannot be used for properties")
+	ErrValueDoesNotHaveProperties     = errors.New("Value does not have properties")
 )
 
 func (expr Parameter) Evaluate(ctx *EvalContext) (Value, error) {
@@ -226,8 +227,29 @@ func (pl PropertyOrLabelsExpression) Evaluate(ctx *EvalContext) (Value, error) {
 		}
 		val.Value = gobj
 	}
-	for range pl.PropertyLookup {
-		panic("Unimplemented")
+	type withProperty interface {
+		GetProperty(string) (interface{}, bool)
+	}
+	type withNativeValue interface {
+		GetNativeValue() interface{}
+	}
+	for _, property := range pl.PropertyLookup {
+		if val.Value == nil {
+			return Value{}, nil
+		}
+		if wp, ok := val.Value.(withProperty); ok {
+			prop, ok := wp.GetProperty(property.String())
+			if !ok {
+				return Value{}, nil
+			}
+			if n, ok := prop.(withNativeValue); ok {
+				val = ValueOf(n.GetNativeValue())
+			} else {
+				val = ValueOf(prop)
+			}
+		} else {
+			return Value{}, ErrValueDoesNotHaveProperties
+		}
 	}
 	return val, nil
 }
@@ -337,27 +359,39 @@ func (query SinglePartQuery) Evaluate(ctx *EvalContext) (Value, error) {
 	if len(query.Update) > 0 {
 		panic("Updating Query is not implemented")
 	}
-	results := ResultSet{}
-	for _, r := range query.Read {
-		rs, err := r.GetResults(ctx)
-		if err != nil {
-			return Value{}, err
-		}
-		results.Add(rs)
-	}
-	if query.Return == nil {
-		return Value{}, nil
-	}
+
 	ret := ResultSet{}
-	// Keys keep the order of each key in the result set
-	for _, item := range results.Rows {
-		val, err := query.Return.Projection.Items.Project(ctx, item)
+	if len(query.Read) > 0 {
+		results := ResultSet{}
+		for _, r := range query.Read {
+			rs, err := r.GetResults(ctx)
+			if err != nil {
+				return Value{}, err
+			}
+			results.Add(rs)
+		}
+		if query.Return == nil {
+			return Value{}, nil
+		}
+		// Keys keep the order of each key in the result set
+		for _, item := range results.Rows {
+			val, err := query.Return.Projection.Items.Project(ctx, item)
+			if err != nil {
+				return Value{}, err
+			}
+			ret.Rows = append(ret.Rows, val)
+		}
+		return Value{Value: ret}, nil
+	}
+	if query.Return != nil {
+		val, err := query.Return.Projection.Items.Project(ctx, nil)
 		if err != nil {
 			return Value{}, err
 		}
 		ret.Rows = append(ret.Rows, val)
+		return Value{Value: ret}, nil
 	}
-	return Value{Value: ret}, nil
+	return Value{}, nil
 }
 
 func (prj ProjectionItems) Project(ctx *EvalContext, values map[string]Value) (map[string]Value, error) {

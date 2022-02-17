@@ -141,16 +141,8 @@ type StringOperatorExpression struct {
 
 type PropertyOrLabelsExpression struct {
 	Atom           Atom
-	PropertyLookup []PropertyLookup
+	PropertyLookup []SchemaName
 	NodeLabels     *NodeLabels
-}
-
-type PropertyLookup struct {
-	PropertyKeyName
-}
-
-type PropertyKeyName struct {
-	SchemaName
 }
 
 type RelationshipTypes struct {
@@ -765,12 +757,12 @@ func oC_PartialComparisonExpression(ctx *parser.OC_PartialComparisonExpressionCo
 	return ret
 }
 
-func oC_PropertyLookup(ctx *parser.OC_PropertyLookupContext) PropertyLookup {
-	return PropertyLookup{oC_PropertyKeyName(ctx.OC_PropertyKeyName().(*parser.OC_PropertyKeyNameContext))}
+func oC_PropertyLookup(ctx *parser.OC_PropertyLookupContext) SchemaName {
+	return oC_PropertyKeyName(ctx.OC_PropertyKeyName().(*parser.OC_PropertyKeyNameContext))
 }
 
-func oC_PropertyKeyName(ctx *parser.OC_PropertyKeyNameContext) PropertyKeyName {
-	return PropertyKeyName{oC_SchemaName(ctx.OC_SchemaName().(*parser.OC_SchemaNameContext))}
+func oC_PropertyKeyName(ctx *parser.OC_PropertyKeyNameContext) SchemaName {
+	return oC_SchemaName(ctx.OC_SchemaName().(*parser.OC_SchemaNameContext))
 }
 
 func oC_SchemaName(ctx *parser.OC_SchemaNameContext) SchemaName {
@@ -1194,7 +1186,8 @@ func oC_Literal(ctx *parser.OC_LiteralContext) Evaluatable {
 		return oC_NumberLiteral(n.(*parser.OC_NumberLiteralContext))
 	}
 	if s := ctx.StringLiteral(); s != nil {
-		return StringLiteral(s.GetText())
+		text := s.GetText()
+		return StringLiteral(text[1 : len(text)-1])
 	}
 	if b := ctx.OC_BooleanLiteral(); b != nil {
 		return oC_BooleanLiteral(b.(*parser.OC_BooleanLiteralContext))

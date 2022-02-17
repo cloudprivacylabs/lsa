@@ -67,7 +67,7 @@ func (p PatternItem) isConstrainedNodes(ctx *MatchContext) (*NodeSet, error) {
 		return nil, nil
 	}
 	// Is this a symbol created in this pattern?
-	sym, exists := ctx.localSymbols[p.Name]
+	sym, exists := ctx.LocalSymbols[p.Name]
 	if exists {
 		if sym.Edges != nil {
 			return nil, ErrNodeVariableExpected(p.Name)
@@ -91,7 +91,7 @@ func (p PatternItem) isConstrainedEdges(ctx *MatchContext) (*EdgeSet, error) {
 		return nil, nil
 	}
 	// Is this a symbol created in this pattern?
-	sym, exists := ctx.localSymbols[p.Name]
+	sym, exists := ctx.LocalSymbols[p.Name]
 	if exists {
 		if sym.Nodes != nil {
 			return nil, ErrEdgeVariableExpected(p.Name)
@@ -242,6 +242,20 @@ func (p *PatternSymbol) AddPath(path []Edge) {
 	}
 }
 
+func (p *PatternSymbol) NodeSlice() []Node {
+	if p.Nodes != nil {
+		return p.Nodes.Slice()
+	}
+	return nil
+}
+
+func (p *PatternSymbol) EdgeSlice() []Edge {
+	if p.Edges != nil {
+		return p.Edges.Slice()
+	}
+	return nil
+}
+
 type MatchPlan struct {
 	steps []planProcessor
 }
@@ -256,7 +270,7 @@ type MatchAccumulator interface {
 	// path is either a Node or []Edge, the matching path symbols
 	// contains the current values for each symbol. The values of the
 	// map is either Node or []Edge
-	StoreResult(path interface{}, symbols map[string]interface{})
+	StoreResult(ctx *MatchContext, path interface{}, symbols map[string]interface{})
 }
 
 type MatchContext struct {
@@ -265,7 +279,7 @@ type MatchContext struct {
 	Symbols map[string]*PatternSymbol
 
 	// localSymbols are symbols defined in the pattern.
-	localSymbols map[string]*PatternSymbol
+	LocalSymbols map[string]*PatternSymbol
 }
 
 // If the current step has a local symbol, it will be recorded in the context
@@ -279,7 +293,7 @@ func (ctx *MatchContext) recordStepResult(step planProcessor) {
 	}
 	result := &PatternSymbol{}
 	result.Add(step.GetResult())
-	ctx.localSymbols[name] = result
+	ctx.LocalSymbols[name] = result
 }
 
 // resetStepResult will remove the step's local symbol from the context
@@ -291,7 +305,7 @@ func (ctx *MatchContext) resetStepResult(step planProcessor) {
 	if _, global := ctx.Symbols[name]; global {
 		return
 	}
-	delete(ctx.localSymbols, name)
+	delete(ctx.LocalSymbols, name)
 }
 
 func (pattern Pattern) Run(graph Graph, symbols map[string]*PatternSymbol, result MatchAccumulator) error {
@@ -299,6 +313,7 @@ func (pattern Pattern) Run(graph Graph, symbols map[string]*PatternSymbol, resul
 	if err != nil {
 		return err
 	}
+	logf("Starting plan run\n")
 	return plan.Run(graph, symbols, result)
 }
 
@@ -460,7 +475,7 @@ type resultAccumulator struct {
 
 // Capture the current results
 func (n *resultAccumulator) Run(ctx *MatchContext) error {
-	n.acc.StoreResult(n.plan.GetCurrentPath(), n.plan.CaptureSymbolValues())
+	n.acc.StoreResult(ctx, n.plan.GetCurrentPath(), n.plan.CaptureSymbolValues())
 	return nil
 }
 
@@ -506,7 +521,7 @@ func (plan MatchPlan) Run(graph Graph, symbols map[string]*PatternSymbol, result
 	ctx := &MatchContext{
 		Graph:        graph,
 		Symbols:      symbols,
-		localSymbols: make(map[string]*PatternSymbol),
+		LocalSymbols: make(map[string]*PatternSymbol),
 	}
 
 	res := resultAccumulator{acc: result, plan: plan}

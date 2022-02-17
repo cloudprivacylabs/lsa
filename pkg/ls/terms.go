@@ -147,7 +147,7 @@ var (
 	InstanceOfTerm = NewTerm(LS, "instanceOf", false, false, ErrorComposition, nil)
 
 	// SchemaNodeIDTerm denotes the schema node ID for ingested nodes
-	SchemaNodeIDTerm = NewTerm(LS, "data/schemaNodeId", false, false, ErrorComposition, nil)
+	SchemaNodeIDTerm = NewTerm(LS, "schemaNodeId", false, false, ErrorComposition, nil)
 
 	// AsPropertyOfTerm is optional. If specified, it gives the nearest
 	// node that is an instance of the given type. If not, it is the
