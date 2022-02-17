@@ -191,7 +191,7 @@ func (reshaper *Reshaper) object(context *ReshapeContext) (graph.Node, error) {
 	empty := len(children) == 0
 	if empty {
 		ifEmpty := ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.IfEmpty))
-		if !(ifEmpty != nil && ifEmpty.IsString() && ifEmpty.AsString() == "true") {
+		if ifEmpty != nil && ifEmpty.IsString() && ifEmpty.AsString() == "true" {
 			return nil, nil
 		}
 	}
@@ -287,7 +287,7 @@ func (reshaper *Reshaper) value(context *ReshapeContext) (graph.Node, error) {
 
 	if empty {
 		ifEmpty := ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.IfEmpty))
-		if !(ifEmpty != nil && ifEmpty.IsString() && ifEmpty.AsString() == "true") {
+		if ifEmpty != nil && ifEmpty.IsString() && ifEmpty.AsString() == "true" {
 			empty = false
 		}
 	}
