@@ -37,6 +37,21 @@ func NewLayer() *Layer {
 	return ret
 }
 
+// NewLayerFromGraph uses the graph to create a layer. The root node
+// of the graph becomes the schema root, if there is one
+func NewLayerFromGraph(g graph.Graph) *Layer {
+	ret := &Layer{Graph: g}
+	if g.NumNodes() == 0 {
+		ret.layerInfo = g.NewNode(nil, nil)
+	} else {
+		sources := graph.Sources(g)
+		if len(sources) > 0 {
+			ret.layerInfo = sources[0]
+		}
+	}
+	return ret
+}
+
 // Clone returns a copy of the layer
 func (l *Layer) Clone() *Layer {
 	targetGraph := graph.NewOCGraph()
