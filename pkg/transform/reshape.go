@@ -24,10 +24,7 @@ import (
 )
 
 type Reshaper struct {
-	TargetSchema *ls.Layer
-
-	// If true, adds the references to the target schema
-	AddInstanceOfEdges bool
+	ls.Ingester
 }
 
 // ErrInvalidSchemaNodeType is returned if the schema node type cannot
@@ -53,9 +50,8 @@ type ReshapeContext struct {
 	// All schema nodes from the root to the current node
 	schemaPath []graph.Node
 
-	// The root node to be used to reshape
-	sourceNode graph.Node
-
+	// The source graph
+	sourceGraph graph.Graph
 	targetGraph graph.Graph
 }
 
@@ -73,7 +69,7 @@ func (p *ReshapeContext) setSymbols(ctx *opencypher.EvalContext) {
 }
 
 func (p *ReshapeContext) getEvalContext() *opencypher.EvalContext {
-	ctx := opencypher.NewEvalContext(p.sourceNode.GetGraph())
+	ctx := opencypher.NewEvalContext(p.sourceGraph)
 	p.setSymbols(ctx)
 	return ctx
 }
@@ -115,13 +111,12 @@ func (p *ReshapeContext) exportVar(name string, values []opencypher.Value) {
 	}
 }
 
-// Reshape the graph rooted at the rootNode to the targetSchema, using
-// the getReshapeProperties function that will return reshaping
-// properties for given schema nodes
-func (respaher *Reshaper) Reshape(rootNode graph.Node, targetGraph graph.Graph) (graph.Node, error) {
+// Reshape builds a new graph in a shape that conforms to a target
+// schema using the source graph
+func (respaher *Reshaper) Reshape(sourceGraph, targetGraph graph.Graph) error {
 	ctx := ReshapeContext{
 		schemaPath:  []graph.Node{respaher.TargetSchema.GetSchemaRootNode()},
-		sourceNode:  rootNode,
+		sourceGraph: sourceGraph,
 		targetGraph: targetGraph,
 		symbols:     make(map[string]opencypher.Value),
 	}
@@ -130,32 +125,24 @@ func (respaher *Reshaper) Reshape(rootNode graph.Node, targetGraph graph.Graph) 
 
 func (reshaper *Reshaper) reshape(context *ReshapeContext) (graph.Node, error) {
 	schemaNode := context.CurrentSchemaNode()
-
 	// If this is not a value node, create a sub-context
 	if !schemaNode.GetLabels().Has(ls.AttributeTypeValue) {
 		context = context.nestedContext()
 	}
-
 	// Evaluate expressions
 	// Export values
 	// Check conditionals
-
 	expressionValues, err := reshaper.getExprs(context, schemaNode)
 	if err != nil {
 		return nil, err
 	}
-
 	for _, varname := range reshaper.getExportVars(schemaNode) {
 		context.exportVar(varname, expressionValues)
 	}
-
 	// Check conditionals
 	v, err := reshaper.checkConditionals(context, schemaNode)
-	if err != nil {
+	if !v || err != nil {
 		return nil, err
-	}
-	if !v {
-		return nil, nil
 	}
 
 	switch {
