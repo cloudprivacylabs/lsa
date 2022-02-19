@@ -1,0 +1,54 @@
+[
+    {
+        "@context": ["../../schemas/ls.json"],
+        "@type": "Schema",
+        "@id": "http://example.com/id",
+        "layer": {
+            "@type": "Object",
+            "ls:ingestAs": "edge",
+            "ls:edgeLabel": "theObjectEdge",
+            "attributeList": [
+                {
+                    "@id": "https://www.example.com/id1",
+                    "@type": "Value",
+                    "attributeName": "field1"
+                },
+                {
+                    "@id": "https://www.example.com/id2",
+                    "@type": "Object",
+                    "attributeName": "obj2",
+                    "ls:ingestAs": "edge",
+                    "ls:edgeLabel": "theObjectEdge",
+                    "attributeList": [
+                        {
+                            "@id": "https://www.example.com/id3",
+                            "@type": "Value",
+                            "attributeName": "field3"
+                        }
+                    ]
+                },
+                {
+                    "@id": "https://www.example.com/id4",
+                    "@type": "Value",
+                    "attributeName": "field4"
+                },
+                {
+                    "@id": "https://www.example.com/id5",
+                    "@type": "Value",
+                    "attributeName": "field5"
+                }
+            ],
+            "attr1": {
+                "@type": "Array",
+                "attributeName": "arr",
+                "ls:ingestAs": "edge",
+                "items": {
+                    "@id": "https://www.example.com/id0",
+                    "@type": "Value",
+                    "attributeName": "field6"
+                }
+            }
+        }
+        
+    }
+]

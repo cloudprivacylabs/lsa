@@ -59,6 +59,12 @@ var (
 
 	// NodeIDTerm keeps the node ID or the attribute ID
 	NodeIDTerm = NewTerm(LS, "nodeID", false, false, ErrorComposition, nil)
+
+	// IngestAsTerm ingests node as an edge, not a node
+	IngestAsTerm = NewTerm(LS, "ingestAs", false, false, OverrideComposition, nil)
+
+	// EdgeLabelTerm represents the value used as an edge label, when ingesting an edge
+	EdgeLabelTerm = NewTerm(LS, "edgeLabel", false, false, OverrideComposition, nil)
 )
 
 // Attribute types defines the terms describing attribute types. Each

@@ -75,8 +75,21 @@ type ErrSchemaValidation struct {
 	Path NodePath
 }
 
+type ErrCannotDetermineEdgeLabel struct {
+	Msg  string
+	Path NodePath
+}
+
 func (e ErrSchemaValidation) Error() string {
 	ret := "Schema validation error: " + e.Msg
+	if e.Path != nil {
+		ret += " path:" + e.Path.String()
+	}
+	return ret
+}
+
+func (e ErrCannotDetermineEdgeLabel) Error() string {
+	ret := "Cannot determine edge label: " + e.Msg
 	if e.Path != nil {
 		ret += " path:" + e.Path.String()
 	}
@@ -183,11 +196,22 @@ func (ingester *Ingester) GetObjectAttributeNodes(objectSchemaNode graph.Node) (
 	return nextNodes, nil
 }
 
-func (ingester *Ingester) ConnectChildNodes(parent graph.Node, children []graph.Node) {
+func (ingester *Ingester) ConnectChildNodes(parent graph.Node, children []graph.Node, edgeLabel ...string) {
+	label := HasTerm
+	if len(edgeLabel) == 1 {
+		label = edgeLabel[0]
+	}
 	for index := range children {
 		SetNodeIndex(children[index], index)
-		ingester.connect(parent, children[index], HasTerm)
+		ingester.connect(parent, children[index], label)
 	}
+}
+
+// EdgeNode defines an EdgeNode
+type EdgeNode struct {
+	Node       graph.Node
+	Label      string
+	Properties map[string]interface{}
 }
 
 // Object creates a new object node
@@ -210,6 +234,79 @@ func (ingester *Ingester) Object(g graph.Graph, path NodePath, schemaNode graph.
 	ret.SetLabels(t)
 	ingester.ConnectChildNodes(ret, elements)
 	return ret, nil
+}
+
+/*
+ObjectAsEdge function:
+
+input:  [](edge-nodes), or []nodes, or both
+output: one --(label)-->childNode for each node
+
+address is an edge, each element under address are edges:
+
+person --address--> _ --street-->"123 main"
+                      --state--> "CO"
+
+valueAsEdge("street":"123 main") return:
+
+   --street-->"123 main"
+
+addressAsEdge("address", []{--street-->"123 main", --state-->"CO"})
+
+   -- address --> _blankNode --street-->"123 main"
+                             --state-->"CO"
+*/
+
+func determineEdgeLabel(schemaNode graph.Node, edgeNode *EdgeNode, path NodePath) (EdgeNode, error) {
+	if x, ok := schemaNode.GetProperty(EdgeLabelTerm); ok {
+		if label := x.(*PropertyValue).AsString(); len(label) > 0 {
+			edgeNode.Label = label
+		}
+	} else if x, ok := schemaNode.GetProperty(AttributeNameTerm); ok {
+		if label := x.(*PropertyValue).AsString(); len(label) > 0 {
+			edgeNode.Label = label
+		}
+	} else {
+		return EdgeNode{}, ErrCannotDetermineEdgeLabel{}
+	}
+	return *edgeNode, nil
+}
+
+func (ingester *Ingester) ObjectAsEdge(g graph.Graph, path NodePath, schemaNode graph.Node, nodes []graph.Node, edgeNodes []EdgeNode, types ...string) (EdgeNode, error) {
+	if schemaNode != nil {
+		if !schemaNode.GetLabels().Has(AttributeTypeObject) {
+			return EdgeNode{}, ErrSchemaValidation{Msg: "An object is not expected here", Path: path}
+		}
+	}
+	newEdgeNode := EdgeNode{}
+	newEdgeNode.Node = ingester.NewNode(g, path, schemaNode)
+	if en, err := determineEdgeLabel(schemaNode, &newEdgeNode, path); err != nil {
+		return en, err
+	}
+	if ingester.PreserveNodePaths {
+		ingester.NodePaths[newEdgeNode.Node] = path.Copy()
+	}
+	t := newEdgeNode.Node.GetLabels()
+	t.Add(types...)
+	// define that newEdgeNode.Node is an object
+	t.Add(AttributeTypeObject)
+	newEdgeNode.Node.SetLabels(t)
+	if len(edgeNodes) > 1 {
+		blank := g.NewNode([]string{}, nil)
+		var edge graph.Edge
+		edge = g.NewEdge(newEdgeNode.Node, blank, newEdgeNode.Label, newEdgeNode.Properties)
+		for _, en := range edgeNodes {
+			en.Label = edge.GetLabel()
+			if prop, ok := en.Node.GetProperty(AttributeNameTerm); ok {
+				en.Properties[GetAttributeID(en.Node)] = prop
+			}
+			edge = g.NewEdge(blank, en.Node, en.Label, en.Properties)
+		}
+	}
+	if len(nodes) > 1 {
+		ingester.ConnectChildNodes(newEdgeNode.Node, nodes, newEdgeNode.Label)
+	}
+	return newEdgeNode, nil
 }
 
 // GetArrayElementNode returns the array element node from an array node
@@ -243,6 +340,48 @@ func (ingester *Ingester) Array(g graph.Graph, path NodePath, schemaNode graph.N
 	return ret, nil
 }
 
+/*
+person --address--> _blankNode --street-->"123 main"
+                      		   --state--> "CO"
+*/
+
+func (ingester *Ingester) ArrayAsEdge(g graph.Graph, path NodePath, schemaNode graph.Node, nodes []graph.Node, edgeNodes []EdgeNode, types ...string) (EdgeNode, error) {
+	if schemaNode != nil {
+		if !schemaNode.GetLabels().Has(AttributeTypeArray) {
+			return EdgeNode{}, ErrSchemaValidation{Msg: "An array is not expected here", Path: path}
+		}
+	}
+	newEdgeNode := EdgeNode{}
+	newEdgeNode.Node = ingester.NewNode(g, path, schemaNode)
+	if en, err := determineEdgeLabel(schemaNode, &newEdgeNode, path); err != nil {
+		return en, err
+	}
+	if ingester.PreserveNodePaths {
+		ingester.NodePaths[newEdgeNode.Node] = path.Copy()
+	}
+	t := newEdgeNode.Node.GetLabels()
+	t.Add(types...)
+	// define that newEdgeNode.Node is an object
+	t.Add(AttributeTypeArray)
+	newEdgeNode.Node.SetLabels(t)
+	if len(edgeNodes) > 1 {
+		blank := g.NewNode([]string{}, nil)
+		var edge graph.Edge
+		edge = g.NewEdge(newEdgeNode.Node, blank, newEdgeNode.Label, newEdgeNode.Properties)
+		for _, en := range edgeNodes {
+			en.Label = edge.GetLabel()
+			if prop, ok := en.Node.GetProperty(AttributeNameTerm); ok {
+				en.Properties[GetAttributeID(en.Node)] = prop
+			}
+			edge = g.NewEdge(blank, en.Node, en.Label, en.Properties)
+		}
+	}
+	if len(nodes) > 1 {
+		ingester.ConnectChildNodes(newEdgeNode.Node, nodes, newEdgeNode.Label)
+	}
+	return newEdgeNode, nil
+}
+
 // Value creates a new value node. The new node has the given value
 // and the types
 func (ingester *Ingester) Value(g graph.Graph, path NodePath, schemaNode graph.Node, value interface{}, types ...string) (graph.Node, error) {
@@ -263,6 +402,41 @@ func (ingester *Ingester) Value(g graph.Graph, path NodePath, schemaNode graph.N
 	t.Add(AttributeTypeValue)
 	newNode.SetLabels(t)
 	return newNode, nil
+}
+
+/*
+ValueAsEdge
+input: (name: value)
+output: --(label)-->(value:value, attributeName:name)
+
+where label=attributeName (in this case "name") if edgeLabel is not
+specified in schema.
+*/
+
+func (ingester *Ingester) ValueAsEdge(g graph.Graph, path NodePath, schemaNode graph.Node, value interface{}, types ...string) (EdgeNode, error) {
+	if schemaNode == nil {
+		return EdgeNode{}, ErrInvalidInput{Msg: "missing schemaNode"}
+	}
+	if !schemaNode.GetLabels().Has(AttributeTypeValue) {
+		return EdgeNode{}, ErrSchemaValidation{Msg: "A value is not expected here", Path: path}
+	}
+
+	newEdgeNode := EdgeNode{}
+	newEdgeNode.Node = ingester.NewNode(g, path, schemaNode)
+	if en, err := determineEdgeLabel(schemaNode, &newEdgeNode, path); err != nil {
+		return en, err
+	}
+	if ingester.PreserveNodePaths {
+		ingester.NodePaths[newEdgeNode.Node] = path.Copy()
+	}
+	if value != nil {
+		SetRawNodeValue(newEdgeNode.Node, value)
+	}
+	t := newEdgeNode.Node.GetLabels()
+	t.Add(types...)
+	t.Add(AttributeTypeValue)
+	newEdgeNode.Node.SetLabels(t)
+	return newEdgeNode, nil
 }
 
 // NewNode creates a new graph node, either by using the NewNodeFunc
@@ -292,12 +466,10 @@ func (ingester *Ingester) NewNode(g graph.Graph, path NodePath, schemaNode graph
 // merged with the target node types.
 func (ingester *Ingester) EmbedSchemaNode(targetNode, schemaNode graph.Node) {
 	schemaNode.ForEachProperty(func(k string, v interface{}) bool {
-		if _, exists := targetNode.GetProperty(k); !exists {
-			if pv, ok := v.(*PropertyValue); ok {
-				targetNode.SetProperty(k, pv.Clone())
-			} else {
-				targetNode.SetProperty(k, v)
-			}
+		if pv, ok := v.(*PropertyValue); ok {
+			targetNode.SetProperty(k, pv.Clone())
+		} else {
+			targetNode.SetProperty(k, v)
 		}
 		return true
 	})
