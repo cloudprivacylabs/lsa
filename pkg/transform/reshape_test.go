@@ -61,17 +61,16 @@ func (tc testCase) Run(t *testing.T) {
 		t.Errorf(" Test case: %s No root node", tc.Name)
 		return
 	}
-	reshaper := Reshaper{TargetSchema: targetLayer}
+	reshaper := Reshaper{}
+	reshaper.EmbedSchemaNodes = true
+	reshaper.Schema = targetLayer
 	resultGraph := graph.NewOCGraph()
-	result, err := reshaper.Reshape(rootNode, resultGraph)
+	err = reshaper.Reshape(sourceGraph, resultGraph)
 	if err != nil {
 		t.Errorf("Test case: %s Reshaper error: %v", tc.Name, err)
 		return
 	}
-	if result == nil {
-		t.Errorf("Test case: %s nil reshaping", tc.Name)
-		return
-	}
+	result := graph.Sources(resultGraph)[0]
 	ls.SetNodeID(result, "root")
 
 	expectedGraph := graph.NewOCGraph()
@@ -85,7 +84,30 @@ func (tc testCase) Run(t *testing.T) {
 		if ls.GetRawNodeValue(n1) != ls.GetRawNodeValue(n2) {
 			return false
 		}
-		if !ls.IsPropertiesEqual(ls.PropertiesAsMap(n1), ls.PropertiesAsMap(n2)) {
+		// Expected properties must be a subset
+		propertiesOK := true
+		n2.ForEachProperty(func(k string, v interface{}) bool {
+			pv, ok := v.(*ls.PropertyValue)
+			if !ok {
+				return true
+			}
+			v2, ok := n1.GetProperty(k)
+			if !ok {
+				propertiesOK = false
+				return false
+			}
+			pv2, ok := v2.(*ls.PropertyValue)
+			if !ok {
+				propertiesOK = false
+				return false
+			}
+			if !pv2.IsEqual(pv) {
+				propertiesOK = false
+				return false
+			}
+			return true
+		})
+		if !propertiesOK {
 			return false
 		}
 		t.Logf("True\n")

@@ -37,10 +37,10 @@ func (e ErrInvalidSchemaNodeType) Error() string {
 }
 
 var (
-	ErrInvalidSource                = errors.New("Invalid source")
-	ErrMultipleSourceNodesForObject = errors.New("Multiple source nodes specified for an object")
-	ErrSourceMustBeString           = errors.New("source term value must be a string")
-	ErrMultipleValues               = errors.New("Multiple values specified")
+	ErrInvalidSource      = errors.New("Invalid source")
+	ErrInvalidSourceValue = errors.New("Invalid source value")
+	ErrSourceMustBeString = errors.New("source term value must be a string")
+	ErrMultipleValues     = errors.New("Multiple values/result columns found")
 )
 
 type ReshapeContext struct {
@@ -113,22 +113,23 @@ func (p *ReshapeContext) exportVar(name string, values []opencypher.Value) {
 
 // Reshape builds a new graph in a shape that conforms to a target
 // schema using the source graph
-func (respaher *Reshaper) Reshape(sourceGraph, targetGraph graph.Graph) error {
+func (reshaper *Reshaper) Reshape(sourceGraph, targetGraph graph.Graph) error {
+	np, root := reshaper.Start("")
 	ctx := ReshapeContext{
-		schemaPath:  []graph.Node{respaher.TargetSchema.GetSchemaRootNode()},
+		schemaPath:  []graph.Node{root},
 		sourceGraph: sourceGraph,
 		targetGraph: targetGraph,
 		symbols:     make(map[string]opencypher.Value),
 	}
-	return respaher.reshape(&ctx)
+
+	_, err := reshaper.reshape(&ctx, np)
+	return err
 }
 
-func (reshaper *Reshaper) reshape(context *ReshapeContext) (graph.Node, error) {
+func (reshaper *Reshaper) reshape(context *ReshapeContext, nodepath ls.NodePath) ([]graph.Node, error) {
 	schemaNode := context.CurrentSchemaNode()
-	// If this is not a value node, create a sub-context
-	if !schemaNode.GetLabels().Has(ls.AttributeTypeValue) {
-		context = context.nestedContext()
-	}
+	// Nested context to keep symbols available to the nodes connected to this one
+	context = context.nestedContext()
 	// Evaluate expressions
 	// Export values
 	// Check conditionals
@@ -144,132 +145,123 @@ func (reshaper *Reshaper) reshape(context *ReshapeContext) (graph.Node, error) {
 	if !v || err != nil {
 		return nil, err
 	}
-
-	switch {
-	case schemaNode.GetLabels().Has(ls.AttributeTypeValue):
-		return reshaper.value(context)
-	case schemaNode.GetLabels().Has(ls.AttributeTypeObject):
-		return reshaper.object(context)
-	case schemaNode.GetLabels().Has(ls.AttributeTypeArray):
-	case schemaNode.GetLabels().Has(ls.AttributeTypePolymorphic):
-	}
-	return nil, ErrInvalidSchemaNodeType(schemaNode.GetLabels().Slice())
-}
-
-func (reshaper *Reshaper) object(context *ReshapeContext) (graph.Node, error) {
-	schemaNode := context.CurrentSchemaNode()
-	attributes := graph.TargetNodes(ls.SortEdgesItr(schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.ObjectAttributesTerm)))
-	attributes = append(attributes, graph.TargetNodes(ls.SortEdgesItr(schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.ObjectAttributeListTerm)))...)
-
-	children := make([]graph.Node, 0)
-	for _, a := range attributes {
-		schemaAttribute := a.(graph.Node)
-		context.schemaPath = append(context.schemaPath, schemaAttribute)
-		newNode, err := reshaper.reshape(context)
-		context.schemaPath = context.schemaPath[:len(context.schemaPath)-1]
-		if err != nil {
-			return nil, err
-		}
-		if newNode != nil {
-			children = append(children, newNode)
-		}
-	}
-
-	empty := len(children) == 0
-	if empty {
-		ifEmpty := ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.IfEmpty))
-		if ifEmpty != nil && ifEmpty.IsString() && ifEmpty.AsString() == "true" {
-			return nil, nil
-		}
-	}
-
-	targetNode := context.targetGraph.NewNode([]string{ls.DocumentNodeTerm, ls.AttributeTypeObject}, nil)
-	types := targetNode.GetLabels()
-	types.Add(ls.FilterNonLayerTypes(schemaNode.GetLabels().Slice())...)
-	targetNode.SetLabels(types)
-	if reshaper.AddInstanceOfEdges {
-		context.targetGraph.NewEdge(targetNode, schemaNode, ls.InstanceOfTerm, nil)
-	}
-	for _, c := range children {
-		context.targetGraph.NewEdge(targetNode, c, ls.HasTerm, nil)
-	}
-	return targetNode, nil
-}
-
-func (reshaper *Reshaper) value(context *ReshapeContext) (graph.Node, error) {
-	schemaNode := context.CurrentSchemaNode()
-
+	// Get source values
 	source, err := getSource(context, schemaNode)
 	if err != nil {
 		return nil, err
 	}
-	empty := true
-	var nodeValue interface{}
-	getNodeValue := func(in interface{}) (interface{}, error) {
-		if node, ok := in.(graph.Node); ok {
-			return ls.GetNodeValue(node)
-		}
-		return in, nil
+	nativeValues, err := getNativeSourceValues(source)
+	if err != nil {
+		return nil, err
 	}
-	if source.Value != nil {
-		if source.IsPrimitive() {
-			nodeValue = source.Value
-			empty = false
-		} else if node, ok := source.Value.(graph.Node); ok {
-			val, err := ls.GetNodeValue(node)
+
+	var ret []graph.Node
+	switch {
+	case schemaNode.GetLabels().Has(ls.AttributeTypeValue):
+		ret, err = reshaper.value(context, nativeValues, nodepath)
+	case schemaNode.GetLabels().Has(ls.AttributeTypeObject):
+		ret, err = reshaper.object(context, nativeValues, nodepath)
+	case schemaNode.GetLabels().Has(ls.AttributeTypeArray):
+	case schemaNode.GetLabels().Has(ls.AttributeTypePolymorphic):
+	default:
+		return nil, ErrInvalidSchemaNodeType(schemaNode.GetLabels().Slice())
+	}
+	for _, x := range ret {
+		x.RemoveProperty(ReshapeTerms.If)
+		x.RemoveProperty(ReshapeTerms.Export)
+		x.RemoveProperty(ReshapeTerms.Expressions)
+		x.RemoveProperty(ReshapeTerms.ValueExpr)
+		x.RemoveProperty(ReshapeTerms.IfEmpty)
+		x.RemoveProperty(ReshapeTerms.JoinMethod)
+		x.RemoveProperty(ReshapeTerms.JoinDelimiter)
+	}
+	return ret, nil
+}
+
+func (reshaper *Reshaper) object(context *ReshapeContext, values []namedValue, np ls.NodePath) ([]graph.Node, error) {
+	schemaNode := context.CurrentSchemaNode()
+	attributes := graph.TargetNodes(ls.SortEdgesItr(schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.ObjectAttributesTerm)))
+	attributes = append(attributes, graph.TargetNodes(ls.SortEdgesItr(schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.ObjectAttributeListTerm)))...)
+
+	ingestObject := func() (graph.Node, error) {
+		children := make([]graph.Node, 0)
+		for _, a := range attributes {
+			schemaAttribute := a.(graph.Node)
+			context.schemaPath = append(context.schemaPath, schemaAttribute)
+			name := ls.AsPropertyValue(schemaAttribute.GetProperty(ls.AttributeNameTerm)).AsString()
+			newNode, err := reshaper.reshape(context, np.AppendString(name))
+			context.schemaPath = context.schemaPath[:len(context.schemaPath)-1]
 			if err != nil {
 				return nil, err
 			}
-			nodeValue = val
-			empty = false
-		} else if rs, ok := source.Value.(opencypher.ResultSet); ok {
-			switch len(rs.Rows) {
-			case 0:
-			case 1:
-				if len(rs.Rows[0]) == 1 {
-					for _, v := range rs.Rows[0] {
-						nodeValue, err = getNodeValue(v.Value)
-						if err != nil {
-							return nil, err
-						}
-					}
-					empty = false
-				} else if len(rs.Rows[0]) > 1 {
-					return nil, ErrMultipleValues
-				}
-			default:
-				joinMethod := "join"
-				prop := ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.JoinMethod))
-				if prop != nil && prop.IsString() {
-					joinMethod = prop.AsString()
-				}
-				joinDelimiter := " "
-				prop = ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.JoinDelimiter))
-				if prop != nil && prop.IsString() {
-					joinDelimiter = prop.AsString()
-				}
-
-				values := make([]opencypher.Value, 0)
-				for _, row := range rs.Rows {
-					if len(row) > 1 {
-						return nil, ErrMultipleValues
-					}
-					for _, v := range row {
-						value, err := getNodeValue(v.Value)
-						if err != nil {
-							return nil, err
-						}
-						values = append(values, opencypher.ValueOf(value))
-					}
-				}
-				result, err := JoinValues(values, joinMethod, joinDelimiter)
-				if err != nil {
-					return nil, err
-				}
-				nodeValue = result
-				empty = false
+			if newNode != nil {
+				children = append(children, newNode...)
 			}
 		}
+
+		empty := len(children) == 0
+		if empty {
+			ifEmpty := ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.IfEmpty))
+			if ifEmpty != nil && ifEmpty.IsString() && ifEmpty.AsString() == "true" {
+				return nil, nil
+			}
+		}
+
+		return reshaper.Object(context.targetGraph, np, schemaNode, children)
+	}
+
+	if values == nil {
+		v, err := ingestObject()
+		if err != nil {
+			return nil, err
+		}
+		return []graph.Node{v}, nil
+	}
+
+	ret := make([]graph.Node, 0)
+	for _, val := range values {
+		// Define the symbol
+		context.symbols[val.name] = opencypher.ValueOf(val)
+		v, err := ingestObject()
+		if err != nil {
+			return nil, err
+		}
+		if v != nil {
+			ret = append(ret, v)
+		}
+	}
+
+	return ret, nil
+}
+
+func (reshaper *Reshaper) value(context *ReshapeContext, values []namedValue, np ls.NodePath) ([]graph.Node, error) {
+	schemaNode := context.CurrentSchemaNode()
+	empty := true
+	var nodeValue interface{}
+	if len(values) > 1 {
+		empty = false
+		joinMethod := "join"
+		prop := ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.JoinMethod))
+		if prop != nil && prop.IsString() {
+			joinMethod = prop.AsString()
+		}
+		joinDelimiter := " "
+		prop = ls.AsPropertyValue(schemaNode.GetProperty(ReshapeTerms.JoinDelimiter))
+		if prop != nil && prop.IsString() {
+			joinDelimiter = prop.AsString()
+		}
+		vals := make([]interface{}, 0, len(values))
+		for _, x := range values {
+			vals = append(vals, x.value)
+		}
+		result, err := JoinValues(vals, joinMethod, joinDelimiter)
+		if err != nil {
+			return nil, err
+		}
+		nodeValue = result
+	} else if len(values) == 1 {
+		nodeValue = values[0].value
+		empty = false
 	}
 
 	if empty {
@@ -281,17 +273,11 @@ func (reshaper *Reshaper) value(context *ReshapeContext) (graph.Node, error) {
 	if empty {
 		return nil, nil
 	}
-	targetNode := context.targetGraph.NewNode([]string{ls.DocumentNodeTerm, ls.AttributeTypeValue}, nil)
-	if reshaper.AddInstanceOfEdges {
-		context.targetGraph.NewEdge(targetNode, schemaNode, ls.InstanceOfTerm, nil)
+	node, err := reshaper.Value(context.targetGraph, np, schemaNode, nodeValue)
+	if err != nil {
+		return nil, err
 	}
-	types := targetNode.GetLabels()
-	types.Add(ls.FilterNonLayerTypes(schemaNode.GetLabels().Slice())...)
-	targetNode.SetLabels(types)
-	if nodeValue != nil {
-		ls.SetNodeValue(targetNode, nodeValue)
-	}
-	return targetNode, nil
+	return []graph.Node{node}, nil
 }
 
 func getSource(context *ReshapeContext, schemaNode graph.Node) (opencypher.Value, error) {
@@ -355,4 +341,60 @@ func (reshaper *Reshaper) checkConditionals(context *ReshapeContext, schemaNode 
 		}
 	}
 	return result, nil
+}
+
+type namedValue struct {
+	name  string
+	value interface{}
+}
+
+func getNativeSourceValues(in opencypher.Value) ([]namedValue, error) {
+	// If we have source values, collect the native values
+	if in.Value == nil {
+		return nil, nil
+	}
+
+	if in.IsPrimitive() {
+		return []namedValue{{value: in.Value}}, nil
+	}
+
+	if node, ok := in.Value.(graph.Node); ok {
+		value, err := ls.GetNodeValue(node)
+		return []namedValue{{value: value}}, err
+	}
+
+	if rs, ok := in.Value.(opencypher.ResultSet); ok {
+		// A resultset. There must be one column only
+		switch len(rs.Rows) {
+		case 0: // No result
+			return nil, nil
+		case 1:
+			if len(rs.Rows[0]) > 1 {
+				return nil, ErrMultipleValues
+			}
+			for k, v := range rs.Rows[0] {
+				val, err := getNativeSourceValues(v)
+				if err != nil {
+					return nil, err
+				}
+				return []namedValue{{name: k, value: val[0].value}}, nil
+			}
+		default:
+			values := make([]namedValue, 0)
+			for _, row := range rs.Rows {
+				if len(row) > 1 {
+					return nil, ErrMultipleValues
+				}
+				for k, v := range row {
+					val, err := getNativeSourceValues(v)
+					if err != nil {
+						return nil, err
+					}
+					values = append(values, namedValue{name: k, value: val[0].value})
+				}
+			}
+			return values, nil
+		}
+	}
+	return nil, ErrInvalidSourceValue
 }

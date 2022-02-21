@@ -16,9 +16,8 @@ package transform
 
 import (
 	"errors"
+	"fmt"
 	"strings"
-
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher"
 )
 
 const (
@@ -28,10 +27,10 @@ const (
 
 var ErrJoinFailure = errors.New("Join failure")
 
-func JoinValues(values []opencypher.Value, method, delimiter string) (string, error) {
+func JoinValues(values []interface{}, method, delimiter string) (string, error) {
 	strs := make([]string, 0, len(values))
 	for _, n := range values {
-		strs = append(strs, n.String())
+		strs = append(strs, fmt.Sprint(n))
 	}
 	if len(strs) > 1 && method == JoinMethodError {
 		return "", ErrJoinFailure
