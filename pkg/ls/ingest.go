@@ -481,8 +481,13 @@ func GetAsProperty(schemaNode graph.Node) (of string, name string) {
 	if schemaNode == nil {
 		return
 	}
-	of = AsPropertyValue(schemaNode.GetProperty(AsPropertyOfTerm)).AsString()
-	name = AsPropertyValue(schemaNode.GetProperty(AsPropertyTerm)).AsString()
+	if AsPropertyValue(schemaNode.GetProperty(IngestAsTerm)).AsString() == "property" {
+		of = AsPropertyValue(schemaNode.GetProperty(AsPropertyOfTerm)).AsString()
+		name = AsPropertyValue(schemaNode.GetProperty(PropertyNameTerm)).AsString()
+		if len(name) == 0 {
+			name = AsPropertyValue(schemaNode.GetProperty(AttributeNameTerm)).AsString()
+		}
+	}
 	return
 }
 
