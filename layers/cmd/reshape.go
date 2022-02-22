@@ -52,14 +52,11 @@ var reshapeCmd = &cobra.Command{
 			failErr(err)
 		}
 
-		reshaper := transform.Reshaper{TargetSchema: layer}
-		sources := graph.Sources(g)
-		if len(sources) != 1 {
-			fail("Cannot determine the root of the graph")
-		}
-		rootNode := sources[0]
+		reshaper := transform.Reshaper{}
+		reshaper.Schema = layer
+		reshaper.EmbedSchemaNodes = true
 		target := graph.NewOCGraph()
-		_, err = reshaper.Reshape(rootNode, target)
+		err = reshaper.Reshape(g, target)
 		if err != nil {
 			failErr(err)
 		}

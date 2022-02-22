@@ -16,6 +16,7 @@ package ls
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
@@ -27,6 +28,201 @@ type ErrInvalidLookupTable struct {
 
 func (e ErrInvalidLookupTable) Error() string {
 	return fmt.Sprintf("Invalid lookup table %s: %s", e.ID, e.Msg)
+}
+
+type ErrInputValueNotFoundInLookup struct {
+	Msg string
+}
+
+func (e ErrInputValueNotFoundInLookup) Error() string {
+	return "Input value not found in lookup in node: " + e.Msg
+}
+
+type ErrAmbiguousLookup struct {
+	Msg string
+}
+
+func (e ErrAmbiguousLookup) Error() string {
+	return "Ambiguous lookup value in node: " + e.Msg
+}
+
+type ErrLookupTableError struct {
+	Errors []string
+}
+
+func (e ErrLookupTableError) Error() string {
+	return "Lookup table error: " + strings.Join(e.Errors, ", ")
+}
+
+type LookupResult struct {
+	// Matched is true if the lookup value matched something in the lookup table
+	Matched bool
+	// If true, the value did not match anything and the returned value
+	// is the default value
+	DefaultValue bool
+	// This is the value returned if Matched==true
+	Value string
+	// This is nonempty if an error must be returned
+	Error string
+}
+
+// LookupProcessor keeps the lookup configuration and provides the
+// methods to evaulate lookup annotations
+type LookupProcessor struct {
+	Graph graph.Graph
+
+	ExternalLookup func(lookupTableID string, dataNode graph.Node) (LookupResult, error)
+}
+
+// ProcessLookup will process the lookup annotations on the node. If the node has none, this will not do anything
+func (prc *LookupProcessor) ProcessLookup(node graph.Node) error {
+	processed, err := prc.processLookup(node, node)
+	if processed {
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	for _, sch := range InstanceOf(node) {
+		processed, err := prc.processLookup(node, sch)
+		if err != nil {
+			return err
+		}
+		if processed {
+			return nil
+		}
+	}
+	return nil
+}
+
+// processLookup traverses all the edges with LookupTableTerm, and
+// processes all the nodes. If the node has a reference, then it tries
+// to find the lookup table with that ID in the graph. If the node has
+// LookupTableElementsTerm, then it tries to process the input using
+// those element definitions.
+func (prc *LookupProcessor) processLookup(dataNode, schemaNode graph.Node) (bool, error) {
+	// Is there a lookup table defined in this node?
+	// Lookup for a lookup table edge
+	lookupTableNodes := graph.NextNodesWith(schemaNode, LookupTableTerm)
+	if len(lookupTableNodes) == 0 {
+		return false, nil
+	}
+	var value string
+	if v := GetRawNodeValue(dataNode); v != nil {
+		value = fmt.Sprint(v)
+	}
+	results := make([]LookupResult, 0)
+	for _, ltNode := range lookupTableNodes {
+		if ltNode.GetLabels().Has(LookupTableReferenceTerm) {
+			// An external reference
+			id := GetNodeID(ltNode)
+			result, err := prc.ExternalLookup(id, dataNode)
+			if err != nil {
+				return true, err
+			}
+			if result.Matched {
+				results = append(results, result)
+			}
+		} else if ltNode.GetLabels().Has(LookupTableElementsTerm) {
+			// An internal reference
+			result, err := prc.processLookupNode(dataNode, ltNode, value)
+			if err != nil {
+				return true, err
+			}
+			if result.Matched {
+				results = append(results, result)
+			}
+		}
+	}
+	if len(results) == 0 {
+		return true, ErrInputValueNotFoundInLookup{Msg: fmt.Sprint(dataNode)}
+	}
+	setNewValue := func(newValue string) {
+		SetRawNodeValue(dataNode, newValue)
+		dataNode.SetProperty(RawInputValueTerm, value)
+	}
+	if len(results) > 1 {
+		// How many non-default and default values?
+		nonDef := 0
+		def := 0
+		e := 0
+		for _, x := range results {
+			if len(x.Error) > 0 {
+				e++
+			} else {
+				if x.DefaultValue {
+					def++
+				} else {
+					nonDef++
+				}
+			}
+		}
+
+		if nonDef > 1 || (nonDef == 0 && def > 1) {
+			return true, ErrAmbiguousLookup{Msg: fmt.Sprint(dataNode)}
+		}
+		if nonDef == 0 && def == 0 && e > 0 {
+			errors := make([]string, 0)
+			for _, x := range results {
+				if len(x.Error) > 0 {
+					errors = append(errors, x.Error)
+				}
+			}
+			return true, ErrLookupTableError{Errors: errors}
+		}
+		if nonDef == 1 && def == 0 && e == 0 {
+			for _, x := range results {
+				if len(x.Error) == 0 && !x.DefaultValue {
+					setNewValue(x.Value)
+					break
+				}
+			}
+		}
+		if nonDef == 0 && def == 1 && e == 0 {
+			for _, x := range results {
+				if len(x.Error) == 0 && x.DefaultValue {
+					setNewValue(x.Value)
+					break
+				}
+			}
+		}
+		return true, ErrAmbiguousLookup{Msg: fmt.Sprint(dataNode)}
+	}
+	if len(results[0].Error) > 0 {
+		return true, ErrLookupTableError{Errors: []string{results[0].Error}}
+	}
+	setNewValue(results[0].Value)
+	return true, nil
+}
+
+// Input is the data node and the lookup element node. This determines
+// if the node value matches lookup element node options
+func (prc *LookupProcessor) processLookupNode(dataNode, lookupElementNode graph.Node, value string) (LookupResult, error) {
+	options := AsPropertyValue(lookupElementNode.GetProperty(LookupTableElementOptionsTerm)).MustStringSlice()
+	if len(options) == 0 {
+		// this is the default option
+		return LookupResult{
+			Matched:      true,
+			DefaultValue: true,
+			Value:        AsPropertyValue(lookupElementNode.GetProperty(LookupTableElementValueTerm)).AsString(),
+			Error:        AsPropertyValue(lookupElementNode.GetProperty(LookupTableElementErrorTerm)).AsString(),
+		}, nil
+	}
+	filter := func(s string) string { return s }
+	if AsPropertyValue(lookupElementNode.GetProperty(LookupTableElementCaseSensitiveTerm)).AsString() != "true" {
+		filter = func(s string) string { return strings.ToLower(s) }
+	}
+	value = filter(value)
+	for _, x := range options {
+		if filter(x) == value {
+			return LookupResult{
+				Matched: true,
+				Value:   AsPropertyValue(lookupElementNode.GetProperty(LookupTableElementValueTerm)).AsString(),
+				Error:   AsPropertyValue(lookupElementNode.GetProperty(LookupTableElementErrorTerm)).AsString(),
+			}, nil
+		}
+	}
+	return LookupResult{Matched: false}, nil
 }
 
 // LookupTableElement is the JSON schema representation of a lookup table item. It
@@ -55,6 +251,9 @@ var LookupTableTerm = NewTerm(LS, "lookupTable", false, false, OverrideCompositi
 }{
 	lookupTableMarshaler{},
 })
+
+// RawInputValueTerm keeps the raw input value if the value is processed using a lookup table
+var RawInputValueTerm = NewTerm(LS, "rawValue", false, false, NoComposition, nil)
 
 var LookupTableElementsTerm = NewTerm(LS, "lookupTable/elements", false, true, NoComposition, nil)
 
@@ -103,6 +302,20 @@ func (lookupTableMarshaler) UnmarshalLd(target *Layer, key string, value interfa
 //   ],
 //   "https://lschema.org/lookupTable/element/value": "a"
 // },
+//
+// Graph representation:
+//
+//   (valueNode) --lookupTableTerm--> (lookupTableTerm) --lookupTableElementsTerm-->(lookupTableElementsTerm)
+//                                                      --lookupTableElementsTerm-->(lookupTableElementsTerm)
+//
+// External Reference:
+//
+//   (valueNode) --lookupTableTerm-->(lookupTableReference, id: ref)
+//
+// Internal reference:
+//
+//   (valueNode) --lookupTableTerm-->(lookupTableTerm)
+//
 func (lookupTableMarshaler) unmarshalLookupTable(target *Layer, key string, value interface{}, node *LDNode, allNodes map[string]*LDNode) error {
 	// key-value is:
 	//   "https://lschema.org/lookupTable": [{

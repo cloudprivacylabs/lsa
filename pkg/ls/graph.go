@@ -273,48 +273,6 @@ func FirstReachable(from graph.Node, nodePredicate func(graph.Node, []graph.Node
 	return ret, path
 }
 
-// // InstanceOfID returns the IDs of the schema nodes this node is an instance of
-// func InstanceOfID(node Node) []string {
-// 	out := make(map[string]struct{})
-// 	ForEachInstanceOf(node, func(n Node) bool {
-// 		v, has := n.GetProperties()[InstanceOfTerm]
-// 		if has {
-// 			if v.IsString() {
-// 				out[v.AsString()] = struct{}{}
-// 			} else if v.IsStringSlice() {
-// 				for _, x := range v.AsStringSlice() {
-// 					out[x] = struct{}{}
-// 				}
-// 			}
-// 		}
-// 		if IsAttributeNode(n) {
-// 			out[n.GetID()] = struct{}{}
-// 		}
-// 		return true
-// 	})
-// 	ret := make([]string, 0, len(out))
-// 	for x := range out {
-// 		ret = append(ret, x)
-// 	}
-// 	return ret
-// }
-
-// // ForEachInstanceOf traverses the transitive closure of all nodes
-// // connected to the given nodes by instanceOf, and calls f until f
-// // returns false or all nodes are traversed
-// func ForEachInstanceOf(node Node, f func(Node) bool) {
-// 	IterateDescendants(node, func(n Node, p []Node) bool {
-// 		return f(n)
-// 	},
-// 		func(e Edge, p []Node) EdgeFuncResult {
-// 			if e.GetLabel() == InstanceOfTerm {
-// 				return FollowEdgeResult
-// 			}
-// 			return SkipEdgeResult
-// 		},
-// 		false)
-// }
-
 // InstanceOf returns the nodes that are connect to this node via
 // instanceOf term,
 func InstanceOf(node graph.Node) []graph.Node {
@@ -429,4 +387,15 @@ func CloneEdge(fromInTarget, toInTarget graph.Node, sourceEdge graph.Edge, targe
 		return true
 	})
 	return targetGraph.NewEdge(fromInTarget, toInTarget, sourceEdge.GetLabel(), properties)
+}
+
+func FindNodeByID(g graph.Graph, ID string) []graph.Node {
+	ret := make([]graph.Node, 0)
+	graph.ForEachNode(g, func(node graph.Node) bool {
+		if GetNodeID(node) == ID {
+			ret = append(ret, node)
+		}
+		return true
+	})
+	return ret
 }

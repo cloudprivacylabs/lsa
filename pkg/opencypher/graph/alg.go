@@ -100,3 +100,14 @@ func CheckIsomorphism(g1, g2 Graph, nodeEquivalenceFunc func(n1, n2 Node) bool, 
 	}
 	return true
 }
+
+// ForEachNode iterates through all the nodes of g until predicate
+// returns false or all nodes are processed.
+func ForEachNode(g Graph, predicate func(Node) bool) bool {
+	for nodes := g.GetNodes(); nodes.Next(); {
+		if !predicate(nodes.Node()) {
+			return false
+		}
+	}
+	return true
+}
