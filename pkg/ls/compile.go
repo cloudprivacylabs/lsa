@@ -23,7 +23,7 @@ import (
 // A CompiledGraph is a graph of compiled schemas
 type CompiledGraph interface {
 	GetCompiledSchema(string) *Layer
-	PutCompiledSchema(string, *Layer, Context) *Layer
+	PutCompiledSchema(*Context, string, *Layer) *Layer
 	GetLayerNodes(string) []graph.Node
 	GetGraph() graph.Graph
 }
@@ -47,7 +47,7 @@ func (d DefaultCompiledGraph) GetCompiledSchema(ref string) *Layer {
 }
 
 // PutCompiledSchema adds the copy of the schema to the common graph
-func (d *DefaultCompiledGraph) PutCompiledSchema(ref string, layer *Layer, context Context) *Layer {
+func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, layer *Layer) *Layer {
 	if d.layers == nil {
 		d.layers = make(map[string]*Layer)
 		d.layerNodes = make(map[string][]graph.Node)
@@ -107,32 +107,32 @@ func (compiler Compiler) loadSchema(ctx *compilerContext, ref string) (*Layer, e
 
 // Compile compiles the schema by resolving all references and
 // building all compositions.
-func (compiler *Compiler) Compile(ref string, context Context) (*Layer, error) {
+func (compiler *Compiler) Compile(context *Context, ref string) (*Layer, error) {
 	ctx := &compilerContext{
 		loadedSchemas: make(map[string]*Layer),
 	}
-	return compiler.compile(ctx, ref)
+	return compiler.compile(context, ctx, ref)
 }
 
 // CompileSchema compiles the loaded schema
-func (compiler *Compiler) CompileSchema(schema *Layer, context Context) (*Layer, error) {
+func (compiler *Compiler) CompileSchema(context *Context, schema *Layer) (*Layer, error) {
 	ctx := &compilerContext{
 		loadedSchemas: map[string]*Layer{schema.GetID(): schema},
 	}
-	return compiler.compile(ctx, schema.GetID())
+	return compiler.compile(context, ctx, schema.GetID())
 }
 
 // RecompileSchema uses the cache to resolve the references of the
 // schema, but does not put the schema back into the cache
-func (compiler *Compiler) RecompileSchema(schema *Layer, context Context) (*Layer, error) {
+func (compiler *Compiler) RecompileSchema(context *Context, schema *Layer) (*Layer, error) {
 	ctx := &compilerContext{
 		loadedSchemas: map[string]*Layer{schema.GetID(): schema},
 		doNotCache:    schema,
 	}
-	return compiler.compile(ctx, schema.GetID())
+	return compiler.compile(context, ctx, schema.GetID())
 }
 
-func (compiler *Compiler) compile(ctx *compilerContext, ref string) (*Layer, error) {
+func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref string) (*Layer, error) {
 	if compiler.CGraph == nil {
 		compiler.CGraph = &DefaultCompiledGraph{}
 	}
@@ -142,11 +142,11 @@ func (compiler *Compiler) compile(ctx *compilerContext, ref string) (*Layer, err
 		return compiled, nil
 	}
 
-	schema, err := compiler.compileRefs(ctx, ref)
+	schema, err := compiler.compileRefs(context, ctx, ref)
 	if err != nil {
 		return nil, err
 	}
-	if err := compiler.resolveCompositions(schema.GetSchemaRootNode()); err != nil {
+	if err := compiler.resolveCompositions(context, schema.GetSchemaRootNode()); err != nil {
 		return nil, err
 	}
 	if err := CompileTerms(schema); err != nil {
@@ -155,7 +155,7 @@ func (compiler *Compiler) compile(ctx *compilerContext, ref string) (*Layer, err
 	return schema, nil
 }
 
-func (compiler *Compiler) compileRefs(ctx *compilerContext, ref string) (*Layer, error) {
+func (compiler *Compiler) compileRefs(context *Context, ctx *compilerContext, ref string) (*Layer, error) {
 	var err error
 	// If compiled already, return the compiled node
 	if c := compiler.CGraph.GetCompiledSchema(ref); c != nil {
@@ -182,7 +182,7 @@ func (compiler *Compiler) compileRefs(ctx *compilerContext, ref string) (*Layer,
 
 	// Resolve all references
 	if schema != ctx.doNotCache {
-		schema = compiler.CGraph.PutCompiledSchema(ref, schema, *DefaultContext())
+		schema = compiler.CGraph.PutCompiledSchema(context, ref, schema)
 	}
 	schemaNodes := compiler.CGraph.GetLayerNodes(ref)
 	for _, node := range schemaNodes {
@@ -191,13 +191,13 @@ func (compiler *Compiler) compileRefs(ctx *compilerContext, ref string) (*Layer,
 			return nil, err
 		}
 	}
-	if err := compiler.resolveReferences(ctx, schema, schemaNodes); err != nil {
+	if err := compiler.resolveReferences(context, ctx, schema, schemaNodes); err != nil {
 		return nil, err
 	}
 	return schema, nil
 }
 
-func (compiler *Compiler) resolveReferences(ctx *compilerContext, layer *Layer, nodes []graph.Node) error {
+func (compiler *Compiler) resolveReferences(context *Context, ctx *compilerContext, layer *Layer, nodes []graph.Node) error {
 	// Collect all reference nodes
 	references := make([]graph.Node, 0)
 	for _, nd := range nodes {
@@ -207,21 +207,21 @@ func (compiler *Compiler) resolveReferences(ctx *compilerContext, layer *Layer, 
 	}
 	// Resolve each reference
 	for _, node := range references {
-		if err := compiler.resolveReference(ctx, layer, node); err != nil {
+		if err := compiler.resolveReference(context, ctx, layer, node); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (compiler *Compiler) resolveReference(ctx *compilerContext, layer *Layer, node graph.Node) error {
+func (compiler *Compiler) resolveReference(context *Context, ctx *compilerContext, layer *Layer, node graph.Node) error {
 	ref := AsPropertyValue(node.GetProperty(ReferenceTerm)).AsString()
 	node.RemoveProperty(ReferenceTerm)
 	// already compiled, or being compiled?
 	compiledSchema := compiler.CGraph.GetCompiledSchema(ref)
 	if compiledSchema == nil {
 		var err error
-		compiledSchema, err = compiler.compileRefs(ctx, ref)
+		compiledSchema, err = compiler.compileRefs(context, ctx, ref)
 		if err != nil {
 			return err
 		}
@@ -233,7 +233,7 @@ func (compiler *Compiler) resolveReference(ctx *compilerContext, layer *Layer, n
 	types.Add(rootNode.GetLabels().Slice()...)
 	node.SetLabels(types)
 	// Compose the properties of the compiled root node with the referenced node
-	if err := ComposeProperties(node, rootNode, *DefaultContext()); err != nil {
+	if err := ComposeProperties(context, node, rootNode); err != nil {
 		return err
 	}
 	// Attach the node to all the children of the compiled node
@@ -244,14 +244,14 @@ func (compiler *Compiler) resolveReference(ctx *compilerContext, layer *Layer, n
 	return nil
 }
 
-func (compiler Compiler) resolveCompositions(root graph.Node) error {
+func (compiler Compiler) resolveCompositions(context *Context, root graph.Node) error {
 	// Process all composition nodes
 	completed := map[graph.Node]struct{}{}
 	var err error
 	ForEachAttributeNode(root, func(n graph.Node, _ []graph.Node) bool {
 		if n.GetLabels().Has(AttributeTypeComposite) {
 			if _, processed := completed[n]; !processed {
-				if x := compiler.resolveComposition(n, completed); x != nil {
+				if x := compiler.resolveComposition(context, n, completed); x != nil {
 					err = x
 					return false
 				}
@@ -262,7 +262,7 @@ func (compiler Compiler) resolveCompositions(root graph.Node) error {
 	return err
 }
 
-func (compiler Compiler) resolveComposition(compositeNode graph.Node, completed map[graph.Node]struct{}) error {
+func (compiler Compiler) resolveComposition(context *Context, compositeNode graph.Node, completed map[graph.Node]struct{}) error {
 	completed[compositeNode] = struct{}{}
 	// At the end of this process, composite node will be converted into an object node
 	for edges := compositeNode.GetEdgesWithLabel(graph.OutgoingEdge, AllOfTerm); edges.Next(); {
@@ -285,7 +285,7 @@ func (compiler Compiler) resolveComposition(compositeNode graph.Node, completed 
 				e.Remove()
 			}
 			// Copy all properties of the component node to the composite node
-			if err := ComposeProperties(compositeNode, component, *DefaultContext()); err != nil {
+			if err := ComposeProperties(context, compositeNode, component); err != nil {
 				return err
 			}
 			// Copy all types
@@ -308,7 +308,7 @@ func (compiler Compiler) resolveComposition(compositeNode graph.Node, completed 
 			compiler.CGraph.GetGraph().NewEdge(compositeNode, component, ObjectAttributeListTerm, nil)
 
 		case component.GetLabels().Has(AttributeTypeComposite):
-			if err := compiler.resolveComposition(component, completed); err != nil {
+			if err := compiler.resolveComposition(context, component, completed); err != nil {
 				return err
 			}
 			goto top

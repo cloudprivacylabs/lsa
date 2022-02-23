@@ -1,10 +1,8 @@
 package ls
 
 import (
-	"bytes"
 	"encoding/json"
 	"log"
-	"os"
 	"runtime/debug"
 	"time"
 )
@@ -15,69 +13,54 @@ type Logger interface {
 	Error(map[string]interface{})
 }
 
-type NopLogger struct {
-	*log.Logger
-}
+type NopLogger struct{}
 
 func (l *NopLogger) Debug(map[string]interface{}) {}
 func (l *NopLogger) Info(map[string]interface{})  {}
 func (l *NopLogger) Error(map[string]interface{}) {}
 
-type Level int8
+type LogLevel int8
 
 const (
-	LevelInfo Level = iota
-	LevelError
-	LevelDebug
-	LevelFatal
-	LevelOff
+	LogLevelInfo LogLevel = iota
+	LogLevelError
+	LogLevelDebug
 )
 
-func (l Level) String() string {
+func (l LogLevel) String() string {
 	switch l {
-	case LevelInfo:
+	case LogLevelInfo:
 		return "INFO"
-	case LevelDebug:
+	case LogLevelDebug:
 		return "DEBUG"
-	case LevelError:
+	case LogLevelError:
 		return "ERROR"
-	case LevelFatal:
-		return "FATAL"
 	default:
 		return ""
 	}
 }
 
 type DefaultLogger struct {
-	log      *log.Logger
-	minLevel Level
+	minLevel LogLevel
 }
 
-func New(log *log.Logger, minLevel Level) *DefaultLogger {
-	return &DefaultLogger{
-		log:      log,
-		minLevel: minLevel,
-	}
+func NewDefaultLogger() *DefaultLogger {
+	return &DefaultLogger{}
 }
 
 func (l DefaultLogger) Info(properties map[string]interface{}) {
-	l.print(LevelInfo, properties)
+	l.print(LogLevelInfo, properties)
 }
 
 func (l DefaultLogger) Debug(properties map[string]interface{}) {
-	print(LevelDebug, properties)
+	print(LogLevelDebug, properties)
 }
 
 func (l DefaultLogger) Error(properties map[string]interface{}) {
-	print(LevelError, properties)
+	print(LogLevelError, properties)
 }
 
-func (l DefaultLogger) Fatal(properties map[string]interface{}) {
-	print(LevelFatal, properties)
-	os.Exit(1)
-}
-
-func (l DefaultLogger) print(level Level, properties map[string]interface{}) (int, error) {
+func (l DefaultLogger) print(level LogLevel, properties map[string]interface{}) {
 	aux := struct {
 		Level      string                 `json:"level"`
 		Time       string                 `json:"time"`
@@ -89,7 +72,7 @@ func (l DefaultLogger) print(level Level, properties map[string]interface{}) (in
 		Properties: properties,
 	}
 
-	if level >= LevelError {
+	if level >= LogLevelError {
 		aux.Trace = string(debug.Stack())
 	}
 
@@ -97,9 +80,8 @@ func (l DefaultLogger) print(level Level, properties map[string]interface{}) (in
 
 	line, err := json.Marshal(aux)
 	if err != nil {
-		line = []byte(LevelError.String() + ": unable to marshal log message: " + err.Error())
+		line = []byte(LogLevelError.String() + ": unable to marshal log message: " + err.Error())
 	}
 
-	l.log.Println(line)
-	return bytes.Count(line, []byte{}), nil
+	log.Println(string(line))
 }

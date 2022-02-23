@@ -42,7 +42,7 @@ func (tc composeTestCase) Run(t *testing.T) {
 			t.Errorf("%s: Cannot unmarshal overlay %d: %v", tc.Name, i, err)
 			return
 		}
-		err = base.Compose(ovl, *DefaultContext())
+		err = base.Compose(DefaultContext(), ovl)
 		if err != nil {
 			t.Errorf("%s: Compose error: %v", tc.Name, err)
 			return
