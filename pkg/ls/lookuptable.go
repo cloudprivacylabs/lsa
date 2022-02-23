@@ -107,10 +107,7 @@ func (prc *LookupProcessor) processLookup(dataNode, schemaNode graph.Node) (bool
 	if len(lookupTableNodes) == 0 {
 		return false, nil
 	}
-	var value string
-	if v := GetRawNodeValue(dataNode); v != nil {
-		value = fmt.Sprint(v)
-	}
+	value, _ := GetRawNodeValue(dataNode)
 	results := make([]LookupResult, 0)
 	for _, ltNode := range lookupTableNodes {
 		if ltNode.GetLabels().Has(LookupTableReferenceTerm) {

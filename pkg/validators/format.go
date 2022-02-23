@@ -36,8 +36,8 @@ func (validator JsonFormatValidator) Validate(docNode, schemaNode graph.Node) er
 	if docNode == nil {
 		return nil
 	}
-	value := ls.GetRawNodeValue(docNode)
-	if value == nil {
+	value, ok := ls.GetRawNodeValue(docNode)
+	if !ok {
 		return nil
 	}
 	c, _ := schemaNode.GetProperty(compiledJsonFormatTerm)

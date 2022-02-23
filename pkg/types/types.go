@@ -18,13 +18,9 @@ func (e ErrNotAStringValue) Error() string {
 // getStringValue tries to get a string value from the node. If the
 // node value is nil, returns "", false, nil
 func getStringNodeValue(node graph.Node) (string, bool, error) {
-	v := ls.GetRawNodeValue(node)
-	if v == nil {
+	v, ok := ls.GetRawNodeValue(node)
+	if !ok {
 		return "", false, nil
 	}
-	str, ok := v.(string)
-	if !ok {
-		return "", true, ErrNotAStringValue{ls.GetNodeID(node)}
-	}
-	return str, true, nil
+	return v, true, nil
 }

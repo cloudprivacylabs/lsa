@@ -403,7 +403,7 @@ func (ingester *Ingester) Value(g graph.Graph, path NodePath, schemaNode graph.N
 		ingester.NodePaths[newNode] = path.Copy()
 	}
 	if value != nil {
-		SetRawNodeValue(newNode, value)
+		SetRawNodeValue(newNode, fmt.Sprint(value))
 	}
 	t := newNode.GetLabels()
 	t.Add(types...)
@@ -438,7 +438,7 @@ func (ingester *Ingester) ValueAsEdge(g graph.Graph, path NodePath, schemaNode g
 		ingester.NodePaths[newEdgeNode.Node] = path.Copy()
 	}
 	if value != nil {
-		SetRawNodeValue(newEdgeNode.Node, value)
+		SetRawNodeValue(newEdgeNode.Node, fmt.Sprint(value))
 	}
 	t := newEdgeNode.Node.GetLabels()
 	t.Add(types...)

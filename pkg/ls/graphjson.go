@@ -12,7 +12,6 @@ import (
 // JSONGraphNode includes a node index, labels, and properties of the node
 type JSONGraphNode struct {
 	N          int                       `json:"n"`
-	Value      interface{}               `json:"value,omitempty"`
 	ID         string                    `json:"id,omitempty"`
 	Labels     []string                  `json:"labels,omitempty"`
 	Properties map[string]*PropertyValue `json:"properties,omitempty"`
@@ -72,7 +71,6 @@ func (m *JSONMarshaler) Encode(g graph.Graph, w io.Writer) error {
 			v.Properties[key] = p
 			return true
 		})
-		v.Value = GetRawNodeValue(node)
 		v.ID = GetNodeID(node)
 		data, err := json.Marshal(v)
 		if err != nil {
@@ -163,9 +161,6 @@ func (m *JSONMarshaler) Unmarshal(in []byte, targetGraph graph.Graph) error {
 			node.Labels[i] = m.interner.Intern(node.Labels[i])
 		}
 		newNode := targetGraph.NewNode(node.Labels, m.copyProperties(node.Properties))
-		if node.Value != nil {
-			SetRawNodeValue(newNode, node.Value)
-		}
 		if len(node.ID) > 0 {
 			SetNodeID(newNode, node.ID)
 		}

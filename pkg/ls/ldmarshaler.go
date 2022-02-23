@@ -83,7 +83,7 @@ func (rd *LDMarshaler) Marshal(input graph.Graph) interface{} {
 			}
 		}
 		if IsDocumentNode(gnode) {
-			if v := GetRawNodeValue(gnode); v != nil {
+			if v, ok := GetRawNodeValue(gnode); ok {
 				onode.ldNode[AttributeValueTerm] = v
 			}
 		}

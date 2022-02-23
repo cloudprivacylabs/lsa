@@ -65,7 +65,7 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 		t.Errorf("invalid get property: %v", err)
 		return
 	}
-	if GetRawNodeValue(en.Node) != "VAUs" {
+	if s, _ := GetRawNodeValue(en.Node); s != "VAUs" {
 		t.Errorf("Ingestion set value error: %v", err)
 		return
 	}
@@ -80,7 +80,7 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 		t.Errorf("invalid get property: %v", err)
 		return
 	}
-	if GetRawNodeValue(en.Node) != "OTHERVALUE" {
+	if s, _ := GetRawNodeValue(en.Node); s != "OTHERVALUE" {
 		t.Errorf("Ingestion set value error: %v", err)
 		return
 	}

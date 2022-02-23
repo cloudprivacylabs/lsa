@@ -81,7 +81,9 @@ func (tc testCase) Run(t *testing.T) {
 	}
 	eq := graph.CheckIsomorphism(resultGraph, expectedGraph, func(n1, n2 graph.Node) bool {
 		t.Logf("Cmp: %+v %+v\n", n1, n2)
-		if ls.GetRawNodeValue(n1) != ls.GetRawNodeValue(n2) {
+		s1, _ := ls.GetRawNodeValue(n1)
+		s2, _ := ls.GetRawNodeValue(n2)
+		if s1 != s2 {
 			return false
 		}
 		// Expected properties must be a subset
