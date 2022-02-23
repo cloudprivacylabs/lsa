@@ -499,6 +499,9 @@ func (ingester *Ingester) NewNode(g graph.Graph, path NodePath, schemaNode graph
 // merged with the target node types.
 func (ingester *Ingester) EmbedSchemaNode(targetNode, schemaNode graph.Node) {
 	schemaNode.ForEachProperty(func(k string, v interface{}) bool {
+		if k == NodeIDTerm {
+			return true
+		}
 		if pv, ok := v.(*PropertyValue); ok {
 			targetNode.SetProperty(k, pv.Clone())
 		} else {

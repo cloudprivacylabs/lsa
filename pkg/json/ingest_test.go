@@ -192,6 +192,7 @@ func TestIngestRootAnnotation(t *testing.T) {
 		nodes := []graph.Node{}
 		for nx := target.GetNodes(); nx.Next(); {
 			node := nx.Node()
+			t.Logf("%s", ls.GetNodeID(node))
 			if ls.GetNodeID(node) == nodeId {
 				nodes = append(nodes, node)
 			}
