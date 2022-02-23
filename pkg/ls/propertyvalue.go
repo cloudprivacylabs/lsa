@@ -330,3 +330,11 @@ func PropertiesAsMap(iterator interface {
 	})
 	return ret
 }
+
+// ClonePropertyFunc can be used in graph copy functions
+func ClonePropertyValueFunc(key string, value interface{}) interface{} {
+	if p, ok := value.(*PropertyValue); ok {
+		return p.Clone()
+	}
+	return value
+}

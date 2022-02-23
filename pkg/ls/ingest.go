@@ -44,6 +44,13 @@ type Ingester struct {
 	// If OnlySchemaAttributes is true, only ingest data points if there is a schema for it.
 	// If OnlySchemaAttributes is false, ingest whether or not there is a schema for it.
 	OnlySchemaAttributes bool
+
+	ExternalLookup func(lookupTableID string, dataNode graph.Node) (LookupResult, error)
+
+	// SchemaNodeMap is used to keep a mapping of schema nodes copied into the
+	// target graph. The key is a schema node. The value is the node in
+	// target graph. This is reset by Start().
+	SchemaNodeMap map[graph.Node]graph.Node
 }
 
 // NodePath contains the name components identifying a node. For JSON,
@@ -133,6 +140,7 @@ func (ingester *Ingester) Start(baseID string) (path NodePath, schemaRoot graph.
 		schemaRoot = ingester.Schema.GetSchemaRootNode()
 	}
 	ingester.NodePaths = make(map[graph.Node]NodePath)
+	ingester.SchemaNodeMap = make(map[graph.Node]graph.Node)
 	return
 }
 
@@ -451,10 +459,35 @@ func (ingester *Ingester) NewNode(g graph.Graph, path NodePath, schemaNode graph
 		types.Add(FilterNonLayerTypes(schemaNode.GetLabels().Slice())...)
 		node.SetLabels(types)
 		node.SetProperty(SchemaNodeIDTerm, StringPropertyValue(GetNodeID(schemaNode)))
+
+		pat := graph.Pattern{{
+			Labels:     graph.NewStringSet(AttributeNodeTerm),
+			Properties: map[string]interface{}{NodeIDTerm: GetNodeID(schemaNode)},
+		}}
+		acc := graph.DefaultMatchAccumulator{}
+		pat.Run(g, nil, &acc)
+		nodes := acc.GetHeadNodes()
 		if ingester.EmbedSchemaNodes {
 			ingester.EmbedSchemaNode(node, schemaNode)
+			// Copy the subtrees for all nodes connected to the schema node
+			for edges := schemaNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+				edge := edges.Edge()
+				if IsAttributeTreeEdge(edge) {
+					continue
+				}
+				graph.CopySubgraph(edge.GetTo(), g, ClonePropertyValueFunc, ingester.SchemaNodeMap)
+				g.NewEdge(node, ingester.SchemaNodeMap[edge.GetTo()], edge.GetLabel(), nil)
+			}
 		} else {
-			ingester.connect(node, schemaNode, InstanceOfTerm)
+			// Copy the schema node into this
+			// If the schema node already exists in the target graph, use it
+			if len(nodes) != 0 {
+				ingester.connect(node, nodes[0], InstanceOfTerm)
+			} else {
+				// Copy the subtree
+				graph.CopySubgraph(schemaNode, g, ClonePropertyValueFunc, ingester.SchemaNodeMap)
+				g.NewEdge(node, ingester.SchemaNodeMap[schemaNode], InstanceOfTerm, nil)
+			}
 		}
 	}
 	return node
@@ -507,13 +540,23 @@ func (ingester *Ingester) DefaultEntityNodeIDGenerationFunc(entity string, ID st
 // Finish ingesting by assigning node IDs and linking nodes to their
 // entity root nodes. If generateIDFunc is nil, the default ID
 // generation function is used
-func (ingester *Ingester) Finish(root graph.Node, generateIDFunc func(entity string, ID string, node graph.Node, path []graph.Node) string) {
+func (ingester *Ingester) Finish(root graph.Node, generateIDFunc func(entity string, ID string, node graph.Node, path []graph.Node) string) error {
 	if ingester.Schema != nil {
 		if generateIDFunc == nil {
 			generateIDFunc = ingester.DefaultEntityNodeIDGenerationFunc
 		}
 		AssignEntityIDs(root, generateIDFunc)
 	}
+	lpc := LookupProcessor{
+		Graph:          root.GetGraph(),
+		ExternalLookup: ingester.ExternalLookup,
+	}
+	for nodes := lpc.Graph.GetNodes(); nodes.Next(); {
+		if err := lpc.ProcessLookup(nodes.Node()); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // // AssignEntityRoots will iterate the document and assign entity roots to each node

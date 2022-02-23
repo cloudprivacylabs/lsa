@@ -512,9 +512,26 @@ type DefaultMatchAccumulator struct {
 	Symbols []map[string]interface{}
 }
 
-func (acc *DefaultMatchAccumulator) StoreResult(path interface{}, symbols map[string]interface{}) {
+func (acc *DefaultMatchAccumulator) StoreResult(_ *MatchContext, path interface{}, symbols map[string]interface{}) {
 	acc.Paths = append(acc.Paths, path)
 	acc.Symbols = append(acc.Symbols, symbols)
+}
+
+// Returns the unique nodes in the accumulator that start a path
+func (acc *DefaultMatchAccumulator) GetHeadNodes() []Node {
+	ret := make(map[Node]struct{})
+	for _, x := range acc.Paths {
+		if n, ok := x.(Node); ok {
+			ret[n] = struct{}{}
+		} else if e, ok := x.([]Edge); ok {
+			ret[e[0].GetFrom()] = struct{}{}
+		}
+	}
+	arr := make([]Node, 0, len(ret))
+	for x := range ret {
+		arr = append(arr, x)
+	}
+	return arr
 }
 
 func (plan MatchPlan) Run(graph Graph, symbols map[string]*PatternSymbol, result MatchAccumulator) error {

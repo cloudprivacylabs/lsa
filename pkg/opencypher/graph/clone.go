@@ -14,20 +14,32 @@
 
 package graph
 
+func copyLabels(in StringSet) []string {
+	srcLabels := in.Slice()
+	labels := make([]string, len(srcLabels))
+	copy(labels, srcLabels)
+	return labels
+}
+
+type withProperties interface {
+	ForEachProperty(func(string, interface{}) bool) bool
+}
+
+func copyProperties(in withProperties, cloneProperty func(string, interface{}) interface{}) map[string]interface{} {
+	properties := make(map[string]interface{})
+	in.ForEachProperty(func(key string, value interface{}) bool {
+		properties[key] = cloneProperty(key, value)
+		return true
+	})
+	return properties
+}
+
 // Copy a graph
 func CopyGraph(source, target Graph, clonePropertyFunc func(string, interface{}) interface{}) map[Node]Node {
 	nodeMap := make(map[Node]Node)
 	for nodes := source.GetNodes(); nodes.Next(); {
 		node := nodes.Node()
-		srcLabels := node.GetLabels().Slice()
-		labels := make([]string, len(srcLabels))
-		copy(labels, srcLabels)
-		properties := make(map[string]interface{})
-		node.ForEachProperty(func(key string, value interface{}) bool {
-			properties[key] = clonePropertyFunc(key, value)
-			return true
-		})
-		nodeMap[node] = target.NewNode(labels, properties)
+		nodeMap[node] = target.NewNode(copyLabels(node.GetLabels()), copyProperties(node, clonePropertyFunc))
 	}
 	for edges := source.GetEdges(); edges.Next(); {
 		edge := edges.Edge()
@@ -39,4 +51,27 @@ func CopyGraph(source, target Graph, clonePropertyFunc func(string, interface{})
 		target.NewEdge(nodeMap[edge.GetFrom()], nodeMap[edge.GetTo()], edge.GetLabel(), properties)
 	}
 	return nodeMap
+}
+
+// CopySubgraph copies all nodes that are accessible from sourceNode to the target graph
+func CopySubgraph(sourceNode Node, target Graph, clonePropertyFunc func(string, interface{}) interface{}, nodeMap map[Node]Node) {
+	if _, ok := nodeMap[sourceNode]; ok {
+		return
+	}
+	nodeMap[sourceNode] = CopyNode(sourceNode, target, clonePropertyFunc)
+	for edges := sourceNode.GetEdges(OutgoingEdge); edges.Next(); {
+		edge := edges.Edge()
+		CopySubgraph(edge.GetTo(), target, clonePropertyFunc, nodeMap)
+		CopyEdge(edge, target, clonePropertyFunc, nodeMap)
+	}
+}
+
+// CopyNode copies the sourceNode into target graph
+func CopyNode(sourceNode Node, target Graph, clonePropertyFunc func(string, interface{}) interface{}) Node {
+	return target.NewNode(copyLabels(sourceNode.GetLabels()), copyProperties(sourceNode, clonePropertyFunc))
+}
+
+// CopyEdge copies the edge into graph
+func CopyEdge(edge Edge, target Graph, clonePropertyFunc func(string, interface{}) interface{}, nodeMap map[Node]Node) Edge {
+	return target.NewEdge(nodeMap[edge.GetFrom()], nodeMap[edge.GetTo()], edge.GetLabel(), copyProperties(edge, clonePropertyFunc))
 }
