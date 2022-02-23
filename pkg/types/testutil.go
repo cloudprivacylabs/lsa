@@ -1,6 +1,7 @@
 package types
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -22,7 +23,7 @@ type getSetTestCase struct {
 func (tc getSetTestCase) run(t *testing.T) {
 	g := graph.NewOCGraph()
 	srcNode := g.NewNode(tc.srcTypes, tc.srcProperties)
-	ls.SetRawNodeValue(srcNode, tc.srcValue)
+	ls.SetRawNodeValue(srcNode, fmt.Sprint(tc.srcValue))
 	targetNode := g.NewNode(tc.targetTypes, tc.targetProperties)
 	v, err := ls.GetNodeValue(srcNode)
 	if err != nil {
@@ -51,9 +52,9 @@ func (tc getSetTestCase) run(t *testing.T) {
 		t.Errorf("Expecting set error, got none in %+v", tc)
 		return
 	}
-	if tc.expectedValue != ls.GetRawNodeValue(targetNode) {
+	if s, _ := ls.GetRawNodeValue(targetNode); s != tc.expectedValue {
 		t.Log(tc.name)
-		t.Errorf("Expecting %v got %v in %+v", tc.expectedValue, ls.GetRawNodeValue(targetNode), tc)
+		t.Errorf("Expecting %v got %v in %+v", tc.expectedValue, s, tc)
 	}
 }
 

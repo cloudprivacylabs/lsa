@@ -107,10 +107,7 @@ func (prc *LookupProcessor) processLookup(dataNode, schemaNode graph.Node) (bool
 	if len(lookupTableNodes) == 0 {
 		return false, nil
 	}
-	var value string
-	if v := GetRawNodeValue(dataNode); v != nil {
-		value = fmt.Sprint(v)
-	}
+	value, _ := GetRawNodeValue(dataNode)
 	results := make([]LookupResult, 0)
 	for _, ltNode := range lookupTableNodes {
 		if ltNode.GetLabels().Has(LookupTableReferenceTerm) {
@@ -123,14 +120,17 @@ func (prc *LookupProcessor) processLookup(dataNode, schemaNode graph.Node) (bool
 			if result.Matched {
 				results = append(results, result)
 			}
-		} else if ltNode.GetLabels().Has(LookupTableElementsTerm) {
+		} else {
 			// An internal reference
-			result, err := prc.processLookupNode(dataNode, ltNode, value)
-			if err != nil {
-				return true, err
-			}
-			if result.Matched {
-				results = append(results, result)
+			elements := graph.NextNodesWith(ltNode, LookupTableElementsTerm)
+			for _, e := range elements {
+				result, err := prc.processLookupNode(dataNode, e, value)
+				if err != nil {
+					return true, err
+				}
+				if result.Matched {
+					results = append(results, result)
+				}
 			}
 		}
 	}
@@ -139,7 +139,7 @@ func (prc *LookupProcessor) processLookup(dataNode, schemaNode graph.Node) (bool
 	}
 	setNewValue := func(newValue string) {
 		SetRawNodeValue(dataNode, newValue)
-		dataNode.SetProperty(RawInputValueTerm, value)
+		dataNode.SetProperty(RawInputValueTerm, StringPropertyValue(value))
 	}
 	if len(results) > 1 {
 		// How many non-default and default values?

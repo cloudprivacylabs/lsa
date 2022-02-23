@@ -467,7 +467,7 @@ func (XSDDateParser) GetNodeValue(node graph.Node) (interface{}, error) {
 // the value of the target node to an XSDDate
 func (XSDDateParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {
@@ -570,7 +570,7 @@ func (XSDDateTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
 
 func (XSDDateTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {
@@ -678,7 +678,7 @@ func (XSDTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
 
 func (XSDTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {
@@ -733,7 +733,7 @@ func (JSONDateParser) GetNodeValue(node graph.Node) (interface{}, error) {
 // the value of the target node to an JSONDate
 func (JSONDateParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {
@@ -840,7 +840,7 @@ func (JSONDateTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
 // "2006-01-02T11:11:11Z07:00" -> Note: uses a 24Hour based clock   "2006-01-02T11:11:11.999999999Z07:00"
 func (JSONDateTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {
@@ -910,7 +910,7 @@ func (JSONTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
 
 func (JSONTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {
@@ -985,7 +985,7 @@ func (PatternDateTimeParser) GetNodeValue(node graph.Node) (interface{}, error) 
 
 func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	var formatter interface{}
@@ -1121,7 +1121,7 @@ func (PatternDateParser) GetNodeValue(node graph.Node) (interface{}, error) {
 
 func (PatternDateParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	var formatter interface{}
@@ -1249,7 +1249,7 @@ func (PatternTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
 
 func (PatternTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	var formatter interface{}
@@ -1322,7 +1322,7 @@ func (XSDGDayParser) GetNodeValue(node graph.Node) (interface{}, error) {
 
 func (XSDGDayParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {
@@ -1366,7 +1366,7 @@ func (XSDGMonthParser) GetNodeValue(node graph.Node) (interface{}, error) {
 
 func (XSDGMonthParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {
@@ -1406,7 +1406,7 @@ func (XSDGMonthDayParser) GetNodeValue(node graph.Node) (interface{}, error) {
 
 func (XSDGMonthDayParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {
@@ -1452,7 +1452,7 @@ func (XSDGYearParser) GetNodeValue(node graph.Node) (interface{}, error) {
 
 func (XSDGYearParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {
@@ -1490,7 +1490,7 @@ func (XSDGYearMonthParser) GetNodeValue(node graph.Node) (interface{}, error) {
 
 func (XSDGYearMonthParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {
@@ -1542,7 +1542,7 @@ func (UnixTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
 
 func (UnixTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {
@@ -1604,7 +1604,7 @@ func (UnixTimeNanoParser) GetNodeValue(node graph.Node) (interface{}, error) {
 
 func (UnixTimeNanoParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {

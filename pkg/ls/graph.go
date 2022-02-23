@@ -57,14 +57,24 @@ func SetNodeID(node graph.Node, ID string) {
 }
 
 // GetRawNodeValue returns the unprocessed node value
-func GetRawNodeValue(node graph.Node) interface{} {
-	val, _ := node.GetProperty(NodeValueTerm)
-	return val
+func GetRawNodeValue(node graph.Node) (string, bool) {
+	pv := AsPropertyValue(node.GetProperty(NodeValueTerm))
+	if pv == nil {
+		return "", false
+	}
+	if !pv.IsString() {
+		return "", false
+	}
+	return pv.AsString(), true
+}
+
+func RemoveRawNodeValue(node graph.Node) {
+	node.RemoveProperty(NodeValueTerm)
 }
 
 // SetRawNodeValue sets the unprocessed node value
-func SetRawNodeValue(node graph.Node, value interface{}) {
-	node.SetProperty(NodeValueTerm, value)
+func SetRawNodeValue(node graph.Node, value string) {
+	node.SetProperty(NodeValueTerm, StringPropertyValue(value))
 }
 
 // GetNodeValue returns the field value processed by the schema type
@@ -76,7 +86,11 @@ func GetNodeValue(node graph.Node) (interface{}, error) {
 		return nil, err
 	}
 	if accessor == nil {
-		return GetRawNodeValue(node), nil
+		v, ok := GetRawNodeValue(node)
+		if !ok {
+			return nil, nil
+		}
+		return v, nil
 	}
 	return accessor.GetNodeValue(node)
 }

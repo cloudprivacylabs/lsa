@@ -73,7 +73,9 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 		return fmt.Errorf("%s: %s", graphname, err)
 	}
 	if !graph.CheckIsomorphism(got, expected, func(n1, n2 graph.Node) bool {
-		if ls.GetRawNodeValue(n1) != ls.GetRawNodeValue(n2) {
+		s1, _ := ls.GetRawNodeValue(n1)
+		s2, _ := ls.GetRawNodeValue(n2)
+		if s1 != s2 {
 			return false
 		}
 		if !ls.IsPropertiesEqual(ls.PropertiesAsMap(n1), ls.PropertiesAsMap(n2)) {

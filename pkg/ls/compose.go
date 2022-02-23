@@ -32,7 +32,7 @@ func (layer *Layer) Compose(source *Layer, context Context) error {
 			return ErrIncompatibleComposition
 		}
 	}
-
+	nodeMap := make(map[graph.Node]graph.Node)
 	var err error
 	// Process attributes of the source layer depth-first
 	// Compose the source attribute nodes with the target attribute nodes, ignoring any nodes attached to them
@@ -49,6 +49,17 @@ func (layer *Layer) Compose(source *Layer, context Context) error {
 				if err = mergeNodes(layer, targetNode, sourceNode, processedSourceNodes); err != nil {
 					return false
 				}
+				// Add any annotation subtrees
+				nodeMap[sourceNode] = targetNode
+				for edges := sourceNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+					edge := edges.Edge()
+					if IsAttributeTreeEdge(edge) {
+						continue
+					}
+					graph.CopySubgraph(edge.GetTo(), layer, ClonePropertyValueFunc, nodeMap)
+					graph.CopyEdge(edge, layer, ClonePropertyValueFunc, nodeMap)
+				}
+
 			}
 		} else {
 			// Target node does not exist.
@@ -64,7 +75,7 @@ func (layer *Layer) Compose(source *Layer, context Context) error {
 				return false
 			}
 
-			newNode := layer.NewNode(sourceNode.GetLabels().Slice(), CloneProperties(sourceNode))
+			newNode := CopySchemaNodeIntoGraph(layer, sourceNode)
 			for edges := sourceNode.GetEdges(graph.IncomingEdge); edges.Next(); {
 				edge := edges.Edge()
 				if edge.GetFrom() == parent {

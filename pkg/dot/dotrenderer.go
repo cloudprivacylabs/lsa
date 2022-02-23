@@ -159,10 +159,8 @@ func DocNodeRenderer(ID string, node graph.Node, options *Options) string {
 
 	io.WriteString(wr, "<TR>")
 	io.WriteString(wr, options.TD.String())
-	if ls.GetRawNodeValue(node) == nil {
-		io.WriteString(wr, "@value=null<br/>")
-	} else {
-		io.WriteString(wr, fmt.Sprintf("@value=%v<br/>", ls.GetRawNodeValue(node)))
+	if v, ok := ls.GetRawNodeValue(node); ok {
+		io.WriteString(wr, fmt.Sprintf("@value=%v<br/>", v))
 	}
 	node.ForEachProperty(func(k string, v interface{}) bool {
 		if pv, ok := v.(*ls.PropertyValue); ok {

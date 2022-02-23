@@ -40,8 +40,8 @@ func (validator EnumValidator) Validate(docNode, schemaNode graph.Node) error {
 	if docNode == nil {
 		return nil
 	}
-	value := ls.GetRawNodeValue(docNode)
-	if value == nil {
+	value, ok := ls.GetRawNodeValue(docNode)
+	if !ok {
 		return nil
 	}
 	options := ls.AsPropertyValue(schemaNode.GetProperty(EnumTerm))

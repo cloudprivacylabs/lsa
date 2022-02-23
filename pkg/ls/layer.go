@@ -304,3 +304,22 @@ func GetAttributeID(node graph.Node) string {
 func SetAttributeID(node graph.Node, ID string) {
 	node.SetProperty(NodeIDTerm, ID)
 }
+
+// CopySchemaNodeIntoGraph copies a schema node and the subtree under
+// it that does not belong the schema into the target graph
+func CopySchemaNodeIntoGraph(target graph.Graph, schemaNode graph.Node) graph.Node {
+	nodeMap := make(map[graph.Node]graph.Node)
+
+	newNode := graph.CopyNode(schemaNode, target, ClonePropertyValueFunc)
+	nodeMap[schemaNode] = newNode
+
+	for edges := schemaNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		edge := edges.Edge()
+		if IsAttributeTreeEdge(edge) {
+			continue
+		}
+		graph.CopySubgraph(edge.GetTo(), target, ClonePropertyValueFunc, nodeMap)
+		graph.CopyEdge(edge, target, ClonePropertyValueFunc, nodeMap)
+	}
+	return newNode
+}

@@ -110,8 +110,11 @@ func TestIngestFlat(t *testing.T) {
 		if len(nodes) == 0 {
 			t.Errorf("node not found: %s", nodeId)
 		}
-		if ls.GetRawNodeValue(nodes[0]) != expected {
-			t.Errorf("Wrong value for %s: %s", nodeId, ls.GetRawNodeValue(nodes[0]))
+		s, ok := ls.GetRawNodeValue(nodes[0])
+		if (expected == nil && ok) ||
+			(expected != nil && !ok) ||
+			(expected != nil && s != expected) {
+			t.Errorf("Wrong value for %s: %s", nodeId, s)
 		}
 	}
 	checkNodeValue("http://base.field1", "value1")
@@ -192,6 +195,7 @@ func TestIngestRootAnnotation(t *testing.T) {
 		nodes := []graph.Node{}
 		for nx := target.GetNodes(); nx.Next(); {
 			node := nx.Node()
+			t.Logf("%s", ls.GetNodeID(node))
 			if ls.GetNodeID(node) == nodeId {
 				nodes = append(nodes, node)
 			}
