@@ -89,7 +89,7 @@ func TestIngestFlat(t *testing.T) {
 		},
 	}
 	target := graph.NewOCGraph()
-	_, err = IngestBytes(&ingester, target, "http://base", []byte(inputStr))
+	_, err = IngestBytes(ls.DefaultContext(), &ingester, target, "http://base", []byte(inputStr))
 	if err != nil {
 		t.Error(err)
 	}
@@ -130,7 +130,7 @@ func TestIngestFlat(t *testing.T) {
 		},
 	}
 	target = graph.NewOCGraph()
-	_, err = IngestBytes(&ingester, target, "http://base", []byte(inputStr))
+	_, err = IngestBytes(ls.DefaultContext(), &ingester, target, "http://base", []byte(inputStr))
 	if err != nil {
 		t.Error(err)
 	}
@@ -186,7 +186,7 @@ func TestIngestRootAnnotation(t *testing.T) {
 		},
 	}
 	target := graph.NewOCGraph()
-	_, err = IngestBytes(&ingester, target, "http://base", []byte(inputStr))
+	_, err = IngestBytes(ls.DefaultContext(), &ingester, target, "http://base", []byte(inputStr))
 	if err != nil {
 		t.Error(err)
 	}
