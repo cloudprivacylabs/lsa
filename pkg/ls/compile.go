@@ -23,7 +23,7 @@ import (
 // A CompiledGraph is a graph of compiled schemas
 type CompiledGraph interface {
 	GetCompiledSchema(string) *Layer
-	PutCompiledSchema(string, *Layer) *Layer
+	PutCompiledSchema(string, *Layer, Context) *Layer
 	GetLayerNodes(string) []graph.Node
 	GetGraph() graph.Graph
 }
@@ -47,7 +47,7 @@ func (d DefaultCompiledGraph) GetCompiledSchema(ref string) *Layer {
 }
 
 // PutCompiledSchema adds the copy of the schema to the common graph
-func (d *DefaultCompiledGraph) PutCompiledSchema(ref string, layer *Layer) *Layer {
+func (d *DefaultCompiledGraph) PutCompiledSchema(ref string, layer *Layer, context Context) *Layer {
 	if d.layers == nil {
 		d.layers = make(map[string]*Layer)
 		d.layerNodes = make(map[string][]graph.Node)
@@ -107,7 +107,7 @@ func (compiler Compiler) loadSchema(ctx *compilerContext, ref string) (*Layer, e
 
 // Compile compiles the schema by resolving all references and
 // building all compositions.
-func (compiler *Compiler) Compile(ref string) (*Layer, error) {
+func (compiler *Compiler) Compile(ref string, context Context) (*Layer, error) {
 	ctx := &compilerContext{
 		loadedSchemas: make(map[string]*Layer),
 	}
@@ -115,7 +115,7 @@ func (compiler *Compiler) Compile(ref string) (*Layer, error) {
 }
 
 // CompileSchema compiles the loaded schema
-func (compiler *Compiler) CompileSchema(schema *Layer) (*Layer, error) {
+func (compiler *Compiler) CompileSchema(schema *Layer, context Context) (*Layer, error) {
 	ctx := &compilerContext{
 		loadedSchemas: map[string]*Layer{schema.GetID(): schema},
 	}
@@ -124,7 +124,7 @@ func (compiler *Compiler) CompileSchema(schema *Layer) (*Layer, error) {
 
 // RecompileSchema uses the cache to resolve the references of the
 // schema, but does not put the schema back into the cache
-func (compiler *Compiler) RecompileSchema(schema *Layer) (*Layer, error) {
+func (compiler *Compiler) RecompileSchema(schema *Layer, context Context) (*Layer, error) {
 	ctx := &compilerContext{
 		loadedSchemas: map[string]*Layer{schema.GetID(): schema},
 		doNotCache:    schema,
@@ -182,7 +182,7 @@ func (compiler *Compiler) compileRefs(ctx *compilerContext, ref string) (*Layer,
 
 	// Resolve all references
 	if schema != ctx.doNotCache {
-		schema = compiler.CGraph.PutCompiledSchema(ref, schema)
+		schema = compiler.CGraph.PutCompiledSchema(ref, schema, *DefaultContext())
 	}
 	schemaNodes := compiler.CGraph.GetLayerNodes(ref)
 	for _, node := range schemaNodes {
@@ -233,7 +233,7 @@ func (compiler *Compiler) resolveReference(ctx *compilerContext, layer *Layer, n
 	types.Add(rootNode.GetLabels().Slice()...)
 	node.SetLabels(types)
 	// Compose the properties of the compiled root node with the referenced node
-	if err := ComposeProperties(node, rootNode); err != nil {
+	if err := ComposeProperties(node, rootNode, *DefaultContext()); err != nil {
 		return err
 	}
 	// Attach the node to all the children of the compiled node
@@ -285,7 +285,7 @@ func (compiler Compiler) resolveComposition(compositeNode graph.Node, completed 
 				e.Remove()
 			}
 			// Copy all properties of the component node to the composite node
-			if err := ComposeProperties(compositeNode, component); err != nil {
+			if err := ComposeProperties(compositeNode, component, *DefaultContext()); err != nil {
 				return err
 			}
 			// Copy all types

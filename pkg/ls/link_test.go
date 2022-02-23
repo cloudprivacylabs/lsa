@@ -41,7 +41,7 @@ func TestBasicLink(t *testing.T) {
 			return nil, fmt.Errorf("Not found: %s", ref)
 		},
 	}
-	layer, err := compiler.Compile(schemas[2].GetID())
+	layer, err := compiler.Compile(schemas[2].GetID(), *DefaultContext())
 	if err != nil {
 		t.Error(err)
 		return
@@ -53,35 +53,35 @@ func TestBasicLink(t *testing.T) {
 		EmbedSchemaNodes: true,
 	}
 
-	path, _ := ingester.Start("root")
+	path, _ := ingester.Start("root", *DefaultContext())
 	g := graph.NewOCGraph()
 
 	var docRoot1 graph.Node
 	{
 		attr, _ := layer.FindAttributeByID("https://test_root.id")
-		node, _ := ingester.Value(g, path.AppendString("id2"), attr, "abc")
+		node, _ := ingester.Value(g, path.AppendString("id2"), attr, "abc", *DefaultContext())
 		rootNode, _ := layer.FindAttributeByID("http://ref1")
-		docRoot1, _ = ingester.Object(g, path.AppendString("second"), rootNode, []graph.Node{node})
+		docRoot1, _ = ingester.Object(g, path.AppendString("second"), rootNode, []graph.Node{node}, *DefaultContext())
 	}
 	var docRoot2 graph.Node
 	{
 		attr, _ := layer.FindAttributeByID("https://test_ref")
-		node, _ := ingester.Value(g, path.AppendString("id1"), attr, "abc")
+		node, _ := ingester.Value(g, path.AppendString("id1"), attr, "abc", *DefaultContext())
 		rootNode, _ := layer.FindAttributeByID("http://ref2")
-		docRoot2, _ = ingester.Object(g, path.AppendString("first"), rootNode, []graph.Node{node})
+		docRoot2, _ = ingester.Object(g, path.AppendString("first"), rootNode, []graph.Node{node}, *DefaultContext())
 	}
 	var arr1, arr2 graph.Node
 	{
 		attr, _ := layer.FindAttributeByID("https://type1")
-		arr1, _ = ingester.Array(g, path.AppendString("arr1"), attr, []graph.Node{docRoot1})
+		arr1, _ = ingester.Array(g, path.AppendString("arr1"), attr, []graph.Node{docRoot1}, *DefaultContext())
 	}
 	{
 		attr, _ := layer.FindAttributeByID("https://type2")
-		arr2, _ = ingester.Array(g, path.AppendString("arr2"), attr, []graph.Node{docRoot2})
+		arr2, _ = ingester.Array(g, path.AppendString("arr2"), attr, []graph.Node{docRoot2}, *DefaultContext())
 	}
 
-	root, _ := ingester.Object(g, path.AppendString("rt"), layer.GetSchemaRootNode(), []graph.Node{arr1, arr2})
-	ingester.Finish(root, nil)
+	root, _ := ingester.Object(g, path.AppendString("rt"), layer.GetSchemaRootNode(), []graph.Node{arr1, arr2}, *DefaultContext())
+	ingester.Finish(root, nil, *DefaultContext())
 
 	linkSpecs := GetAllLinkSpecs(root)
 	// There must be one

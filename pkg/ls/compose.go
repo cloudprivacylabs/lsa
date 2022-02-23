@@ -20,7 +20,7 @@ import (
 
 // Compose schema layers. Directly modifies the source and the
 // target. The source must be an overlay.
-func (layer *Layer) Compose(source *Layer) error {
+func (layer *Layer) Compose(source *Layer, context Context) error {
 	if source.GetLayerType() != OverlayTerm {
 		return ErrCompositionSourceNotOverlay
 	}
@@ -91,14 +91,14 @@ func mergeNodes(targetLayer *Layer, target, source graph.Node, processedSourceNo
 		return nil
 	}
 
-	if err := ComposeProperties(target, source); err != nil {
+	if err := ComposeProperties(target, source, *DefaultContext()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // ComposeProperty composes targetValue and sourceValue for key
-func ComposeProperty(key string, targetValue, sourceValue *PropertyValue) (*PropertyValue, error) {
+func ComposeProperty(key string, targetValue, sourceValue *PropertyValue, context Context) (*PropertyValue, error) {
 	newValue := targetValue
 	newValue, err := GetComposerForTerm(key).Compose(newValue, sourceValue)
 	if err != nil {
@@ -109,13 +109,13 @@ func ComposeProperty(key string, targetValue, sourceValue *PropertyValue) (*Prop
 
 // ComposeProperties will combine the properties in source to
 // target. The target properties will be modified directly
-func ComposeProperties(target, source graph.Node) error {
+func ComposeProperties(target, source graph.Node, context Context) error {
 	var retErr error
 	source.ForEachProperty(func(key string, value interface{}) bool {
 		if p, ok := value.(*PropertyValue); ok {
 			tp, _ := target.GetProperty(key)
 			targetProperty, _ := tp.(*PropertyValue)
-			newValue, err := ComposeProperty(key, targetProperty, p)
+			newValue, err := ComposeProperty(key, targetProperty, p, context)
 			if err != nil {
 				retErr = err
 				return false

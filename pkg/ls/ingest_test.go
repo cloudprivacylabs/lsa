@@ -56,7 +56,7 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 	root.SetProperty(EdgeLabelTerm, &PropertyValue{value: "attr3"})
 
 	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, PreserveNodePaths: true, NodePaths: tc.NodePaths}
-	en, err := ing.ValueAsEdge(schema.Graph, tc.Path, root, "VAUs", AttributeTypeValue)
+	en, err := ing.ValueAsEdge(schema.Graph, tc.Path, root, "VAUs", *DefaultContext(), AttributeTypeValue)
 	if err != nil {
 		t.Errorf("ingest err: %v", err)
 		return
@@ -71,7 +71,7 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 	}
 	root.RemoveProperty(EdgeLabelTerm)
 	root.SetProperty(AttributeNameTerm, &PropertyValue{value: "attr1"})
-	en, err = ing.ValueAsEdge(schema.Graph, tc.Path, root, "OTHERVALUE", AttributeTypeValue)
+	en, err = ing.ValueAsEdge(schema.Graph, tc.Path, root, "OTHERVALUE", *DefaultContext(), AttributeTypeValue)
 	if err != nil {
 		t.Errorf("ingest err: %v", err)
 		return
@@ -111,7 +111,7 @@ func (tc ingestTest) testObjectAsEdge(t *testing.T) {
 			childEdgeNodes = append(childEdgeNodes, EdgeNode{Node: ix.Node(), Label: label.(*PropertyValue).AsString(), Properties: make(map[string]interface{})})
 		}
 	}
-	en, err := ing.ObjectAsEdge(schema.Graph, tc.Path, root, childNodes, childEdgeNodes, ObjectAttributeListTerm)
+	en, err := ing.ObjectAsEdge(schema.Graph, tc.Path, root, childNodes, childEdgeNodes, *DefaultContext(), ObjectAttributeListTerm)
 	if err != nil {
 		t.Error(err)
 	}
@@ -173,7 +173,7 @@ func (tc ingestTest) TestArrayAsEdge(t *testing.T) {
 			childEdgeNodes = append(childEdgeNodes, EdgeNode{Node: ix.Node(), Label: label.(*PropertyValue).AsString(), Properties: make(map[string]interface{})})
 		}
 	}
-	en, err := ing.ArrayAsEdge(schema.Graph, tc.Path, root, childNodes, childEdgeNodes, AttributeTypeArray)
+	en, err := ing.ArrayAsEdge(schema.Graph, tc.Path, root, childNodes, childEdgeNodes, *DefaultContext(), AttributeTypeArray)
 	if err != nil {
 		t.Error(err)
 	}
