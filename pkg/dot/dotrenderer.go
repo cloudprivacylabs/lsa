@@ -73,6 +73,44 @@ type TableCellOptions struct {
 	Style       string              `dot:"STYLE"`
 	Target      string              `dot:"TARGET"`
 	Valign      VerticalAlignment   `dot:"VALIGN"`
+	Font        FontConfig
+}
+
+type FontConfig struct {
+	Face  string
+	Size  int
+	Color string
+}
+
+func (f FontConfig) String() string {
+	ret := ""
+	if len(f.Face) > 0 {
+		ret += fmt.Sprintf(" fontname=\"%s\" ", f.Face)
+	}
+	if f.Size > 0 {
+		ret += fmt.Sprintf(" fontsize=\"%d\" ", f.Size)
+	}
+	if len(f.Color) > 0 {
+		ret += fmt.Sprintf(" fontcolor=\"%s\" ", f.Color)
+	}
+	return ret
+}
+
+func (f FontConfig) Write(s string) string {
+	if len(f.Face) == 0 && f.Size == 0 && len(f.Color) == 0 {
+		return s
+	}
+	out := "<font "
+	if len(f.Face) > 0 {
+		out += fmt.Sprintf("face=\"%s\" ", f.Face)
+	}
+	if f.Size > 0 {
+		out += fmt.Sprintf("point-size=\"%d\" ", f.Size)
+	}
+	if len(f.Color) > 0 {
+		out += fmt.Sprintf("color=\"%s\" ", f.Color)
+	}
+	return out + ">" + s + "</font>"
 }
 
 func buildOptions(data interface{}) []string {
@@ -102,75 +140,61 @@ func (t TableCellOptions) String() string {
 	return "<TD " + strings.Join(buildOptions(t), " ") + ">"
 }
 
+type EdgeOptions struct {
+	Font  FontConfig
+	Color string
+}
+
+func (e EdgeOptions) String() string {
+	ret := e.Font.String()
+	if len(e.Color) > 0 {
+		ret += fmt.Sprintf(" color=\"%s\" ", e.Color)
+	}
+	return ret
+}
+
 type Options struct {
-	Table TableOptions
-	TD    TableCellOptions
+	Font  FontConfig
+	Color string
+
+	Table      TableOptions
+	Labels     TableCellOptions
+	Properties TableCellOptions
+	Edges      EdgeOptions
+}
+
+var DefaultFontConfig = FontConfig{
+	Face:  "Courier",
+	Size:  10,
+	Color: "gray20",
 }
 
 func DefaultOptions() Options {
 	return Options{
+		Font:  DefaultFontConfig,
+		Color: "gray20",
 		Table: TableOptions{
 			CellSpacing: "0",
 			Border:      "0",
+			Color:       "gray20",
 		},
-		TD: TableCellOptions{
+		Labels: TableCellOptions{
 			Border: "1",
+			Align:  "CENTER",
+			Color:  "gray20",
+			Font:   DefaultFontConfig,
+		},
+		Properties: TableCellOptions{
+			Border:      "1",
+			Balign:      "LEFT",
+			CellPadding: "5",
+			Font:        DefaultFontConfig,
+		},
+		Edges: EdgeOptions{
+			Font:  DefaultFontConfig,
+			Color: "gray20",
 		},
 	}
-}
-
-// SchemaNodeRenderer renders the node as an HTML table
-func SchemaNodeRenderer(ID string, node graph.Node, options *Options) string {
-	to := options.Table
-	to.ID = ID
-	wr := &bytes.Buffer{}
-	io.WriteString(wr, fmt.Sprintf("%s [shape=plaintext label=<", ID))
-	io.WriteString(wr, to.String())
-
-	io.WriteString(wr, "<TR>")
-	io.WriteString(wr, options.TD.String())
-	io.WriteString(wr, ls.GetNodeID(node))
-	io.WriteString(wr, "</TD></TR>")
-
-	io.WriteString(wr, "<TR>")
-	io.WriteString(wr, options.TD.String())
-	node.ForEachProperty(func(k string, v interface{}) bool {
-		if pv, ok := v.(*ls.PropertyValue); ok {
-			io.WriteString(wr, fmt.Sprintf("%s=%v<br/>", k, pv))
-		}
-		return true
-	})
-	io.WriteString(wr, "</TD></TR></TABLE>>];\n")
-	return wr.String()
-}
-
-func DocNodeRenderer(ID string, node graph.Node, options *Options) string {
-	to := options.Table
-	to.ID = ID
-	wr := &bytes.Buffer{}
-	io.WriteString(wr, fmt.Sprintf("%s [shape=plaintext label=<", ID))
-	io.WriteString(wr, to.String())
-
-	io.WriteString(wr, "<TR>")
-	io.WriteString(wr, options.TD.String())
-	io.WriteString(wr, ls.GetNodeID(node))
-
-	io.WriteString(wr, "</TD></TR>")
-
-	io.WriteString(wr, "<TR>")
-	io.WriteString(wr, options.TD.String())
-	if v, ok := ls.GetRawNodeValue(node); ok {
-		io.WriteString(wr, fmt.Sprintf("@value=%v<br/>", v))
-	}
-	node.ForEachProperty(func(k string, v interface{}) bool {
-		if pv, ok := v.(*ls.PropertyValue); ok {
-			io.WriteString(wr, fmt.Sprintf("%s=%v<br/>", k, pv))
-		}
-		return true
-	})
-	io.WriteString(wr, "</TD></TR>")
-	io.WriteString(wr, "</TABLE>>];\n")
-	return wr.String()
 }
 
 type Renderer struct {
@@ -179,30 +203,95 @@ type Renderer struct {
 	EdgeSelectorFunc func(graph.Edge) bool
 }
 
-func (r Renderer) NodeRenderer(ID string, n graph.Node, wr io.Writer) (bool, error) {
-	node := n.(graph.Node)
-	if r.NodeSelectorFunc != nil && !r.NodeSelectorFunc(node) {
-		return false, nil
+func (r Renderer) NodeRenderer(ID string, node graph.Node, wr io.Writer) (bool, error) {
+	to := r.Options.Table
+	to.ID = ID
+	io.WriteString(wr, fmt.Sprintf("%s [shape=plaintext label=<", ID))
+	io.WriteString(wr, to.String())
+
+	io.WriteString(wr, "<TR>")
+	io.WriteString(wr, r.Options.Labels.String())
+	lbl := bytes.Buffer{}
+	for l := range node.GetLabels() {
+		io.WriteString(&lbl, ":")
+		io.WriteString(&lbl, l)
 	}
-	if node.GetLabels().Has(ls.AttributeNodeTerm) {
-		_, err := io.WriteString(wr, SchemaNodeRenderer(ID, node, &r.Options))
-		return true, err
+	io.WriteString(wr, r.Options.Labels.Font.Write(lbl.String()))
+	io.WriteString(wr, "</TD></TR>")
+
+	io.WriteString(wr, "<TR>")
+	io.WriteString(wr, r.Options.Properties.String())
+
+	if id := ls.GetNodeID(node); len(id) > 0 {
+		io.WriteString(wr, r.Options.Properties.Font.Write("id="+id)+"<br/>")
 	}
-	if node.GetLabels().Has(ls.DocumentNodeTerm) {
-		_, err := io.WriteString(wr, DocNodeRenderer(ID, node, &r.Options))
-		return true, err
+	node.ForEachProperty(func(k string, v interface{}) bool {
+		if pv, ok := v.(*ls.PropertyValue); ok {
+			io.WriteString(wr, r.Options.Properties.Font.Write(fmt.Sprintf("%s=%v", k, pv))+"<br/>")
+		}
+		return true
+	})
+	io.WriteString(wr, "</TD></TR></TABLE>>];\n")
+	return true, nil
+}
+
+func (r Renderer) renderEdge(fromNode, toNode string, edge graph.Edge, w io.Writer) error {
+	lbl := edge.GetLabel()
+	if len(lbl) != 0 {
+		if _, err := fmt.Fprintf(w, "  %s -> %s [label=\"%s\" %s];\n", fromNode, toNode, lbl, r.Options.Edges); err != nil {
+			return err
+		}
+	} else {
+		if _, err := fmt.Fprintf(w, "  %s -> %s;\n", fromNode, toNode); err != nil {
+			return err
+		}
 	}
-	return true, graph.DefaultDOTNodeRender(ID, node, wr)
+	return nil
 }
 
 func (r Renderer) EdgeRenderer(fromID, toID string, edge graph.Edge, w io.Writer) (bool, error) {
 	if r.EdgeSelectorFunc == nil || r.EdgeSelectorFunc(edge) {
-		return true, graph.DefaultDOTEdgeRender(fromID, toID, edge, w)
+		return true, r.renderEdge(fromID, toID, edge, w)
 	}
 	return false, nil
 }
 
 func (r Renderer) Render(g graph.Graph, graphName string, out io.Writer) error {
 	dr := graph.DOTRenderer{NodeRenderer: r.NodeRenderer, EdgeRenderer: r.EdgeRenderer}
-	return dr.Render(g, graphName, out)
+	if _, err := fmt.Fprintf(out, "digraph %s {\n", graphName); err != nil {
+		return err
+	}
+	if _, err := fmt.Fprintf(out, "rankdir=\"LR\";\n"); err != nil {
+		return err
+	}
+
+	if len(r.Options.Font.Face) > 0 {
+		if _, err := fmt.Fprintf(out, "fontname=\"%s\";\n", r.Options.Font.Face); err != nil {
+			return err
+		}
+	}
+	if len(r.Options.Font.Color) > 0 {
+		if _, err := fmt.Fprintf(out, "fontcolor=\"%s\";\n", r.Options.Font.Color); err != nil {
+			return err
+		}
+	}
+	if r.Options.Font.Size > 0 {
+		if _, err := fmt.Fprintf(out, "fontsize=\"%d\";\n", r.Options.Font.Size); err != nil {
+			return err
+		}
+	}
+	if len(r.Options.Color) > 0 {
+		if _, err := fmt.Fprintf(out, "color=\"%s\";\n", r.Options.Color); err != nil {
+			return err
+		}
+	}
+
+	if err := dr.RenderNodesEdges(g, out); err != nil {
+		return err
+	}
+
+	if _, err := fmt.Fprintf(out, "}\n"); err != nil {
+		return err
+	}
+	return nil
 }
