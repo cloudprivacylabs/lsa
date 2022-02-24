@@ -95,7 +95,7 @@ func TestIngest(t *testing.T) {
 	ingester.OnlySchemaAttributes = false
 	target := graph.NewOCGraph()
 	for idx, tt := range inputStrColData {
-		_, err := ingester.Ingest(target, tt, "https://www.example.com/id")
+		_, err := ingester.Ingest(ls.DefaultContext(), target, tt, "https://www.example.com/id")
 		nodesRow := make([][]string, 0, len(inputStrColData))
 		require.NoError(t, err)
 		const nodeID = "https://www.example.com/id"
@@ -119,7 +119,7 @@ func TestIngest(t *testing.T) {
 	ingester.OnlySchemaAttributes = true
 	target = graph.NewOCGraph()
 	for idx, tt := range inputStrColData {
-		_, err := ingester.Ingest(target, tt, "https://www.example.com/id")
+		_, err := ingester.Ingest(ls.DefaultContext(), target, tt, "https://www.example.com/id")
 		nodesRow := make([][]string, 0, len(inputStrColData))
 		require.NoError(t, err)
 		const nodeID = "https://www.example.com/id"

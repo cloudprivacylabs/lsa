@@ -65,7 +65,7 @@ func (tc testCase) Run(t *testing.T) {
 	reshaper.EmbedSchemaNodes = true
 	reshaper.Schema = targetLayer
 	resultGraph := graph.NewOCGraph()
-	err = reshaper.Reshape(sourceGraph, resultGraph)
+	err = reshaper.Reshape(ls.DefaultContext(), sourceGraph, resultGraph)
 	if err != nil {
 		t.Errorf("Test case: %s Reshaper error: %v", tc.Name, err)
 		return

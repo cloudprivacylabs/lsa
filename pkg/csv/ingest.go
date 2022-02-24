@@ -38,11 +38,11 @@ type propertyValueItem struct {
 // Ingest a row of CSV data. The `data` slice is a row of data. The ID
 // is the assigned identifier for the resulting object. ID is empty,
 // IDs are assigned based on schema-dictated identifiers.
-func (ingester Ingester) Ingest(targetGraph graph.Graph, data []string, ID string) (graph.Node, error) {
+func (ingester Ingester) Ingest(context *ls.Context, targetGraph graph.Graph, data []string, ID string) (graph.Node, error) {
 	ingester.PreserveNodePaths = true
-	path, schemaRoot := ingester.Start(ID)
+	path, schemaRoot := ingester.Start(context, ID)
 	// Retrieve map of schema attribute nodes from schemaRoot
-	attributes, err := ingester.GetObjectAttributeNodes(schemaRoot)
+	attributes, err := ingester.GetObjectAttributeNodes(context, schemaRoot)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func (ingester Ingester) Ingest(targetGraph graph.Graph, data []string, ID strin
 			})
 		} else if schemaNode != nil || !ingester.OnlySchemaAttributes {
 			// create a new value node only if there is a matching schema node
-			newNode, err := ingester.Value(targetGraph, newPath, schemaNode, columnData)
+			newNode, err := ingester.Value(context, targetGraph, newPath, schemaNode, columnData)
 			if err != nil {
 				return nil, err
 			}
@@ -106,7 +106,7 @@ func (ingester Ingester) Ingest(targetGraph graph.Graph, data []string, ID strin
 	}
 
 	// create a new object node
-	retNode, err := ingester.Object(targetGraph, path, schemaRoot, children)
+	retNode, err := ingester.Object(context, targetGraph, path, schemaRoot, children)
 	if err != nil {
 		return nil, err
 	}
@@ -129,6 +129,6 @@ func (ingester Ingester) Ingest(targetGraph graph.Graph, data []string, ID strin
 		}
 		parentNode.SetProperty(pv.name, ls.StringPropertyValue(pv.value))
 	}
-	ingester.Finish(retNode, nil)
+	ingester.Finish(context, retNode, nil)
 	return retNode, nil
 }

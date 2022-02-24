@@ -56,7 +56,7 @@ var reshapeCmd = &cobra.Command{
 		reshaper.Schema = layer
 		reshaper.EmbedSchemaNodes = true
 		target := graph.NewOCGraph()
-		err = reshaper.Reshape(g, target)
+		err = reshaper.Reshape(ls.DefaultContext(), g, target)
 		if err != nil {
 			failErr(err)
 		}

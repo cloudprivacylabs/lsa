@@ -54,7 +54,7 @@ var compileCmd = &cobra.Command{
 		if repo != nil {
 			var err error
 			logf("Loading composed schema for %s", schemaName)
-			layer, err = repo.GetComposedSchema(schemaName)
+			layer, err = repo.GetComposedSchema(ls.DefaultContext(), schemaName)
 			if err != nil {
 				failErr(err)
 			}
@@ -64,11 +64,11 @@ var compileCmd = &cobra.Command{
 					if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
 						x = manifest.ID
 					}
-					return repo.LoadAndCompose(x)
+					return repo.LoadAndCompose(ls.DefaultContext(), x)
 				},
 			}
 			logf("Compiling schema %s", schemaName)
-			layer, err = compiler.Compile(schemaName)
+			layer, err = compiler.Compile(ls.DefaultContext(), schemaName)
 			if err != nil {
 				failErr(err)
 			}
@@ -91,7 +91,7 @@ var compileCmd = &cobra.Command{
 					return nil, fmt.Errorf("Not found")
 				},
 			}
-			layer, err = compiler.Compile(schemaName)
+			layer, err = compiler.Compile(ls.DefaultContext(), schemaName)
 			if err != nil {
 				failErr(err)
 			}

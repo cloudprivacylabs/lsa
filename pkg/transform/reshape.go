@@ -113,8 +113,8 @@ func (p *ReshapeContext) exportVar(name string, values []opencypher.Value) {
 
 // Reshape builds a new graph in a shape that conforms to a target
 // schema using the source graph
-func (reshaper *Reshaper) Reshape(sourceGraph, targetGraph graph.Graph) error {
-	np, root := reshaper.Start("")
+func (reshaper *Reshaper) Reshape(lsContext *ls.Context, sourceGraph, targetGraph graph.Graph) error {
+	np, root := reshaper.Start(lsContext, "")
 	ctx := ReshapeContext{
 		schemaPath:  []graph.Node{root},
 		sourceGraph: sourceGraph,
@@ -122,11 +122,11 @@ func (reshaper *Reshaper) Reshape(sourceGraph, targetGraph graph.Graph) error {
 		symbols:     make(map[string]opencypher.Value),
 	}
 
-	_, err := reshaper.reshape(&ctx, np)
+	_, err := reshaper.reshape(lsContext, &ctx, np)
 	return err
 }
 
-func (reshaper *Reshaper) reshape(context *ReshapeContext, nodepath ls.NodePath) ([]graph.Node, error) {
+func (reshaper *Reshaper) reshape(lsContext *ls.Context, context *ReshapeContext, nodepath ls.NodePath) ([]graph.Node, error) {
 	schemaNode := context.CurrentSchemaNode()
 	// Nested context to keep symbols available to the nodes connected to this one
 	context = context.nestedContext()
@@ -158,9 +158,9 @@ func (reshaper *Reshaper) reshape(context *ReshapeContext, nodepath ls.NodePath)
 	var ret []graph.Node
 	switch {
 	case schemaNode.GetLabels().Has(ls.AttributeTypeValue):
-		ret, err = reshaper.value(context, nativeValues, nodepath)
+		ret, err = reshaper.value(lsContext, context, nativeValues, nodepath)
 	case schemaNode.GetLabels().Has(ls.AttributeTypeObject):
-		ret, err = reshaper.object(context, nativeValues, nodepath)
+		ret, err = reshaper.object(lsContext, context, nativeValues, nodepath)
 	case schemaNode.GetLabels().Has(ls.AttributeTypeArray):
 	case schemaNode.GetLabels().Has(ls.AttributeTypePolymorphic):
 	default:
@@ -178,7 +178,7 @@ func (reshaper *Reshaper) reshape(context *ReshapeContext, nodepath ls.NodePath)
 	return ret, nil
 }
 
-func (reshaper *Reshaper) object(context *ReshapeContext, values []namedValue, np ls.NodePath) ([]graph.Node, error) {
+func (reshaper *Reshaper) object(lsContext *ls.Context, context *ReshapeContext, values []namedValue, np ls.NodePath) ([]graph.Node, error) {
 	schemaNode := context.CurrentSchemaNode()
 	attributes := graph.TargetNodes(ls.SortEdgesItr(schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.ObjectAttributesTerm)))
 	attributes = append(attributes, graph.TargetNodes(ls.SortEdgesItr(schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.ObjectAttributeListTerm)))...)
@@ -189,7 +189,7 @@ func (reshaper *Reshaper) object(context *ReshapeContext, values []namedValue, n
 			schemaAttribute := a.(graph.Node)
 			context.schemaPath = append(context.schemaPath, schemaAttribute)
 			name := ls.AsPropertyValue(schemaAttribute.GetProperty(ls.AttributeNameTerm)).AsString()
-			newNode, err := reshaper.reshape(context, np.AppendString(name))
+			newNode, err := reshaper.reshape(lsContext, context, np.AppendString(name))
 			context.schemaPath = context.schemaPath[:len(context.schemaPath)-1]
 			if err != nil {
 				return nil, err
@@ -207,7 +207,7 @@ func (reshaper *Reshaper) object(context *ReshapeContext, values []namedValue, n
 			}
 		}
 
-		return reshaper.Object(context.targetGraph, np, schemaNode, children)
+		return reshaper.Object(lsContext, context.targetGraph, np, schemaNode, children)
 	}
 
 	if values == nil {
@@ -234,7 +234,7 @@ func (reshaper *Reshaper) object(context *ReshapeContext, values []namedValue, n
 	return ret, nil
 }
 
-func (reshaper *Reshaper) value(context *ReshapeContext, values []namedValue, np ls.NodePath) ([]graph.Node, error) {
+func (reshaper *Reshaper) value(lsContext *ls.Context, context *ReshapeContext, values []namedValue, np ls.NodePath) ([]graph.Node, error) {
 	schemaNode := context.CurrentSchemaNode()
 	empty := true
 	var nodeValue interface{}
@@ -273,7 +273,7 @@ func (reshaper *Reshaper) value(context *ReshapeContext, values []namedValue, np
 	if empty {
 		return nil, nil
 	}
-	node, err := reshaper.Value(context.targetGraph, np, schemaNode, nodeValue)
+	node, err := reshaper.Value(lsContext, context.targetGraph, np, schemaNode, nodeValue)
 	if err != nil {
 		return nil, err
 	}

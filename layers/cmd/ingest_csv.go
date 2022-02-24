@@ -113,7 +113,7 @@ var ingestCSVCmd = &cobra.Command{
 				if err := idTmp.Execute(&buf, templateData); err != nil {
 					failErr(err)
 				}
-				_, err := ingester.Ingest(target, rowData, strings.TrimSpace(buf.String()))
+				_, err := ingester.Ingest(ls.DefaultContext(), target, rowData, strings.TrimSpace(buf.String()))
 				if err != nil {
 					failErr(err)
 				}

@@ -47,7 +47,7 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 			return fmt.Errorf("%s: %w", schemaName, err)
 		}
 		c := ls.Compiler{}
-		layer, err = c.CompileSchema(layer)
+		layer, err = c.CompileSchema(ls.DefaultContext(), layer)
 		if err != nil {
 			return fmt.Errorf("%s: %w", schemaName, err)
 		}
@@ -58,7 +58,7 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 	ingester.Schema = schema
 	ingester.EmbedSchemaNodes = true
 	got := graph.NewOCGraph()
-	_, err = IngestStream(ingester, got, "a", f)
+	_, err = IngestStream(ls.DefaultContext(), ingester, got, "a", f)
 	if err != nil {
 		return fmt.Errorf("%s: %w", xmlname, err)
 	}

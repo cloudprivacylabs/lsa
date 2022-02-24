@@ -74,7 +74,7 @@ var ingestXMLCmd = &cobra.Command{
 
 		baseID, _ := cmd.Flags().GetString("id")
 		target := graph.NewOCGraph()
-		_, err = xmlingest.IngestStream(&ingester, target, baseID, input)
+		_, err = xmlingest.IngestStream(ls.DefaultContext(), &ingester, target, baseID, input)
 		if err != nil {
 			failErr(err)
 		}
