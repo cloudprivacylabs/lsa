@@ -11,7 +11,7 @@ type Context struct {
 
 func (ctx *Context) GetLogger() Logger {
 	if ctx.logger == nil {
-		return &NopLogger{}
+		return &nopLogger{}
 	}
 	return ctx.logger
 }

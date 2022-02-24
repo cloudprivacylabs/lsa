@@ -65,7 +65,7 @@ func IngestStream(context *ls.Context, ingester *Ingester, targetGraph graph.Gra
 // used if the schema does not explicitly specify an ID
 func (ingester *Ingester) Ingest(context *ls.Context, targetGraph graph.Graph, baseID string, input jsonom.Node) (graph.Node, error) {
 	ingester.PreserveNodePaths = true
-	path, root := ingester.Start(ls.DefaultContext(), baseID)
+	path, root := ingester.Start(context, baseID)
 	dn, dp, err := ingester.ingest(context, targetGraph, input, path, root)
 	if err != nil {
 		return nil, err
@@ -73,7 +73,7 @@ func (ingester *Ingester) Ingest(context *ls.Context, targetGraph graph.Graph, b
 	if len(dp) > 0 {
 		return nil, ls.ErrNoParentNode{dp[0].of}
 	}
-	ingester.Finish(ls.DefaultContext(), dn, nil)
+	ingester.Finish(context, dn, nil)
 	return dn, err
 }
 
@@ -83,7 +83,7 @@ func (ingester *Ingester) ingest(context *ls.Context, targetGraph graph.Graph, i
 		if err != nil {
 			return nil, nil, err
 		}
-		if err := ingester.Validate(ls.DefaultContext(), node, schemaNode); err != nil {
+		if err := ingester.Validate(context, node, schemaNode); err != nil {
 			return nil, nil, err
 		}
 		return node, dp, nil
@@ -106,7 +106,7 @@ func (ingester *Ingester) ingest(context *ls.Context, targetGraph graph.Graph, i
 
 func (ingester *Ingester) ingestPolymorphicNode(context *ls.Context, targetGraph graph.Graph, input jsonom.Node, path ls.NodePath, schemaNode graph.Node) (graph.Node, []deferredProperty, error) {
 	var dp []deferredProperty
-	g, node, err := ingester.Polymorphic(ls.DefaultContext(), targetGraph, path, schemaNode, func(g graph.Graph, p ls.NodePath, optionNode graph.Node) (graph.Node, error) {
+	g, node, err := ingester.Polymorphic(context, targetGraph, path, schemaNode, func(g graph.Graph, p ls.NodePath, optionNode graph.Node) (graph.Node, error) {
 		n, x, err := ingester.ingest(context, g, input, p, optionNode)
 		if err != nil {
 			return nil, err
@@ -126,7 +126,7 @@ func (ingester *Ingester) ingestPolymorphicNode(context *ls.Context, targetGraph
 func (ingester *Ingester) ingestObject(context *ls.Context, targetGraph graph.Graph, input *jsonom.Object, path ls.NodePath, schemaNode graph.Node) (graph.Node, []deferredProperty, error) {
 	// An object node
 	// There is a schema node for this node. It must be an object
-	nextNodes, err := ingester.GetObjectAttributeNodes(ls.DefaultContext(), schemaNode)
+	nextNodes, err := ingester.GetObjectAttributeNodes(context, schemaNode)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -156,7 +156,7 @@ func (ingester *Ingester) ingestObject(context *ls.Context, targetGraph graph.Gr
 			dp = append(dp, props...)
 		}
 	}
-	node, err := ingester.Object(ls.DefaultContext(), targetGraph, path, schemaNode, elements, ObjectTypeTerm)
+	node, err := ingester.Object(context, targetGraph, path, schemaNode, elements, ObjectTypeTerm)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -217,7 +217,7 @@ func (ingester *Ingester) ingestArray(context *ls.Context, targetGraph graph.Gra
 			elements = append(elements, childNode)
 		}
 	}
-	node, err := ingester.Array(ls.DefaultContext(), targetGraph, path, schemaNode, elements, ArrayTypeTerm)
+	node, err := ingester.Array(context, targetGraph, path, schemaNode, elements, ArrayTypeTerm)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -264,7 +264,7 @@ func (ingester *Ingester) ingestValue(context *ls.Context, targetGraph graph.Gra
 		}}, nil
 	}
 
-	node, err := ingester.Value(ls.DefaultContext(), targetGraph, path, schemaNode, value, typ)
+	node, err := ingester.Value(context, targetGraph, path, schemaNode, value, typ)
 	return node, nil, err
 }
 

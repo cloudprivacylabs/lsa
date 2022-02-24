@@ -13,11 +13,11 @@ type Logger interface {
 	Error(map[string]interface{})
 }
 
-type NopLogger struct{}
+type nopLogger struct{}
 
-func (l *NopLogger) Debug(map[string]interface{}) {}
-func (l *NopLogger) Info(map[string]interface{})  {}
-func (l *NopLogger) Error(map[string]interface{}) {}
+func (l *nopLogger) Debug(map[string]interface{}) {}
+func (l *nopLogger) Info(map[string]interface{})  {}
+func (l *nopLogger) Error(map[string]interface{}) {}
 
 type LogLevel int8
 
