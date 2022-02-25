@@ -7,6 +7,14 @@ menu:
     url: "/terms/"
     weight: 3
 ---
+<style>
+.list {
+   font-size: 20px;
+   line-height: 1.5em; 
+   margin-bottom: 5px;
+}
+
+</style>
 <h3>Terms Directory</h3>
 <ul >
     <li class="list"><a href="http://localhost:1313/array">Array</a></li>
