@@ -54,15 +54,7 @@ func DefaultDOTEdgeRender(fromNode, toNode string, edge Edge, w io.Writer) error
 	return nil
 }
 
-// Render writes a DOT graph with the given name
-func (d DOTRenderer) Render(g Graph, graphName string, out io.Writer) error {
-	if _, err := fmt.Fprintf(out, "digraph %s {\n", graphName); err != nil {
-		return err
-	}
-	if _, err := fmt.Fprintf(out, "rankdir=\"LR\";\n"); err != nil {
-		return err
-	}
-
+func (d DOTRenderer) RenderNodesEdges(g Graph, out io.Writer) error {
 	// Give nodes unique IDs for the graph
 	nodeMap := map[Node]string{}
 	x := 0
@@ -88,6 +80,21 @@ func (d DOTRenderer) Render(g Graph, graphName string, out io.Writer) error {
 				return err
 			}
 		}
+	}
+	return nil
+}
+
+// Render writes a DOT graph with the given name
+func (d DOTRenderer) Render(g Graph, graphName string, out io.Writer) error {
+	if _, err := fmt.Fprintf(out, "digraph %s {\n", graphName); err != nil {
+		return err
+	}
+	if _, err := fmt.Fprintf(out, "rankdir=\"LR\";\n"); err != nil {
+		return err
+	}
+
+	if err := d.RenderNodesEdges(g, out); err != nil {
+		return err
 	}
 
 	if _, err := fmt.Fprintf(out, "}\n"); err != nil {

@@ -59,7 +59,7 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string, intern
 			return nil, err
 		}
 		compiler := ls.Compiler{}
-		layer, err = compiler.CompileSchema(layer)
+		layer, err = compiler.CompileSchema(ls.DefaultContext(), layer)
 		if err != nil {
 			return nil, err
 		}
@@ -76,7 +76,7 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string, intern
 		if len(schemaName) > 0 {
 			if repo != nil {
 				var err error
-				layer, err = repo.GetComposedSchema(schemaName)
+				layer, err = repo.GetComposedSchema(ls.DefaultContext(), schemaName)
 				if err != nil {
 					return nil, err
 				}
@@ -85,10 +85,10 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string, intern
 						if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
 							x = manifest.ID
 						}
-						return repo.LoadAndCompose(x)
+						return repo.LoadAndCompose(ls.DefaultContext(), x)
 					},
 				}
-				layer, err = compiler.Compile(schemaName)
+				layer, err = compiler.Compile(ls.DefaultContext(), schemaName)
 				if err != nil {
 					return nil, err
 				}
@@ -110,7 +110,7 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string, intern
 						return nil, fmt.Errorf("Not found")
 					},
 				}
-				layer, err = compiler.Compile(schemaName)
+				layer, err = compiler.Compile(ls.DefaultContext(), schemaName)
 				if err != nil {
 					return nil, err
 				}

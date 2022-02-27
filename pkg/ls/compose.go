@@ -20,7 +20,7 @@ import (
 
 // Compose schema layers. Directly modifies the source and the
 // target. The source must be an overlay.
-func (layer *Layer) Compose(source *Layer) error {
+func (layer *Layer) Compose(context *Context, source *Layer) error {
 	if source.GetLayerType() != OverlayTerm {
 		return ErrCompositionSourceNotOverlay
 	}
@@ -32,7 +32,7 @@ func (layer *Layer) Compose(source *Layer) error {
 			return ErrIncompatibleComposition
 		}
 	}
-
+	nodeMap := make(map[graph.Node]graph.Node)
 	var err error
 	// Process attributes of the source layer depth-first
 	// Compose the source attribute nodes with the target attribute nodes, ignoring any nodes attached to them
@@ -46,9 +46,20 @@ func (layer *Layer) Compose(source *Layer) error {
 		if targetNode != nil {
 			// Target node exists. Merge if paths match
 			if pathsMatch(targetPath, sourcePath) {
-				if err = mergeNodes(layer, targetNode, sourceNode, processedSourceNodes); err != nil {
+				if err = mergeNodes(context, layer, targetNode, sourceNode, processedSourceNodes); err != nil {
 					return false
 				}
+				// Add any annotation subtrees
+				nodeMap[sourceNode] = targetNode
+				for edges := sourceNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+					edge := edges.Edge()
+					if IsAttributeTreeEdge(edge) {
+						continue
+					}
+					graph.CopySubgraph(edge.GetTo(), layer, ClonePropertyValueFunc, nodeMap)
+					graph.CopyEdge(edge, layer, ClonePropertyValueFunc, nodeMap)
+				}
+
 			}
 		} else {
 			// Target node does not exist.
@@ -64,7 +75,7 @@ func (layer *Layer) Compose(source *Layer) error {
 				return false
 			}
 
-			newNode := layer.NewNode(sourceNode.GetLabels().Slice(), CloneProperties(sourceNode))
+			newNode := CopySchemaNodeIntoGraph(layer, sourceNode)
 			for edges := sourceNode.GetEdges(graph.IncomingEdge); edges.Next(); {
 				edge := edges.Edge()
 				if edge.GetFrom() == parent {
@@ -82,7 +93,7 @@ func (layer *Layer) Compose(source *Layer) error {
 }
 
 // Merge source into target.
-func mergeNodes(targetLayer *Layer, target, source graph.Node, processedSourceNodes map[graph.Node]struct{}) error {
+func mergeNodes(context *Context, targetLayer *Layer, target, source graph.Node, processedSourceNodes map[graph.Node]struct{}) error {
 	if _, processed := processedSourceNodes[source]; processed {
 		return nil
 	}
@@ -91,14 +102,14 @@ func mergeNodes(targetLayer *Layer, target, source graph.Node, processedSourceNo
 		return nil
 	}
 
-	if err := ComposeProperties(target, source); err != nil {
+	if err := ComposeProperties(context, target, source); err != nil {
 		return err
 	}
 	return nil
 }
 
 // ComposeProperty composes targetValue and sourceValue for key
-func ComposeProperty(key string, targetValue, sourceValue *PropertyValue) (*PropertyValue, error) {
+func ComposeProperty(context *Context, key string, targetValue, sourceValue *PropertyValue) (*PropertyValue, error) {
 	newValue := targetValue
 	newValue, err := GetComposerForTerm(key).Compose(newValue, sourceValue)
 	if err != nil {
@@ -109,13 +120,13 @@ func ComposeProperty(key string, targetValue, sourceValue *PropertyValue) (*Prop
 
 // ComposeProperties will combine the properties in source to
 // target. The target properties will be modified directly
-func ComposeProperties(target, source graph.Node) error {
+func ComposeProperties(context *Context, target, source graph.Node) error {
 	var retErr error
 	source.ForEachProperty(func(key string, value interface{}) bool {
 		if p, ok := value.(*PropertyValue); ok {
 			tp, _ := target.GetProperty(key)
 			targetProperty, _ := tp.(*PropertyValue)
-			newValue, err := ComposeProperty(key, targetProperty, p)
+			newValue, err := ComposeProperty(context, key, targetProperty, p)
 			if err != nil {
 				retErr = err
 				return false

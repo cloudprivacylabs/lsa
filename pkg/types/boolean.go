@@ -55,7 +55,7 @@ func (JSONBooleanParser) GetNodeValue(node graph.Node) (interface{}, error) {
 
 func (JSONBooleanParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {
@@ -64,7 +64,7 @@ func (JSONBooleanParser) SetNodeValue(node graph.Node, value interface{}) error 
 		return nil
 	case string:
 		if value == "true" || value == "false" {
-			ls.SetRawNodeValue(node, value)
+			ls.SetRawNodeValue(node, v)
 			return nil
 		}
 	case int:
@@ -98,7 +98,7 @@ func (XMLBooleanParser) GetNodeValue(node graph.Node) (interface{}, error) {
 
 func (XMLBooleanParser) SetNodeValue(node graph.Node, value interface{}) error {
 	if value == nil {
-		ls.SetRawNodeValue(node, nil)
+		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch v := value.(type) {

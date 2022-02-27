@@ -59,6 +59,20 @@ var (
 
 	// NodeIDTerm keeps the node ID or the attribute ID
 	NodeIDTerm = NewTerm(LS, "nodeID", false, false, ErrorComposition, nil)
+
+	// IngestAsTerm ingests value as an edge, node, or property
+	IngestAsTerm = NewTerm(LS, "ingestAs", false, false, OverrideComposition, nil)
+
+	// AsPropertyOfTerm is optional. If specified, it gives the nearest
+	// node that is an instance of the given type. If not, it is the
+	// nearest document node
+	AsPropertyOfTerm = NewTerm(LS, "asPropertyOf", false, false, OverrideComposition, nil)
+
+	// EdgeLabelTerm represents the value used as an edge label, when ingesting an edge
+	EdgeLabelTerm = NewTerm(LS, "edgeLabel", false, false, OverrideComposition, nil)
+
+	// PropertyNameTerm represents the value used as a property name when ingesting a property
+	PropertyNameTerm = NewTerm(LS, "propertyName", false, false, OverrideComposition, nil)
 )
 
 // Attribute types defines the terms describing attribute types. Each
@@ -148,14 +162,6 @@ var (
 
 	// SchemaNodeIDTerm denotes the schema node ID for ingested nodes
 	SchemaNodeIDTerm = NewTerm(LS, "schemaNodeId", false, false, ErrorComposition, nil)
-
-	// AsPropertyOfTerm is optional. If specified, it gives the nearest
-	// node that is an instance of the given type. If not, it is the
-	// nearest document node
-	AsPropertyOfTerm = NewTerm(LS, "asPropertyOf", false, false, OverrideComposition, nil)
-	// AsPropertyTerm specifies the property name the data point
-	// should be added in the parent node
-	AsPropertyTerm = NewTerm(LS, "asProperty", false, false, OverrideComposition, nil)
 
 	BundleTerm     = NewTerm(LS, "SchemaManifest/bundle", false, false, ErrorComposition, nil)
 	SchemaBaseTerm = NewTerm(LS, "SchemaManifest/schema", true, false, ErrorComposition, nil)

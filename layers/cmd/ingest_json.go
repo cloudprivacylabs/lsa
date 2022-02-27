@@ -74,7 +74,7 @@ var ingestJSONCmd = &cobra.Command{
 
 		baseID, _ := cmd.Flags().GetString("id")
 		target := graph.NewOCGraph()
-		_, err = jsoningest.IngestStream(&ingester, target, baseID, input)
+		_, err = jsoningest.IngestStream(ls.DefaultContext(), &ingester, target, baseID, input)
 		if err != nil {
 			failErr(err)
 		}

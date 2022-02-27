@@ -12,31 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package transform
+package cmd
 
 import (
-	"errors"
-	"fmt"
-	"strings"
+	"os"
+
+	"github.com/spf13/cobra"
+
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 )
 
-const (
-	JoinMethodJoin  = "join"
-	JoinMethodError = "error"
-)
+func init() {
+	rootCmd.AddCommand(dotCmd)
+	dotCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
+}
 
-var ErrJoinFailure = errors.New("Join failure")
-
-func JoinValues(values []interface{}, method, delimiter string) (string, error) {
-	strs := make([]string, 0, len(values))
-	for _, n := range values {
-		strs = append(strs, fmt.Sprint(n))
-	}
-	if len(strs) > 1 && method == JoinMethodError {
-		return "", ErrJoinFailure
-	}
-	if method == JoinMethodJoin {
-		return strings.Join(strs, delimiter), nil
-	}
-	return "", ErrJoinFailure
+var dotCmd = &cobra.Command{
+	Use:   "dot",
+	Short: "Convert a graph to dot format",
+	Args:  cobra.MaximumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		inputFormat, _ := cmd.Flags().GetString("input")
+		g, err := cmdutil.ReadGraph(args, nil, inputFormat)
+		if err != nil {
+			failErr(err)
+		}
+		cmdutil.WriteGraph(g, "dot", os.Stdout)
+	},
 }

@@ -37,6 +37,21 @@ func NewLayer() *Layer {
 	return ret
 }
 
+// NewLayerFromGraph uses the graph to create a layer. The root node
+// of the graph becomes the schema root, if there is one
+func NewLayerFromGraph(g graph.Graph) *Layer {
+	ret := &Layer{Graph: g}
+	if g.NumNodes() == 0 {
+		ret.layerInfo = g.NewNode(nil, nil)
+	} else {
+		sources := graph.Sources(g)
+		if len(sources) > 0 {
+			ret.layerInfo = sources[0]
+		}
+	}
+	return ret
+}
+
 // Clone returns a copy of the layer
 func (l *Layer) Clone() *Layer {
 	targetGraph := graph.NewOCGraph()
@@ -288,4 +303,23 @@ func GetAttributeID(node graph.Node) string {
 // SetAttrributeID sets the attribute ID
 func SetAttributeID(node graph.Node, ID string) {
 	node.SetProperty(NodeIDTerm, ID)
+}
+
+// CopySchemaNodeIntoGraph copies a schema node and the subtree under
+// it that does not belong the schema into the target graph
+func CopySchemaNodeIntoGraph(target graph.Graph, schemaNode graph.Node) graph.Node {
+	nodeMap := make(map[graph.Node]graph.Node)
+
+	newNode := graph.CopyNode(schemaNode, target, ClonePropertyValueFunc)
+	nodeMap[schemaNode] = newNode
+
+	for edges := schemaNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		edge := edges.Edge()
+		if IsAttributeTreeEdge(edge) {
+			continue
+		}
+		graph.CopySubgraph(edge.GetTo(), target, ClonePropertyValueFunc, nodeMap)
+		graph.CopyEdge(edge, target, ClonePropertyValueFunc, nodeMap)
+	}
+	return newNode
 }

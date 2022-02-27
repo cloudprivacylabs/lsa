@@ -53,7 +53,7 @@ var composeCmd = &cobra.Command{
 				if output == nil {
 					output = layer
 				} else {
-					if err := output.Compose(layer); err != nil {
+					if err := output.Compose(ls.DefaultContext(), layer); err != nil {
 						fail(fmt.Sprintf("Cannot compose %s: %s", args[i], err))
 					}
 				}
@@ -63,7 +63,7 @@ var composeCmd = &cobra.Command{
 			if err != nil {
 				failErr(err)
 			}
-			output, err = repo.GetComposedSchema(args[0])
+			output, err = repo.GetComposedSchema(ls.DefaultContext(), args[0])
 			if err != nil {
 				failErr(err)
 			}

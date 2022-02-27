@@ -145,7 +145,7 @@ func (repo *Repository) GetSchemaManifestByObjectType(t string) *ls.SchemaManife
 }
 
 // GetComposedSchema returns a composed layer from the schema manifest
-func (repo *Repository) GetComposedSchema(id string) (*ls.Layer, error) {
+func (repo *Repository) GetComposedSchema(context *ls.Context, id string) (*ls.Layer, error) {
 	m := repo.GetSchemaManifest(id)
 	if m == nil {
 		m = repo.GetSchemaManifestByObjectType(id)
@@ -169,7 +169,7 @@ func (repo *Repository) GetComposedSchema(id string) (*ls.Layer, error) {
 		if result == nil {
 			result = ovl.Clone()
 		} else {
-			err := result.Compose(ovl)
+			err := result.Compose(context, ovl)
 			if err != nil {
 				return nil, err
 			}

@@ -219,11 +219,11 @@ func exportJSON(node graph.Node, options ExportOptions, seen map[graph.Node]stru
 		return ret, nil
 
 	case types.Has(ls.AttributeTypeValue):
-		value := ls.GetRawNodeValue(node)
-		if value == nil {
+		value, ok := ls.GetRawNodeValue(node)
+		if !ok {
 			return nil, nil
 		}
-		valueStr := value.(string)
+		valueStr := value
 		switch {
 		case types.Has(BooleanTypeTerm):
 			if valueStr == "true" {

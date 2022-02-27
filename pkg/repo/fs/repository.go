@@ -211,12 +211,12 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 // LoadAndCompose loads the layer or schema manifest with the given
 // ID. If the loaded object is a schema manifest, computes the
 // composite schema and returns it.
-func (repo *Repository) LoadAndCompose(id string) (*ls.Layer, error) {
+func (repo *Repository) LoadAndCompose(context *ls.Context, id string) (*ls.Layer, error) {
 	layer := repo.GetLayer(id)
 	if layer != nil {
 		return layer, nil
 	}
-	return repo.GetComposedSchema(id)
+	return repo.GetComposedSchema(context, id)
 }
 
 func (repo *Repository) GetSchemaManifest(id string) *ls.SchemaManifest {
@@ -308,25 +308,25 @@ func (repo *Repository) loadLayer(file string) *ls.Layer {
 	return ret
 }
 
-func (repo *Repository) GetComposedSchema(id string) (*ls.Layer, error) {
+func (repo *Repository) GetComposedSchema(context *ls.Context, id string) (*ls.Layer, error) {
 	for _, x := range repo.index {
 		if x.ID == id && x.Type == ls.SchemaManifestTerm {
-			return repo.compose(x)
+			return repo.compose(context, x)
 		}
 	}
 	return nil, nil
 }
 
-func (repo *Repository) GetComposedSchemaByObjectType(t string) (*ls.Layer, error) {
+func (repo *Repository) GetComposedSchemaByObjectType(context *ls.Context, t string) (*ls.Layer, error) {
 	for _, x := range repo.index {
 		if x.hasType(t) && x.Type == ls.SchemaManifestTerm {
-			return repo.compose(x)
+			return repo.compose(context, x)
 		}
 	}
 	return nil, nil
 }
 
-func (repo *Repository) compose(index IndexEntry) (*ls.Layer, error) {
+func (repo *Repository) compose(context *ls.Context, index IndexEntry) (*ls.Layer, error) {
 	m, err := repo.loadSchemaManifest(index.File)
 	if err != nil {
 		return nil, err
@@ -347,7 +347,7 @@ func (repo *Repository) compose(index IndexEntry) (*ls.Layer, error) {
 		if result == nil {
 			result = ovl
 		} else {
-			err := result.Compose(ovl)
+			err := result.Compose(context, ovl)
 			if err != nil {
 				return nil, err
 			}
