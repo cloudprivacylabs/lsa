@@ -56,7 +56,7 @@ property specified in the schema node.
 Given the schema: ![Value as node schema ](value_as_node_schema.png)
 
 If in the schema node, the ingest as property  is specified as `ls:ingestAs=node` then the data ingestion will 
-behave as ingesting the array as a node. 
+behave as ingesting the value as a node. 
 
 Ingesting an array as a `node` outputs a graph similar to:  
 ![Value as node](value_as_node.png)
