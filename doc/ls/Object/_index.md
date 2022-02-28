@@ -1,6 +1,13 @@
 ---
 title: "Object"
 type: "term"
+see:
+  - label: ingestAs
+    url: /ingestAs
+  - label: attributeName
+    url: /attributeName
+  - label: attributeIndex
+    url: /attributeIndex
 ---
 
 # Object
@@ -8,10 +15,13 @@ type: "term"
 {{% termheader %}}
 Term: https://lschema.org/Object
 Type: Node label
+Use: Schema nodes, ingested data nodes
 {{% /termheader %}}
 
-An object groups a set of nodes. A JSON object containing key-value
-pairs, or an XML element can be represented as an `Object` node.
+In a schema, an `Object` node groups a set of other attributes. When
+data elements are ingested, an `Object` groups a set of data
+nodes. A JSON object containing key-value pairs, or an XML element can
+be represented as an `Object` node.
 
 ## Schema Model
 
@@ -30,12 +40,13 @@ attribute.
 
 ## JSON-LD Schema Representation
 
-In a JSON-LD schema, object nodes are written as:
+The following JSON-LD schema fragment shows an `Object` that has an unordered set of attributes:
 
 ```
 {
   "@type": "Object",
-  "@id": "myObject",
+  "@id": "myObjectId",
+  "attributeName": "objectName",
   "attributes": {
      "attr1": {
         "@type": "Value"
@@ -47,10 +58,14 @@ In a JSON-LD schema, object nodes are written as:
 }
 ```
 
+The following JSON-LD schema fragment shows an `Object` that as an
+ordered list of attributes:
+
 ```
 {
   "@type": "Object",
-  "@id": "myObject",
+  "@id": "myObjectId",
+  "attributeName": "objectName",
   "attributeList": [
      {
         "@id": "attr1",
@@ -63,3 +78,16 @@ In a JSON-LD schema, object nodes are written as:
   ]
 }
 ```
+
+## Ingested Data Model
+
+Data ingestion behavior is controlled by the value of `ls:ingestAs`
+property specified in the schema node.
+
+### `ingestAs = node` (default)
+
+TODO
+
+### `ingestAs = edge`
+
+TODO
