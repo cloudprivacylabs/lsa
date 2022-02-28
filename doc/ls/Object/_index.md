@@ -58,7 +58,7 @@ The following JSON-LD schema fragment shows an `Object` that has an unordered se
 }
 ```
 
-The following JSON-LD schema fragment shows an `Object` that as an
+The following JSON-LD schema fragment shows an `Object` that has an
 ordered list of attributes:
 
 ```

@@ -60,8 +60,15 @@ property specified in the schema node.
 
 ### `ingestAs = node` (default)
 
-TODO
+In the schema node, if the property ingest as property is specified as `ls:ingestAs=node` 
+then the data ingestion will behave as ingesting the array as a node. Ingesting an array as a node outputs a 
+graph similar to: ![](array_as_node.png)
+where each parent node contains the edge label "has" to each of its child nodes. 
 
 ### `ingestAs = edge`
 
-TODO
+In the schema node, if the property ingest as property is specified as `ls:ingestAs=edge` then the data ingestion 
+will behave as ingesting the array as an edge. Ingesting an array as an edge outputs a graph similar to: 
+![](array_as_edge.png) 
+where the edge label connecting the parent to the child node, is value of the `attributeName` 
+field in the key-value pair of the child node.

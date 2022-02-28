@@ -6,6 +6,8 @@ all: content/Object/object_node_model.png \
      content/Object/attributelist_model.png \
      content/Value/value_node_model.png \
 	   content/Array/array_node_model.png \
+	   content/Array/array_as_node.png \
+	   content/Array/array_as_edge.png \
 	   content/Value/value_as_node.png \
 	   content/Value/value_as_edge.png \
 	   content/Value/value_as_node_schema.png  \
