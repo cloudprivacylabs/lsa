@@ -2,6 +2,8 @@
 title: "Value"
 type: "term"
 see:
+  - label: value
+    url: /value
   - label: ingestAs
     url: /ingestAs
   - label: attributeName
@@ -49,10 +51,22 @@ The following JSON-LD schema fragment shows a `Value`:
 Data ingestion behavior is controlled by the value of `ls:ingestAs`
 property specified in the schema node.
 
-### `ingestAs = node` (default)
+### Ingest Value as Node (default)
 
-TODO
+Schema:
 
-### `ingestAs = edge`
+![Value as node schema ](value_as_node_schema.png)
 
-TODO
+Ingested data:
+
+![Value as node](value_as_node.png)
+
+### Ingest Value as Edge
+
+Schema:
+
+![Value as edge schema](value_as_edge_schema.png)
+
+Ingested data:
+
+![Value as edge](value_as_edge.png)
