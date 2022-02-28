@@ -2,38 +2,60 @@
     "nodes": [
         {
             "n":0,
-            "labels": ["Attribute","Object","Person"]            
+            "labels": ["Attribute","Object"],
+            "properties" : {
+                "attributeName": "objectName"
+            }            
         },
         {
             "n":1,
-            "labels": [""]            
+            "labels": ["DocumentNode","Object"]          
         },
         {
             "n": 2,
             "labels": ["Attribute","Value"],
             "properties": {
-                "ingestAs": "node"
+                "value": "value1"
             }
         },
         {
             "n": 3,
             "labels": ["Attribute","Value"],
             "properties": {
-                "ingestAs": "node"
+                "value": "value2"
             }
         },
         {
             "n": 4,
             "labels": ["Attribute","Value"],
             "properties": {
-                "ingestAs": "node"
+                "attributeIndex": "0",
+                "value": "value3"
+            }
+        },
+        {
+            "n": 5,
+            "labels": ["Attribute","Value"],
+            "properties": {
+                "attributeIndex": "1",
+                "value": "value4"
+            }
+        },
+        {
+            "n": 6,
+            "labels": ["Attribute","Value"],
+            "properties": {
+                "attributeIndex": "2",
+                "value": "value5"
             }
         }
     ],
     "edges": [
-        {"from":0,"to":1,"label":"person"},
-        {"from":1,"to":2,"label":"firstName"},
-        {"from":1,"to":3,"label":"lastName"},
-        {"from":1,"to":4,"label":"age"}
+        {"from":0,"to":1,"label":"edgeLabel"},
+        {"from":1,"to":2,"label":"attrName1"},
+        {"from":1,"to":3,"label":"attrName2"},
+        {"from":1,"to":4,"label":"attrName3"},
+        {"from":1,"to":5,"label":"attrName4"},
+        {"from":1,"to":6,"label":"attrName5"}
     ]
 }
