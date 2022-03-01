@@ -58,7 +58,7 @@ The following JSON-LD schema fragment shows an `Object` that has an unordered se
 }
 ```
 
-The following JSON-LD schema fragment shows an `Object` that as an
+The following JSON-LD schema fragment shows an `Object` that has an
 ordered list of attributes:
 
 ```
@@ -86,8 +86,23 @@ property specified in the schema node.
 
 ### `ingestAs = node` (default)
 
-TODO
+Given the schema: ![Object as node schema](object_as_node_schema.png)
+
+If in the schema node, the ingest as property  is specified as `ls:ingestAs=node` then the data ingestion will 
+behave as ingesting the object as a node.
+
+Ingesting an `object` as a `node` outputs a 
+graph similar to: ![Object as node](object_as_node.png)
+where each parent node contains the edge label "has" to each of its child nodes. 
 
 ### `ingestAs = edge`
 
-TODO
+Given the schema: ![Object as edge schema](object_as_edge_schema.png)
+
+If in the schema node, the ingest as property 
+is specified as `ls:ingestAs=edge` then the data ingestion will behave as ingesting the `object` as an `edge`. 
+
+Ingesting an `object` as an `edge` outputs a graph similar to: 
+![Object as edge](object_as_edge.png) 
+where the edge label connecting the parent to the child node, is value of the `attributeName` 
+field in the key-value pair of the child node.

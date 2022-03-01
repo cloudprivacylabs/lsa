@@ -53,20 +53,26 @@ property specified in the schema node.
 
 ### Ingest Value as Node (default)
 
-Schema:
+Given the schema: ![Value as node schema ](value_as_node_schema.png)
 
-![Value as node schema ](value_as_node_schema.png)
+If in the schema node, the ingest as property  is specified as `ls:ingestAs=node` then the data ingestion will 
+behave as ingesting the value as a node. 
 
-Ingested data:
-
+Ingesting a `value` as a `node` outputs a graph similar to:  
 ![Value as node](value_as_node.png)
 
+where each parent node contains the edge label “has” to each of its child nodes.
+
+
 ### Ingest Value as Edge
+Given the schema: ![Value as edge schema](value_as_edge_schema.png)
 
-Schema:
+If in the schema node, the ingest as property 
+is specified as `ls:ingestAs=edge` then the data ingestion will behave as ingesting the value as an edge. 
 
-![Value as edge schema](value_as_edge_schema.png)
+Ingesting a `value` as an `edge` outputs a graph similar to: 
 
-Ingested data:
+![Value as edge](value_as_edge.png) 
 
-![Value as edge](value_as_edge.png)
+where the edge label connecting the parent to the child node, is value of the `attributeName` 
+field in the key-value pair of the child node.
