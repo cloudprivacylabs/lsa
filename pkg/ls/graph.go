@@ -116,7 +116,7 @@ func SetNodeValue(node graph.Node, value interface{}) error {
 }
 
 // GetNodeValueAccessor returns the value accessor for the node based
-// on the node type. If there is none, returns nil
+// on the node value type. If there is none, returns nil
 func GetNodeValueAccessor(node graph.Node) (ValueAccessor, error) {
 	var (
 		accessor ValueAccessor
@@ -134,17 +134,24 @@ func GetNodeValueAccessor(node graph.Node) (ValueAccessor, error) {
 		}
 		return nil
 	}
-	iedges := graph.EdgeSlice(node.GetEdgesWithLabel(graph.OutgoingEdge, InstanceOfTerm))
-	if len(iedges) == 1 {
-		for _, t := range iedges[0].GetTo().GetLabels().Slice() {
-			if err := setAccessor(t); err != nil {
+	typeFound := false
+	p, _ := node.GetProperty(ValueTypeTerm)
+	if pv, ok := p.(*PropertyValue); ok {
+		typeFound = true
+		for _, x := range pv.MustStringSlice() {
+			if err := setAccessor(x); err != nil {
 				return nil, err
 			}
 		}
 	}
-	for _, t := range node.GetLabels().Slice() {
-		if err := setAccessor(t); err != nil {
-			return nil, err
+	if !typeFound {
+		iedges := graph.EdgeSlice(node.GetEdgesWithLabel(graph.OutgoingEdge, InstanceOfTerm))
+		if len(iedges) == 1 {
+			for _, t := range iedges[0].GetTo().GetLabels().Slice() {
+				if err := setAccessor(t); err != nil {
+					return nil, err
+				}
+			}
 		}
 	}
 	return accessor, nil

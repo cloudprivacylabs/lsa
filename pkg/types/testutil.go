@@ -22,9 +22,21 @@ type getSetTestCase struct {
 
 func (tc getSetTestCase) run(t *testing.T) {
 	g := graph.NewOCGraph()
-	srcNode := g.NewNode(tc.srcTypes, tc.srcProperties)
+	srcProperties := make(map[string]interface{})
+	for k, v := range tc.srcProperties {
+		srcProperties[k] = v
+	}
+	srcProperties[ls.ValueTypeTerm] = ls.StringSlicePropertyValue(tc.srcTypes)
+	srcNode := g.NewNode(nil, srcProperties)
 	ls.SetRawNodeValue(srcNode, fmt.Sprint(tc.srcValue))
-	targetNode := g.NewNode(tc.targetTypes, tc.targetProperties)
+	targetProperties := make(map[string]interface{})
+	for k, v := range tc.targetProperties {
+		targetProperties[k] = v
+	}
+	if len(tc.targetTypes) > 0 {
+		targetProperties[ls.ValueTypeTerm] = ls.StringSlicePropertyValue(tc.targetTypes)
+	}
+	targetNode := g.NewNode(tc.targetTypes, targetProperties)
 	v, err := ls.GetNodeValue(srcNode)
 	if err != nil {
 		t.Log(tc.name)
