@@ -51,6 +51,9 @@ type Ingester struct {
 	// target graph. The key is a schema node. The value is the node in
 	// target graph. This is reset by Start().
 	SchemaNodeMap map[graph.Node]graph.Node
+
+	// Set IngestEmptyValues to true if the value to ingest does not contain data, otherwise default to false
+	IngestEmptyValues bool
 }
 
 // NodePath contains the name components identifying a node. For JSON,
@@ -398,18 +401,21 @@ func (ingester *Ingester) Value(context *Context, g graph.Graph, path NodePath, 
 			return nil, ErrSchemaValidation{Msg: "A value is not expected here", Path: path}
 		}
 	}
-	newNode := ingester.NewNode(context, g, path, schemaNode)
-	if ingester.PreserveNodePaths {
-		ingester.NodePaths[newNode] = path.Copy()
+	if !ingester.IngestEmptyValues {
+		newNode := ingester.NewNode(context, g, path, schemaNode)
+		if ingester.PreserveNodePaths {
+			ingester.NodePaths[newNode] = path.Copy()
+		}
+		if value != nil {
+			SetRawNodeValue(newNode, fmt.Sprint(value))
+		}
+		t := newNode.GetLabels()
+		t.Add(types...)
+		t.Add(AttributeTypeValue)
+		newNode.SetLabels(t)
+		return newNode, nil
 	}
-	if value != nil {
-		SetRawNodeValue(newNode, fmt.Sprint(value))
-	}
-	t := newNode.GetLabels()
-	t.Add(types...)
-	t.Add(AttributeTypeValue)
-	newNode.SetLabels(t)
-	return newNode, nil
+	return nil, nil
 }
 
 /*

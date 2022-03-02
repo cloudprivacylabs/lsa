@@ -39,6 +39,9 @@ type propertyValueItem struct {
 // is the assigned identifier for the resulting object. ID is empty,
 // IDs are assigned based on schema-dictated identifiers.
 func (ingester Ingester) Ingest(context *ls.Context, targetGraph graph.Graph, data []string, ID string) (graph.Node, error) {
+	if len(data) == 0 {
+		ingester.IngestEmptyValues = true
+	}
 	ingester.PreserveNodePaths = true
 	path, schemaRoot := ingester.Start(context, ID)
 	// Retrieve map of schema attribute nodes from schemaRoot

@@ -152,6 +152,9 @@ func (ingester *Ingester) parseElement(context *ls.Context, targetGraph graph.Gr
 	if schemaNode == nil && ingester.OnlySchemaAttributes {
 		return parsedElement{}, nil
 	}
+	if len(data.Attr) == 0 {
+		ingester.IngestEmptyValues = true
+	}
 
 	// Get all the possible child nodes from the schema. If the
 	// schemaNode is nil, the returned schemaNodes will be empty
