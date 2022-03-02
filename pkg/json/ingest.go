@@ -232,8 +232,8 @@ func (ingester *Ingester) ingestArray(context *ls.Context, targetGraph graph.Gra
 }
 
 func (ingester *Ingester) ingestValue(context *ls.Context, targetGraph graph.Graph, input *jsonom.Value, path ls.NodePath, schemaNode graph.Node) (graph.Node, []deferredProperty, error) {
-	if len(input.String()) == 0 {
-		ingester.IngestEmptyValues = true
+	if !ingester.IngestEmptyValues && input == nil {
+		return nil, nil, nil
 	}
 	var value interface{}
 	var typ string

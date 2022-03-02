@@ -86,6 +86,7 @@ func TestIngestFlat(t *testing.T) {
 		Ingester: ls.Ingester{
 			Schema:               schema,
 			OnlySchemaAttributes: false,
+			IngestEmptyValues:    true,
 		},
 	}
 	target := graph.NewOCGraph()
@@ -127,6 +128,7 @@ func TestIngestFlat(t *testing.T) {
 		Ingester: ls.Ingester{
 			Schema:               schema,
 			OnlySchemaAttributes: true,
+			IngestEmptyValues:    true,
 		},
 	}
 	target = graph.NewOCGraph()

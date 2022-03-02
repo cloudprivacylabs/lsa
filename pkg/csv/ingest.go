@@ -39,9 +39,6 @@ type propertyValueItem struct {
 // is the assigned identifier for the resulting object. ID is empty,
 // IDs are assigned based on schema-dictated identifiers.
 func (ingester Ingester) Ingest(context *ls.Context, targetGraph graph.Graph, data []string, ID string) (graph.Node, error) {
-	if len(data) == 0 {
-		ingester.IngestEmptyValues = true
-	}
 	ingester.PreserveNodePaths = true
 	path, schemaRoot := ingester.Start(context, ID)
 	// Retrieve map of schema attribute nodes from schemaRoot
@@ -55,6 +52,9 @@ func (ingester Ingester) Ingest(context *ls.Context, targetGraph graph.Graph, da
 	propertyValueQueue := make([]propertyValueItem, 0, len(data))
 	// Iterate through each column of the CSV row
 	for columnIndex, columnData := range data {
+		if !ingester.IngestEmptyValues && len(columnData) == 0 {
+			continue
+		}
 		var columnName string
 		if columnIndex < len(ingester.ColumnNames) {
 			columnName = ingester.ColumnNames[columnIndex]

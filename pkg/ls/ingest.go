@@ -52,7 +52,7 @@ type Ingester struct {
 	// target graph. This is reset by Start().
 	SchemaNodeMap map[graph.Node]graph.Node
 
-	// Set IngestEmptyValues to true if the value to ingest does not contain data, otherwise default to false
+	// IngestEmptyValues is true if the value to ingest contains data, otherwise default to false
 	IngestEmptyValues bool
 }
 
@@ -401,21 +401,21 @@ func (ingester *Ingester) Value(context *Context, g graph.Graph, path NodePath, 
 			return nil, ErrSchemaValidation{Msg: "A value is not expected here", Path: path}
 		}
 	}
-	if !ingester.IngestEmptyValues {
-		newNode := ingester.NewNode(context, g, path, schemaNode)
-		if ingester.PreserveNodePaths {
-			ingester.NodePaths[newNode] = path.Copy()
-		}
-		if value != nil {
-			SetRawNodeValue(newNode, fmt.Sprint(value))
-		}
-		t := newNode.GetLabels()
-		t.Add(types...)
-		t.Add(AttributeTypeValue)
-		newNode.SetLabels(t)
-		return newNode, nil
+	if !ingester.IngestEmptyValues && value == nil {
+		return nil, nil
 	}
-	return nil, nil
+	newNode := ingester.NewNode(context, g, path, schemaNode)
+	if ingester.PreserveNodePaths {
+		ingester.NodePaths[newNode] = path.Copy()
+	}
+	if value != nil {
+		SetRawNodeValue(newNode, fmt.Sprint(value))
+	}
+	t := newNode.GetLabels()
+	t.Add(types...)
+	t.Add(AttributeTypeValue)
+	newNode.SetLabels(t)
+	return newNode, nil
 }
 
 /*
@@ -435,6 +435,9 @@ func (ingester *Ingester) ValueAsEdge(context *Context, g graph.Graph, path Node
 		return EdgeNode{}, ErrSchemaValidation{Msg: "A value is not expected here", Path: path}
 	}
 
+	if !ingester.IngestEmptyValues && value == nil {
+		return EdgeNode{}, nil
+	}
 	newEdgeNode := EdgeNode{}
 	newEdgeNode.Node = ingester.NewNode(context, g, path, schemaNode)
 	if en, err := determineEdgeLabel(schemaNode, &newEdgeNode, path); err != nil {
