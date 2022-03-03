@@ -87,7 +87,7 @@ func CompileEntities(entities ...Entity) ([]CompiledEntity, error) {
 }
 
 // The meta-schema for annotations
-var annotationsMeta = jsonschema.MustCompileString("annotations.json", `{}`)
+var annotationsMeta = jsonschema.MustCompileString("mem://annotations.json", `{}`)
 
 type annotationsCompiler struct{}
 

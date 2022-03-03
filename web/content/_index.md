@@ -34,20 +34,14 @@ semantic pipelines for analytics and AI applications.
 
 {{<figure src="dw-fanin-fanout-sm.png" class="text-center my-3">}} 
 
-### Use Case: Interoperability Across Domains
+### Use Case: Privacy-Conscious Data Exchange
 
-There are multipls domain-specific data exchange standards, such as
-FHIR for health data exchange. An application working with data from
-multiple domains usually have to continuously translate between
-different standards. An applications built using the layered schema
-architecture uses standard schemas available for each domain, with
-layers defining translations and crosswalks between domain-specific
-standards.
+Machine-readable data exchange policies and 
+
+### Use Case: Interoperability Across Domains
 
 ### Use Case: Executable Data Exchange Policies
 
-
-
-### Data Display and Entry
+### Use Case: Data Display and Entry
 
 
