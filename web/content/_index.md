@@ -1,58 +1,53 @@
 ---
-title: "Home"
+title: "Layered Schema Architecture"
+subtitle: "Semantic interoperability for structured data"
+menu: 
+  main:
+    title: Home
+    weight: 1
+
 ---
 
-Layered schemas technology is a semantic interoperability tool for
-data capture, processing, and exchange. It uses a schema to define
-data elements and additional layers (overlays) to define open-ended
-semantic annotations. These annotations can be used to 
+{{<figure src="layers_ingestion.png" class="text-center my-3">}} 
 
-  * classify data using various ontologies, 
-  * harmonize variations due to different conventions, locale, and
-    vendor implementations,
-  * add directives for validation and custom processing, 
-  * add metadata.
-  
+Layered schema technology enables interoperability between
+heterogeneous systems by harmonizing data semantics for data capture,
+processing, and exchange. It uses a schema to define data elements and
+interchangeable layers (overlays) to define semantics that can vary
+between different sources. Data can be ingested from disparate systems
+that use different conventions and ontologies, and then converted into
+a knowledge graph.
 
-A layered schema defines a mapping from structured data to a knowledge
-graph while adding metadata. This enables processing and linking data
-from multiple domains independent of representation. Added semantic
-information allows interpreting and processing data without the
-precise structure of the source data. For example, it is possible to
-use layeres schemas to ingest clinical health data, merge it with
-wearable device data, and then mark certain attributes as
-"identifiable" so they can be excluded from certain data exchange
-scenarios.
+### Use Case: Semantic Data Warehouse
 
-## Schema Vocabulary
+A traditional data warehouse uses source specific ETL scripts to
+normalize and ingest data. Maintanence of such scripts heavily rely on
+organically developed tools and know-how. A semantic data warehouse
+based on the layered schema architecture replaces such ETL scripts
+with source specific schema variants. Each schema variant is composed
+of a schema base that describes the common data elements with a set of
+overlays. Overlays add the metadata necessary to adjust the ingestion
+process to account for the variations specific to a data
+source. Ingested data is stored as a knowledge graph. The knowledge
+graph can be further processed using a terminology library and
+semantic pipelines for analytics and AI applications.
 
-### Node Types
+{{<figure src="dw-fanin-fanout-sm.png" class="text-center my-3">}} 
 
-[https://lschema.org/Attribute](/Attribute)
-: Defines an attribute node. The actual type of the attribute node is
-    defined by one of the following terms. Defining a schema node with
-    one of the following terms implies that the node is an `Attribute`
-    node.
+### Use Case: Interoperability Across Domains
 
-[https://lschema.org/Value](/Value)
-: Defines an attribute that is a terminal node that has a value, such
-  as a JSON key-value pair, an XML attribute, or an XML element that
-  does not contain other elements.
+There are multipls domain-specific data exchange standards, such as
+FHIR for health data exchange. An application working with data from
+multiple domains usually have to continuously translate between
+different standards. An applications built using the layered schema
+architecture uses standard schemas available for each domain, with
+layers defining translations and crosswalks between domain-specific
+standards.
 
-[https://lschema.org/Object](/Object)
-: Defines an attribute that groups other attributes as an ordered or
-  unordered set, such as a JSON object, or an XML element containing
-  other elements.
- 
-[https://lschema.org/Array](/Array)
-: Defines an attribute that groups other attributes as an ordered and
-  indexed set, such as a JSON array, or repeating XML elements.
- 
- [https://lschema.org/Reference](/Reference)
-: Defines an attribute whose type definition is in a different schema.
+### Use Case: Executable Data Exchange Policies
 
-[https://lschema.org/Composite](/Composite)
-: Defines an attribute that is composed of multiple components. 
- 
-[https://lschema.org/Polymorphic](/Polymorphic)
-: Defines an attribute whose type can be one of several types.
+
+
+### Data Display and Entry
+
+
