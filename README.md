@@ -1,6 +1,6 @@
 [![GoDoc](https://godoc.org/github.com/cloudprivacylabs/lsa?status.svg)](https://godoc.org/github.com/cloudprivacylabs/lsa)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cloudprivacylabs/lsa)](https://goreportcard.com/report/github.com/cloudprivacylabs/lsa)
-
+[![Build Status](https://github.com/cloudprivacylabs/lsa/actions/workflows/CI.yml/badge.svg?branch=master)](https://github.com/cloudprivacylabs/lsa/actions/workflows/CI.yml)
 # Layered Schemas
 
 Layered schemas is a semantic interoperability tool. It uses a schema
