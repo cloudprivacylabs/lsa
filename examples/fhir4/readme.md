@@ -51,7 +51,7 @@ Then specify how the schemas are created:
 This is a Go template evaluated for each entity defined in the
 Entities array. As a result of this, 
 
-  * a SchemaManifest is created in `repo/{{.name}}_schema.json`
+  * a SchemaVariant is created in `repo/{{.name}}_schema.json`
   * The schema ID and type are derived from entity names
   * Each layer is specified in the `layers` array as separate
     files. This example only creates a schema base.

@@ -152,7 +152,6 @@ func (ingester *Ingester) parseElement(context *ls.Context, targetGraph graph.Gr
 	if schemaNode == nil && ingester.OnlySchemaAttributes {
 		return parsedElement{}, nil
 	}
-
 	// Get all the possible child nodes from the schema. If the
 	// schemaNode is nil, the returned schemaNodes will be empty
 	schemaNodes, err := ingester.GetObjectAttributeNodes(context, schemaNode)
@@ -208,6 +207,9 @@ func (ingester *Ingester) parseElement(context *ls.Context, targetGraph graph.Gr
 
 	attributeNodes := make([]graph.Node, 0)
 	for index, attribute := range data.Attr {
+		if !ingester.IngestEmptyValues && len(attribute.Value) == 0 {
+			continue
+		}
 		if IsWhitespaceFacet(attribute.Name) {
 			wf, err := GetWhitespaceFacet(attribute.Value)
 			if err != nil {

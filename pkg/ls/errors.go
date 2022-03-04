@@ -19,6 +19,8 @@ import (
 	"fmt"
 )
 
+// ErrInvalidInput is used for errors due to incorrect values,
+// unexpected syntax, etc.
 type ErrInvalidInput struct {
 	ID  string
 	Msg string
@@ -31,6 +33,10 @@ func (e ErrInvalidInput) Error() string {
 	return fmt.Sprintf("Invalid input: %s", e.ID)
 }
 
+// MakeErrInvalidInput creates an ErrInvalidInput error. If there is
+// only one argument, it is used as the ID field of the error. If
+// there are two, then the first is used as the ID, and the second as
+// msg. Other arguments are ignored.
 func MakeErrInvalidInput(id ...string) error {
 	ret := ErrInvalidInput{}
 	if len(id) > 0 {
@@ -42,51 +48,43 @@ func MakeErrInvalidInput(id ...string) error {
 	return ret
 }
 
+// ErrDuplicateAttributeID is used to denote a duplicate attribute in
+// a schema
 type ErrDuplicateAttributeID string
 
 func (e ErrDuplicateAttributeID) Error() string {
 	return fmt.Sprintf("Duplicate attribute id: %s", string(e))
 }
 
-type ErrDuplicateNodeID string
-
-func (e ErrDuplicateNodeID) Error() string {
-	return fmt.Sprintf("Duplicate node id: %v", string(e))
-}
-
+// ErrMultipleTypes denotes multiple incompatible types declared for
+// an attribute
 type ErrMultipleTypes string
 
 func (e ErrMultipleTypes) Error() string {
 	return fmt.Sprintf("Multiple types declared for attribute: %s", string(e))
 }
 
+// ErrNotFound is used for all not-found errors.
 type ErrNotFound string
 
 func (e ErrNotFound) Error() string {
 	return fmt.Sprintf("Not found: %s", string(e))
 }
 
-var ErrInvalidJsonLdGraph = errors.New("Invalid JsonLd graph")
-var ErrInvalidJsonGraph = errors.New("Invalid JSON graph")
-var ErrUnexpectedEOF = errors.New("Unexpected EOF")
-var ErrAttributeWithoutID = errors.New("Attribute without id")
-var ErrNotALayer = errors.New("Not a layer")
-var ErrCompositionSourceNotOverlay = errors.New("Composition source is not an overlay")
-var ErrIncompatibleComposition = errors.New("Incompatible composition of layers")
+// Error declarations for marshaling and composition
+var (
+	ErrInvalidJsonLdGraph          = errors.New("Invalid JsonLd graph")
+	ErrInvalidJsonGraph            = errors.New("Invalid JSON graph")
+	ErrUnexpectedEOF               = errors.New("Unexpected EOF")
+	ErrAttributeWithoutID          = errors.New("Attribute without id")
+	ErrNotALayer                   = errors.New("Not a layer")
+	ErrCompositionSourceNotOverlay = errors.New("Composition source is not an overlay")
+	ErrIncompatibleComposition     = errors.New("Incompatible composition of layers")
 
-var ErrInvalidComposition = errors.New("Invalid composition")
+	ErrInvalidComposition = errors.New("Invalid composition")
+)
 
-var ErrInvalidPredicate = errors.New("Invalid predicate")
-var ErrInvalidExpression = errors.New("Invalid expression")
-
-type ErrUnknownOperator struct {
-	Operator string
-}
-
-func (e ErrUnknownOperator) Error() string {
-	return fmt.Sprintf("Unknown operator: %s", e.Operator)
-}
-
+// ErrTerm is used to denote a term operation error
 type ErrTerm struct {
 	Term string
 	Err  error
@@ -100,12 +98,15 @@ func (e ErrTerm) Unwrap() error {
 	return e.Err
 }
 
+// ErrMultipleParentNodes is used to denote multiple parentnodes detected during data ingestion
 type ErrMultipleParentNodes struct {
 	Of string
 }
 
 func (e ErrMultipleParentNodes) Error() string { return "Multiple parent nodes for:" + e.Of }
 
+// ErrNoParentNode is used to denote no parent nodes for an ingested
+// node
 type ErrNoParentNode struct {
 	Of string
 }

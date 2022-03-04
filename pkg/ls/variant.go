@@ -21,8 +21,8 @@ import (
 	"github.com/piprate/json-gold/ld"
 )
 
-// SchemaManifest contains the minimal information to define a schema variant with an optional bundle
-type SchemaManifest struct {
+// SchemaVAriant contains the minimal information to define a schema variant with an optional bundle
+type SchemaVariant struct {
 	ID         string
 	Type       string
 	TargetType string
@@ -31,19 +31,19 @@ type SchemaManifest struct {
 	Overlays   []string
 }
 
-// GetID returns the schema manifest ID
-func (m *SchemaManifest) GetID() string { return m.ID }
+// GetID returns the schema variant ID
+func (m *SchemaVariant) GetID() string { return m.ID }
 
-var ErrNotASchemaManifest = errors.New("Not a schema manifest")
+var ErrNotASchemaVariant = errors.New("Not a schema variant")
 
-// Unmarshals the given jsonld document into a schema manifest
-func UnmarshalSchemaManifest(in interface{}) (*SchemaManifest, error) {
+// Unmarshals the given jsonld document into a schema variant
+func UnmarshalSchemaVariant(in interface{}) (*SchemaVariant, error) {
 	proc := ld.NewJsonLdProcessor()
 	compacted, err := proc.Compact(in, map[string]interface{}{}, nil)
 	if err != nil {
 		return nil, err
 	}
-	ret := SchemaManifest{}
+	ret := SchemaVariant{}
 	for k, v := range compacted {
 		switch k {
 		case "@id":
@@ -62,28 +62,28 @@ func UnmarshalSchemaManifest(in interface{}) (*SchemaManifest, error) {
 			}
 		}
 	}
-	if ret.Type != SchemaManifestTerm {
-		return nil, ErrNotASchemaManifest
+	if ret.Type != SchemaVariantTerm {
+		return nil, ErrNotASchemaVariant
 	}
 	if len(ret.ID) == 0 || ret.ID == "./" || strings.HasPrefix(ret.ID, "_") {
-		return nil, MakeErrInvalidInput("No schema manifest  @id")
+		return nil, MakeErrInvalidInput("No schema variant  @id")
 	}
 	return &ret, nil
 }
 
-// MarshalSchemaNanifest returns a compact jsonld document for the manifest
-func MarshalSchemaManifest(manifest *SchemaManifest) interface{} {
+// MarshalSchemaVariant returns a compact jsonld document for the variant
+func MarshalSchemaVariant(variant *SchemaVariant) interface{} {
 	m := make(map[string]interface{})
-	m["@id"] = manifest.ID
-	m["@type"] = SchemaManifestTerm
-	m[TargetType] = map[string]interface{}{"@id": manifest.TargetType}
-	if len(manifest.Bundle) > 0 {
-		m[BundleTerm] = map[string]interface{}{"@id": manifest.Bundle}
+	m["@id"] = variant.ID
+	m["@type"] = SchemaVariantTerm
+	m[TargetType] = map[string]interface{}{"@id": variant.TargetType}
+	if len(variant.Bundle) > 0 {
+		m[BundleTerm] = map[string]interface{}{"@id": variant.Bundle}
 	}
-	m[SchemaBaseTerm] = map[string]interface{}{"@id": manifest.Schema}
-	if len(manifest.Overlays) > 0 {
-		arr := make([]interface{}, 0, len(manifest.Overlays))
-		for _, x := range manifest.Overlays {
+	m[SchemaBaseTerm] = map[string]interface{}{"@id": variant.Schema}
+	if len(variant.Overlays) > 0 {
+		arr := make([]interface{}, 0, len(variant.Overlays))
+		for _, x := range variant.Overlays {
 			arr = append(arr, map[string]interface{}{"@id": x})
 		}
 		m[OverlaysTerm] = map[string]interface{}{"@list": arr}

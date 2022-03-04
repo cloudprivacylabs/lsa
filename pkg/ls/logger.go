@@ -22,8 +22,8 @@ func (l *nopLogger) Error(map[string]interface{}) {}
 type LogLevel int8
 
 const (
-	LogLevelInfo LogLevel = iota
-	LogLevelError
+	LogLevelError LogLevel = iota
+	LogLevelInfo
 	LogLevelDebug
 )
 
@@ -41,11 +41,12 @@ func (l LogLevel) String() string {
 }
 
 type DefaultLogger struct {
-	minLevel LogLevel
+	Level LogLevel
+	Trace bool
 }
 
 func NewDefaultLogger() *DefaultLogger {
-	return &DefaultLogger{}
+	return &DefaultLogger{Level: LogLevelError}
 }
 
 func (l DefaultLogger) Info(properties map[string]interface{}) {
@@ -53,14 +54,17 @@ func (l DefaultLogger) Info(properties map[string]interface{}) {
 }
 
 func (l DefaultLogger) Debug(properties map[string]interface{}) {
-	print(LogLevelDebug, properties)
+	l.print(LogLevelDebug, properties)
 }
 
 func (l DefaultLogger) Error(properties map[string]interface{}) {
-	print(LogLevelError, properties)
+	l.print(LogLevelError, properties)
 }
 
 func (l DefaultLogger) print(level LogLevel, properties map[string]interface{}) {
+	if level > l.Level {
+		return
+	}
 	aux := struct {
 		Level      string                 `json:"level"`
 		Time       string                 `json:"time"`
@@ -72,7 +76,7 @@ func (l DefaultLogger) print(level LogLevel, properties map[string]interface{}) 
 		Properties: properties,
 	}
 
-	if level >= LogLevelError {
+	if level <= LogLevelError || l.Trace {
 		aux.Trace = string(debug.Stack())
 	}
 

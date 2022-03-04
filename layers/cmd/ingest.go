@@ -82,8 +82,8 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string, intern
 				}
 				compiler := ls.Compiler{
 					Loader: func(x string) (*ls.Layer, error) {
-						if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
-							x = manifest.ID
+						if variant := repo.GetSchemaVariantByObjectType(x); variant != nil {
+							x = variant.ID
 						}
 						return repo.LoadAndCompose(ls.DefaultContext(), x)
 					},

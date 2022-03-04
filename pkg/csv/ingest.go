@@ -52,6 +52,9 @@ func (ingester Ingester) Ingest(context *ls.Context, targetGraph graph.Graph, da
 	propertyValueQueue := make([]propertyValueItem, 0, len(data))
 	// Iterate through each column of the CSV row
 	for columnIndex, columnData := range data {
+		if !ingester.IngestEmptyValues && len(columnData) == 0 {
+			continue
+		}
 		var columnName string
 		if columnIndex < len(ingester.ColumnNames) {
 			columnName = ingester.ColumnNames[columnIndex]

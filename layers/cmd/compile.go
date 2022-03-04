@@ -61,8 +61,8 @@ var compileCmd = &cobra.Command{
 			compiler := ls.Compiler{
 				Loader: func(x string) (*ls.Layer, error) {
 					logf("Loading %s", x)
-					if manifest := repo.GetSchemaManifestByObjectType(x); manifest != nil {
-						x = manifest.ID
+					if variant := repo.GetSchemaVariantByObjectType(x); variant != nil {
+						x = variant.ID
 					}
 					return repo.LoadAndCompose(ls.DefaultContext(), x)
 				},

@@ -38,7 +38,7 @@ func (validator RequiredValidator) Validate(docNode, schemaNode graph.Node) erro
 	return nil
 }
 
-// Compile the required properties array
+// CompileTerm compiles the required properties array
 func (validator RequiredValidator) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	if !value.IsStringSlice() {
 		return ls.ErrValidatorCompile{Validator: RequiredTerm, Msg: "Array of required attributes expected"}

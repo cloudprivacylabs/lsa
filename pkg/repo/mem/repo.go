@@ -22,32 +22,29 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-type ErrNotFound string
-
-func (e ErrNotFound) Error() string { return "Not found: " + string(e) }
-
-var ErrEmptyManifest = errors.New("Empty manifest")
+// ErrEmptyVariant is used to denote an empty schema variant
+var ErrEmptyVariant = errors.New("Empty variant")
 
 // Repository is an in-memory schema repository. It keeps all parsed
-// schemas and schema manifests
+// schemas and schema variants
 type Repository struct {
-	schemaManifests map[string]*ls.SchemaManifest
-	layers          map[string]*ls.Layer
-	interner        ls.Interner
+	schemaVariants map[string]*ls.SchemaVariant
+	layers         map[string]*ls.Layer
+	interner       ls.Interner
 }
 
 // New returns a new empty repository
 func New() *Repository {
-	return &Repository{schemaManifests: make(map[string]*ls.SchemaManifest),
+	return &Repository{schemaVariants: make(map[string]*ls.SchemaVariant),
 		layers:   make(map[string]*ls.Layer),
 		interner: ls.NewInterner(),
 	}
 }
 
 // GetSchemas returns schemas in the repository
-func (repo *Repository) GetSchemas() []*ls.SchemaManifest {
-	ret := make([]*ls.SchemaManifest, 0, len(repo.schemaManifests))
-	for _, x := range repo.schemaManifests {
+func (repo *Repository) GetSchemas() []*ls.SchemaVariant {
+	ret := make([]*ls.SchemaVariant, 0, len(repo.schemaVariants))
+	for _, x := range repo.schemaVariants {
 		ret = append(ret, x)
 	}
 	return ret
@@ -68,7 +65,7 @@ func (repo *Repository) AddLayer(layer *ls.Layer) {
 	repo.layers[layer.GetID()] = layer
 }
 
-// ParseAddObject parses the given layer or schema manifest and adds
+// ParseAddObject parses the given layer or schema variant and adds
 // it to the repository. Returns the parsed object
 func (repo *Repository) ParseAddObject(in []byte) (interface{}, error) {
 	var m interface{}
@@ -83,12 +80,12 @@ func (repo *Repository) ParseAddObject(in []byte) (interface{}, error) {
 func (repo *Repository) ParseAddIntf(m interface{}) (interface{}, error) {
 	layer, err1 := ls.UnmarshalLayer(m, repo.interner)
 	if err1 != nil {
-		manifest, err2 := ls.UnmarshalSchemaManifest(m)
+		variant, err2 := ls.UnmarshalSchemaVariant(m)
 		if err2 != nil {
 			return nil, fmt.Errorf("Unrecognized object: %+v %+v", err1, err2)
 		}
-		repo.AddSchemaManifest(manifest)
-		return manifest, nil
+		repo.AddSchemaVariant(variant)
+		return variant, nil
 	}
 	repo.AddLayer(layer)
 	return layer, nil
@@ -96,19 +93,19 @@ func (repo *Repository) ParseAddIntf(m interface{}) (interface{}, error) {
 
 // RemoveObject removes the object(s) with the given id
 func (repo *Repository) RemoveObject(ID string) {
-	delete(repo.schemaManifests, ID)
+	delete(repo.schemaVariants, ID)
 	delete(repo.layers, ID)
 }
 
-// AddSchemaManifest adds a new manifest to the repo. If there is one
+// AddSchemaVariant adds a new variant to the repo. If there is one
 // with the same id, the new one replaces the old one
-func (repo *Repository) AddSchemaManifest(manifest *ls.SchemaManifest) {
-	repo.schemaManifests[manifest.ID] = manifest
+func (repo *Repository) AddSchemaVariant(variant *ls.SchemaVariant) {
+	repo.schemaVariants[variant.ID] = variant
 }
 
-// GetSchemaManifest returns the manifest with the given id
-func (repo *Repository) GetSchemaManifest(id string) *ls.SchemaManifest {
-	return repo.schemaManifests[id]
+// GetSchemaVariant returns the variant with the given id
+func (repo *Repository) GetSchemaVariant(id string) *ls.SchemaVariant {
+	return repo.schemaVariants[id]
 }
 
 // GetSchema returns a schema with the given id
@@ -134,9 +131,9 @@ func (repo *Repository) GetLayer(id string) *ls.Layer {
 	return repo.layers[id]
 }
 
-// GetSchemaManifestByObjectType returns the schema manifest whose target type is t
-func (repo *Repository) GetSchemaManifestByObjectType(t string) *ls.SchemaManifest {
-	for _, v := range repo.schemaManifests {
+// GetSchemaVariantByObjectType returns the schema variant whose target type is t
+func (repo *Repository) GetSchemaVariantByObjectType(t string) *ls.SchemaVariant {
+	for _, v := range repo.schemaVariants {
 		if v.TargetType == t {
 			return v
 		}
@@ -144,27 +141,27 @@ func (repo *Repository) GetSchemaManifestByObjectType(t string) *ls.SchemaManife
 	return nil
 }
 
-// GetComposedSchema returns a composed layer from the schema manifest
+// GetComposedSchema returns a composed layer from the schema variant
 func (repo *Repository) GetComposedSchema(context *ls.Context, id string) (*ls.Layer, error) {
-	m := repo.GetSchemaManifest(id)
+	m := repo.GetSchemaVariant(id)
 	if m == nil {
-		m = repo.GetSchemaManifestByObjectType(id)
+		m = repo.GetSchemaVariantByObjectType(id)
 		if m == nil {
-			return nil, ErrNotFound(id)
+			return nil, ls.ErrNotFound(id)
 		}
 	}
 	var result *ls.Layer
 	if len(m.Schema) > 0 {
 		sch := repo.GetSchema(m.Schema)
 		if sch == nil {
-			return nil, ErrNotFound(m.Schema)
+			return nil, ls.ErrNotFound(m.Schema)
 		}
 		result = sch.Clone()
 	}
 	for _, x := range m.Overlays {
 		ovl := repo.GetLayer(x)
 		if ovl == nil {
-			return nil, ErrNotFound(x)
+			return nil, ls.ErrNotFound(x)
 		}
 		if result == nil {
 			result = ovl.Clone()
@@ -176,7 +173,7 @@ func (repo *Repository) GetComposedSchema(context *ls.Context, id string) (*ls.L
 		}
 	}
 	if result == nil {
-		return nil, ErrEmptyManifest
+		return nil, ErrEmptyVariant
 	}
 	return result, nil
 }

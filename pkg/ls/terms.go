@@ -26,8 +26,23 @@ var (
 	// LayerIDTerm is the schema or overlay id
 	LayerIDTerm = NewTerm(LS, "layerId", true, false, NoComposition, nil)
 
-	// SchemaManifestTerm is the schema manifest type
-	SchemaManifestTerm = NewTerm(LS, "SchemaManifest", false, false, NoComposition, nil)
+	// CharacterEncodingTerm is used to specify a character encoding for
+	// the data processed with the layer
+	CharacterEncodingTerm = NewTerm(LS, "characterEncoding", false, false, OverrideComposition, nil)
+
+	// InstanceOfTerm is an edge term that is used to connect values with
+	// their schema specifications
+	InstanceOfTerm = NewTerm(LS, "instanceOf", false, false, ErrorComposition, nil)
+
+	// SchemaNodeIDTerm denotes the schema node ID for ingested nodes
+	SchemaNodeIDTerm = NewTerm(LS, "schemaNodeId", false, false, ErrorComposition, nil)
+
+	BundleTerm     = NewTerm(LS, "SchemaVariant/bundle", false, false, ErrorComposition, nil)
+	SchemaBaseTerm = NewTerm(LS, "SchemaVariant/schema", true, false, ErrorComposition, nil)
+	OverlaysTerm   = NewTerm(LS, "SchemaVariant/overlays", true, true, ErrorComposition, nil)
+
+	// SchemaVariantTerm is the schema variant type
+	SchemaVariantTerm = NewTerm(LS, "SchemaVariant", false, false, NoComposition, nil)
 
 	// TargetType is the term specifying the data type for the attribute defined
 	TargetType = NewTerm(LS, "targetType", true, false, SetComposition, nil)
@@ -73,6 +88,18 @@ var (
 
 	// PropertyNameTerm represents the value used as a property name when ingesting a property
 	PropertyNameTerm = NewTerm(LS, "propertyName", false, false, OverrideComposition, nil)
+
+	// DocumentNodeTerm is the type of document nodes
+	DocumentNodeTerm = NewTerm(LS, "DocumentNode", false, false, ErrorComposition, nil)
+
+	// NodeValueTerm is the property key used to keep node value
+	NodeValueTerm = NewTerm(LS, "value", false, false, ErrorComposition, nil)
+
+	// ValueTypeTerm defines the type of a value
+	ValueTypeTerm = NewTerm(LS, "valueType", false, false, OverrideComposition, nil)
+
+	// HasTerm is an edge term for linking document elements
+	HasTerm = NewTerm(LS, "has", false, false, ErrorComposition, nil)
 )
 
 // Attribute types defines the terms describing attribute types. Each
@@ -105,15 +132,6 @@ var (
 	// All options of a polymorphic attribute
 	OneOfTerm = NewTerm(LS, "Polymorphic/oneOf", false, true, ErrorComposition, nil)
 )
-
-// DocumentNodeTerm is the type of document nodes
-var DocumentNodeTerm = NewTerm(LS, "DocumentNode", false, false, ErrorComposition, nil)
-
-// NodeValueTerm is the property key used to keep node value
-var NodeValueTerm = NewTerm(LS, "value", false, false, ErrorComposition, nil)
-
-// HasTerm is an edge term for linking document elements
-var HasTerm = NewTerm(LS, "has", false, false, ErrorComposition, nil)
 
 // FilterAttributeTypes returns all recognized attribute types from
 // the given types array. This is mainly used for validation, to
@@ -150,20 +168,3 @@ func FilterNonLayerTypes(types []string) []string {
 	}
 	return ret
 }
-
-var (
-	// CharacterEncodingTerm is used to specify a character encoding for
-	// the data processed with the layer
-	CharacterEncodingTerm = NewTerm(LS, "characterEncoding", false, false, OverrideComposition, nil)
-
-	// InstanceOfTerm is an edge term that is used to connect values with
-	// their schema specifications
-	InstanceOfTerm = NewTerm(LS, "instanceOf", false, false, ErrorComposition, nil)
-
-	// SchemaNodeIDTerm denotes the schema node ID for ingested nodes
-	SchemaNodeIDTerm = NewTerm(LS, "schemaNodeId", false, false, ErrorComposition, nil)
-
-	BundleTerm     = NewTerm(LS, "SchemaManifest/bundle", false, false, ErrorComposition, nil)
-	SchemaBaseTerm = NewTerm(LS, "SchemaManifest/schema", true, false, ErrorComposition, nil)
-	OverlaysTerm   = NewTerm(LS, "SchemaManifest/overlays", true, true, ErrorComposition, nil)
-)

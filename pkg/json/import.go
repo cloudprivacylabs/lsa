@@ -87,6 +87,9 @@ func CompileEntities(entities ...Entity) ([]CompiledEntity, error) {
 }
 
 // The meta-schema for annotations
+// mem:// is required for WASM
+// compilation. Without that, JSON schema compiler tries to resolve
+// relative dir and fails.
 var annotationsMeta = jsonschema.MustCompileString("mem://annotations.json", `{}`)
 
 type annotationsCompiler struct{}

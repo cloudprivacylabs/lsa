@@ -34,7 +34,7 @@ type StringInterner struct {
 	strings map[string]string
 }
 
-// Return a new interner
+// NewInterner returns a new interner
 func NewInterner() StringInterner {
 	return StringInterner{strings: make(map[string]string)}
 }
