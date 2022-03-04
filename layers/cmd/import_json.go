@@ -38,7 +38,7 @@ type importEntity struct {
 type ImportJSONSchemaRequest struct {
 	Entities   []importEntity     `json:"entities"`
 	SchemaID   string             `json:"schemaId"`
-	Schema     string             `json:"schemaManifest"`
+	Schema     string             `json:"schemaVariant"`
 	ObjectType string             `json:"objectType"`
 	Layers     []SliceByTermsSpec `json:"layers"`
 }
@@ -62,7 +62,7 @@ func (req *ImportJSONSchemaRequest) CompileAndImport() ([]jsonsch.EntityLayer, e
 	return jsonsch.BuildEntityGraph(ls.SchemaTerm, c...)
 }
 
-func (req *ImportJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) ([]*ls.Layer, *ls.SchemaManifest, error) {
+func (req *ImportJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) ([]*ls.Layer, *ls.SchemaVariant, error) {
 	layerIDs := make([]string, 0)
 	baseID := ""
 	returnLayers := make([]*ls.Layer, 0)
@@ -82,7 +82,7 @@ func (req *ImportJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) (
 		}
 		returnLayers = append(returnLayers, layer)
 	}
-	sch := ls.SchemaManifest{
+	sch := ls.SchemaVariant{
 		ID:         execTemplate(req.SchemaID, tdata),
 		TargetType: execTemplate(req.ObjectType, tdata),
 		Schema:     baseID,
@@ -105,7 +105,7 @@ var importJSONCmd = &cobra.Command{
      },
     ...
    ],
-  "schemaManifest": "schema output file",
+  "schemaVariant": "schema output file",
   "schemaId": "schema id",
   "objectType": "object type",
   "layers": [
@@ -160,7 +160,7 @@ are Go templates, you can reference entity names and references using {{.name}} 
 				ioutil.WriteFile(execTemplate(req.Layers[i].File, tdata), data, 0664)
 			}
 			if len(req.Schema) > 0 {
-				data, _ := json.MarshalIndent(ls.MarshalSchemaManifest(sch), "", "  ")
+				data, _ := json.MarshalIndent(ls.MarshalSchemaVariant(sch), "", "  ")
 				ioutil.WriteFile(execTemplate(req.Schema, tdata), data, 0664)
 			}
 		}

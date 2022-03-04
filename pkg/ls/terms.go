@@ -37,12 +37,12 @@ var (
 	// SchemaNodeIDTerm denotes the schema node ID for ingested nodes
 	SchemaNodeIDTerm = NewTerm(LS, "schemaNodeId", false, false, ErrorComposition, nil)
 
-	BundleTerm     = NewTerm(LS, "SchemaManifest/bundle", false, false, ErrorComposition, nil)
-	SchemaBaseTerm = NewTerm(LS, "SchemaManifest/schema", true, false, ErrorComposition, nil)
-	OverlaysTerm   = NewTerm(LS, "SchemaManifest/overlays", true, true, ErrorComposition, nil)
+	BundleTerm     = NewTerm(LS, "SchemaVariant/bundle", false, false, ErrorComposition, nil)
+	SchemaBaseTerm = NewTerm(LS, "SchemaVariant/schema", true, false, ErrorComposition, nil)
+	OverlaysTerm   = NewTerm(LS, "SchemaVariant/overlays", true, true, ErrorComposition, nil)
 
-	// SchemaManifestTerm is the schema manifest type
-	SchemaManifestTerm = NewTerm(LS, "SchemaManifest", false, false, NoComposition, nil)
+	// SchemaVariantTerm is the schema variant type
+	SchemaVariantTerm = NewTerm(LS, "SchemaVariant", false, false, NoComposition, nil)
 
 	// TargetType is the term specifying the data type for the attribute defined
 	TargetType = NewTerm(LS, "targetType", true, false, SetComposition, nil)

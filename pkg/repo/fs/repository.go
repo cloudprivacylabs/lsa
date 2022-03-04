@@ -188,16 +188,16 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 					File:       entry.Name(),
 				}
 				ret = append(ret, entry)
-			case hasType(ls.SchemaManifestTerm), hasType("SchemaManifest"):
-				manifest, err := ls.UnmarshalSchemaManifest(obj)
+			case hasType(ls.SchemaVariantTerm), hasType("SchemaVariant"):
+				variant, err := ls.UnmarshalSchemaVariant(obj)
 				if err != nil {
 					warnings = append(warnings, fmt.Sprintf("Cannot parse %s: %v", fname, err))
 					continue
 				}
 				entry := IndexEntry{
-					Type:       ls.SchemaManifestTerm,
-					ID:         manifest.ID,
-					TargetType: manifest.TargetType,
+					Type:       ls.SchemaVariantTerm,
+					ID:         variant.ID,
+					TargetType: variant.TargetType,
 					File:       entry.Name(),
 				}
 				ret = append(ret, entry)
@@ -208,8 +208,8 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 	return ret, warnings, nil
 }
 
-// LoadAndCompose loads the layer or schema manifest with the given
-// ID. If the loaded object is a schema manifest, computes the
+// LoadAndCompose loads the layer or schema variant with the given
+// ID. If the loaded object is a schema variant, computes the
 // composite schema and returns it.
 func (repo *Repository) LoadAndCompose(context *ls.Context, id string) (*ls.Layer, error) {
 	layer := repo.GetLayer(id)
@@ -219,10 +219,10 @@ func (repo *Repository) LoadAndCompose(context *ls.Context, id string) (*ls.Laye
 	return repo.GetComposedSchema(context, id)
 }
 
-func (repo *Repository) GetSchemaManifest(id string) *ls.SchemaManifest {
+func (repo *Repository) GetSchemaVariant(id string) *ls.SchemaVariant {
 	for _, x := range repo.index {
-		if x.ID == id && x.Type == ls.SchemaManifestTerm {
-			return repo.mustLoadSchemaManifest(x.File)
+		if x.ID == id && x.Type == ls.SchemaVariantTerm {
+			return repo.mustLoadSchemaVariant(x.File)
 		}
 	}
 	return nil
@@ -255,10 +255,10 @@ func (repo *Repository) GetLayer(id string) *ls.Layer {
 	return nil
 }
 
-func (repo *Repository) GetSchemaManifestByObjectType(t string) *ls.SchemaManifest {
+func (repo *Repository) GetSchemaVariantByObjectType(t string) *ls.SchemaVariant {
 	for _, x := range repo.index {
-		if x.hasType(t) && x.Type == ls.SchemaManifestTerm {
-			return repo.mustLoadSchemaManifest(x.File)
+		if x.hasType(t) && x.Type == ls.SchemaVariantTerm {
+			return repo.mustLoadSchemaVariant(x.File)
 		}
 	}
 	return nil
@@ -276,20 +276,20 @@ func (repo *Repository) readJson(file string) (interface{}, error) {
 	return v, nil
 }
 
-func (repo *Repository) mustLoadSchemaManifest(file string) *ls.SchemaManifest {
-	ret, err := repo.loadSchemaManifest(file)
+func (repo *Repository) mustLoadSchemaVariant(file string) *ls.SchemaVariant {
+	ret, err := repo.loadSchemaVariant(file)
 	if err != nil {
-		panic("Cannot load manifest:" + err.Error())
+		panic("Cannot load variant:" + err.Error())
 	}
 	return ret
 }
 
-func (repo *Repository) loadSchemaManifest(file string) (*ls.SchemaManifest, error) {
+func (repo *Repository) loadSchemaVariant(file string) (*ls.SchemaVariant, error) {
 	data, err := repo.readJson(file)
 	if err != nil {
 		return nil, err
 	}
-	ret, err := ls.UnmarshalSchemaManifest(data)
+	ret, err := ls.UnmarshalSchemaVariant(data)
 	if err != nil {
 		return nil, err
 	}
@@ -310,7 +310,7 @@ func (repo *Repository) loadLayer(file string) *ls.Layer {
 
 func (repo *Repository) GetComposedSchema(context *ls.Context, id string) (*ls.Layer, error) {
 	for _, x := range repo.index {
-		if x.ID == id && x.Type == ls.SchemaManifestTerm {
+		if x.ID == id && x.Type == ls.SchemaVariantTerm {
 			return repo.compose(context, x)
 		}
 	}
@@ -319,7 +319,7 @@ func (repo *Repository) GetComposedSchema(context *ls.Context, id string) (*ls.L
 
 func (repo *Repository) GetComposedSchemaByObjectType(context *ls.Context, t string) (*ls.Layer, error) {
 	for _, x := range repo.index {
-		if x.hasType(t) && x.Type == ls.SchemaManifestTerm {
+		if x.hasType(t) && x.Type == ls.SchemaVariantTerm {
 			return repo.compose(context, x)
 		}
 	}
@@ -327,7 +327,7 @@ func (repo *Repository) GetComposedSchemaByObjectType(context *ls.Context, t str
 }
 
 func (repo *Repository) compose(context *ls.Context, index IndexEntry) (*ls.Layer, error) {
-	m, err := repo.loadSchemaManifest(index.File)
+	m, err := repo.loadSchemaVariant(index.File)
 	if err != nil {
 		return nil, err
 	}
