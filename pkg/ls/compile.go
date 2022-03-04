@@ -133,6 +133,7 @@ func (compiler *Compiler) RecompileSchema(context *Context, schema *Layer) (*Lay
 }
 
 func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref string) (*Layer, error) {
+	context.GetLogger().Debug(map[string]interface{}{"mth": "compile", "ref": ref})
 	if compiler.CGraph == nil {
 		compiler.CGraph = &DefaultCompiledGraph{}
 	}
@@ -156,12 +157,14 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 }
 
 func (compiler *Compiler) compileRefs(context *Context, ctx *compilerContext, ref string) (*Layer, error) {
+	context.GetLogger().Debug(map[string]interface{}{"mth": "compileRefs", "ref": ref})
 	var err error
 	// If compiled already, return the compiled node
 	if c := compiler.CGraph.GetCompiledSchema(ref); c != nil {
 		return c, nil
 	}
 	// Load the schema
+	context.GetLogger().Debug(map[string]interface{}{"mth": "compileRefs", "ref": ref, "stage": "Loading"})
 	schema, err := compiler.loadSchema(ctx, ref)
 	if err != nil {
 		return nil, err
@@ -169,6 +172,7 @@ func (compiler *Compiler) compileRefs(context *Context, ctx *compilerContext, re
 	if schema == nil {
 		return nil, ErrNotFound(ref)
 	}
+	context.GetLogger().Debug(map[string]interface{}{"mth": "compileRefs", "ref": ref, "stage": "Loaded"})
 	// Here, schema is loaded but not compiled
 	// If this is the top-level, we set the target layer as this schema
 	var compileRoot graph.Node
@@ -178,6 +182,7 @@ func (compiler *Compiler) compileRefs(context *Context, ctx *compilerContext, re
 		return nil, ErrNotFound(ref)
 	}
 	// Record the schema ID in the entity root
+	context.GetLogger().Debug(map[string]interface{}{"mth": "compileRefs", "entitySchema": schema.GetID()})
 	compileRoot.SetProperty(EntitySchemaTerm, StringPropertyValue(schema.GetID()))
 
 	// Resolve all references
@@ -185,6 +190,7 @@ func (compiler *Compiler) compileRefs(context *Context, ctx *compilerContext, re
 		schema = compiler.CGraph.PutCompiledSchema(context, ref, schema)
 	}
 	schemaNodes := compiler.CGraph.GetLayerNodes(ref)
+	context.GetLogger().Debug(map[string]interface{}{"mth": "compileRefs", "schemaNodes": len(schemaNodes)})
 	for _, node := range schemaNodes {
 		_, _, err := CompileReferenceLinkSpec(schema, node)
 		if err != nil {
@@ -216,6 +222,7 @@ func (compiler *Compiler) resolveReferences(context *Context, ctx *compilerConte
 
 func (compiler *Compiler) resolveReference(context *Context, ctx *compilerContext, layer *Layer, node graph.Node) error {
 	ref := AsPropertyValue(node.GetProperty(ReferenceTerm)).AsString()
+	context.GetLogger().Debug(map[string]interface{}{"mth": "resolveReference", "ref": ref})
 	node.RemoveProperty(ReferenceTerm)
 	// already compiled, or being compiled?
 	compiledSchema := compiler.CGraph.GetCompiledSchema(ref)

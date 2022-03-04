@@ -16,8 +16,9 @@ func (ctx *Context) GetLogger() Logger {
 	return ctx.logger
 }
 
-func (ctx *Context) SetLogger(log Logger) {
+func (ctx *Context) SetLogger(log Logger) *Context {
 	ctx.logger = log
+	return ctx
 }
 
 func DefaultContext() *Context {
