@@ -1,47 +1,58 @@
 ---
 title: "Layered Schema Architecture"
 subtitle: "Semantic interoperability for structured data"
-menu: 
-  main:
-    title: Home
-    weight: 1
-
 ---
 
 {{<figure src="layers_ingestion.png" class="text-center my-3">}} 
 
-Layered schema technology enables interoperability between
-heterogeneous systems by harmonizing data semantics for data capture,
-processing, and exchange. It uses a schema to define data elements and
-interchangeable layers (overlays) to define semantics that can vary
-between different sources. Data can be ingested from disparate systems
-that use different conventions and ontologies, and then converted into
-a knowledge graph.
+Layered schema architecture enables interoperability between
+heterogeneous systems for data capture, processing, and exchange.  It
+uses a schema to define data elements and interchangeable overlays to
+add semantic annotations.  Data can be ingested from disparate systems
+using different sets of overlays and converted into a knowledge graph.
+
+### Use Case: Interoperability Across Domains
+
+Schemas and vocabularies are usually domain specific.  Achieving
+interoperability across domains requires manual mappings, which is
+further complicated by variations due to conventions and jurisdictions
+The layered schema architecture allows ingesting data while annotating
+data elements with mappings to other vocabularies relevant to the use
+case. The annotated knowledge graph can then be translated into data
+objects for different domains.
+
+
+{{<figure src="vocab-mapping.png" class="text-center my-3">}} 
 
 ### Use Case: Semantic Data Warehouse
 
 A traditional data warehouse uses source specific ETL scripts to
-normalize and ingest data. Maintanence of such scripts heavily rely on
-organically developed tools and know-how. A semantic data warehouse
+normalize and ingest data. Maintenance of such scripts relies heavily
+on internally developed tools and know-how.  A semantic data warehouse
 based on the layered schema architecture replaces such ETL scripts
-with source specific schema variants. Each schema variant is composed
-of a schema base that describes the common data elements with a set of
-overlays. Overlays add the metadata necessary to adjust the ingestion
-process to account for the variations specific to a data
-source. Ingested data is stored as a knowledge graph. The knowledge
-graph can be further processed using a terminology library and
-semantic pipelines for analytics and AI applications.
+with source specific schema variants, which can be reused in different
+scenarios and can be shared.
 
 {{<figure src="dw-fanin-fanout-sm.png" class="text-center my-3">}} 
 
 ### Use Case: Privacy-Conscious Data Exchange
 
-Machine-readable data exchange policies and 
+Data exchange policies and user consent dictate what types of data can
+be exchanged with whom and for what purposes. Traditionally this is
+solved by domain-specific algorithms that decide what can be
+shared. With the layered schema architecture, data elements are
+classified using overlays based on policies and privacy settings, and
+are filtered or redacted using semantic pipelines.
 
-### Use Case: Interoperability Across Domains
-
-### Use Case: Executable Data Exchange Policies
+{{<figure src="data-exchange.png" class="text-center my-3">}} 
 
 ### Use Case: Data Display and Entry
+
+Layered schema architecture allows building data entry/display
+applications that harmonize semantics to implement variations for
+language, locale, formatting, and jurisdiction. An application can use
+locale-specific overlays to generate views and entry forms.
+
+{{<figure src="layered-schema-data-capture-application.png" class="text-center my-3">}} 
 
 

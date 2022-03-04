@@ -3,15 +3,33 @@
     <a class="navbar-brand" href="/">
       Layered Schemas
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+    <div class="collapse navbar-collapse" id="navbarMain">
+      <ul class="navbar-nav me-auto">
+        {{range .Site.Menus.main}}
+        {{ if .HasChildren }}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {{.Title}}
+          </a>
+          <ul class="dropdown-menu">
+            {{range .Children}}
+            <li><a class="dropdown-item" href="{{.URL}}">{{.Title}}</a></li>
+            {{end}}
+          </ul>
+        </li>
+        {{else}}
+        <li class="nav-item">
+          <a class="nav-link" href="{{.URL}}">{{.Title}}</a>
+        </li>
+        {{end}}
+        {{end}}
+      </ul>
+    </div>
     <ul class="navbar-nav">
-      {{range .Site.Menus.main}}
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="{{.URL}}">{{.Title}}</a>
-      </li>
-      {{end}}
+      <a class="nav-link active" href="https://cloudprivacylabs.com">Cloud Privacy Labs</a>
     </ul>
   </div>
 </nav>
