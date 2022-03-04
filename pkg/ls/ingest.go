@@ -231,7 +231,7 @@ func (ingester *Ingester) Object(context *Context, g graph.Graph, path NodePath,
 	// There is a schema node for this node. It must be an object
 	if schemaNode != nil {
 		if !schemaNode.GetLabels().Has(AttributeTypeObject) {
-			return nil, ErrSchemaValidation{Msg: "An object is not expected here", Path: path}
+			return nil, ErrSchemaValidation{Msg: fmt.Sprintf("An object is expected here but found %s", schemaNode.GetLabels()), Path: path}
 		}
 	}
 	ret := ingester.NewNode(context, g, path, schemaNode)
@@ -286,7 +286,7 @@ func determineEdgeLabel(schemaNode graph.Node, edgeNode *EdgeNode, path NodePath
 func (ingester *Ingester) ObjectAsEdge(context *Context, g graph.Graph, path NodePath, schemaNode graph.Node, nodes []graph.Node, edgeNodes []EdgeNode, types ...string) (EdgeNode, error) {
 	if schemaNode != nil {
 		if !schemaNode.GetLabels().Has(AttributeTypeObject) {
-			return EdgeNode{}, ErrSchemaValidation{Msg: "An object is not expected here", Path: path}
+			return EdgeNode{}, ErrSchemaValidation{Msg: fmt.Sprintf("An object is expected here but found %s", schemaNode.GetLabels()), Path: path}
 		}
 	}
 	newEdgeNode := EdgeNode{}
