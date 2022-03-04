@@ -55,7 +55,7 @@ func StringSetIntersection(s1, s2 []string) []string {
 	return output
 }
 
-// Returns all elements that are in s1 but not in s2
+// StringSetSubtract returns all elements that are in s1 but not in s2
 func StringSetSubtract(s1, s2 []string) []string {
 	s := make(map[string]struct{})
 	for _, x := range s2 {

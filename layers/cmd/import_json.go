@@ -35,7 +35,7 @@ type importEntity struct {
 	SchemaName string `json:"fileName"`
 }
 
-type ImportJSONSchemaRequest struct {
+type importJSONSchemaRequest struct {
 	Entities   []importEntity     `json:"entities"`
 	SchemaID   string             `json:"schemaId"`
 	Schema     string             `json:"schemaVariant"`
@@ -43,13 +43,13 @@ type ImportJSONSchemaRequest struct {
 	Layers     []SliceByTermsSpec `json:"layers"`
 }
 
-func (req *ImportJSONSchemaRequest) SetSchemaNames() {
+func (req *importJSONSchemaRequest) SetSchemaNames() {
 	for i := range req.Entities {
 		req.Entities[i].SchemaName = execTemplate(req.SchemaID, map[string]interface{}{"name": req.Entities[i].Name, "ref": req.Entities[i].Ref})
 	}
 }
 
-func (req *ImportJSONSchemaRequest) CompileAndImport() ([]jsonsch.EntityLayer, error) {
+func (req *importJSONSchemaRequest) CompileAndImport() ([]jsonsch.EntityLayer, error) {
 	req.SetSchemaNames()
 	e := make([]jsonsch.Entity, 0, len(req.Entities))
 	for _, x := range req.Entities {
@@ -62,7 +62,7 @@ func (req *ImportJSONSchemaRequest) CompileAndImport() ([]jsonsch.EntityLayer, e
 	return jsonsch.BuildEntityGraph(ls.SchemaTerm, c...)
 }
 
-func (req *ImportJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) ([]*ls.Layer, *ls.SchemaVariant, error) {
+func (req *importJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) ([]*ls.Layer, *ls.SchemaVariant, error) {
 	layerIDs := make([]string, 0)
 	baseID := ""
 	returnLayers := make([]*ls.Layer, 0)
@@ -130,7 +130,7 @@ are Go templates, you can reference entity names and references using {{.name}} 
 			failErr(err)
 		}
 
-		var req ImportJSONSchemaRequest
+		var req importJSONSchemaRequest
 		if err := json.Unmarshal(inputData, &req); err != nil {
 			failErr(err)
 		}

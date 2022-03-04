@@ -22,10 +22,7 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-type ErrNotFound string
-
-func (e ErrNotFound) Error() string { return "Not found: " + string(e) }
-
+// ErrEmptyVariant is used to denote an empty schema variant
 var ErrEmptyVariant = errors.New("Empty variant")
 
 // Repository is an in-memory schema repository. It keeps all parsed
@@ -150,21 +147,21 @@ func (repo *Repository) GetComposedSchema(context *ls.Context, id string) (*ls.L
 	if m == nil {
 		m = repo.GetSchemaVariantByObjectType(id)
 		if m == nil {
-			return nil, ErrNotFound(id)
+			return nil, ls.ErrNotFound(id)
 		}
 	}
 	var result *ls.Layer
 	if len(m.Schema) > 0 {
 		sch := repo.GetSchema(m.Schema)
 		if sch == nil {
-			return nil, ErrNotFound(m.Schema)
+			return nil, ls.ErrNotFound(m.Schema)
 		}
 		result = sch.Clone()
 	}
 	for _, x := range m.Overlays {
 		ovl := repo.GetLayer(x)
 		if ovl == nil {
-			return nil, ErrNotFound(x)
+			return nil, ls.ErrNotFound(x)
 		}
 		if result == nil {
 			result = ovl.Clone()
