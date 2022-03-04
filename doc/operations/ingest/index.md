@@ -1,10 +1,12 @@
 ---
-title: "Ingest"
+title: "Data Ingestion"
+menu: 
+  main:
+    weight: 20
+    parent: docs
 ---
-This is the ingest page content.
 
-  * [Array](Array)
-  * [Object](Object)
+# Data Ingestion
 
 
 Ingest Object

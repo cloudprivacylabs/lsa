@@ -1,6 +1,13 @@
 ---
 title: "Layered Schema Architecture"
 subtitle: "Semantic interoperability for structured data"
+features:
+  - title: Cross-domain Interoperability
+    text: Integrate concepts from multiple domains in reusable layers.
+  - title: Semantic Harmonization
+    text: Ingest data from disparate sources and transform with semantic pipelines.
+  - title: Analytics and AI
+    text: Build knowledge graphs, research data sets from heterogeneous data.
 ---
 
 {{<figure src="layers_ingestion.png" class="text-center my-3">}} 
