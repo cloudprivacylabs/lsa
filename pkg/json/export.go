@@ -20,7 +20,6 @@ import (
 	"strings"
 
 	"github.com/bserdar/jsonom"
-	"github.com/cloudprivacylabs/lsa/pkg/gl"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
@@ -46,27 +45,6 @@ func GetBuildNodeKeyBySchemaNodeFunc(f func(schemaNode, docNode graph.Node) (str
 			return "", false, nil
 		}
 		return f(schemaNodes[0].(graph.Node), node)
-	}
-}
-
-// GetBuildNodeKeyExprFunc returns a function that builds node keys
-// using an expression. The expression should be a closure getting a
-// node argument
-func GetBuildNodeKeyExprFunc(closure gl.Closure) func(graph.Node) (string, bool, error) {
-	return func(node graph.Node) (string, bool, error) {
-		value, err := closure.Evaluate(gl.ValueOf(node), gl.NewScope())
-		if err != nil {
-			return "", false, err
-		}
-		// Value must be a string
-		str, err := value.AsString()
-		if err != nil {
-			return "", false, err
-		}
-		if len(str) == 0 {
-			return "", false, nil
-		}
-		return str, true, nil
 	}
 }
 
