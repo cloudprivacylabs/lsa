@@ -317,6 +317,15 @@ func (pattern Pattern) Run(graph Graph, symbols map[string]*PatternSymbol, resul
 	return plan.Run(graph, symbols, result)
 }
 
+// FindNodes runs the pattern with the given symbols, and returns all the head nodes found
+func (pattern Pattern) FindNodes(graph Graph, symbols map[string]*PatternSymbol) ([]Node, error) {
+	acc := DefaultMatchAccumulator{}
+	if err := pattern.Run(graph, symbols, &acc); err != nil {
+		return nil, err
+	}
+	return acc.GetHeadNodes(), nil
+}
+
 func (pattern Pattern) getFastestElement(graph Graph, symbols map[string]*PatternSymbol) (Iterator, int) {
 	maxSize := -1
 	index := 0

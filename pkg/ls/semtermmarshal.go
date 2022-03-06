@@ -89,7 +89,7 @@ func (defaultTermMarshaler) UnmarshalLd(target *Layer, key string, value interfa
 					if referencedNode == nil {
 						setValue(id)
 					} else {
-						target.NewEdge(node.GraphNode, referencedNode.GraphNode, key, nil)
+						target.Graph.NewEdge(node.GraphNode, referencedNode.GraphNode, key, nil)
 					}
 				}
 			}

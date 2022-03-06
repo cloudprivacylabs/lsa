@@ -102,9 +102,9 @@ func (tc ingestTest) testObjectAsEdge(t *testing.T) {
 	}
 	root := schema.GetSchemaRootNode()
 	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, PreserveNodePaths: true, NodePaths: tc.NodePaths}
-	ix := schema.GetNodes()
-	childNodes := make([]graph.Node, 0, schema.NumNodes())
-	childEdgeNodes := make([]EdgeNode, 0, schema.NumNodes())
+	ix := schema.Graph.GetNodes()
+	childNodes := make([]graph.Node, 0, schema.Graph.NumNodes())
+	childEdgeNodes := make([]EdgeNode, 0, schema.Graph.NumNodes())
 	for ix.Next() {
 		childNodes = append(childNodes, ix.Node())
 		if label, ok := ix.Node().GetProperty(IngestAsTerm); ok {
@@ -164,9 +164,9 @@ func (tc ingestTest) TestArrayAsEdge(t *testing.T) {
 	root := schema.GetSchemaRootNode()
 	root.SetLabels(graph.NewStringSet(AttributeTypeArray))
 	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, PreserveNodePaths: true, NodePaths: tc.NodePaths}
-	ix := schema.GetNodes()
-	childNodes := make([]graph.Node, 0, schema.NumNodes())
-	childEdgeNodes := make([]EdgeNode, 0, schema.NumNodes())
+	ix := schema.Graph.GetNodes()
+	childNodes := make([]graph.Node, 0, schema.Graph.NumNodes())
+	childEdgeNodes := make([]EdgeNode, 0, schema.Graph.NumNodes())
 	for ix.Next() {
 		childNodes = append(childNodes, ix.Node())
 		if label, ok := ix.Node().GetProperty(IngestAsTerm); ok {

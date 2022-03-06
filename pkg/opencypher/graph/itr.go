@@ -105,7 +105,7 @@ func MultiIterator(iterators ...Iterator) Iterator {
 	}
 }
 
-// nodeIterator is a type-sace iterator for nodes
+// nodeIterator is a type-safe iterator for nodes
 type nodeIterator struct {
 	Iterator
 }
@@ -114,7 +114,7 @@ func (n *nodeIterator) Node() Node {
 	return n.Value().(Node)
 }
 
-// edgeIterator is a type-sace iterator for edges
+// edgeIterator is a type-safe iterator for edges
 type edgeIterator struct {
 	Iterator
 }

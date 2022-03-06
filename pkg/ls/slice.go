@@ -46,7 +46,7 @@ func GetSliceByTermsFunc(includeTerms []string, includeAttributeNodes bool) func
 			return true
 		})
 		if hasProperties || includeNode {
-			newNode := layer.NewNode(nd.GetLabels().Slice(), properties)
+			newNode := layer.Graph.NewNode(nd.GetLabels().Slice(), properties)
 			return newNode
 		}
 		return nil
@@ -55,7 +55,7 @@ func GetSliceByTermsFunc(includeTerms []string, includeAttributeNodes bool) func
 
 // IncludeAllNodesInSliceFunc includes all the nodes in the slice
 var IncludeAllNodesInSliceFunc = func(layer *Layer, nd graph.Node) graph.Node {
-	return CloneNode(nd, layer)
+	return CloneNode(nd, layer.Graph)
 }
 
 func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, graph.Node) graph.Node) *Layer {
@@ -68,18 +68,18 @@ func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, graph.Node) 
 	}
 	rootNode := nodeFilter(ret, sourceRoot)
 	if rootNode == nil {
-		rootNode = CloneNode(sourceRoot, ret)
+		rootNode = CloneNode(sourceRoot, ret.Graph)
 	}
 	for targets := sourceRoot.GetEdges(graph.OutgoingEdge); targets.Next(); {
 		edge := targets.Edge()
 		if IsAttributeTreeEdge(edge) {
 			newNode := slice(ret, edge.GetTo(), nodeFilter, map[graph.Node]struct{}{})
 			if newNode != nil {
-				ret.NewEdge(rootNode, newNode, edge.GetLabel(), nil)
+				ret.Graph.NewEdge(rootNode, newNode, edge.GetLabel(), nil)
 			}
 		}
 	}
-	ret.NewEdge(ret.GetLayerRootNode(), rootNode, LayerRootTerm, nil)
+	ret.Graph.NewEdge(ret.GetLayerRootNode(), rootNode, LayerRootTerm, nil)
 	return ret
 }
 
@@ -102,12 +102,12 @@ func slice(targetLayer *Layer, sourceNode graph.Node, nodeFilter func(*Layer, gr
 		if newTo != nil {
 			// If targetNode was filtered out, it has to be included now
 			if targetNode == nil {
-				targetNode = targetLayer.NewNode(sourceNode.GetLabels().Slice(), nil)
+				targetNode = targetLayer.Graph.NewNode(sourceNode.GetLabels().Slice(), nil)
 				if len(GetAttributeID(sourceNode)) > 0 {
 					SetAttributeID(targetNode, GetAttributeID(sourceNode))
 				}
 			}
-			targetLayer.NewEdge(targetNode, newTo, edge.GetLabel(), CloneProperties(edge))
+			targetLayer.Graph.NewEdge(targetNode, newTo, edge.GetLabel(), CloneProperties(edge))
 		}
 	}
 	return targetNode

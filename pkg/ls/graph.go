@@ -199,6 +199,14 @@ func FollowEdgesToNodeWithType(typ string) func(graph.Edge, []graph.Node) EdgeFu
 	}
 }
 
+// FollowEdgesInEntity follows only the document edges that do not cross entity boundaries
+func FollowEdgesInEntity(edge graph.Edge, _ []graph.Node) EdgeFuncResult {
+	if _, ok := GetNodeOrSchemaProperty(edge.GetTo(), EntitySchemaTerm); ok {
+		return SkipEdgeResult
+	}
+	return FollowEdgeResult
+}
+
 // SkipSchemaNodes can be used in IterateDescendants edge func
 // to skip all edges that go to a schema node
 var SkipSchemaNodes = SkipEdgesToNodeWithType(AttributeNodeTerm)
@@ -262,36 +270,6 @@ func iterateDescendants(root graph.Node, path []graph.Node, nodeFunc func(graph.
 		}
 	}
 	return true
-
-}
-
-// FirstReachable returns the first reachable node for which
-// nodePredicate returns true, using only the edges for which
-// edgePredicate returns true.
-func FirstReachable(from graph.Node, nodePredicate func(graph.Node, []graph.Node) bool, edgePredicate func(graph.Edge, []graph.Node) bool) (graph.Node, []graph.Node) {
-	var (
-		ret  graph.Node
-		path []graph.Node
-	)
-	IterateDescendants(from, func(n graph.Node, p []graph.Node) bool {
-		if nodePredicate(n, p) {
-			ret = n
-			path = p
-			return false
-		}
-		return true
-	},
-		func(e graph.Edge, p []graph.Node) EdgeFuncResult {
-			if edgePredicate == nil {
-				return FollowEdgeResult
-			}
-			if edgePredicate(e, p) {
-				return FollowEdgeResult
-			}
-			return SkipEdgeResult
-		},
-		true)
-	return ret, path
 }
 
 // InstanceOf returns the nodes that are connect to this node via
