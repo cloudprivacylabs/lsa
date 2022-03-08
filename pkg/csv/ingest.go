@@ -29,39 +29,31 @@ type Ingester struct {
 	ColumnNames []string
 }
 
-type propertyValueItem struct {
-	of    string
-	name  string
-	value string
-}
-
 // Ingest a row of CSV data. The `data` slice is a row of data. The ID
 // is the assigned identifier for the resulting object. ID is empty,
 // IDs are assigned based on schema-dictated identifiers.
-func (ingester Ingester) Ingest(context *ls.Context, targetGraph graph.Graph, data []string, ID string) (graph.Node, error) {
-	ingester.PreserveNodePaths = true
-	path, schemaRoot := ingester.Start(context, ID)
+func (ingester Ingester) Ingest(context *ls.Context, data []string, ID string) (graph.Node, error) {
+	ictx := ingester.Start(context, ID)
 	// Retrieve map of schema attribute nodes from schemaRoot
-	attributes, err := ingester.GetObjectAttributeNodes(context, schemaRoot)
+	attributes, err := ls.GetObjectAttributeNodes(ictx.GetSchemaNode())
 	if err != nil {
 		return nil, err
 	}
-	// initialize slice for storing children nodes
-	children := make([]graph.Node, 0, len(data))
-	childrenSchemaNodes := make(map[graph.Node]graph.Node)
-	propertyValueQueue := make([]propertyValueItem, 0, len(data))
+	// create a new object node
+	_, retNode, err := ingester.Object(ictx)
+	if err != nil {
+		return nil, err
+	}
+	ctx := ictx.NewLevel(retNode)
 	// Iterate through each column of the CSV row
 	for columnIndex, columnData := range data {
-		if !ingester.IngestEmptyValues && len(columnData) == 0 {
-			continue
-		}
 		var columnName string
 		if columnIndex < len(ingester.ColumnNames) {
 			columnName = ingester.ColumnNames[columnIndex]
 		}
 		var schemaNode graph.Node
-		var newPath ls.NodePath
 		// if column header exists, assign schemaNode to corresponding value in attributes map
+		var node graph.Node
 		if len(columnName) > 0 {
 			schemaNodes := attributes[columnName]
 			if len(schemaNodes) > 1 {
@@ -70,7 +62,11 @@ func (ingester Ingester) Ingest(context *ls.Context, targetGraph graph.Graph, da
 			if len(schemaNodes) == 1 {
 				schemaNode = schemaNodes[0]
 			}
-			newPath = path.AppendString(columnName)
+
+			_, node, err = ingester.Value(ctx.New(columnName, schemaNode), columnData)
+			if err != nil {
+				return nil, err
+			}
 		} else if ingester.Schema != nil || !ingester.OnlySchemaAttributes {
 			schemaNode, _ = ingester.Schema.FindFirstAttribute(func(n graph.Node) bool {
 				p := ls.AsPropertyValue(n.GetProperty(ls.AttributeIndexTerm))
@@ -79,59 +75,21 @@ func (ingester Ingester) Ingest(context *ls.Context, targetGraph graph.Graph, da
 				}
 				return p.IsInt() && p.AsInt() == columnIndex
 			})
-			newPath = path.AppendInt(columnIndex)
-		}
-
-		propertyOf, propertyName := ls.GetAsProperty(schemaNode)
-		if len(propertyName) != 0 || len(propertyOf) != 0 {
-			if len(propertyName) == 0 {
-				propertyName = columnName
-			}
-			propertyValueQueue = append(propertyValueQueue, propertyValueItem{
-				of:    propertyOf,
-				name:  propertyName,
-				value: columnData,
-			})
-		} else if schemaNode != nil || !ingester.OnlySchemaAttributes {
-			// create a new value node only if there is a matching schema node
-			newNode, err := ingester.Value(context, targetGraph, newPath, schemaNode, columnData)
-			if err != nil {
-				return nil, err
-			}
-			if len(columnName) > 0 {
-				newNode.SetProperty(ls.AttributeNameTerm, ls.StringPropertyValue(columnName))
-			}
-			newNode.SetProperty(ls.AttributeIndexTerm, ls.StringPropertyValue(fmt.Sprint(columnIndex)))
-			children = append(children, newNode)
-			// keep a reference to the schemaNode
-			childrenSchemaNodes[newNode] = schemaNode
-		}
-	}
-
-	// create a new object node
-	retNode, err := ingester.Object(context, targetGraph, path, schemaRoot, children)
-	if err != nil {
-		return nil, err
-	}
-	for _, pv := range propertyValueQueue {
-		var parentNode graph.Node
-		if len(pv.of) > 0 {
-			for child, sch := range childrenSchemaNodes {
-				if sch != nil && ls.GetNodeID(sch) == pv.of {
-					if parentNode != nil {
-						return nil, ls.ErrMultipleParentNodes{pv.of}
-					}
-					parentNode = child
+			if schemaNode != nil {
+				_, node, err = ingester.Value(ctx.New(columnIndex, schemaNode), columnData)
+				if err != nil {
+					return nil, err
 				}
 			}
-			if parentNode == nil {
-				return nil, ls.ErrNoParentNode{pv.of}
-			}
-		} else {
-			parentNode = retNode
 		}
-		parentNode.SetProperty(pv.name, ls.StringPropertyValue(pv.value))
+		if node != nil {
+			if len(columnName) > 0 {
+				node.SetProperty(ls.AttributeNameTerm, ls.StringPropertyValue(columnName))
+			}
+			node.SetProperty(ls.AttributeIndexTerm, ls.StringPropertyValue(fmt.Sprint(columnIndex)))
+		}
 	}
-	ingester.Finish(context, retNode, nil)
+
+	ingester.Finish(ictx, retNode)
 	return retNode, nil
 }

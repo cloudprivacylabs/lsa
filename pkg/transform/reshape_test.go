@@ -64,13 +64,13 @@ func (tc testCase) Run(t *testing.T) {
 	reshaper := Reshaper{}
 	reshaper.EmbedSchemaNodes = true
 	reshaper.Schema = targetLayer
-	resultGraph := graph.NewOCGraph()
-	err = reshaper.Reshape(ls.DefaultContext(), sourceGraph, resultGraph)
+	reshaper.Graph = ls.NewDocumentGraph()
+	err = reshaper.Reshape(ls.DefaultContext(), sourceGraph)
 	if err != nil {
 		t.Errorf("Test case: %s Reshaper error: %v", tc.Name, err)
 		return
 	}
-	result := graph.Sources(resultGraph)[0]
+	result := graph.Sources(reshaper.Graph)[0]
 	ls.SetNodeID(result, "root")
 
 	expectedGraph := graph.NewOCGraph()
@@ -79,7 +79,7 @@ func (tc testCase) Run(t *testing.T) {
 		t.Errorf("Test case: %s Cannot unmarshal expected graph: %v", tc.Name, err)
 		return
 	}
-	eq := graph.CheckIsomorphism(resultGraph, expectedGraph, func(n1, n2 graph.Node) bool {
+	eq := graph.CheckIsomorphism(reshaper.Graph, expectedGraph, func(n1, n2 graph.Node) bool {
 		t.Logf("Cmp: %+v %+v\n", n1, n2)
 		s1, _ := ls.GetRawNodeValue(n1)
 		s2, _ := ls.GetRawNodeValue(n2)
@@ -120,7 +120,7 @@ func (tc testCase) Run(t *testing.T) {
 
 	if !eq {
 		m := ls.JSONMarshaler{}
-		result, _ := m.Marshal(resultGraph)
+		result, _ := m.Marshal(reshaper.Graph)
 		expected, _ := m.Marshal(expectedGraph)
 		t.Errorf("Test case: %s Result is different from the expected: Result:\n%s\nExpected:\n%s", tc.Name, string(result), string(expected))
 	}

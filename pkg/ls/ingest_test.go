@@ -4,32 +4,27 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"testing"
-
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	//	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 type ingestTest struct {
-	Labels    []string                `json:"labels"`
-	Path      []string                `json:"path"`
-	NodePaths map[graph.Node]NodePath `json:"node_paths"`
+	Labels []string `json:"labels"`
+	Path   []string `json:"path"`
 }
 
 func TestEdges(t *testing.T) {
 	var valueCase = ingestTest{
-		Path:      nil,
-		NodePaths: make(map[graph.Node]NodePath),
+		Path: nil,
 	}
 	valueCase.testValueAsEdge(t)
 
 	var objectCase = ingestTest{
-		Path:      nil,
-		NodePaths: make(map[graph.Node]NodePath),
+		Path: nil,
 	}
 	objectCase.testObjectAsEdge(t)
 
 	var arrayCase = ingestTest{
-		Path:      nil,
-		NodePaths: make(map[graph.Node]NodePath),
+		Path: nil,
 	}
 	arrayCase.TestArrayAsEdge(t)
 }
@@ -52,42 +47,57 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	root := schema.GetSchemaRootNode()
-	root.SetProperty(EdgeLabelTerm, &PropertyValue{value: "attr3"})
 
-	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, PreserveNodePaths: true, NodePaths: tc.NodePaths}
-	en, err := ing.ValueAsEdge(DefaultContext(), schema.Graph, tc.Path, root, "VAUs", AttributeTypeValue)
+	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, Graph: NewDocumentGraph()}
+	ctx := ing.Start(DefaultContext(), "")
+	_, rootNode, err := ing.Object(ctx)
+	if err != nil {
+		t.Errorf("Ingest err: %v", err)
+		return
+	}
+	newctx := ctx.NewLevel(rootNode)
+
+	attr3Node, _ := schema.FindAttributeByID("attr3")
+	if attr3Node == nil {
+		t.Errorf("Cannot find attr3 node")
+		return
+	}
+	edge, node, err := ing.Value(newctx.New("attr3", attr3Node), "VAUs")
 	if err != nil {
 		t.Errorf("ingest err: %v", err)
 		return
 	}
-	if en.Label != "attr3" {
-		t.Errorf("invalid get property: %v", err)
+	if edge.GetLabel() != "edgeLabel" {
+		t.Errorf("invalid label: %v", edge.GetLabel())
 		return
 	}
-	if s, _ := GetRawNodeValue(en.Node); s != "VAUs" {
+	if s, _ := GetRawNodeValue(node); s != "VAUs" {
 		t.Errorf("Ingestion set value error: %v", err)
 		return
 	}
-	root.RemoveProperty(EdgeLabelTerm)
-	root.SetProperty(AttributeNameTerm, &PropertyValue{value: "attr1"})
-	en, err = ing.ValueAsEdge(DefaultContext(), schema.Graph, tc.Path, root, "OTHERVALUE", AttributeTypeValue)
+
+	attr4Node, _ := schema.FindAttributeByID("attr4")
+	if attr4Node == nil {
+		t.Errorf("Cannot find attr4 node")
+		return
+	}
+	edge, node, err = ing.Value(newctx.New("attr4", attr4Node), "b")
 	if err != nil {
 		t.Errorf("ingest err: %v", err)
 		return
 	}
-	if en.Label != "attr1" {
-		t.Errorf("invalid get property: %v", err)
+	if edge.GetLabel() != "attr4" {
+		t.Errorf("invalid get label: %v", edge.GetLabel())
 		return
 	}
-	if s, _ := GetRawNodeValue(en.Node); s != "OTHERVALUE" {
+	if s, _ := GetRawNodeValue(node); s != "b" {
 		t.Errorf("Ingestion set value error: %v", err)
 		return
 	}
+
 }
 
 func (tc ingestTest) testObjectAsEdge(t *testing.T) {
-	// g := graph.NewOCGraph()
 	var schMap interface{}
 	schStr, err := ioutil.ReadFile("testdata/object_as_edge_test.json")
 	if err != nil {
@@ -100,55 +110,60 @@ func (tc ingestTest) testObjectAsEdge(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	root := schema.GetSchemaRootNode()
-	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, PreserveNodePaths: true, NodePaths: tc.NodePaths}
-	ix := schema.Graph.GetNodes()
-	childNodes := make([]graph.Node, 0, schema.Graph.NumNodes())
-	childEdgeNodes := make([]EdgeNode, 0, schema.Graph.NumNodes())
-	for ix.Next() {
-		childNodes = append(childNodes, ix.Node())
-		if label, ok := ix.Node().GetProperty(IngestAsTerm); ok {
-			childEdgeNodes = append(childEdgeNodes, EdgeNode{Node: ix.Node(), Label: label.(*PropertyValue).AsString(), Properties: make(map[string]interface{})})
-		}
+
+	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, Graph: NewDocumentGraph()}
+	ctx := ing.Start(DefaultContext(), "")
+	_, rootNode, err := ing.Object(ctx)
+	if err != nil {
+		t.Errorf("Ingest err: %v", err)
+		return
 	}
-	en, err := ing.ObjectAsEdge(DefaultContext(), schema.Graph, tc.Path, root, childNodes, childEdgeNodes, ObjectAttributeListTerm)
+	newctx := ctx.NewLevel(rootNode)
+
+	attr2Node, _ := schema.FindAttributeByID("https://www.example.com/id2")
+	if attr2Node == nil {
+		t.Errorf("Cannot find attr2 node")
+		return
+	}
+	edge, node, err := ing.Object(newctx.New("obj2", attr2Node))
 	if err != nil {
 		t.Error(err)
 	}
-	checkEdgeNodeValue := func(nodeId string, childEdgeNodes []EdgeNode, expected interface{}) {
-		for _, e := range childEdgeNodes {
-			prop, ok := e.Node.GetProperty(IngestAsTerm)
-			if ok && prop.(*PropertyValue).AsString() != e.Label {
-				t.Errorf("Wrong value for %v: expecting: %v, got %v", nodeId, expected, prop)
-			}
-		}
-
+	if edge.GetLabel() != "theObjectEdge" {
+		t.Errorf("Wrong edge label: %s", edge.GetLabel())
 	}
-	checkEdgeNodeValue(EdgeLabelTerm, childEdgeNodes, en.Label)
-
-	checkNodeValue := func(nodeId string, childNode graph.Node, expected interface{}) {
-		prop, _ := childNode.GetProperty(AttributeNameTerm)
-		if prop != expected {
-			t.Errorf("Wrong value for %v: expecting: %v, got %v", nodeId, expected, prop)
-		}
+	// There must be a blank node
+	if edge.GetFrom() != rootNode {
+		t.Errorf("Wrong from")
 	}
-	for _, cn := range childNodes {
-		prop, _ := cn.GetProperty(AttributeNameTerm)
-		checkNodeValue(GetAttributeID(cn), cn, prop)
+	if edge.GetTo() != node {
+		t.Errorf("GetTo")
+	}
+
+	attr3Node, _ := schema.FindAttributeByID("https://www.example.com/id3")
+	if attr3Node == nil {
+		t.Errorf("Cannot find attr3 node")
+		return
+	}
+	edge2, node2, err := ing.Value(newctx.New("field3", attr3Node), "3")
+	if err != nil {
+		t.Error(err)
+	}
+	if edge2.GetFrom() != node && edge2.GetLabel() != HasTerm && edge2.GetTo() != node2 {
+		t.Errorf("Wrong path")
 	}
 }
 
-// attr2: (value_as_edge schema)
-//
-// --arr--> _ -->elem1
-//            -->elem2
-//
-//  or?
-//
-//  --arr-->elem1
-//       -->elem2
+// // attr2: (value_as_edge schema)
+// //
+// // --arr--> _ -->elem1
+// //            -->elem2
+// //
+// //  or?
+// //
+// //  --arr-->elem1
+// //       -->elem2
 func (tc ingestTest) TestArrayAsEdge(t *testing.T) {
-	// g := graph.NewOCGraph()
 	var schMap interface{}
 	schStr, err := ioutil.ReadFile("testdata/object_as_edge_test.json")
 	if err != nil {
@@ -161,41 +176,46 @@ func (tc ingestTest) TestArrayAsEdge(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	root := schema.GetSchemaRootNode()
-	root.SetLabels(graph.NewStringSet(AttributeTypeArray))
-	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, PreserveNodePaths: true, NodePaths: tc.NodePaths}
-	ix := schema.Graph.GetNodes()
-	childNodes := make([]graph.Node, 0, schema.Graph.NumNodes())
-	childEdgeNodes := make([]EdgeNode, 0, schema.Graph.NumNodes())
-	for ix.Next() {
-		childNodes = append(childNodes, ix.Node())
-		if label, ok := ix.Node().GetProperty(IngestAsTerm); ok {
-			childEdgeNodes = append(childEdgeNodes, EdgeNode{Node: ix.Node(), Label: label.(*PropertyValue).AsString(), Properties: make(map[string]interface{})})
-		}
+
+	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, Graph: NewDocumentGraph()}
+	ctx := ing.Start(DefaultContext(), "")
+	_, rootNode, err := ing.Object(ctx)
+	if err != nil {
+		t.Errorf("Ingest err: %v", err)
+		return
 	}
-	en, err := ing.ArrayAsEdge(DefaultContext(), schema.Graph, tc.Path, root, childNodes, childEdgeNodes, AttributeTypeArray)
+	newctx := ctx.NewLevel(rootNode)
+
+	attr1Node, _ := schema.FindAttributeByID("https://attr1")
+	if attr1Node == nil {
+		t.Errorf("Cannot find attr1 node")
+		return
+	}
+	edge, node, err := ing.Array(newctx.New("arr", attr1Node))
 	if err != nil {
 		t.Error(err)
 	}
-	checkEdgeNodeValue := func(nodeId string, childEdgeNodes []EdgeNode, expected interface{}) {
-		for _, e := range childEdgeNodes {
-			prop, ok := e.Node.GetProperty(IngestAsTerm)
-			if ok && prop.(*PropertyValue).AsString() != e.Label {
-				t.Errorf("Wrong value for %v: expecting: %v, got %v", nodeId, expected, prop)
-			}
-		}
-
+	if edge.GetLabel() != "arr" {
+		t.Errorf("Wrong edge label: %s", edge.GetLabel())
 	}
-	checkEdgeNodeValue(EdgeLabelTerm, childEdgeNodes, en.Label)
-
-	checkNodeValue := func(nodeId string, childNode graph.Node, expected interface{}) {
-		prop, _ := childNode.GetProperty(AttributeNameTerm)
-		if prop != expected {
-			t.Errorf("Wrong value for %v: expecting: %v, got %v", nodeId, expected, prop)
-		}
+	// There must be a blank node
+	if edge.GetFrom() != rootNode {
+		t.Errorf("Wrong from")
 	}
-	for _, cn := range childNodes {
-		prop, _ := cn.GetProperty(AttributeNameTerm)
-		checkNodeValue(GetAttributeID(cn), cn, prop)
+	if edge.GetTo() != node {
+		t.Errorf("GetTo")
+	}
+
+	elemNode, _ := schema.FindAttributeByID("https://www.example.com/id0")
+	if elemNode == nil {
+		t.Errorf("Cannot find elem node")
+		return
+	}
+	edge2, node2, err := ing.Value(newctx.New(0, elemNode), "3")
+	if err != nil {
+		t.Error(err)
+	}
+	if edge2.GetFrom() != node && edge2.GetLabel() != HasTerm && edge2.GetTo() != node2 {
+		t.Errorf("Wrong path")
 	}
 }

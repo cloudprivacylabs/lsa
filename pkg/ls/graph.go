@@ -272,6 +272,44 @@ func iterateDescendants(root graph.Node, path []graph.Node, nodeFunc func(graph.
 	return true
 }
 
+// IterateAncestors iterates the ancestors of the node, calling
+// nodeFunc for each node, and edgeFunc for each edge. If nodeFunc
+// returns false, stops iteration and returns. The behavior after
+// calling edgefunc depends on the return value. The edgeFunc may
+// skiip the edge, follow it, or stop processing.
+func IterateAncestors(root graph.Node, nodeFunc func(graph.Node) bool, edgeFunc func(graph.Edge) EdgeFuncResult) bool {
+	seen := make(map[graph.Node]struct{})
+	var f func(graph.Node) bool
+	f = func(node graph.Node) bool {
+		if _, exists := seen[node]; exists {
+			return true
+		}
+		seen[node] = struct{}{}
+		if nodeFunc != nil && !nodeFunc(node) {
+			return false
+		}
+		for incoming := node.GetEdges(graph.IncomingEdge); incoming.Next(); {
+			edge := incoming.Edge()
+			follow := FollowEdgeResult
+			if edgeFunc != nil {
+				follow = edgeFunc(edge)
+			}
+			switch follow {
+			case StopEdgeResult:
+				return false
+			case SkipEdgeResult:
+			case FollowEdgeResult:
+				next := edge.GetFrom()
+				if !f(next) {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	return f(root)
+}
+
 // InstanceOf returns the nodes that are connect to this node via
 // instanceOf term,
 func InstanceOf(node graph.Node) []graph.Node {
