@@ -51,6 +51,13 @@ type Ingester struct {
 	Graph graph.Graph
 }
 
+// IngestAs constants
+const (
+	IngestAsNode     = "node"
+	IngestAsEdge     = "edge"
+	IngestAsProperty = "property"
+)
+
 // NodePath contains the name components identifying a node. For JSON,
 // this is the components of a JSON pointer
 type NodePath []string
@@ -414,33 +421,38 @@ func (ingester *Ingester) ValueAsProperty(ictx IngestionContext, value string) e
 }
 
 // Value ingests a value as a node, edge-node, or as a property depending on the schema. The default is ingestion as node. Returns the node, and optionally, the edge going to that node
-func (ingester *Ingester) Value(ictx IngestionContext, value string, types ...string) (graph.Edge, graph.Node, error) {
+func (ingester *Ingester) Value(ictx IngestionContext, value string, types ...string) (string, graph.Edge, graph.Node, error) {
 	// Is this an ID value?
 	if err := setEntityID(ictx, value); err != nil {
-		return nil, nil, err
+		return "", nil, nil, err
 	}
 	schemaNode := ictx.GetSchemaNode()
 	if schemaNode == nil && ingester.OnlySchemaAttributes {
-		return nil, nil, nil
+		return "", nil, nil, nil
 	}
 	switch GetIngestAs(schemaNode) {
-	case "node":
-		return ingester.ValueAsNode(ictx, value, types...)
+	case IngestAsNode:
+		e, g, err := ingester.ValueAsNode(ictx, value, types...)
+		if err != nil {
+			return "", nil, nil, err
+		}
+		return IngestAsNode, e, g, nil
 
-	case "edge":
+	case IngestAsEdge:
 		e, err := ingester.ValueAsEdge(ictx, value, types...)
 		if err != nil {
-			return nil, nil, err
+			return "", nil, nil, err
 		}
-		return e, e.GetTo(), nil
+		return IngestAsEdge, e, e.GetTo(), nil
 
-	case "property":
+	case IngestAsProperty:
 		err := ingester.ValueAsProperty(ictx, value)
 		if err != nil {
-			return nil, nil, err
+			return "", nil, nil, err
 		}
+		return IngestAsProperty, nil, nil, nil
 	}
-	return nil, nil, nil
+	return "", nil, nil, nil
 }
 
 func (ingester *Ingester) collectionAsNode(ictx IngestionContext, typeTerm string, types ...string) (graph.Edge, graph.Node, error) {
@@ -530,37 +542,45 @@ func (ingester *Ingester) ArrayAsEdge(ictx IngestionContext, types ...string) (g
 }
 
 // Object ingests an object as a node or edge
-func (ingester *Ingester) Object(ictx IngestionContext, types ...string) (graph.Edge, graph.Node, error) {
+func (ingester *Ingester) Object(ictx IngestionContext, types ...string) (string, graph.Edge, graph.Node, error) {
 	schemaNode := ictx.GetSchemaNode()
 	switch GetIngestAs(schemaNode) {
-	case "node":
-		return ingester.ObjectAsNode(ictx, types...)
+	case IngestAsNode:
+		e, g, err := ingester.ObjectAsNode(ictx, types...)
+		if err != nil {
+			return "", nil, nil, err
+		}
+		return IngestAsNode, e, g, nil
 
 	case "edge":
 		e, err := ingester.ObjectAsEdge(ictx, types...)
 		if err != nil {
-			return nil, nil, err
+			return "", nil, nil, err
 		}
-		return e, e.GetTo(), nil
+		return IngestAsEdge, e, e.GetTo(), nil
 	}
-	return nil, nil, nil
+	return "", nil, nil, nil
 }
 
 // Array ingests an array as a node or edge
-func (ingester *Ingester) Array(ictx IngestionContext, types ...string) (graph.Edge, graph.Node, error) {
+func (ingester *Ingester) Array(ictx IngestionContext, types ...string) (string, graph.Edge, graph.Node, error) {
 	schemaNode := ictx.GetSchemaNode()
 	switch GetIngestAs(schemaNode) {
-	case "node":
-		return ingester.ArrayAsNode(ictx, types...)
+	case IngestAsNode:
+		e, g, err := ingester.ArrayAsNode(ictx, types...)
+		if err != nil {
+			return "", nil, nil, err
+		}
+		return IngestAsNode, e, g, nil
 
-	case "edge":
+	case IngestAsEdge:
 		e, err := ingester.ArrayAsEdge(ictx, types...)
 		if err != nil {
-			return nil, nil, err
+			return "", nil, nil, err
 		}
-		return e, e.GetTo(), nil
+		return IngestAsEdge, e, e.GetTo(), nil
 	}
-	return nil, nil, nil
+	return "", nil, nil, nil
 }
 
 // Validate the document node with the schema node

@@ -177,7 +177,7 @@ func (reshaper *Reshaper) object(context *ReshapeContext, ictx ls.IngestionConte
 	attributes = append(attributes, graph.TargetNodes(ls.SortEdgesItr(schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.ObjectAttributeListTerm)))...)
 
 	ingestObject := func() (graph.Node, error) {
-		_, objectNode, err := reshaper.Object(ictx)
+		_, _, objectNode, err := reshaper.Object(ictx)
 		if err != nil {
 			return nil, err
 		}
@@ -266,7 +266,7 @@ func (reshaper *Reshaper) value(context *ReshapeContext, ictx ls.IngestionContex
 	if empty {
 		return nil, nil
 	}
-	_, node, err := reshaper.Value(ictx, nodeValue)
+	_, _, node, err := reshaper.Value(ictx, nodeValue)
 	if err != nil {
 		return nil, err
 	}

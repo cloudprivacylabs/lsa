@@ -40,7 +40,7 @@ func (ingester Ingester) Ingest(context *ls.Context, data []string, ID string) (
 		return nil, err
 	}
 	// create a new object node
-	_, retNode, err := ingester.Object(ictx)
+	_, _, retNode, err := ingester.Object(ictx)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (ingester Ingester) Ingest(context *ls.Context, data []string, ID string) (
 				schemaNode = schemaNodes[0]
 			}
 
-			_, node, err = ingester.Value(ctx.New(columnName, schemaNode), columnData)
+			_, _, node, err = ingester.Value(ctx.New(columnName, schemaNode), columnData)
 			if err != nil {
 				return nil, err
 			}
@@ -76,7 +76,7 @@ func (ingester Ingester) Ingest(context *ls.Context, data []string, ID string) (
 				return p.IsInt() && p.AsInt() == columnIndex
 			})
 			if schemaNode != nil {
-				_, node, err = ingester.Value(ctx.New(columnIndex, schemaNode), columnData)
+				_, _, node, err = ingester.Value(ctx.New(columnIndex, schemaNode), columnData)
 				if err != nil {
 					return nil, err
 				}

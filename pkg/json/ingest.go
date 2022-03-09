@@ -115,7 +115,7 @@ func (ingester *Ingester) ingestObject(context ls.IngestionContext, input *jsono
 	if err != nil {
 		return nil, err
 	}
-	_, node, err := ingester.Object(context)
+	_, _, node, err := ingester.Object(context)
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +144,7 @@ func (ingester *Ingester) ingestObject(context ls.IngestionContext, input *jsono
 func (ingester *Ingester) ingestArray(context ls.IngestionContext, input *jsonom.Array) (graph.Node, error) {
 	schemaNode := context.GetSchemaNode()
 	elementsNode := ls.GetArrayElementNode(schemaNode)
-	_, node, err := ingester.Array(context)
+	_, _, node, err := ingester.Array(context)
 	if err != nil {
 		return nil, err
 	}
@@ -185,6 +185,6 @@ func (ingester *Ingester) ingestValue(context ls.IngestionContext, input *jsonom
 			value = fmt.Sprint(v)
 		}
 	}
-	_, node, err := ingester.Value(context, value, typ)
+	_, _, node, err := ingester.Value(context, value, typ)
 	return node, err
 }

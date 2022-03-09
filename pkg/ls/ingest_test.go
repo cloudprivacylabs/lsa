@@ -50,7 +50,7 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 
 	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, Graph: NewDocumentGraph()}
 	ctx := ing.Start(DefaultContext(), "")
-	_, rootNode, err := ing.Object(ctx)
+	_, _, rootNode, err := ing.Object(ctx)
 	if err != nil {
 		t.Errorf("Ingest err: %v", err)
 		return
@@ -62,7 +62,7 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 		t.Errorf("Cannot find attr3 node")
 		return
 	}
-	edge, node, err := ing.Value(newctx.New("attr3", attr3Node), "VAUs")
+	_, edge, node, err := ing.Value(newctx.New("attr3", attr3Node), "VAUs")
 	if err != nil {
 		t.Errorf("ingest err: %v", err)
 		return
@@ -81,7 +81,7 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 		t.Errorf("Cannot find attr4 node")
 		return
 	}
-	edge, node, err = ing.Value(newctx.New("attr4", attr4Node), "b")
+	_, edge, node, err = ing.Value(newctx.New("attr4", attr4Node), "b")
 	if err != nil {
 		t.Errorf("ingest err: %v", err)
 		return
@@ -113,7 +113,7 @@ func (tc ingestTest) testObjectAsEdge(t *testing.T) {
 
 	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, Graph: NewDocumentGraph()}
 	ctx := ing.Start(DefaultContext(), "")
-	_, rootNode, err := ing.Object(ctx)
+	_, _, rootNode, err := ing.Object(ctx)
 	if err != nil {
 		t.Errorf("Ingest err: %v", err)
 		return
@@ -125,7 +125,7 @@ func (tc ingestTest) testObjectAsEdge(t *testing.T) {
 		t.Errorf("Cannot find attr2 node")
 		return
 	}
-	edge, node, err := ing.Object(newctx.New("obj2", attr2Node))
+	_, edge, node, err := ing.Object(newctx.New("obj2", attr2Node))
 	if err != nil {
 		t.Error(err)
 	}
@@ -145,7 +145,7 @@ func (tc ingestTest) testObjectAsEdge(t *testing.T) {
 		t.Errorf("Cannot find attr3 node")
 		return
 	}
-	edge2, node2, err := ing.Value(newctx.New("field3", attr3Node), "3")
+	_, edge2, node2, err := ing.Value(newctx.New("field3", attr3Node), "3")
 	if err != nil {
 		t.Error(err)
 	}
@@ -179,7 +179,7 @@ func (tc ingestTest) TestArrayAsEdge(t *testing.T) {
 
 	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, Graph: NewDocumentGraph()}
 	ctx := ing.Start(DefaultContext(), "")
-	_, rootNode, err := ing.Object(ctx)
+	_, _, rootNode, err := ing.Object(ctx)
 	if err != nil {
 		t.Errorf("Ingest err: %v", err)
 		return
@@ -191,7 +191,7 @@ func (tc ingestTest) TestArrayAsEdge(t *testing.T) {
 		t.Errorf("Cannot find attr1 node")
 		return
 	}
-	edge, node, err := ing.Array(newctx.New("arr", attr1Node))
+	_, edge, node, err := ing.Array(newctx.New("arr", attr1Node))
 	if err != nil {
 		t.Error(err)
 	}
@@ -211,7 +211,7 @@ func (tc ingestTest) TestArrayAsEdge(t *testing.T) {
 		t.Errorf("Cannot find elem node")
 		return
 	}
-	edge2, node2, err := ing.Value(newctx.New(0, elemNode), "3")
+	_, edge2, node2, err := ing.Value(newctx.New(0, elemNode), "3")
 	if err != nil {
 		t.Error(err)
 	}

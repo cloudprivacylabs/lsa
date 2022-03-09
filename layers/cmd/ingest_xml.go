@@ -22,7 +22,6 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 	xmlingest "github.com/cloudprivacylabs/lsa/pkg/xml"
 )
 
@@ -69,18 +68,18 @@ var ingestXMLCmd = &cobra.Command{
 				Schema:               layer,
 				EmbedSchemaNodes:     embedSchemaNodes,
 				OnlySchemaAttributes: onlySchemaAttributes,
+				Graph:                ls.NewDocumentGraph(),
 			},
 		}
 
 		baseID, _ := cmd.Flags().GetString("id")
-		target := graph.NewOCGraph()
-		_, err = xmlingest.IngestStream(ls.DefaultContext(), &ingester, target, baseID, input)
+		_, err = xmlingest.IngestStream(ls.DefaultContext(), &ingester, baseID, input)
 		if err != nil {
 			failErr(err)
 		}
 		outFormat, _ := cmd.Flags().GetString("output")
 		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
-		err = OutputIngestedGraph(outFormat, target, os.Stdout, includeSchema)
+		err = OutputIngestedGraph(outFormat, ingester.Graph, os.Stdout, includeSchema)
 		if err != nil {
 			failErr(err)
 		}
