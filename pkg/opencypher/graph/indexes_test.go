@@ -7,7 +7,7 @@ import (
 
 func TestNodeIndex(t *testing.T) {
 	g := NewOCGraph()
-	g.index.NodePropertyIndex("index")
+	g.index.NodePropertyIndex("index", g)
 	labels := []string{"a", "b", "c", "d", "e", "f"}
 	data := make(map[string]struct{})
 	for _, l := range labels {

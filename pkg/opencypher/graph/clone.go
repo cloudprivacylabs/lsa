@@ -34,21 +34,41 @@ func copyProperties(in withProperties, cloneProperty func(string, interface{}) i
 	return properties
 }
 
-// Copy a graph
+// CopyGraph copies source graph into target, using clonePropertyFunc to clone properties
 func CopyGraph(source, target Graph, clonePropertyFunc func(string, interface{}) interface{}) map[Node]Node {
-	nodeMap := make(map[Node]Node)
-	for nodes := source.GetNodes(); nodes.Next(); {
-		node := nodes.Node()
-		nodeMap[node] = target.NewNode(copyLabels(node.GetLabels()), copyProperties(node, clonePropertyFunc))
-	}
-	for edges := source.GetEdges(); edges.Next(); {
-		edge := edges.Edge()
+	return CopyGraphf(source, func(node Node, nodeMap map[Node]Node) Node {
+		return target.NewNode(copyLabels(node.GetLabels()), copyProperties(node, clonePropertyFunc))
+	}, func(edge Edge, nodeMap map[Node]Node) Edge {
 		properties := make(map[string]interface{})
 		edge.ForEachProperty(func(key string, value interface{}) bool {
 			properties[key] = clonePropertyFunc(key, value)
 			return true
 		})
-		target.NewEdge(nodeMap[edge.GetFrom()], nodeMap[edge.GetTo()], edge.GetLabel(), properties)
+		return target.NewEdge(nodeMap[edge.GetFrom()], nodeMap[edge.GetTo()], edge.GetLabel(), properties)
+	})
+}
+
+// CopyGraphf copies source graph into target, using the copeNodeFunc
+// func to clone nodes. copyNodeFunc may return nil to prevent
+// copying a node
+func CopyGraphf(source Graph, copyNodeFunc func(Node, map[Node]Node) Node, copyEdgeFunc func(Edge, map[Node]Node) Edge) map[Node]Node {
+	nodeMap := make(map[Node]Node)
+	for nodes := source.GetNodes(); nodes.Next(); {
+		node := nodes.Node()
+		newNode := copyNodeFunc(node, nodeMap)
+		if newNode != nil {
+			nodeMap[node] = newNode
+		}
+	}
+	for edges := source.GetEdges(); edges.Next(); {
+		edge := edges.Edge()
+		if _, fromExists := nodeMap[edge.GetFrom()]; !fromExists {
+			continue
+		}
+		if _, toExists := nodeMap[edge.GetTo()]; !toExists {
+			continue
+		}
+		copyEdgeFunc(edge, nodeMap)
 	}
 	return nodeMap
 }

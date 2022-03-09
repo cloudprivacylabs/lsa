@@ -67,7 +67,7 @@ func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer, int
 
 func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer, interner ls.Interner) (graph.Node, error) {
 	id := entityId + "#" + strings.Join(name, ".")
-	newNode := layer.NewNode(nil, nil)
+	newNode := layer.Graph.NewNode(nil, nil)
 	ls.SetNodeID(newNode, id)
 	return buildSchemaAttrs(entityId, name, attr, layer, newNode, interner)
 }
@@ -117,7 +117,7 @@ func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer
 			return nil, err
 		}
 		for _, x := range attrs {
-			layer.NewEdge(newNode, x, ls.ObjectAttributeListTerm, nil)
+			layer.Graph.NewEdge(newNode, x, ls.ObjectAttributeListTerm, nil)
 		}
 		if len(attr.object.required) > 0 {
 			newNode.SetProperty(validators.RequiredTerm, ls.StringSlicePropertyValue(attr.object.required))
@@ -130,7 +130,7 @@ func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer
 		if err != nil {
 			return nil, err
 		}
-		layer.NewEdge(newNode, n, ls.ArrayItemsTerm, nil)
+		layer.Graph.NewEdge(newNode, n, ls.ArrayItemsTerm, nil)
 		return newNode, nil
 	}
 
@@ -153,7 +153,7 @@ func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer
 			return nil, err
 		}
 		for _, x := range choices {
-			layer.NewEdge(newNode, x, ls.OneOfTerm, nil)
+			layer.Graph.NewEdge(newNode, x, ls.OneOfTerm, nil)
 		}
 		return newNode, nil
 	}
@@ -164,7 +164,7 @@ func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer
 			return nil, err
 		}
 		for _, x := range choices {
-			layer.NewEdge(newNode, x, ls.AllOfTerm, nil)
+			layer.Graph.NewEdge(newNode, x, ls.AllOfTerm, nil)
 		}
 		return newNode, nil
 	}

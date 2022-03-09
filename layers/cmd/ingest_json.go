@@ -23,7 +23,6 @@ import (
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func init() {
@@ -69,18 +68,18 @@ var ingestJSONCmd = &cobra.Command{
 				Schema:               layer,
 				EmbedSchemaNodes:     embedSchemaNodes,
 				OnlySchemaAttributes: onlySchemaAttributes,
+				Graph:                ls.NewDocumentGraph(),
 			},
 		}
 
 		baseID, _ := cmd.Flags().GetString("id")
-		target := graph.NewOCGraph()
-		_, err = jsoningest.IngestStream(ls.DefaultContext(), &ingester, target, baseID, input)
+		_, err = jsoningest.IngestStream(ls.DefaultContext(), &ingester, baseID, input)
 		if err != nil {
 			failErr(err)
 		}
 		outFormat, _ := cmd.Flags().GetString("output")
 		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
-		err = OutputIngestedGraph(outFormat, target, os.Stdout, includeSchema)
+		err = OutputIngestedGraph(outFormat, ingester.Graph, os.Stdout, includeSchema)
 		if err != nil {
 			failErr(err)
 		}

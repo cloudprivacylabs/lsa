@@ -94,16 +94,16 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 	// The root node must connect to the layer node
 	layerRoot := inputNodes[LDGetNodeID(rootNode.Node[LayerRootTerm])]
 	if layerRoot != nil {
-		layerRoot.GraphNode = target.NewNode([]string{AttributeNodeTerm}, nil)
+		layerRoot.GraphNode = target.Graph.NewNode([]string{AttributeNodeTerm}, nil)
 		if ld.IsURL(layerRoot.ID) {
 			SetAttributeID(layerRoot.GraphNode, layerRoot.ID)
 		}
-		target.NewEdge(target.GetLayerRootNode(), layerRoot.GraphNode, LayerRootTerm, nil)
+		target.Graph.NewEdge(target.GetLayerRootNode(), layerRoot.GraphNode, LayerRootTerm, nil)
 	}
 
 	for _, node := range inputNodes {
 		if node.GraphNode == nil {
-			node.GraphNode = target.NewNode(nil, nil)
+			node.GraphNode = target.Graph.NewNode(nil, nil)
 		}
 	}
 
@@ -192,7 +192,7 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 					return err
 				}
 				SetNodeIndex(attrNode.GraphNode, index)
-				target.NewEdge(inode.GraphNode, attrNode.GraphNode, k, nil)
+				target.Graph.NewEdge(inode.GraphNode, attrNode.GraphNode, k, nil)
 			}
 
 		case ReferenceTerm:
@@ -221,7 +221,7 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 				if err := unmarshalAttributeNode(target, itemsNode, allNodes, interner); err != nil {
 					return err
 				}
-				target.NewEdge(inode.GraphNode, itemsNode.GraphNode, k, nil)
+				target.Graph.NewEdge(inode.GraphNode, itemsNode.GraphNode, k, nil)
 			default:
 				return MakeErrInvalidInput(inode.ID, "Multiple array items")
 			}
@@ -247,7 +247,7 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 					return err
 				}
 				SetNodeIndex(nnode.GraphNode, index)
-				target.NewEdge(inode.GraphNode, nnode.GraphNode, k, nil)
+				target.Graph.NewEdge(inode.GraphNode, nnode.GraphNode, k, nil)
 			}
 		}
 	}

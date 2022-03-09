@@ -41,8 +41,12 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 		if _, processed := processedSourceNodes[sourceNode]; processed {
 			return true
 		}
+		sourceID := GetAttributeID(sourceNode)
+		if len(sourceID) == 0 {
+			return true
+		}
 		// If node exists in target, merge
-		targetNode, targetPath := layer.FindAttributeByID(GetAttributeID(sourceNode))
+		targetNode, targetPath := layer.FindAttributeByID(sourceID)
 		if targetNode != nil {
 			// Target node exists. Merge if paths match
 			if pathsMatch(targetPath, sourcePath) {
@@ -56,8 +60,8 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 					if IsAttributeTreeEdge(edge) {
 						continue
 					}
-					graph.CopySubgraph(edge.GetTo(), layer, ClonePropertyValueFunc, nodeMap)
-					graph.CopyEdge(edge, layer, ClonePropertyValueFunc, nodeMap)
+					graph.CopySubgraph(edge.GetTo(), layer.Graph, ClonePropertyValueFunc, nodeMap)
+					graph.CopyEdge(edge, layer.Graph, ClonePropertyValueFunc, nodeMap)
 				}
 
 			}
@@ -75,11 +79,11 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 				return false
 			}
 
-			newNode := CopySchemaNodeIntoGraph(layer, sourceNode)
+			newNode := CopySchemaNodeIntoGraph(layer.Graph, sourceNode)
 			for edges := sourceNode.GetEdges(graph.IncomingEdge); edges.Next(); {
 				edge := edges.Edge()
 				if edge.GetFrom() == parent {
-					layer.NewEdge(parentInLayer, newNode, edge.GetLabel(), CloneProperties(edge))
+					layer.Graph.NewEdge(parentInLayer, newNode, edge.GetLabel(), CloneProperties(edge))
 				}
 			}
 		}

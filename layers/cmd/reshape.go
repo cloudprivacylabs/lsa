@@ -19,7 +19,6 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 	"github.com/cloudprivacylabs/lsa/pkg/transform"
 	"github.com/spf13/cobra"
 )
@@ -55,13 +54,13 @@ var reshapeCmd = &cobra.Command{
 		reshaper := transform.Reshaper{}
 		reshaper.Schema = layer
 		reshaper.EmbedSchemaNodes = true
-		target := graph.NewOCGraph()
-		err = reshaper.Reshape(ls.DefaultContext(), g, target)
+		reshaper.Graph = ls.NewDocumentGraph()
+		err = reshaper.Reshape(ls.DefaultContext(), g)
 		if err != nil {
 			failErr(err)
 		}
 		outFormat, _ := cmd.Flags().GetString("format")
-		err = OutputIngestedGraph(outFormat, target, os.Stdout, false)
+		err = OutputIngestedGraph(outFormat, reshaper.Graph, os.Stdout, false)
 		if err != nil {
 			failErr(err)
 		}

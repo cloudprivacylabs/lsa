@@ -328,7 +328,7 @@ func (lookupTableMarshaler) unmarshalLookupTable(target *Layer, key string, valu
 	lookupContents := allNodes[id]
 	if lookupContents == nil {
 		// This is an external lookup table. Create a reference node for it
-		referenceNode := target.NewNode([]string{LookupTableReferenceTerm}, nil)
+		referenceNode := target.Graph.NewNode([]string{LookupTableReferenceTerm}, nil)
 		SetNodeID(referenceNode, id)
 		// Put that into allNodes
 		newNode := &LDNode{
@@ -338,7 +338,7 @@ func (lookupTableMarshaler) unmarshalLookupTable(target *Layer, key string, valu
 		}
 		allNodes[id] = newNode
 		// Connect the attribute node to the reference node
-		target.NewEdge(node.GraphNode, referenceNode, LookupTableTerm, nil)
+		target.Graph.NewEdge(node.GraphNode, referenceNode, LookupTableTerm, nil)
 		return nil
 	}
 
@@ -346,7 +346,7 @@ func (lookupTableMarshaler) unmarshalLookupTable(target *Layer, key string, valu
 	// are referring to an already processed lookup table, simply
 	// connect this node to the table
 	if lookupContents.GraphNode != nil && lookupContents.GraphNode.GetLabels().Has(LookupTableTerm) {
-		target.NewEdge(node.GraphNode, lookupContents.GraphNode, LookupTableTerm, nil)
+		target.Graph.NewEdge(node.GraphNode, lookupContents.GraphNode, LookupTableTerm, nil)
 		return nil
 	}
 
@@ -355,14 +355,14 @@ func (lookupTableMarshaler) unmarshalLookupTable(target *Layer, key string, valu
 	// Create the root node
 	lookupTableNode := lookupContents.GraphNode
 	if lookupTableNode == nil {
-		lookupTableNode := target.NewNode(nil, nil)
+		lookupTableNode := target.Graph.NewNode(nil, nil)
 		SetNodeID(lookupTableNode, id)
 		lookupContents.GraphNode = lookupTableNode
 	}
 	types := lookupTableNode.GetLabels()
 	types.Add(LookupTableTerm)
 	lookupTableNode.SetLabels(types)
-	target.NewEdge(node.GraphNode, lookupTableNode, LookupTableTerm, nil)
+	target.Graph.NewEdge(node.GraphNode, lookupTableNode, LookupTableTerm, nil)
 
 	// Create options
 	for index, element := range LDGetListElements(lookupContents.Node[LookupTableElementsTerm]) {
@@ -371,7 +371,7 @@ func (lookupTableMarshaler) unmarshalLookupTable(target *Layer, key string, valu
 		if elementLDNode == nil {
 			return ErrInvalidLookupTable{ID: node.ID, Msg: fmt.Sprintf("Cannot find element node with '%s'", elementNodeID)}
 		}
-		elementNode := target.NewNode([]string{LookupTableElementsTerm}, nil)
+		elementNode := target.Graph.NewNode([]string{LookupTableElementsTerm}, nil)
 		SetNodeID(elementNode, elementNodeID)
 		SetNodeIndex(elementNode, index)
 		for k, v := range elementLDNode.Node {
@@ -396,7 +396,7 @@ func (lookupTableMarshaler) unmarshalLookupTable(target *Layer, key string, valu
 				elementNode.SetProperty(k, StringPropertyValue(LDGetStringValue("@value", arr[0])))
 			}
 		}
-		target.NewEdge(lookupTableNode, elementNode, LookupTableElementsTerm, nil)
+		target.Graph.NewEdge(lookupTableNode, elementNode, LookupTableElementsTerm, nil)
 	}
 	return nil
 }
@@ -501,18 +501,18 @@ func (lookupTableMarshaler) UnmarshalJSON(target *Layer, key string, value inter
 		if len(table.ID) > 0 || len(table.Elements) > 0 {
 			return ErrInvalidLookupTable{ID: table.ID, Msg: "ref specified along with other attributes"}
 		}
-		referenceNode := target.NewNode([]string{LookupTableReferenceTerm}, nil)
+		referenceNode := target.Graph.NewNode([]string{LookupTableReferenceTerm}, nil)
 		SetNodeID(referenceNode, table.ID)
 		// Connect the attribute node to the reference node
-		target.NewEdge(node, referenceNode, LookupTableTerm, nil)
+		target.Graph.NewEdge(node, referenceNode, LookupTableTerm, nil)
 		return nil
 	}
 	// Non-reference table
-	rootNode := target.NewNode([]string{LookupTableTerm}, nil)
+	rootNode := target.Graph.NewNode([]string{LookupTableTerm}, nil)
 	SetNodeID(rootNode, table.ID)
-	target.NewEdge(node, rootNode, LookupTableTerm, nil)
+	target.Graph.NewEdge(node, rootNode, LookupTableTerm, nil)
 	for index, element := range table.Elements {
-		elementNode := target.NewNode([]string{LookupTableElementsTerm}, nil)
+		elementNode := target.Graph.NewNode([]string{LookupTableElementsTerm}, nil)
 		SetNodeIndex(elementNode, index)
 		if len(element.Options) > 0 {
 			elementNode.SetProperty(LookupTableElementOptionsTerm, StringSlicePropertyValue(element.Options))
@@ -526,7 +526,7 @@ func (lookupTableMarshaler) UnmarshalJSON(target *Layer, key string, value inter
 		if len(element.Error) > 0 {
 			elementNode.SetProperty(LookupTableElementErrorTerm, StringPropertyValue(element.Error))
 		}
-		target.NewEdge(rootNode, elementNode, LookupTableElementsTerm, nil)
+		target.Graph.NewEdge(rootNode, elementNode, LookupTableElementsTerm, nil)
 	}
 	return nil
 }
