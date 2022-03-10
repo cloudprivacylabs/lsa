@@ -618,7 +618,7 @@ func (ingester *Ingester) NewNode(ictx IngestionContext) graph.Node {
 	nodes := acc.GetHeadNodes()
 
 	if ingester.EmbedSchemaNodes {
-		ingester.EmbedSchemaNode(ictx, node, schemaNode)
+		ingester.EmbedSchemaNode(node, schemaNode)
 		// Copy the subtrees for all nodes connected to the schema node
 		for edges := schemaNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
@@ -651,7 +651,7 @@ func (ingester *Ingester) NewNode(ictx IngestionContext) graph.Node {
 // node properties. No properties are overwritten in the target
 // node. The schema node types that are not schema node types are also
 // merged with the target node types.
-func (ingester *Ingester) EmbedSchemaNode(ictx IngestionContext, targetNode, schemaNode graph.Node) {
+func (ingester *Ingester) EmbedSchemaNode(targetNode, schemaNode graph.Node) {
 	schemaNode.ForEachProperty(func(k string, v interface{}) bool {
 		if k == NodeIDTerm {
 			return true
@@ -730,10 +730,49 @@ func (ingester *Ingester) Polymorphic(ictx IngestionContext, ingest func(*Ingest
 // entity root nodes. If generateIDFunc is nil, the default ID
 // generation function is used
 func (ingester *Ingester) Finish(ictx IngestionContext, root graph.Node) error {
+	var entityInfo map[graph.Node]EntityInfo
 	if ingester.Schema != nil {
-		//entities := GetEntityRootNodes(ingester.Graph)
-
+		entityInfo = GetEntityRootNodes(ingester.Graph)
+		for nodes := ingester.Schema.Graph.GetNodes(); nodes.Next(); {
+			attrNode := nodes.Node()
+			ls, err := GetLinkSpec(attrNode)
+			if err != nil {
+				return err
+			}
+			if ls == nil {
+				continue
+			}
+			attrId := GetNodeID(attrNode)
+			// Found a link spec. Find corresponding nodes in the document, or find parents of those nodes
+			parentSchemaNode := GetParentAttribute(attrNode)
+			// Find nodes that are instance of this node
+			parentDocNodes := GetNodesInstanceOf(ingester.Graph, GetNodeID(parentSchemaNode))
+			for _, parent := range parentDocNodes {
+				// Each parent node has at least one reference node child
+				childFound := false
+				for edges := parent.GetEdges(graph.OutgoingEdge); edges.Next(); {
+					childNode := edges.Edge().GetTo()
+					if !childNode.GetLabels().Has(DocumentNodeTerm) {
+						continue
+					}
+					if AsPropertyValue(childNode.GetProperty(SchemaNodeIDTerm)).AsString() != attrId {
+						continue
+					}
+					// childNode is an instance of attrNode, which is a link
+					childFound = true
+					if err := ingester.Link(ictx, ls, childNode, parent, entityInfo); err != nil {
+						return err
+					}
+				}
+				if !childFound {
+					if err := ingester.Link(ictx, ls, nil, parent, entityInfo); err != nil {
+						return err
+					}
+				}
+			}
+		}
 	}
+
 	lpc := LookupProcessor{
 		Graph:          root.GetGraph(),
 		ExternalLookup: ingester.ExternalLookup,

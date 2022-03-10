@@ -76,7 +76,7 @@ func (s setTree) valueItr() Iterator {
 			if !treeItr.Next() {
 				return nil
 			}
-			set := treeItr.Value().(linkedhashset.Set)
+			set := treeItr.Value().(*linkedhashset.Set)
 			itr := set.Iterator()
 			return withSize(&itr, set.Size())
 		},

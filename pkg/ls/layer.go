@@ -264,6 +264,17 @@ func (l *Layer) RenameBlankNodes(namer func(graph.Node)) {
 	}
 }
 
+// GetParentAttribute returns the parent attribute of the given node
+func GetParentAttribute(node graph.Node) graph.Node {
+	for edges := node.GetEdges(graph.IncomingEdge); edges.Next(); {
+		edge := edges.Edge()
+		if IsAttributeTreeEdge(edge) && IsAttributeNode(edge.GetFrom()) {
+			return edge.GetFrom()
+		}
+	}
+	return nil
+}
+
 // GetPath returns the path to the given attribute node
 func (l *Layer) GetAttributePath(node graph.Node) []graph.Node {
 	root := l.GetSchemaRootNode()

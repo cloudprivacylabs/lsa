@@ -20,23 +20,48 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
+/*
+
+  The linking definition must include a "reference" and "link" entry.
+
+  Types of links:
+
+  A: {
+    entityId: [idField]
+  }
+
+  B references to A using a reference field
+
+  B -- aField--> A (ingestAs=edge) or
+  B.aField --label-->A (ingestAs=node)
+
+  B: {
+    "aField": {
+      "reference": "A",  // Reference to an A entity
+         or
+      "entitySchema": "A"
+      "fk": [aIdField]   // This is the attribute ID of a field in B that contains the A ID
+      "link": -> <-  // Edge goes to A, or edge goes to B
+      "multi": // Multiple references
+      "ingestAs": "edge" or "node"
+      "label": "edgeLabel" if ingestAs=edge
+    }
+  }
+
+
+*/
+
 var (
 	// ReferenceFKTerm specifies the foreign key attribute ID
 	ReferenceFKTerm = NewTerm(LS+"Reference/", "fk", false, false, OverrideComposition, nil)
 
-	// ReferenceTargetTerm specifies the target entity if the node is not a reference node
-	ReferenceTargetTerm = NewTerm(LS+"Reference/", "target", false, false, OverrideComposition, nil)
-
-	// ReferenceTargetIDTerm is the target schema ID field. If not specified, entity ID is used
-	ReferenceTargetIDTerm = NewTerm(LS+"Reference/", "targetId", false, false, OverrideComposition, nil)
-
 	// ReferenceLabelTerm specifies the edge label between the referenced nodes
 	ReferenceLabelTerm = NewTerm(LS+"Reference/", "label", false, false, OverrideComposition, nil)
 
-	// ReferenceDirectionTerm specifies the direction of the edge. If
+	// ReferenceLinkTerm specifies the direction of the edge. If
 	// ->, the edge points to the target entity. If <-, the edge points
 	// to this entity.
-	ReferenceDirectionTerm = NewTerm(LS+"Reference/", "direction", false, false, OverrideComposition, nil)
+	ReferenceLinkTerm = NewTerm(LS+"Reference/", "link", false, false, OverrideComposition, nil)
 
 	// ReferenceMultiTerm specifies if there can be more than one link targets
 	ReferenceMultiTerm = NewTerm(LS+"Reference/", "multi", false, false, OverrideComposition, nil)
@@ -65,15 +90,23 @@ func (err ErrCannotResolveLink) Error() string {
 	return fmt.Sprintf("Cannot resolve link: %+v", LinkSpec(err))
 }
 
+type ErrInvalidForeignKeys struct {
+	Spec LinkSpec
+	Msg  string
+}
+
+func (err ErrInvalidForeignKeys) Error() string {
+	return fmt.Sprintf("Invalid foreign keys: %s %s", err.Msg, GetNodeID(err.Spec.SchemaNode))
+}
+
 // LinkSpec contains the link field information
 type LinkSpec struct {
+	SchemaNode graph.Node
 	// The target schema/entity reference, populated from the
 	// `reference` property of the node
 	TargetEntity string
-	// The foreign key field
-	FK string
-	// The ID field of the target entity. If not specified, the entity id is used
-	TargetID string
+	// The foreign key field(s)
+	FK []string
 	// The label of the link
 	Label string
 	// If true, the link is from this entity to the target. If false,
@@ -81,213 +114,181 @@ type LinkSpec struct {
 	Forward bool
 	// If true, the reference can have more than one links
 	Multi bool
+	// IngestAs node or edge
+	IngestAs string
 }
 
-const linkSpecKey = "_linkSpec"
-
-// GetCompiledReferenceLinkSpec returns the compiled reference link
-// spec if there is one in the compiled property map of the node
-func GetCompiledReferenceLinkSpec(node graph.Node) (LinkSpec, bool) {
-	spec, exists := node.GetProperty(linkSpecKey)
-	if exists {
-		return spec.(LinkSpec), true
+// GetLinkSpec returns a link spec from the node if there is one. The node is a schema node
+func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
+	if schemaNode == nil {
+		return nil, nil
 	}
-	return LinkSpec{}, false
-}
-
-// GetEntityRoot tries to find the closes entity containing this
-// node. It stops searching when there are more than one incoming
-// document node edge
-func GetEntityRoot(node graph.Node) graph.Node {
-	var movePrev func(graph.Node) graph.Node
-
-	seen := make(map[graph.Node]struct{})
-	movePrev = func(start graph.Node) graph.Node {
-		var prevNode graph.Node
-		for edges := start.GetEdges(graph.IncomingEdge); edges.Next(); {
-			edge := edges.Edge()
-			if IsDocumentNode(edge.GetFrom()) {
-				if prevNode != nil {
-					return nil
-				}
-				prevNode = edge.GetFrom()
-			}
-		}
-		return prevNode
+	ls, ok := schemaNode.GetProperty("$linkSpec")
+	if ok {
+		return ls.(*LinkSpec), nil
 	}
 
-	for {
-		trc := movePrev(node)
-		if trc == nil {
-			return nil
-		}
-		if _, ok := seen[trc]; ok {
-			return nil
-		}
-		seen[trc] = struct{}{}
-		if _, boundary := GetNodeOrSchemaProperty(trc, EntitySchemaTerm); boundary {
-			return trc
+	// A reference to another entity is either a reference node, or a node that has Entity schema reference in it
+	ref := AsPropertyValue(schemaNode.GetProperty(ReferenceTerm)).AsString()
+	if len(ref) == 0 {
+		ref = AsPropertyValue(schemaNode.GetProperty(EntitySchemaTerm)).AsString()
+		if len(ref) == 0 {
+			return nil, nil
 		}
 	}
-}
 
-// CompileReferenceLinkSpec gets an uncompiled reference node, and
-// puts a LinkSpec into compiled data map of the node if the node
-// specifies a link. It also returns the LinkSpec and true. If the
-// node is not a reference node, or if the node does not specify a
-// link, returns false
-func CompileReferenceLinkSpec(layer *Layer, node graph.Node) (LinkSpec, bool, error) {
-	// Already processed?
-	if _, ok := GetCompiledReferenceLinkSpec(node); ok {
-		return LinkSpec{}, false, nil
+	link := AsPropertyValue(schemaNode.GetProperty(ReferenceLinkTerm))
+	if link == nil {
+		return nil, nil
 	}
-	if !node.GetLabels().Has(AttributeNodeTerm) {
-		return LinkSpec{}, false, nil
-	}
-	var ref, fk string
-	if node.GetLabels().Has(AttributeTypeReference) {
-		ref = AsPropertyValue(node.GetProperty(ReferenceTerm)).AsString()
-		fk = AsPropertyValue(node.GetProperty(ReferenceFKTerm)).AsString()
-	} else {
-		ref = AsPropertyValue(node.GetProperty(ReferenceTargetTerm)).AsString()
-		fk = GetNodeID(node)
-	}
-	if len(ref) == 0 || len(fk) == 0 {
-		return LinkSpec{}, false, nil
-	}
-	targetID := AsPropertyValue(node.GetProperty(ReferenceTargetIDTerm)).AsString()
-	label := AsPropertyValue(node.GetProperty(ReferenceLabelTerm)).AsString()
-	dir := AsPropertyValue(node.GetProperty(ReferenceDirectionTerm)).AsString()
-	multi := AsPropertyValue(node.GetProperty(ReferenceMultiTerm)).AsString()
-	if len(label) == 0 {
-		label = HasTerm
-	}
-	spec := LinkSpec{
+	ret := LinkSpec{
+		SchemaNode:   schemaNode,
 		TargetEntity: ref,
-		FK:           fk,
-		TargetID:     targetID,
-		Label:        label,
-		Multi:        multi == "true",
+		Label:        AsPropertyValue(schemaNode.GetProperty(ReferenceLabelTerm)).AsString(),
+		Multi:        AsPropertyValue(schemaNode.GetProperty(ReferenceMultiTerm)).AsString() != "false",
+		IngestAs:     GetIngestAs(schemaNode),
 	}
-	switch dir {
-	case "->", "":
-		spec.Forward = true
+	if len(ret.Label) == 0 {
+		ret.Label = AsPropertyValue(schemaNode.GetProperty(AttributeNameTerm)).AsString()
+	}
+	switch link.AsString() {
+	case "->":
+		ret.Forward = true
 	case "<-":
-		spec.Forward = false
+		ret.Forward = false
+	case "":
+		return nil, nil
 	default:
-		return LinkSpec{}, true, ErrInvalidLinkSpec{ID: GetNodeID(node), Msg: "Direction is not one of: ->, <-"}
+		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Direction is not one of: ->, <-"}
 	}
-	node.SetProperty(linkSpecKey, spec)
-	return spec, true, nil
+
+	if ret.IngestAs != IngestAsNode && ret.IngestAs != IngestAsEdge {
+		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Invalid ingestAs for link"}
+	}
+	fk := AsPropertyValue(schemaNode.GetProperty(ReferenceFKTerm))
+	if fk.IsString() {
+		ret.FK = []string{fk.AsString()}
+	}
+	if fk.IsStringSlice() {
+		ret.FK = fk.AsStringSlice()
+	}
+	if len(ret.FK) == 0 {
+		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Empty foreign key"}
+	}
+	schemaNode.SetProperty("$linkSpec", &ret)
+	return &ret, nil
 }
 
-// GetAllLinkSpecs returns all linkspecs under the given root node
-func GetAllLinkSpecs(root graph.Node) map[graph.Node]LinkSpec {
-	ret := make(map[graph.Node]LinkSpec)
-	IterateDescendants(root, func(node graph.Node, _ []graph.Node) bool {
-		spec, exists := GetCompiledReferenceLinkSpec(node)
-		if exists {
-			ret[node] = spec
-		}
-		return true
-	}, SkipSchemaNodes, false)
-	return ret
-}
-
-// DocumentEntityInfo describes an entity in a document
-type DocumentEntityInfo struct {
-	Root    graph.Node
-	Schema  string
-	IDNodes []graph.Node
-}
-
-// GetDocumentEntityInfo returns a map containing all entity root
-// nodes, with entity info as map values
-func GetDocumentEntityInfo(docRoot graph.Node) map[graph.Node]DocumentEntityInfo {
-	ret := make(map[graph.Node]DocumentEntityInfo)
-	IterateDescendants(docRoot, func(node graph.Node, path []graph.Node) bool {
-		prop, root := GetNodeOrSchemaProperty(node, EntitySchemaTerm)
-		if root {
-			ret[node] = DocumentEntityInfo{Root: node,
-				Schema: prop.AsString(),
-			}
-		}
-		_, hasId := GetNodeOrSchemaProperty(node, EntityIDTerm)
-		if hasId {
-			for i := len(path) - 1; i >= 0; i-- {
-				if closest, exists := ret[path[i]]; exists {
-					closest.IDNodes = append(closest.IDNodes, node)
-					ret[path[i]] = closest
-					break
-				}
-			}
-		}
-		return true
-	}, SkipSchemaNodes, false)
-	return ret
-}
-
-// Link the given node
-func (spec LinkSpec) Link(node graph.Node, entityInfo map[graph.Node]DocumentEntityInfo) error {
-	// Get the ID
-	// Is this the ID node?
-	var fk interface{}
-	var err error
-	if AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString() == spec.FK {
-		fk, err = GetNodeValue(node)
-	} else {
-		root := GetEntityRoot(node)
-		if root != nil {
-			return ErrCannotResolveLink(spec)
-		}
-		IterateDescendants(root, func(n graph.Node, _ []graph.Node) bool {
-			if AsPropertyValue(n.GetProperty(SchemaNodeIDTerm)).AsString() == spec.FK {
-				fk, err = GetNodeValue(n)
-				return false
-			}
+// Link the given node, or create a link from the parent node as the
+// docNode may not exist.
+func (ingester *Ingester) Link(ictx IngestionContext, spec *LinkSpec, docNode, parentNode graph.Node, entityInfo map[graph.Node]EntityInfo) error {
+	entityRoot := GetEntityRoot(parentNode)
+	if entityRoot == nil {
+		return ErrCannotResolveLink(*spec)
+	}
+	foreignKeyNodes := make([][]graph.Node, len(spec.FK))
+	IterateDescendants(entityRoot, func(n graph.Node, _ []graph.Node) bool {
+		attrId := AsPropertyValue(n.GetProperty(SchemaNodeIDTerm)).AsString()
+		if len(attrId) == 0 {
 			return true
-		}, SkipSchemaNodes, false)
-	}
-	if err != nil {
-		return err
-	}
-	linkTo := make([]graph.Node, 0)
-	for _, info := range entityInfo {
-		if len(info.IDNodes) != 1 {
-			continue
 		}
-		nv, err := GetNodeValue(info.IDNodes[0])
+		for i := range spec.FK {
+			if spec.FK[i] == attrId {
+				foreignKeyNodes[i] = append(foreignKeyNodes[i], n)
+			}
+		}
+		return true
+	}, OnlyDocumentNodes, false)
+	// All foreign key elements must have the same number of elements, and no index must be skipped
+	var numKeys int
+	for index := 0; index < len(foreignKeyNodes); index++ {
+		if index == 0 {
+			numKeys = len(foreignKeyNodes[index])
+		} else {
+			if len(foreignKeyNodes[index]) != numKeys {
+				return ErrInvalidForeignKeys{Spec: *spec, Msg: "Inconsistent foreign keys"}
+			}
+		}
+	}
+	if numKeys == 0 {
+		// Nothing to link
+		return nil
+	}
+	if numKeys > 1 && !spec.Multi {
+		return ErrInvalidForeignKeys{Spec: *spec, Msg: "Multiple foreign key values not allowed"}
+	}
+
+	g := parentNode.GetGraph()
+	var nodeProperties map[string]interface{}
+	if spec.IngestAs == IngestAsEdge && docNode != nil {
+		// This document node is removed and a link from the parent to the target is created
+		nodeProperties = CloneProperties(docNode)
+		docNode.DetachAndRemove()
+	}
+
+	// Find remote references
+	for i := 0; i < numKeys; i++ {
+		fk := make([]string, len(foreignKeyNodes))
+		for k, v := range foreignKeyNodes {
+			fk[k], _ = GetRawNodeValue(v[i])
+		}
+		ref, err := spec.FindReference(entityInfo, fk)
 		if err != nil {
 			return err
 		}
-		if fk == nv {
-			linkTo = append(linkTo, info.Root)
+		if len(ref) == 0 {
+			continue
 		}
-	}
-	if len(linkTo) == 0 {
-		return nil
-	}
-	if len(linkTo) > 1 && !spec.Multi {
-		return ErrMultipleTargetsFound{ID: GetNodeID(node)}
-	}
-
-	// Find the parent node of this node
-	var parent graph.Node
-	for edges := node.GetEdges(graph.IncomingEdge); edges.Next(); {
-		edge := edges.Edge()
-		if IsDocumentNode(edge.GetFrom()) {
-			if parent != nil {
-				return ErrInvalidLinkSpec{ID: GetNodeID(node), Msg: "Node has multiple parents"}
+		for _, linkRef := range ref {
+			if spec.IngestAs == IngestAsEdge {
+				// Node is already removed. Make an edge
+				if spec.Forward {
+					g.NewEdge(parentNode, linkRef, spec.Label, nodeProperties)
+				} else {
+					g.NewEdge(linkRef, parentNode, spec.Label, nodeProperties)
+				}
+			} else {
+				if docNode == nil {
+					ctx := ictx
+					ctx.SourcePath = nil
+					ctx.SchemaPath = []graph.Node{spec.SchemaNode}
+					ctx.GraphPath = []graph.Node{parentNode}
+					docNode = ingester.NewNode(ctx)
+					g.NewEdge(parentNode, docNode, HasTerm, nil)
+				}
+				// A link from this document node to target is created
+				if spec.Forward {
+					g.NewEdge(docNode, linkRef, spec.Label, nil)
+				} else {
+					g.NewEdge(linkRef, docNode, spec.Label, nil)
+				}
 			}
-			parent = edge.GetFrom()
 		}
 	}
-	if parent == nil {
-		return ErrInvalidLinkSpec{ID: GetNodeID(node), Msg: "Node has no parent"}
-	}
 
-	for _, target := range linkTo {
-		parent.GetGraph().NewEdge(parent, target, spec.Label, nil)
-	}
 	return nil
+}
+
+// FindReference finds the root nodes with entitySchema=spec.Schema, with entityId=fk
+func (spec *LinkSpec) FindReference(entityInfo map[graph.Node]EntityInfo, fk []string) ([]graph.Node, error) {
+	ret := make([]graph.Node, 0)
+	for _, ei := range entityInfo {
+		if ei.GetEntitySchema() == spec.TargetEntity {
+			id := ei.GetID()
+			if len(id) != len(fk) {
+				continue
+			}
+			found := true
+			for i := range fk {
+				if id[i] != fk[i] {
+					found = false
+					break
+				}
+			}
+			if found {
+				ret = append(ret, ei.GetRoot())
+			}
+		}
+	}
+	return ret, nil
 }
