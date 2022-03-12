@@ -87,17 +87,17 @@ func TestIngestFlat(t *testing.T) {
 			Schema:               schema,
 			OnlySchemaAttributes: false,
 			IngestEmptyValues:    true,
+			Graph:                ls.NewDocumentGraph(),
 		},
 	}
-	target := graph.NewOCGraph()
-	_, err = IngestBytes(ls.DefaultContext(), &ingester, target, "http://base", []byte(inputStr))
+	_, err = IngestBytes(ls.DefaultContext(), &ingester, "http://base", []byte(inputStr))
 	if err != nil {
 		t.Error(err)
 	}
 
 	findNodes := func(nodeId string) []graph.Node {
 		nodes := []graph.Node{}
-		for nx := target.GetNodes(); nx.Next(); {
+		for nx := ingester.Graph.GetNodes(); nx.Next(); {
 			node := nx.Node()
 			if ls.GetNodeID(node) == nodeId {
 				nodes = append(nodes, node)
@@ -121,7 +121,7 @@ func TestIngestFlat(t *testing.T) {
 	checkNodeValue("http://base.field1", "value1")
 	checkNodeValue("http://base.field2", "2")
 	checkNodeValue("http://base.field3", "true")
-	checkNodeValue("http://base.field4", nil)
+	checkNodeValue("http://base.field4", "")
 	checkNodeValue("http://base.field5", "extra")
 
 	ingester = Ingester{
@@ -129,17 +129,17 @@ func TestIngestFlat(t *testing.T) {
 			Schema:               schema,
 			OnlySchemaAttributes: true,
 			IngestEmptyValues:    true,
+			Graph:                ls.NewDocumentGraph(),
 		},
 	}
-	target = graph.NewOCGraph()
-	_, err = IngestBytes(ls.DefaultContext(), &ingester, target, "http://base", []byte(inputStr))
+	_, err = IngestBytes(ls.DefaultContext(), &ingester, "http://base", []byte(inputStr))
 	if err != nil {
 		t.Error(err)
 	}
 	checkNodeValue("http://base.field1", "value1")
 	checkNodeValue("http://base.field2", "2")
 	checkNodeValue("http://base.field3", "true")
-	checkNodeValue("http://base.field4", nil)
+	checkNodeValue("http://base.field4", "")
 
 	if len(findNodes("http://base.field5")) != 0 {
 		t.Errorf("Unexpected node found")
@@ -185,17 +185,17 @@ func TestIngestRootAnnotation(t *testing.T) {
 			Schema:               layers[0].Layer,
 			EmbedSchemaNodes:     true,
 			OnlySchemaAttributes: true,
+			Graph:                ls.NewDocumentGraph(),
 		},
 	}
-	target := graph.NewOCGraph()
-	_, err = IngestBytes(ls.DefaultContext(), &ingester, target, "http://base", []byte(inputStr))
+	_, err = IngestBytes(ls.DefaultContext(), &ingester, "http://base", []byte(inputStr))
 	if err != nil {
 		t.Error(err)
 	}
 
 	findNodes := func(nodeId string) []graph.Node {
 		nodes := []graph.Node{}
-		for nx := target.GetNodes(); nx.Next(); {
+		for nx := ingester.Graph.GetNodes(); nx.Next(); {
 			node := nx.Node()
 			t.Logf("%s", ls.GetNodeID(node))
 			if ls.GetNodeID(node) == nodeId {

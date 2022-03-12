@@ -1,0 +1,26 @@
+{
+    "@context": "../../schemas/ls.json",
+    "@id": "https://2",
+    "@type": "Schema",
+    "targetType": "2",
+    "layer": {
+        "@type": "Object",
+        "@id": "2",
+        "entityIdFields": "idField",
+        "attributes": {
+            "idField": {
+                "@type": "Value"
+            },
+            "https://rootid": {
+                "@type":"Value"
+            },
+            "https://test_ref": {
+                "@type": "Reference",
+                "reference": "https://root",
+                "fk":"https://rootid",
+                "link": "<-",
+                "ingestAs":"edge"
+            }
+        }
+    }
+}

@@ -66,6 +66,23 @@ func (s setTree) find(key interface{}) Iterator {
 	return withSize(&itr, set.Size())
 }
 
+func (s setTree) valueItr() Iterator {
+	if s.tree == nil {
+		return emptyIterator{}
+	}
+	treeItr := s.tree.Iterator()
+	return &funcIterator{
+		iteratorFunc: func() Iterator {
+			if !treeItr.Next() {
+				return nil
+			}
+			set := treeItr.Value().(*linkedhashset.Set)
+			itr := set.Iterator()
+			return withSize(&itr, set.Size())
+		},
+	}
+}
+
 type graphIndex struct {
 	nodesByLabel NodeMap
 
@@ -74,7 +91,7 @@ type graphIndex struct {
 }
 
 // NodePropertyIndex sets up an index for the given node property
-func (g *graphIndex) NodePropertyIndex(propertyName string) {
+func (g *graphIndex) NodePropertyIndex(propertyName string, graph Graph) {
 	if g.nodeProperties == nil {
 		g.nodeProperties = make(map[string]*setTree)
 	}
@@ -82,7 +99,16 @@ func (g *graphIndex) NodePropertyIndex(propertyName string) {
 	if exists {
 		return
 	}
-	g.nodeProperties[propertyName] = &setTree{}
+	index := &setTree{}
+	g.nodeProperties[propertyName] = index
+	// Reindex
+	for nodes := graph.GetNodes(); nodes.Next(); {
+		node := nodes.Node().(*OCNode)
+		value, ok := node.Properties[propertyName]
+		if ok {
+			index.add(value, node)
+		}
+	}
 }
 
 func (g *graphIndex) IsNodePropertyIndexed(propertyName string) bool {
@@ -113,6 +139,26 @@ func (g *graphIndex) GetIteratorForNodeProperty(key string, value interface{}) N
 	return &nodeIterator{itr}
 }
 
+// NodesWithProperty returns an iterator that will go through the
+// nodes that has the property
+func (g *graphIndex) NodesWithProperty(key string) NodeIterator {
+	index, found := g.nodeProperties[key]
+	if !found {
+		return nil
+	}
+	return &nodeIterator{index.valueItr()}
+}
+
+// EdgesWithProperty returns an iterator that will go through the
+// edges that has the property
+func (g *graphIndex) EdgesWithProperty(key string) EdgeIterator {
+	index, found := g.edgeProperties[key]
+	if !found {
+		return nil
+	}
+	return &edgeIterator{index.valueItr()}
+}
+
 func (g *graphIndex) addNodeToIndex(node *OCNode) {
 	g.nodesByLabel.Add(node)
 
@@ -138,7 +184,7 @@ func (g *graphIndex) removeNodeFromIndex(node *OCNode) {
 }
 
 // EdgePropertyIndex sets up an index for the given edge property
-func (g *graphIndex) EdgePropertyIndex(propertyName string) {
+func (g *graphIndex) EdgePropertyIndex(propertyName string, graph Graph) {
 	if g.edgeProperties == nil {
 		g.edgeProperties = make(map[string]*setTree)
 	}
@@ -146,7 +192,16 @@ func (g *graphIndex) EdgePropertyIndex(propertyName string) {
 	if exists {
 		return
 	}
-	g.edgeProperties[propertyName] = &setTree{}
+	index := &setTree{}
+	g.edgeProperties[propertyName] = index
+	// Reindex
+	for edges := graph.GetEdges(); edges.Next(); {
+		edge := edges.Edge().(*OCEdge)
+		value, ok := edge.Properties[propertyName]
+		if ok {
+			index.add(value, edge)
+		}
+	}
 }
 
 func (g *graphIndex) addEdgeToIndex(edge *OCEdge) {

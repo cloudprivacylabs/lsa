@@ -5,8 +5,6 @@
         "@id": "http://example.com/id",
         "layer": {
             "@type": "Object",
-            "ls:ingestAs": "edge",
-            "ls:edgeLabel": "theObjectEdge",
             "attributeList": [
                 {
                     "@id": "https://www.example.com/id1",
@@ -36,18 +34,19 @@
                     "@id": "https://www.example.com/id5",
                     "@type": "Value",
                     "attributeName": "field5"
+                },
+                {
+                    "@id": "https://attr1",
+                    "@type": "Array",
+                    "attributeName": "arr",
+                    "ls:ingestAs": "edge",
+                    "arrayElements": {
+                        "@id": "https://www.example.com/id0",
+                        "@type": "Value",
+                        "attributeName": "field6"
+                    }
                 }
-            ],
-            "attr1": {
-                "@type": "Array",
-                "attributeName": "arr",
-                "ls:ingestAs": "edge",
-                "items": {
-                    "@id": "https://www.example.com/id0",
-                    "@type": "Value",
-                    "attributeName": "field6"
-                }
-            }
+            ]
         }
         
     }

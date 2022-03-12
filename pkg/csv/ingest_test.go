@@ -87,28 +87,28 @@ func TestIngest(t *testing.T) {
 	ingester := Ingester{
 		Ingester: ls.Ingester{
 			Schema: schema,
+			Graph:  ls.NewDocumentGraph(),
 		},
+		ColumnNames: []string{"field1", "field2", "field3", "field4", "field5", "field6"},
 	}
 
 	// Test with OnlySchemaAttributes flag set to false (ingest all nodes)
-	ingester.PreserveNodePaths = true
 	ingester.OnlySchemaAttributes = false
-	target := graph.NewOCGraph()
 	for idx, tt := range inputStrColData {
-		_, err := ingester.Ingest(ls.DefaultContext(), target, tt, "https://www.example.com/id")
+		_, err := ingester.Ingest(ls.DefaultContext(), tt, "https://www.example.com/id")
 		nodesRow := make([][]string, 0, len(inputStrColData))
 		require.NoError(t, err)
 		const nodeID = "https://www.example.com/id"
 		for i := 0; i < len(tt); i++ {
 			nodes := make([]graph.Node, 0)
-			for nx := target.GetNodes(); nx.Next(); {
+			for nx := ingester.Graph.GetNodes(); nx.Next(); {
 				node := nx.Node()
-				if ls.GetNodeID(node) == (nodeID + "." + strconv.Itoa(idx)) {
+				if ls.GetNodeID(node) == (nodeID + strconv.Itoa(idx+1)) {
 					nodes = append(nodes, node)
 				}
 			}
 			if len(nodes) == 0 {
-				t.Errorf("node not found: %s", nodeID)
+				t.Errorf("node not found: %s", nodeID+strconv.Itoa(idx+1))
 			}
 			nodesRow = append(nodesRow, expectedNodes_OSA_FlagFalse[ls.GetNodeIndex(nodes[idx])])
 		}
@@ -117,22 +117,22 @@ func TestIngest(t *testing.T) {
 
 	// Test with OnlySchemaAttributes flag set
 	ingester.OnlySchemaAttributes = true
-	target = graph.NewOCGraph()
+	ingester.Graph = ls.NewDocumentGraph()
 	for idx, tt := range inputStrColData {
-		_, err := ingester.Ingest(ls.DefaultContext(), target, tt, "https://www.example.com/id")
+		_, err := ingester.Ingest(ls.DefaultContext(), tt, "https://www.example.com/id")
 		nodesRow := make([][]string, 0, len(inputStrColData))
 		require.NoError(t, err)
 		const nodeID = "https://www.example.com/id"
 		for i := 0; i < len(tt); i++ {
 			nodes := make([]graph.Node, 0)
-			for nx := target.GetNodes(); nx.Next(); {
+			for nx := ingester.Graph.GetNodes(); nx.Next(); {
 				node := nx.Node()
-				if ls.GetNodeID(node) == (nodeID + "." + strconv.Itoa(idx)) {
+				if ls.GetNodeID(node) == (nodeID + strconv.Itoa(idx+1)) {
 					nodes = append(nodes, node)
 				}
 			}
 			if len(nodes) == 0 {
-				t.Errorf("node not found: %s", nodeID)
+				t.Errorf("node not found: %s", nodeID+strconv.Itoa(idx+1))
 			}
 			nodesRow = append(nodesRow, expectedNodes_OSA_FlagTrue[ls.GetNodeIndex(nodes[idx])])
 		}

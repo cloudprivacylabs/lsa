@@ -15,6 +15,8 @@
 package ls
 
 import (
+	"fmt"
+
 	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 	"golang.org/x/text/encoding"
 )
@@ -26,14 +28,16 @@ import (
 // root node is connected to the schema node which contains the actual
 // object defined by the layer.
 type Layer struct {
-	graph.Graph
+	Graph     graph.Graph
 	layerInfo graph.Node
 }
 
 // NewLayer returns a new empty layer
 func NewLayer() *Layer {
-	ret := &Layer{Graph: graph.NewOCGraph()}
-	ret.layerInfo = ret.NewNode(nil, nil)
+	g := graph.NewOCGraph()
+	g.AddNodePropertyIndex(NodeIDTerm)
+	ret := &Layer{Graph: g}
+	ret.layerInfo = ret.Graph.NewNode(nil, nil)
 	return ret
 }
 
@@ -170,13 +174,62 @@ func (l *Layer) SetTargetType(t string) {
 	}
 }
 
-// GetEntityIDNodes returns the entity ID nodes for the layer.
-func (l *Layer) GetEntityIDNodes() []graph.Node {
+// GetArrayElementNode returns the array element node from an array node
+func GetArrayElementNode(arraySchemaNode graph.Node) graph.Node {
+	if arraySchemaNode == nil {
+		return nil
+	}
+	n := graph.TargetNodes(arraySchemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ArrayItemsTerm))
+	if len(n) == 1 {
+		return n[0]
+	}
+	return nil
+}
+
+// GetObjectAttributeNodes returns the schema attribute nodes under a
+// schema object. The returned map is keyed by the AttributeNameTerm
+func GetObjectAttributeNodes(objectSchemaNode graph.Node) (map[string][]graph.Node, error) {
+	nextNodes := make(map[string][]graph.Node)
+	addNextNode := func(node graph.Node) error {
+		key := AsPropertyValue(node.GetProperty(AttributeNameTerm)).AsString()
+		if len(key) == 0 {
+			return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema at %s", AttributeNameTerm, GetNodeID(objectSchemaNode)))
+		}
+		nextNodes[key] = append(nextNodes[key], node)
+		return nil
+	}
+	if objectSchemaNode != nil {
+		for _, node := range graph.TargetNodes(objectSchemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ObjectAttributesTerm)) {
+			if err := addNextNode(node); err != nil {
+				return nil, err
+			}
+		}
+		for _, node := range graph.TargetNodes(objectSchemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ObjectAttributeListTerm)) {
+			if err := addNextNode(node); err != nil {
+				return nil, err
+			}
+		}
+	}
+	return nextNodes, nil
+}
+
+// GetEntityIDNodes returns the entity id attribute IDs from the layer
+// root node
+func (l *Layer) GetEntityIDNodes() []string {
 	root := l.GetSchemaRootNode()
 	if root == nil {
 		return nil
 	}
-	return GetEntityIDNodes(root)
+	return AsPropertyValue(root.GetProperty(EntityIDFieldsTerm)).MustStringSlice()
+}
+
+// GetAttributesByID returns attribute nodes by ID
+func (l *Layer) GetAttributesByID(ids []string) []graph.Node {
+	ret := make([]graph.Node, len(ids))
+	for x := range ids {
+		ret[x] = l.GetAttributeByID(ids[x])
+	}
+	return ret
 }
 
 // ForEachAttribute calls f with each attribute node, depth first. If
@@ -202,7 +255,7 @@ func (l *Layer) ForEachAttributeOrdered(f func(graph.Node, []graph.Node) bool) b
 // RenameBlankNodes will call namerFunc for each blank node, so they
 // can be renamed and won't cause name clashes
 func (l *Layer) RenameBlankNodes(namer func(graph.Node)) {
-	for nodes := l.GetNodes(); nodes.Next(); {
+	for nodes := l.Graph.GetNodes(); nodes.Next(); {
 		node := nodes.Node()
 		id := GetAttributeID(node)
 		if len(id) == 0 || id[0] == '_' {
@@ -211,22 +264,56 @@ func (l *Layer) RenameBlankNodes(namer func(graph.Node)) {
 	}
 }
 
+// GetParentAttribute returns the parent attribute of the given node
+func GetParentAttribute(node graph.Node) graph.Node {
+	for edges := node.GetEdges(graph.IncomingEdge); edges.Next(); {
+		edge := edges.Edge()
+		if IsAttributeTreeEdge(edge) && IsAttributeNode(edge.GetFrom()) {
+			return edge.GetFrom()
+		}
+	}
+	return nil
+}
+
 // GetPath returns the path to the given attribute node
 func (l *Layer) GetAttributePath(node graph.Node) []graph.Node {
-	var ret []graph.Node
-	ForEachAttributeNode(l.GetSchemaRootNode(), func(n graph.Node, path []graph.Node) bool {
-		if n == node {
-			ret = path
-			return false
+	root := l.GetSchemaRootNode()
+	ret := make([]graph.Node, 0)
+	ret = append(ret, node)
+	for node != root {
+		for edges := node.GetEdges(graph.IncomingEdge); edges.Next(); {
+			edge := edges.Edge()
+			if IsAttributeTreeEdge(edge) && IsAttributeNode(edge.GetFrom()) {
+				ret = append(ret, edge.GetFrom())
+				node = edge.GetFrom()
+			}
 		}
-		return true
-	})
+	}
+	for i := 0; i < len(ret)/2; i++ {
+		ret[i], ret[len(ret)-i-1] = ret[len(ret)-i-1], ret[i]
+	}
 	return ret
+}
+
+// GetAttributeByID returns the attribute node by its ID.
+func (l *Layer) GetAttributeByID(id string) graph.Node {
+	getAttributeByIDPattern := graph.Pattern{{
+		Labels:     graph.NewStringSet(AttributeNodeTerm),
+		Properties: map[string]interface{}{NodeIDTerm: id}}}
+	nodes, _ := getAttributeByIDPattern.FindNodes(l.Graph, nil)
+	if len(nodes) == 1 {
+		return nodes[0]
+	}
+	return nil
 }
 
 // FindAttributeByID returns the attribute and the path to it
 func (l *Layer) FindAttributeByID(id string) (graph.Node, []graph.Node) {
-	return l.FindFirstAttribute(func(n graph.Node) bool { return GetAttributeID(n) == id })
+	node := l.GetAttributeByID(id)
+	if node == nil {
+		return nil, nil
+	}
+	return node, l.GetAttributePath(node)
 }
 
 // FindFirstAttribute returns the first attribute for which the predicate holds

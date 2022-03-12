@@ -79,8 +79,8 @@ var (
 	IngestAsTerm = NewTerm(LS, "ingestAs", false, false, OverrideComposition, nil)
 
 	// AsPropertyOfTerm is optional. If specified, it gives the nearest
-	// node that is an instance of the given type. If not, it is the
-	// nearest document node
+	// ancestor node that is an instance of the given type. If not, it
+	// is the parent document node
 	AsPropertyOfTerm = NewTerm(LS, "asPropertyOf", false, false, OverrideComposition, nil)
 
 	// EdgeLabelTerm represents the value used as an edge label, when ingesting an edge
@@ -100,6 +100,15 @@ var (
 
 	// HasTerm is an edge term for linking document elements
 	HasTerm = NewTerm(LS, "has", false, false, ErrorComposition, nil)
+
+	// EntityIDFieldsTerm is a string or []string that lists the attribute IDs
+	// for entity ID. It is defined at the root node of a layer. All
+	// attribute IDs must refer to value nodes.
+	EntityIDFieldsTerm = NewTerm(LS, "entityIdFields", false, false, OverrideComposition, nil)
+
+	// EntityIDTerm is a string or []string that gives the unique ID of
+	// an entity. This is a node property at the root node of an entity
+	EntityIDTerm = NewTerm(LS, "entityId", false, false, OverrideComposition, nil)
 )
 
 // Attribute types defines the terms describing attribute types. Each

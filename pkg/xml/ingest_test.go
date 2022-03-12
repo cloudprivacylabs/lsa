@@ -57,8 +57,8 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 	ingester := &Ingester{}
 	ingester.Schema = schema
 	ingester.EmbedSchemaNodes = true
-	got := graph.NewOCGraph()
-	_, err = IngestStream(ls.DefaultContext(), ingester, got, "a", f)
+	ingester.Graph = ls.NewDocumentGraph()
+	_, err = IngestStream(ls.DefaultContext(), ingester, "a", f)
 	if err != nil {
 		return fmt.Errorf("%s: %w", xmlname, err)
 	}
@@ -72,7 +72,7 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 	if err := m.Unmarshal(d, expected); err != nil {
 		return fmt.Errorf("%s: %s", graphname, err)
 	}
-	if !graph.CheckIsomorphism(got, expected, func(n1, n2 graph.Node) bool {
+	if !graph.CheckIsomorphism(ingester.Graph, expected, func(n1, n2 graph.Node) bool {
 		s1, _ := ls.GetRawNodeValue(n1)
 		s2, _ := ls.GetRawNodeValue(n2)
 		if s1 != s2 {
@@ -85,7 +85,7 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 	}, func(e1, e2 graph.Edge) bool {
 		return ls.IsPropertiesEqual(ls.PropertiesAsMap(e1), ls.PropertiesAsMap(e2))
 	}) {
-		d, _ := m.Marshal(got)
+		d, _ := m.Marshal(ingester.Graph)
 		fmt.Println("got:" + string(d))
 		d, _ = m.Marshal(expected)
 		fmt.Println("expected:" + string(d))

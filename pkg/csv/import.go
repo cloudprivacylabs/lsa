@@ -87,8 +87,8 @@ func (e ErrInvalidID) Error() string {
 // of Layer objects
 func Import(attributeID AttributeSpec, terms []TermSpec, startRow, nRows int, input [][]string) (*ls.Layer, error) {
 	layer := ls.NewLayer()
-	root := layer.NewNode([]string{ls.AttributeTypeObject, ls.AttributeNodeTerm}, nil)
-	layer.NewEdge(layer.GetLayerRootNode(), root, ls.LayerRootTerm, nil)
+	root := layer.Graph.NewNode([]string{ls.AttributeTypeObject, ls.AttributeNodeTerm}, nil)
+	layer.Graph.NewEdge(layer.GetLayerRootNode(), root, ls.LayerRootTerm, nil)
 
 	var idTemplate, arrayIdTemplate, arrayTypeTemplate *template.Template
 
@@ -157,14 +157,14 @@ func Import(attributeID AttributeSpec, terms []TermSpec, startRow, nRows int, in
 			}
 			var attr graph.Node
 			if arrayIdTemplate != nil {
-				attr = layer.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeArray}, nil)
+				attr = layer.Graph.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeArray}, nil)
 				ls.SetNodeID(attr, id)
 				arrId, err := runtmp(arrayIdTemplate, "@id", id)
 				if err != nil {
 					return nil, err
 				}
 				if len(arrId) == 0 {
-					attr = layer.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeValue}, nil)
+					attr = layer.Graph.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeValue}, nil)
 					ls.SetNodeID(attr, id)
 				} else {
 					typ, err := runtmp(arrayTypeTemplate, "@id", id)
@@ -174,15 +174,15 @@ func Import(attributeID AttributeSpec, terms []TermSpec, startRow, nRows int, in
 					if len(typ) == 0 {
 						typ = ls.AttributeTypeValue
 					}
-					elems := layer.NewNode([]string{ls.AttributeNodeTerm, typ}, nil)
+					elems := layer.Graph.NewNode([]string{ls.AttributeNodeTerm, typ}, nil)
 					ls.SetNodeID(elems, arrId)
-					layer.NewEdge(attr, elems, ls.ArrayItemsTerm, nil)
+					layer.Graph.NewEdge(attr, elems, ls.ArrayItemsTerm, nil)
 				}
 			} else {
-				attr = layer.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeValue}, nil)
+				attr = layer.Graph.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeValue}, nil)
 				ls.SetNodeID(attr, id)
 			}
-			layer.NewEdge(root, attr, ls.ObjectAttributeListTerm, nil)
+			layer.Graph.NewEdge(root, attr, ls.ObjectAttributeListTerm, nil)
 			ls.SetNodeIndex(attr, index)
 			index++
 			for ti, term := range terms {

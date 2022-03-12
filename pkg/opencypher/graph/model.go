@@ -128,6 +128,11 @@ func NextNodesWith(source Node, label string) []Node {
 	return TargetNodes(source.GetEdgesWithLabel(OutgoingEdge, label))
 }
 
+// PrevNodesWith returns the nodes reachable from source with the given label at one step
+func PrevNodesWith(source Node, label string) []Node {
+	return SourceNodes(source.GetEdgesWithLabel(IncomingEdge, label))
+}
+
 type Edge interface {
 	GetGraph() Graph
 
@@ -157,9 +162,11 @@ type Graph interface {
 
 	GetNodes() NodeIterator
 	GetNodesWithAllLabels(StringSet) NodeIterator
+	GetNodesWithProperty(string) NodeIterator
 	NumNodes() int
 
 	GetEdges() EdgeIterator
 	GetEdgesWithAnyLabel(StringSet) EdgeIterator
+	GetEdgesWithProperty(string) EdgeIterator
 	NumEdges() int
 }

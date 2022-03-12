@@ -257,6 +257,55 @@ func (g *OCGraph) FindNodes(allLabels StringSet, properties map[string]interface
 	return g.GetNodes()
 }
 
+// AddEdgePropertyIndex adds an index for the given edge property
+func (g *OCGraph) AddEdgePropertyIndex(propertyName string) {
+	g.index.EdgePropertyIndex(propertyName, g)
+}
+
+// AddNodePropertyIndex adds an index for the given node property
+func (g *OCGraph) AddNodePropertyIndex(propertyName string) {
+	g.index.NodePropertyIndex(propertyName, g)
+}
+
+// GetNodesWithProperty returns an iterator for the nodes that has the property
+func (g *OCGraph) GetNodesWithProperty(property string) NodeIterator {
+	itr := g.index.NodesWithProperty(property)
+	if itr != nil {
+		return itr
+	}
+	return &nodeIterator{&filterIterator{
+		itr: g.GetNodes(),
+		filter: func(v interface{}) bool {
+			wp, ok := v.(Node)
+			if !ok {
+				return false
+			}
+			_, exists := wp.GetProperty(property)
+			return exists
+		},
+	}}
+}
+
+// GetEdgesWithProperty returns an iterator for the edges that has the property
+func (g *OCGraph) GetEdgesWithProperty(property string) EdgeIterator {
+	itr := g.index.EdgesWithProperty(property)
+	if itr != nil {
+		return itr
+	}
+	return &edgeIterator{&filterIterator{
+		itr: g.GetEdges(),
+		filter: func(v interface{}) bool {
+			wp, ok := v.(Edge)
+			if !ok {
+				return false
+			}
+			_, exists := wp.GetProperty(property)
+			return exists
+		},
+	}}
+
+}
+
 // FindEdges returns an iterator that will iterate through all the
 // edges whose label is in the given labels and have all the
 // properties. If labels is nil or empty, it does not look at the

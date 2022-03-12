@@ -191,12 +191,6 @@ func (compiler *Compiler) compileRefs(context *Context, ctx *compilerContext, re
 	}
 	schemaNodes := compiler.CGraph.GetLayerNodes(ref)
 	context.GetLogger().Debug(map[string]interface{}{"mth": "compileRefs", "schemaNodes": len(schemaNodes)})
-	for _, node := range schemaNodes {
-		_, _, err := CompileReferenceLinkSpec(schema, node)
-		if err != nil {
-			return nil, err
-		}
-	}
 	if err := compiler.resolveReferences(context, ctx, schema, schemaNodes); err != nil {
 		return nil, err
 	}
@@ -223,7 +217,6 @@ func (compiler *Compiler) resolveReferences(context *Context, ctx *compilerConte
 func (compiler *Compiler) resolveReference(context *Context, ctx *compilerContext, layer *Layer, node graph.Node) error {
 	ref := AsPropertyValue(node.GetProperty(ReferenceTerm)).AsString()
 	context.GetLogger().Debug(map[string]interface{}{"mth": "resolveReference", "ref": ref})
-	node.RemoveProperty(ReferenceTerm)
 	// already compiled, or being compiled?
 	compiledSchema := compiler.CGraph.GetCompiledSchema(ref)
 	if compiledSchema == nil {
@@ -243,6 +236,7 @@ func (compiler *Compiler) resolveReference(context *Context, ctx *compilerContex
 	if err := ComposeProperties(context, node, rootNode); err != nil {
 		return err
 	}
+	node.SetProperty(ReferenceTerm, StringPropertyValue(ref))
 	// Attach the node to all the children of the compiled node
 	for edges := rootNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
 		edge := edges.Edge()

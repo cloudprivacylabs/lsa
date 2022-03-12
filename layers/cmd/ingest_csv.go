@@ -26,7 +26,6 @@ import (
 
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func init() {
@@ -81,6 +80,7 @@ var ingestCSVCmd = &cobra.Command{
 				Schema:               layer,
 				EmbedSchemaNodes:     embedSchemaNodes,
 				OnlySchemaAttributes: onlySchemaAttributes,
+				Graph:                ls.NewDocumentGraph(),
 			},
 		}
 		idTemplate, _ := cmd.Flags().GetString("id")
@@ -88,7 +88,6 @@ var ingestCSVCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		target := graph.NewOCGraph()
 
 		for row := 0; ; row++ {
 			rowData, err := reader.Read()
@@ -113,7 +112,7 @@ var ingestCSVCmd = &cobra.Command{
 				if err := idTmp.Execute(&buf, templateData); err != nil {
 					failErr(err)
 				}
-				_, err := ingester.Ingest(ls.DefaultContext(), target, rowData, strings.TrimSpace(buf.String()))
+				_, err := ingester.Ingest(ls.DefaultContext(), rowData, strings.TrimSpace(buf.String()))
 				if err != nil {
 					failErr(err)
 				}
@@ -121,7 +120,7 @@ var ingestCSVCmd = &cobra.Command{
 		}
 		outFormat, _ := cmd.Flags().GetString("output")
 		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
-		err = OutputIngestedGraph(outFormat, target, os.Stdout, includeSchema)
+		err = OutputIngestedGraph(outFormat, ingester.Graph, os.Stdout, includeSchema)
 		if err != nil {
 			failErr(err)
 		}
