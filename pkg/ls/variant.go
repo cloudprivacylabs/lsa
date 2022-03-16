@@ -50,7 +50,7 @@ func UnmarshalSchemaVariant(in interface{}) (*SchemaVariant, error) {
 			ret.ID = v.(string)
 		case "@type":
 			ret.Type = v.(string)
-		case ValueType:
+		case ValueTypeTerm:
 			ret.ValueType = LDGetNodeID(v)
 		case BundleTerm:
 			ret.Bundle = LDGetNodeID(v)
@@ -76,7 +76,7 @@ func MarshalSchemaVariant(variant *SchemaVariant) interface{} {
 	m := make(map[string]interface{})
 	m["@id"] = variant.ID
 	m["@type"] = SchemaVariantTerm
-	m[ValueType] = map[string]interface{}{"@id": variant.ValueType}
+	m[ValueTypeTerm] = map[string]interface{}{"@id": variant.ValueType}
 	if len(variant.Bundle) > 0 {
 		m[BundleTerm] = map[string]interface{}{"@id": variant.Bundle}
 	}

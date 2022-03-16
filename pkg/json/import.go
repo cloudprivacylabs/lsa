@@ -185,7 +185,7 @@ func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
 // algorithm creates a layer for each entity in the given target graph.
 //
 // typeTerm should be either ls.SchemaTerm or ls.OverlayTerm
-func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, entities ...CompiledEntity) ([]EntityLayer, error) {
+func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkRefsBy, entities ...CompiledEntity) ([]EntityLayer, error) {
 	ctx := importContext{entities: entities, interner: ls.NewInterner()}
 	ret := make([]EntityLayer, 0, len(ctx.entities))
 	for i := range ctx.entities {
@@ -209,7 +209,16 @@ func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, entities ...Comp
 		// Set the value type of the layer to root node ID
 		imported.Layer.SetValueType(ctx.currentEntity.ValueType)
 		imported.Layer.Graph.NewEdge(imported.Layer.GetLayerRootNode(), rootNode, ls.LayerRootTerm, nil)
-		buildSchemaAttrs(ctx.currentEntity.ValueType, nil, s, imported.Layer, rootNode, ctx.interner)
+		importer := schemaImporter{
+			entityId: ctx.currentEntity.RootNodeID,
+			layer:    imported.Layer,
+			interner: ctx.interner,
+			linkRefs: linkRefsBy,
+		}
+		if len(importer.entityId) == 0 {
+			importer.entityId = ctx.currentEntity.LayerID
+		}
+		importer.buildSchemaAttrs(nil, s, rootNode)
 		ret = append(ret, imported)
 	}
 	return ret, nil

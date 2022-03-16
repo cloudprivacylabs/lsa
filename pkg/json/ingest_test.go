@@ -169,12 +169,12 @@ func TestIngestRootAnnotation(t *testing.T) {
 
 	compiler := jsonschema.NewCompiler()
 	compiler.AddResource("http://test.json", strings.NewReader(schStr))
-	compiled, err := CompileEntitiesWith(compiler, Entity{Ref: "http://test.json#/definitions/a", ID: "id", LayerID: "lid"})
+	compiled, err := CompileEntitiesWith(compiler, Entity{Ref: "http://test.json#/definitions/a", LayerID: "lid"})
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	layers, err := BuildEntityGraph(ls.SchemaTerm, compiled...)
+	layers, err := BuildEntityGraph(graph.NewOCGraph(), ls.SchemaTerm, LinkRefsBySchemaRef, compiled...)
 	if err != nil {
 		t.Error(err)
 		return

@@ -113,7 +113,14 @@ func (imp schemaImporter) buildSchemaAttrs(name []string, attr schemaProperty, n
 
 	if attr.reference != nil {
 		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeReference))
-		newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(attr.reference))
+		switch imp.linkRefs {
+		case LinkRefsBySchemaRef:
+			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(attr.reference.Ref))
+		case LinkRefsByLayerID:
+			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(attr.reference.LayerID))
+		case LinkRefsByValueType:
+			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(attr.reference.ValueType))
+		}
 		return newNode, nil
 	}
 

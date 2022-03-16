@@ -23,6 +23,7 @@ import (
 
 	jsonsch "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func init() {
@@ -59,7 +60,7 @@ func (req *importJSONSchemaRequest) CompileAndImport() ([]jsonsch.EntityLayer, e
 	if err != nil {
 		return nil, err
 	}
-	return jsonsch.BuildEntityGraph(ls.SchemaTerm, c...)
+	return jsonsch.BuildEntityGraph(graph.NewOCGraph(), ls.SchemaTerm, jsonsch.LinkRefsByLayerID, c...)
 }
 
 func (req *importJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) ([]*ls.Layer, *ls.SchemaVariant, error) {
@@ -83,10 +84,10 @@ func (req *importJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) (
 		returnLayers = append(returnLayers, layer)
 	}
 	sch := ls.SchemaVariant{
-		ID:         execTemplate(req.SchemaID, tdata),
-		TargetType: execTemplate(req.ObjectType, tdata),
-		Schema:     baseID,
-		Overlays:   layerIDs,
+		ID:        execTemplate(req.SchemaID, tdata),
+		ValueType: execTemplate(req.ObjectType, tdata),
+		Schema:    baseID,
+		Overlays:  layerIDs,
 	}
 	return returnLayers, &sch, nil
 }
