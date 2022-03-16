@@ -23,12 +23,12 @@ import (
 
 // SchemaVAriant contains the minimal information to define a schema variant with an optional bundle
 type SchemaVariant struct {
-	ID         string
-	Type       string
-	TargetType string
-	Bundle     string
-	Schema     string
-	Overlays   []string
+	ID        string
+	Type      string
+	ValueType string
+	Bundle    string
+	Schema    string
+	Overlays  []string
 }
 
 // GetID returns the schema variant ID
@@ -50,8 +50,8 @@ func UnmarshalSchemaVariant(in interface{}) (*SchemaVariant, error) {
 			ret.ID = v.(string)
 		case "@type":
 			ret.Type = v.(string)
-		case TargetType:
-			ret.TargetType = LDGetNodeID(v)
+		case ValueType:
+			ret.ValueType = LDGetNodeID(v)
 		case BundleTerm:
 			ret.Bundle = LDGetNodeID(v)
 		case SchemaBaseTerm:
@@ -76,7 +76,7 @@ func MarshalSchemaVariant(variant *SchemaVariant) interface{} {
 	m := make(map[string]interface{})
 	m["@id"] = variant.ID
 	m["@type"] = SchemaVariantTerm
-	m[TargetType] = map[string]interface{}{"@id": variant.TargetType}
+	m[ValueType] = map[string]interface{}{"@id": variant.ValueType}
 	if len(variant.Bundle) > 0 {
 		m[BundleTerm] = map[string]interface{}{"@id": variant.Bundle}
 	}

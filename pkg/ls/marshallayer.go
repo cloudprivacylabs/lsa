@@ -83,7 +83,7 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 	if rootNode == nil {
 		return nil, MakeErrInvalidInput("No schema or overlay type node")
 	}
-	targetType := LDGetNodeID(rootNode.Node[TargetType])
+	targetType := LDGetNodeValue(rootNode.Node[ValueTypeTerm])
 	target := NewLayer()
 	rootNode.GraphNode = target.GetLayerRootNode()
 	rootNode.GraphNode.SetLabels(graph.NewStringSet(rootNode.Types...))
@@ -134,7 +134,7 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 		}
 	}
 	if len(targetType) > 0 {
-		target.SetTargetType(targetType)
+		target.SetValueType(targetType)
 	}
 	return target, nil
 }

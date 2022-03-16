@@ -41,6 +41,15 @@ func NewLayer() *Layer {
 	return ret
 }
 
+// NewLayerInGraph creates a new layer in the given graph by creating
+// a layerinfo root node for the layer. The graph may contain many
+// other layers
+func NewLayerInGraph(g graph.Graph) *Layer {
+	ret := &Layer{Graph: g}
+	ret.layerInfo = g.NewNode(nil, nil)
+	return ret
+}
+
 // NewLayerFromGraph uses the graph to create a layer. The root node
 // of the graph becomes the schema root, if there is one
 func NewLayerFromGraph(g graph.Graph) *Layer {
@@ -56,31 +65,25 @@ func NewLayerFromGraph(g graph.Graph) *Layer {
 	return ret
 }
 
-// Clone returns a copy of the layer
+// Clone returns a copy of the layer in a new graph. If the graph
+// contains other layers, they are not copied.
 func (l *Layer) Clone() *Layer {
 	targetGraph := graph.NewOCGraph()
-	nodeMap := graph.CopyGraph(l.Graph, targetGraph, func(key string, value interface{}) interface{} {
-		if p, ok := value.(*PropertyValue); ok {
-			return p.Clone()
-		}
-		return value
-	})
-	ret := &Layer{
-		Graph:     targetGraph,
-		layerInfo: nodeMap[l.layerInfo],
-	}
-	return ret
+	newLayer, _ := l.CloneInto(targetGraph)
+	return newLayer
 }
 
-// CloneInto clones the layer into the targetgraph
+// CloneInto clones the layer into the targetgraph. If the source
+// graph contains other layers, they are not copied.
 func (l *Layer) CloneInto(targetGraph graph.Graph) (*Layer, map[graph.Node]graph.Node) {
 	ret := &Layer{Graph: targetGraph}
-	nodeMap := graph.CopyGraph(l.Graph, targetGraph, func(key string, value interface{}) interface{} {
+	nodeMap := make(map[graph.Node]graph.Node)
+	graph.CopySubgraph(l.layerInfo, targetGraph, func(key string, value interface{}) interface{} {
 		if p, ok := value.(*PropertyValue); ok {
 			return p.Clone()
 		}
 		return value
-	})
+	}, nodeMap)
 	ret.layerInfo = nodeMap[l.layerInfo]
 	return ret, nodeMap
 }
@@ -149,15 +152,16 @@ func (l *Layer) GetEncoding() (encoding.Encoding, error) {
 	return UnknownEncodingIndex.Encoding(enc)
 }
 
-// GetTargetType returns the value of the targetType field from the
-// layer information node
-func (l *Layer) GetTargetType() string {
-	return AsPropertyValue(l.layerInfo.GetProperty(TargetType)).AsString()
+// GetValueType returns the value of the valueType field from the
+// layer information node. This is the type of the entity defined by
+// the schema
+func (l *Layer) GetValueType() string {
+	return AsPropertyValue(l.layerInfo.GetProperty(ValueTypeTerm)).AsString()
 }
 
-// SetTargetType sets the targe types of the layer
-func (l *Layer) SetTargetType(t string) {
-	if oldT := l.GetTargetType(); len(oldT) > 0 {
+// SetValueType sets the value types of the layer
+func (l *Layer) SetValueType(t string) {
+	if oldT := l.GetValueType(); len(oldT) > 0 {
 		if oin := l.GetSchemaRootNode(); oin != nil {
 			labels := oin.GetLabels()
 			labels.Remove(oldT)
@@ -165,7 +169,7 @@ func (l *Layer) SetTargetType(t string) {
 		}
 	}
 	if len(t) > 0 {
-		l.layerInfo.SetProperty(TargetType, StringPropertyValue(t))
+		l.layerInfo.SetProperty(ValueTypeTerm, StringPropertyValue(t))
 		if oin := l.GetSchemaRootNode(); oin != nil {
 			labels := oin.GetLabels()
 			labels.Add(t)

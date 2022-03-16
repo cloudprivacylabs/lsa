@@ -21,6 +21,7 @@ import (
 	"github.com/santhosh-tekuri/jsonschema/v5"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 const X_LS = "x-ls"
@@ -37,15 +38,33 @@ func (e ErrCyclicSchema) Error() string {
 	return "Cycle:" + strings.Join(items, " ")
 }
 
-// Entity defines a location in the schema as an entity
+// Entity defines an entity as a layered schema with respect to a JSON schema
 type Entity struct {
-	// Reference to the  schema
+	// Reference to the schema. This includes the full reference to the
+	// JSON schema, and the reference in that schema that defines the
+	// entity. For example, this can be
+	// https://somenamespace/myschema.json#/definitions/Object
 	Ref string `json:"ref" bson:"ref" yaml:"ref"`
-	// ID of the entity
-	ID string `json:"id" bson:"id" yaml:"id"`
 	// ID of the layer that will be generated
 	LayerID string `json:"layerId" bson:"layerId" yaml:"layerId"`
+	// The ID of the root node. If empty, ValueType is used for the root node id
+	RootNodeID string `json:"rootNodeId" baon:"rootNodeId" yaml:"rootNodeId"`
+	// ValueType is the value type of the schema, that is, the entity type defined with this schema
+	ValueType string `json:"valueType" bson:"valueType" yaml:"valueType"`
 }
+
+// LinkRefsBy is an enumeration that specifies how the links for the
+// imported schema should be written
+type LinkRefsBy int
+
+const (
+	// Remote references are schema references (entity.Ref)
+	LinkRefsBySchemaRef LinkRefsBy = iota
+	// Remote references are layer ids (entity.LayerID)
+	LinkRefsByLayerID
+	// Remote references are value types (entity.ValueType)
+	LinkRefsByValueType
+)
 
 // FindEntityByRef finds the entity by ref value
 func FindEntityByRef(entities []Entity, ref string) *Entity {
@@ -57,10 +76,10 @@ func FindEntityByRef(entities []Entity, ref string) *Entity {
 	return nil
 }
 
-// FindEntityByID finds the entity by ID value
-func FindEntityByID(entities []Entity, ID string) *Entity {
+// FindEntityByValueType finds the entity by ValueType value
+func FindEntityByValueType(entities []Entity, valueType string) *Entity {
 	for i, x := range entities {
-		if x.ID == ID {
+		if x.ValueType == valueType {
 			return &entities[i]
 		}
 	}
@@ -123,7 +142,7 @@ func CompileEntitiesWith(compiler *jsonschema.Compiler, entities ...Entity) ([]C
 	for _, e := range entities {
 		sch, err := compiler.Compile(e.Ref)
 		if err != nil {
-			return nil, fmt.Errorf("During %s: %w", e.ID, err)
+			return nil, fmt.Errorf("During %s: %w", e.Ref, err)
 		}
 		ret = append(ret, CompiledEntity{Entity: e, Schema: sch})
 	}
@@ -163,10 +182,10 @@ func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
 // BuildEntityGraph imports  JSON schemas or overlays
 //
 // A JSON schema may include many object definitions. This import
-// algorithm creates a layer for each entity.
+// algorithm creates a layer for each entity in the given target graph.
 //
 // typeTerm should be either ls.SchemaTerm or ls.OverlayTerm
-func BuildEntityGraph(typeTerm string, entities ...CompiledEntity) ([]EntityLayer, error) {
+func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, entities ...CompiledEntity) ([]EntityLayer, error) {
 	ctx := importContext{entities: entities, interner: ls.NewInterner()}
 	ret := make([]EntityLayer, 0, len(ctx.entities))
 	for i := range ctx.entities {
@@ -180,17 +199,17 @@ func BuildEntityGraph(typeTerm string, entities ...CompiledEntity) ([]EntityLaye
 
 		imported := EntityLayer{}
 		imported.Entity = *ctx.currentEntity
-		imported.Layer = ls.NewLayer()
+		imported.Layer = ls.NewLayerInGraph(targetGraph)
 
 		// Set the layer ID from the entity layer ID
 		imported.Layer.SetID(ctx.currentEntity.LayerID)
 		// Set the root node ID from the entity ID
 		rootNode := imported.Layer.Graph.NewNode(nil, nil)
-		ls.SetNodeID(rootNode, ctx.currentEntity.ID)
-		// Set the target type of the layer to root node ID
-		imported.Layer.SetTargetType(ctx.currentEntity.ID)
+		//ls.SetNodeID(rootNode, ctx.currentEntity.ID)
+		// Set the value type of the layer to root node ID
+		imported.Layer.SetValueType(ctx.currentEntity.ValueType)
 		imported.Layer.Graph.NewEdge(imported.Layer.GetLayerRootNode(), rootNode, ls.LayerRootTerm, nil)
-		buildSchemaAttrs(ctx.currentEntity.ID, nil, s, imported.Layer, rootNode, ctx.interner)
+		buildSchemaAttrs(ctx.currentEntity.ValueType, nil, s, imported.Layer, rootNode, ctx.interner)
 		ret = append(ret, imported)
 	}
 	return ret, nil
@@ -206,7 +225,7 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 	case sch.Ref != nil:
 		ref := ctx.findEntity(sch.Ref)
 		if ref != nil {
-			target.reference = ref.ID
+			target.reference = ref
 			return nil
 		}
 		return importSchema(ctx, target, sch.Ref)
