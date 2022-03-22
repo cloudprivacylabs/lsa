@@ -773,13 +773,15 @@ func (ingester *Ingester) Finish(ictx IngestionContext, root graph.Node) error {
 		}
 	}
 
-	lpc := LookupProcessor{
-		Graph:          root.GetGraph(),
-		ExternalLookup: ingester.ExternalLookup,
-	}
-	for nodes := lpc.Graph.GetNodes(); nodes.Next(); {
-		if err := lpc.ProcessLookup(nodes.Node()); err != nil {
-			return err
+	if root != nil {
+		lpc := LookupProcessor{
+			Graph:          root.GetGraph(),
+			ExternalLookup: ingester.ExternalLookup,
+		}
+		for nodes := lpc.Graph.GetNodes(); nodes.Next(); {
+			if err := lpc.ProcessLookup(nodes.Node()); err != nil {
+				return err
+			}
 		}
 	}
 	return nil
