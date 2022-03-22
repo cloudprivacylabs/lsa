@@ -28,48 +28,42 @@ import (
 
 func init() {
 	importCmd.AddCommand(importJSONCmd)
+	importJSONCmd.Flags().String("output", "graph", "Output format: graph (single graph containing the schema(s), or sliced for sliced output)")
 }
 
-type importEntity struct {
-	jsonsch.Entity
-	Name       string `json:"name"`
-	SchemaName string `json:"fileName"`
+type ImportJSONSchemaRequest struct {
+	Entities []jsonsch.Entity   `json:"entities"`
+	SchemaID string             `json:"schemaId"`
+	Schema   string             `json:"schemaVariant"`
+	Layers   []SliceByTermsSpec `json:"layers"`
 }
 
-type importJSONSchemaRequest struct {
-	Entities   []importEntity     `json:"entities"`
-	SchemaID   string             `json:"schemaId"`
-	Schema     string             `json:"schemaVariant"`
-	ObjectType string             `json:"objectType"`
-	Layers     []SliceByTermsSpec `json:"layers"`
-}
-
-func (req *importJSONSchemaRequest) SetSchemaNames() {
-	for i := range req.Entities {
-		req.Entities[i].SchemaName = execTemplate(req.SchemaID, map[string]interface{}{"name": req.Entities[i].Name, "ref": req.Entities[i].Ref})
-	}
-}
-
-func (req *importJSONSchemaRequest) CompileAndImport() ([]jsonsch.EntityLayer, error) {
-	req.SetSchemaNames()
-	e := make([]jsonsch.Entity, 0, len(req.Entities))
-	for _, x := range req.Entities {
-		e = append(e, x.Entity)
-	}
-	c, err := jsonsch.CompileEntities(e...)
+func (req *ImportJSONSchemaRequest) CompileAndImport() (graph.Graph, []jsonsch.EntityLayer, error) {
+	c, err := jsonsch.CompileEntities(req.Entities...)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return jsonsch.BuildEntityGraph(graph.NewOCGraph(), ls.SchemaTerm, jsonsch.LinkRefsByLayerID, c...)
+	g := graph.NewOCGraph()
+	layers, err := jsonsch.BuildEntityGraph(g, ls.SchemaTerm, jsonsch.LinkRefsByLayerID, c...)
+	return g, layers, err
 }
 
-func (req *importJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) ([]*ls.Layer, *ls.SchemaVariant, error) {
+func makeEntityTemplateData(e jsonsch.Entity) map[string]interface{} {
+	return map[string]interface{}{
+		"ref":        e.Ref,
+		"layerId":    e.LayerID,
+		"rootNodeId": e.RootNodeID,
+		"valueType":  e.ValueType,
+	}
+}
+
+func (req *ImportJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) ([]*ls.Layer, *ls.SchemaVariant, error) {
 	layerIDs := make([]string, 0)
 	baseID := ""
 	returnLayers := make([]*ls.Layer, 0)
-	tdata := map[string]interface{}{"name": req.Entities[index].Name, "ref": item.Entity.Ref}
+	tdata := makeEntityTemplateData(item.Entity.Entity)
 	for _, ovl := range req.Layers {
-		layer, err := ovl.Slice(item.Layer, execTemplate(req.ObjectType, tdata), tdata)
+		layer, err := ovl.Slice(item.Layer, item.Entity.ValueType, tdata)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -85,7 +79,7 @@ func (req *importJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) (
 	}
 	sch := ls.SchemaVariant{
 		ID:        execTemplate(req.SchemaID, tdata),
-		ValueType: execTemplate(req.ObjectType, tdata),
+		ValueType: item.Entity.ValueType,
 		Schema:    baseID,
 		Overlays:  layerIDs,
 	}
@@ -100,9 +94,10 @@ var importJSONCmd = &cobra.Command{
 {
   "entities": [
      {
-       "ref": "<reference to schema>",
-       "name": "entity name",
-       "id": "ID of the output type"
+       "ref": "reference to schema, e.g. myFile.json#/definitions/item",
+       "layerId": "Id of the schema or the overlay",
+       "rootNodeId": "Id of the root node. If none, same as layerId",
+       "valueType" "Type of the value defined in the schema" 
      },
     ...
    ],
@@ -121,8 +116,8 @@ var importJSONCmd = &cobra.Command{
 }
 
 Each element in the input will be compiled, and sliced into a layers, and saved 
-as a schema+layers. The file names, @ids, and terms
-are Go templates, you can reference entity names and references using {{.name}} and {{.ref}}.
+as a schema+layers. All fields are Go templates evaluated using the current entity: 
+{{.entity.ref}}, {{.entity.layerId}}...
 `,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -131,7 +126,7 @@ are Go templates, you can reference entity names and references using {{.name}} 
 			failErr(err)
 		}
 
-		var req importJSONSchemaRequest
+		var req ImportJSONSchemaRequest
 		if err := json.Unmarshal(inputData, &req); err != nil {
 			failErr(err)
 		}
@@ -139,30 +134,39 @@ are Go templates, you can reference entity names and references using {{.name}} 
 			return
 		}
 
-		results, err := req.CompileAndImport()
+		g, results, err := req.CompileAndImport()
 		if err != nil {
 			failErr(err)
 		}
-		for index, item := range results {
-			layers, sch, err := req.Slice(index, item)
-			if err != nil {
-				failErr(err)
-			}
-			tdata := map[string]interface{}{"name": req.Entities[index].Name, "ref": item.Entity.Ref}
-			for i := range layers {
-				marshaled, err := ls.MarshalLayer(layers[i])
+
+		output, _ := cmd.Flags().GetString("output")
+		switch output {
+		case "graph":
+			m := ls.JSONMarshaler{}
+			out, _ := m.Marshal(g)
+			fmt.Println(string(out))
+		case "sliced":
+			for index, item := range results {
+				layers, sch, err := req.Slice(index, item)
 				if err != nil {
 					failErr(err)
 				}
-				data, err := json.MarshalIndent(marshaled, "", "  ")
-				if err != nil {
-					failErr(err)
+				tdata := makeEntityTemplateData(item.Entity.Entity)
+				for i := range layers {
+					marshaled, err := ls.MarshalLayer(layers[i])
+					if err != nil {
+						failErr(err)
+					}
+					data, err := json.MarshalIndent(marshaled, "", "  ")
+					if err != nil {
+						failErr(err)
+					}
+					ioutil.WriteFile(execTemplate(req.Layers[i].File, tdata), data, 0664)
 				}
-				ioutil.WriteFile(execTemplate(req.Layers[i].File, tdata), data, 0664)
-			}
-			if len(req.Schema) > 0 {
-				data, _ := json.MarshalIndent(ls.MarshalSchemaVariant(sch), "", "  ")
-				ioutil.WriteFile(execTemplate(req.Schema, tdata), data, 0664)
+				if len(req.Schema) > 0 {
+					data, _ := json.MarshalIndent(ls.MarshalSchemaVariant(sch), "", "  ")
+					ioutil.WriteFile(execTemplate(req.Schema, tdata), data, 0664)
+				}
 			}
 		}
 	},

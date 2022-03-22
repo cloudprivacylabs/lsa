@@ -50,17 +50,21 @@ func NewLayerInGraph(g graph.Graph) *Layer {
 	return ret
 }
 
-// NewLayerFromGraph uses the graph to create a layer. The root node
-// of the graph becomes the schema root, if there is one
-func NewLayerFromGraph(g graph.Graph) *Layer {
-	ret := &Layer{Graph: g}
-	if g.NumNodes() == 0 {
-		ret.layerInfo = g.NewNode(nil, nil)
-	} else {
-		sources := graph.Sources(g)
-		if len(sources) > 0 {
-			ret.layerInfo = sources[0]
-		}
+// LayersFromGraph returns the layers from an existing graph. All
+// Schema and Overlay nodes are returned as layers.
+func LayersFromGraph(g graph.Graph) []*Layer {
+	ret := make([]*Layer, 0)
+	set := graph.NewStringSet(SchemaTerm)
+	for nodes := g.GetNodesWithAllLabels(set); nodes.Next(); {
+		node := nodes.Node()
+		l := Layer{Graph: g, layerInfo: node}
+		ret = append(ret, &l)
+	}
+	set = graph.NewStringSet(OverlayTerm)
+	for nodes := g.GetNodesWithAllLabels(set); nodes.Next(); {
+		node := nodes.Node()
+		l := Layer{Graph: g, layerInfo: node}
+		ret = append(ret, &l)
 	}
 	return ret
 }
@@ -194,8 +198,10 @@ func GetArrayElementNode(arraySchemaNode graph.Node) graph.Node {
 // schema object. The returned map is keyed by the AttributeNameTerm
 func GetObjectAttributeNodes(objectSchemaNode graph.Node) (map[string][]graph.Node, error) {
 	nextNodes := make(map[string][]graph.Node)
+	fmt.Println("ObjAttr nodes: %s\n", objectSchemaNode)
 	addNextNode := func(node graph.Node) error {
 		key := AsPropertyValue(node.GetProperty(AttributeNameTerm)).AsString()
+		fmt.Println(key)
 		if len(key) == 0 {
 			return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema at %s", AttributeNameTerm, GetNodeID(objectSchemaNode)))
 		}

@@ -46,9 +46,9 @@ type Entity struct {
 	// https://somenamespace/myschema.json#/definitions/Object
 	Ref string `json:"ref" bson:"ref" yaml:"ref"`
 	// ID of the layer that will be generated
-	LayerID string `json:"layerId" bson:"layerId" yaml:"layerId"`
+	LayerID string `json:"layerId,omitempty" bson:"layerId,omitempty" yaml:"layerId,omitempty"`
 	// The ID of the root node. If empty, ValueType is used for the root node id
-	RootNodeID string `json:"rootNodeId" baon:"rootNodeId" yaml:"rootNodeId"`
+	RootNodeID string `json:"rootNodeId,omitempty" baon:"rootNodeId,omitempty" yaml:"rootNodeId,omitempty"`
 	// ValueType is the value type of the schema, that is, the entity type defined with this schema
 	ValueType string `json:"valueType" bson:"valueType" yaml:"valueType"`
 }
@@ -150,24 +150,20 @@ func CompileEntitiesWith(compiler *jsonschema.Compiler, entities ...Entity) ([]C
 }
 
 type importContext struct {
-	entities      []CompiledEntity
-	loop          []*jsonschema.Schema
+	entities []CompiledEntity
+
 	currentEntity *CompiledEntity
 	interner      ls.Interner
+	// Maps schemas to their corresponding objects
+	schMap map[*jsonschema.Schema]*schemaProperty
 }
 
-func (ctx *importContext) checkLoopAndPush(sch *jsonschema.Schema) bool {
-	for _, x := range ctx.loop {
-		if sch == x {
-			return true
-		}
-	}
-	ctx.loop = append(ctx.loop, sch)
-	return false
+func (ctx *importContext) newProp(sch *jsonschema.Schema, prop *schemaProperty) {
+	ctx.schMap[sch] = prop
 }
 
-func (ctx *importContext) pop() {
-	ctx.loop = ctx.loop[:len(ctx.loop)-1]
+func (ctx *importContext) findProp(sch *jsonschema.Schema) *schemaProperty {
+	return ctx.schMap[sch]
 }
 
 func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
@@ -186,13 +182,12 @@ func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
 //
 // typeTerm should be either ls.SchemaTerm or ls.OverlayTerm
 func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkRefsBy, entities ...CompiledEntity) ([]EntityLayer, error) {
-	ctx := importContext{entities: entities, interner: ls.NewInterner()}
+	ctx := importContext{entities: entities, interner: ls.NewInterner(), schMap: make(map[*jsonschema.Schema]*schemaProperty)}
 	ret := make([]EntityLayer, 0, len(ctx.entities))
 	for i := range ctx.entities {
 		ctx.currentEntity = &ctx.entities[i]
 
 		s := schemaProperty{}
-		ctx.loop = make([]*jsonschema.Schema, 0)
 		if err := importSchema(&ctx, &s, ctx.currentEntity.Schema); err != nil {
 			return nil, err
 		}
@@ -200,6 +195,7 @@ func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkR
 		imported := EntityLayer{}
 		imported.Entity = *ctx.currentEntity
 		imported.Layer = ls.NewLayerInGraph(targetGraph)
+		imported.Layer.SetLayerType(typeTerm)
 
 		// Set the layer ID from the entity layer ID
 		imported.Layer.SetID(ctx.currentEntity.LayerID)
@@ -218,18 +214,22 @@ func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkR
 		if len(importer.entityId) == 0 {
 			importer.entityId = ctx.currentEntity.LayerID
 		}
-		importer.buildSchemaAttrs(nil, s, rootNode)
+		if err := importer.buildChildAttrs(&s, rootNode); err != nil {
+			return nil, err
+		}
 		ret = append(ret, imported)
 	}
 	return ret, nil
 }
 
 func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Schema) error {
-	if ctx.checkLoopAndPush(sch) {
-		return ErrCyclicSchema{Loop: ctx.loop}
+	if l := ctx.findProp(sch); l != nil {
+		target.loopRef = l
+		return nil
 	}
-	defer ctx.pop()
+	ctx.newProp(sch, target)
 
+	target.ID = sch.Location
 	switch {
 	case sch.Ref != nil:
 		ref := ctx.findEntity(sch.Ref)
@@ -241,8 +241,8 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 
 	case len(sch.AllOf) > 0:
 		for _, x := range sch.AllOf {
-			prop := schemaProperty{}
-			if err := importSchema(ctx, &prop, x); err != nil {
+			prop := &schemaProperty{}
+			if err := importSchema(ctx, prop, x); err != nil {
 				return err
 			}
 			target.allOf = append(target.allOf, prop)
@@ -250,8 +250,8 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 
 	case len(sch.AnyOf) > 0:
 		for _, x := range sch.AnyOf {
-			prop := schemaProperty{}
-			if err := importSchema(ctx, &prop, x); err != nil {
+			prop := &schemaProperty{}
+			if err := importSchema(ctx, prop, x); err != nil {
 				return err
 			}
 			target.allOf = append(target.allOf, prop)
@@ -259,18 +259,18 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 
 	case len(sch.OneOf) > 0:
 		for _, x := range sch.OneOf {
-			prop := schemaProperty{}
-			if err := importSchema(ctx, &prop, x); err != nil {
+			prop := &schemaProperty{}
+			if err := importSchema(ctx, prop, x); err != nil {
 				return err
 			}
 			target.oneOf = append(target.oneOf, prop)
 		}
 
 	case len(sch.Properties) > 0:
-		target.object = &objectSchema{properties: make(map[string]schemaProperty), required: sch.Required}
+		target.object = &objectSchema{properties: make(map[string]*schemaProperty), required: sch.Required}
 		for k, v := range sch.Properties {
-			val := schemaProperty{key: k}
-			err := importSchema(ctx, &val, v)
+			val := &schemaProperty{key: k}
+			err := importSchema(ctx, val, v)
 			if err != nil {
 				return err
 			}
@@ -278,9 +278,9 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 		}
 		// TODO: patternProperties, etc
 	case sch.Items != nil:
-		target.array = &arraySchema{}
+		target.array = &arraySchema{items: &schemaProperty{}}
 		if itemSchema, ok := sch.Items.(*jsonschema.Schema); ok {
-			err := importSchema(ctx, &target.array.items, itemSchema)
+			err := importSchema(ctx, target.array.items, itemSchema)
 			if err != nil {
 				return err
 			}
@@ -288,8 +288,8 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 			panic("Multiple item schemas not supported")
 		}
 	case sch.Items2020 != nil:
-		target.array = &arraySchema{}
-		err := importSchema(ctx, &target.array.items, sch.Items2020)
+		target.array = &arraySchema{items: &schemaProperty{}}
+		err := importSchema(ctx, target.array.items, sch.Items2020)
 		if err != nil {
 			return err
 		}
