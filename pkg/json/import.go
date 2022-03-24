@@ -155,15 +155,15 @@ type importContext struct {
 	currentEntity *CompiledEntity
 	interner      ls.Interner
 	// Maps schemas to their corresponding objects
-	schMap map[*jsonschema.Schema]*schemaProperty
+	schMap map[string]*schemaProperty
 }
 
 func (ctx *importContext) newProp(sch *jsonschema.Schema, prop *schemaProperty) {
-	ctx.schMap[sch] = prop
+	ctx.schMap[sch.Location] = prop
 }
 
 func (ctx *importContext) findProp(sch *jsonschema.Schema) *schemaProperty {
-	return ctx.schMap[sch]
+	return ctx.schMap[sch.Location]
 }
 
 func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
@@ -182,13 +182,13 @@ func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
 //
 // typeTerm should be either ls.SchemaTerm or ls.OverlayTerm
 func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkRefsBy, entities ...CompiledEntity) ([]EntityLayer, error) {
-	ctx := importContext{entities: entities, interner: ls.NewInterner(), schMap: make(map[*jsonschema.Schema]*schemaProperty)}
+	ctx := importContext{entities: entities, interner: ls.NewInterner(), schMap: make(map[string]*schemaProperty)}
 	ret := make([]EntityLayer, 0, len(ctx.entities))
 	for i := range ctx.entities {
 		ctx.currentEntity = &ctx.entities[i]
 
-		s := schemaProperty{}
-		if err := importSchema(&ctx, &s, ctx.currentEntity.Schema); err != nil {
+		s, err := importSchema(&ctx, ctx.currentEntity.Schema)
+		if err != nil {
 			return nil, err
 		}
 
@@ -214,7 +214,7 @@ func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkR
 		if len(importer.entityId) == 0 {
 			importer.entityId = ctx.currentEntity.LayerID
 		}
-		if err := importer.buildChildAttrs(&s, rootNode); err != nil {
+		if err := importer.buildChildAttrs(s, rootNode); err != nil {
 			return nil, err
 		}
 		ret = append(ret, imported)
@@ -222,46 +222,53 @@ func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkR
 	return ret, nil
 }
 
-func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Schema) error {
-	if l := ctx.findProp(sch); l != nil {
-		target.loopRef = l
-		return nil
+func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, error) {
+	if p := ctx.findProp(sch); p != nil {
+		return p, nil
+	}
+	target := &schemaProperty{
+		ID: sch.Location,
 	}
 	ctx.newProp(sch, target)
-
-	target.ID = sch.Location
-	switch {
-	case sch.Ref != nil:
+	if sch.Ref != nil {
 		ref := ctx.findEntity(sch.Ref)
 		if ref != nil {
 			target.reference = ref
-			return nil
+			return target, nil
 		}
-		return importSchema(ctx, target, sch.Ref)
+		p, err := importSchema(ctx, sch.Ref)
+		if err != nil {
+			return nil, err
+		}
+		target.localReference = p
+		return target, nil
+	}
 
+	ctx.newProp(sch, target)
+	switch {
 	case len(sch.AllOf) > 0:
 		for _, x := range sch.AllOf {
-			prop := &schemaProperty{}
-			if err := importSchema(ctx, prop, x); err != nil {
-				return err
+			prop, err := importSchema(ctx, x)
+			if err != nil {
+				return nil, err
 			}
 			target.allOf = append(target.allOf, prop)
 		}
 
 	case len(sch.AnyOf) > 0:
 		for _, x := range sch.AnyOf {
-			prop := &schemaProperty{}
-			if err := importSchema(ctx, prop, x); err != nil {
-				return err
+			prop, err := importSchema(ctx, x)
+			if err != nil {
+				return nil, err
 			}
 			target.allOf = append(target.allOf, prop)
 		}
 
 	case len(sch.OneOf) > 0:
 		for _, x := range sch.OneOf {
-			prop := &schemaProperty{}
-			if err := importSchema(ctx, prop, x); err != nil {
-				return err
+			prop, err := importSchema(ctx, x)
+			if err != nil {
+				return nil, err
 			}
 			target.oneOf = append(target.oneOf, prop)
 		}
@@ -269,29 +276,31 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 	case len(sch.Properties) > 0:
 		target.object = &objectSchema{properties: make(map[string]*schemaProperty), required: sch.Required}
 		for k, v := range sch.Properties {
-			val := &schemaProperty{key: k}
-			err := importSchema(ctx, val, v)
+			val, err := importSchema(ctx, v)
 			if err != nil {
-				return err
+				return nil, err
 			}
+			val.key = k
 			target.object.properties[k] = val
 		}
 		// TODO: patternProperties, etc
 	case sch.Items != nil:
-		target.array = &arraySchema{items: &schemaProperty{}}
+		target.array = &arraySchema{}
+		var err error
 		if itemSchema, ok := sch.Items.(*jsonschema.Schema); ok {
-			err := importSchema(ctx, target.array.items, itemSchema)
+			target.array.items, err = importSchema(ctx, itemSchema)
 			if err != nil {
-				return err
+				return nil, err
 			}
 		} else {
 			panic("Multiple item schemas not supported")
 		}
 	case sch.Items2020 != nil:
-		target.array = &arraySchema{items: &schemaProperty{}}
-		err := importSchema(ctx, target.array.items, sch.Items2020)
+		target.array = &arraySchema{}
+		var err error
+		target.array.items, err = importSchema(ctx, sch.Items2020)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	default:
 		if len(sch.Types) > 0 {
@@ -322,5 +331,5 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 		}
 	}
 
-	return nil
+	return target, nil
 }

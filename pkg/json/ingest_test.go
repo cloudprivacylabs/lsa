@@ -48,13 +48,13 @@ func TestIngestFlat(t *testing.T) {
  "@type": "Schema",
  "layer": {
   "@type": "Object",
+  "required": [ "id2"],
  "attributes": {
    "id1": {
      "attributeName":"field1"
    },
    "id2": {
-     "attributeName":"field2",
-     "required": true
+     "attributeName":"field2"
    },
    "id3": {
      "attributeName": "field3"

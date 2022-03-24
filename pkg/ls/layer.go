@@ -32,10 +32,16 @@ type Layer struct {
 	layerInfo graph.Node
 }
 
-// NewLayer returns a new empty layer
-func NewLayer() *Layer {
+// NewLayerGraph creates a new graph indexes to store layers
+func NewLayerGraph() graph.Graph {
 	g := graph.NewOCGraph()
 	g.AddNodePropertyIndex(NodeIDTerm)
+	return g
+}
+
+// NewLayer returns a new empty layer
+func NewLayer() *Layer {
+	g := NewLayerGraph()
 	ret := &Layer{Graph: g}
 	ret.layerInfo = ret.Graph.NewNode(nil, nil)
 	return ret
@@ -72,7 +78,7 @@ func LayersFromGraph(g graph.Graph) []*Layer {
 // Clone returns a copy of the layer in a new graph. If the graph
 // contains other layers, they are not copied.
 func (l *Layer) Clone() *Layer {
-	targetGraph := graph.NewOCGraph()
+	targetGraph := NewLayerGraph()
 	newLayer, _ := l.CloneInto(targetGraph)
 	return newLayer
 }
@@ -198,7 +204,6 @@ func GetArrayElementNode(arraySchemaNode graph.Node) graph.Node {
 // schema object. The returned map is keyed by the AttributeNameTerm
 func GetObjectAttributeNodes(objectSchemaNode graph.Node) (map[string][]graph.Node, error) {
 	nextNodes := make(map[string][]graph.Node)
-	fmt.Println("ObjAttr nodes: %s\n", objectSchemaNode)
 	addNextNode := func(node graph.Node) error {
 		key := AsPropertyValue(node.GetProperty(AttributeNameTerm)).AsString()
 		fmt.Println(key)

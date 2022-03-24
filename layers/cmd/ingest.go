@@ -49,8 +49,9 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string, intern
 		if err != nil {
 			return nil, err
 		}
-		var v interface{}
-		err = json.Unmarshal(sch, &v)
+		m := ls.JSONMarshaler{}
+		g := ls.NewLayerGraph()
+		err = m.Unmarshal(sch, g)
 		if err != nil {
 			return nil, err
 		}

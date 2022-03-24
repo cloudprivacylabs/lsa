@@ -15,6 +15,7 @@
 package ls
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 
@@ -260,7 +261,7 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 		attribute.SetLabels(types)
 	case 1:
 	default:
-		return ErrMultipleTypes(inode.ID)
+		return ErrMultipleTypes(fmt.Sprintf("%s: %s", inode.ID, t))
 	}
 	return nil
 }

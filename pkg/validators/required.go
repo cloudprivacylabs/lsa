@@ -1,11 +1,13 @@
 package validators
 
 import (
+	"fmt"
+
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
-// RequiredTerm validates if a required properties exist
+// RequiredTerm validates if a required properties exist. Properties are addressed by schema attribute id
 var RequiredTerm = ls.NewTerm(ls.LS, "validation/required", false, false, ls.OverrideComposition, struct {
 	RequiredValidator
 }{
@@ -22,17 +24,22 @@ func (validator RequiredValidator) Validate(docNode, schemaNode graph.Node) erro
 	}
 	required := ls.AsPropertyValue(schemaNode.GetProperty(RequiredTerm)).MustStringSlice()
 	if len(required) > 0 {
-		names := make(map[string]struct{})
-		for _, node := range graph.TargetNodes(docNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.HasTerm)) {
-			name := ls.AsPropertyValue(node.GetProperty(ls.AttributeNameTerm))
-			if name.IsString() {
-				names[name.AsString()] = struct{}{}
+		req := make(map[string]struct{})
+		for _, x := range required {
+			req[x] = struct{}{}
+		}
+		for edges := docNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+			to := edges.Edge().GetTo()
+			if !to.GetLabels().Has(ls.DocumentNodeTerm) {
+				continue
+			}
+			id := ls.AsPropertyValue(to.GetProperty(ls.SchemaNodeIDTerm)).AsString()
+			if len(id) > 0 {
+				delete(req, id)
 			}
 		}
-		for _, str := range required {
-			if _, ok := names[str]; !ok {
-				return ls.ErrValidation{Validator: RequiredTerm, Msg: "Missing required attribute: %s" + str}
-			}
+		if len(req) > 0 {
+			return ls.ErrValidation{Validator: RequiredTerm, Msg: "Missing required attribute: " + fmt.Sprint(req)}
 		}
 	}
 	return nil
