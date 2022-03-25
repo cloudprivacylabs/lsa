@@ -24,6 +24,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
@@ -36,6 +37,7 @@ func init() {
 	ingestCSVCmd.Flags().Int("headerRow", -1, "Header row 0-based (default: no header)")
 	ingestCSVCmd.Flags().String("id", "row_{{.rowIndex}}", "Object ID Go template for ingested data if no ID is declared in the schema")
 	ingestCSVCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
+	ingestCSVCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
 }
 
 var ingestCSVCmd = &cobra.Command{
@@ -47,6 +49,7 @@ var ingestCSVCmd = &cobra.Command{
 		compiledSchema, _ := cmd.Flags().GetString("compiledschema")
 		repoDir, _ := cmd.Flags().GetString("repo")
 		schemaName, _ := cmd.Flags().GetString("schema")
+		initialGraph, _ := cmd.Flags().GetString("initialGraph")
 		layer, err := LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName, interner)
 		if err != nil {
 			failErr(err)
@@ -73,6 +76,17 @@ var ingestCSVCmd = &cobra.Command{
 		if headerRow >= startRow {
 			fail("Header row is ahead of start row")
 		}
+		grph := ls.NewDocumentGraph()
+		if layer != nil && initialGraph != "" {
+			enc, err := layer.GetEncoding()
+			if err != nil {
+				failErr(err)
+			}
+			err = cmdutil.ReadJSON(initialGraph, grph, enc)
+			if err != nil {
+				failErr(err)
+			}
+		}
 		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
 		onlySchemaAttributes, _ := cmd.Flags().GetBool("onlySchemaAttributes")
 		ingester := csvingest.Ingester{
@@ -80,9 +94,10 @@ var ingestCSVCmd = &cobra.Command{
 				Schema:               layer,
 				EmbedSchemaNodes:     embedSchemaNodes,
 				OnlySchemaAttributes: onlySchemaAttributes,
-				Graph:                ls.NewDocumentGraph(),
+				Graph:                grph,
 			},
 		}
+
 		idTemplate, _ := cmd.Flags().GetString("id")
 		idTmp, err := template.New("id").Parse(idTemplate)
 		if err != nil {
