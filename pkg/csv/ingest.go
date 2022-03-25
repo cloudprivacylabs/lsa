@@ -35,7 +35,7 @@ type Ingester struct {
 func (ingester Ingester) Ingest(context *ls.Context, data []string, ID string) (graph.Node, error) {
 	ictx := ingester.Start(context, ID)
 	// Retrieve map of schema attribute nodes from schemaRoot
-	attributes, err := ls.GetObjectAttributeNodes(ictx.GetSchemaNode())
+	attributes, err := ls.GetObjectAttributeNodesBy(ictx.GetSchemaNode(), ls.AttributeNameTerm)
 	if err != nil {
 		return nil, err
 	}

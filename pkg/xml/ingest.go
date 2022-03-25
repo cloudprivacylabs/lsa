@@ -306,7 +306,7 @@ func (ingester *Ingester) element(ctx ls.IngestionContext, element *xmlElement) 
 //    name: abc
 //    schema attributes: ns:abc, abc -> abc will be returned
 //    name: ns:abc
-//    schema attributes: ns:abc, abc -> nc:abc will be returned
+//    schema attributes: ns:abc, abc -> ns:abc will be returned
 func findBestMatchingSchemaAttribute(name xml.Name, schemaAttrs []graph.Node, requireAttr bool) (graph.Node, error) {
 	var lnameMatch, fnameMatch graph.Node
 	for _, attr := range schemaAttrs {
@@ -315,13 +315,17 @@ func findBestMatchingSchemaAttribute(name xml.Name, schemaAttrs []graph.Node, re
 			continue
 		}
 		ns := ls.AsPropertyValue(attr.GetProperty(NamespaceTerm))
+		ln := ls.AsPropertyValue(attr.GetProperty(LocalNameTerm))
+
 		if ns == nil {
-			if lnameMatch != nil {
-				return nil, ErrAmbiguousSchemaAttribute{Attr: name}
+			if ln.AsString() == name.Local {
+				if lnameMatch != nil {
+					return nil, ErrAmbiguousSchemaAttribute{Attr: name}
+				}
+				lnameMatch = attr
 			}
-			lnameMatch = attr
 		} else if ns.IsString() {
-			if ns.AsString() == name.Space {
+			if ns.AsString() == name.Space && ln.AsString() == name.Local {
 				if fnameMatch != nil {
 					return nil, ErrAmbiguousSchemaAttribute{Attr: name}
 				}
@@ -380,10 +384,7 @@ func (ingester *Ingester) ingestAsValue(ctx ls.IngestionContext, element *xmlEle
 func (ingester *Ingester) ingestAsObject(ctx ls.IngestionContext, element *xmlElement, schemaNode graph.Node) (graph.Node, error) {
 	// Get all the possible child nodes from the schema. If the
 	// schemaNode is nil, the returned schemaNodes will be empty
-	childSchemaNodes, err := ls.GetObjectAttributeNodes(schemaNode)
-	if err != nil {
-		return nil, err
-	}
+	childSchemaNodes := ls.GetObjectAttributeNodes(schemaNode)
 	_, _, node, err := ingester.Object(ctx.New(element.name.Local, schemaNode))
 	if err != nil {
 		return nil, err
@@ -400,7 +401,7 @@ func (ingester *Ingester) ingestAsObject(ctx ls.IngestionContext, element *xmlEl
 		}
 		var attrSchema graph.Node
 		if schemaNode != nil {
-			attrSchema, err = findBestMatchingSchemaAttribute(attribute.name, childSchemaNodes[attribute.name.Local], true)
+			attrSchema, err = findBestMatchingSchemaAttribute(attribute.name, childSchemaNodes, true)
 			if err != nil {
 				return nil, err
 			}
@@ -422,7 +423,7 @@ func (ingester *Ingester) ingestAsObject(ctx ls.IngestionContext, element *xmlEl
 		var newNode graph.Node
 		switch childNode := child.(type) {
 		case *xmlElement:
-			childSchema, err := findBestMatchingSchemaAttribute(childNode.name, childSchemaNodes[childNode.name.Local], false)
+			childSchema, err := findBestMatchingSchemaAttribute(childNode.name, childSchemaNodes, false)
 			if err != nil {
 				return nil, err
 			}

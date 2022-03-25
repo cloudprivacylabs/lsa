@@ -186,14 +186,14 @@ func GetArrayElementNode(arraySchemaNode graph.Node) graph.Node {
 	return nil
 }
 
-// GetObjectAttributeNodes returns the schema attribute nodes under a
-// schema object. The returned map is keyed by the AttributeNameTerm
-func GetObjectAttributeNodes(objectSchemaNode graph.Node) (map[string][]graph.Node, error) {
+// GetObjectAttributeNodesBy returns the schema attribute nodes under a
+// schema object. The returned map is keyed by the keyTerm
+func GetObjectAttributeNodesBy(objectSchemaNode graph.Node, keyTerm string) (map[string][]graph.Node, error) {
 	nextNodes := make(map[string][]graph.Node)
 	addNextNode := func(node graph.Node) error {
-		key := AsPropertyValue(node.GetProperty(AttributeNameTerm)).AsString()
+		key := AsPropertyValue(node.GetProperty(keyTerm)).AsString()
 		if len(key) == 0 {
-			return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema at %s", AttributeNameTerm, GetNodeID(objectSchemaNode)))
+			return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema at %s", keyTerm, GetNodeID(objectSchemaNode)))
 		}
 		nextNodes[key] = append(nextNodes[key], node)
 		return nil
@@ -211,6 +211,21 @@ func GetObjectAttributeNodes(objectSchemaNode graph.Node) (map[string][]graph.No
 		}
 	}
 	return nextNodes, nil
+}
+
+// GetObjectAttributeNodes returns the schema attribute nodes under a
+// schema object.
+func GetObjectAttributeNodes(objectSchemaNode graph.Node) []graph.Node {
+	nextNodes := make([]graph.Node, 0)
+	if objectSchemaNode != nil {
+		for _, node := range graph.TargetNodes(objectSchemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ObjectAttributesTerm)) {
+			nextNodes = append(nextNodes, node)
+		}
+		for _, node := range graph.TargetNodes(objectSchemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ObjectAttributeListTerm)) {
+			nextNodes = append(nextNodes, node)
+		}
+	}
+	return nextNodes
 }
 
 // GetEntityIDNodes returns the entity id attribute IDs from the layer
