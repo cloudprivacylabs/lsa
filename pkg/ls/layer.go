@@ -206,7 +206,6 @@ func GetObjectAttributeNodes(objectSchemaNode graph.Node) (map[string][]graph.No
 	nextNodes := make(map[string][]graph.Node)
 	addNextNode := func(node graph.Node) error {
 		key := AsPropertyValue(node.GetProperty(AttributeNameTerm)).AsString()
-		fmt.Println(key)
 		if len(key) == 0 {
 			return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema at %s", AttributeNameTerm, GetNodeID(objectSchemaNode)))
 		}
