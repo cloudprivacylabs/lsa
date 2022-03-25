@@ -360,7 +360,7 @@ func (ingester *Ingester) ingestAsValue(ctx ls.IngestionContext, element *xmlEle
 	if err != nil {
 		return nil, err
 	}
-	if ingestedAs != ls.IngestAsProperty {
+	if node != nil && ingestedAs != ls.IngestAsProperty {
 		node.SetProperty(LocalNameTerm, ls.StringPropertyValue(element.name.Local))
 		if len(element.name.Space) > 0 {
 			node.SetProperty(NamespaceTerm, ls.StringPropertyValue(element.name.Space))
@@ -375,7 +375,9 @@ func (ingester *Ingester) ingestAsValue(ctx ls.IngestionContext, element *xmlEle
 		if ingestedAs == ls.IngestAsProperty {
 			return nil, ErrCannotHaveAttributes{Path: ctx.SourcePath.String()}
 		}
-		node.SetProperty(makeFullName(attribute.name), ls.StringPropertyValue(attribute.value))
+		if node != nil {
+			node.SetProperty(makeFullName(attribute.name), ls.StringPropertyValue(attribute.value))
+		}
 	}
 
 	return node, err
