@@ -1,6 +1,6 @@
 ---
 title: "Layered Schema Architecture"
-subtitle: "Semantic interoperability for structured data"
+subtitle: "Semantic interoperability for data capture, processing, and exchange"
 features:
   - title: Cross-domain Interoperability
     text: Integrate concepts from multiple domains in reusable layers.
@@ -8,6 +8,9 @@ features:
     text: Ingest data from disparate sources and transform with semantic pipelines.
   - title: Analytics and AI
     text: Build knowledge graphs, research data sets from heterogeneous data.
+button:
+  link: https://playground.layeredschemas.org
+  text: Launch the Layered Schema Playground
 ---
 
 {{<figure src="layers_ingestion.png" class="text-center my-3">}} 
