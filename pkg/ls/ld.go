@@ -68,6 +68,11 @@ func LDGetNodeID(node interface{}) string {
 	return LDGetStringValue("@id", node)
 }
 
+// LDGetNodeValue returns the node @value. The argument must be a map
+func LDGetNodeValue(node interface{}) string {
+	return LDGetStringValue("@value", node)
+}
+
 // LDGetListElements returns the elements of a @list node. The input can
 // be a [{"@list":elements}] or {@list:elements}. If the input cannot
 // be interpreted as a list, returns nil

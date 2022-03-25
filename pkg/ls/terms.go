@@ -44,9 +44,6 @@ var (
 	// SchemaVariantTerm is the schema variant type
 	SchemaVariantTerm = NewTerm(LS, "SchemaVariant", false, false, NoComposition, nil)
 
-	// TargetType is the term specifying the data type for the attribute defined
-	TargetType = NewTerm(LS, "targetType", true, false, SetComposition, nil)
-
 	// DescriptionTerm is used for comments/descriptions
 	DescriptionTerm = NewTerm(LS, "description", false, false, SetComposition, nil)
 

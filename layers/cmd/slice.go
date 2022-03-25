@@ -58,6 +58,6 @@ func (spec SliceByTermsSpec) Slice(sourceLayer *ls.Layer, targetType string, tem
 		return nil, fmt.Errorf("Layer type unspecified")
 	}
 	layer.SetID(id)
-	layer.SetTargetType(targetType)
+	layer.SetValueType(targetType)
 	return layer, nil
 }

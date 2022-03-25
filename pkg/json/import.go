@@ -21,6 +21,7 @@ import (
 	"github.com/santhosh-tekuri/jsonschema/v5"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 const X_LS = "x-ls"
@@ -37,15 +38,33 @@ func (e ErrCyclicSchema) Error() string {
 	return "Cycle:" + strings.Join(items, " ")
 }
 
-// Entity defines a location in the schema as an entity
+// Entity defines an entity as a layered schema with respect to a JSON schema
 type Entity struct {
-	// Reference to the  schema
+	// Reference to the schema. This includes the full reference to the
+	// JSON schema, and the reference in that schema that defines the
+	// entity. For example, this can be
+	// https://somenamespace/myschema.json#/definitions/Object
 	Ref string `json:"ref" bson:"ref" yaml:"ref"`
-	// ID of the entity
-	ID string `json:"id" bson:"id" yaml:"id"`
 	// ID of the layer that will be generated
-	LayerID string `json:"layerId" bson:"layerId" yaml:"layerId"`
+	LayerID string `json:"layerId,omitempty" bson:"layerId,omitempty" yaml:"layerId,omitempty"`
+	// The ID of the root node. If empty, ValueType is used for the root node id
+	RootNodeID string `json:"rootNodeId,omitempty" baon:"rootNodeId,omitempty" yaml:"rootNodeId,omitempty"`
+	// ValueType is the value type of the schema, that is, the entity type defined with this schema
+	ValueType string `json:"valueType" bson:"valueType" yaml:"valueType"`
 }
+
+// LinkRefsBy is an enumeration that specifies how the links for the
+// imported schema should be written
+type LinkRefsBy int
+
+const (
+	// Remote references are schema references (entity.Ref)
+	LinkRefsBySchemaRef LinkRefsBy = iota
+	// Remote references are layer ids (entity.LayerID)
+	LinkRefsByLayerID
+	// Remote references are value types (entity.ValueType)
+	LinkRefsByValueType
+)
 
 // FindEntityByRef finds the entity by ref value
 func FindEntityByRef(entities []Entity, ref string) *Entity {
@@ -57,10 +76,10 @@ func FindEntityByRef(entities []Entity, ref string) *Entity {
 	return nil
 }
 
-// FindEntityByID finds the entity by ID value
-func FindEntityByID(entities []Entity, ID string) *Entity {
+// FindEntityByValueType finds the entity by ValueType value
+func FindEntityByValueType(entities []Entity, valueType string) *Entity {
 	for i, x := range entities {
-		if x.ID == ID {
+		if x.ValueType == valueType {
 			return &entities[i]
 		}
 	}
@@ -124,7 +143,7 @@ func CompileEntitiesWith(compiler *jsonschema.Compiler, entities ...Entity) ([]C
 	for _, e := range entities {
 		sch, err := compiler.Compile(e.Ref)
 		if err != nil {
-			return nil, fmt.Errorf("During %s: %w", e.ID, err)
+			return nil, fmt.Errorf("During %s: %w", e.Ref, err)
 		}
 		ret = append(ret, CompiledEntity{Entity: e, Schema: sch})
 	}
@@ -132,24 +151,20 @@ func CompileEntitiesWith(compiler *jsonschema.Compiler, entities ...Entity) ([]C
 }
 
 type importContext struct {
-	entities      []CompiledEntity
-	loop          []*jsonschema.Schema
+	entities []CompiledEntity
+
 	currentEntity *CompiledEntity
 	interner      ls.Interner
+	// Maps schemas to their corresponding objects
+	schMap map[string]*schemaProperty
 }
 
-func (ctx *importContext) checkLoopAndPush(sch *jsonschema.Schema) bool {
-	for _, x := range ctx.loop {
-		if sch == x {
-			return true
-		}
-	}
-	ctx.loop = append(ctx.loop, sch)
-	return false
+func (ctx *importContext) newProp(sch *jsonschema.Schema, prop *schemaProperty) {
+	ctx.schMap[sch.Location] = prop
 }
 
-func (ctx *importContext) pop() {
-	ctx.loop = ctx.loop[:len(ctx.loop)-1]
+func (ctx *importContext) findProp(sch *jsonschema.Schema) *schemaProperty {
+	return ctx.schMap[sch.Location]
 }
 
 func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
@@ -164,107 +179,129 @@ func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
 // BuildEntityGraph imports  JSON schemas or overlays
 //
 // A JSON schema may include many object definitions. This import
-// algorithm creates a layer for each entity.
+// algorithm creates a layer for each entity in the given target graph.
 //
 // typeTerm should be either ls.SchemaTerm or ls.OverlayTerm
-func BuildEntityGraph(typeTerm string, entities ...CompiledEntity) ([]EntityLayer, error) {
-	ctx := importContext{entities: entities, interner: ls.NewInterner()}
+func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkRefsBy, entities ...CompiledEntity) ([]EntityLayer, error) {
+	ctx := importContext{entities: entities, interner: ls.NewInterner(), schMap: make(map[string]*schemaProperty)}
 	ret := make([]EntityLayer, 0, len(ctx.entities))
 	for i := range ctx.entities {
 		ctx.currentEntity = &ctx.entities[i]
 
-		s := schemaProperty{}
-		ctx.loop = make([]*jsonschema.Schema, 0)
-		if err := importSchema(&ctx, &s, ctx.currentEntity.Schema); err != nil {
+		s, err := importSchema(&ctx, ctx.currentEntity.Schema)
+		if err != nil {
 			return nil, err
 		}
 
 		imported := EntityLayer{}
 		imported.Entity = *ctx.currentEntity
-		imported.Layer = ls.NewLayer()
+		imported.Layer = ls.NewLayerInGraph(targetGraph)
+		imported.Layer.SetLayerType(typeTerm)
 
 		// Set the layer ID from the entity layer ID
 		imported.Layer.SetID(ctx.currentEntity.LayerID)
 		// Set the root node ID from the entity ID
 		rootNode := imported.Layer.Graph.NewNode(nil, nil)
-		ls.SetNodeID(rootNode, ctx.currentEntity.ID)
-		// Set the target type of the layer to root node ID
-		imported.Layer.SetTargetType(ctx.currentEntity.ID)
+		//ls.SetNodeID(rootNode, ctx.currentEntity.ID)
+		// Set the value type of the layer to root node ID
+		imported.Layer.SetValueType(ctx.currentEntity.ValueType)
 		imported.Layer.Graph.NewEdge(imported.Layer.GetLayerRootNode(), rootNode, ls.LayerRootTerm, nil)
-		buildSchemaAttrs(ctx.currentEntity.ID, nil, s, imported.Layer, rootNode, ctx.interner)
+		importer := schemaImporter{
+			entityId: ctx.currentEntity.RootNodeID,
+			layer:    imported.Layer,
+			interner: ctx.interner,
+			linkRefs: linkRefsBy,
+		}
+		if len(importer.entityId) == 0 {
+			importer.entityId = ctx.currentEntity.LayerID
+		}
+		if err := importer.buildChildAttrs(s, rootNode); err != nil {
+			return nil, err
+		}
 		ret = append(ret, imported)
 	}
 	return ret, nil
 }
 
-func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Schema) error {
-	if ctx.checkLoopAndPush(sch) {
-		return ErrCyclicSchema{Loop: ctx.loop}
+func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, error) {
+	if p := ctx.findProp(sch); p != nil {
+		return p, nil
 	}
-	defer ctx.pop()
-
-	switch {
-	case sch.Ref != nil:
+	target := &schemaProperty{
+		ID: sch.Location,
+	}
+	ctx.newProp(sch, target)
+	if sch.Ref != nil {
 		ref := ctx.findEntity(sch.Ref)
 		if ref != nil {
-			target.reference = ref.ID
-			return nil
+			target.reference = ref
+			return target, nil
 		}
-		return importSchema(ctx, target, sch.Ref)
+		p, err := importSchema(ctx, sch.Ref)
+		if err != nil {
+			return nil, err
+		}
+		target.localReference = p
+		return target, nil
+	}
 
+	ctx.newProp(sch, target)
+	switch {
 	case len(sch.AllOf) > 0:
 		for _, x := range sch.AllOf {
-			prop := schemaProperty{}
-			if err := importSchema(ctx, &prop, x); err != nil {
-				return err
+			prop, err := importSchema(ctx, x)
+			if err != nil {
+				return nil, err
 			}
 			target.allOf = append(target.allOf, prop)
 		}
 
 	case len(sch.AnyOf) > 0:
 		for _, x := range sch.AnyOf {
-			prop := schemaProperty{}
-			if err := importSchema(ctx, &prop, x); err != nil {
-				return err
+			prop, err := importSchema(ctx, x)
+			if err != nil {
+				return nil, err
 			}
 			target.allOf = append(target.allOf, prop)
 		}
 
 	case len(sch.OneOf) > 0:
 		for _, x := range sch.OneOf {
-			prop := schemaProperty{}
-			if err := importSchema(ctx, &prop, x); err != nil {
-				return err
+			prop, err := importSchema(ctx, x)
+			if err != nil {
+				return nil, err
 			}
 			target.oneOf = append(target.oneOf, prop)
 		}
 
 	case len(sch.Properties) > 0:
-		target.object = &objectSchema{properties: make(map[string]schemaProperty), required: sch.Required}
+		target.object = &objectSchema{properties: make(map[string]*schemaProperty), required: sch.Required}
 		for k, v := range sch.Properties {
-			val := schemaProperty{key: k}
-			err := importSchema(ctx, &val, v)
+			val, err := importSchema(ctx, v)
 			if err != nil {
-				return err
+				return nil, err
 			}
+			val.key = k
 			target.object.properties[k] = val
 		}
 		// TODO: patternProperties, etc
 	case sch.Items != nil:
 		target.array = &arraySchema{}
+		var err error
 		if itemSchema, ok := sch.Items.(*jsonschema.Schema); ok {
-			err := importSchema(ctx, &target.array.items, itemSchema)
+			target.array.items, err = importSchema(ctx, itemSchema)
 			if err != nil {
-				return err
+				return nil, err
 			}
 		} else {
 			panic("Multiple item schemas not supported")
 		}
 	case sch.Items2020 != nil:
 		target.array = &arraySchema{}
-		err := importSchema(ctx, &target.array.items, sch.Items2020)
+		var err error
+		target.array.items, err = importSchema(ctx, sch.Items2020)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	default:
 		if len(sch.Types) > 0 {
@@ -295,5 +332,5 @@ func importSchema(ctx *importContext, target *schemaProperty, sch *jsonschema.Sc
 		}
 	}
 
-	return nil
+	return target, nil
 }

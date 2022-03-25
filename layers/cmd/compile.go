@@ -15,7 +15,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -96,9 +95,8 @@ var compileCmd = &cobra.Command{
 				failErr(err)
 			}
 		}
-		marshaler := ls.LDMarshaler{}
-		intf := marshaler.Marshal(layer.Graph)
-		x, _ := json.MarshalIndent(intf, "", "  ")
+		marshaler := ls.JSONMarshaler{}
+		x, _ := marshaler.Marshal(layer.Graph)
 		fmt.Println(string(x))
 	},
 }

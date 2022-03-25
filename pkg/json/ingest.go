@@ -111,7 +111,7 @@ func (ingester *Ingester) ingestObject(context ls.IngestionContext, input *jsono
 	// An object node
 	// There is a schema node for this node. It must be an object
 	schemaNode := context.GetSchemaNode()
-	nextNodes, err := ls.GetObjectAttributeNodes(schemaNode)
+	nextNodes, err := ls.GetObjectAttributeNodesBy(schemaNode, ls.AttributeNameTerm)
 	if err != nil {
 		return nil, err
 	}
