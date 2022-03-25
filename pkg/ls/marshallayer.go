@@ -15,6 +15,7 @@
 package ls
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 
@@ -83,7 +84,7 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 	if rootNode == nil {
 		return nil, MakeErrInvalidInput("No schema or overlay type node")
 	}
-	targetType := LDGetNodeID(rootNode.Node[TargetType])
+	targetType := LDGetNodeValue(rootNode.Node[ValueTypeTerm])
 	target := NewLayer()
 	rootNode.GraphNode = target.GetLayerRootNode()
 	rootNode.GraphNode.SetLabels(graph.NewStringSet(rootNode.Types...))
@@ -134,7 +135,7 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 		}
 	}
 	if len(targetType) > 0 {
-		target.SetTargetType(targetType)
+		target.SetValueType(targetType)
 	}
 	return target, nil
 }
@@ -260,7 +261,7 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 		attribute.SetLabels(types)
 	case 1:
 	default:
-		return ErrMultipleTypes(inode.ID)
+		return ErrMultipleTypes(fmt.Sprintf("%s: %s", inode.ID, t))
 	}
 	return nil
 }
@@ -291,9 +292,10 @@ func unmarshalAnnotations(target *Layer, node *LDNode, allNodes map[string]*LDNo
 func MarshalLayer(layer *Layer) (interface{}, error) {
 	schRoot := layer.GetSchemaRootNode()
 	var layerOut interface{}
+	nodeMap := make(map[graph.Node]string)
 	if schRoot != nil {
 		var err error
-		layerOut, err = marshalNode(layer, schRoot)
+		layerOut, err = marshalNode(layer, schRoot, nodeMap)
 		if err != nil {
 			return nil, err
 		}
@@ -311,7 +313,11 @@ func MarshalLayer(layer *Layer) (interface{}, error) {
 	return []interface{}{v}, nil
 }
 
-func marshalNode(layer *Layer, node graph.Node) (interface{}, error) {
+func marshalNode(layer *Layer, node graph.Node, nodeMap map[graph.Node]string) (interface{}, error) {
+	if nodeId, ok := nodeMap[node]; ok {
+		return []interface{}{map[string]interface{}{"@id": nodeId}}, nil
+	}
+	nodeMap[node] = GetNodeID(node)
 	m := make(map[string]interface{})
 	s := GetAttributeID(node)
 	if len(s) > 0 {
@@ -345,7 +351,7 @@ func marshalNode(layer *Layer, node graph.Node) (interface{}, error) {
 		return GetNodeIndex(edges[i].GetTo()) < GetNodeIndex(edges[j].GetTo())
 	})
 	for _, edge := range edges {
-		toNode, err := marshalNode(layer, edge.GetTo())
+		toNode, err := marshalNode(layer, edge.GetTo(), nodeMap)
 		if err != nil {
 			return nil, err
 		}

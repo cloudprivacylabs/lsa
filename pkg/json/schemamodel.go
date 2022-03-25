@@ -16,7 +16,6 @@ package json
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
@@ -24,12 +23,13 @@ import (
 )
 
 type schemaProperty struct {
+	ID           string
 	key          string
-	reference    string
+	reference    *CompiledEntity
 	object       *objectSchema
 	array        *arraySchema
-	oneOf        []schemaProperty
-	allOf        []schemaProperty
+	oneOf        []*schemaProperty
+	allOf        []*schemaProperty
 	typ          []string
 	format       string
 	enum         []interface{}
@@ -37,42 +37,61 @@ type schemaProperty struct {
 	description  string
 	defaultValue *string
 	annotations  map[string]interface{}
+
+	node graph.Node
+
+	localReference *schemaProperty
 }
 
 type arraySchema struct {
-	items schemaProperty
+	items *schemaProperty
 }
 
 type objectSchema struct {
-	properties map[string]schemaProperty
+	properties map[string]*schemaProperty
 	required   []string
 }
 
-func (a arraySchema) itr(entityId string, name []string, layer *ls.Layer, interner ls.Interner) (graph.Node, error) {
-	return schemaAttrs(entityId, append(name, "*"), a.items, layer, interner)
+type schemaImporter struct {
+	entityId string
+	layer    *ls.Layer
+	interner ls.Interner
+	linkRefs LinkRefsBy
 }
 
-func (obj objectSchema) itr(entityId string, name []string, layer *ls.Layer, interner ls.Interner) ([]graph.Node, error) {
-	ret := make([]graph.Node, 0, len(obj.properties))
-	for k, v := range obj.properties {
-		nm := append(name, k)
-		node, err := schemaAttrs(entityId, nm, v, layer, interner)
-		if err != nil {
-			return nil, err
-		}
-		ret = append(ret, node)
+func (imp schemaImporter) schemaAttrs(attr *schemaProperty) (graph.Node, error) {
+	if attr.node != nil {
+		return attr.node, nil
 	}
-	return ret, nil
+	if attr.localReference != nil {
+		attr.object = attr.localReference.object
+		attr.array = attr.localReference.array
+		attr.allOf = attr.localReference.allOf
+		attr.oneOf = attr.localReference.oneOf
+		attr.typ = attr.localReference.typ
+		attr.description = attr.localReference.description
+		for k, v := range attr.localReference.annotations {
+			if attr.annotations == nil {
+				attr.annotations = make(map[string]interface{})
+			}
+			attr.annotations[k] = v
+		}
+		attr.localReference = nil
+	}
+
+	newNode, err := imp.newAttrNode(attr)
+	if err != nil {
+		return nil, err
+	}
+	return newNode, imp.buildChildAttrs(attr, newNode)
 }
 
-func schemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer, interner ls.Interner) (graph.Node, error) {
-	id := entityId + "#" + strings.Join(name, ".")
-	newNode := layer.Graph.NewNode(nil, nil)
-	ls.SetNodeID(newNode, id)
-	return buildSchemaAttrs(entityId, name, attr, layer, newNode, interner)
-}
-
-func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer *ls.Layer, newNode graph.Node, interner ls.Interner) (graph.Node, error) {
+func (imp schemaImporter) newAttrNode(attr *schemaProperty) (graph.Node, error) {
+	newNode := imp.layer.Graph.NewNode([]string{ls.AttributeNodeTerm}, nil)
+	attr.node = newNode
+	if len(attr.ID) > 0 {
+		ls.SetNodeID(newNode, attr.ID)
+	}
 	if len(attr.format) > 0 {
 		newNode.SetProperty(validators.JsonFormatTerm, ls.StringPropertyValue(attr.format))
 	}
@@ -83,7 +102,7 @@ func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer
 		newNode.SetProperty(ls.DescriptionTerm, ls.StringPropertyValue(attr.description))
 	}
 	if len(attr.typ) > 0 {
-		newNode.SetProperty(ls.TargetType, ls.StringSlicePropertyValue(attr.typ))
+		newNode.SetProperty(ls.ValueTypeTerm, ls.StringSlicePropertyValue(attr.typ))
 	}
 	if len(attr.key) > 0 {
 		newNode.SetProperty(ls.AttributeNameTerm, ls.StringPropertyValue(attr.key))
@@ -91,7 +110,7 @@ func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer
 	if len(attr.enum) > 0 {
 		elements := make([]string, 0, len(attr.enum))
 		for _, v := range attr.enum {
-			elements = append(elements, interner.Intern(fmt.Sprint(v)))
+			elements = append(elements, imp.interner.Intern(fmt.Sprint(v)))
 		}
 		newNode.SetProperty(validators.EnumTerm, ls.StringSlicePropertyValue(elements))
 	}
@@ -99,46 +118,83 @@ func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer
 		newNode.SetProperty(ls.DefaultValueTerm, ls.StringPropertyValue(*attr.defaultValue))
 	}
 	for k, v := range attr.annotations {
-		if err := ls.GetTermMarshaler(k).UnmarshalJSON(layer, k, v, newNode, interner); err != nil {
+		if err := ls.GetTermMarshaler(k).UnmarshalJSON(imp.layer, k, v, newNode, imp.interner); err != nil {
 			return nil, err
 		}
 	}
 
-	if len(attr.reference) > 0 {
+	if attr.reference != nil {
 		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeReference))
-		newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(attr.reference))
+		switch imp.linkRefs {
+		case LinkRefsBySchemaRef:
+			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(attr.reference.Ref))
+		case LinkRefsByLayerID:
+			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(attr.reference.LayerID))
+		case LinkRefsByValueType:
+			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(attr.reference.ValueType))
+		}
 		return newNode, nil
 	}
-
 	if attr.object != nil {
 		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeObject))
-		attrs, err := attr.object.itr(entityId, name, layer, interner)
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range attrs {
-			layer.Graph.NewEdge(newNode, x, ls.ObjectAttributeListTerm, nil)
-		}
-		if len(attr.object.required) > 0 {
-			newNode.SetProperty(validators.RequiredTerm, ls.StringSlicePropertyValue(attr.object.required))
-		}
 		return newNode, nil
 	}
 	if attr.array != nil {
 		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeArray))
-		n, err := attr.array.itr(entityId, name, layer, interner)
-		if err != nil {
-			return nil, err
-		}
-		layer.Graph.NewEdge(newNode, n, ls.ArrayItemsTerm, nil)
 		return newNode, nil
 	}
+	if len(attr.oneOf) > 0 {
+		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypePolymorphic))
+		return newNode, nil
+	}
+	if len(attr.allOf) > 0 {
+		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeComposite))
+		return newNode, nil
+	}
+	newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeValue))
+	return newNode, nil
+}
 
-	buildChoices := func(arr []schemaProperty) ([]graph.Node, error) {
+func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.Node) error {
+	if attr.object != nil {
+		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeObject))
+		attrIds := make(map[string]string)
+		for _, v := range attr.object.properties {
+			node, err := imp.schemaAttrs(v)
+			if err != nil {
+				return err
+			}
+			if len(v.key) > 0 {
+				attrIds[v.key] = ls.GetNodeID(node)
+			}
+			imp.layer.Graph.NewEdge(newNode, node, ls.ObjectAttributeListTerm, nil)
+		}
+		if len(attr.object.required) > 0 {
+			req := make([]string, 0, len(attr.object.required))
+			for _, x := range attr.object.required {
+				id := attrIds[x]
+				if len(id) > 0 {
+					req = append(req, id)
+				}
+			}
+			newNode.SetProperty(validators.RequiredTerm, ls.StringSlicePropertyValue(req))
+		}
+		return nil
+	}
+	if attr.array != nil {
+		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeArray))
+		n, err := imp.schemaAttrs(attr.array.items)
+		if err != nil {
+			return err
+		}
+		imp.layer.Graph.NewEdge(newNode, n, ls.ArrayItemsTerm, nil)
+		return nil
+	}
+
+	buildChoices := func(arr []*schemaProperty) ([]graph.Node, error) {
 		elements := make([]graph.Node, 0, len(arr))
-		for i, x := range arr {
-			newName := append(name, fmt.Sprint(i))
-			node, err := schemaAttrs(entityId, newName, x, layer, interner)
+		for _, x := range arr {
+			node, err := imp.schemaAttrs(x)
 			if err != nil {
 				return nil, err
 			}
@@ -150,24 +206,31 @@ func buildSchemaAttrs(entityId string, name []string, attr schemaProperty, layer
 		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypePolymorphic))
 		choices, err := buildChoices(attr.oneOf)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		for _, x := range choices {
-			layer.Graph.NewEdge(newNode, x, ls.OneOfTerm, nil)
+			imp.layer.Graph.NewEdge(newNode, x, ls.OneOfTerm, nil)
 		}
-		return newNode, nil
+		return nil
 	}
 	if len(attr.allOf) > 0 {
 		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeComposite))
-		choices, err := buildChoices(attr.oneOf)
+		choices, err := buildChoices(attr.allOf)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		for _, x := range choices {
-			layer.Graph.NewEdge(newNode, x, ls.AllOfTerm, nil)
+			imp.layer.Graph.NewEdge(newNode, x, ls.AllOfTerm, nil)
 		}
-		return newNode, nil
+		return nil
 	}
 	newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeValue))
-	return newNode, nil
+	return nil
+}
+
+func (imp schemaImporter) linkChildAttrs(attr *schemaProperty, newNode, targetNode graph.Node) {
+	for edges := targetNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		edge := edges.Edge()
+		imp.layer.Graph.NewEdge(newNode, edge.GetTo(), edge.GetLabel(), nil)
+	}
 }

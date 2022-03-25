@@ -83,7 +83,7 @@ where termSpec is:
 			AttributeID dec.AttributeSpec `json:"attributeId"`
 			LayerType   string            `json:"layerType"`
 			LayerID     string            `json:"layerId"`
-			TargetType  string            `json:"targetType"`
+			ValueType   string            `json:"valueType"`
 			StartRow    int               `json:"startRow"`
 			NRows       int               `json:"nrows"`
 			Terms       []dec.TermSpec    `json:"terms"`
@@ -117,8 +117,8 @@ where termSpec is:
 		if len(spec.LayerID) > 0 {
 			layer.SetID(spec.LayerID)
 		}
-		if len(spec.TargetType) > 0 {
-			layer.SetTargetType(spec.TargetType)
+		if len(spec.ValueType) > 0 {
+			layer.SetValueType(spec.ValueType)
 		}
 		marshaled, err := ls.MarshalLayer(layer)
 		if err != nil {

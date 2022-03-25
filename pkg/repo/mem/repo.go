@@ -131,10 +131,10 @@ func (repo *Repository) GetLayer(id string) *ls.Layer {
 	return repo.layers[id]
 }
 
-// GetSchemaVariantByObjectType returns the schema variant whose target type is t
+// GetSchemaVariantByObjectType returns the schema variant whose value type is t
 func (repo *Repository) GetSchemaVariantByObjectType(t string) *ls.SchemaVariant {
 	for _, v := range repo.schemaVariants {
-		if v.TargetType == t {
+		if v.ValueType == t {
 			return v
 		}
 	}

@@ -15,7 +15,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -49,14 +48,22 @@ func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string, intern
 		if err != nil {
 			return nil, err
 		}
-		var v interface{}
-		err = json.Unmarshal(sch, &v)
+		m := ls.JSONMarshaler{}
+		g := ls.NewLayerGraph()
+		err = m.Unmarshal(sch, g)
 		if err != nil {
 			return nil, err
 		}
-		layer, err = ls.UnmarshalLayer(v, interner)
-		if err != nil {
-			return nil, err
+		layers := ls.LayersFromGraph(g)
+		var layer *ls.Layer
+		for i := range layers {
+			if schemaName == layers[i].GetID() {
+				layer = layers[i]
+				break
+			}
+		}
+		if layer == nil {
+			return nil, fmt.Errorf("Not found: %s", schemaName)
 		}
 		compiler := ls.Compiler{}
 		layer, err = compiler.CompileSchema(ls.DefaultContext(), layer)
