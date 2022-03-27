@@ -73,7 +73,7 @@ func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
 		return nil, fmt.Errorf("%s: Empty bundle", file)
 	}
 	if len(bundle.Types) != 0 && len(bundle.Variants) != 0 {
-		return nil, fmt.Errorf("%s: Bundle has both types and variants")
+		return nil, fmt.Errorf("%s: Bundle has both types and variants", file)
 	}
 	if len(bundle.Types) != 0 {
 		b := ls.BundleByType{}
