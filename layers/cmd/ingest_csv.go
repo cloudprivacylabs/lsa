@@ -59,7 +59,6 @@ var ingestCSVCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-
 		reader := csv.NewReader(f)
 		startRow, err := cmd.Flags().GetInt("startRow")
 		if err != nil {
@@ -78,11 +77,7 @@ var ingestCSVCmd = &cobra.Command{
 		}
 		grph := ls.NewDocumentGraph()
 		if layer != nil && initialGraph != "" {
-			enc, err := layer.GetEncoding()
-			if err != nil {
-				failErr(err)
-			}
-			err = cmdutil.ReadJSON(initialGraph, grph, enc)
+			grph, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
 			if err != nil {
 				failErr(err)
 			}
@@ -97,13 +92,11 @@ var ingestCSVCmd = &cobra.Command{
 				Graph:                grph,
 			},
 		}
-
 		idTemplate, _ := cmd.Flags().GetString("id")
 		idTmp, err := template.New("id").Parse(idTemplate)
 		if err != nil {
 			failErr(err)
 		}
-
 		for row := 0; ; row++ {
 			rowData, err := reader.Read()
 			if err == io.EOF {
