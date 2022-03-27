@@ -27,6 +27,8 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
 
+var logger = ls.NewDefaultLogger()
+
 var (
 	rootCmd = &cobra.Command{
 		Use:   "layers",
@@ -39,6 +41,9 @@ var (
 					panic(err)
 				}
 				pprof.StartCPUProfile(file)
+			}
+			if b, _ := cmd.Flags().GetBool("log"); b {
+				logger.Level = ls.LogLevelDebug
 			}
 		},
 		PersistentPostRun: func(cmd *cobra.Command, _ []string) {
@@ -57,6 +62,10 @@ func Execute() error {
 func init() {
 	rootCmd.PersistentFlags().String("cpuprofile", "", "Write cpu profile to file")
 	rootCmd.PersistentFlags().Bool("log", false, "Enable logging")
+}
+
+func getContext() *ls.Context {
+	return ls.DefaultContext().SetLogger(logger)
 }
 
 func failErr(err error) {

@@ -27,9 +27,7 @@ import (
 
 func init() {
 	ingestCmd.AddCommand(ingestXMLCmd)
-	ingestXMLCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
 	ingestXMLCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
-	ingestXMLCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 }
 
 var ingestXMLCmd = &cobra.Command{
@@ -37,15 +35,10 @@ var ingestXMLCmd = &cobra.Command{
 	Short: "Ingest an XML document and enrich it with a schema",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		interner := ls.NewInterner()
-		compiledSchema, _ := cmd.Flags().GetString("compiledschema")
-		repoDir, _ := cmd.Flags().GetString("repo")
-		schemaName, _ := cmd.Flags().GetString("schema")
-		layer, err := LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName, interner)
-		if err != nil {
-			failErr(err)
-		}
+		ctx := getContext()
+		layer := loadSchemaCmd(ctx, cmd)
 		var input io.Reader
+		var err error
 		if layer != nil {
 			enc, err := layer.GetEncoding()
 			if err != nil {
@@ -73,7 +66,7 @@ var ingestXMLCmd = &cobra.Command{
 		}
 
 		baseID, _ := cmd.Flags().GetString("id")
-		_, err = xmlingest.IngestStream(ls.DefaultContext(), &ingester, baseID, input)
+		_, err = xmlingest.IngestStream(ctx, &ingester, baseID, input)
 		if err != nil {
 			failErr(err)
 		}

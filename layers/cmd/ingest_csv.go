@@ -30,12 +30,10 @@ import (
 
 func init() {
 	ingestCmd.AddCommand(ingestCSVCmd)
-	ingestCSVCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
 	ingestCSVCmd.Flags().Int("startRow", 1, "Start row 0-based (default 1)")
 	ingestCSVCmd.Flags().Int("endRow", -1, "End row 0-based")
 	ingestCSVCmd.Flags().Int("headerRow", -1, "Header row 0-based (default: no header)")
 	ingestCSVCmd.Flags().String("id", "row_{{.rowIndex}}", "Object ID Go template for ingested data if no ID is declared in the schema")
-	ingestCSVCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 }
 
 var ingestCSVCmd = &cobra.Command{
@@ -43,15 +41,8 @@ var ingestCSVCmd = &cobra.Command{
 	Short: "Ingest a CSV document and enrich it with a schema",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		interner := ls.NewInterner()
-		compiledSchema, _ := cmd.Flags().GetString("compiledschema")
-		repoDir, _ := cmd.Flags().GetString("repo")
-		schemaName, _ := cmd.Flags().GetString("schema")
-		layer, err := LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName, interner)
-		if err != nil {
-			failErr(err)
-		}
-
+		ctx := getContext()
+		layer := loadSchemaCmd(ctx, cmd)
 		f, err := os.Open(args[0])
 		if err != nil {
 			failErr(err)
@@ -112,7 +103,7 @@ var ingestCSVCmd = &cobra.Command{
 				if err := idTmp.Execute(&buf, templateData); err != nil {
 					failErr(err)
 				}
-				_, err := ingester.Ingest(ls.DefaultContext(), rowData, strings.TrimSpace(buf.String()))
+				_, err := ingester.Ingest(ctx, rowData, strings.TrimSpace(buf.String()))
 				if err != nil {
 					failErr(err)
 				}

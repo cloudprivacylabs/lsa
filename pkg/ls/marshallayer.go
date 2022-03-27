@@ -200,7 +200,7 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 			types.Add(AttributeTypeReference)
 			attribute.SetLabels(types)
 			// There can be at most one reference
-			oid := LDGetNodeID(val)
+			oid := LDGetNodeValue(val)
 			if len(oid) == 0 {
 				return MakeErrInvalidInput(inode.ID)
 			}

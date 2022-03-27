@@ -35,6 +35,10 @@ type JSONMarshaler struct {
 	interner Interner
 }
 
+func NewJSONMarshaler(interner Interner) *JSONMarshaler {
+	return &JSONMarshaler{interner}
+}
+
 func (m *JSONMarshaler) copyProperties(properties map[string]*PropertyValue) map[string]interface{} {
 	ret := make(map[string]interface{})
 	for k, v := range properties {

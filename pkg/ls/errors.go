@@ -64,6 +64,13 @@ func (e ErrMultipleTypes) Error() string {
 	return fmt.Sprintf("Multiple types declared for attribute: %s", string(e))
 }
 
+// ErrDuplicate is used for duplicate errors
+type ErrDuplicate string
+
+func (e ErrDuplicate) Error() string {
+	return fmt.Sprintf("Duplicate: %s", string(e))
+}
+
 // ErrNotFound is used for all not-found errors.
 type ErrNotFound string
 
