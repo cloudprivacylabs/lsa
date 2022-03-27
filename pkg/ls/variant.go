@@ -26,7 +26,6 @@ type SchemaVariant struct {
 	ID        string
 	Type      string
 	ValueType string
-	Bundle    string
 	Schema    string
 	Overlays  []string
 }
@@ -52,8 +51,6 @@ func UnmarshalSchemaVariant(in interface{}) (*SchemaVariant, error) {
 			ret.Type = v.(string)
 		case ValueTypeTerm:
 			ret.ValueType = LDGetNodeID(v)
-		case BundleTerm:
-			ret.Bundle = LDGetNodeID(v)
 		case SchemaBaseTerm:
 			ret.Schema = LDGetNodeID(v)
 		case OverlaysTerm:
@@ -77,9 +74,6 @@ func MarshalSchemaVariant(variant *SchemaVariant) interface{} {
 	m["@id"] = variant.ID
 	m["@type"] = SchemaVariantTerm
 	m[ValueTypeTerm] = map[string]interface{}{"@id": variant.ValueType}
-	if len(variant.Bundle) > 0 {
-		m[BundleTerm] = map[string]interface{}{"@id": variant.Bundle}
-	}
 	m[SchemaBaseTerm] = map[string]interface{}{"@id": variant.Schema}
 	if len(variant.Overlays) > 0 {
 		arr := make([]interface{}, 0, len(variant.Overlays))
