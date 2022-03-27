@@ -27,6 +27,7 @@ import (
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func init() {
@@ -75,12 +76,14 @@ var ingestCSVCmd = &cobra.Command{
 		if headerRow >= startRow {
 			fail("Header row is ahead of start row")
 		}
-		grph := ls.NewDocumentGraph()
+		var grph graph.Graph
 		if layer != nil && initialGraph != "" {
 			grph, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
 			if err != nil {
 				failErr(err)
 			}
+		} else {
+			grph = ls.NewDocumentGraph()
 		}
 		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
 		onlySchemaAttributes, _ := cmd.Flags().GetBool("onlySchemaAttributes")
