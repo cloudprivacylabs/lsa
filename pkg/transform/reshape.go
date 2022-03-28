@@ -15,7 +15,6 @@
 package transform
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -26,22 +25,6 @@ import (
 type Reshaper struct {
 	ls.Ingester
 }
-
-// ErrInvalidSchemaNodeType is returned if the schema node type cannot
-// be projected (such as a reference, which cannot happen after
-// compilation)
-type ErrInvalidSchemaNodeType []string
-
-func (e ErrInvalidSchemaNodeType) Error() string {
-	return fmt.Sprintf("Invalid schema node type for reshaping: %v", []string(e))
-}
-
-var (
-	ErrInvalidSource      = errors.New("Invalid source")
-	ErrInvalidSourceValue = errors.New("Invalid source value")
-	ErrSourceMustBeString = errors.New("source term value must be a string")
-	ErrMultipleValues     = errors.New("Multiple values/result columns found")
-)
 
 type ReshapeContext struct {
 	*ls.Context

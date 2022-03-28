@@ -1,0 +1,70 @@
+[
+    {
+        "name": "Basic",
+        "term": "omop",
+        "target": {
+            "@context": ["../../schemas/ls.json","../../schemas/transform.json"],
+            "@id": "http://test",
+            "@type": "Schema",
+            "layer": {
+                "@type": "Object",
+                "@id": "urn:root",
+                "attributeList": [
+                    {
+                        "@id": "urn:target:1",
+                        "@type": "Value"
+                    },
+                    {
+                        "@id": "urn:target:2",
+                        "@type": "Value"
+                    }
+                ]
+            }
+        },
+        "sourceGraph": {
+            "nodes": [
+                {
+                    "n":0,
+                    "id": "1",
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Object"],
+                    "properties": {
+                        "omop":"urn:root"
+                    }
+                },
+                {
+                    "n":1,
+                    "id": "2",
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "properties": {
+                        "omop":"urn:target:1",
+                        "https://lschema.org/value":"a"
+                    }
+                },
+                {
+                    "n":2,
+                    "id": "3",
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "properties": {
+                        "omop":"urn:target:2",
+                        "https://lschema.org/value":"b"
+                    }
+                }
+            ],
+            "edges": [
+                {
+                    "from": 0,
+                    "to": 1,
+                    "label": "https://lschema.org/has"
+                },
+                {
+                    "from": 0,
+                    "to": 2,
+                    "label": "https://lschema.org/has"
+                }
+            ]
+        },
+        "expected": {
+        }
+    }
+]
+
