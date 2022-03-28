@@ -82,12 +82,9 @@ func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
 			if err != nil {
 				return nil, err
 			}
-			layer, err := b.Add(ctx, items[0], items[1:]...)
+			_, err = b.Add(ctx, typeName, items[0], items[1:]...)
 			if err != nil {
 				return nil, err
-			}
-			if layer.GetValueType() != typeName {
-				return nil, fmt.Errorf("%s: Type %s has layers of type %s", file, typeName, layer.GetValueType())
 			}
 		}
 		return &b, nil

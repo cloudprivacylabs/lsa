@@ -100,11 +100,13 @@ func (mapper *Mapper) Map(lsContext *ls.Context, sourceGraph graph.Graph) error 
 func (mapper *Mapper) buildTarget(ctx *mapContext) error {
 	// Get the schema node to build
 	schemaNode := ctx.GetSchemaNode()
+	ctx.GetLogger().Debug(map[string]interface{}{"mth": "map.buildTarget", "schemaNode": schemaNode})
 	// Find the source nodes
 	sourceNodes, err := ctx.find(ls.GetNodeID(schemaNode))
 	if err != nil {
 		return err
 	}
+	ctx.GetLogger().Debug(map[string]interface{}{"mth": "map.buildTarget", "sourceNodes": len(sourceNodes)})
 	if len(sourceNodes) == 0 {
 		return nil
 	}
@@ -113,6 +115,7 @@ func (mapper *Mapper) buildTarget(ctx *mapContext) error {
 		// Create the target node
 		switch {
 		case schemaNode.GetLabels().Has(ls.AttributeTypeValue):
+			ctx.GetLogger().Debug(map[string]interface{}{"mth": "map.buildTarget", "sourceValueNode": sourceNode})
 			value, err := ls.GetNodeValue(sourceNode)
 			if err != nil {
 				return err

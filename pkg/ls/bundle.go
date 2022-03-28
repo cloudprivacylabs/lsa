@@ -59,14 +59,18 @@ type BundleByType struct {
 	variants map[string]*Layer
 }
 
-// Add a new variant to the bundle. The schema type must be unique. If
-// there are overlays, the variant will be built using the schema as
-// the base, so caller must create a clone if necessary.
-func (b *BundleByType) Add(ctx *Context, schema *Layer, overlays ...*Layer) (*Layer, error) {
+// Add a new variant to the bundle. The typeName must be unique. If
+// empty, schema type will be used. If there are overlays, the variant
+// will be built using the schema as the base, so caller must create a
+// clone if necessary.
+func (b *BundleByType) Add(ctx *Context, typeName string, schema *Layer, overlays ...*Layer) (*Layer, error) {
 	if b.variants == nil {
 		b.variants = make(map[string]*Layer)
 	}
-	vtype := schema.GetValueType()
+	vtype := typeName
+	if len(vtype) == 0 {
+		vtype = schema.GetValueType()
+	}
 	if len(vtype) == 0 {
 		return nil, ErrInvalidInput{Msg: "Schema has no type"}
 	}
