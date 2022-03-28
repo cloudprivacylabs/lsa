@@ -29,6 +29,7 @@ func init() {
 	rootCmd.AddCommand(compileCmd)
 	compileCmd.Flags().String("repo", "", "Schema repository directory")
 	compileCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
+	compileCmd.Flags().String("type", "", "If bundle is given, type name to compile.")
 	compileCmd.Flags().String("bundle", "", "Schema bundle.")
 }
 
@@ -37,27 +38,28 @@ var compileCmd = &cobra.Command{
 	Short: "Compile schema(s)",
 	Long:  `Compile schemas. If a bundle is given, all schemas in the bundle are compiled`,
 	Run: func(cmd *cobra.Command, args []string) {
-		interner := ls.NewInterner()
+		ctx := getContext()
 		repoDir, _ := cmd.Flags().GetString("repo")
 		bundleName, _ := cmd.Flags().GetString("bundle")
 		schemaName, _ := cmd.Flags().GetString("schema")
-		if len(schemaName) == 0 || len(bundleName) == 0 {
-			fail("One of schema or bundle is required")
+		typeName, _ := cmd.Flags().GetString("type")
+		if len(repoDir) > 0 && len(bundleName) > 0 {
+			fail("One of repo or bundle is required")
 		}
-		if len(schemaName) > 0 && len(bundleName) > 0 {
-			fail("One of schema or bundle is required")
-		}
-		if len(schemaName) > 0 {
-			var layer *ls.Layer
+		var layer *ls.Layer
+		if len(bundleName) == 0 {
+			if len(schemaName) == 0 {
+				fail("Schema is required")
+			}
 			if len(repoDir) > 0 {
 				var repo *fs.Repository
 				var err error
-				repo, err = getRepo(repoDir, interner)
+				repo, err = getRepo(repoDir, ctx.GetInterner())
 				if err != nil {
 					failErr(err)
 				}
 				logf("Loading composed schema for %s", schemaName)
-				layer, err = repo.GetComposedSchema(ls.DefaultContext(), schemaName)
+				layer, err = repo.GetComposedSchema(ctx, schemaName)
 				if err != nil {
 					failErr(err)
 				}
@@ -67,11 +69,11 @@ var compileCmd = &cobra.Command{
 						if variant := repo.GetSchemaVariantByObjectType(x); variant != nil {
 							x = variant.ID
 						}
-						return repo.LoadAndCompose(ls.DefaultContext(), x)
+						return repo.LoadAndCompose(ctx, x)
 					}),
 				}
 				logf("Compiling schema %s", schemaName)
-				layer, err = compiler.Compile(ls.DefaultContext(), schemaName)
+				layer, err = compiler.Compile(ctx, schemaName)
 				if err != nil {
 					failErr(err)
 				}
@@ -81,7 +83,7 @@ var compileCmd = &cobra.Command{
 				if err != nil {
 					failErr(err)
 				}
-				layers, err := ReadLayers(data, interner)
+				layers, err := ReadLayers(data, ctx.GetInterner())
 				if err != nil {
 					failErr(err)
 				}
@@ -97,16 +99,32 @@ var compileCmd = &cobra.Command{
 						return nil, fmt.Errorf("Not found")
 					}),
 				}
-				layer, err = compiler.Compile(ls.DefaultContext(), schemaName)
+				layer, err = compiler.Compile(ctx, schemaName)
 				if err != nil {
 					failErr(err)
 				}
 			}
-			marshaler := ls.JSONMarshaler{}
-			x, _ := marshaler.Marshal(layer.Graph)
-			fmt.Println(string(x))
-			return
+		} else {
+			logf("Loading bundle %s", bundleName)
+			loader, err := LoadBundle(ctx, bundleName)
+			if err != nil {
+				failErr(err)
+			}
+			compiler := ls.Compiler{
+				Loader: loader,
+			}
+			name := typeName
+			if len(name) == 0 {
+				name = schemaName
+			}
+			layer, err = compiler.Compile(ctx, name)
+			if err != nil {
+				failErr(err)
+			}
 		}
-
+		marshaler := ls.JSONMarshaler{}
+		x, _ := marshaler.Marshal(layer.Graph)
+		fmt.Println(string(x))
+		return
 	},
 }
