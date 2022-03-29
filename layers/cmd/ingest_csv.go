@@ -47,6 +47,8 @@ var ingestCSVCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
+		valueSets := &ValueSets{}
+		loadValuesetsCmd(cmd, valueSets)
 
 		reader := csv.NewReader(f)
 		startRow, err := cmd.Flags().GetInt("startRow")
@@ -72,6 +74,7 @@ var ingestCSVCmd = &cobra.Command{
 				EmbedSchemaNodes:     embedSchemaNodes,
 				OnlySchemaAttributes: onlySchemaAttributes,
 				Graph:                ls.NewDocumentGraph(),
+				ExternalLookup:       valueSets.Lookup,
 			},
 		}
 		idTemplate, _ := cmd.Flags().GetString("id")

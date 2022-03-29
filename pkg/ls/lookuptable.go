@@ -21,6 +21,39 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
+// LookupTable is the JSON representation of a lookup table containing the ID and elements
+type LookupTable struct {
+	// Lookup table ID
+	ID       string               `json:"id" yaml:"id"`
+	Ref      string               `json:"ref" yaml:"ref"`
+	Elements []LookupTableElement `json:"elements" yaml:"elements"`
+}
+
+// LookupTableElement is the JSON schema representation of a lookup table item. It
+// is also the JSON-LD representation under the ls:/lookupTable/element namespace
+type LookupTableElement struct {
+	// Possible values the data point can take. If empty, this is the default option
+	Options []string `json:"options" yaml:"options"`
+	// If the options are to be compared case sensitive
+	CaseSensitive bool `json:"caseSensitive" yaml:"caseSensitive"`
+	// This is the value that has to be returned for the field if options match, or if this is the default
+	Value string `json:"value" yaml:"value"`
+	// If set, data ingestion/set/get must fail with this error
+	Error string `json:"error" yaml:"error"`
+}
+
+type LookupResult struct {
+	// Matched is true if the lookup value matched something in the lookup table
+	Matched bool
+	// If true, the value did not match anything and the returned value
+	// is the default value
+	DefaultValue bool
+	// This is the value returned if Matched==true
+	Value string
+	// This is nonempty if an error must be returned
+	Error string
+}
+
 type ErrInvalidLookupTable struct {
 	ID  string
 	Msg string
@@ -52,18 +85,6 @@ type ErrLookupTableError struct {
 
 func (e ErrLookupTableError) Error() string {
 	return "Lookup table error: " + strings.Join(e.Errors, ", ")
-}
-
-type LookupResult struct {
-	// Matched is true if the lookup value matched something in the lookup table
-	Matched bool
-	// If true, the value did not match anything and the returned value
-	// is the default value
-	DefaultValue bool
-	// This is the value returned if Matched==true
-	Value string
-	// This is nonempty if an error must be returned
-	Error string
 }
 
 // LookupProcessor keeps the lookup configuration and provides the
@@ -124,10 +145,8 @@ func (prc *LookupProcessor) processLookup(dataNode, schemaNode graph.Node) (bool
 			// An internal reference
 			elements := graph.NextNodesWith(ltNode, LookupTableElementsTerm)
 			for _, e := range elements {
-				result, err := prc.processLookupNode(dataNode, e, value)
-				if err != nil {
-					return true, err
-				}
+				lte := LookupTableElement{}
+				result := lte.FromNode(e).Check(value)
 				if result.Matched {
 					results = append(results, result)
 				}
@@ -195,55 +214,51 @@ func (prc *LookupProcessor) processLookup(dataNode, schemaNode graph.Node) (bool
 	return true, nil
 }
 
-// Input is the data node and the lookup element node. This determines
-// if the node value matches lookup element node options
-func (prc *LookupProcessor) processLookupNode(dataNode, lookupElementNode graph.Node, value string) (LookupResult, error) {
-	options := AsPropertyValue(lookupElementNode.GetProperty(LookupTableElementOptionsTerm)).MustStringSlice()
-	if len(options) == 0 {
+func (el *LookupTableElement) FromNode(elementNode graph.Node) *LookupTableElement {
+	el.Options = AsPropertyValue(elementNode.GetProperty(LookupTableElementOptionsTerm)).MustStringSlice()
+	el.CaseSensitive = AsPropertyValue(elementNode.GetProperty(LookupTableElementCaseSensitiveTerm)).AsString() == "true"
+	el.Value = AsPropertyValue(elementNode.GetProperty(LookupTableElementValueTerm)).AsString()
+	el.Error = AsPropertyValue(elementNode.GetProperty(LookupTableElementErrorTerm)).AsString()
+	return el
+}
+
+func (el *LookupTableElement) Check(value string) LookupResult {
+	if len(el.Options) == 0 {
 		// this is the default option
 		return LookupResult{
 			Matched:      true,
 			DefaultValue: true,
-			Value:        AsPropertyValue(lookupElementNode.GetProperty(LookupTableElementValueTerm)).AsString(),
-			Error:        AsPropertyValue(lookupElementNode.GetProperty(LookupTableElementErrorTerm)).AsString(),
-		}, nil
+			Value:        el.Value,
+			Error:        el.Error,
+		}
 	}
-	filter := func(s string) string { return s }
-	if AsPropertyValue(lookupElementNode.GetProperty(LookupTableElementCaseSensitiveTerm)).AsString() != "true" {
-		filter = func(s string) string { return strings.ToLower(s) }
+	filter := func(s string) string { return strings.ToLower(s) }
+	if el.CaseSensitive {
+		filter = func(s string) string { return s }
 	}
 	value = filter(value)
-	for _, x := range options {
+	for _, x := range el.Options {
 		if filter(x) == value {
 			return LookupResult{
 				Matched: true,
-				Value:   AsPropertyValue(lookupElementNode.GetProperty(LookupTableElementValueTerm)).AsString(),
-				Error:   AsPropertyValue(lookupElementNode.GetProperty(LookupTableElementErrorTerm)).AsString(),
-			}, nil
+				Value:   el.Value,
+				Error:   el.Error,
+			}
 		}
 	}
-	return LookupResult{Matched: false}, nil
+	return LookupResult{Matched: false}
 }
 
-// LookupTableElement is the JSON schema representation of a lookup table item. It
-// is also the JSON-LD representation under the ls:/lookupTable/element namespace
-type LookupTableElement struct {
-	// Possible values the data point can take. If empty, this is the default option
-	Options []string `json:"options"`
-	// If the options are to be compared case sensitive
-	CaseSensitive bool `json:"caseSensitive"`
-	// This is the value that has to be returned for the field if options match, or if this is the default
-	Value string `json:"value"`
-	// If set, data ingestion/set/get must fail with this error
-	Error string `json:"error"`
-}
-
-// LookupTable is the JSON representation of a lookup table containing the ID and elements
-type LookupTable struct {
-	// Lookup table ID
-	ID       string               `json:"id"`
-	Ref      string               `json:"ref"`
-	Elements []LookupTableElement `json:"elements"`
+// FindValue scans the lookupTable so see if the input matches a value
+func (l LookupTable) FindValue(value string) []LookupResult {
+	ret := make([]LookupResult, 0)
+	for _, el := range l.Elements {
+		r := el.Check(value)
+		if r.Matched {
+			ret = append(ret, r)
+		}
+	}
+	return ret
 }
 
 var LookupTableTerm = NewTerm(LS, "lookupTable", false, false, OverrideComposition, struct {

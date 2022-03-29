@@ -37,6 +37,8 @@ var ingestXMLCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := getContext()
 		layer := loadSchemaCmd(ctx, cmd)
+		valueSets := &ValueSets{}
+		loadValuesetsCmd(cmd, valueSets)
 		var input io.Reader
 		var err error
 		if layer != nil {
@@ -62,6 +64,7 @@ var ingestXMLCmd = &cobra.Command{
 				EmbedSchemaNodes:     embedSchemaNodes,
 				OnlySchemaAttributes: onlySchemaAttributes,
 				Graph:                ls.NewDocumentGraph(),
+				ExternalLookup:       valueSets.Lookup,
 			},
 		}
 

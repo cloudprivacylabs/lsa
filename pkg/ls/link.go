@@ -180,7 +180,8 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 }
 
 // Link the given node, or create a link from the parent node as the
-// docNode may not exist.
+// docNode may not exist because this link may refer to a node with no
+// ingested data.
 func (ingester *Ingester) Link(ictx IngestionContext, spec *LinkSpec, docNode, parentNode graph.Node, entityInfo map[graph.Node]EntityInfo) error {
 	entityRoot := GetEntityRoot(parentNode)
 	if entityRoot == nil {

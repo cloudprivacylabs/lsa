@@ -34,6 +34,7 @@ func init() {
 	ingestCmd.PersistentFlags().String("type", "", "Use if a bundle is given for data types. The type name to ingest.")
 	ingestCmd.PersistentFlags().String("bundle", "", "Schema bundle.")
 	ingestCmd.PersistentFlags().String("compiledschema", "", "Use the given compiled schema")
+	ingestCmd.PersistentFlags().StringSlice("valueset", nil, "Value set file (s)")
 	ingestCmd.PersistentFlags().Bool("includeSchema", false, "Include schema in the output")
 	ingestCmd.PersistentFlags().Bool("embedSchemaNodes", false, "Embed schema nodes into document nodes")
 	ingestCmd.PersistentFlags().Bool("onlySchemaAttributes", false, "Only ingest nodes that have an associated schema attribute")
@@ -42,6 +43,68 @@ func init() {
 var ingestCmd = &cobra.Command{
 	Use:   "ingest",
 	Short: "Ingest and enrich data with a schema",
+	Long: `Ingest data using a schema variant. 
+
+There are several ways a schema variant can be specified:
+
+  layers ingest json --schema <schemaFile>
+
+This form ingests data using the given schema file.
+  
+  layers ingest xml --repo <repodir> --schema <schemaId>
+
+This form uses a repository to resolve and load schemas. When run,
+this command will first read all schema files under "repoDir" and
+create an index. Then, it will load the schema variant with id
+"schemaId". If the schema variant refers to other schemas or overlays,
+those are resolved using the schemas in the "repoDir".
+
+  layers ingest csv --bundle <bundlefile> --type <typeName>
+
+This form uses a bundle that specifies type names and corresponding
+schema variants. The input will be ingested using the variant for the
+type. The bundle is a JSON file:
+
+{
+  "types": {
+    "typeName": {
+       "schema": "schemaFile",
+       "overlays": [
+          "overlayFile","overlayFile"
+       ]
+    },
+    "typeName": {
+       "schema": "schemaFile",
+       "overlays": [
+          "overlayFile","overlayFile"
+       ]
+    },
+    ...
+}
+
+A bundle can also be defined using IDs:
+
+{
+  "variants": {
+    "variantId": {
+       "schema": "schemaFile",
+       "overlays": [
+          "overlayFile","overlayFile"
+       ]
+    },
+    "variantId": {
+       "schema": "schemaFile",
+       "overlays": [
+          "overlayFile","overlayFile"
+       ]
+    },
+    ...
+}
+
+  layers ingest csv --compiledSchema <schemaGraphFile> --schema <schemaId>
+
+This form will use a previously compiled schema.
+`,
 }
 
 func loadSchemaCmd(ctx *ls.Context, cmd *cobra.Command) *ls.Layer {
