@@ -304,18 +304,27 @@ func GetParentAttribute(node graph.Node) graph.Node {
 	return nil
 }
 
-// GetPath returns the path to the given attribute node
+// GetAttributePath returns the path to the given attribute node
 func (l *Layer) GetAttributePath(node graph.Node) []graph.Node {
 	root := l.GetSchemaRootNode()
+	return GetAttributePath(root, node)
+}
+
+func GetAttributePath(root, node graph.Node) []graph.Node {
 	ret := make([]graph.Node, 0)
 	ret = append(ret, node)
 	for node != root {
+		hasEdges := false
 		for edges := node.GetEdges(graph.IncomingEdge); edges.Next(); {
+			hasEdges = true
 			edge := edges.Edge()
 			if IsAttributeTreeEdge(edge) && IsAttributeNode(edge.GetFrom()) {
 				ret = append(ret, edge.GetFrom())
 				node = edge.GetFrom()
 			}
+		}
+		if !hasEdges {
+			break
 		}
 	}
 	for i := 0; i < len(ret)/2; i++ {
