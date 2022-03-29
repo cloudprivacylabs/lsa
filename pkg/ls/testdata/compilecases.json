@@ -1,0 +1,92 @@
+[
+    {
+        "name": "BasicRef",
+        "schemas": [
+            {
+                "@context": "../../schemas/ls.json",
+                "@type": "Schema",
+                "@id": "urn:root",
+                "layer": {
+                    "@type": "Object",
+                    "attributeList": [
+                        {
+                            "@id": "https://ref",
+                            "@type": "Reference",
+                            "ref": "urn:2"
+                        }
+                    ]
+                }
+            },
+            {
+                "@context": "../../schemas/ls.json",
+                "@type": "Schema",
+                "@id": "urn:2",
+                "layer": {
+                    "@type": "Object",
+                    "https://annotation": "value",
+                    "attributeList": [
+                        {
+                            "@id": "https://refed",
+                            "@type": "Value"
+                        }
+                    ]
+                }
+            }
+        ],
+        "expected": {
+            "nodes":[
+                {
+                    "n":0,
+                    "id":"_b:0",
+                    "labels":["https://lschema.org/Schema"]
+                },
+                {"n":1,
+                 "id":"_b:1",
+                 "labels":["https://lschema.org/Object",
+                           "https://lschema.org/Attribute"],
+                 "properties":{"https://lschema.org/entitySchema":"urn:root"}
+                },
+                {
+                    "n":2,
+                    "id":"https://ref",
+                    "labels":["https://lschema.org/Attribute","https://lschema.org/Object"],
+                    "properties":{
+                        "https://annotation":"value",
+                        "https://lschema.org/Reference/ref":"urn:2",
+                        "https://lschema.org/attributeIndex":"0",
+                        "https://lschema.org/entitySchema":"urn:2"
+                    }
+                },
+                {
+                    "n":3,
+                    "id":"_b:2",
+                    "labels":["https://lschema.org/Schema"]
+                },
+                {
+                    "n":4,
+                    "id":"_b:3",
+                    "labels":["https://lschema.org/Attribute","https://lschema.org/Object"],
+                    "properties":{
+                        "https://annotation":"value",
+                        "https://lschema.org/entitySchema":"urn:2"
+                    }
+                },
+                {
+                    "n":5,
+                    "id":"https://refed",
+                    "labels":["https://lschema.org/Attribute","https://lschema.org/Value"],
+                    "properties":{
+                        "https://lschema.org/attributeIndex":"0"
+                    }
+                }
+            ],
+            "edges":[
+                {"from":1,"to":2,"label":"https://lschema.org/Object/attributeList"},
+                {"from":4,"to":5,"label":"https://lschema.org/Object/attributeList"},
+                {"from":2,"to":5,"label":"https://lschema.org/Object/attributeList"},
+                {"from":0,"to":1,"label":"https://lschema.org/layer"},
+                {"from":3,"to":4,"label":"https://lschema.org/layer"}
+            ]
+        }
+    }
+]

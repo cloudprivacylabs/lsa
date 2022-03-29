@@ -70,10 +70,11 @@ func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, graph.Node) 
 	if rootNode == nil {
 		rootNode = CloneNode(sourceRoot, ret.Graph)
 	}
+	nodeMap := make(map[graph.Node]graph.Node)
 	for targets := sourceRoot.GetEdges(graph.OutgoingEdge); targets.Next(); {
 		edge := targets.Edge()
 		if IsAttributeTreeEdge(edge) {
-			newNode := slice(ret, edge.GetTo(), nodeFilter, map[graph.Node]struct{}{})
+			newNode := slice(ret, edge.GetTo(), nodeFilter, nodeMap)
 			if newNode != nil {
 				ret.Graph.NewEdge(rootNode, newNode, edge.GetLabel(), nil)
 			}
@@ -83,26 +84,25 @@ func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, graph.Node) 
 	return ret
 }
 
-func slice(targetLayer *Layer, sourceNode graph.Node, nodeFilter func(*Layer, graph.Node) graph.Node, ctx map[graph.Node]struct{}) graph.Node {
-	// Avoid loops
-	if _, seen := ctx[sourceNode]; seen {
-		return nil
+func slice(targetLayer *Layer, sourceNode graph.Node, nodeFilter func(*Layer, graph.Node) graph.Node, nodeMap map[graph.Node]graph.Node) graph.Node {
+	// If the sourceNode was seen before, link to it
+	if tgt, ok := nodeMap[sourceNode]; ok {
+		return tgt
 	}
-	ctx[sourceNode] = struct{}{}
-	defer func() {
-		delete(ctx, sourceNode)
-	}()
-
 	// Try to filter first. This may return nil
 	targetNode := nodeFilter(targetLayer, sourceNode)
+	if targetNode != nil {
+		nodeMap[sourceNode] = targetNode
+	}
 
 	for edges := sourceNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
 		edge := edges.Edge()
-		newTo := slice(targetLayer, edge.GetTo(), nodeFilter, ctx)
+		newTo := slice(targetLayer, edge.GetTo(), nodeFilter, nodeMap)
 		if newTo != nil {
 			// If targetNode was filtered out, it has to be included now
 			if targetNode == nil {
 				targetNode = targetLayer.Graph.NewNode(sourceNode.GetLabels().Slice(), nil)
+				nodeMap[sourceNode] = targetNode
 				if len(GetAttributeID(sourceNode)) > 0 {
 					SetAttributeID(targetNode, GetAttributeID(sourceNode))
 				}

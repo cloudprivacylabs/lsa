@@ -24,19 +24,20 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(reshapeCmd)
-	reshapeCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
-	reshapeCmd.Flags().String("repo", "", "Schema repository directory")
-	reshapeCmd.Flags().String("type", "", "Use if a bundle is given for data types. The type name to ingest.")
-	reshapeCmd.Flags().String("bundle", "", "Schema bundle.")
-	reshapeCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
-	reshapeCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
-	reshapeCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
+	rootCmd.AddCommand(mapCmd)
+	mapCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
+	mapCmd.Flags().String("repo", "", "Schema repository directory")
+	mapCmd.Flags().String("type", "", "Use if a bundle is given for data types. The type name to ingest.")
+	mapCmd.Flags().String("bundle", "", "Schema bundle.")
+	mapCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
+	mapCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
+	mapCmd.Flags().String("output", "json", "Output format, json, jsonld, or dot")
+	mapCmd.Flags().String("term", "", "The term in the input graph that contains the target schema attribute ids")
 }
 
-var reshapeCmd = &cobra.Command{
-	Use:   "reshape",
-	Short: "Reshape a graph using a target schema",
+var mapCmd = &cobra.Command{
+	Use:   "map",
+	Short: "Map a graph to fit to a target schema by copying the values from the source nodes that has a term property containing target schema node ids",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := getContext()
@@ -47,16 +48,17 @@ var reshapeCmd = &cobra.Command{
 		}
 		layer := loadSchemaCmd(ctx, cmd)
 
-		reshaper := transform.Reshaper{}
-		reshaper.Schema = layer
-		reshaper.EmbedSchemaNodes = true
-		reshaper.Graph = ls.NewDocumentGraph()
-		err = reshaper.Reshape(ctx, g)
+		mapper := transform.Mapper{}
+		mapper.Schema = layer
+		mapper.EmbedSchemaNodes = true
+		mapper.Graph = ls.NewDocumentGraph()
+		mapper.PropertyName, _ = cmd.Flags().GetString("term")
+		err = mapper.Map(ctx, g)
 		if err != nil {
 			failErr(err)
 		}
 		outFormat, _ := cmd.Flags().GetString("output")
-		err = OutputIngestedGraph(outFormat, reshaper.Graph, os.Stdout, false)
+		err = OutputIngestedGraph(outFormat, mapper.Graph, os.Stdout, false)
 		if err != nil {
 			failErr(err)
 		}

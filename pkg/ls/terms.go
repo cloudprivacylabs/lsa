@@ -37,15 +37,11 @@ var (
 	// SchemaNodeIDTerm denotes the schema node ID for ingested nodes
 	SchemaNodeIDTerm = NewTerm(LS, "schemaNodeId", false, false, ErrorComposition, nil)
 
-	BundleTerm     = NewTerm(LS, "SchemaVariant/bundle", false, false, ErrorComposition, nil)
 	SchemaBaseTerm = NewTerm(LS, "SchemaVariant/schema", true, false, ErrorComposition, nil)
 	OverlaysTerm   = NewTerm(LS, "SchemaVariant/overlays", true, true, ErrorComposition, nil)
 
 	// SchemaVariantTerm is the schema variant type
 	SchemaVariantTerm = NewTerm(LS, "SchemaVariant", false, false, NoComposition, nil)
-
-	// TargetType is the term specifying the data type for the attribute defined
-	TargetType = NewTerm(LS, "targetType", true, false, SetComposition, nil)
 
 	// DescriptionTerm is used for comments/descriptions
 	DescriptionTerm = NewTerm(LS, "description", false, false, SetComposition, nil)
@@ -133,7 +129,7 @@ var (
 	ObjectAttributeListTerm = NewTerm(LS, "Object/attributeList", false, true, ErrorComposition, nil)
 	// Reference to another schema. This will be resolved to another
 	// schema during compilation
-	ReferenceTerm = NewTerm(LS, "Reference/ref", true, false, ErrorComposition, nil)
+	ReferenceTerm = NewTerm(LS, "Reference/ref", false, false, ErrorComposition, nil)
 	// ArrayItems contains the definition for the items of the array
 	ArrayItemsTerm = NewTerm(LS, "Array/elements", false, false, ErrorComposition, nil)
 	// All components of a composite attribute

@@ -15,10 +15,8 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 
 	"github.com/spf13/cobra"
 
@@ -32,6 +30,10 @@ func init() {
 	rootCmd.AddCommand(ingestCmd)
 	ingestCmd.PersistentFlags().String("repo", "", "Schema repository directory")
 	ingestCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
+	ingestCmd.PersistentFlags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
+	ingestCmd.PersistentFlags().String("type", "", "Use if a bundle is given for data types. The type name to ingest.")
+	ingestCmd.PersistentFlags().String("bundle", "", "Schema bundle.")
+	ingestCmd.PersistentFlags().String("compiledschema", "", "Use the given compiled schema")
 	ingestCmd.PersistentFlags().Bool("includeSchema", false, "Include schema in the output")
 	ingestCmd.PersistentFlags().Bool("embedSchemaNodes", false, "Embed schema nodes into document nodes")
 	ingestCmd.PersistentFlags().Bool("onlySchemaAttributes", false, "Only ingest nodes that have an associated schema attribute")
@@ -42,82 +44,120 @@ var ingestCmd = &cobra.Command{
 	Short: "Ingest and enrich data with a schema",
 }
 
-func LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName string, interner ls.Interner) (*ls.Layer, error) {
+func loadSchemaCmd(ctx *ls.Context, cmd *cobra.Command) *ls.Layer {
+	compiledSchema, _ := cmd.Flags().GetString("compiledschema")
+	repoDir, _ := cmd.Flags().GetString("repo")
+	schemaName, _ := cmd.Flags().GetString("schema")
+	bundleName, _ := cmd.Flags().GetString("bundle")
+	typeName, _ := cmd.Flags().GetString("type")
+	layer, err := LoadSchemaFromFileOrRepo(ctx, compiledSchema, repoDir, schemaName, typeName, bundleName)
+	if err != nil {
+		failErr(err)
+	}
+	return layer
+}
+
+func loadCompiledSchema(ctx *ls.Context, compiledSchema, schemaName string) (*ls.Layer, []*ls.Layer, error) {
+	sch, err := cmdutil.ReadURL(compiledSchema)
+	if err != nil {
+		return nil, nil, err
+	}
+	m := ls.NewJSONMarshaler(ctx.GetInterner())
+	g := ls.NewLayerGraph()
+	err = m.Unmarshal(sch, g)
+	if err != nil {
+		return nil, nil, err
+	}
+	layers := ls.LayersFromGraph(g)
 	var layer *ls.Layer
-	if len(compiledSchema) > 0 {
-		sch, err := ioutil.ReadFile(compiledSchema)
-		if err != nil {
-			return nil, err
-		}
-		var v interface{}
-		err = json.Unmarshal(sch, &v)
-		if err != nil {
-			return nil, err
-		}
-		layer, err = ls.UnmarshalLayer(v, interner)
-		if err != nil {
-			return nil, err
-		}
-		compiler := ls.Compiler{}
-		layer, err = compiler.CompileSchema(ls.DefaultContext(), layer)
-		if err != nil {
-			return nil, err
+	for i := range layers {
+		if schemaName == layers[i].GetID() {
+			layer = layers[i]
+			break
 		}
 	}
 	if layer == nil {
-		var repo *fs.Repository
-		if len(repoDir) > 0 {
-			var err error
-			repo, err = getRepo(repoDir, interner)
-			if err != nil {
-				return nil, err
-			}
-		}
-		if len(schemaName) > 0 {
-			if repo != nil {
-				var err error
-				layer, err = repo.GetComposedSchema(ls.DefaultContext(), schemaName)
-				if err != nil {
-					return nil, err
-				}
-				compiler := ls.Compiler{
-					Loader: func(x string) (*ls.Layer, error) {
-						if variant := repo.GetSchemaVariantByObjectType(x); variant != nil {
-							x = variant.ID
-						}
-						return repo.LoadAndCompose(ls.DefaultContext(), x)
-					},
-				}
-				layer, err = compiler.Compile(ls.DefaultContext(), schemaName)
-				if err != nil {
-					return nil, err
-				}
-			} else {
-				var v interface{}
-				err := cmdutil.ReadJSON(schemaName, &v)
-				if err != nil {
-					return nil, err
-				}
-				layer, err = ls.UnmarshalLayer(v, interner)
-				if err != nil {
-					return nil, err
-				}
-				compiler := ls.Compiler{
-					Loader: func(x string) (*ls.Layer, error) {
-						if x == schemaName || x == layer.GetID() {
-							return layer, nil
-						}
-						return nil, fmt.Errorf("Not found")
-					},
-				}
-				layer, err = compiler.Compile(ls.DefaultContext(), schemaName)
-				if err != nil {
-					return nil, err
-				}
-			}
-		}
+		return nil, nil, fmt.Errorf("Not found: %s", schemaName)
 	}
-	return layer, nil
+	compiler := ls.Compiler{}
+	layer, err = compiler.CompileSchema(ctx, layer)
+	if err != nil {
+		return nil, nil, err
+	}
+	return layer, layers, nil
+}
+
+func LoadSchemaFromFileOrRepo(ctx *ls.Context, compiledSchema, repoDir, schemaName, typeName, bundleName string) (*ls.Layer, error) {
+	if len(compiledSchema) > 0 {
+		l, _, err := loadCompiledSchema(ctx, compiledSchema, schemaName)
+		return l, err
+	}
+	if len(bundleName) > 0 {
+		schLoader, err := LoadBundle(ctx, bundleName)
+		if err != nil {
+			return nil, err
+		}
+		compiler := ls.Compiler{
+			Loader: schLoader,
+		}
+		name := schemaName
+		if len(typeName) > 0 {
+			name = typeName
+		}
+		layer, err := compiler.Compile(ctx, name)
+		if err != nil {
+			return nil, err
+		}
+		return layer, nil
+	}
+	if len(schemaName) == 0 {
+		return nil, fmt.Errorf("Empty schema name")
+	}
+	var repo *fs.Repository
+	if len(repoDir) > 0 {
+		var err error
+		repo, err = getRepo(repoDir, ctx.GetInterner())
+		if err != nil {
+			return nil, err
+		}
+		layer, err := repo.GetComposedSchema(ctx, schemaName)
+		if err != nil {
+			return nil, err
+		}
+		compiler := ls.Compiler{
+			Loader: ls.SchemaLoaderFunc(func(x string) (*ls.Layer, error) {
+				if variant := repo.GetSchemaVariantByObjectType(x); variant != nil {
+					x = variant.ID
+				}
+				return repo.LoadAndCompose(ctx, x)
+			}),
+		}
+		layer, err = compiler.Compile(ctx, schemaName)
+		if err != nil {
+			return nil, err
+		}
+		return layer, nil
+	}
+	data, err := cmdutil.ReadURL(schemaName)
+	if err != nil {
+		return nil, err
+	}
+	layers, err := ReadLayers(data, ctx.GetInterner())
+	if err != nil {
+		return nil, err
+	}
+	if len(layers) > 1 {
+		return nil, fmt.Errorf("Multiple layers in schema input")
+	}
+	compiler := ls.Compiler{
+		Loader: ls.SchemaLoaderFunc(func(x string) (*ls.Layer, error) {
+			if x == schemaName || x == layers[0].GetID() {
+				return layers[0], nil
+			}
+			return nil, fmt.Errorf("Not found")
+		}),
+	}
+	return compiler.Compile(ctx, schemaName)
 }
 
 func OutputIngestedGraph(outFormat string, target graph.Graph, wr io.Writer, includeSchema bool) error {

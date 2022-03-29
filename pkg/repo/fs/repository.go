@@ -50,14 +50,14 @@ func NewWithInterner(root string, interner ls.Interner) *Repository {
 }
 
 type IndexEntry struct {
-	Type       string `json:"type"`
-	ID         string `json:"id"`
-	TargetType string `json:"targetType,omitempty"`
-	File       string `json:"file"`
+	Type      string `json:"type"`
+	ID        string `json:"id"`
+	ValueType string `json:"valueType,omitempty"`
+	File      string `json:"file"`
 }
 
 func (i IndexEntry) hasType(t string) bool {
-	return i.TargetType == t
+	return i.ValueType == t
 }
 
 var ErrBadIndex = errors.New("Bad index file")
@@ -182,10 +182,10 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 					continue
 				}
 				entry := IndexEntry{
-					Type:       layer.GetLayerType(),
-					ID:         layer.GetID(),
-					TargetType: layer.GetTargetType(),
-					File:       entry.Name(),
+					Type:      layer.GetLayerType(),
+					ID:        layer.GetID(),
+					ValueType: layer.GetValueType(),
+					File:      entry.Name(),
 				}
 				ret = append(ret, entry)
 			case hasType(ls.SchemaVariantTerm), hasType("SchemaVariant"):
@@ -195,10 +195,10 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 					continue
 				}
 				entry := IndexEntry{
-					Type:       ls.SchemaVariantTerm,
-					ID:         variant.ID,
-					TargetType: variant.TargetType,
-					File:       entry.Name(),
+					Type:      ls.SchemaVariantTerm,
+					ID:        variant.ID,
+					ValueType: variant.ValueType,
+					File:      entry.Name(),
 				}
 				ret = append(ret, entry)
 			}

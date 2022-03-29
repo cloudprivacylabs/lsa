@@ -25,8 +25,8 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 		return ErrCompositionSourceNotOverlay
 	}
 	// Check if target types are compatible. If they are non-empty, they must be the same
-	layerType := layer.GetTargetType()
-	sourceType := source.GetTargetType()
+	layerType := layer.GetValueType()
+	sourceType := source.GetValueType()
 	if len(layerType) > 0 && len(sourceType) > 0 {
 		if layerType != sourceType {
 			return ErrIncompatibleComposition

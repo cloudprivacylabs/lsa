@@ -39,14 +39,15 @@ func TestAnnotations(t *testing.T) {
    }
  }
 }`))
-	compiled, err := CompileEntitiesWith(compiler, Entity{Ref: "/schema", ID: "id"})
+	compiled, err := CompileEntitiesWith(compiler, Entity{Ref: "/schema", LayerID: "id"})
 	if err != nil {
 		t.Error(err)
 	}
 	if compiled[0].Schema.Properties["p1"].Extensions[X_LS].(annotationExtSchema)["field"].(string) != "value" {
 		t.Errorf("No extension")
 	}
-	layers, err := BuildEntityGraph(ls.SchemaTerm, compiled[0])
+	targetGraph := graph.NewOCGraph()
+	layers, err := BuildEntityGraph(targetGraph, ls.SchemaTerm, LinkRefsBySchemaRef, compiled[0])
 	if err != nil {
 		t.Error(err)
 		return
@@ -66,13 +67,14 @@ func TestRefs(t *testing.T) {
 	compiler := jsonschema.NewCompiler()
 	compiler.AddResource("https://ref", bytes.NewReader(td))
 
-	compiled, err := CompileEntitiesWith(compiler, Entity{Ref: "https://ref#/definitions/Array", ID: "http://array"},
-		Entity{Ref: "https://ref#/definitions/Item", ID: "http://item"})
+	compiled, err := CompileEntitiesWith(compiler, Entity{Ref: "https://ref#/definitions/Array", LayerID: "http://array"},
+		Entity{Ref: "https://ref#/definitions/Item", LayerID: "http://item"})
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	graphs, err := BuildEntityGraph(ls.SchemaTerm, compiled...)
+	targetGraph := graph.NewOCGraph()
+	graphs, err := BuildEntityGraph(targetGraph, ls.SchemaTerm, LinkRefsByLayerID, compiled...)
 	if err != nil {
 		t.Error(err)
 		return
@@ -104,12 +106,13 @@ func TestLoop(t *testing.T) {
 	compiler := jsonschema.NewCompiler()
 	compiler.AddResource("https://loop", bytes.NewReader(td))
 
-	compiled, err := CompileEntitiesWith(compiler, Entity{Ref: "https://loop#/definitions/Item", ID: "http://item"})
+	compiled, err := CompileEntitiesWith(compiler, Entity{Ref: "https://loop#/definitions/Item", LayerID: "http://item"})
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	_, err = BuildEntityGraph(ls.SchemaTerm, compiled...)
+	targetGraph := graph.NewOCGraph()
+	_, err = BuildEntityGraph(targetGraph, ls.SchemaTerm, LinkRefsBySchemaRef, compiled...)
 	if err != nil {
 		t.Error(err)
 		return

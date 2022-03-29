@@ -32,14 +32,14 @@ func TestBasicLink(t *testing.T) {
 		}
 	}
 	compiler := Compiler{
-		Loader: func(ref string) (*Layer, error) {
+		Loader: SchemaLoaderFunc(func(ref string) (*Layer, error) {
 			for i := range schemas {
 				if ref == schemas[i].GetID() {
 					return schemas[i], nil
 				}
 			}
 			return nil, fmt.Errorf("Not found: %s", ref)
-		},
+		}),
 	}
 	layer0, err := compiler.Compile(DefaultContext(), schemas[0].GetID())
 	if err != nil {

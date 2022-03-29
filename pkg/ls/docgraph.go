@@ -32,6 +32,7 @@ type EntityInfo struct {
 	sch  string
 }
 
+func (e EntityInfo) GetValueType() []string  { return FilterNonLayerTypes(e.root.GetLabels().Slice()) }
 func (e EntityInfo) GetRoot() graph.Node     { return e.root }
 func (e EntityInfo) GetEntitySchema() string { return e.sch }
 func (e EntityInfo) GetID() []string {
