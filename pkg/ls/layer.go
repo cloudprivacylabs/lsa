@@ -15,8 +15,6 @@
 package ls
 
 import (
-	"fmt"
-
 	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 	"golang.org/x/text/encoding"
 )
@@ -207,7 +205,7 @@ func GetObjectAttributeNodesBy(objectSchemaNode graph.Node, keyTerm string) (map
 	addNextNode := func(node graph.Node) error {
 		key := AsPropertyValue(node.GetProperty(keyTerm)).AsString()
 		if len(key) == 0 {
-			return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema at %s", keyTerm, GetNodeID(objectSchemaNode)))
+			return nil
 		}
 		nextNodes[key] = append(nextNodes[key], node)
 		return nil

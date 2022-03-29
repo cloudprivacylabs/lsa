@@ -24,8 +24,10 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func init() {
@@ -34,6 +36,8 @@ func init() {
 	ingestCSVCmd.Flags().Int("endRow", -1, "End row 0-based")
 	ingestCSVCmd.Flags().Int("headerRow", -1, "Header row 0-based (default: no header)")
 	ingestCSVCmd.Flags().String("id", "row_{{.rowIndex}}", "Object ID Go template for ingested data if no ID is declared in the schema")
+	ingestCSVCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
+	ingestCSVCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
 }
 
 var ingestCSVCmd = &cobra.Command{
@@ -41,13 +45,13 @@ var ingestCSVCmd = &cobra.Command{
 	Short: "Ingest a CSV document and enrich it with a schema",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		initialGraph, _ := cmd.Flags().GetString("initialGraph")
 		ctx := getContext()
 		layer := loadSchemaCmd(ctx, cmd)
 		f, err := os.Open(args[0])
 		if err != nil {
 			failErr(err)
 		}
-
 		reader := csv.NewReader(f)
 		startRow, err := cmd.Flags().GetInt("startRow")
 		if err != nil {
@@ -64,6 +68,15 @@ var ingestCSVCmd = &cobra.Command{
 		if headerRow >= startRow {
 			fail("Header row is ahead of start row")
 		}
+		var grph graph.Graph
+		if layer != nil && initialGraph != "" {
+			grph, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
+			if err != nil {
+				failErr(err)
+			}
+		} else {
+			grph = ls.NewDocumentGraph()
+		}
 		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
 		onlySchemaAttributes, _ := cmd.Flags().GetBool("onlySchemaAttributes")
 		ingester := csvingest.Ingester{
@@ -71,7 +84,7 @@ var ingestCSVCmd = &cobra.Command{
 				Schema:               layer,
 				EmbedSchemaNodes:     embedSchemaNodes,
 				OnlySchemaAttributes: onlySchemaAttributes,
-				Graph:                ls.NewDocumentGraph(),
+				Graph:                grph,
 			},
 		}
 		idTemplate, _ := cmd.Flags().GetString("id")
@@ -79,7 +92,6 @@ var ingestCSVCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-
 		for row := 0; ; row++ {
 			rowData, err := reader.Read()
 			if err == io.EOF {

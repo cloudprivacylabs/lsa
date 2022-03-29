@@ -37,6 +37,9 @@ func (e EntityInfo) GetEntitySchema() string { return e.sch }
 func (e EntityInfo) GetID() []string {
 	return AsPropertyValue(e.root.GetProperty(EntityIDTerm)).MustStringSlice()
 }
+func (e EntityInfo) GetValueType() []string {
+	return FilterNonLayerTypes(e.root.GetLabels().Slice())
+}
 
 // GetEntityRootNodes returns all the nodes that are entity roots
 func GetEntityRootNodes(g graph.Graph) map[graph.Node]EntityInfo {
