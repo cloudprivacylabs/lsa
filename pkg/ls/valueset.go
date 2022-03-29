@@ -253,15 +253,61 @@ func (ingester *Ingester) ProcessValueset(ctx IngestionContext, rootDocumentNode
 				}
 				// Create the new node
 				ictx = ictx.New("", schemaNode)
+				// Do we already have the target node?
+				children := FindChildInstanceOf(currentParent, GetNodeID(schemaNode))
+				if len(children) > 1 {
+					return ErrValueset{Msg: fmt.Sprintf("Multiple nodes already exist for valueset target %s", GetNodeID(schemaNode))}
+				}
 				switch {
 				case schemaNode.GetLabels().Has(AttributeTypeValue):
 					if len(result.KeyValues) != 1 {
 						return ErrValueset{Msg: "Multiple values cannot be set to value node: %s"}
 					}
-					for _, v := range result.KeyValues {
-						ingester.Value(ictx, v)
+					switch len(children) {
+					case 0:
+						// Create the new node
+						for _, v := range result.KeyValues {
+							ingester.Value(ictx, v)
+						}
+					case 1:
+						// Overwrite the existing node
+						for _, v := range result.KeyValues {
+							SetRawNodeValue(children[0], v)
+						}
 					}
 				case schemaNode.GetLabels().Has(AttributeTypeObject):
+					// Create the object node
+					_, _, node, nictx, err := ingester.Instantiate(ictx)
+					if err != nil {
+						return ErrValueset{Msg: fmt.Sprintf("In %s: %s", GetNodeID(schemaNode), err)}
+					}
+					nictx = nictx.NewLevel(node)
+					// Create children
+					// TODO: For now, this only creates single-level flat structures
+					if len(vsi.ResultValues) == 0 {
+						return ErrValueset{Msg: fmt.Sprintf("In %s: target is an object node, but there are no ids to receive result values", GetNodeID(schemaNode))}
+					}
+					for i, key := range vsi.ResultKeys {
+						value, ok := result.KeyValues[key]
+						if !ok {
+							continue
+						}
+						// Get the schema node for this one
+						valueSchemaNode := FindNodeByID(schemaNode.GetGraph(), vsi.ResultValues[i])
+						if len(valueSchemaNode) != 1 {
+							return ErrValueset{Msg: fmt.Sprintf("Expecting one %s node in schema, got %d", vsi.ResultValues[i], len(valueSchemaNode))}
+						}
+
+						// Insert a value node
+						_, _, node, _, err := ingester.Instantiate(nictx.New("", valueSchemaNode[0]))
+						if err != nil {
+							return ErrValueset{Msg: fmt.Sprintf("While setting %s: %s", GetNodeID(valueSchemaNode[0]), err)}
+						}
+						SetRawNodeValue(node, value)
+					}
+
+				default:
+					return ErrValueset{Msg: fmt.Sprintf("Unsupported schema node type: %s", GetNodeID(schemaNode))}
 				}
 			}
 		}

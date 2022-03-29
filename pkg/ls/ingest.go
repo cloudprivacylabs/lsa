@@ -593,6 +593,52 @@ func (ingester *Ingester) Array(ictx IngestionContext, types ...string) (string,
 	return "", nil, nil, nil
 }
 
+// Instantiate the latest schema node element in the context, and
+// connect it to its parent. Returns the new ingestion context to add
+// nodes after the new node. If the new node is an object or array,
+// the returned ingestion context is a level deeper.
+func (ingester *Ingester) Instantiate(ictx IngestionContext) (string, graph.Edge, graph.Node, IngestionContext, error) {
+	schemaNode := ictx.GetSchemaNode()
+	if schemaNode == nil {
+		return "", nil, nil, ictx, nil
+	}
+	// Create new node
+	switch {
+	case schemaNode.GetLabels().Has(AttributeTypeValue):
+		t := ingester.IngestEmptyValues
+		ingester.IngestEmptyValues = true
+		s, e, n, err := ingester.Value(ictx, "")
+		ingester.IngestEmptyValues = t
+		if err != nil {
+			return "", nil, nil, ictx, err
+		}
+		return s, e, n, ictx, nil
+
+	case schemaNode.GetLabels().Has(AttributeTypeObject):
+		t := ingester.IngestEmptyValues
+		ingester.IngestEmptyValues = true
+		s, e, n, err := ingester.Object(ictx)
+		ingester.IngestEmptyValues = t
+		if err != nil {
+			return "", nil, nil, ictx, err
+		}
+		ictx = ictx.NewLevel(n)
+		return s, e, n, ictx, nil
+	case schemaNode.GetLabels().Has(AttributeTypeArray):
+		t := ingester.IngestEmptyValues
+		ingester.IngestEmptyValues = true
+		s, e, n, err := ingester.Array(ictx)
+		ingester.IngestEmptyValues = t
+		if err != nil {
+			return "", nil, nil, ictx, err
+		}
+		ictx = ictx.NewLevel(n)
+		return s, e, n, ictx, nil
+	}
+	// Cannot instantiate
+	return "", nil, nil, ictx, fmt.Errorf("Cannot instantiate node/edge")
+}
+
 // Validate the document node with the schema node
 func (ingester *Ingester) Validate(ictx IngestionContext, documentNode graph.Node) error {
 	if ictx.GetSchemaNode() != nil {
