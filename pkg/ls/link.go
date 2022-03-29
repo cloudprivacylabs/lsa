@@ -280,7 +280,7 @@ func (spec *LinkSpec) FindReference(entityInfo map[graph.Node]EntityInfo, fk []s
 				break
 			}
 		}
-		if exists {
+		if exists || ei.GetEntitySchema() == spec.TargetEntity {
 			id := ei.GetID()
 			if len(id) != len(fk) {
 				continue
