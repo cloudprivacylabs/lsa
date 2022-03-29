@@ -43,9 +43,10 @@ type PatternSymbol struct {
 type PatternItem struct {
 	Labels     StringSet
 	Properties map[string]interface{}
-	Min        int
-	Max        int
-	Backwards  bool
+	// Min=-1 and Max=-1 for variable length
+	Min       int
+	Max       int
+	Backwards bool
 	// Name of the variable associated with this processing node. If the
 	// name is defined, it is used to constrain values. If not, it is
 	// used to store values
@@ -317,6 +318,14 @@ func (pattern Pattern) Run(graph Graph, symbols map[string]*PatternSymbol, resul
 	return plan.Run(graph, symbols, result)
 }
 
+func (pattern Pattern) FindPaths(graph Graph, symbols map[string]*PatternSymbol) (DefaultMatchAccumulator, error) {
+	acc := DefaultMatchAccumulator{}
+	if err := pattern.Run(graph, symbols, &acc); err != nil {
+		return acc, err
+	}
+	return acc, nil
+}
+
 // FindNodes runs the pattern with the given symbols, and returns all the head nodes found
 func (pattern Pattern) FindNodes(graph Graph, symbols map[string]*PatternSymbol) ([]Node, error) {
 	acc := DefaultMatchAccumulator{}
@@ -534,6 +543,23 @@ func (acc *DefaultMatchAccumulator) GetHeadNodes() []Node {
 			ret[n] = struct{}{}
 		} else if e, ok := x.([]Edge); ok {
 			ret[e[0].GetFrom()] = struct{}{}
+		}
+	}
+	arr := make([]Node, 0, len(ret))
+	for x := range ret {
+		arr = append(arr, x)
+	}
+	return arr
+}
+
+// Returns the unique nodes in the accumulator that ends a path
+func (acc *DefaultMatchAccumulator) GetTailNodes() []Node {
+	ret := make(map[Node]struct{})
+	for _, x := range acc.Paths {
+		if n, ok := x.(Node); ok {
+			ret[n] = struct{}{}
+		} else if e, ok := x.([]Edge); ok {
+			ret[e[len(e)-1].GetTo()] = struct{}{}
 		}
 	}
 	arr := make([]Node, 0, len(ret))

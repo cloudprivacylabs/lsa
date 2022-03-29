@@ -40,7 +40,7 @@ type Ingester struct {
 	// IngestEmptyValues is true if the value to ingest contains data, otherwise default to false
 	IngestEmptyValues bool
 
-	ExternalLookup func(lookupTableID string, dataNode graph.Node) (LookupResult, error)
+	ValuesetFunc func(ValuesetLookupRequest) (ValuesetLookupResponse, error)
 
 	// SchemaNodeMap is used to keep a mapping of schema nodes copied into the
 	// target graph. The key is a schema node. The value is the node in
@@ -211,18 +211,27 @@ func (ctx IngestionContext) GetEntityRootNode() graph.Node {
 	return nil
 }
 
-// Start ingestion. Returns the path initialized with the baseId, and
-// the schema root.
-func (ingester *Ingester) Start(context *Context, baseID string) IngestionContext {
+func newIngestionContext(context *Context, baseID string, schemaRoot graph.Node) IngestionContext {
 	ctx := IngestionContext{
 		Context: context,
 	}
 	if len(baseID) > 0 {
 		ctx.SourcePath = ctx.SourcePath.Append(baseID)
 	}
-	if ingester.Schema != nil {
-		ctx.SchemaPath = []graph.Node{ingester.Schema.GetSchemaRootNode()}
+	if schemaRoot != nil {
+		ctx.SchemaPath = []graph.Node{schemaRoot}
 	}
+	return ctx
+}
+
+// Start ingestion. Returns the path initialized with the baseId, and
+// the schema root.
+func (ingester *Ingester) Start(context *Context, baseID string) IngestionContext {
+	var schRoot graph.Node
+	if ingester.Schema != nil {
+		schRoot = ingester.Schema.GetSchemaRootNode()
+	}
+	ctx := newIngestionContext(context, baseID, schRoot)
 	if ingester.SchemaNodeMap == nil {
 		ingester.SchemaNodeMap = make(map[graph.Node]graph.Node)
 	}
@@ -287,7 +296,7 @@ func (ingester *Ingester) ValueAsNode(ictx IngestionContext, value string, types
 	}
 	if schemaNode != nil {
 		if !schemaNode.GetLabels().Has(AttributeTypeValue) {
-			return nil, nil, ErrSchemaValidation{Msg: "A value is not expected here", Path: ictx.SourcePath.Copy()}
+			return nil, nil, ErrSchemaValidation{Msg: "A value is expected here", Path: ictx.SourcePath.Copy()}
 		}
 	}
 	if !ingester.IngestEmptyValues && len(value) == 0 {
@@ -583,6 +592,52 @@ func (ingester *Ingester) Array(ictx IngestionContext, types ...string) (string,
 	return "", nil, nil, nil
 }
 
+// Instantiate the latest schema node element in the context, and
+// connect it to its parent. Returns the new ingestion context to add
+// nodes after the new node. If the new node is an object or array,
+// the returned ingestion context is a level deeper.
+func (ingester *Ingester) Instantiate(ictx IngestionContext) (string, graph.Edge, graph.Node, IngestionContext, error) {
+	schemaNode := ictx.GetSchemaNode()
+	if schemaNode == nil {
+		return "", nil, nil, ictx, nil
+	}
+	// Create new node
+	switch {
+	case schemaNode.GetLabels().Has(AttributeTypeValue):
+		t := ingester.IngestEmptyValues
+		ingester.IngestEmptyValues = true
+		s, e, n, err := ingester.Value(ictx, "")
+		ingester.IngestEmptyValues = t
+		if err != nil {
+			return "", nil, nil, ictx, err
+		}
+		return s, e, n, ictx, nil
+
+	case schemaNode.GetLabels().Has(AttributeTypeObject):
+		t := ingester.IngestEmptyValues
+		ingester.IngestEmptyValues = true
+		s, e, n, err := ingester.Object(ictx)
+		ingester.IngestEmptyValues = t
+		if err != nil {
+			return "", nil, nil, ictx, err
+		}
+		ictx = ictx.NewLevel(n)
+		return s, e, n, ictx, nil
+	case schemaNode.GetLabels().Has(AttributeTypeArray):
+		t := ingester.IngestEmptyValues
+		ingester.IngestEmptyValues = true
+		s, e, n, err := ingester.Array(ictx)
+		ingester.IngestEmptyValues = t
+		if err != nil {
+			return "", nil, nil, ictx, err
+		}
+		ictx = ictx.NewLevel(n)
+		return s, e, n, ictx, nil
+	}
+	// Cannot instantiate
+	return "", nil, nil, ictx, fmt.Errorf("Cannot instantiate node/edge")
+}
+
 // Validate the document node with the schema node
 func (ingester *Ingester) Validate(ictx IngestionContext, documentNode graph.Node) error {
 	if ictx.GetSchemaNode() != nil {
@@ -730,6 +785,16 @@ func (ingester *Ingester) Polymorphic(ictx IngestionContext, ingest func(*Ingest
 // entity root nodes. If generateIDFunc is nil, the default ID
 // generation function is used
 func (ingester *Ingester) Finish(ictx IngestionContext, root graph.Node) error {
+	if root != nil {
+		if ingester.Schema != nil {
+			for nodes := ingester.Schema.Graph.GetNodes(); nodes.Next(); {
+				node := nodes.Node()
+				if err := ingester.ProcessValueset(ictx, root, node); err != nil {
+					return err
+				}
+			}
+		}
+	}
 	var entityInfo map[graph.Node]EntityInfo
 	if ingester.Schema != nil {
 		entityInfo = GetEntityRootNodes(ingester.Graph)
@@ -773,16 +838,5 @@ func (ingester *Ingester) Finish(ictx IngestionContext, root graph.Node) error {
 		}
 	}
 
-	if root != nil {
-		lpc := LookupProcessor{
-			Graph:          root.GetGraph(),
-			ExternalLookup: ingester.ExternalLookup,
-		}
-		for nodes := lpc.Graph.GetNodes(); nodes.Next(); {
-			if err := lpc.ProcessLookup(nodes.Node()); err != nil {
-				return err
-			}
-		}
-	}
 	return nil
 }

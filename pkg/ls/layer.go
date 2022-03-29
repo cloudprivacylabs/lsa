@@ -15,8 +15,6 @@
 package ls
 
 import (
-	"fmt"
-
 	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 	"golang.org/x/text/encoding"
 )
@@ -207,7 +205,7 @@ func GetObjectAttributeNodesBy(objectSchemaNode graph.Node, keyTerm string) (map
 	addNextNode := func(node graph.Node) error {
 		key := AsPropertyValue(node.GetProperty(keyTerm)).AsString()
 		if len(key) == 0 {
-			return ErrInvalidSchema(fmt.Sprintf("No '%s' in schema at %s", keyTerm, GetNodeID(objectSchemaNode)))
+			return nil
 		}
 		nextNodes[key] = append(nextNodes[key], node)
 		return nil
@@ -304,18 +302,27 @@ func GetParentAttribute(node graph.Node) graph.Node {
 	return nil
 }
 
-// GetPath returns the path to the given attribute node
+// GetAttributePath returns the path to the given attribute node
 func (l *Layer) GetAttributePath(node graph.Node) []graph.Node {
 	root := l.GetSchemaRootNode()
+	return GetAttributePath(root, node)
+}
+
+func GetAttributePath(root, node graph.Node) []graph.Node {
 	ret := make([]graph.Node, 0)
 	ret = append(ret, node)
 	for node != root {
+		hasEdges := false
 		for edges := node.GetEdges(graph.IncomingEdge); edges.Next(); {
+			hasEdges = true
 			edge := edges.Edge()
 			if IsAttributeTreeEdge(edge) && IsAttributeNode(edge.GetFrom()) {
 				ret = append(ret, edge.GetFrom())
 				node = edge.GetFrom()
 			}
+		}
+		if !hasEdges {
+			break
 		}
 	}
 	for i := 0; i < len(ret)/2; i++ {

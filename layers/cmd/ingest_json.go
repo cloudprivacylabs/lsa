@@ -23,13 +23,12 @@ import (
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 )
 
 func init() {
 	ingestCmd.AddCommand(ingestJSONCmd)
-	ingestJSONCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
 	ingestJSONCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
-	ingestJSONCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 }
 
 var ingestJSONCmd = &cobra.Command{
@@ -37,15 +36,13 @@ var ingestJSONCmd = &cobra.Command{
 	Short: "Ingest a JSON document and enrich it with a schema",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		interner := ls.NewInterner()
-		compiledSchema, _ := cmd.Flags().GetString("compiledschema")
-		repoDir, _ := cmd.Flags().GetString("repo")
-		schemaName, _ := cmd.Flags().GetString("schema")
-		layer, err := LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName, interner)
-		if err != nil {
-			failErr(err)
-		}
+		initialGraph, _ := cmd.Flags().GetString("initialGraph")
+		ctx := getContext()
+		layer := loadSchemaCmd(ctx, cmd)
+		valuesets := &Valuesets{}
+		loadValuesetsCmd(cmd, valuesets)
 		var input io.Reader
+		var err error
 		if layer != nil {
 			enc, err := layer.GetEncoding()
 			if err != nil {
@@ -61,6 +58,15 @@ var ingestJSONCmd = &cobra.Command{
 				failErr(err)
 			}
 		}
+		var grph graph.Graph
+		if layer != nil && initialGraph != "" {
+			grph, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
+			if err != nil {
+				failErr(err)
+			}
+		} else {
+			grph = ls.NewDocumentGraph()
+		}
 		onlySchemaAttributes, _ := cmd.Flags().GetBool("onlySchemaAttributes")
 		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
 		ingester := jsoningest.Ingester{
@@ -68,12 +74,13 @@ var ingestJSONCmd = &cobra.Command{
 				Schema:               layer,
 				EmbedSchemaNodes:     embedSchemaNodes,
 				OnlySchemaAttributes: onlySchemaAttributes,
-				Graph:                ls.NewDocumentGraph(),
+				ValuesetFunc:         valuesets.Lookup,
+				Graph:                grph,
 			},
 		}
 
 		baseID, _ := cmd.Flags().GetString("id")
-		_, err = jsoningest.IngestStream(ls.DefaultContext(), &ingester, baseID, input)
+		_, err = jsoningest.IngestStream(ctx, &ingester, baseID, input)
 		if err != nil {
 			failErr(err)
 		}

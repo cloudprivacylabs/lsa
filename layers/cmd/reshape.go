@@ -27,9 +27,11 @@ func init() {
 	rootCmd.AddCommand(reshapeCmd)
 	reshapeCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
 	reshapeCmd.Flags().String("repo", "", "Schema repository directory")
+	reshapeCmd.Flags().String("type", "", "Use if a bundle is given for data types. The type name to ingest.")
+	reshapeCmd.Flags().String("bundle", "", "Schema bundle.")
+	reshapeCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 	reshapeCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	reshapeCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
-	reshapeCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 }
 
 var reshapeCmd = &cobra.Command{
@@ -37,29 +39,23 @@ var reshapeCmd = &cobra.Command{
 	Short: "Reshape a graph using a target schema",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		interner := ls.NewInterner()
+		ctx := getContext()
 		input, _ := cmd.Flags().GetString("input")
-		g, err := cmdutil.ReadGraph(args, interner, input)
+		g, err := cmdutil.ReadGraph(args, ctx.GetInterner(), input)
 		if err != nil {
 			failErr(err)
 		}
-		compiledSchema, _ := cmd.Flags().GetString("compiledschema")
-		repoDir, _ := cmd.Flags().GetString("repo")
-		schemaName, _ := cmd.Flags().GetString("schema")
-		layer, err := LoadSchemaFromFileOrRepo(compiledSchema, repoDir, schemaName, interner)
-		if err != nil {
-			failErr(err)
-		}
+		layer := loadSchemaCmd(ctx, cmd)
 
 		reshaper := transform.Reshaper{}
 		reshaper.Schema = layer
 		reshaper.EmbedSchemaNodes = true
 		reshaper.Graph = ls.NewDocumentGraph()
-		err = reshaper.Reshape(ls.DefaultContext(), g)
+		err = reshaper.Reshape(ctx, g)
 		if err != nil {
 			failErr(err)
 		}
-		outFormat, _ := cmd.Flags().GetString("format")
+		outFormat, _ := cmd.Flags().GetString("output")
 		err = OutputIngestedGraph(outFormat, reshaper.Graph, os.Stdout, false)
 		if err != nil {
 			failErr(err)

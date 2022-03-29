@@ -69,9 +69,20 @@ func (d *DefaultCompiledGraph) GetLayerNodes(ref string) []graph.Node {
 	return d.layerNodes[ref]
 }
 
+// SchemaLoader interface defines the LoadSchema method that loads schemas by reference
+type SchemaLoader interface {
+	LoadSchema(ref string) (*Layer, error)
+}
+
+// SchemaLoaderFunc is the function type that load schemas. It also
+// implements SchemaLoader interface
+type SchemaLoaderFunc func(string) (*Layer, error)
+
+func (s SchemaLoaderFunc) LoadSchema(ref string) (*Layer, error) { return s(ref) }
+
 type Compiler struct {
 	// Loader loads a layer using a strong reference.
-	Loader func(ref string) (*Layer, error)
+	Loader SchemaLoader
 	// CGraph keeps the compiled interlinked schemas. If this is
 	// initalized before compilation, then it is used during compilation
 	// and new schemas are added to it. If it is left uninitialized,
@@ -97,7 +108,7 @@ func (compiler Compiler) loadSchema(ctx *compilerContext, ref string) (*Layer, e
 	if layer != nil {
 		return layer, nil
 	}
-	layer, err = compiler.Loader(ref)
+	layer, err = compiler.Loader.LoadSchema(ref)
 	if err != nil {
 		return nil, err
 	}
