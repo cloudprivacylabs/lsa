@@ -43,14 +43,14 @@ func (sch SchemaOverlays) Load(ctx *ls.Context, relativeDir string) ([]*ls.Layer
 	for _, l := range append([]string{sch.Schema}, sch.Overlays...) {
 		data, err := loadFile(l)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("While loading %s: %w", l, err)
 		}
 		layers, err := ReadLayers(data, ctx.GetInterner())
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("While loading %s: %w", l, err)
 		}
 		if len(layers) > 1 {
-			return nil, fmt.Errorf("Multiple layers in input %s", relativeDir)
+			return nil, fmt.Errorf("Multiple layers in input %s: %s", relativeDir, l)
 		}
 		ret = append(ret, layers[0])
 	}
@@ -107,36 +107,37 @@ func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
 // ReadLayers reads layer(s) from jsongraph, jsonld
 func ReadLayers(input []byte, interner ls.Interner) ([]*ls.Layer, error) {
 	var v interface{}
-	if err := json.Unmarshal(input, &v); err == nil {
-		// Input is JSON or JSON-LD
-		// If input is []interface{}, it must be JSON-LD
-		if _, arr := v.([]interface{}); arr {
-			l, err := ls.UnmarshalLayer(v, interner)
-			if err != nil {
-				return nil, err
-			}
-			return []*ls.Layer{l}, nil
-		}
-		// If input has "nodes", it is a JSON graph
-		if m, ok := v.(map[string]interface{}); ok {
-			if _, exists := m["nodes"]; exists {
-				target := ls.NewLayerGraph()
-				if err := ls.NewJSONMarshaler(interner).Unmarshal(input, target); err != nil {
-					return nil, err
-				}
-				layers := ls.LayersFromGraph(target)
-				if len(layers) == 0 {
-					return nil, fmt.Errorf("No layers in input")
-				}
-				return layers, nil
-			}
-		}
-		// Try json-ld
+	err := json.Unmarshal(input, &v)
+	if err != nil {
+		return nil, err
+	}
+	// Input is JSON or JSON-LD
+	// If input is []interface{}, it must be JSON-LD
+	if _, arr := v.([]interface{}); arr {
 		l, err := ls.UnmarshalLayer(v, interner)
 		if err != nil {
 			return nil, err
 		}
 		return []*ls.Layer{l}, nil
 	}
-	return nil, fmt.Errorf("Unrecognized input format")
+	// If input has "nodes", it is a JSON graph
+	if m, ok := v.(map[string]interface{}); ok {
+		if _, exists := m["nodes"]; exists {
+			target := ls.NewLayerGraph()
+			if err := ls.NewJSONMarshaler(interner).Unmarshal(input, target); err != nil {
+				return nil, err
+			}
+			layers := ls.LayersFromGraph(target)
+			if len(layers) == 0 {
+				return nil, fmt.Errorf("No layers in input")
+			}
+			return layers, nil
+		}
+	}
+	// Try json-ld
+	l, err := ls.UnmarshalLayer(v, interner)
+	if err != nil {
+		return nil, err
+	}
+	return []*ls.Layer{l}, nil
 }

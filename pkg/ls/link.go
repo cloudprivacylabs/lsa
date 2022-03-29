@@ -152,14 +152,14 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 		ret.Label = AsPropertyValue(schemaNode.GetProperty(AttributeNameTerm)).AsString()
 	}
 	switch link.AsString() {
-	case "->":
+	case "to":
 		ret.Forward = true
-	case "<-":
+	case "from":
 		ret.Forward = false
 	case "":
 		return nil, nil
 	default:
-		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Direction is not one of: ->, <-"}
+		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Direction is not one of: `to`, `from`"}
 	}
 
 	if ret.IngestAs != IngestAsNode && ret.IngestAs != IngestAsEdge {
@@ -274,7 +274,14 @@ func (ingester *Ingester) Link(ictx IngestionContext, spec *LinkSpec, docNode, p
 func (spec *LinkSpec) FindReference(entityInfo map[graph.Node]EntityInfo, fk []string) ([]graph.Node, error) {
 	ret := make([]graph.Node, 0)
 	for _, ei := range entityInfo {
-		if ei.GetEntitySchema() == spec.TargetEntity {
+		var exists bool
+		for _, typeName := range ei.GetValueType() {
+			if typeName == spec.TargetEntity {
+				exists = true
+				break
+			}
+		}
+		if exists || ei.GetEntitySchema() == spec.TargetEntity {
 			id := ei.GetID()
 			if len(id) != len(fk) {
 				continue
@@ -291,5 +298,6 @@ func (spec *LinkSpec) FindReference(entityInfo map[graph.Node]EntityInfo, fk []s
 			}
 		}
 	}
+
 	return ret, nil
 }

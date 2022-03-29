@@ -30,6 +30,7 @@ func init() {
 	mapCmd.Flags().String("type", "", "Use if a bundle is given for data types. The type name to ingest.")
 	mapCmd.Flags().String("bundle", "", "Schema bundle.")
 	mapCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
+	mapCmd.Flags().StringSlice("valueset", nil, "Value set file (s)")
 	mapCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	mapCmd.Flags().String("output", "json", "Output format, json, jsonld, or dot")
 	mapCmd.Flags().String("term", "", "The term in the input graph that contains the target schema attribute ids")
@@ -47,12 +48,15 @@ var mapCmd = &cobra.Command{
 			failErr(err)
 		}
 		layer := loadSchemaCmd(ctx, cmd)
+		valuesets := &Valuesets{}
+		loadValuesetsCmd(cmd, valuesets)
 
 		mapper := transform.Mapper{}
 		mapper.Schema = layer
 		mapper.EmbedSchemaNodes = true
 		mapper.Graph = ls.NewDocumentGraph()
 		mapper.PropertyName, _ = cmd.Flags().GetString("term")
+		mapper.ValuesetFunc = valuesets.Lookup
 		err = mapper.Map(ctx, g)
 		if err != nil {
 			failErr(err)

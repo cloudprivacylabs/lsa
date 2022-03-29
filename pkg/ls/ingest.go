@@ -40,8 +40,7 @@ type Ingester struct {
 	// IngestEmptyValues is true if the value to ingest contains data, otherwise default to false
 	IngestEmptyValues bool
 
-	ExternalLookup func(lookupTableID string, dataNode graph.Node) (LookupResult, error)
-	ValuesetFunc   func(ValuesetLookupRequest) (ValuesetLookupResponse, error)
+	ValuesetFunc func(ValuesetLookupRequest) (ValuesetLookupResponse, error)
 
 	// SchemaNodeMap is used to keep a mapping of schema nodes copied into the
 	// target graph. The key is a schema node. The value is the node in
@@ -787,10 +786,12 @@ func (ingester *Ingester) Polymorphic(ictx IngestionContext, ingest func(*Ingest
 // generation function is used
 func (ingester *Ingester) Finish(ictx IngestionContext, root graph.Node) error {
 	if root != nil {
-		for nodes := ingester.Schema.Graph.GetNodes(); nodes.Next(); {
-			node := nodes.Node()
-			if err := ingester.ProcessValueset(ictx, root, node); err != nil {
-				return err
+		if ingester.Schema != nil {
+			for nodes := ingester.Schema.Graph.GetNodes(); nodes.Next(); {
+				node := nodes.Node()
+				if err := ingester.ProcessValueset(ictx, root, node); err != nil {
+					return err
+				}
 			}
 		}
 	}
@@ -837,17 +838,5 @@ func (ingester *Ingester) Finish(ictx IngestionContext, root graph.Node) error {
 		}
 	}
 
-	if root != nil {
-		lpc := LookupProcessor{
-			Graph:          root.GetGraph(),
-			ExternalLookup: ingester.ExternalLookup,
-		}
-		for nodes := lpc.Graph.GetNodes(); nodes.Next(); {
-			if err := lpc.ProcessLookup(nodes.Node()); err != nil {
-				return err
-			}
-		}
-
-	}
 	return nil
 }

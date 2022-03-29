@@ -22,6 +22,7 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 	xmlingest "github.com/cloudprivacylabs/lsa/pkg/xml"
 )
 
@@ -35,10 +36,11 @@ var ingestXMLCmd = &cobra.Command{
 	Short: "Ingest an XML document and enrich it with a schema",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		initialGraph, _ := cmd.Flags().GetString("initialGraph")
 		ctx := getContext()
 		layer := loadSchemaCmd(ctx, cmd)
-		valueSets := &ValueSets{}
-		loadValuesetsCmd(cmd, valueSets)
+		valuesets := &Valuesets{}
+		loadValuesetsCmd(cmd, valuesets)
 		var input io.Reader
 		var err error
 		if layer != nil {
@@ -56,6 +58,15 @@ var ingestXMLCmd = &cobra.Command{
 				failErr(err)
 			}
 		}
+		var grph graph.Graph
+		if layer != nil && initialGraph != "" {
+			grph, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
+			if err != nil {
+				failErr(err)
+			}
+		} else {
+			grph = ls.NewDocumentGraph()
+		}
 		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
 		onlySchemaAttributes, _ := cmd.Flags().GetBool("onlySchemaAttributes")
 		ingester := xmlingest.Ingester{
@@ -63,8 +74,8 @@ var ingestXMLCmd = &cobra.Command{
 				Schema:               layer,
 				EmbedSchemaNodes:     embedSchemaNodes,
 				OnlySchemaAttributes: onlySchemaAttributes,
-				Graph:                ls.NewDocumentGraph(),
-				ExternalLookup:       valueSets.Lookup,
+				ValuesetFunc:         valuesets.Lookup,
+				Graph:                grph,
 			},
 		}
 

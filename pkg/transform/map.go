@@ -93,23 +93,30 @@ func (mapper *Mapper) Map(lsContext *ls.Context, sourceGraph graph.Graph) error 
 	}
 
 	mapper.IngestEmptyValues = true
-	err := mapper.buildTarget(&ctx)
-	return err
+	roots, err := mapper.buildTarget(&ctx)
+	if err != nil {
+		return err
+	}
+	if len(roots) == 1 {
+		return mapper.Finish(ctx.IngestionContext, roots[0])
+	}
+	return mapper.Finish(ctx.IngestionContext, nil)
 }
 
-func (mapper *Mapper) buildTarget(ctx *mapContext) error {
+func (mapper *Mapper) buildTarget(ctx *mapContext) ([]graph.Node, error) {
 	// Get the schema node to build
 	schemaNode := ctx.GetSchemaNode()
 	ctx.GetLogger().Debug(map[string]interface{}{"mth": "map.buildTarget", "schemaNode": schemaNode})
 	// Find the source nodes
 	sourceNodes, err := ctx.find(ls.GetNodeID(schemaNode))
 	if err != nil {
-		return err
+		return nil, err
 	}
 	ctx.GetLogger().Debug(map[string]interface{}{"mth": "map.buildTarget", "sourceNodes": len(sourceNodes)})
 	if len(sourceNodes) == 0 {
-		return nil
+		return nil, nil
 	}
+	roots := make([]graph.Node, 0)
 	// Create one target node for each instance of the source node
 	for _, sourceNode := range sourceNodes {
 		// Create the target node
@@ -118,37 +125,40 @@ func (mapper *Mapper) buildTarget(ctx *mapContext) error {
 			ctx.GetLogger().Debug(map[string]interface{}{"mth": "map.buildTarget", "sourceValueNode": sourceNode})
 			value, err := ls.GetNodeValue(sourceNode)
 			if err != nil {
-				return err
+				return nil, err
 			}
 			_, _, nd, err := mapper.Value(ctx.IngestionContext, "")
 			if err != nil {
-				return err
+				return nil, err
 			}
 			// TODO: Node may not have a value https://github.com/cloudprivacylabs/lsa/issues/15
 			ls.SetNodeValue(nd, value)
+			roots = append(roots, nd)
 		case schemaNode.GetLabels().Has(ls.AttributeTypeArray):
 			_, _, arrayNode, err := mapper.Array(ctx.IngestionContext)
 			if err != nil {
-				return err
+				return nil, err
 			}
+			roots = append(roots, arrayNode)
 			el := ls.GetArrayElementNode(schemaNode)
 			if el != nil {
 				ocn := ctx.contextNode
 				oc := ctx.IngestionContext
 				ctx.contextNode = sourceNode
 				ctx.IngestionContext = ctx.NewLevel(arrayNode)
-				err = mapper.buildTarget(ctx)
+				_, err = mapper.buildTarget(ctx)
 				ctx.contextNode = ocn
 				ctx.IngestionContext = oc
 				if err != nil {
-					return err
+					return nil, err
 				}
 			}
 		case schemaNode.GetLabels().Has(ls.AttributeTypeObject):
 			_, _, objectNode, err := mapper.Object(ctx.IngestionContext)
 			if err != nil {
-				return err
+				return nil, err
 			}
+			roots = append(roots, objectNode)
 			oc := ctx.IngestionContext
 			ic := ctx.NewLevel(objectNode)
 			ocn := ctx.contextNode
@@ -159,10 +169,10 @@ func (mapper *Mapper) buildTarget(ctx *mapContext) error {
 				old := ctx.IngestionContext
 				an := ls.AsPropertyValue(child.GetProperty(ls.AttributeNameTerm)).AsString()
 				ctx.IngestionContext = ic.New(an, child)
-				err := mapper.buildTarget(ctx)
+				_, err := mapper.buildTarget(ctx)
 				ctx.IngestionContext = old
 				if err != nil {
-					return err
+					return nil, err
 				}
 			}
 			ctx.contextNode = ocn
@@ -170,5 +180,5 @@ func (mapper *Mapper) buildTarget(ctx *mapContext) error {
 		}
 	}
 
-	return nil
+	return roots, nil
 }
