@@ -52,6 +52,9 @@ var ingestCSVCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
+		valuesets := &Valuesets{}
+		loadValuesetsCmd(cmd, valuesets)
+
 		reader := csv.NewReader(f)
 		startRow, err := cmd.Flags().GetInt("startRow")
 		if err != nil {
@@ -84,6 +87,7 @@ var ingestCSVCmd = &cobra.Command{
 				Schema:               layer,
 				EmbedSchemaNodes:     embedSchemaNodes,
 				OnlySchemaAttributes: onlySchemaAttributes,
+				ValuesetFunc:         valuesets.Lookup,
 				Graph:                grph,
 			},
 		}

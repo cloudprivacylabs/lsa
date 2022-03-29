@@ -276,7 +276,7 @@ func iterateDescendants(root graph.Node, path []graph.Node, nodeFunc func(graph.
 // nodeFunc for each node, and edgeFunc for each edge. If nodeFunc
 // returns false, stops iteration and returns. The behavior after
 // calling edgefunc depends on the return value. The edgeFunc may
-// skiip the edge, follow it, or stop processing.
+// skip the edge, follow it, or stop processing.
 func IterateAncestors(root graph.Node, nodeFunc func(graph.Node) bool, edgeFunc func(graph.Edge) EdgeFuncResult) bool {
 	seen := make(map[graph.Node]struct{})
 	var f func(graph.Node) bool
@@ -434,5 +434,22 @@ func FindNodeByID(g graph.Graph, ID string) []graph.Node {
 		}
 		return true
 	})
+	return ret
+}
+
+// FindChildInstanceOf returns the childnodes of the parent that are
+// instance of the given attribute id
+func FindChildInstanceOf(parent graph.Node, childAttrID string) []graph.Node {
+	ret := make([]graph.Node, 0)
+	for edges := parent.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		edge := edges.Edge()
+		child := edge.GetTo()
+		if !child.GetLabels().Has(DocumentNodeTerm) {
+			continue
+		}
+		if childAttrID == AsPropertyValue(child.GetProperty(SchemaNodeIDTerm)).AsString() {
+			ret = append(ret, child)
+		}
+	}
 	return ret
 }

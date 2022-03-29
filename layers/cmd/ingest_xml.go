@@ -39,6 +39,8 @@ var ingestXMLCmd = &cobra.Command{
 		initialGraph, _ := cmd.Flags().GetString("initialGraph")
 		ctx := getContext()
 		layer := loadSchemaCmd(ctx, cmd)
+		valuesets := &Valuesets{}
+		loadValuesetsCmd(cmd, valuesets)
 		var input io.Reader
 		var err error
 		if layer != nil {
@@ -72,6 +74,7 @@ var ingestXMLCmd = &cobra.Command{
 				Schema:               layer,
 				EmbedSchemaNodes:     embedSchemaNodes,
 				OnlySchemaAttributes: onlySchemaAttributes,
+				ValuesetFunc:         valuesets.Lookup,
 				Graph:                grph,
 			},
 		}
