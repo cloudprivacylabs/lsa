@@ -3,7 +3,7 @@ title: "Layered Schema Architecture"
 subtitle: "Semantic interoperability for data capture, processing, and exchange"
 features:
   - title: Cross-domain Interoperability
-    text: Integrate concepts from multiple domains in reusable layers.
+    text: Convert data and map concepts between domains.
   - title: Semantic Harmonization
     text: Ingest data from disparate sources and transform with semantic pipelines.
   - title: Analytics and AI
@@ -18,7 +18,7 @@ button:
 Layered schema architecture enables interoperability between
 heterogeneous systems for data capture, processing, and exchange.  It
 uses a schema to define data elements and interchangeable overlays to
-add semantic annotations.  Data can be ingested from disparate systems
+add semantic annotations. Data can be ingested from disparate systems
 using different sets of overlays and converted into a knowledge graph.
 
 ### Use Case: Interoperability Across Domains
