@@ -1,0 +1,38 @@
+{
+    "nodes": [
+        {
+            "n":0,
+            "id": "https://test.org/person_schema",
+            "labels": ["Schema"],
+            "properties": {
+                "valueType": "Person"
+            }
+        },
+        {
+            "n":1,
+            "id": "https://test.org/Person",
+            "labels": ["Object","Attribute"],
+            "properties": {
+                "valueType": "Person"
+            }
+        },
+        {
+            "n":2,
+            "id": "https://test.org/addresses",
+            "labels": ["Array","Attribute"],
+            "properties": {
+                "attributeName": "addresses"
+            }
+        },
+        {
+            "n":3,
+            "id": "https://test.org/address",
+            "labels": ["Object","Attribute"]
+        }
+    ],
+    "edges": [
+        {"from":0, "to":1, "label":"layer"},
+        {"from":1, "to":2, "label":"attributes"},
+        {"from":2, "to":3, "label":"Array/elements"}
+    ]
+}

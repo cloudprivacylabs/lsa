@@ -1,9 +1,9 @@
 ---
 title: Data Types
-menu: 
-  main:
-    weight: 20
-    parent: docs
+#menu: 
+#  main:
+#    weight: 20
+#    parent: docs
 ---
 
 # Data Types

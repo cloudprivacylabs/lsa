@@ -1,9 +1,9 @@
 ---
 title: Terms Reference
-menu: 
-  main:
-    weight: 10
-    parent: docs
+#menu: 
+#  main:
+#    weight: 10
+#    parent: docs
 ---
 
 # Terms Reference
