@@ -24,8 +24,14 @@ import (
 )
 
 type SchemaOverlays struct {
-	Schema   string   `json:"schema"`
-	Overlays []string `json:"overlays"`
+	Schema     string     `json:"schema"`
+	JSONSchema JSONSchema `json:"jsonSchema"`
+	Overlays   []string   `json:"overlays"`
+}
+
+type JSONSchema struct {
+	schema  string
+	layerId string
 }
 
 func (sch SchemaOverlays) Load(ctx *ls.Context, relativeDir string) ([]*ls.Layer, error) {
@@ -40,19 +46,36 @@ func (sch SchemaOverlays) Load(ctx *ls.Context, relativeDir string) ([]*ls.Layer
 	}
 	ret := make([]*ls.Layer, 0)
 
-	for _, l := range append([]string{sch.Schema}, sch.Overlays...) {
-		data, err := loadFile(l)
-		if err != nil {
-			return nil, fmt.Errorf("While loading %s: %w", l, err)
+	if sch.JSONSchema.schema == "" {
+		for _, l := range append([]string{sch.Schema}, sch.Overlays...) {
+			data, err := loadFile(l)
+			if err != nil {
+				return nil, fmt.Errorf("While loading %s: %w", l, err)
+			}
+			layers, err := ReadLayers(data, ctx.GetInterner())
+			if err != nil {
+				return nil, fmt.Errorf("While loading %s: %w", l, err)
+			}
+			if len(layers) > 1 {
+				return nil, fmt.Errorf("Multiple layers in input %s: %s", relativeDir, l)
+			}
+			ret = append(ret, layers[0])
 		}
-		layers, err := ReadLayers(data, ctx.GetInterner())
-		if err != nil {
-			return nil, fmt.Errorf("While loading %s: %w", l, err)
+	} else {
+		for _, l := range append([]string{sch.JSONSchema.schema}, sch.Overlays...) {
+			data, err := loadFile(l)
+			if err != nil {
+				return nil, fmt.Errorf("While loading %s: %w", l, err)
+			}
+			layers, err := ReadLayers(data, ctx.GetInterner())
+			if err != nil {
+				return nil, fmt.Errorf("While loading %s: %w", l, err)
+			}
+			if len(layers) > 1 {
+				return nil, fmt.Errorf("Multiple layers in input %s: %s", relativeDir, l)
+			}
+			ret = append(ret, layers[0])
 		}
-		if len(layers) > 1 {
-			return nil, fmt.Errorf("Multiple layers in input %s: %s", relativeDir, l)
-		}
-		ret = append(ret, layers[0])
 	}
 	return ret, nil
 }
@@ -96,9 +119,16 @@ func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
 		if err != nil {
 			return nil, err
 		}
-		_, err = b.Add(ctx, id, items[0], items[1:]...)
-		if err != nil {
-			return nil, err
+		if layers.JSONSchema.layerId != "" {
+			_, err = b.Add(ctx, layers.JSONSchema.layerId, items[0], items[1:]...)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			_, err = b.Add(ctx, id, items[0], items[1:]...)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 	return &b, nil

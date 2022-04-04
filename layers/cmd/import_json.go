@@ -32,18 +32,27 @@ func init() {
 }
 
 type ImportJSONSchemaRequest struct {
-	Entities []jsonsch.Entity   `json:"entities"`
-	SchemaID string             `json:"schemaId"`
-	Schema   string             `json:"schemaVariant"`
-	Layers   []SliceByTermsSpec `json:"layers"`
+	Entities        []jsonsch.Entity        `json:"entities"`
+	SchemaID        string                  `json:"schemaId"`
+	Schema          string                  `json:"schemaVariant"`
+	Layers          []SliceByTermsSpec      `json:"layers"`
+	JsonschEntities []jsonsch.JsonschEntity `json:"jsonschEntities"`
 }
 
 func (req *ImportJSONSchemaRequest) CompileAndImport() (graph.Graph, []jsonsch.EntityLayer, error) {
+	g := graph.NewOCGraph()
+	if req.JsonschEntities != nil {
+		c, err := jsonsch.JsonschCompileEntities(req.JsonschEntities...)
+		if err != nil {
+			return nil, nil, err
+		}
+		layers, err := jsonsch.BuildEntityGraph(g, ls.SchemaTerm, jsonsch.LinkRefsByLayerID, c...)
+		return g, layers, err
+	}
 	c, err := jsonsch.CompileEntities(req.Entities...)
 	if err != nil {
 		return nil, nil, err
 	}
-	g := graph.NewOCGraph()
 	layers, err := jsonsch.BuildEntityGraph(g, ls.SchemaTerm, jsonsch.LinkRefsByLayerID, c...)
 	return g, layers, err
 }
