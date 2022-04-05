@@ -30,20 +30,20 @@ import (
 	"github.com/santhosh-tekuri/jsonschema/v5"
 )
 
-type SchemaOverlays[T OverlayTypeConstraint] struct {
-	Schema     string     `json:"schema"`
-	JSONSchema JSONSchema `json:"jsonSchema"`
-	Overlays   []T        `json:"overlays"`
-}
+// type SchemaOverlays[T OverlayTypeConstraint] struct {
+// 	Schema     string     `json:"schema"`
+// 	JSONSchema JSONSchema `json:"jsonSchema"`
+// 	Overlays   []T        `json:"overlays"`
+// }
 
-type JSONSchema struct {
-	Schema  string `json:"schema"`
-	LayerId string `json:"layerId"`
-}
+// type JSONSchema struct {
+// 	Schema  string `json:"schema"`
+// 	LayerId string `json:"layerId"`
+// }
 
-type OverlayTypeConstraint interface {
-	string | JSONSchema
-}
+// type OverlayTypeConstraint interface {
+// 	string | JSONSchema
+// }
 
 // --- >
 // Bundle defines type names for variants so references can be resolved
