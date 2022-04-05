@@ -23,18 +23,63 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-type SchemaOverlays struct {
+type SchemaOverlays[T OverlayTypeConstraint] struct {
 	Schema     string     `json:"schema"`
 	JSONSchema JSONSchema `json:"jsonSchema"`
-	Overlays   []string   `json:"overlays"`
+	Overlays   []T        `json:"overlays"`
 }
 
 type JSONSchema struct {
-	schema  string
-	layerId string
+	Schema  string `json:"schema"`
+	LayerId string `json:"layerId"`
 }
 
-func (sch SchemaOverlays) Load(ctx *ls.Context, relativeDir string) ([]*ls.Layer, error) {
+type OverlayTypeConstraint interface {
+	string | JSONSchema
+}
+
+// fn to process schemas, (go through bundles once)
+func ReadSchemaBundle[T OverlayTypeConstraint](ctx *ls.Context, file string) (map[string]*ls.Layer, error) {
+	var ovl SchemaOverlays[T]
+	if err := cmdutil.ReadJSON(file, &ovl); err != nil {
+		return nil, err
+	}
+	layers, err := ovl.Load(ctx, filepath.Dir(file))
+	if err != nil {
+		return nil, err
+	}
+	b := ls.BundleByType{}
+	bundle := make(map[string]*ls.Layer, 0)
+	strLayers := make(map[string]*ls.Layer, 0)
+	jsonschLayers := make(map[JSONSchema]*ls.Layer, 0)
+	for idx, t := range ovl.Overlays {
+		switch any(t).(type) {
+		case string:
+			strLayers[any(t).(string)] = layers[idx]
+		case JSONSchema:
+			jsonschLayers[any(t).(JSONSchema)] = layers[idx]
+		}
+	}
+	for _, l := range layers {
+		for k, v := range strLayers {
+			c, err := b.Add(ctx, k, l, v)
+			if err != nil {
+				return nil, err
+			}
+			bundle[k] = c
+		}
+		for k, v := range jsonschLayers {
+			c, err := b.Add(ctx, k.LayerId, l, v)
+			if err != nil {
+				return nil, err
+			}
+			bundle[k.LayerId] = c
+		}
+	}
+	return bundle, nil
+}
+
+func (sch SchemaOverlays[T]) Load(ctx *ls.Context, relativeDir string) ([]*ls.Layer, error) {
 	loadFile := func(f string) ([]byte, error) {
 		var fname string
 		if filepath.IsAbs(f) {
@@ -46,49 +91,32 @@ func (sch SchemaOverlays) Load(ctx *ls.Context, relativeDir string) ([]*ls.Layer
 	}
 	ret := make([]*ls.Layer, 0)
 
-	if sch.JSONSchema.schema == "" {
-		for _, l := range append([]string{sch.Schema}, sch.Overlays...) {
-			data, err := loadFile(l)
-			if err != nil {
-				return nil, fmt.Errorf("While loading %s: %w", l, err)
-			}
-			layers, err := ReadLayers(data, ctx.GetInterner())
-			if err != nil {
-				return nil, fmt.Errorf("While loading %s: %w", l, err)
-			}
-			if len(layers) > 1 {
-				return nil, fmt.Errorf("Multiple layers in input %s: %s", relativeDir, l)
-			}
-			ret = append(ret, layers[0])
+	for _, l := range append([]T{any(sch.Schema).(T)}, sch.Overlays...) {
+		data, err := loadFile(any(l).(string))
+		if err != nil {
+			return nil, fmt.Errorf("While loading %s: %w", l, err)
 		}
-	} else {
-		for _, l := range append([]string{sch.JSONSchema.schema}, sch.Overlays...) {
-			data, err := loadFile(l)
-			if err != nil {
-				return nil, fmt.Errorf("While loading %s: %w", l, err)
-			}
-			layers, err := ReadLayers(data, ctx.GetInterner())
-			if err != nil {
-				return nil, fmt.Errorf("While loading %s: %w", l, err)
-			}
-			if len(layers) > 1 {
-				return nil, fmt.Errorf("Multiple layers in input %s: %s", relativeDir, l)
-			}
-			ret = append(ret, layers[0])
+		layers, err := ReadLayers(data, ctx.GetInterner())
+		if err != nil {
+			return nil, fmt.Errorf("While loading %s: %w", l, err)
 		}
+		if len(layers) > 1 {
+			return nil, fmt.Errorf("Multiple layers in input %s: %s", relativeDir, l)
+		}
+		ret = append(ret, layers[0])
 	}
 	return ret, nil
 }
 
-type Bundle struct {
+type Bundle[T OverlayTypeConstraint] struct {
 	// If types is nonempty, bundle is based on schema types
-	Types map[string]SchemaOverlays `json:"types"`
+	Types map[string]SchemaOverlays[T] `json:"types"`
 	// If variants is nonempty, bundle is based on variant IDs
-	Variants map[string]SchemaOverlays `json:"variants"`
+	Variants map[string]SchemaOverlays[T] `json:"variants"`
 }
 
-func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
-	var bundle Bundle
+func LoadBundle[T OverlayTypeConstraint](ctx *ls.Context, file string) (ls.SchemaLoader, error) {
+	var bundle Bundle[T]
 	if err := cmdutil.ReadJSON(file, &bundle); err != nil {
 		return nil, err
 	}
@@ -119,16 +147,9 @@ func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
 		if err != nil {
 			return nil, err
 		}
-		if layers.JSONSchema.layerId != "" {
-			_, err = b.Add(ctx, layers.JSONSchema.layerId, items[0], items[1:]...)
-			if err != nil {
-				return nil, err
-			}
-		} else {
-			_, err = b.Add(ctx, id, items[0], items[1:]...)
-			if err != nil {
-				return nil, err
-			}
+		_, err = b.Add(ctx, id, items[0], items[1:]...)
+		if err != nil {
+			return nil, err
 		}
 	}
 	return &b, nil

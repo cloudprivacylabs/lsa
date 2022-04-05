@@ -53,13 +53,6 @@ type Entity struct {
 	ValueType string `json:"valueType" bson:"valueType" yaml:"valueType"`
 }
 
-type JsonschEntity struct {
-	Entity
-	Schema   string `json:"schema"`
-	TypeName string `json:"typeName"`
-	LayerID  string `json:"layerId,omitempty"`
-}
-
 // LinkRefsBy is an enumeration that specifies how the links for the
 // imported schema should be written
 type LinkRefsBy int
@@ -99,11 +92,6 @@ type CompiledEntity struct {
 	Schema *jsonschema.Schema
 }
 
-type JsonschCompiledEntity struct {
-	JsonschEntity
-	Schema *jsonschema.Schema
-}
-
 // EntityLayer contains the layer for the entity
 type EntityLayer struct {
 	Entity CompiledEntity
@@ -115,12 +103,6 @@ type EntityLayer struct {
 func CompileEntities(entities ...Entity) ([]CompiledEntity, error) {
 	compiler := jsonschema.NewCompiler()
 	return CompileEntitiesWith(compiler, entities...)
-}
-
-// CompileEntities compiles given entities
-func JsonschCompileEntities(entities ...JsonschEntity) ([]CompiledEntity, error) {
-	compiler := jsonschema.NewCompiler()
-	return JsonschCompileEntitiesWith(compiler, entities...)
 }
 
 // The meta-schema for annotations mem:// is required for WASM
@@ -163,21 +145,6 @@ func CompileEntitiesWith(compiler *jsonschema.Compiler, entities ...Entity) ([]C
 			return nil, fmt.Errorf("During %s: %w", e.Ref, err)
 		}
 		ret = append(ret, CompiledEntity{Entity: e, Schema: sch})
-	}
-	return ret, nil
-}
-
-// CompileEntitiesWith compiles all entities as a single json schema unit using the given compiler
-func JsonschCompileEntitiesWith(compiler *jsonschema.Compiler, entities ...JsonschEntity) ([]CompiledEntity, error) {
-	ret := make([]CompiledEntity, 0, len(entities))
-	compiler.ExtractAnnotations = true
-	compiler.RegisterExtension(X_LS, annotationsMeta, annotationsCompiler{})
-	for _, e := range entities {
-		sch, err := compiler.Compile(e.Schema)
-		if err != nil {
-			return nil, fmt.Errorf("During %s: %w", e.Schema, err)
-		}
-		ret = append(ret, CompiledEntity{Entity: e.Entity, Schema: sch})
 	}
 	return ret, nil
 }
