@@ -92,7 +92,7 @@ func (ingester *Ingester) ingest(context ls.IngestionContext, input jsonom.Node)
 }
 
 func (ingester *Ingester) ingestPolymorphicNode(context ls.IngestionContext, input jsonom.Node) (graph.Node, error) {
-	node, err := ingester.Polymorphic(context, func(ig *ls.Ingester, ictx ls.IngestionContext) (graph.Node, error) {
+	f := func(ig *ls.Ingester, ictx ls.IngestionContext) (graph.Node, error) {
 		newIngester := *ingester
 		newIngester.Ingester = *ig
 		n, err := newIngester.ingest(ictx, input)
@@ -100,7 +100,8 @@ func (ingester *Ingester) ingestPolymorphicNode(context ls.IngestionContext, inp
 			return nil, err
 		}
 		return n, nil
-	})
+	}
+	node, err := ingester.Polymorphic(context, f, f)
 	if err != nil {
 		return nil, err
 	}

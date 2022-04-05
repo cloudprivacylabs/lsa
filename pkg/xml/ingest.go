@@ -283,6 +283,7 @@ func (ingester *Ingester) element(ctx ls.IngestionContext, element *xmlElement) 
 		case schemaNode.GetLabels().Has(ls.AttributeTypeArray):
 			return ingester.ingestAsArray(ctx, element, schemaNode)
 		case schemaNode.GetLabels().Has(ls.AttributeTypePolymorphic):
+			return ingester.ingestPolymorphic(ctx, element, schemaNode)
 		}
 		return nil, ls.ErrInvalidSchema(fmt.Sprintf("Cannot determine attribute type for %s", ls.GetNodeID(schemaNode)))
 	}
@@ -301,6 +302,9 @@ func (ingester *Ingester) element(ctx ls.IngestionContext, element *xmlElement) 
 // and lname, that attribute is returned. If there are no full-name
 // matches, a lname matching attribute tha does not specify
 // namespace will be returned.
+//
+// If nothing matches and if there is only one child node with no XML
+// name annotations, that child is returned.
 //
 // Example:
 //    name: abc
@@ -487,6 +491,15 @@ func (ingester *Ingester) ingestAsArray(ctx ls.IngestionContext, element *xmlEle
 		}
 	}
 	return node, nil
+}
+
+func (ingester *Ingester) ingestPolymorphic(ctx ls.IngestionContext, element *xmlElement, schemaNode graph.Node) (graph.Node, error) {
+	f := func(ing *ls.Ingester, ctx ls.IngestionContext) (graph.Node, error) {
+		newIngester := *ingester
+		newIngester.Ingester = *ing
+		return newIngester.element(ctx, element)
+	}
+	return ingester.Polymorphic(ctx, f, f)
 }
 
 func makeFullName(name xml.Name) string {

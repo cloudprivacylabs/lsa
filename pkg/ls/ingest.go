@@ -736,49 +736,72 @@ func GetIngestAs(schemaNode graph.Node) string {
 	return "node"
 }
 
-// Polymorphic tests all options in the schema by calling ingest func
-func (ingester *Ingester) Polymorphic(ictx IngestionContext, ingest func(*Ingester, IngestionContext) (graph.Node, error)) (graph.Node, error) {
+type PolymorphicOption struct {
+	SchemaNode     graph.Node
+	Graph          graph.Graph
+	IngestedNode   graph.Node
+	IngestionError error
+}
+
+// TestPolymorphicOptions ingests data at the current location using
+// all polymorphic options with OnlySchemaAttributes set to true, and
+// returns the results of those ingestions
+func (ingester *Ingester) TestPolymorphicOptions(ictx IngestionContext, ingest func(*Ingester, IngestionContext) (graph.Node, error)) ([]PolymorphicOption, error) {
 	if ictx.GetSchemaNode() == nil {
 		return nil, ErrDataIngestion{Key: ictx.SourcePath.String(), Err: fmt.Errorf("A schema is required to ingest polymorphic nodes")}
 	}
 	// Polymorphic node. Try each option
-	var newChild graph.Node
 	// iterate through all edges of the schema node which have a polymorphic attribute
+	ret := make([]PolymorphicOption, 0)
 	for edges := ictx.GetSchemaNode().GetEdgesWithLabel(graph.OutgoingEdge, OneOfTerm); edges.Next(); {
 		edge := edges.Edge()
 		optionNode := edge.GetTo()
 
+		pOption := PolymorphicOption{SchemaNode: optionNode}
+
 		newIngester := *ingester
 		newIngester.SchemaNodeMap = make(map[graph.Node]graph.Node)
+		newIngester.OnlySchemaAttributes = true
 		newIngester.Graph = NewDocumentGraph()
+		pOption.Graph = newIngester.Graph
 		newContext := IngestionContext{
 			Context:    ictx.Context,
 			SchemaPath: []graph.Node{optionNode},
 		}
-		childNode, err := ingest(&newIngester, newContext)
-		if err == nil {
-			if newChild != nil {
-				return nil, ErrSchemaValidation{Msg: "Multiple options of the polymorphic node matched:" + GetNodeID(ictx.GetSchemaNode()), Path: ictx.SourcePath.Copy()}
-			}
-			newChild = childNode
+		pOption.IngestedNode, pOption.IngestionError = ingest(&newIngester, newContext)
+		ret = append(ret, pOption)
+	}
+	return ret, nil
+}
+
+// Polymorphic tests all options in the schema by calling ingest func to find the actual type. Then ingests using that option
+func (ingester *Ingester) Polymorphic(ictx IngestionContext, test, ingest func(*Ingester, IngestionContext) (graph.Node, error)) (graph.Node, error) {
+	if ictx.GetSchemaNode() == nil {
+		return nil, ErrDataIngestion{Key: ictx.SourcePath.String(), Err: fmt.Errorf("A schema is required to ingest polymorphic nodes")}
+	}
+	optionResults, err := ingester.TestPolymorphicOptions(ictx, test)
+	if err != nil {
+		return nil, err
+	}
+	// Look at the results and find the actual type
+	numMatches := 0
+	var matched *PolymorphicOption
+	for ix, r := range optionResults {
+		if r.IngestionError != nil && r.IngestedNode != nil {
+			numMatches++
+			matched = &optionResults[ix]
 		}
 	}
-	if newChild == nil {
+	if numMatches == 0 {
 		return nil, ErrSchemaValidation{Msg: "None of the options of the polymorphic node matched:" + GetNodeID(ictx.GetSchemaNode()), Path: ictx.SourcePath.Copy()}
 	}
-	targetGraph := newChild.GetGraph()
-	nodeMap := graph.CopyGraphf(newChild.GetGraph(), func(node graph.Node, nodeMap map[graph.Node]graph.Node) graph.Node {
-		// Is this a schema node that already exists in the target?
-		schNode, yes := ingester.SchemaNodeMap[node]
-		if yes {
-			return schNode
-		}
-		return targetGraph.NewNode(node.GetLabels().Slice(), CloneProperties(node))
-	}, func(edge graph.Edge, nodeMap map[graph.Node]graph.Node) graph.Edge {
-		return targetGraph.NewEdge(nodeMap[edge.GetFrom()], nodeMap[edge.GetTo()], edge.GetLabel(), CloneProperties(edge))
-	})
+	if numMatches > 1 {
+		return nil, ErrSchemaValidation{Msg: "Multiple options of the polymorphic node matched:" + GetNodeID(ictx.GetSchemaNode()), Path: ictx.SourcePath.Copy()}
+	}
 
-	return nodeMap[newChild], nil
+	// Only one matched
+	// Reingest
+	return ingest(ingester, ictx.New("", matched.SchemaNode))
 }
 
 // Finish ingesting by assigning node IDs and linking nodes to their
