@@ -1,14 +1,11 @@
 ---
 title: Basic Concepts
-menu: 
-  main:
-    weight: 10
-    parent: docs
 ---
 
-# Motivation and Basic Concepts
+# Motivation: Schema Layers
 
-A traditional schema describes the shape of data. This is a JSON schema:
+Traditional schemas define the shape of data (attributes, nesting,
+constraints, etc.) The following is a JSON schema:
 
 
 {{< highlight json >}}
@@ -26,10 +23,7 @@ A traditional schema describes the shape of data. This is a JSON schema:
 {{</highlight>}}
 
 It defines an object containing two attributes, `firstName` which is a
-string value, and `age` which is a number. Traditional schemas usually
-define structure (attributes, nested attributes, repetitive
-attributes, etc.) and constraints (min/max values, pattern,format,
-etc.). A data object that conforms to a schema is an **instance** of that
+string value, and `age` which is a number. A data object that conforms to a schema is an **instance** of that
 schema. The following JSON object is an instance of the above schema:
 
 {{< highlight json >}}
@@ -46,11 +40,10 @@ the above example, a data processing application can convert the
 `firstName` and `age` to a platform-specific value after the object is
 validated.
 
-Traditional schemas usually do not contain much semantic
-information. For instance, the schema above does not include the fact
-that `firstName` and `age` are personally identifiable information. We
-can `Overlay` that information onto the JSON schema using another JSON
-schema:
+Schemas usually do not contain much semantic information. For
+instance, the schema above does not include the fact that `firstName`
+and `age` are personally identifiable information. We can `Overlay`
+that information onto the JSON schema using another layer:
 
 {{< highlight json >}}
 {
@@ -98,7 +91,7 @@ data ingestion algorithm that represent data elements as the nodes of
 a labeled property graph:
 
 
-{{<figure src="../example-lpg1.png" class="text-center my-3">}} 
+{{<figure src="example-lpg1.png" class="text-center my-3">}} 
 
 Note that the schema information is also embedded into the ingested
 graph.
@@ -126,12 +119,10 @@ ingested. For instance, the following overlay:
 
 results in the following graph:
 
-{{<figure src="../example-lpg2.png" class="text-center my-3">}} 
+{{<figure src="example-lpg2.png" class="text-center my-3">}} 
 
-Note that the `privacyFlags` for the `firstName` is now lost because
-it is stored as a property of its parent node.
 
-Layered schema architecture extend the idea of overlaying semantics
+Layered schema architecture extends the idea of overlaying semantic
 layers onto a schema base. The architecture allows dealing with
 different data sources that implement the same basic schema with
 variations. Different sets of overlays can be composed with a base
@@ -139,7 +130,7 @@ schema to add semantic annotations that are layers used to process
 data.
 
 The canonical model for layered schemas is expressed using labeled
-property graphs. Any tectual input describing that graph can be used
+property graphs. Any textual input describing that graph can be used
 as a layered schema. Because of this, layered schemas can be defined
 by importing existing JSON/XML schemas, CSV specifications, or by
 using more direct representations such as graph JSON objects and
@@ -149,7 +140,7 @@ polymorphism.
 
 ## JSON-LD Representation
 
-A JSON-LD layered schema is of the following format:
+A JSON-LD layered schema looks like this:
 
 {{< highlight json >}}
 {
@@ -174,11 +165,7 @@ A JSON-LD layered schema is of the following format:
 This schema defines a data type `Person` containing two `Value`
 attributes. A `Value` attribute holds a data value represented as a
 string. `valueType` annotation defines the data type to interpret the
-value stored for the attribute. Layered schema implementation
-recognizes basic types defined for XML schemas in the `xsd:`
-namespace. All other properties are semantic annotations. Some of
-these have meanings and logic associated with them. Others can be
-application specific.
+value stored for the attribute. 
 
 An `Overlay` can be defined to add new data fields and annotate
 existing ones. For instance, the following overlay adds the `lastName`
@@ -207,7 +194,7 @@ first and last names.
 
 By composing a schema base with zero or more overlays, a **schema
 variant** can be constructed. Different schema variants can be used to
-ingest and process data from disparate sources. Thje schema variant
+ingest and process data from different sources. The schema variant
 for the above schema and overlay is:
 
 {{< highlight json >}}

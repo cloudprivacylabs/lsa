@@ -1,30 +1,30 @@
 ---
 title: "Layered Schema Architecture"
 subtitle: "Semantic interoperability for data capture, processing, and exchange"
+description: "Layered schemas data capture, semantic interoperability, knowledge graphs"
 features:
-  - title: Cross-domain Interoperability
-    text: Import data, annotate with mappings to another domain, and export it
   - title: Semantic Harmonization
-    text: Ingest data from disparate sources and transform using semantic pipelines.
-  - title: Analytics and AI
-    text: Build knowledge graphs, research data sets from heterogeneous data.
-button:
-  link: https://playground.layeredschemas.org
-  text: Launch the Layered Schema Playground
+    text: Ingest data from disparate sources. Harmonize, process and transform ingested data using semantic pipelines.
+  - title: Cross-Domain Interoperability
+    text: Annotate data with domain-specific vocabulary mappings, convert and exchange for specific targets
+  - title: From Data to Knowledge
+    text: Build knowledge graphs with contextual metadata. Create AI training sets from heterogeneous data.
+#button:
+#  link: https://playground.layeredschemas.org
+#  text: Launch the Layered Schema Playground
 ---
 
-{{<figure src="layers_ingestion.png" class="text-center my-3">}} 
 
-Layered schema architecture enables semantic interoperability between
-heterogeneous systems. Layered schemas are used to ingest, harmonize,
-and annotate structured data during data capture, processing, and
-exchange.  LSA uses a schema base (such as FHIR schemas for health
-data) to define data structures, and interchangeable overlays to add
-semantic annotations, rules, and metadata to build a schema
-variant. Data can be ingested from disparate systems, or exported to
-disparate systems using different schema variants. Each variant
-encodes source-specific metadata and rules to ingest data into a
-semantically harmonized knowledge graph.
+Layered Schema Architecture (LSA) enables semantic interoperability
+between heterogeneous systems. LSA uses a schema base (such as FHIR
+schemas for health data) to define data structures, and use-case
+specific interchangeable overlays to add semantics, contextual
+metadata, and processing directives to build a schema
+variant. Different schema variants can be used to ingest data from or
+export data to disparate systems. Each variant encodes source specific
+metadata and rules to ingest data into a knowledge graph, or target
+specific metadata and rules to translate the knowledge graph into
+another format.
 
 ## Use Cases
 ### Interoperability Across Domains
@@ -32,10 +32,10 @@ semantically harmonized knowledge graph.
 Schemas and vocabularies are usually domain specific.  Achieving
 interoperability across domains requires manual mappings, which is
 further complicated by variations due to conventions and jurisdictions
-The layered schema architecture allows ingesting data while annotating
-data elements with mappings to other vocabularies relevant to the use
-case. The annotated knowledge graph can then be translated into data
-objects for different domains.
+The layered schema architecture allows ingesting data from several
+sources that may have variations due to vendor specific extensions or
+jurisdiction. Ingested data can be annotated and translated into data
+usable for other domains.
 
 
 {{<figure src="vocab-mapping.png" class="text-center my-3">}} 

@@ -9,16 +9,16 @@
 
 
 
-all: content/docs/model/valueschema.png \
-	content/docs/model/objectschema1.png \
-	content/docs/model/objectschema2.png \
-	content/docs/model/arrayschema.png \
-	content/docs/model/referenceschema.png \
-	content/docs/model/addressschema.png \
-  content/docs/model/compiled_address_schema.png \
-  content/docs/model/compositeschema.png \
-  content/docs/model/polymorphicschema.png \
-   content/docs/model/schemaroot.png \
+all: content/docs/model_and_syntax/valueschema.png \
+	content/docs/model_and_syntax/objectschema1.png \
+	content/docs/model_and_syntax/objectschema2.png \
+	content/docs/model_and_syntax/arrayschema.png \
+	content/docs/model_and_syntax/referenceschema.png \
+	content/docs/model_and_syntax/addressschema.png \
+  content/docs/model_and_syntax/compiled_address_schema.png \
+  content/docs/model_and_syntax/compositeschema.png \
+  content/docs/model_and_syntax/polymorphicschema.png \
+   content/docs/model_and_syntax/schemaroot.png \
   content/docs/basics/example-lpg1.png \
   content/docs/basics/example-lpg2.png \
    content/Object/object_node_model.png \

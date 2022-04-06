@@ -1,9 +1,5 @@
 ---
 title: Model and Syntax
-menu: 
-  main:
-    weight: 20
-    parent: docs
 ---
 
 # Schema Model
@@ -16,20 +12,25 @@ represented using graph JSON, graph YAML, JSON-LD. Layered schemas can
 also be imported from JSON schemas and CSV specifications.
 
 The nodes of a layered schema graph contains *labels* that represent
-the node type, and *properties* that are semantic annotations for the
-node. The edges of a layered schema graph contains a *label* that
-represents the relationship between the nodes, and *properties* that
-are semantic annotations for the edge.
+the node type (not the value type), and *properties* that are semantic
+annotations for the node. The edges of a layered schema graph contains
+a *label* that represents the relationship between the nodes, and
+*properties* that are semantic annotations for the edge.
+
+**Name spaces**: The JSON-LD specification of layered schemas use the
+`https://lschema.org/` namespace. Some other common namespaces such as
+`xsd` ( http://www.w3.org/2001/XMLSchema/ ), `json`
+( https://json-schema.org/ ) are also recognized by the LSA tooling.
 
 ## Schema/Overlay Header
 
- A Schema or an Overlay node is the root node of a layered schema. The
+ A `Schema` or an `Overlay` node is the root node of a layered schema. The
  schema/overlay root node is connected to the root node of the layer
  with a `layer` edge. The schema/overlay node defines the schema and
  any metadata related to the schema. The schema/overlay layer root
  node defines the root node of the data object.
  
-{{<figure src="../schemaroot.png" class="text-center my-3">}} 
+{{<figure src="schemaroot.png" class="text-center my-3">}} 
 
 **Labels**
 
@@ -132,7 +133,7 @@ attribute cannot have child attributes.
 
 The following schema defines an object containing a value attribute:
 
-{{<figure src="../valueschema.png" class="text-center my-3" >}} 
+{{<figure src="valueschema.png" class="text-center my-3" >}} 
 
 The corresponding JSON-LD schema is:
 
@@ -169,7 +170,7 @@ order is not significant, or `attributeList`, which is a set of
 attributes where order is significant.
 
 The following schema shows an object using `attributes`:
-{{<figure src="../objectschema1.png" class="text-center my-3" >}} 
+{{<figure src="objectschema1.png" class="text-center my-3" >}} 
 
 The corresponding JSON-LD schema is:
 
@@ -197,7 +198,7 @@ The corresponding JSON-LD schema is:
 
 Below is the same schema using `attributeList`:
 
-{{<figure src="../objectschema2.png" class="text-center my-3" >}} 
+{{<figure src="objectschema2.png" class="text-center my-3" >}} 
 
 And its JSON-LD representation is:
 
@@ -241,7 +242,7 @@ can be represented as both an object and an array). The array
 definition contains the attribute specification for the array items.
 
 
-{{<figure src="../arrayschema.png" class="text-center my-3" >}} 
+{{<figure src="arrayschema.png" class="text-center my-3" >}} 
 
 The JSON-LD schema for this is:
 
@@ -283,7 +284,7 @@ dependent. The reference can be:
 The reference implementation of layered schemas uses value type
 references.
 
-{{<figure src="../referenceschema.png" class="text-center my-3" >}} 
+{{<figure src="referenceschema.png" class="text-center my-3" >}} 
 
 The JSON-LD schema for this is:
 
@@ -312,11 +313,11 @@ looking up the schema variant for `Address` type. Then, the reference
 node in the schema will be composed with the root node of the
 `Address` schema. For example, consider the following address schema:
 
-{{<figure src="../addressschema.png" class="text-center my-3" >}} 
+{{<figure src="addressschema.png" class="text-center my-3" >}} 
 
 After compilation, the schema looks like:
 
-{{<figure src="../compiled_address_schema.png" class="text-center my-3" >}} 
+{{<figure src="compiled_address_schema.png" class="text-center my-3" >}} 
 
 
 ### Composite
@@ -326,7 +327,7 @@ schema containing composite attributes is compiled, all such
 attributes are converted into `Object`s by combining the contents of its
 components.
 
-{{<figure src="../compositeschema.png" class="text-center my-3" >}} 
+{{<figure src="compositeschema.png" class="text-center my-3" >}} 
 
 The JSON-LD schema for this is:
 
@@ -374,7 +375,7 @@ algorithm relies on attribute validators to determine the correct type
 of the object being ingested, but other implementations may choose to
 ingest data using different approaches.
 
-{{<figure src="../polymorphicschema.png" class="text-center my-3" >}} 
+{{<figure src="polymorphicschema.png" class="text-center my-3" >}} 
 
 The JSON-LD schema for this is:
 
