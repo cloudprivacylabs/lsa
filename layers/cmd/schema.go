@@ -15,7 +15,6 @@
 package cmd
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -31,7 +30,6 @@ import (
 
 // Bundle defines type names for variants so references can be resolved
 type Bundle struct {
-	ID       string                   `json:"id" bson:"id" yaml:"id" bson:"id"`
 	Variants map[string]BundleVariant `json:"variants" yaml:"variants"`
 }
 
@@ -68,7 +66,7 @@ func ParseBundle(text string, contentType string) (*Bundle, error) {
 	return &ret, nil
 }
 
-func (bundle *Bundle) importJSONSchema(ctx context.Context, loader ls.SchemaLoader, typeTerm string, importEntities []jsonsch.Entity) (map[string]*ls.Layer, error) {
+func (bundle *Bundle) importJSONSchema(ctx *ls.Context, loader ls.SchemaLoader, typeTerm string, importEntities []jsonsch.Entity) (map[string]*ls.Layer, error) {
 	compiler := jsonschema.NewCompiler()
 	compiler.LoadURL = func(s string) (io.ReadCloser, error) {
 		obj, err := loader.LoadSchema(s)
@@ -97,7 +95,7 @@ func (bundle *Bundle) importJSONSchema(ctx context.Context, loader ls.SchemaLoad
 }
 
 // GetLayers returns the layers of the bundle keyed by variant type
-func (bundle *Bundle) GetLayers(ctx context.Context, loader ls.SchemaLoader) (map[string]*ls.Layer, error) {
+func (bundle *Bundle) GetLayers(ctx *ls.Context, loader ls.SchemaLoader) (map[string]*ls.Layer, error) {
 	// layers keyed by layer id
 	layers := make(map[string]*ls.Layer)
 	// entities keyed by layer id
@@ -175,7 +173,6 @@ func (bundle *Bundle) GetLayers(ctx context.Context, loader ls.SchemaLoader) (ma
 		return nil, err
 	}
 
-	lsctx := ls.NewContext(ctx)
 	resultBundle := ls.BundleByType{}
 	for variantType, variant := range bundle.Variants {
 		sch := layers[variant.GetLayerID()]
@@ -183,7 +180,7 @@ func (bundle *Bundle) GetLayers(ctx context.Context, loader ls.SchemaLoader) (ma
 		for _, o := range variant.Overlays {
 			ovl = append(ovl, layers[o.GetLayerID()])
 		}
-		_, err := resultBundle.Add(lsctx, variantType, sch, ovl...)
+		_, err := resultBundle.Add(ctx, variantType, sch, ovl...)
 		if err != nil {
 			return nil, err
 		}
@@ -211,20 +208,42 @@ func (bv *BundleVariant) Load(ctx *ls.Context, relativeDir string) ([]*ls.Layer,
 	ret := make([]*ls.Layer, 0)
 
 	idx := 0
-	for _, l := range append([]string{bv.LayerID}, bv.Overlays[idx].GetLayerID()) {
-		data, err := loadFile(any(l).(string))
-		if err != nil {
-			return nil, fmt.Errorf("While loading %s: %w", l, err)
+	var bundle Bundle
+	bundle.Variants = make(map[string]BundleVariant, 0)
+	if len(bv.Overlays) > 0 {
+		for _, l := range append([]string{bv.LayerID}, bv.Overlays[idx].GetLayerID()) {
+			bundle.Variants[bv.GetLayerID()] = *bv
+			data, err := loadFile(l)
+			if err != nil {
+				return nil, fmt.Errorf("While loading %s: %w", l, err)
+			}
+			layers, err := ReadLayers(data, ctx.GetInterner())
+			if err != nil {
+				return nil, fmt.Errorf("While loading %s: %w", l, err)
+			}
+			if len(layers) > 1 {
+				return nil, fmt.Errorf("Multiple layers in input %s: %s", relativeDir, l)
+			}
+			ret = append(ret, layers[0])
+			idx++
 		}
-		layers, err := ReadLayers(data, ctx.GetInterner())
-		if err != nil {
-			return nil, fmt.Errorf("While loading %s: %w", l, err)
+	} else {
+		for _, l := range append([]string{bv.GetLayerID()}) {
+			bundle.Variants[bv.GetLayerID()] = *bv
+			b := ls.BundleByID{}
+			data, err := bundle.GetLayers(ctx, &b)
+			if err != nil {
+				return nil, fmt.Errorf("While loading %s: %w", l, err)
+			}
+			for k, v := range data {
+				_, err := cmdutil.ReadURL(k)
+				if err != nil {
+					return nil, fmt.Errorf("While loading %s: %w", l, err)
+				}
+				ret = append(ret, v)
+			}
+			idx++
 		}
-		if len(layers) > 1 {
-			return nil, fmt.Errorf("Multiple layers in input %s: %s", relativeDir, l)
-		}
-		ret = append(ret, layers[0])
-		idx++
 	}
 	return ret, nil
 }
@@ -234,10 +253,6 @@ func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
 	if err := cmdutil.ReadJSON(file, &bundle); err != nil {
 		return nil, err
 	}
-	if len(bundle.ID) == 0 && len(bundle.Variants) == 0 {
-		return nil, fmt.Errorf("%s: Empty bundle", file)
-	}
-
 	if len(bundle.Variants) != 0 {
 		b := ls.BundleByType{}
 		for typeName, layers := range bundle.Variants {
