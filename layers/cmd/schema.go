@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"path/filepath"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	jsonsch "github.com/cloudprivacylabs/lsa/pkg/json"
@@ -94,7 +95,7 @@ func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importE
 }
 
 // GetLayers returns the layers of the bundle keyed by variant type
-func (bundle *Bundle) GetLayers(ctx *ls.Context, loader func(s string) (*ls.Layer, error)) (map[string]*ls.Layer, error) {
+func (bundle *Bundle) GetLayers(ctx *ls.Context, loader func(file string) (*ls.Layer, error)) (map[string]*ls.Layer, error) {
 	// layers keyed by layer id
 	layers := make(map[string]*ls.Layer)
 	// entities keyed by layer id
@@ -109,8 +110,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, loader func(s string) (*ls.Laye
 			if loaded {
 				break
 			}
-			b := ls.BundleByID{}
-			layer, err := b.LoadSchema(ref.LayerID)
+			layer, err := loader(ref.LayerID)
 			if err != nil {
 				return err
 			}
@@ -196,7 +196,8 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, loader func(s string) (*ls.Laye
 
 func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
 	var bundle Bundle
-	if err := cmdutil.ReadJSON(file, &bundle); err != nil {
+	dir := filepath.Dir(file)
+	if err := cmdutil.ReadJSON(getRelativeFileName(dir, file), &bundle); err != nil {
 		return nil, err
 	}
 	items, err := bundle.GetLayers(ctx, func(data string) (*ls.Layer, error) {
@@ -253,4 +254,11 @@ func ReadLayers(input []byte, interner ls.Interner) ([]*ls.Layer, error) {
 		return nil, err
 	}
 	return []*ls.Layer{l}, nil
+}
+
+func getRelativeFileName(dir, fname string) string {
+	if filepath.IsAbs(fname) {
+		return fname
+	}
+	return filepath.Join(dir, filepath.Base(fname))
 }
