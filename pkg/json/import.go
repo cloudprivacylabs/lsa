@@ -141,9 +141,18 @@ func CompileEntitiesWith(compiler *jsonschema.Compiler, path string, entities ..
 	compiler.ExtractAnnotations = true
 	compiler.RegisterExtension(X_LS, annotationsMeta, annotationsCompiler{})
 	for _, e := range entities {
-		sch, err := compiler.Compile(filepath.Join(path, e.Ref))
-		if err != nil {
-			return nil, fmt.Errorf("During %s: %w", e.Ref, err)
+		var sch *jsonschema.Schema
+		var err error
+		if path != "" {
+			sch, err = compiler.Compile(filepath.Join(path, e.Ref))
+			if err != nil {
+				return nil, fmt.Errorf("During %s: %w", e.Ref, err)
+			}
+		} else {
+			sch, err = compiler.Compile(e.Ref)
+			if err != nil {
+				return nil, fmt.Errorf("During %s: %w", e.Ref, err)
+			}
 		}
 		ret = append(ret, CompiledEntity{Entity: e, Schema: sch})
 	}
