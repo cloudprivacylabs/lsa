@@ -39,7 +39,7 @@ func TestAnnotations(t *testing.T) {
    }
  }
 }`))
-	compiled, err := CompileEntitiesWith(compiler, ".", Entity{Ref: "/schema", LayerID: "id"})
+	compiled, err := CompileEntitiesWith(compiler, Entity{Ref: "/schema", LayerID: "id"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -67,7 +67,7 @@ func TestRefs(t *testing.T) {
 	compiler := jsonschema.NewCompiler()
 	compiler.AddResource("https://ref", bytes.NewReader(td))
 
-	compiled, err := CompileEntitiesWith(compiler, ".", Entity{Ref: "https://ref#/definitions/Array", LayerID: "http://array"},
+	compiled, err := CompileEntitiesWith(compiler, Entity{Ref: "https://ref#/definitions/Array", LayerID: "http://array"},
 		Entity{Ref: "https://ref#/definitions/Item", LayerID: "http://item"})
 	if err != nil {
 		t.Error(err)
@@ -106,7 +106,7 @@ func TestLoop(t *testing.T) {
 	compiler := jsonschema.NewCompiler()
 	compiler.AddResource("https://loop", bytes.NewReader(td))
 
-	compiled, err := CompileEntitiesWith(compiler, ".", Entity{Ref: "https://loop#/definitions/Item", LayerID: "http://item"})
+	compiled, err := CompileEntitiesWith(compiler, Entity{Ref: "https://loop#/definitions/Item", LayerID: "http://item"})
 	if err != nil {
 		t.Error(err)
 		return
