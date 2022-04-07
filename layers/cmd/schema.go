@@ -15,91 +15,205 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"path/filepath"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	jsonsch "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/santhosh-tekuri/jsonschema/v5"
 )
 
-type SchemaOverlays struct {
-	Schema   string   `json:"schema"`
-	Overlays []string `json:"overlays"`
+// Bundle defines type names for variants so references can be resolved
+type Bundle struct {
+	TypeNames map[string]BundleVariant `json:"typeNames" yaml:"typeNames"`
 }
 
-func (sch SchemaOverlays) Load(ctx *ls.Context, relativeDir string) ([]*ls.Layer, error) {
-	loadFile := func(f string) ([]byte, error) {
-		var fname string
-		if filepath.IsAbs(f) {
-			fname = f
-		} else {
-			fname = filepath.Join(relativeDir, f)
-		}
-		return cmdutil.ReadURL(fname)
-	}
-	ret := make([]*ls.Layer, 0)
+type BundleSchemaRef struct {
+	LayerID    string               `json:"layerId,omitempty" yaml:"layerId,omitempty" bson:"layerId,omitempty"`
+	JSONSchema *JSONSchemaReference `json:"jsonSchema" yaml:"jsonSchema" bson:"jsonSchema,omitempty"`
+}
 
-	for _, l := range append([]string{sch.Schema}, sch.Overlays...) {
-		data, err := loadFile(l)
+// GetLayerID returns the layer id for the schema reference
+func (ref BundleSchemaRef) GetLayerID() string {
+	if ref.JSONSchema != nil {
+		return ref.JSONSchema.LayerID
+	}
+	return ref.LayerID
+}
+
+type JSONSchemaReference struct {
+	LayerID string `json:"layerId" yaml:"layerId" bson:"layerId"`
+	Ref     string `json:"ref" yaml:"ref" bson:"ref"`
+}
+
+// BundleVariant combines a schema and overlays
+type BundleVariant struct {
+	BundleSchemaRef
+	Overlays []BundleSchemaRef `json:"overlays" yaml:"overlays"`
+}
+
+// ParseBundle parses a bundle from JSON
+func ParseBundle(text string, contentType string) (*Bundle, error) {
+	var ret Bundle
+	if err := cmdutil.ReadJSON(contentType, &ret); err != nil {
+		return nil, err
+	}
+	return &ret, nil
+}
+
+func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importEntities []jsonsch.Entity) (map[string]*ls.Layer, error) {
+	compiler := jsonschema.NewCompiler()
+	compiler.LoadURL = func(s string) (io.ReadCloser, error) {
+		obj, err := cmdutil.ReadURL(s)
 		if err != nil {
-			return nil, fmt.Errorf("While loading %s: %w", l, err)
+			return nil, err
 		}
-		layers, err := ReadLayers(data, ctx.GetInterner())
+		return ioutil.NopCloser(bytes.NewReader(obj)), nil
+	}
+	// Import all JSON schemas into a graph
+	jsonLayers := make(map[string]*ls.Layer)
+	if len(importEntities) > 0 {
+		compiled, err := jsonsch.CompileEntitiesWith(compiler, importEntities...)
 		if err != nil {
-			return nil, fmt.Errorf("While loading %s: %w", l, err)
+			return nil, err
 		}
-		if len(layers) > 1 {
-			return nil, fmt.Errorf("Multiple layers in input %s: %s", relativeDir, l)
+		g := ls.NewLayerGraph()
+		layers, err := jsonsch.BuildEntityGraph(g, typeTerm, jsonsch.LinkRefsByValueType, compiled...)
+		if err != nil {
+			return nil, err
 		}
-		ret = append(ret, layers[0])
+		for _, layer := range layers {
+			jsonLayers[layer.Layer.GetID()] = layer.Layer
+		}
+	}
+	return jsonLayers, nil
+}
+
+// GetLayers returns the layers of the bundle keyed by variant type
+func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s string) (*ls.Layer, error)) (map[string]*ls.Layer, error) {
+	// layers keyed by layer id
+	layers := make(map[string]*ls.Layer)
+	// entities keyed by layer id
+	schemaEntities := make(map[string]jsonsch.Entity)
+	ovlEntities := make(map[string]jsonsch.Entity)
+
+	processRef := func(variantType string, ref BundleSchemaRef, entitiesMap map[string]jsonsch.Entity) error {
+		switch {
+		case len(ref.LayerID) > 0:
+			// Load the layer if not loaded before
+			_, loaded := layers[ref.LayerID]
+			if loaded {
+				break
+			}
+			layer, err := loader(ref.LayerID)
+			if err != nil {
+				return err
+			}
+			layers[layer.GetID()] = layer
+
+		case ref.JSONSchema != nil:
+			_, loaded := entitiesMap[ref.JSONSchema.LayerID]
+			if loaded {
+				break
+			}
+			entity := jsonsch.Entity{
+				LayerID:   ref.JSONSchema.LayerID,
+				ValueType: variantType,
+				Ref:       getRelativeFileName(path, ref.JSONSchema.Ref),
+			}
+			entitiesMap[entity.LayerID] = entity
+		}
+		return nil
+	}
+
+	// Load all layers, construct entities
+	for variantType, variant := range bundle.TypeNames {
+		if err := processRef(variantType, variant.BundleSchemaRef, schemaEntities); err != nil {
+			return nil, err
+		}
+		for _, ovl := range variant.Overlays {
+			if err := processRef(variantType, ovl, ovlEntities); err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	// If there are entities, import them
+	// First import schemas, then overlays
+	importJson := func(input map[string]jsonsch.Entity, typeTerm string) error {
+		importEntities := make([]jsonsch.Entity, 0, len(input))
+		for _, entity := range input {
+			importEntities = append(importEntities, entity)
+		}
+		if len(importEntities) > 0 {
+			jlayers, err := bundle.importJSONSchema(ctx, typeTerm, importEntities)
+			if err != nil {
+				return err
+			}
+			for k, v := range jlayers {
+				if _, exists := layers[k]; exists {
+					return fmt.Errorf("Multiple definitions for layer %s", k)
+				}
+				layers[k] = v
+			}
+		}
+		return nil
+	}
+
+	if err := importJson(schemaEntities, ls.SchemaTerm); err != nil {
+		return nil, err
+	}
+	if err := importJson(ovlEntities, ls.OverlayTerm); err != nil {
+		return nil, err
+	}
+
+	resultBundle := ls.BundleByType{}
+	for variantType, variant := range bundle.TypeNames {
+		sch := layers[variant.GetLayerID()]
+		ovl := make([]*ls.Layer, 0, len(variant.Overlays))
+		for _, o := range variant.Overlays {
+			ovl = append(ovl, layers[o.GetLayerID()])
+		}
+		_, err := resultBundle.Add(ctx, variantType, sch, ovl...)
+		if err != nil {
+			return nil, err
+		}
+	}
+	ret := make(map[string]*ls.Layer)
+	for variantId := range bundle.TypeNames {
+		layer, _ := resultBundle.LoadSchema(variantId)
+		if layer != nil {
+			ret[variantId] = layer
+		}
 	}
 	return ret, nil
 }
 
-type Bundle struct {
-	// If types is nonempty, bundle is based on schema types
-	Types map[string]SchemaOverlays `json:"types"`
-	// If variants is nonempty, bundle is based on variant IDs
-	Variants map[string]SchemaOverlays `json:"variants"`
-}
-
 func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
 	var bundle Bundle
+	dir := filepath.Dir(file)
 	if err := cmdutil.ReadJSON(file, &bundle); err != nil {
 		return nil, err
 	}
-	if len(bundle.Types) == 0 && len(bundle.Variants) == 0 {
-		return nil, fmt.Errorf("%s: Empty bundle", file)
-	}
-	if len(bundle.Types) != 0 && len(bundle.Variants) != 0 {
-		return nil, fmt.Errorf("%s: Bundle has both types and variants", file)
-	}
-	if len(bundle.Types) != 0 {
-		b := ls.BundleByType{}
-		for typeName, layers := range bundle.Types {
-			items, err := layers.Load(ctx, filepath.Dir(file))
-			if err != nil {
-				return nil, err
-			}
-			_, err = b.Add(ctx, typeName, items[0], items[1:]...)
-			if err != nil {
-				return nil, err
-			}
-		}
-		return &b, nil
-	}
-
-	b := ls.BundleByID{}
-	for id, layers := range bundle.Variants {
-		items, err := layers.Load(ctx, filepath.Dir(file))
+	items, err := bundle.GetLayers(ctx, dir, func(data string) (*ls.Layer, error) {
+		var input interface{}
+		err := json.Unmarshal([]byte(data), &input)
 		if err != nil {
 			return nil, err
 		}
-		_, err = b.Add(ctx, id, items[0], items[1:]...)
-		if err != nil {
-			return nil, err
-		}
+		return ls.UnmarshalLayer(input, nil)
+	})
+	if err != nil {
+		return nil, err
+	}
+	b := ls.BundleByType{}
+	for k, v := range items {
+		b.Add(ctx, k, v)
 	}
 	return &b, nil
 }
@@ -140,4 +254,11 @@ func ReadLayers(input []byte, interner ls.Interner) ([]*ls.Layer, error) {
 		return nil, err
 	}
 	return []*ls.Layer{l}, nil
+}
+
+func getRelativeFileName(dir, fname string) string {
+	if filepath.IsAbs(fname) {
+		return fname
+	}
+	return filepath.Join(dir, fname)
 }

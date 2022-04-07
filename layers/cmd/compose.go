@@ -28,6 +28,8 @@ func init() {
 	rootCmd.AddCommand(composeCmd)
 	composeCmd.Flags().StringP("output", "o", "", "Output file")
 	composeCmd.Flags().String("repo", "", "Schema repository directory. If a repository is given, all layers are resolved using that repository. Otherwise, all layers are read as files.")
+	composeCmd.Flags().String("bundle", "", "Bundle file")
+	composeCmd.Flags().String("type", "", "Value Type")
 }
 
 var composeCmd = &cobra.Command{
@@ -38,6 +40,8 @@ var composeCmd = &cobra.Command{
 	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		repoDir, _ := cmd.Flags().GetString("repo")
+		bundleName, _ := cmd.Flags().GetString("bundle")
+		typeName, _ := cmd.Flags().GetString("type")
 		interner := ls.NewInterner()
 		var output *ls.Layer
 		if len(repoDir) == 0 {
@@ -66,6 +70,20 @@ var composeCmd = &cobra.Command{
 			output, err = repo.GetComposedSchema(ls.DefaultContext(), args[0])
 			if err != nil {
 				failErr(err)
+			}
+			bundle, err := LoadBundle(ls.DefaultContext(), bundleName)
+			if err != nil {
+				failErr(err)
+			}
+			if bundle != nil {
+				t, err := bundle.LoadSchema(typeName)
+				if err != nil {
+					failErr(err)
+				}
+				out, _ := ls.MarshalLayer(t)
+				d, _ := json.MarshalIndent(out, "", "  ")
+				fmt.Println(string(d))
+				return
 			}
 		}
 		if output != nil {

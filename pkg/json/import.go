@@ -16,6 +16,7 @@ package json
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 
 	"github.com/santhosh-tekuri/jsonschema/v5"
@@ -48,9 +49,16 @@ type Entity struct {
 	// ID of the layer that will be generated
 	LayerID string `json:"layerId,omitempty" bson:"layerId,omitempty" yaml:"layerId,omitempty"`
 	// The ID of the root node. If empty, ValueType is used for the root node id
-	RootNodeID string `json:"rootNodeId,omitempty" baon:"rootNodeId,omitempty" yaml:"rootNodeId,omitempty"`
+	RootNodeID string `json:"rootNodeId,omitempty" bson:"rootNodeId,omitempty" yaml:"rootNodeId,omitempty"`
 	// ValueType is the value type of the schema, that is, the entity type defined with this schema
 	ValueType string `json:"valueType" bson:"valueType" yaml:"valueType"`
+}
+
+func (e Entity) GetLayerRoot() string {
+	if len(e.RootNodeID) == 0 {
+		return e.ValueType
+	}
+	return e.RootNodeID
 }
 
 // LinkRefsBy is an enumeration that specifies how the links for the
@@ -206,13 +214,10 @@ func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkR
 		imported.Layer.SetValueType(ctx.currentEntity.ValueType)
 		imported.Layer.Graph.NewEdge(imported.Layer.GetLayerRootNode(), rootNode, ls.LayerRootTerm, nil)
 		importer := schemaImporter{
-			entityId: ctx.currentEntity.RootNodeID,
+			entityId: ctx.currentEntity.GetLayerRoot(),
 			layer:    imported.Layer,
 			interner: ctx.interner,
 			linkRefs: linkRefsBy,
-		}
-		if len(importer.entityId) == 0 {
-			importer.entityId = ctx.currentEntity.LayerID
 		}
 		if err := importer.buildChildAttrs(s, rootNode); err != nil {
 			return nil, err
@@ -226,9 +231,17 @@ func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, 
 	if p := ctx.findProp(sch); p != nil {
 		return p, nil
 	}
+	// Schema node ID is the layer ID + schema location
 	target := &schemaProperty{
 		ID: sch.Location,
 	}
+	{
+		u, err := url.Parse(sch.Location)
+		if err == nil {
+			target.ID = u.Fragment
+		}
+	}
+
 	ctx.newProp(sch, target)
 	if sch.Ref != nil {
 		ref := ctx.findEntity(sch.Ref)
