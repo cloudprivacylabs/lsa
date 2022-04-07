@@ -135,6 +135,7 @@ func (vsi *ValuesetInfo) GetRequest(sourceDocumentNode graph.Node) (map[string]s
 			}
 		} else {
 			// Locate a child node
+			// match (n)-[]->({SchemaNodeIDTerm:reqv})
 			pattern := graph.Pattern{
 				{
 					Name: "n",

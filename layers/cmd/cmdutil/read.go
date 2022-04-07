@@ -39,6 +39,11 @@ func ReadURL(input string, enc ...encoding.Encoding) ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
+	} else if urlInput.Scheme == "file" {
+		data, err = ioutil.ReadFile(urlInput.Path)
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		rsp, err := http.Get(urlInput.String())
 		if err != nil {
