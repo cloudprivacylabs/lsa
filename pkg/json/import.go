@@ -16,7 +16,6 @@ package json
 
 import (
 	"fmt"
-	"path/filepath"
 	"strings"
 
 	"github.com/santhosh-tekuri/jsonschema/v5"
@@ -103,7 +102,7 @@ type EntityLayer struct {
 // CompileEntities compiles given entities
 func CompileEntities(entities ...Entity) ([]CompiledEntity, error) {
 	compiler := jsonschema.NewCompiler()
-	return CompileEntitiesWith(compiler, ".", entities...)
+	return CompileEntitiesWith(compiler, entities...)
 }
 
 // The meta-schema for annotations mem:// is required for WASM
@@ -136,23 +135,14 @@ func (annotationsCompiler) Compile(ctx jsonschema.CompilerContext, m map[string]
 }
 
 // CompileEntitiesWith compiles all entities as a single json schema unit using the given compiler
-func CompileEntitiesWith(compiler *jsonschema.Compiler, path string, entities ...Entity) ([]CompiledEntity, error) {
+func CompileEntitiesWith(compiler *jsonschema.Compiler, entities ...Entity) ([]CompiledEntity, error) {
 	ret := make([]CompiledEntity, 0, len(entities))
 	compiler.ExtractAnnotations = true
 	compiler.RegisterExtension(X_LS, annotationsMeta, annotationsCompiler{})
 	for _, e := range entities {
-		var sch *jsonschema.Schema
-		var err error
-		if path != "" {
-			sch, err = compiler.Compile(filepath.Join(path, e.Ref))
-			if err != nil {
-				return nil, fmt.Errorf("During %s: %w", e.Ref, err)
-			}
-		} else {
-			sch, err = compiler.Compile(e.Ref)
-			if err != nil {
-				return nil, fmt.Errorf("During %s: %w", e.Ref, err)
-			}
+		sch, err := compiler.Compile(e.Ref)
+		if err != nil {
+			return nil, fmt.Errorf("During %s: %w", e.Ref, err)
 		}
 		ret = append(ret, CompiledEntity{Entity: e, Schema: sch})
 	}

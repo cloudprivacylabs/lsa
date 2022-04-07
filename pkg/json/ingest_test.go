@@ -169,7 +169,7 @@ func TestIngestRootAnnotation(t *testing.T) {
 
 	compiler := jsonschema.NewCompiler()
 	compiler.AddResource("http://test.json", strings.NewReader(schStr))
-	compiled, err := CompileEntitiesWith(compiler, "", Entity{Ref: "http://test.json#/definitions/a", LayerID: "lid"})
+	compiled, err := CompileEntitiesWith(compiler, Entity{Ref: "http://test.json#/definitions/a", LayerID: "lid"})
 	if err != nil {
 		t.Error(err)
 		return
