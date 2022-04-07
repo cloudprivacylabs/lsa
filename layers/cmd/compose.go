@@ -83,6 +83,7 @@ var composeCmd = &cobra.Command{
 				out, _ := ls.MarshalLayer(t)
 				d, _ := json.MarshalIndent(out, "", "  ")
 				fmt.Println(string(d))
+				return
 			}
 		}
 		if output != nil {
