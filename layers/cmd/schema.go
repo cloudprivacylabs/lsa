@@ -66,7 +66,7 @@ func ParseBundle(text string, contentType string) (*Bundle, error) {
 	return &ret, nil
 }
 
-func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importEntities []jsonsch.Entity) (map[string]*ls.Layer, error) {
+func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm, path string, importEntities []jsonsch.Entity) (map[string]*ls.Layer, error) {
 	compiler := jsonschema.NewCompiler()
 	compiler.LoadURL = func(s string) (io.ReadCloser, error) {
 		obj, err := cmdutil.ReadURL(s)
@@ -78,7 +78,7 @@ func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importE
 	// Import all JSON schemas into a graph
 	jsonLayers := make(map[string]*ls.Layer)
 	if len(importEntities) > 0 {
-		compiled, err := jsonsch.CompileEntitiesWith(compiler, importEntities...)
+		compiled, err := jsonsch.CompileEntitiesWith(compiler, path, importEntities...)
 		if err != nil {
 			return nil, err
 		}
@@ -95,7 +95,7 @@ func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importE
 }
 
 // GetLayers returns the layers of the bundle keyed by variant type
-func (bundle *Bundle) GetLayers(ctx *ls.Context, loader func(file string) (*ls.Layer, error)) (map[string]*ls.Layer, error) {
+func (bundle *Bundle) GetLayers(ctx *ls.Context, relative string, loader func(file string) (*ls.Layer, error)) (map[string]*ls.Layer, error) {
 	// layers keyed by layer id
 	layers := make(map[string]*ls.Layer)
 	// entities keyed by layer id
@@ -151,7 +151,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, loader func(file string) (*ls.L
 			importEntities = append(importEntities, entity)
 		}
 		if len(importEntities) > 0 {
-			jlayers, err := bundle.importJSONSchema(ctx, typeTerm, importEntities)
+			jlayers, err := bundle.importJSONSchema(ctx, typeTerm, relative, importEntities)
 			if err != nil {
 				return err
 			}
@@ -196,11 +196,11 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, loader func(file string) (*ls.L
 
 func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
 	var bundle Bundle
-	dir := filepath.Dir(file)
-	if err := cmdutil.ReadJSON(getRelativeFileName(dir, file), &bundle); err != nil {
+	if err := cmdutil.ReadJSON(file, &bundle); err != nil {
 		return nil, err
 	}
-	items, err := bundle.GetLayers(ctx, func(data string) (*ls.Layer, error) {
+	dir := filepath.Dir(file)
+	items, err := bundle.GetLayers(ctx, dir, func(data string) (*ls.Layer, error) {
 		var input interface{}
 		err := json.Unmarshal([]byte(data), &input)
 		if err != nil {
