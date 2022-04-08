@@ -200,14 +200,14 @@ func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
 	if err := cmdutil.ReadJSON(file, &bundle); err != nil {
 		return nil, err
 	}
-	items, err := bundle.GetLayers(ctx, dir, func(data string) (*ls.Layer, error) {
+	items, err := bundle.GetLayers(ctx, dir, ls.SchemaLoaderFunc(func(data string) (*ls.Layer, error) {
 		var input interface{}
 		err := json.Unmarshal([]byte(data), &input)
 		if err != nil {
 			return nil, err
 		}
 		return ls.UnmarshalLayer(input, nil)
-	})
+	}))
 	if err != nil {
 		return nil, err
 	}
