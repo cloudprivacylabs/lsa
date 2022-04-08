@@ -17,37 +17,23 @@ package mem
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-// ErrEmptyVariant is used to denote an empty schema variant
-var ErrEmptyVariant = errors.New("Empty variant")
-
 // Repository is an in-memory schema repository. It keeps all parsed
 // schemas and schema variants
 type Repository struct {
-	schemaVariants map[string]*ls.SchemaVariant
-	layers         map[string]*ls.Layer
-	interner       ls.Interner
+	layers   map[string]*ls.Layer
+	interner ls.Interner
 }
 
 // New returns a new empty repository
 func New() *Repository {
-	return &Repository{schemaVariants: make(map[string]*ls.SchemaVariant),
+	return &Repository{
 		layers:   make(map[string]*ls.Layer),
 		interner: ls.NewInterner(),
 	}
-}
-
-// GetSchemas returns schemas in the repository
-func (repo *Repository) GetSchemas() []*ls.SchemaVariant {
-	ret := make([]*ls.SchemaVariant, 0, len(repo.schemaVariants))
-	for _, x := range repo.schemaVariants {
-		ret = append(ret, x)
-	}
-	return ret
 }
 
 // GetLayers returns layers in the repository
@@ -80,12 +66,7 @@ func (repo *Repository) ParseAddObject(in []byte) (interface{}, error) {
 func (repo *Repository) ParseAddIntf(m interface{}) (interface{}, error) {
 	layer, err1 := ls.UnmarshalLayer(m, repo.interner)
 	if err1 != nil {
-		variant, err2 := ls.UnmarshalSchemaVariant(m)
-		if err2 != nil {
-			return nil, fmt.Errorf("Unrecognized object: %+v %+v", err1, err2)
-		}
-		repo.AddSchemaVariant(variant)
-		return variant, nil
+		return nil, err1
 	}
 	repo.AddLayer(layer)
 	return layer, nil
@@ -93,19 +74,7 @@ func (repo *Repository) ParseAddIntf(m interface{}) (interface{}, error) {
 
 // RemoveObject removes the object(s) with the given id
 func (repo *Repository) RemoveObject(ID string) {
-	delete(repo.schemaVariants, ID)
 	delete(repo.layers, ID)
-}
-
-// AddSchemaVariant adds a new variant to the repo. If there is one
-// with the same id, the new one replaces the old one
-func (repo *Repository) AddSchemaVariant(variant *ls.SchemaVariant) {
-	repo.schemaVariants[variant.ID] = variant
-}
-
-// GetSchemaVariant returns the variant with the given id
-func (repo *Repository) GetSchemaVariant(id string) *ls.SchemaVariant {
-	return repo.schemaVariants[id]
 }
 
 // GetSchema returns a schema with the given id
@@ -131,24 +100,20 @@ func (repo *Repository) GetLayer(id string) *ls.Layer {
 	return repo.layers[id]
 }
 
-// GetSchemaVariantByObjectType returns the schema variant whose value type is t
-func (repo *Repository) GetSchemaVariantByObjectType(t string) *ls.SchemaVariant {
-	for _, v := range repo.schemaVariants {
-		if v.ValueType == t {
-			return v
-		}
-	}
-	return nil
-}
-
 // GetComposedSchema returns a composed layer from the schema variant
 func (repo *Repository) GetComposedSchema(context *ls.Context, id string) (*ls.Layer, error) {
-	m := repo.GetSchemaVariant(id)
-	if m == nil {
-		m = repo.GetSchemaVariantByObjectType(id)
-		if m == nil {
-			return nil, ls.ErrNotFound(id)
-		}
+	data, err := ls.MarshalLayer(repo.GetLayer(id))
+	if err != nil {
+		return nil, err
+	}
+	m := struct {
+		Schema   string   `json:"schema"`
+		Overlays []string `json:"overlays"`
+	}{}
+	b, err := json.Marshal(data)
+	err = json.Unmarshal(b, &m)
+	if err != nil {
+		return nil, err
 	}
 	var result *ls.Layer
 	if len(m.Schema) > 0 {
@@ -173,7 +138,7 @@ func (repo *Repository) GetComposedSchema(context *ls.Context, id string) (*ls.L
 		}
 	}
 	if result == nil {
-		return nil, ErrEmptyVariant
+		return nil, errors.New("empty schema")
 	}
 	return result, nil
 }

@@ -57,7 +57,7 @@ func makeEntityTemplateData(e jsonsch.Entity) map[string]interface{} {
 	}
 }
 
-func (req *ImportJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) ([]*ls.Layer, *ls.SchemaVariant, error) {
+func (req *ImportJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) ([]*ls.Layer, error) {
 	layerIDs := make([]string, 0)
 	baseID := ""
 	returnLayers := make([]*ls.Layer, 0)
@@ -65,11 +65,11 @@ func (req *ImportJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) (
 	for _, ovl := range req.Layers {
 		layer, err := ovl.Slice(item.Layer, item.Entity.ValueType, tdata)
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
 		if layer.GetLayerType() == ls.SchemaTerm {
 			if baseID != "" {
-				return nil, nil, fmt.Errorf("Multiple schemas")
+				return nil, fmt.Errorf("Multiple schemas")
 			}
 			baseID = layer.GetID()
 		} else {
@@ -77,13 +77,8 @@ func (req *ImportJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) (
 		}
 		returnLayers = append(returnLayers, layer)
 	}
-	sch := ls.SchemaVariant{
-		ID:        execTemplate(req.SchemaID, tdata),
-		ValueType: item.Entity.ValueType,
-		Schema:    baseID,
-		Overlays:  layerIDs,
-	}
-	return returnLayers, &sch, nil
+
+	return returnLayers, nil
 }
 
 var importJSONCmd = &cobra.Command{
@@ -147,7 +142,7 @@ as a schema+layers. All fields are Go templates evaluated using the current enti
 			fmt.Println(string(out))
 		case "sliced":
 			for index, item := range results {
-				layers, sch, err := req.Slice(index, item)
+				layers, err := req.Slice(index, item)
 				if err != nil {
 					failErr(err)
 				}
@@ -162,10 +157,6 @@ as a schema+layers. All fields are Go templates evaluated using the current enti
 						failErr(err)
 					}
 					ioutil.WriteFile(execTemplate(req.Layers[i].File, tdata), data, 0664)
-				}
-				if len(req.Schema) > 0 {
-					data, _ := json.MarshalIndent(ls.MarshalSchemaVariant(sch), "", "  ")
-					ioutil.WriteFile(execTemplate(req.Schema, tdata), data, 0664)
 				}
 			}
 		}

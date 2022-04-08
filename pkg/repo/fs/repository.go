@@ -284,7 +284,8 @@ func (repo *Repository) compose(context *ls.Context, index IndexEntry) (*ls.Laye
 		Schema   string   `json:"schema"`
 		Overlays []string `json:"overlays"`
 	}{}
-	err = json.Unmarshal(data.([]byte), &m)
+	b, err := json.Marshal(data)
+	err = json.Unmarshal(b, &m)
 	if err != nil {
 		return nil, err
 	}
