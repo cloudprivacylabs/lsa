@@ -23,6 +23,9 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
+
+	"gopkg.in/yaml.v2"
 
 	"golang.org/x/text/encoding"
 )
@@ -71,6 +74,31 @@ func ReadJSON(input string, output interface{}, enc ...encoding.Encoding) error 
 		return err
 	}
 	return json.Unmarshal(data, output)
+}
+
+func ReadJSONOrYAML(input string, output interface{}, enc ...encoding.Encoding) error {
+	data, err := ReadURL(input, enc...)
+	if err != nil {
+		return err
+	}
+	if strings.HasSuffix(strings.ToLower(input), "json") {
+		if err := json.Unmarshal(data, output); err != nil {
+			return err
+		}
+		return nil
+	}
+	if strings.HasSuffix(strings.ToLower(input), "ml") {
+		if err := yaml.Unmarshal(data, output); err != nil {
+			return err
+		}
+		return nil
+	}
+	if err := json.Unmarshal(data, output); err != nil {
+		if err2 := yaml.Unmarshal(data, output); err2 != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // ReadJSONFileOrStdin reads a JSON file(s), or if there are none, reads from stdin

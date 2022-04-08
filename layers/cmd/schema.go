@@ -197,7 +197,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
 	var bundle Bundle
 	dir := filepath.Dir(file)
-	if err := cmdutil.ReadJSON(file, &bundle); err != nil {
+	if err := cmdutil.ReadJSONOrYAML(file, &bundle); err != nil {
 		return nil, err
 	}
 	items, err := bundle.GetLayers(ctx, dir, func(data string) (*ls.Layer, error) {
