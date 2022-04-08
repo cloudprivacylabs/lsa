@@ -37,7 +37,7 @@ var composeCmd = &cobra.Command{
 	Short: "Compose a schema from components",
 	Long:  `Compose a schema from components and output the resulting schema layer.`,
 
-	Args: cobra.MinimumNArgs(1),
+	Args: cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		repoDir, _ := cmd.Flags().GetString("repo")
 		bundleName, _ := cmd.Flags().GetString("bundle")
@@ -45,20 +45,34 @@ var composeCmd = &cobra.Command{
 		interner := ls.NewInterner()
 		var output *ls.Layer
 		if len(repoDir) == 0 {
-			inputs, err := cmdutil.ReadJSONMultiple(args)
-			if err != nil {
-				failErr(err)
-			}
-			for i, input := range inputs {
-				layer, err := ls.UnmarshalLayer(input, interner)
+			if len(bundleName) > 0 && len(typeName) > 0 {
+				bundle, err := LoadBundle(ls.DefaultContext(), bundleName)
 				if err != nil {
-					fail(fmt.Sprintf("Cannot unmarshal %s: %v", args[i], err))
+					failErr(err)
 				}
-				if output == nil {
-					output = layer
-				} else {
-					if err := output.Compose(ls.DefaultContext(), layer); err != nil {
-						fail(fmt.Sprintf("Cannot compose %s: %s", args[i], err))
+				output, err = bundle.LoadSchema(typeName)
+				if err != nil {
+					failErr(err)
+				}
+			} else {
+				if len(args) == 0 {
+					fail("Input files requied")
+				}
+				inputs, err := cmdutil.ReadJSONMultiple(args)
+				if err != nil {
+					failErr(err)
+				}
+				for i, input := range inputs {
+					layer, err := ls.UnmarshalLayer(input, interner)
+					if err != nil {
+						fail(fmt.Sprintf("Cannot unmarshal %s: %v", args[i], err))
+					}
+					if output == nil {
+						output = layer
+					} else {
+						if err := output.Compose(ls.DefaultContext(), layer); err != nil {
+							fail(fmt.Sprintf("Cannot compose %s: %s", args[i], err))
+						}
 					}
 				}
 			}
@@ -70,20 +84,6 @@ var composeCmd = &cobra.Command{
 			output, err = repo.GetComposedSchema(ls.DefaultContext(), args[0])
 			if err != nil {
 				failErr(err)
-			}
-			bundle, err := LoadBundle(ls.DefaultContext(), bundleName)
-			if err != nil {
-				failErr(err)
-			}
-			if bundle != nil {
-				t, err := bundle.LoadSchema(typeName)
-				if err != nil {
-					failErr(err)
-				}
-				out, _ := ls.MarshalLayer(t)
-				d, _ := json.MarshalIndent(out, "", "  ")
-				fmt.Println(string(d))
-				return
 			}
 		}
 		if output != nil {
