@@ -89,6 +89,10 @@ func (imp schemaImporter) schemaAttrs(attr *schemaProperty) (graph.Node, error) 
 func (imp schemaImporter) newAttrNode(attr *schemaProperty) (graph.Node, error) {
 	newNode := imp.layer.Graph.NewNode([]string{ls.AttributeNodeTerm}, nil)
 	attr.node = newNode
+	return newNode, imp.setNodeProperties(attr, newNode)
+}
+
+func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode graph.Node) error {
 	if len(attr.ID) > 0 {
 		ls.SetNodeID(newNode, attr.ID)
 	}
@@ -119,7 +123,7 @@ func (imp schemaImporter) newAttrNode(attr *schemaProperty) (graph.Node, error) 
 	}
 	for k, v := range attr.annotations {
 		if err := ls.GetTermMarshaler(k).UnmarshalJSON(imp.layer, k, v, newNode, imp.interner); err != nil {
-			return nil, err
+			return err
 		}
 	}
 
@@ -133,26 +137,26 @@ func (imp schemaImporter) newAttrNode(attr *schemaProperty) (graph.Node, error) 
 		case LinkRefsByValueType:
 			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(attr.reference.ValueType))
 		}
-		return newNode, nil
+		return nil
 	}
 	if attr.object != nil {
 		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeObject))
-		return newNode, nil
+		return nil
 	}
 	if attr.array != nil {
 		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeArray))
-		return newNode, nil
+		return nil
 	}
 	if len(attr.oneOf) > 0 {
 		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypePolymorphic))
-		return newNode, nil
+		return nil
 	}
 	if len(attr.allOf) > 0 {
 		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeComposite))
-		return newNode, nil
+		return nil
 	}
 	newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeValue))
-	return newNode, nil
+	return nil
 }
 
 func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.Node) error {

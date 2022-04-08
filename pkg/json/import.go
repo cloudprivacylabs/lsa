@@ -219,6 +219,9 @@ func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkR
 			interner: ctx.interner,
 			linkRefs: linkRefsBy,
 		}
+		if err := importer.setNodeProperties(s, rootNode); err != nil {
+			return nil, err
+		}
 		if err := importer.buildChildAttrs(s, rootNode); err != nil {
 			return nil, err
 		}
