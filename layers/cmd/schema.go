@@ -34,8 +34,8 @@ type Bundle struct {
 }
 
 type BundleSchemaRef struct {
-	LayerID    string               `json:"layerId,omitempty" yaml:"layerId,omitempty" bson:"layerId,omitempty"`
-	JSONSchema *JSONSchemaReference `json:"jsonSchema" yaml:"jsonSchema" bson:"jsonSchema,omitempty"`
+	Schema     string               `json:"schema,omitempty" yaml:"schema,omitempty"`
+	JSONSchema *JSONSchemaReference `json:"jsonSchema" yaml:"jsonSchema"`
 }
 
 // GetLayerID returns the layer id for the schema reference
@@ -43,7 +43,7 @@ func (ref BundleSchemaRef) GetLayerID() string {
 	if ref.JSONSchema != nil {
 		return ref.JSONSchema.LayerID
 	}
-	return ref.LayerID
+	return ref.Schema
 }
 
 type JSONSchemaReference struct {
@@ -107,10 +107,10 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 
 	processRef := func(variantType string, ref BundleSchemaRef, entitiesMap map[string]jsonsch.Entity) error {
 		switch {
-		case len(ref.LayerID) > 0:
+		case len(ref.Schema) > 0:
 			// ref.LayerID refers to a file
 			// Load the layer if not loaded before
-			fileName := ref.LayerID
+			fileName := ref.Schema
 			_, loaded := layerIDMap[fileName]
 			if loaded {
 				break
