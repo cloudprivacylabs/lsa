@@ -16,57 +16,68 @@ Contact:
   value string
 ```
 
-The schema base for `Person` is `repo/person_base.jsonld`. It defines
+Multiple schemas and overlays can be neatly packaged 
+into a single file called a `bundle` which specifies type names and their corresponding
+schemas. The input will be ingested using the schema that is listed for the
+type. The bundle is a JSON file:
+
+```
+{
+  "types": {
+    "typeName": {
+       "schema": "schemaFile",
+       "overlays": [
+          "overlayFile","overlayFile"
+       ]
+    },
+    "typeName": {
+       "schema": "schemaFile",
+       "overlays": [
+          "overlayFile","overlayFile"
+       ]
+    },
+    ...
+}
+```
+
+The schema for `Person` is `person.schema.json`. It defines
 `http://example.org/Person` entity, which includes the three fields
 with `contact` being a reference:
 
 ```
-"attributes": {
-  "http://example.org/Person/firstName": {
-      "@type": "Value",
-      "attributeName":"firstName"
-  },
-  "http://example.org/Person/lastName": {
-      "@type": "Value",
-      "attributeName": "lastName"
-  },
-  "http://example.org/Person/contact": {
-      "@type": "Array",
-      "attributeName": "contact",
-      "items": {
-         "@type": "Reference",
-          "reference": "http://example.org/Contact/schemaManifest"
-      }
-  }
-}
+"attributes": [
+    {
+        "@id": "http://example.org/Person/firstName",
+        "@type": "Value",
+        "attributeName":"firstName"
+    },
+    {
+        "@id": "http://example.org/Person/lastName",
+        "@type": "Value",
+        "attributeName": "lastName"
+    },
+    {
+        "@id": "http://example.org/Person/contact",
+        "@type": "Array",
+        "attributeName": "contact",
+        "arrayElements": {
+            "@type": "Reference",
+            "@id": "http://example.org/Person/contact/items",
+            "ref": "Contact"
+        }
+    }
+]
 ```
 
-Each attribute of `Person` object is mapped to a
-`http://example.org/Person/<attrName>` term. The `contact` attribute
-is an array of references that point to `http://example.org/Contact`
+The `Person` object contains a list of attributes and each attribute is mapped to a
+`http://example.org/Person/<attrName>` term. The attribute that contains 
+`http://example.org/Person/contact` is an array of references that point to `http://example.org/Contact`
 objects.
 
-The schema variants for these objects are as follows:
-
- * `http://example.org/Person/schema`
-: This schema marks the `firstName` and `lastName` with `PII` privacy classifications
-
- * `http://example.org/Person/schema`
-: This schema marks the `firtsName` and `lastName` with `PII` and
-  `BIT` privacy classifications.
-  
-Both variants marks the `contact.value` with `phoneNumber` privacy classification.
-
-To compose the `Person/schema` variant:
+To compose the `Person/schema` schema:
 
 ```
 layers compose --repo repo/ http://example.org/Person/schema
-```
-
-To compose the `Person_bit/schema` variant:
-
-```
-layers compose --repo repo/ http://example.org/Person_bit/schema
 ```
 
 The `person_sample.json` file contains a sample record. To ingest this:
@@ -75,8 +86,8 @@ The `person_sample.json` file contains a sample record. To ingest this:
 layers ingest json --repo repo/  person_sample.json  --schema http://example.org/Person/schema
 ```
 
-To ingest the same file using the `Person_bit` schema:
+To ingest the `bundle` using the `Person` schema: 
 
 ```
-layers ingest json --repo repo/  person_sample.json  --schema http://example.org/Person_bit/schema
+layers ingest json --schema person.schema.json --bundle person-dpv.bundle.json --type Person
 ```
