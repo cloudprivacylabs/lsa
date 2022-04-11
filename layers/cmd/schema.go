@@ -98,6 +98,9 @@ func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importE
 func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s string) (*ls.Layer, error)) (map[string]*ls.Layer, error) {
 	// layers keyed by layer id
 	layers := make(map[string]*ls.Layer)
+
+	// For JSON-LS schemas, layerId refers to the filename. We use this map to map that filename to loaded layerid
+	layerIDMap := make(map[string]string)
 	// entities keyed by layer id
 	schemaEntities := make(map[string]jsonsch.Entity)
 	ovlEntities := make(map[string]jsonsch.Entity)
@@ -105,16 +108,20 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 	processRef := func(variantType string, ref BundleSchemaRef, entitiesMap map[string]jsonsch.Entity) error {
 		switch {
 		case len(ref.LayerID) > 0:
+			// ref.LayerID refers to a file
 			// Load the layer if not loaded before
-			_, loaded := layers[ref.LayerID]
+			fileName := ref.LayerID
+			_, loaded := layerIDMap[fileName]
 			if loaded {
 				break
 			}
-			layer, err := loader(ref.LayerID)
+			layer, err := loader(getRelativeFileName(path, fileName))
 			if err != nil {
 				return err
 			}
-			layers[layer.GetID()] = layer
+			layerID := layer.GetID()
+			layers[layerID] = layer
+			layerIDMap[fileName] = layerID
 
 		case ref.JSONSchema != nil:
 			_, loaded := entitiesMap[ref.JSONSchema.LayerID]
@@ -127,6 +134,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 				Ref:       getRelativeFileName(path, ref.JSONSchema.Ref),
 			}
 			entitiesMap[entity.LayerID] = entity
+			layerIDMap[entity.LayerID] = entity.LayerID
 		}
 		return nil
 	}
@@ -174,10 +182,10 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 
 	resultBundle := ls.BundleByType{}
 	for variantType, variant := range bundle.TypeNames {
-		sch := layers[variant.GetLayerID()]
+		sch := layers[layerIDMap[variant.GetLayerID()]]
 		ovl := make([]*ls.Layer, 0, len(variant.Overlays))
 		for _, o := range variant.Overlays {
-			ovl = append(ovl, layers[o.GetLayerID()])
+			ovl = append(ovl, layers[layerIDMap[o.GetLayerID()]])
 		}
 		_, err := resultBundle.Add(ctx, variantType, sch, ovl...)
 		if err != nil {
@@ -200,9 +208,13 @@ func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
 	if err := cmdutil.ReadJSONOrYAML(file, &bundle); err != nil {
 		return nil, err
 	}
-	items, err := bundle.GetLayers(ctx, dir, func(data string) (*ls.Layer, error) {
+	items, err := bundle.GetLayers(ctx, dir, func(fname string) (*ls.Layer, error) {
+		data, err := ioutil.ReadFile(fname)
+		if err != nil {
+			return nil, err
+		}
 		var input interface{}
-		err := json.Unmarshal([]byte(data), &input)
+		err = json.Unmarshal([]byte(data), &input)
 		if err != nil {
 			return nil, err
 		}
