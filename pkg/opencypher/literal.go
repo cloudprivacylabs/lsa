@@ -1,6 +1,17 @@
 package opencypher
 
-import ()
+import (
+	"strings"
+)
+
+// EscapeStringLiteratl returns s quoted as a string literal, in
+// single-quotes. Any single-quotes are escaped with \', and \ are
+// escaped with \\
+func EscapeStringLiteral(s string) string {
+	s = strings.ReplaceAll(s, `\`, `\\`)
+	s = strings.ReplaceAll(s, `'`, `\'`)
+	return `'` + s + `'`
+}
 
 func (literal IntLiteral) Evaluate(ctx *EvalContext) (Value, error) {
 	return Value{

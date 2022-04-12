@@ -203,6 +203,7 @@ type Match struct {
 	Pattern  Pattern
 	Where    Expression
 }
+
 type NodeLabels []SchemaName
 
 type SymbolicName string

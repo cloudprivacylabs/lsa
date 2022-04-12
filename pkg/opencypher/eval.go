@@ -35,6 +35,7 @@ var (
 	ErrPropertiesParameterExpected    = errors.New("Parameter value cannot be used for properties")
 	ErrPropertiesExpected             = errors.New("Value cannot be used for properties")
 	ErrValueDoesNotHaveProperties     = errors.New("Value does not have properties")
+	ErrExpectingNode                  = errors.New("Expecting a graph node")
 )
 
 func (expr Parameter) Evaluate(ctx *EvalContext) (Value, error) {
