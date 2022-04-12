@@ -56,7 +56,7 @@ func (wr Writer) WriteHeader(writer csv.Writer) error {
 	return writer.Write(wr.Columns)
 }
 
-func (wr Writer) WriteRows(writer csv.Writer, g graph.Graph) error {
+func (wr Writer) WriteRows(writer *csv.Writer, g graph.Graph) error {
 	var roots []graph.Node
 	if len(wr.RowRootQuery) == 0 {
 		roots = graph.Sources(g)
@@ -98,17 +98,17 @@ func (wr Writer) WriteRows(writer csv.Writer, g graph.Graph) error {
 			continue
 		}
 		var err error
-		parsedQueries[colName], err = opencypher.Parse(fmt.Sprintf(`match (root)-[]->(n {`+"`"+ls.AttributeNameTerm+"`"+`:"%s"}) return n`, opencypher.EscapeStringLiteral(colName)))
+		parsedQueries[colName], err = opencypher.Parse(fmt.Sprintf(`match (root)-[]->(n {`+"`"+ls.AttributeNameTerm+"`"+`:%s}) return n`, opencypher.EscapeStringLiteral(colName)))
 		if err != nil {
 			panic(err)
 		}
 	}
 
-	ctx := opencypher.NewEvalContext(g)
 	for _, root := range roots {
-		ctx.SetVar("root", opencypher.Value{Value: root})
 		row := make([]string, 0, len(wr.Columns))
 		for _, col := range wr.Columns {
+			ctx := opencypher.NewEvalContext(g)
+			ctx.SetVar("root", opencypher.Value{Value: root})
 			result, err := parsedQueries[col].Evaluate(ctx)
 			if err != nil {
 				return err

@@ -67,15 +67,17 @@ func (ingester Ingester) Ingest(context *ls.Context, data []string, ID string) (
 			if err != nil {
 				return nil, err
 			}
-		} else if ingester.Schema != nil || !ingester.OnlySchemaAttributes {
-			schemaNode, _ = ingester.Schema.FindFirstAttribute(func(n graph.Node) bool {
-				p := ls.AsPropertyValue(n.GetProperty(ls.AttributeIndexTerm))
-				if p == nil {
-					return false
-				}
-				return p.IsInt() && p.AsInt() == columnIndex
-			})
-			if schemaNode != nil {
+		} else {
+			if ingester.Schema != nil {
+				schemaNode, _ = ingester.Schema.FindFirstAttribute(func(n graph.Node) bool {
+					p := ls.AsPropertyValue(n.GetProperty(ls.AttributeIndexTerm))
+					if p == nil {
+						return false
+					}
+					return p.IsInt() && p.AsInt() == columnIndex
+				})
+			}
+			if schemaNode != nil || !ingester.OnlySchemaAttributes {
 				_, _, node, err = ingester.Value(ctx.New(columnIndex, schemaNode), columnData)
 				if err != nil {
 					return nil, err
