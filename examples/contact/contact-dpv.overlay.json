@@ -1,14 +1,22 @@
 {
-    "@context": "https://layeredschemas.org/ls.json",
+    "@context":[ "https://layeredschemas.org/ls.json",
+         { 
+            "dpv": "http://www.w3.org/ns/dpv#",
+             "hasPersonalDataCategory": {
+               "@id":"dpv:hasPersonalDataCategory",
+               "@type":"@id"
+             }
+         }
+               ],
     "@id": "http://example.org/Contact/ovl1",
     "@type": "Overlay",
-    "targetType": "http://example.org/Contact",
+    "valueType": "http://example.org/Contact",
     "layer": {
         "@type": "Object",
         "attributes": {
             "http://example.org/Contact/value": {
                 "@type": "Value",
-                "http://test/privacyClassification": "http://example.org/PhoneNumber"
+                "hasPersonalDataCategory": [ "dpv:TelephoneNumber", "dpv:Identifying" ]
             }
         }
     }

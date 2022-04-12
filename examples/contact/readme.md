@@ -16,10 +16,14 @@ Contact:
   value string
 ```
 
-Multiple schemas and overlays can be neatly packaged 
-into a single file called a `bundle` which specifies type names and their corresponding
-schemas. The input will be ingested using the schema that is listed for the
-type. The bundle is a JSON file:
+Multiple schemas and overlays can be neatly packaged into a single
+file called a `bundle` which specifies type names for entities and
+their corresponding schema variants. A schema variant is a schema plus
+zero or more overlays. The input will be ingested using the schema
+variant that is listed for the type. If a schema in a bundle
+references other type names (by using an attribute of type
+`Reference`), the reference is resolved using the schema variants in
+the bundle. The bundle is a JSON file:
 
 ```
 {
@@ -74,20 +78,54 @@ The `Person` object contains a list of attributes and each attribute is mapped t
 `http://example.org/Person/contact` is an array of references that point to `http://example.org/Contact`
 objects.
 
-To compose the `Person/schema` schema:
+The file `person-dpv.bundle.json` contains the schemas an overlays
+that use the Privacy Data Vocabulary (https://w3c.github.io/dpv/dpv/)
+terms. The file `person-pii.bundle.json` uses a `PII` tag mark fields
+as personally identifiable information.
+
+To compose the `Person` schema, use:
 
 ```
-layers compose --repo repo/ http://example.org/Person/schema
+layers compose --bundle person-dpv.bundle.json --type Person
 ```
+
+Similarly:
+
+```
+layers compose --bundle person-pii.bundle.json --type Person
+```
+
+These will print the `Person` schema with different compositions.
+
+To resolve links between the schemas and get a complete schema object, use the `compile` option:
+
+```
+layers compile --bundle person-dpv.bundle.json --type Person
+```
+
+In a compiled schema, all other schema references are resolved an a
+composite schema graph is returned.
+
 
 The `person_sample.json` file contains a sample record. To ingest this:
 
 ```
-layers ingest json --repo repo/  person_sample.json  --schema http://example.org/Person/schema
+layers ingest json --bundle person-dpv.bundle.json  --type Person  person_sample.json
 ```
 
-To ingest the `bundle` using the `Person` schema: 
+Similarly:
 
 ```
-layers ingest json --schema person.schema.json --bundle person-dpv.bundle.json --type Person
+layers ingest json --bundle person-dpv.bundle.json --type Person --embedSchemaNodes person_sample.json
+```
+
+This will output the ingested graph, with schema nodes embedded into document nodes.
+
+Note that the `person_sample.json` file contains a field not defined
+in the schema. By default, such fields will be ingested without an
+associated schema node. To ignore such fields:
+
+
+```
+layers ingest json --bundle person-dpv.bundle.json --type Person --embedSchemaNodes --onlySchemaAttributes person_sample.json
 ```
