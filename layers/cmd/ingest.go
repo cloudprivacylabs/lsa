@@ -223,7 +223,7 @@ func LoadSchemaFromFileOrRepo(ctx *ls.Context, compiledSchema, repoDir, schemaNa
 	return compiler.Compile(ctx, schemaName)
 }
 
-func OutputIngestedGraph(outFormat string, target graph.Graph, wr io.Writer, includeSchema bool) error {
+func OutputIngestedGraph(cmd *cobra.Command, outFormat string, target graph.Graph, wr io.Writer, includeSchema bool) error {
 	if !includeSchema {
 		schemaNodes := make(map[graph.Node]struct{})
 		for nodes := target.GetNodes(); nodes.Next(); {
@@ -249,5 +249,5 @@ func OutputIngestedGraph(outFormat string, target graph.Graph, wr io.Writer, inc
 			})
 		target = newTarget
 	}
-	return cmdutil.WriteGraph(target, outFormat, wr)
+	return cmdutil.WriteGraph(cmd, target, outFormat, wr)
 }

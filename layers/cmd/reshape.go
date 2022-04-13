@@ -56,7 +56,7 @@ var reshapeCmd = &cobra.Command{
 			failErr(err)
 		}
 		outFormat, _ := cmd.Flags().GetString("output")
-		err = OutputIngestedGraph(outFormat, reshaper.Graph, os.Stdout, false)
+		err = OutputIngestedGraph(cmd, outFormat, reshaper.Graph, os.Stdout, false)
 		if err != nil {
 			failErr(err)
 		}

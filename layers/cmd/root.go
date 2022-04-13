@@ -62,6 +62,8 @@ func Execute() error {
 func init() {
 	rootCmd.PersistentFlags().String("cpuprofile", "", "Write cpu profile to file")
 	rootCmd.PersistentFlags().Bool("log", false, "Enable logging")
+
+	rootCmd.PersistentFlags().String("rankdir", "LR", "DOT: rankdir option")
 }
 
 func getContext() *ls.Context {

@@ -62,7 +62,7 @@ var mapCmd = &cobra.Command{
 			failErr(err)
 		}
 		outFormat, _ := cmd.Flags().GetString("output")
-		err = OutputIngestedGraph(outFormat, mapper.Graph, os.Stdout, false)
+		err = OutputIngestedGraph(cmd, outFormat, mapper.Graph, os.Stdout, false)
 		if err != nil {
 			failErr(err)
 		}
