@@ -93,5 +93,5 @@ func (b *BundleByType) LoadSchema(ref string) (*Layer, error) {
 	if l == nil {
 		return nil, ErrNotFound(ref)
 	}
-	return l, nil
+	return l.Clone(), nil
 }

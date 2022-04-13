@@ -1,0 +1,28 @@
+{{define "header"}}
+{{partial "nav.html" .}}
+{{end}}
+{{ define "main" }}
+<section class="container">
+  <div class="row">
+    <div class="col-10 bodytext">
+      {{.Content }}
+    </div>
+    <div class="col-2">
+      <aside>
+        {{.TableOfContents}}
+        {{if .Params.see}}
+        <h5>Also see</h5>
+        <ul>
+          {{range .Params.see}}
+          <li><a href="{{.url}}">{{.label}}</a></li>
+          {{end}}
+        </ul>
+        {{end}}
+      </aside>
+    </div>
+  </div>
+</section>
+{{ end }}
+{{define "footer"}}
+{{partial "footer.html" .}}
+{{end}}

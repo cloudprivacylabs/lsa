@@ -1,0 +1,37 @@
+{{define "header"}}
+{{partial "nav.html" .}}
+{{end}}
+
+{{define "main"}}
+<section class="container">
+  <div class="row">
+    <div class="col-9 bodytext">
+      {{.Content}}
+    </div>
+    <div class="col-3">
+      {{if .Pages}}
+      <h5>Terms under {{.Title}}</h5>
+      <ul>
+        {{range .Pages}}
+        <li>
+          <a href="{{.Permalink}}">{{.Title}}</a>
+        </li>
+        {{end}}
+      </ul>
+      {{end}}
+      {{if .Params.see}}
+      <h5>Also see</h5>
+      <ul>
+        {{range .Params.see}}
+        <li><a href="{{.url}}">{{.label}}</a></li>
+        {{end}}
+      </ul>
+      {{end}}
+    </div>
+  </div>
+</section>
+{{end}}
+
+{{define "footer"}}
+{{partial "footer.html" .}}
+{{end}}
