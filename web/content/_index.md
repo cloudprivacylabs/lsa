@@ -17,14 +17,14 @@ features:
 
 Layered Schema Architecture (LSA) enables semantic interoperability
 between heterogeneous systems. LSA uses a schema base (such as FHIR
-schemas for health data) to define data structures, and use-case
-specific interchangeable overlays to add semantics, contextual
-metadata, and processing directives to build a schema
-variant. Different schema variants can be used to ingest data from or
-export data to disparate systems. Each variant encodes source specific
-metadata and rules to ingest data into a knowledge graph, or target
-specific metadata and rules to translate the knowledge graph into
-another format.
+schemas for health data) to define data structures, and overlays to
+add semantics, contextual metadata, and processing directives. A
+schema variant is the composition of the schema base and use-case
+specific overlays. Different schema variants can be used to ingest
+data from or export data to disparate systems. Each variant encodes
+source specific metadata and rules to ingest data into a knowledge
+graph, or target specific metadata and rules to translate the
+knowledge graph into another format.
 
 ## Use Cases
 ### Interoperability Across Domains
