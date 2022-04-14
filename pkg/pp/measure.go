@@ -51,7 +51,7 @@ import (
 //   measureValueNode: B
 //
 //
-var MeasureTerm = ls.NewTerm(ls.LS, "Measure", false, false, ls.OverrideComposition, measureAccessors)
+var MeasureTerm = ls.NewTerm(ls.LS, "Measure", false, false, ls.OverrideComposition, nil)
 
 // MeasureUnitTerm is a node property term giving measure unit
 var MeasureUnitTerm = ls.NewTerm(ls.LS, "measureUnit", false, false, ls.OverrideComposition, nil)
@@ -62,4 +62,4 @@ var MeasureUnitNodeTerm = ls.NewTerm(ls.LS, "measureUnitNode", false, false, ls.
 
 // MeasureValueNodeTerm gives the schema node ID of the value node
 // under the Measure node
-var MeasureValueNodeTerm = ls.NewTerm(ls.Ls, "measureValueNode", false, false, ls.OverrideComposition, nil)
+var MeasureValueNodeTerm = ls.NewTerm(ls.LS, "measureValueNode", false, false, ls.OverrideComposition, nil)
