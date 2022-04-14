@@ -27,7 +27,7 @@ type OCNode struct {
 }
 
 func (node *OCNode) GetGraph() Graph      { return node.graph }
-func (node *OCNode) GetLabels() StringSet { return node.labels }
+func (node *OCNode) GetLabels() StringSet { return node.labels.Clone() }
 
 // Returns an edge iterator for incoming or outgoing edges
 func (node *OCNode) GetEdges(dir EdgeDir) EdgeIterator {

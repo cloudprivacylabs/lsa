@@ -174,7 +174,7 @@ func (nm *NodeMap) Add(node *OCNode) {
 	}
 
 	var set *FastSet
-	for _, label := range node.labels.Slice() {
+	for label := range node.labels {
 		v, found := nm.m.Get(label)
 		if !found {
 			set = &FastSet{}
@@ -195,7 +195,7 @@ func (nm NodeMap) Remove(node *OCNode) {
 		return
 	}
 	var set *FastSet
-	for _, label := range node.labels.Slice() {
+	for label := range node.labels {
 		v, found := nm.m.Get(label)
 		if !found {
 			continue

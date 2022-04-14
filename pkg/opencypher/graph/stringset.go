@@ -28,6 +28,14 @@ func NewStringSet(s ...string) StringSet {
 	return ret
 }
 
+func (set StringSet) Clone() StringSet {
+	ret := make(StringSet)
+	for x := range set {
+		ret[x] = struct{}{}
+	}
+	return ret
+}
+
 func (set StringSet) IsEqual(s StringSet) bool {
 	return len(set) == len(s) && set.HasAllSet(s)
 }

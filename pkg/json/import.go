@@ -208,8 +208,7 @@ func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkR
 
 		// Set the layer ID from the entity layer ID
 		imported.Layer.SetID(ctx.currentEntity.LayerID)
-		// Set the root node ID from the entity ID
-		rootNode := imported.Layer.Graph.NewNode(nil, nil)
+		rootNode := imported.Layer.Graph.NewNode([]string{ls.AttributeNodeTerm, ctx.currentEntity.ValueType}, nil)
 		//ls.SetNodeID(rootNode, ctx.currentEntity.ID)
 		// Set the value type of the layer to root node ID
 		imported.Layer.SetValueType(ctx.currentEntity.ValueType)
