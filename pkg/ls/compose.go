@@ -36,34 +36,27 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 	var err error
 	// Process attributes of the source layer depth-first
 	// Compose the source attribute nodes with the target attribute nodes, ignoring any nodes attached to them
-	processedSourceNodes := make(map[graph.Node]struct{})
 	source.ForEachAttribute(func(sourceNode graph.Node, sourcePath []graph.Node) bool {
-		if _, processed := processedSourceNodes[sourceNode]; processed {
-			return true
-		}
 		sourceID := GetAttributeID(sourceNode)
 		if len(sourceID) == 0 {
 			return true
 		}
 		// If node exists in target, merge
-		targetNode, targetPath := layer.FindAttributeByID(sourceID)
+		targetNode, _ := layer.FindAttributeByID(sourceID)
 		if targetNode != nil {
-			// Target node exists. Merge if paths match
-			if pathsMatch(targetPath, sourcePath) {
-				if err = mergeNodes(context, layer, targetNode, sourceNode, processedSourceNodes); err != nil {
-					return false
+			// Target node exists. Merge
+			if err = ComposeProperties(context, targetNode, sourceNode); err != nil {
+				return false
+			}
+			// Add any annotation subtrees
+			nodeMap[sourceNode] = targetNode
+			for edges := sourceNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+				edge := edges.Edge()
+				if IsAttributeTreeEdge(edge) {
+					continue
 				}
-				// Add any annotation subtrees
-				nodeMap[sourceNode] = targetNode
-				for edges := sourceNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
-					edge := edges.Edge()
-					if IsAttributeTreeEdge(edge) {
-						continue
-					}
-					graph.CopySubgraph(edge.GetTo(), layer.Graph, ClonePropertyValueFunc, nodeMap)
-					graph.CopyEdge(edge, layer.Graph, ClonePropertyValueFunc, nodeMap)
-				}
-
+				graph.CopySubgraph(edge.GetTo(), layer.Graph, ClonePropertyValueFunc, nodeMap)
+				graph.CopyEdge(edge, layer.Graph, ClonePropertyValueFunc, nodeMap)
 			}
 		} else {
 			// Target node does not exist.
@@ -87,26 +80,9 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 				}
 			}
 		}
-		processedSourceNodes[sourceNode] = struct{}{}
 		return true
 	})
 	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// Merge source into target.
-func mergeNodes(context *Context, targetLayer *Layer, target, source graph.Node, processedSourceNodes map[graph.Node]struct{}) error {
-	if _, processed := processedSourceNodes[source]; processed {
-		return nil
-	}
-	processedSourceNodes[source] = struct{}{}
-	if source == nil || target == nil {
-		return nil
-	}
-
-	if err := ComposeProperties(context, target, source); err != nil {
 		return err
 	}
 	return nil
@@ -140,29 +116,4 @@ func ComposeProperties(context *Context, target, source graph.Node) error {
 		return true
 	})
 	return retErr
-}
-
-// pathsMatch returns true if the attribute predecessors of source matches target's
-func pathsMatch(targetPath, sourcePath []graph.Node) bool {
-	tn := len(targetPath)
-	sn := len(sourcePath)
-	for {
-		if tn == 0 {
-			return true
-		}
-		if sn == 0 {
-			return false
-		}
-		if sourcePath[sn-1].GetLabels().Has(SchemaTerm) || sourcePath[sn-1].GetLabels().Has(OverlayTerm) {
-			return true
-		}
-		if targetPath[tn-1].GetLabels().Has(SchemaTerm) || targetPath[tn-1].GetLabels().Has(OverlayTerm) {
-			return false
-		}
-		if GetAttributeID(targetPath[tn-1]) != GetAttributeID(sourcePath[sn-1]) {
-			return false
-		}
-		tn--
-		sn--
-	}
 }
