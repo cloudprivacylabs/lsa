@@ -3,12 +3,11 @@ title: Composition and Slicing
 ---
 # Composition and Slicing
 
-To adapt a schema for a particular use case, compose it with overlays
-that add semantic annotations for that use case. The resulting schema
-is a *schema variant*. The semantic annotations classify data, add
-processing instructions, or add use-case specific metadata. Use a
-different set of overlays to adapt the same schema base for another
-use case.
+Use a schema base to describe the data elements for a particular data
+capture scenario, and compose it with different overlays to add
+semantics that may differ based on data source. The composed schema is
+a *schema variant*. The semantic annotations classify data, add
+processing instructions, or add use-case specific metadata. 
 
 If you have a schema variant, you can *slice* it to separate into a
 schema with fewer annotations, and one or more overlays.
@@ -79,103 +78,98 @@ methods are as follows:
 
 ### Algorithm
 
-This algorithm composes the `source` layer into `target` layer. The
-result is the `target` layer. The algorithm recursively processes the
-source attributes, find the matching target attribute and composes the
-two.
+This algorithm recursively composes the attributed of the `source`
+layer into `target` layer. Each attribute of the `source` layer is
+looked up in the `target` by using the attribute ID. If the `target`
+has an attribute with a matching ID, the two nodes are composed. If
+the `target` does not have a matching attribute, then the new
+attribute is added.
 
-For a given `source` attribute `sourceAttr`, the `path(sourceAttr)`
-refers to the sequence of attribute id's from `sourceAttr` to the
-layer root. For example:
+#### Examples
 
-{{< highlight json >}}
+Overlay adds `valueType` to the base:
+
+Base:
+{{<highlight json>}}
 {
   "@id": "a",
   "@type": "Object",
   "attributes": {
      "b": {
-       "@type":"Object",
-       "attributes": {
-         "c": {}
-       }
+        "@type": "Object"
      }
   }
 }
 {{</highlight>}}
 
-Above, `path(a) = a`, `path(b) = `a.b`, and `path(c) = a.b.c`.
-
-In the below algorithm, an overlay node `o` matches the base layer
-node `b` if `path(o)` is a suffix of `path(b)`. 
-
-
-
-{{< highlight reStructuredText >}}
-ComposeNode(target,source)
-  ComposeTerms(target,source)
-  For each source attribute node s
-    Find target node t such that path(t) has path(s) as a suffix
-    ComposeNode(t,s)
-
-  Add all source non-attribute nodes connected to s into t
-{{< /highlight>}}
-
-This algorithm allows defining overlays that contains only the leaf
-nodes without the intermediate steps. For example:
-
-{{< highlight json >}}
-{
-  "@type": "Schema",
-  "layer": {
-    "@type": "Object",
-    "attributes": {
-      "obj": {
-        "@type": "Object",
-        "attributes": {
-           "nestedAttr": {
-              "@type": "Value"
-           }
-        }
-    }
-  }
-}
-
-{
-  "@type": "Overlay",
-  "layer": {
-    "@type": "Object",
-    "attributes": {
-      "nestedAttr": {
-        "@type":"Value",
-        "descr": "description"
-      }
-    }
-  }
-}
-{{</highlight>}}
-
-The `nestedAttr` in the overlay has path `nestedAttr`, which matches
-`obj.nestedAttr`, so the composition becomes:
-
+Overlay:
 {{<highlight json>}}
 {
-  "@type": "Schema",
-  "layer": {
-    "@type": "Object",
-    "attributes": {
-      "obj": {
+  "@id": "b",
+  "@type": "Object",
+  "valueType": "xs:date"
+}
+{{</highlight>}}
+
+Result:
+{{<highlight json>}}
+{
+  "@id": "a",
+  "@type": "Object",
+  "attributes": {
+     "b": {
         "@type": "Object",
-        "attributes": {
-           "nestedAttr": {
-              "@type": "Value",
-              "descr": "description"
-           }
-        }
-      }
+        "valueType": "xs:date"
+     }
+  }
+}
+{{</highlight>}}
+
+
+Overlay adds new attribute to the base:
+
+Base:
+{{<highlight json>}}
+{
+  "@id": "a",
+  "@type": "Object",
+  "attributes": {
+     "b": {
+        "@type": "Object"
+     }
+  }
+}
+{{</highlight>}}
+
+Overlay:
+{{<highlight json>}}
+{
+  "@id": "a",
+  "@type": "Object",
+  "attributes": {
+     "c": {
+       "@type": "Value"
     }
   }
 }
 {{</highlight>}}
+
+Result:
+{{<highlight json>}}
+{
+  "@id": "a",
+  "@type": "Object",
+  "attributes": {
+     "b": {
+        "@type": "Object"
+     },
+     "c": {
+        "@type": "Value"
+     }
+  }
+}
+{{</highlight>}}
+
 
 ## Slicing
 
