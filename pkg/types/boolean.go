@@ -26,13 +26,13 @@ var JSONBooleanTerm = ls.NewTerm(JSON, "boolean", false, false, ls.OverrideCompo
 	JSONBooleanParser
 }{
 	JSONBooleanParser{},
-})
+}, "json:boolean")
 
 var XMLBooleanTerm = ls.NewTerm(XSD, "boolean", false, false, ls.OverrideComposition, struct {
 	XMLBooleanParser
 }{
 	XMLBooleanParser{},
-})
+}, "xsd:boolean", "xs:boolean")
 
 type JSONBooleanParser struct{}
 

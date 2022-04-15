@@ -99,6 +99,9 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 		if ld.IsURL(layerRoot.ID) {
 			SetAttributeID(layerRoot.GraphNode, layerRoot.ID)
 		}
+		if strings.HasPrefix(layerRoot.ID, "_") {
+			return nil, MakeErrInvalidInput("layer root cannot be blank node. Enter a unique @id")
+		}
 		target.Graph.NewEdge(target.GetLayerRootNode(), layerRoot.GraphNode, LayerRootTerm, nil)
 	}
 
@@ -149,9 +152,15 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 	types := attribute.GetLabels()
 	types.Add(AttributeNodeTerm)
 	attribute.SetLabels(types)
-	if len(inode.ID) > 0 && !strings.HasPrefix(inode.ID, "_") {
-		SetAttributeID(attribute, inode.ID)
+	if len(inode.ID) == 0 {
+		return MakeErrInvalidInput("Attribute node without an ID")
 	}
+	if strings.HasPrefix(inode.ID, "_") {
+		return MakeErrInvalidInput("Attribute node does not have an ID")
+	}
+
+	SetAttributeID(attribute, inode.ID)
+
 	// Process the nested attribute nodes
 	for k, val := range inode.Node {
 		switch k {

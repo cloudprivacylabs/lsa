@@ -56,7 +56,7 @@ func (b *BundleByID) LoadSchema(ref string) (*Layer, error) {
 
 // BundleByType stores layers by their value type
 type BundleByType struct {
-	variants map[string]*Layer
+	Variants map[string]*Layer
 }
 
 // Add a new variant to the bundle. The typeName must be unique. If
@@ -64,8 +64,8 @@ type BundleByType struct {
 // will be built using the schema as the base, so caller must create a
 // clone if necessary.
 func (b *BundleByType) Add(ctx *Context, typeName string, schema *Layer, overlays ...*Layer) (*Layer, error) {
-	if b.variants == nil {
-		b.variants = make(map[string]*Layer)
+	if b.Variants == nil {
+		b.Variants = make(map[string]*Layer)
 	}
 	vtype := typeName
 	if len(vtype) == 0 {
@@ -74,7 +74,7 @@ func (b *BundleByType) Add(ctx *Context, typeName string, schema *Layer, overlay
 	if len(vtype) == 0 {
 		return nil, ErrInvalidInput{Msg: "Schema has no type"}
 	}
-	if _, exists := b.variants[vtype]; exists {
+	if _, exists := b.Variants[vtype]; exists {
 		return nil, ErrDuplicate(vtype)
 	}
 	output := schema
@@ -83,15 +83,16 @@ func (b *BundleByType) Add(ctx *Context, typeName string, schema *Layer, overlay
 			return nil, err
 		}
 	}
-	b.variants[vtype] = output
+	b.Variants[vtype] = output
 	return output, nil
 }
 
-// SchemaLoader is a schema loader function using types as reference
+// SchemaLoader is a schema loader function using types as
+// reference.
 func (b *BundleByType) LoadSchema(ref string) (*Layer, error) {
-	l := b.variants[ref]
+	l := b.Variants[ref]
 	if l == nil {
 		return nil, ErrNotFound(ref)
 	}
-	return l.Clone(), nil
+	return l, nil
 }

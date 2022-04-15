@@ -279,18 +279,6 @@ func (l *Layer) ForEachAttributeOrdered(f func(graph.Node, []graph.Node) bool) b
 	return true
 }
 
-// RenameBlankNodes will call namerFunc for each blank node, so they
-// can be renamed and won't cause name clashes
-func (l *Layer) RenameBlankNodes(namer func(graph.Node)) {
-	for nodes := l.Graph.GetNodes(); nodes.Next(); {
-		node := nodes.Node()
-		id := GetAttributeID(node)
-		if len(id) == 0 || id[0] == '_' {
-			namer(node)
-		}
-	}
-}
-
 // GetParentAttribute returns the parent attribute of the given node
 func GetParentAttribute(node graph.Node) graph.Node {
 	for edges := node.GetEdges(graph.IncomingEdge); edges.Next(); {

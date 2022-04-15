@@ -51,7 +51,7 @@ func (g *OCGraph) SetNodeLabels(node *OCNode, labels StringSet) {
 	if g.index != nil {
 		g.index.removeNodeFromIndex(node)
 	}
-	node.labels = labels
+	node.labels = labels.Clone()
 	if g.index != nil {
 		g.index.addNodeToIndex(node)
 	}
@@ -95,6 +95,12 @@ func (g *OCGraph) DetachNode(node *OCNode) {
 func (g *OCGraph) NewEdge(from, to Node, label string, properties map[string]interface{}) Edge {
 	ofrom := from.(*OCNode)
 	oto := to.(*OCNode)
+	if ofrom.graph != g {
+		panic("from node is not in graph")
+	}
+	if oto.graph != g {
+		panic("to node is not in graph")
+	}
 	newEdge := &OCEdge{
 		id:         g.idBase,
 		from:       ofrom,

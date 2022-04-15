@@ -48,6 +48,7 @@ func TestIngestFlat(t *testing.T) {
  "@type": "Schema",
  "layer": {
   "@type": "Object",
+  "@id": "root",
   "required": [ "id2"],
  "attributes": {
    "id1": {
@@ -145,6 +146,99 @@ func TestIngestFlat(t *testing.T) {
 		t.Errorf("Unexpected node found")
 	}
 
+}
+
+func TestIngestPoly(t *testing.T) {
+	schStr := `{
+ "@context": "../../schemas/ls.json",
+ "@id":"http://example.org/id",
+ "@type": "Schema",
+ "layer": {
+  "@type": "Object",
+  "@id": "root",
+ "attributes": {
+   "id1": {
+     "@type": "Value",
+     "attributeName":"field1"
+   },
+   "id2": {
+     "@type": "Polymorphic",
+     "attributeName":"field2",
+     "oneOf": [
+       {
+         "@id": "option1",
+         "@type": "Object",
+         "attributes": {
+           "objType1": {
+             "@type": "Value",
+             "@id": "objType1",
+             "attributeName": "t",
+             "enumeration": "type1"
+           }
+         }
+       },
+       {
+         "@id": "option2",
+         "@type": "Object",
+         "attributes": {
+           "objType2": {
+             "@type": "Value",
+             "@id": "objType2",
+             "attributeName": "t",
+             "enumeration": "type2"
+           }
+         }
+       }
+     ]
+   }
+  }
+ }
+}`
+	inputStr := `{
+  "field1": "value1",
+  "field2": {
+     "t": "type1"
+  }
+}`
+
+	var schMap interface{}
+	if err := json.Unmarshal([]byte(schStr), &schMap); err != nil {
+		t.Fatal(err)
+	}
+	schema, err := ls.UnmarshalLayer(schMap, nil)
+	if err != nil {
+		t.Error(err)
+	}
+
+	ingester := Ingester{
+		Ingester: ls.Ingester{
+			Schema:               schema,
+			OnlySchemaAttributes: false,
+			IngestEmptyValues:    true,
+			Graph:                ls.NewDocumentGraph(),
+		},
+	}
+	_, err = IngestBytes(ls.DefaultContext(), &ingester, "http://base", []byte(inputStr))
+	if err != nil {
+		t.Error(err)
+	}
+
+	findNodes := func(nodeId string) []graph.Node {
+		nodes := []graph.Node{}
+		for nx := ingester.Graph.GetNodes(); nx.Next(); {
+			node := nx.Node()
+			if ls.GetNodeID(node) == nodeId {
+				nodes = append(nodes, node)
+			}
+		}
+		return nodes
+	}
+
+	nodes := findNodes("objType1")
+	t.Logf("%+v", nodes)
+	if len(nodes) != 1 {
+		t.Errorf("Expecting 1 type node")
+	}
 }
 
 func TestIngestRootAnnotation(t *testing.T) {

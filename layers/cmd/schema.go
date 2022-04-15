@@ -192,14 +192,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 			return nil, err
 		}
 	}
-	ret := make(map[string]*ls.Layer)
-	for variantId := range bundle.TypeNames {
-		layer, _ := resultBundle.LoadSchema(variantId)
-		if layer != nil {
-			ret[variantId] = layer
-		}
-	}
-	return ret, nil
+	return resultBundle.Variants, nil
 }
 
 func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {

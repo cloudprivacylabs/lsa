@@ -35,7 +35,8 @@ type Mapper struct {
 	ls.Ingester
 
 	// PropertyName specifies the property to lookup in the source
-	// graph. The property values give the target schema attribute IDs
+	// graph. The property values give the target schema attribute IDs.
+	// Use PropertyName:ls:schemaNodeId to use the same schema
 	PropertyName string
 }
 

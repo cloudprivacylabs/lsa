@@ -228,7 +228,6 @@ func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.No
 		}
 		return nil
 	}
-	newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeValue))
 	return nil
 }
 

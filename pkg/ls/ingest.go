@@ -689,9 +689,19 @@ func (ingester *Ingester) NewNode(ictx IngestionContext) graph.Node {
 		if len(nodes) != 0 {
 			ingester.Graph.NewEdge(node, nodes[0], InstanceOfTerm, nil)
 		} else {
-			// Copy the subtree
-			graph.CopySubgraph(schemaNode, ingester.Graph, ClonePropertyValueFunc, ingester.SchemaNodeMap)
-			ingester.Graph.NewEdge(node, ingester.SchemaNodeMap[schemaNode], InstanceOfTerm, nil)
+			// Copy the node
+			newNode := graph.CopyNode(schemaNode, ingester.Graph, ClonePropertyValueFunc)
+			ingester.SchemaNodeMap[schemaNode] = newNode
+			ingester.Graph.NewEdge(node, newNode, InstanceOfTerm, nil)
+			// Copy the subtrees for all nodes connected to the schema node
+			for edges := schemaNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+				edge := edges.Edge()
+				if IsAttributeTreeEdge(edge) {
+					continue
+				}
+				graph.CopySubgraph(edge.GetTo(), ingester.Graph, ClonePropertyValueFunc, ingester.SchemaNodeMap)
+				ingester.Graph.NewEdge(node, ingester.SchemaNodeMap[edge.GetTo()], edge.GetLabel(), nil)
+			}
 		}
 	}
 	// If this is an entity boundary, mark it
@@ -787,7 +797,7 @@ func (ingester *Ingester) Polymorphic(ictx IngestionContext, test, ingest func(*
 	numMatches := 0
 	var matched *PolymorphicOption
 	for ix, r := range optionResults {
-		if r.IngestionError != nil && r.IngestedNode != nil {
+		if r.IngestionError == nil && r.IngestedNode != nil {
 			numMatches++
 			matched = &optionResults[ix]
 		}

@@ -10,6 +10,9 @@ description: "Layered schema architecture documentation"
 : Layered schema meta model described as labeled property graphs and
   JSON-LD serialization
 
+[Data Types](data_types)
+: Data types suported by layered schema architecture
+
 [Composition and Slicing](compose_slice)
 : Composing a schema involves building a schema variant from a schema
   base and overlays. Slicing a schema creates a schema base and one or
