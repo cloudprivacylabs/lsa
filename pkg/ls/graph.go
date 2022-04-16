@@ -207,6 +207,12 @@ func FollowEdgesInEntity(edge graph.Edge, _ []graph.Node) EdgeFuncResult {
 	return FollowEdgeResult
 }
 
+// IsNodeEntityRoot checks if node is an entity root
+func IsNodeEntityRoot(node graph.Node) bool {
+	_, ok := GetNodeOrSchemaProperty(node, EntitySchemaTerm)
+	return ok
+}
+
 // SkipSchemaNodes can be used in IterateDescendants edge func
 // to skip all edges that go to a schema node
 var SkipSchemaNodes = SkipEdgesToNodeWithType(AttributeNodeTerm)
@@ -452,4 +458,48 @@ func FindChildInstanceOf(parent graph.Node, childAttrID string) []graph.Node {
 		}
 	}
 	return ret
+}
+
+// GetEntityRootNode returns the entity root node containing this node
+func GetEntityRootNode(aNode graph.Node) graph.Node {
+	trc := aNode
+	for {
+		if IsNodeEntityRoot(trc) {
+			return trc
+		}
+
+		nNodes := 0
+		for edges := trc.GetEdges(graph.IncomingEdge); edges.Next(); {
+			edge := edges.Edge()
+			nextNode := edge.GetFrom()
+			if nextNode == edge.GetTo() {
+				continue
+			}
+			if !nextNode.GetLabels().Has(DocumentNodeTerm) {
+				continue
+			}
+			nNodes++
+			if nNodes > 1 {
+				// Cannot find root
+				return nil
+			}
+			trc = nextNode
+		}
+		if nNodes == 0 {
+			return nil
+		}
+	}
+}
+
+// WalkNodesInEntity walks through all the nodes without crossing
+// entity boundaries. It calls the function f for each node. The
+// entity root containing the given node is also traversed.
+func WalkNodesInEntity(aNode graph.Node, f func(graph.Node) bool) bool {
+	root := GetEntityRootNode(aNode)
+	if root == nil {
+		return true
+	}
+	return IterateDescendants(root, func(node graph.Node, _ []graph.Node) bool {
+		return f(node)
+	}, FollowEdgesInEntity, false)
 }

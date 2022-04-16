@@ -89,8 +89,28 @@ func (match Match) GetResults(ctx *EvalContext) (ResultSet, error) {
 
 	newContext := ctx.SubContext()
 
-	symbols := make(map[string]*graph.PatternSymbol)
+	symbols, err := BuildPatternSymbols(ctx, pattern)
+	if err != nil {
+		return ResultSet{}, err
+	}
 
+	resultAccumulator := matchResultAccumulator{
+		where:   match.Where,
+		evalCtx: newContext,
+	}
+
+	err = pattern.Run(ctx.graph, symbols, &resultAccumulator)
+	if err != nil {
+		return ResultSet{}, err
+	}
+
+	return resultAccumulator.result, nil
+}
+
+// BuildPatternSymbols copies all the symbols referenced in the
+// pattern from the context, and puts them in a map
+func BuildPatternSymbols(ctx *EvalContext, pattern graph.Pattern) (map[string]*graph.PatternSymbol, error) {
+	symbols := make(map[string]*graph.PatternSymbol)
 	for symbol := range pattern.GetSymbolNames() {
 		// If a symbol is in the context, then get its value. Otherwise, it is a local symbol. Add to context
 		value, err := ctx.GetVar(symbol)
@@ -106,22 +126,11 @@ func (match Match) GetResults(ctx *EvalContext) (ResultSet, error) {
 		case []graph.Edge:
 			ps.AddPath(val)
 		default:
-			return ResultSet{}, ErrInvalidValueReferenceInPattern{Symbol: symbol}
+			return nil, ErrInvalidValueReferenceInPattern{Symbol: symbol}
 		}
 		symbols[symbol] = ps
 	}
-
-	resultAccumulator := matchResultAccumulator{
-		where:   match.Where,
-		evalCtx: newContext,
-	}
-
-	err = pattern.Run(ctx.graph, symbols, &resultAccumulator)
-	if err != nil {
-		return ResultSet{}, err
-	}
-
-	return resultAccumulator.result, nil
+	return symbols, nil
 }
 
 func (part PatternPart) getPattern(ctx *EvalContext) (graph.Pattern, error) {

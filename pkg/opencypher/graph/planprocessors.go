@@ -192,7 +192,6 @@ type iterateConnectedNodes struct {
 	source      planProcessor
 	useNode     int
 	result      Node
-	done        bool
 	nodeFilter  func(Node) bool
 }
 
@@ -206,10 +205,6 @@ func newIterateConnectedNodes(source planProcessor, item PatternItem, useNode in
 }
 
 func (processor *iterateConnectedNodes) Run(ctx *MatchContext, next matchAccumulator) error {
-	if processor.done {
-		processor.done = false
-		return nil
-	}
 	edges := processor.source.GetResult().([]Edge)
 	edge := edges[len(edges)-1]
 	var node Node
@@ -232,7 +227,6 @@ func (processor *iterateConnectedNodes) Run(ctx *MatchContext, next matchAccumul
 		}
 
 		processor.result = node
-		processor.done = true
 		ctx.recordStepResult(processor)
 		logf("Iterate connected nodes goes deeper\n")
 		if err := next.Run(ctx); err != nil {
