@@ -49,7 +49,7 @@ based on the layered schema architecture replaces such ETL scripts
 with source specific schema variants. The schema variants can be
 reused in different scenarios and can be shared.
 
-{{<figure src="dw-fanin-fanout-sm.png" class="text-center my-3">}} 
+{{<figure src="dw-fanin-fanout-sm.png" class="text-center my-3" >}} 
 
 ### Privacy-Conscious Data Exchange
 
@@ -60,7 +60,7 @@ shared. With the layered schema architecture, data elements are
 classified using overlays based on policies and privacy settings, and
 are filtered or redacted using semantic pipelines.
 
-{{<figure src="data-exchange.png" class="text-center my-3">}} 
+{{<figure src="data-exchange.png" class="text-center my-3" >}} 
 
 ### Data Display and Entry
 

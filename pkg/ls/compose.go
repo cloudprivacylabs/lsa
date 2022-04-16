@@ -32,6 +32,8 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 			return ErrIncompatibleComposition
 		}
 	}
+	sourceCompose := AsPropertyValue(source.GetLayerRootNode().GetProperty(ComposeTerm)).AsString()
+
 	nodeMap := make(map[graph.Node]graph.Node)
 	var err error
 	// Process attributes of the source layer depth-first
@@ -50,7 +52,7 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 		if targetNode != nil {
 			// Target node exists. Merge if paths match
 			if pathsMatch(targetPath, sourcePath) {
-				if err = mergeNodes(context, layer, targetNode, sourceNode, processedSourceNodes); err != nil {
+				if err = mergeNodes(context, layer, targetNode, sourceNode, sourceCompose, processedSourceNodes); err != nil {
 					return false
 				}
 				// Add any annotation subtrees
@@ -97,7 +99,7 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 }
 
 // Merge source into target.
-func mergeNodes(context *Context, targetLayer *Layer, target, source graph.Node, processedSourceNodes map[graph.Node]struct{}) error {
+func mergeNodes(context *Context, targetLayer *Layer, target, source graph.Node, sourceCompose string, processedSourceNodes map[graph.Node]struct{}) error {
 	if _, processed := processedSourceNodes[source]; processed {
 		return nil
 	}
@@ -106,9 +108,28 @@ func mergeNodes(context *Context, targetLayer *Layer, target, source graph.Node,
 		return nil
 	}
 
+	if len(sourceCompose) > 0 {
+		cType := CompositionType(sourceCompose)
+		var retErr error
+		source.ForEachProperty(func(key string, value interface{}) bool {
+			if p, ok := value.(*PropertyValue); ok {
+				tp, _ := target.GetProperty(key)
+				targetProperty, _ := tp.(*PropertyValue)
+				newValue, err := cType.Compose(targetProperty, p)
+				if err != nil {
+					retErr = err
+					return false
+				}
+				target.SetProperty(key, newValue)
+			}
+			return true
+		})
+		return retErr
+	}
 	if err := ComposeProperties(context, target, source); err != nil {
 		return err
 	}
+
 	return nil
 }
 
