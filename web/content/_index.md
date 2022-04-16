@@ -3,12 +3,12 @@ title: "Layered Schema Architecture"
 subtitle: "Semantic interoperability for data capture, processing, and exchange"
 description: "Layered schemas data capture, semantic interoperability, knowledge graphs"
 features:
-  - title: Semantic Harmonization
-    text: Ingest data from disparate sources. Harmonize, process and transform ingested data using semantic pipelines.
-  - title: Cross-Domain Interoperability
-    text: Annotate data with domain-specific vocabulary mappings, convert and exchange for specific targets
   - title: From Data to Knowledge
-    text: Build knowledge graphs with contextual metadata. Create AI training sets from heterogeneous data.
+    text: Meaning of data is contextual. Layered schemas add context-specific metadata to capture and rebuild the meaning in data.
+  - title: Semantic Harmonization
+    text: Layered schema architecture provides the tools to ingest and harmonize data from disparate sources, and transform it using semantic pipelines.
+  - title: Cross-Domain Interoperability
+    text: Schemas and interchangeable layers annotate data with different vocabularies to enable data exchange across domains
 #button:
 #  link: https://playground.layeredschemas.org
 #  text: Launch the Layered Schema Playground
