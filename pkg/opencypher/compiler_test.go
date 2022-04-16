@@ -76,8 +76,8 @@ func TestBasicMatch(t *testing.T) {
 	n3 := g.NewNode([]string{"t4"}, nil)
 	g.NewEdge(n2, n3, "e2", nil)
 	rs = runTestMatch(t, "match (m:t1)-[*]->(n:t4) return n", g)
-	if !(len(rs.Rows) == 1 && rs.Rows[0]["1"].Value.(graph.Node) == n3) {
-		t.Errorf("Expecting to see one row n2: %v", rs)
+	if !(len(rs.Rows) == 2 && rs.Rows[0]["1"].Value.(graph.Node) == n3 && rs.Rows[1]["1"].Value.(graph.Node) == n3) {
+		t.Errorf("Expecting to see two rows n3: %v", rs)
 	}
 
 }
