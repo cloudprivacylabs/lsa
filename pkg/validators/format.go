@@ -4,7 +4,7 @@ import (
 	"github.com/santhosh-tekuri/jsonschema/v3"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // JsonFormatTerm validates if the value matches one of the json format implementations

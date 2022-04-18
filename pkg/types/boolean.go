@@ -19,7 +19,7 @@ import (
 	"strings"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 var JSONBooleanTerm = ls.NewTerm(JSON, "boolean", false, false, ls.OverrideComposition, struct {

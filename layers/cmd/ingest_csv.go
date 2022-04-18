@@ -27,7 +27,7 @@ import (
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func init() {

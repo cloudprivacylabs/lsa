@@ -23,7 +23,7 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/pkg/dot"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func ReadGraph(gfile []string, interner ls.Interner, inputFormat string) (graph.Graph, error) {

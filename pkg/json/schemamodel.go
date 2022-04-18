@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 	"github.com/cloudprivacylabs/lsa/pkg/validators"
 )
 

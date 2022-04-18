@@ -18,7 +18,7 @@ import (
 	"errors"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher"
+	"github.com/cloudprivacylabs/opencypher"
 )
 
 var ErrInvalidConditional = errors.New("Invalid conditional")

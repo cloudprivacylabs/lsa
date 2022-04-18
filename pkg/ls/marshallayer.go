@@ -19,7 +19,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 	"github.com/piprate/json-gold/ld"
 )
 

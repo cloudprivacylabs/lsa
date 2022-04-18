@@ -18,8 +18,8 @@ import (
 	"fmt"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // Measure is the data type that contains a value and a unit

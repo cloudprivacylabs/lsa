@@ -22,7 +22,7 @@ import (
 	"github.com/nleeper/goment"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type ErrCannotParseTemporalValue string

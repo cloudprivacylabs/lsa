@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"testing"
-	//	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	//	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type ingestTest struct {

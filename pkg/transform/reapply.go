@@ -16,7 +16,7 @@ package transform
 
 import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // ApplyLayer applies the given layer onto the graph.

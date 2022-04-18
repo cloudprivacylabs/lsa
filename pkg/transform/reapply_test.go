@@ -19,7 +19,7 @@ import (
 	"testing"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 
 	_ "github.com/cloudprivacylabs/lsa/pkg/types"
 )

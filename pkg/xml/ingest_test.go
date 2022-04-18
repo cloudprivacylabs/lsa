@@ -22,7 +22,7 @@ import (
 	"testing"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {

@@ -17,7 +17,7 @@ package ls
 import (
 	"testing"
 
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func TestWalkNodesInEntity(t *testing.T) {

@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // IsDocumentNode returns if the node has the DocumentNodeTerm as one of its labels

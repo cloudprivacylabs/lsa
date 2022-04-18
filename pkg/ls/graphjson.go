@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // JSONGraphNode includes a node index, labels, and properties of the node
