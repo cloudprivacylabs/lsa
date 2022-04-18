@@ -803,6 +803,9 @@ func (ingester *Ingester) Polymorphic(ictx IngestionContext, test, ingest func(*
 		}
 	}
 	if numMatches == 0 {
+		if ingester.OnlySchemaAttributes {
+			return nil, nil
+		}
 		return nil, ErrSchemaValidation{Msg: "None of the options of the polymorphic node matched:" + GetNodeID(ictx.GetSchemaNode()), Path: ictx.SourcePath.Copy()}
 	}
 	if numMatches > 1 {

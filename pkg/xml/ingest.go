@@ -30,6 +30,14 @@ var ErrExtraCharacters = errors.New("Extra characters before document")
 var ErrMultipleRoots = errors.New("Multiple roots")
 var ErrInvalidXML = errors.New("Invalid XML")
 
+type ErrIncorrectElement struct {
+	Name xml.Name
+}
+
+func (err ErrIncorrectElement) Error() string {
+	return fmt.Sprintf("Incorrect element: %v", err.Name)
+}
+
 const XSDNamespace = "http://www.w3.org/2001/XMLSchema"
 
 type ErrAmbiguousSchemaAttribute struct {
@@ -272,17 +280,26 @@ func (ingester *Ingester) element(ctx ls.IngestionContext, element *xmlElement) 
 	if schemaNode == nil && ingester.OnlySchemaAttributes {
 		return nil, nil
 	}
+	validate := func(node graph.Node, err error) (graph.Node, error) {
+		if err != nil {
+			return nil, err
+		}
+		if err := ingester.Validate(ctx, node); err != nil {
+			return nil, err
+		}
+		return node, nil
+	}
 
 	// What are we ingesting? If there is a schema, it dictates the type
 	if schemaNode != nil {
 		switch {
-		case schemaNode.GetLabels().Has(ls.AttributeTypeValue):
-			return ingester.ingestAsValue(ctx, element, schemaNode)
-		case schemaNode.GetLabels().Has(ls.AttributeTypeObject):
-			return ingester.ingestAsObject(ctx, element, schemaNode)
-		case schemaNode.GetLabels().Has(ls.AttributeTypeArray):
-			return ingester.ingestAsArray(ctx, element, schemaNode)
-		case schemaNode.GetLabels().Has(ls.AttributeTypePolymorphic):
+		case schemaNode.HasLabel(ls.AttributeTypeValue):
+			return validate(ingester.ingestAsValue(ctx, element, schemaNode))
+		case schemaNode.HasLabel(ls.AttributeTypeObject):
+			return validate(ingester.ingestAsObject(ctx, element, schemaNode))
+		case schemaNode.HasLabel(ls.AttributeTypeArray):
+			return validate(ingester.ingestAsArray(ctx, element, schemaNode))
+		case schemaNode.HasLabel(ls.AttributeTypePolymorphic):
 			return ingester.ingestPolymorphic(ctx, element, schemaNode)
 		}
 		return nil, ls.ErrInvalidSchema(fmt.Sprintf("Cannot determine attribute type for %s", ls.GetNodeID(schemaNode)))
@@ -297,54 +314,24 @@ func (ingester *Ingester) element(ctx ls.IngestionContext, element *xmlElement) 
 }
 
 // This finds the best matching schema attribute. If a schema
-// attribute is required for an XML attribute, requireAttr must be
-// true. Then, if the name matches a schema attribute with namespace
-// and lname, that attribute is returned. If there are no full-name
-// matches, a lname matching attribute tha does not specify
-// namespace will be returned.
-//
-// If nothing matches and if there is only one child node with no XML
-// name annotations, that child is returned.
-//
-// Example:
-//    name: abc
-//    schema attributes: ns:abc, abc -> abc will be returned
-//    name: ns:abc
-//    schema attributes: ns:abc, abc -> ns:abc will be returned
+// attribute is an XML attribute, requireAttr must be
+// true.
 func findBestMatchingSchemaAttribute(name xml.Name, schemaAttrs []graph.Node, requireAttr bool) (graph.Node, error) {
-	var lnameMatch, fnameMatch graph.Node
+	var matched graph.Node
 	for _, attr := range schemaAttrs {
 		_, attrTerm := attr.GetProperty(AttributeTerm)
 		if requireAttr != attrTerm {
 			continue
 		}
-		ns := ls.AsPropertyValue(attr.GetProperty(NamespaceTerm))
-		ln := ls.AsPropertyValue(attr.GetProperty(LocalNameTerm))
-
-		if ns == nil {
-			if ln.AsString() == name.Local {
-				if lnameMatch != nil {
-					return nil, ErrAmbiguousSchemaAttribute{Attr: name}
-				}
-				lnameMatch = attr
+		attrName := GetXMLName(attr)
+		if MatchName(name, attrName) {
+			if matched != nil {
+				return nil, ErrAmbiguousSchemaAttribute{Attr: name}
 			}
-		} else if ns.IsString() {
-			if ns.AsString() == name.Space && ln.AsString() == name.Local {
-				if fnameMatch != nil {
-					return nil, ErrAmbiguousSchemaAttribute{Attr: name}
-				}
-				fnameMatch = attr
-			}
+			matched = attr
 		}
 	}
-	if lnameMatch != nil && fnameMatch != nil {
-		return nil, ErrAmbiguousSchemaAttribute{Attr: name}
-	}
-	attrSchema := lnameMatch
-	if attrSchema == nil {
-		attrSchema = fnameMatch
-	}
-	return attrSchema, nil
+	return matched, nil
 }
 
 func (ingester *Ingester) ingestAsValue(ctx ls.IngestionContext, element *xmlElement, schemaNode graph.Node) (graph.Node, error) {
@@ -388,6 +375,15 @@ func (ingester *Ingester) ingestAsValue(ctx ls.IngestionContext, element *xmlEle
 }
 
 func (ingester *Ingester) ingestAsObject(ctx ls.IngestionContext, element *xmlElement, schemaNode graph.Node) (graph.Node, error) {
+	// Make sure tag matches
+	if schemaNode != nil {
+		schName := GetXMLName(schemaNode)
+		if len(schName.Local) > 0 {
+			if !MatchName(element.name, schName) {
+				return nil, ErrIncorrectElement{element.name}
+			}
+		}
+	}
 	// Get all the possible child nodes from the schema. If the
 	// schemaNode is nil, the returned schemaNodes will be empty
 	childSchemaNodes := ls.GetObjectAttributeNodes(schemaNode)
@@ -433,9 +429,24 @@ func (ingester *Ingester) ingestAsObject(ctx ls.IngestionContext, element *xmlEl
 			if err != nil {
 				return nil, err
 			}
-			newNode, err = ingester.element(newCtx.New(childNode.name.Local, childSchema), childNode)
-			if err != nil {
-				return nil, err
+			// If nothing was found, check if there are polymorphic nodes
+			if childSchema == nil {
+				for _, childSchemaNode := range childSchemaNodes {
+					if !childSchemaNode.HasLabel(ls.AttributeTypePolymorphic) {
+						continue
+					}
+					// A polymorphic node
+					newNode, err = ingester.element(newCtx.New(childNode.name.Local, childSchemaNode), childNode)
+					if err != nil {
+						return nil, err
+					}
+				}
+			}
+			if newNode == nil {
+				newNode, err = ingester.element(newCtx.New(childNode.name.Local, childSchema), childNode)
+				if err != nil {
+					return nil, err
+				}
 			}
 		case *xmlText:
 			_, _, newNode, err = ingester.Value(newCtx.New("", nil), string(childNode.text))
@@ -497,7 +508,14 @@ func (ingester *Ingester) ingestPolymorphic(ctx ls.IngestionContext, element *xm
 	f := func(ing *ls.Ingester, ctx ls.IngestionContext) (graph.Node, error) {
 		newIngester := *ingester
 		newIngester.Ingester = *ing
-		return newIngester.element(ctx, element)
+		node, err := newIngester.element(ctx, element)
+		if err != nil {
+			return nil, err
+		}
+		if node == nil {
+			return nil, fmt.Errorf("Polymorhic option does not produce output")
+		}
+		return node, nil
 	}
 	return ingester.Polymorphic(ctx, f, f)
 }

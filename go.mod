@@ -15,7 +15,7 @@ require (
 	golang.org/x/text v0.3.6
 )
 
-require github.com/cloudprivacylabs/opencypher v0.0.0-20220418150232-976eabe1a045 // indirect
+require github.com/cloudprivacylabs/opencypher v0.0.0-20220418161125-8959d28ce9a7 // indirect
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
