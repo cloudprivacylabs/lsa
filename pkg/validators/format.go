@@ -20,7 +20,7 @@ type JsonFormatValidator struct{}
 const compiledJsonFormatTerm = "$compiledJsonFormat"
 
 // ValidateValue checks if the value matches the format
-func (validator JsonFormatValidator) ValidateValue(value interface{}, format string) error {
+func (validator JsonFormatValidator) validateValue(value, format string) error {
 	f := jsonschema.Formats[format]
 	if f == nil {
 		return ls.ErrValidation{Validator: JsonFormatTerm, Msg: "Unknown format: " + format}
@@ -31,8 +31,17 @@ func (validator JsonFormatValidator) ValidateValue(value interface{}, format str
 	return nil
 }
 
-// Validate validates the node value if it is non-nil
-func (validator JsonFormatValidator) Validate(docNode, schemaNode graph.Node) error {
+// ValidateValue checks if the value matches the format
+func (validator JsonFormatValidator) ValidateValue(value *string, schemaNode graph.Node) error {
+	if value == nil {
+		return nil
+	}
+	c, _ := schemaNode.GetProperty(compiledJsonFormatTerm)
+	return validator.validateValue(*value, c.(string))
+}
+
+// ValidateNode validates the node value if it is non-nil
+func (validator JsonFormatValidator) ValidateNode(docNode, schemaNode graph.Node) error {
 	if docNode == nil {
 		return nil
 	}
@@ -40,8 +49,7 @@ func (validator JsonFormatValidator) Validate(docNode, schemaNode graph.Node) er
 	if !ok {
 		return nil
 	}
-	c, _ := schemaNode.GetProperty(compiledJsonFormatTerm)
-	return validator.ValidateValue(value, c.(string))
+	return validator.ValidateValue(&value, schemaNode)
 }
 
 func (validator JsonFormatValidator) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {

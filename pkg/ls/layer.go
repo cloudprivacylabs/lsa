@@ -240,6 +240,11 @@ func GetObjectAttributeNodes(objectSchemaNode graph.Node) []graph.Node {
 	return nextNodes
 }
 
+// GetPolymorphicOptions returns the polymorphic options of a schema node
+func GetPolymorphicOptions(polymorphicSchemaNode graph.Node) []graph.Node {
+	return graph.TargetNodes(polymorphicSchemaNode.GetEdgesWithLabel(graph.OutgoingEdge, OneOfTerm))
+}
+
 // GetEntityIDNodes returns the entity id attribute IDs from the layer
 // root node
 func (l *Layer) GetEntityIDNodes() []string {

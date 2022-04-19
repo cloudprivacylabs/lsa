@@ -92,24 +92,27 @@ type ErrSchemaValidation struct {
 }
 
 type ErrCannotDetermineEdgeLabel struct {
-	Msg  string
-	Path NodePath
+	Msg          string
+	Path         NodePath
+	SchemaNodeID string
 }
 
 type ErrCannotDeterminePropertyName struct {
-	Path NodePath
+	Path         NodePath
+	SchemaNodeID string
 }
 
 func (e ErrCannotDeterminePropertyName) Error() string {
-	return "Cannot determine property name: " + e.Path.String()
+	return fmt.Sprintf("Cannot determine property name %s: %s", e.SchemaNodeID, e.Path.String())
 }
 
 type ErrCannotFindAncestor struct {
-	Path NodePath
+	Path         NodePath
+	SchemaNodeID string
 }
 
 func (e ErrCannotFindAncestor) Error() string {
-	return "Cannot find ancestor: " + e.Path.String()
+	return fmt.Sprintf("Cannot find ancestor %s: %s", e.SchemaNodeID, e.Path.String())
 }
 
 type ErrInvalidEntityID struct {
@@ -129,7 +132,7 @@ func (e ErrSchemaValidation) Error() string {
 }
 
 func (e ErrCannotDetermineEdgeLabel) Error() string {
-	ret := "Cannot determine edge label: " + e.Msg
+	ret := fmt.Sprintf("Cannot determine edge label %s: %s", e.SchemaNodeID, e.Msg)
 	if e.Path != nil {
 		ret += " path:" + e.Path.String()
 	}

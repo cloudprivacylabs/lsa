@@ -7,7 +7,12 @@ import (
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
-// RequiredTerm validates if a required properties exist. Properties are addressed by schema attribute id
+// RequiredTerm validates if a required properties exist.
+//
+//  {
+//    @id: attrId
+//    validation/required: true
+//  }
 var RequiredTerm = ls.NewTerm(ls.LS, "validation/required", false, false, ls.OverrideComposition, struct {
 	RequiredValidator
 }{
@@ -16,6 +21,28 @@ var RequiredTerm = ls.NewTerm(ls.LS, "validation/required", false, false, ls.Ove
 
 // RequiredValidator validates if a required value exists
 type RequiredValidator struct{}
+
+// ValidateValue checks if value is nil. If value is nil and it is required, returns an error
+func (validator RequiredValidator) ValidateValue(value *string, schemaNode graph.Node) error {
+	if ls.AsPropertyValue(schemaNode.GetProperty(RequiredTerm)).AsString() == "true" && value == nil {
+		return ls.ErrValidation{Validator: RequiredTerm, Msg: "Missing required attribute: " + ls.GetNodeID(schemaNode)}
+	}
+	return nil
+}
+
+// ValidateNode checks if value is nil. If value is nil and it is required, returns an error
+func (validator RequiredValidator) ValidateNode(docNode, schemaNode graph.Node) error {
+	if ls.AsPropertyValue(schemaNode.GetProperty(RequiredTerm)).AsString() == "true" {
+		if docNode == nil {
+			return ls.ErrValidation{Validator: RequiredTerm, Msg: "Missing required attribute: " + ls.GetNodeID(schemaNode)}
+		}
+		_, ok := ls.GetRawNodeValue(docNode)
+		if !ok {
+			return ls.ErrValidation{Validator: RequiredTerm, Msg: "Missing required attribute: " + ls.GetNodeID(schemaNode)}
+		}
+	}
+	return nil
+}
 
 // Validate checks if value is nil. If value is nil and it is required, returns an error
 func (validator RequiredValidator) Validate(docNode, schemaNode graph.Node) error {
