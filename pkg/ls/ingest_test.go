@@ -48,21 +48,23 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 		t.Error(err)
 	}
 
-	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, Graph: NewDocumentGraph()}
-	ctx := ing.Start(DefaultContext(), "")
-	_, _, rootNode, err := ing.Object(ctx)
+	builder := NewGraphBuilder(nil, GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
+
+	schemaRoot := schema.GetSchemaRootNode()
+	_, rootNode, err := builder.ObjectAsNode(schemaRoot, nil)
 	if err != nil {
 		t.Errorf("Ingest err: %v", err)
 		return
 	}
-	newctx := ctx.NewLevel(rootNode)
 
 	attr3Node, _ := schema.FindAttributeByID("attr3")
 	if attr3Node == nil {
 		t.Errorf("Cannot find attr3 node")
 		return
 	}
-	_, edge, node, err := ing.Value(newctx.New("attr3", attr3Node), "VAUs")
+	edge, err := builder.ValueAsEdge(attr3Node, rootNode, "VAUs")
 	if err != nil {
 		t.Errorf("ingest err: %v", err)
 		return
@@ -71,7 +73,7 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 		t.Errorf("invalid label: %v", edge.GetLabel())
 		return
 	}
-	if s, _ := GetRawNodeValue(node); s != "VAUs" {
+	if s, _ := GetRawNodeValue(edge.GetTo()); s != "VAUs" {
 		t.Errorf("Ingestion set value error: %v", err)
 		return
 	}
@@ -81,7 +83,7 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 		t.Errorf("Cannot find attr4 node")
 		return
 	}
-	_, edge, node, err = ing.Value(newctx.New("attr4", attr4Node), "b")
+	edge, err = builder.ValueAsEdge(attr4Node, rootNode, "b")
 	if err != nil {
 		t.Errorf("ingest err: %v", err)
 		return
@@ -90,7 +92,7 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 		t.Errorf("invalid get label: %v", edge.GetLabel())
 		return
 	}
-	if s, _ := GetRawNodeValue(node); s != "b" {
+	if s, _ := GetRawNodeValue(edge.GetTo()); s != "b" {
 		t.Errorf("Ingestion set value error: %v", err)
 		return
 	}
@@ -111,21 +113,22 @@ func (tc ingestTest) testObjectAsEdge(t *testing.T) {
 		t.Error(err)
 	}
 
-	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, Graph: NewDocumentGraph()}
-	ctx := ing.Start(DefaultContext(), "")
-	_, _, rootNode, err := ing.Object(ctx)
+	builder := NewGraphBuilder(nil, GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
+	schemaRoot := schema.GetSchemaRootNode()
+	_, rootNode, err := builder.ObjectAsNode(schemaRoot, nil)
 	if err != nil {
 		t.Errorf("Ingest err: %v", err)
 		return
 	}
-	newctx := ctx.NewLevel(rootNode)
 
 	attr2Node, _ := schema.FindAttributeByID("https://www.example.com/id2")
 	if attr2Node == nil {
 		t.Errorf("Cannot find attr2 node")
 		return
 	}
-	_, edge, node, err := ing.Object(newctx.New("obj2", attr2Node))
+	edge, err := builder.ObjectAsEdge(attr2Node, rootNode)
 	if err != nil {
 		t.Error(err)
 	}
@@ -136,20 +139,17 @@ func (tc ingestTest) testObjectAsEdge(t *testing.T) {
 	if edge.GetFrom() != rootNode {
 		t.Errorf("Wrong from")
 	}
-	if edge.GetTo() != node {
-		t.Errorf("GetTo")
-	}
 
 	attr3Node, _ := schema.FindAttributeByID("https://www.example.com/id3")
 	if attr3Node == nil {
 		t.Errorf("Cannot find attr3 node")
 		return
 	}
-	_, edge2, node2, err := ing.Value(newctx.New("field3", attr3Node), "3")
+	edge2, err := builder.ValueAsEdge(attr3Node, edge.GetTo(), "3")
 	if err != nil {
 		t.Error(err)
 	}
-	if edge2.GetFrom() != node && edge2.GetLabel() != HasTerm && edge2.GetTo() != node2 {
+	if edge2.GetFrom() != edge.GetTo() && edge2.GetLabel() != HasTerm {
 		t.Errorf("Wrong path")
 	}
 }
@@ -177,21 +177,22 @@ func (tc ingestTest) TestArrayAsEdge(t *testing.T) {
 		t.Error(err)
 	}
 
-	ing := Ingester{Schema: schema, EmbedSchemaNodes: true, Graph: NewDocumentGraph()}
-	ctx := ing.Start(DefaultContext(), "")
-	_, _, rootNode, err := ing.Object(ctx)
+	builder := NewGraphBuilder(nil, GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
+	schemaRoot := schema.GetSchemaRootNode()
+	_, rootNode, err := builder.ObjectAsNode(schemaRoot, nil)
 	if err != nil {
 		t.Errorf("Ingest err: %v", err)
 		return
 	}
-	newctx := ctx.NewLevel(rootNode)
 
 	attr1Node, _ := schema.FindAttributeByID("https://attr1")
 	if attr1Node == nil {
 		t.Errorf("Cannot find attr1 node")
 		return
 	}
-	_, edge, node, err := ing.Array(newctx.New("arr", attr1Node))
+	edge, err := builder.ArrayAsEdge(attr1Node, rootNode)
 	if err != nil {
 		t.Error(err)
 	}
@@ -202,20 +203,17 @@ func (tc ingestTest) TestArrayAsEdge(t *testing.T) {
 	if edge.GetFrom() != rootNode {
 		t.Errorf("Wrong from")
 	}
-	if edge.GetTo() != node {
-		t.Errorf("GetTo")
-	}
 
 	elemNode, _ := schema.FindAttributeByID("https://www.example.com/id0")
 	if elemNode == nil {
 		t.Errorf("Cannot find elem node")
 		return
 	}
-	_, edge2, node2, err := ing.Value(newctx.New(0, elemNode), "3")
+	edge2, err := builder.ValueAsEdge(elemNode, edge.GetTo(), "3")
 	if err != nil {
 		t.Error(err)
 	}
-	if edge2.GetFrom() != node && edge2.GetLabel() != HasTerm && edge2.GetTo() != node2 {
+	if edge2.GetFrom() != edge.GetTo() && edge2.GetLabel() != HasTerm {
 		t.Errorf("Wrong path")
 	}
 }

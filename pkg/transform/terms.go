@@ -15,135 +15,41 @@
 package transform
 
 import (
-	"errors"
-
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
-var ErrInvalidConditional = errors.New("Invalid conditional")
-var ErrInvalidVariables = errors.New("Invalid vars section")
+// MultipleTerm is used to specify if multiple values are allowed. If so, one node will be constructed for each value
+var MultipleTerm = ls.NewTerm(TRANSFORM, "multi", false, false, ls.OverrideComposition, nil)
 
-const RS = ls.LS + "reshape/"
+// MapPropertyTerm defines the name of the property in the source
+// graph nodes that contain the mapped schema node id. The contents of
+// the nodes under the mapContext that have prop:schemaNodeId will be
+// assigned to the current node
+var MapPropertyTerm = ls.NewTerm(TRANSFORM, "mapProperty", false, false, ls.OverrideComposition, nil)
 
-// ReshapeTerms defines the terms used to specify reshaping layers
-var ReshapeTerms = struct {
-	// If given, the If term specifies a predicate that should be true to reshape the node
-	If string
-	// Export defines a list of symbols that will be exported from the
-	// opencypher expressions run in this node
-	Export string
-	// Expressions specify one or more expression to evaluate
-	Expressions string
-	// ValueExpr specifies the query to be used to generate the target value
-	ValueExpr string
-	// IfEmpty determines whether to reshape the node even if it has no value
-	IfEmpty string
-	// JoinMethod determines how to join multiple values to generate a single value
-	JoinMethod string
-	// JoinDelimiter specifies the join delimiter if there are multiple values to be combined
-	JoinDelimiter string
-}{
-	If: ls.NewTerm(RS, "if", false, false, ls.OverrideComposition, struct {
-		ifSemantics
-	}{}),
-	Export: ls.NewTerm(RS, "export", false, true, ls.OverrideComposition, struct {
-		exportSemantics
-	}{}),
-	Expressions: ls.NewTerm(RS, "expr", false, true, ls.OverrideComposition, struct {
-		exprSemantics
-	}{}),
-	ValueExpr: ls.NewTerm(RS, "valueExpr", false, false, ls.OverrideComposition, struct {
-		valueExprSemantics
-	}{}),
-	IfEmpty:       ls.NewTerm(RS, "ifEmpty", false, false, ls.OverrideComposition, nil),
-	JoinMethod:    ls.NewTerm(RS, "joinMethod", false, false, ls.OverrideComposition, nil),
-	JoinDelimiter: ls.NewTerm(RS, "joinDelimiter", false, false, ls.OverrideComposition, nil),
-}
+// MapContextTerm gives an opencypher expression that results in a
+// node. That node will be used as the context for the map operations
+// under that node
+var MapContextTerm = ls.NewTerm(TRANSFORM, "mapContext", false, false, ls.OverrideComposition, MapContextSemantics)
 
-type ifSemantics struct{}
-type exportSemantics struct{}
-type valueExprSemantics struct{}
-type exprSemantics struct{}
+var MapContextSemantics = mapContextSemantics{}
 
-// CompileTerm compiles the if conditional
-func (ifSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
-	if value == nil {
-		return nil
-	}
-	var val []string
-	if value.IsString() {
-		val = []string{value.AsString()}
-	} else if value.IsStringSlice() {
-		val = value.AsStringSlice()
-	} else {
-		return ErrInvalidConditional
-	}
-	out := make([]opencypher.Evaluatable, 0, len(val))
-	for _, x := range val {
-		r, err := opencypher.Parse(x)
-		if err != nil {
-			return err
-		}
-		out = append(out, r)
-	}
-	target.SetProperty("$compiled_"+term, out)
-	return nil
-}
+type mapContextSemantics struct{}
 
-// CompileTerm compiles the export list
-func (exportSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
-	if value == nil {
-		return nil
-	}
-	var val []string
-	if value.IsString() {
-		val = []string{value.AsString()}
-	} else if value.IsStringSlice() {
-		val = value.AsStringSlice()
-	} else {
-		return ErrInvalidVariables
-	}
-	target.SetProperty("$compiled_"+term, val)
-	return nil
-}
-
-func (exprSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
-	if value == nil {
-		return nil
-	}
-	expr := make([]opencypher.Evaluatable, 0)
-	if value.IsString() {
-		e, err := opencypher.Parse(value.AsString())
-		if err != nil {
-			return err
-		}
-		expr = append(expr, e)
-	} else if value.IsStringSlice() {
-		for _, x := range value.AsStringSlice() {
-			e, err := opencypher.Parse(x)
-			if err != nil {
-				return err
-			}
-			expr = append(expr, e)
-		}
-	}
-	target.SetProperty("$compiled_"+term, expr)
-	return nil
-}
-
-// CompileTerm compiles the value expressions
-func (valueExprSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
-	if value == nil {
-		return nil
-	}
-	if !value.IsString() {
-		return ErrSourceMustBeString
-	}
+func (mapContextSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	e, err := opencypher.Parse(value.AsString())
 	if err != nil {
 		return err
 	}
-	target.SetProperty("$compiled_"+term, e)
+	target.SetProperty("$compiled_"+MapContextTerm, e)
 	return nil
+}
+
+// GetEvaluatable returns the contents of the compiled mapContext term
+func (mapContextSemantics) GetEvaluatable(node graph.Node) opencypher.Evaluatable {
+	v, _ := node.GetProperty("$compiled_" + MapContextTerm)
+	x, _ := v.(opencypher.Evaluatable)
+	return x
 }

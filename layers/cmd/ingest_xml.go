@@ -22,8 +22,8 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 	xmlingest "github.com/cloudprivacylabs/lsa/pkg/xml"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func init() {
@@ -39,8 +39,6 @@ var ingestXMLCmd = &cobra.Command{
 		initialGraph, _ := cmd.Flags().GetString("initialGraph")
 		ctx := getContext()
 		layer := loadSchemaCmd(ctx, cmd)
-		valuesets := &Valuesets{}
-		loadValuesetsCmd(cmd, valuesets)
 		var input io.Reader
 		var err error
 		if layer != nil {
@@ -69,24 +67,30 @@ var ingestXMLCmd = &cobra.Command{
 		}
 		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
 		onlySchemaAttributes, _ := cmd.Flags().GetBool("onlySchemaAttributes")
-		ingester := xmlingest.Ingester{
-			Ingester: ls.Ingester{
-				Schema:               layer,
-				EmbedSchemaNodes:     embedSchemaNodes,
-				OnlySchemaAttributes: onlySchemaAttributes,
-				ValuesetFunc:         valuesets.Lookup,
-				Graph:                grph,
-			},
+		parser := xmlingest.Parser{
+			OnlySchemaAttributes: onlySchemaAttributes,
 		}
+		if layer != nil {
+			parser.SchemaNode = layer.GetSchemaRootNode()
+		}
+		builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
+			EmbedSchemaNodes:     embedSchemaNodes,
+			OnlySchemaAttributes: onlySchemaAttributes,
+		})
 
 		baseID, _ := cmd.Flags().GetString("id")
-		_, err = xmlingest.IngestStream(ctx, &ingester, baseID, input)
+
+		parsed, err := parser.ParseStream(ctx, baseID, input)
+		if err != nil {
+			failErr(err)
+		}
+		_, err = ls.Ingest(builder, parsed)
 		if err != nil {
 			failErr(err)
 		}
 		outFormat, _ := cmd.Flags().GetString("output")
 		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
-		err = OutputIngestedGraph(cmd, outFormat, ingester.Graph, os.Stdout, includeSchema)
+		err = OutputIngestedGraph(cmd, outFormat, grph, os.Stdout, includeSchema)
 		if err != nil {
 			failErr(err)
 		}

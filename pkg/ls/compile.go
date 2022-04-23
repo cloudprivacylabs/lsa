@@ -364,7 +364,7 @@ func (compiler Compiler) resolveComposition(context *Context, compositeNode grap
 // CompileTerms compiles all node and edge terms of the layer
 func CompileTerms(layer *Layer) error {
 	var err error
-	IterateDescendants(layer.GetSchemaRootNode(), func(node graph.Node, _ []graph.Node) bool {
+	IterateDescendants(layer.GetSchemaRootNode(), func(node graph.Node) bool {
 		// Compile all non-attribute nodes
 		if !IsAttributeNode(node) {
 			if err = GetNodeCompiler(GetNodeID(node)).CompileNode(layer, node); err != nil {
@@ -402,7 +402,7 @@ func CompileTerms(layer *Layer) error {
 			return false
 		}
 		return true
-	}, func(edge graph.Edge, _ []graph.Node) EdgeFuncResult {
+	}, func(edge graph.Edge) EdgeFuncResult {
 		return FollowEdgeResult
 	}, false)
 	return err

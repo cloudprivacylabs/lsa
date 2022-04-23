@@ -66,13 +66,35 @@ func (gb GraphBuilder) GetOptions() GraphBuilderOptions {
 	return *gb.options
 }
 
+func (gb GraphBuilder) GetGraph() graph.Graph {
+	return gb.targetGraph
+}
+
+func determineEdgeLabel(schemaNode graph.Node) string {
+	if x, ok := schemaNode.GetProperty(EdgeLabelTerm); ok {
+		if label := x.(*PropertyValue).AsString(); len(label) > 0 {
+			return label
+		}
+	}
+	if x, ok := schemaNode.GetProperty(AttributeNameTerm); ok {
+		if label := x.(*PropertyValue).AsString(); len(label) > 0 {
+			return label
+		}
+	}
+	return ""
+}
+
 // NewNode creates a new graph node as an instance of SchemaNode. Then
 // it either merges schema properties into the new node, or creates an
 // instanceOf edge to the schema node.
 func (gb GraphBuilder) NewNode(schemaNode graph.Node) graph.Node {
 	types := []string{DocumentNodeTerm}
 	if schemaNode != nil {
-		types = append(types, FilterNonLayerTypes(schemaNode.GetLabels().Slice())...)
+		for l := range schemaNode.GetLabels() {
+			if l != AttributeNodeTerm {
+				types = append(types, l)
+			}
+		}
 	}
 	newNode := gb.targetGraph.NewNode(types, nil)
 	if schemaNode == nil {
@@ -131,6 +153,46 @@ func (gb GraphBuilder) NewNode(schemaNode graph.Node) graph.Node {
 	return newNode
 }
 
+func (gb GraphBuilder) setEntityID(value string, parentDocumentNode, schemaNode graph.Node) error {
+	entityRootNode := GetEntityRootNode(parentDocumentNode)
+	if entityRootNode == nil {
+		return nil
+	}
+	idFieldsProp := GetEntityIDFields(entityRootNode)
+	idFields := idFieldsProp.MustStringSlice()
+	if len(idFields) == 0 {
+		return nil
+	}
+	schemaNodeID := GetNodeID(schemaNode)
+	idIndex := -1
+	for i, idField := range idFields {
+		if schemaNodeID == idField {
+			idIndex = i
+			break
+		}
+	}
+	// Is this an ID field?
+	if idIndex == -1 {
+		return nil
+	}
+
+	// Get existing ID
+	entityID := AsPropertyValue(entityRootNode.GetProperty(EntityIDTerm))
+
+	existingEntityIDSlice := entityID.MustStringSlice()
+	for len(existingEntityIDSlice) <= idIndex {
+		existingEntityIDSlice = append(existingEntityIDSlice, "")
+	}
+	existingEntityIDSlice[idIndex] = value
+
+	if idFieldsProp.IsString() {
+		entityRootNode.SetProperty(EntityIDTerm, StringPropertyValue(value))
+		return nil
+	}
+	entityRootNode.SetProperty(EntityIDTerm, StringSlicePropertyValue(existingEntityIDSlice))
+	return nil
+}
+
 //  ValueAsEdge ingests a value using the following scheme:
 //
 //  input: (name: value)
@@ -141,6 +203,7 @@ func (gb GraphBuilder) NewNode(schemaNode graph.Node) graph.Node {
 func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode graph.Node, value string, types ...string) (graph.Edge, error) {
 	var edgeLabel string
 	if schemaNode != nil {
+		gb.setEntityID(value, parentDocumentNode, schemaNode)
 		if !schemaNode.HasLabel(AttributeTypeValue) {
 			return nil, ErrSchemaValidation{Msg: "A value is expected here"}
 		}
@@ -165,6 +228,7 @@ func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode graph.Node, va
 // and the types
 func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode graph.Node, value string, types ...string) (graph.Edge, graph.Node, error) {
 	if schemaNode != nil {
+		gb.setEntityID(value, parentDocumentNode, schemaNode)
 		if !schemaNode.HasLabel(AttributeTypeValue) {
 			return nil, nil, ErrSchemaValidation{Msg: "A value expected here"}
 		}
@@ -249,7 +313,7 @@ func (gb GraphBuilder) CollectionAsEdge(schemaNode, parentNode graph.Node, typeT
 	if schemaNode == nil && gb.options.OnlySchemaAttributes {
 		return nil, nil
 	}
-	if parentNode != nil {
+	if parentNode == nil {
 		return nil, ErrDataIngestion{Err: fmt.Errorf("Document root object cannot be an edge")}
 	}
 	blankNode := gb.NewNode(schemaNode)
@@ -283,4 +347,135 @@ func (gb GraphBuilder) ObjectAsEdge(schemaNode, parentNode graph.Node, types ...
 
 func (gb GraphBuilder) ArrayAsEdge(schemaNode, parentNode graph.Node, types ...string) (graph.Edge, error) {
 	return gb.CollectionAsEdge(schemaNode, parentNode, AttributeTypeArray, types...)
+}
+
+// Link the given node, or create a link from the parent node.
+//
+// `spec` is the link spec. `docNode` contains the ingested document
+// node that will be linked. It can be nil. `parentNode` is the
+// document node containing the docNode.
+func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, entityInfo map[graph.Node]EntityInfo) error {
+	entityRoot := GetEntityRoot(parentNode)
+	if entityRoot == nil {
+		return ErrCannotResolveLink(*spec)
+	}
+	foreignKeyNodes := make([][]graph.Node, len(spec.FK))
+	IterateDescendants(entityRoot, func(n graph.Node) bool {
+		attrId := AsPropertyValue(n.GetProperty(SchemaNodeIDTerm)).AsString()
+		if len(attrId) == 0 {
+			return true
+		}
+		for i := range spec.FK {
+			if spec.FK[i] == attrId {
+				foreignKeyNodes[i] = append(foreignKeyNodes[i], n)
+			}
+		}
+		return true
+	}, OnlyDocumentNodes, false)
+	// All foreign key elements must have the same number of elements, and no index must be skipped
+	var numKeys int
+	for index := 0; index < len(foreignKeyNodes); index++ {
+		if index == 0 {
+			numKeys = len(foreignKeyNodes[index])
+		} else {
+			if len(foreignKeyNodes[index]) != numKeys {
+				return ErrInvalidForeignKeys{Spec: *spec, Msg: "Inconsistent foreign keys"}
+			}
+		}
+	}
+	if numKeys == 0 {
+		// Nothing to link
+		return nil
+	}
+	if numKeys > 1 && !spec.Multi {
+		return ErrInvalidForeignKeys{Spec: *spec, Msg: "Multiple foreign key values not allowed"}
+	}
+
+	g := parentNode.GetGraph()
+	var nodeProperties map[string]interface{}
+	if spec.IngestAs == IngestAsEdge && docNode != nil {
+		// This document node is removed and a link from the parent to the target is created
+		nodeProperties = CloneProperties(docNode)
+		docNode.DetachAndRemove()
+	}
+
+	// Find remote references
+	for i := 0; i < numKeys; i++ {
+		fk := make([]string, len(foreignKeyNodes))
+		for k, v := range foreignKeyNodes {
+			fk[k], _ = GetRawNodeValue(v[i])
+		}
+		ref, err := spec.FindReference(entityInfo, fk)
+		if err != nil {
+			return err
+		}
+		if len(ref) == 0 {
+			continue
+		}
+		for _, linkRef := range ref {
+			if spec.IngestAs == IngestAsEdge {
+				// Node is already removed. Make an edge
+				if spec.Forward {
+					g.NewEdge(parentNode, linkRef, spec.Label, nodeProperties)
+				} else {
+					g.NewEdge(linkRef, parentNode, spec.Label, nodeProperties)
+				}
+			} else {
+				if docNode == nil {
+					docNode = gb.NewNode(spec.SchemaNode)
+					gb.targetGraph.NewEdge(parentNode, docNode, HasTerm, nil)
+				}
+				// A link from this document node to target is created
+				if spec.Forward {
+					gb.targetGraph.NewEdge(docNode, linkRef, spec.Label, nil)
+				} else {
+					gb.targetGraph.NewEdge(linkRef, docNode, spec.Label, nil)
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+func (gb GraphBuilder) LinkNodes(schema *Layer, entityInfo map[graph.Node]EntityInfo) error {
+	for nodes := schema.Graph.GetNodes(); nodes.Next(); {
+		attrNode := nodes.Node()
+		ls, err := GetLinkSpec(attrNode)
+		if err != nil {
+			return err
+		}
+		if ls == nil {
+			continue
+		}
+		attrId := GetNodeID(attrNode)
+		// Found a link spec. Find corresponding parent nodes in the document
+		parentSchemaNode := GetParentAttribute(attrNode)
+		// Find nodes that are instance of this node
+		parentDocNodes := GetNodesInstanceOf(gb.targetGraph, GetNodeID(parentSchemaNode))
+		for _, parent := range parentDocNodes {
+			// Each parent node has at least one reference node child
+			childFound := false
+			for edges := parent.GetEdges(graph.OutgoingEdge); edges.Next(); {
+				childNode := edges.Edge().GetTo()
+				if !IsDocumentNode(childNode) {
+					continue
+				}
+				if AsPropertyValue(childNode.GetProperty(SchemaNodeIDTerm)).AsString() != attrId {
+					continue
+				}
+				// childNode is an instance of attrNode, which is a link
+				childFound = true
+				if err := gb.LinkNode(ls, childNode, parent, entityInfo); err != nil {
+					return err
+				}
+			}
+			if !childFound {
+				if err := gb.LinkNode(ls, nil, parent, entityInfo); err != nil {
+					return err
+				}
+			}
+		}
+	}
+	return nil
 }

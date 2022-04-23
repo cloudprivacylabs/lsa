@@ -2,7 +2,7 @@
     {
         "name": "Covid bundle",
         "rootId": "http://example.org/root",
-        "sourceGraph":{
+        "sourceLdGraph":{
             "@graph": [
                 {
                     "@id": "http://example.org/root.id",
@@ -1538,13 +1538,13 @@
                     {
                         "@id": "https://www.w3.org/2018/credentials/v1/name",
                         "@type": "ls:Value",
-                        "ls:reshape/valueExpr": "return 'COVID-19 Vaccination Certificate'"
+                        "ls:transform/valueExpr": "return 'COVID-19 Vaccination Certificate'"
                     },
                     {
                         "@id":"https://www.w3.org/2018/credentials/v1/credentialSubject",
                         "@type": ["ls:Object","ls:1"],
-                        "ls:reshape/export": [ "immunization", "patient"],
-                        "ls:reshape/expr": [
+                        "ls:transform/export": [ "immunization", "patient"],
+                        "ls:transform/evaluate": [
                             "match (n:`http://hl7.org/fhir/Immunization`:`https://lschema.org/DocumentNode`) return n as immunization",
                             "match (n:`http://hl7.org/fhir/Patient`:`https://lschema.org/DocumentNode`) return n as patient"
                         ],
@@ -1552,7 +1552,7 @@
                             {
                                 "@id": "https://w3id.org/vaccination#batchNumber",
                                 "@type": "ls:Value",
-                                "ls:reshape/valueExpr": "match (immunization)-[*]->(k {`https://lschema.org/schemaNodeId`:'http://hl7.org/fhir/Immunization#lotNumber'}) return k"
+                                "ls:transform/valueExpr": "match (immunization)-[*]->(k {`https://lschema.org/schemaNodeId`:'http://hl7.org/fhir/Immunization#lotNumber'}) return k"
                             },
                             {
                                 "@id": "https://w3id.org/vaccination#recipient",
@@ -1561,22 +1561,23 @@
                                     {
                                         "@id": "http://schema.org/givenName",
                                         "@type": "ls:Value",
-                                        "ls:reshape/valueExpr": "match (patient)-[*]->(k {`https://lschema.org/schemaNodeId`:'http://hl7.org/fhir/HumanName#given.*'}) return k"
+                                        "ls:transform/valueExpr": "match (patient)-[*]->(k {`https://lschema.org/schemaNodeId`:'http://hl7.org/fhir/HumanName#given.*'}) return k",
+                                        "ls:transform/joinWith": " "
                                     },
                                     {
                                         "@id": "http://schema.org/familyName",
                                         "@type": "ls:Value",
-                                        "ls:reshape/valueExpr": "match (patient)-[*]->(k {`https://lschema.org/schemaNodeId`: 'http://hl7.org/fhir/HumanName#family'}) return k"
+                                        "ls:transform/valueExpr": "match (patient)-[*]->(k {`https://lschema.org/schemaNodeId`: 'http://hl7.org/fhir/HumanName#family'}) return k"
                                     },
                                     {
                                         "@id": "http://schema.org/gender",
                                         "@type": "ls:Value",
-                                        "ls:reshape/valueExpr": "match (patient)-[*]->(k {`https://lschema.org/schemaNodeId`:'http://hl7.org/fhir/Patient#gender'}) return k"
+                                        "ls:transform/valueExpr": "match (patient)-[*]->(k {`https://lschema.org/schemaNodeId`:'http://hl7.org/fhir/Patient#gender'}) return k"
                                     },
                                     {
                                         "@id": "http://schema.org/birthDate",
                                         "@type": "ls:Value",
-                                        "ls:reshape/valueExpr": "match (patient)-[*]->(k {`https://lschema.org/schemaNodeId`:'http://hl7.org/fhir/Patient#birthDate'}) return k"
+                                        "ls:transform/valueExpr": "match (patient)-[*]->(k {`https://lschema.org/schemaNodeId`:'http://hl7.org/fhir/Patient#birthDate'}) return k"
                                     }
                                 ]
                             }
@@ -1585,7 +1586,7 @@
                 ]
             }
         },
-        "expected": {
+        "expectedLd": {
             "@graph": [
                 {
                     "@id": "root",

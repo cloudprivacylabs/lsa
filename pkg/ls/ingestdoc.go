@@ -16,9 +16,46 @@ package ls
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
+
+// IngestAs constants
+const (
+	IngestAsNode     = "node"
+	IngestAsEdge     = "edge"
+	IngestAsProperty = "property"
+)
+
+// NodePath contains the name components identifying a node. For JSON,
+// this is the components of a JSON pointer
+type NodePath []string
+
+// String returns '.' combined path components
+func (n NodePath) String() string {
+	return strings.Join([]string(n), ".")
+}
+
+// Create a deep-copy of the nodepath
+func (n NodePath) Copy() NodePath {
+	ret := make(NodePath, len(n))
+	copy(ret, n)
+	return ret
+}
+
+func (n NodePath) AppendString(s string) NodePath {
+	return append(n, s)
+}
+
+func (n NodePath) AppendInt(i int) NodePath {
+	return append(n, strconv.Itoa(i))
+}
+
+func (n NodePath) Append(i interface{}) NodePath {
+	return n.AppendString(fmt.Sprint(i))
+}
 
 type ParsedDocNode interface {
 	GetSchemaNode() graph.Node
@@ -26,10 +63,14 @@ type ParsedDocNode interface {
 	// Returns value, object, array
 	GetTypeTerm() string
 
+	GetID() string
+
 	GetValue() string
 	GetValueTypes() []string
 
 	GetChildren() []ParsedDocNode
+
+	GetProperties() map[string]interface{}
 }
 
 type ingestCursor struct {
@@ -55,14 +96,44 @@ func Ingest(builder GraphBuilder, root ParsedDocNode) (graph.Node, error) {
 	return ingestWithCursor(builder, cursor)
 }
 
+// GetIngestAs returns "node", "edge", or "property" based on IngestAsTerm
+func GetIngestAs(schemaNode graph.Node) string {
+	if schemaNode == nil {
+		return "node"
+	}
+	p, ok := schemaNode.GetProperty(IngestAsTerm)
+	if !ok {
+		return "node"
+	}
+	s := AsPropertyValue(p, ok).AsString()
+	if s == "edge" || s == "property" {
+		return s
+	}
+	return "node"
+}
+
 func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, error) {
 	root := cursor.getInput()
 	schemaNode := root.GetSchemaNode()
 	typeTerm := root.GetTypeTerm()
+	setID := func(node graph.Node) {
+		if node != nil {
+			if id := root.GetID(); len(id) > 0 {
+				SetNodeID(node, id)
+			}
+		}
+	}
+	setProp := func(node graph.Node) {
+		for k, v := range root.GetProperties() {
+			node.SetProperty(k, v)
+		}
+	}
 	if typeTerm == AttributeTypeValue {
 		switch GetIngestAs(schemaNode) {
 		case "node":
 			_, node, err := builder.ValueAsNode(schemaNode, cursor.getOutput(), root.GetValue(), root.GetValueTypes()...)
+			setID(node)
+			setProp(node)
 			return node, err
 		case "edge":
 			edge, err := builder.ValueAsEdge(schemaNode, cursor.getOutput(), root.GetValue(), root.GetValueTypes()...)
@@ -72,6 +143,8 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, er
 			if edge == nil {
 				return nil, nil
 			}
+			setID(edge.GetTo())
+			setProp(edge.GetTo())
 			return edge.GetTo(), nil
 		case "property":
 			err := builder.ValueAsProperty(schemaNode, cursor.output, root.GetValue())
@@ -89,12 +162,16 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, er
 		if err != nil {
 			return nil, err
 		}
+		setID(node)
+		setProp(node)
 		parentNode = node
 	case "edge":
 		edge, err := builder.CollectionAsEdge(schemaNode, cursor.getOutput(), typeTerm, root.GetValueTypes()...)
 		if err != nil {
 			return nil, err
 		}
+		setID(edge.GetTo())
+		setProp(edge.GetTo())
 		parentNode = edge.GetTo()
 	}
 	if parentNode != nil {
@@ -103,7 +180,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, er
 		newCursor.output = append(newCursor.output, parentNode)
 		for index, child := range root.GetChildren() {
 			newCursor.input[len(newCursor.input)-1] = child
-			node, err := ingestWithCursor(builder, cursor)
+			node, err := ingestWithCursor(builder, newCursor)
 			if err != nil {
 				return nil, err
 			}
@@ -111,6 +188,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, er
 				node.SetProperty(AttributeIndexTerm, IntPropertyValue(index))
 			}
 		}
+		return parentNode, nil
 	}
 	return nil, ErrInvalidSchema(fmt.Sprintf("Invalid input node type: %s", typeTerm))
 }

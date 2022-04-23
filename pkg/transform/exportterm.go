@@ -12,30 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package json
+package transform
 
 import (
-	"bytes"
-	"io"
-
-	"github.com/bserdar/jsonom"
-
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
-func IngestBytes(ctx *ls.Context, baseID string, input []byte, parser Parser, builder ls.GraphBuilder) (graph.Node, error) {
-	return IngestStream(ctx, baseID, bytes.NewReader(input), parser, builder)
+var ExportTerm = ls.NewTerm(TRANSFORM, "export", false, false, ls.OverrideComposition, ExportTermSemantics)
+
+type exportTermSemantics struct{}
+
+var ExportTermSemantics = exportTermSemantics{}
+
+func (exportTermSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
+	if value == nil {
+		return nil
+	}
+	target.SetProperty("$compiled_"+ExportTerm, value.MustStringSlice())
+	return nil
 }
 
-func IngestStream(ctx *ls.Context, baseID string, input io.Reader, parser Parser, builder ls.GraphBuilder) (graph.Node, error) {
-	node, err := jsonom.UnmarshalReader(input, ctx.GetInterner())
-	if err != nil {
-		return nil, err
+// GetExportVars returns the contents of the compiled export term
+func (exportTermSemantics) GetExportVars(node graph.Node) []string {
+	v, _ := node.GetProperty("$compiled_" + ExportTerm)
+	if v == nil {
+		return nil
 	}
-	pd, err := parser.ParseDoc(ctx, baseID, node)
-	if err != nil {
-		return nil, err
-	}
-	return ls.Ingest(builder, pd)
+	return v.([]string)
 }

@@ -32,16 +32,21 @@ type ParsedDocNode struct {
 	children   []ls.ParsedDocNode
 	name       string
 	index      int
+	id         string
 }
 
-func (i ParsedDocNode) GetSchemaNode() graph.Node       { return i.schemaNode }
-func (i ParsedDocNode) GetTypeTerm() string             { return i.typeTerm }
-func (i ParsedDocNode) GetValue() string                { return i.value }
-func (i ParsedDocNode) GetValueTypes() []string         { return i.valueTypes }
-func (i ParsedDocNode) GetChildren() []ls.ParsedDocNode { return i.children }
+func (i ParsedDocNode) GetSchemaNode() graph.Node             { return i.schemaNode }
+func (i ParsedDocNode) GetTypeTerm() string                   { return i.typeTerm }
+func (i ParsedDocNode) GetValue() string                      { return i.value }
+func (i ParsedDocNode) GetValueTypes() []string               { return i.valueTypes }
+func (i ParsedDocNode) GetChildren() []ls.ParsedDocNode       { return i.children }
+func (i ParsedDocNode) GetID() string                         { return i.id }
+func (i ParsedDocNode) GetProperties() map[string]interface{} { return nil }
 
 type Parser struct {
-	Options ls.GraphBuilderOptions
+	OnlySchemaAttributes bool
+	IngestNullValues     bool
+	SchemaNode           graph.Node
 }
 
 type parserContext struct {
@@ -50,11 +55,11 @@ type parserContext struct {
 	schemaNode graph.Node
 }
 
-func (ing Parser) ParseDoc(context *ls.Context, baseID string, input jsonom.Node, schemaNode graph.Node) (*ParsedDocNode, error) {
+func (ing Parser) ParseDoc(context *ls.Context, baseID string, input jsonom.Node) (*ParsedDocNode, error) {
 	ctx := parserContext{
 		context:    context,
 		path:       ls.NodePath{},
-		schemaNode: schemaNode,
+		schemaNode: ing.SchemaNode,
 	}
 	if len(baseID) > 0 {
 		ctx.path = append(ctx.path, baseID)
@@ -63,7 +68,7 @@ func (ing Parser) ParseDoc(context *ls.Context, baseID string, input jsonom.Node
 }
 
 func (ing Parser) parseDoc(ctx parserContext, input jsonom.Node) (*ParsedDocNode, error) {
-	if ctx.schemaNode == nil && ing.Options.OnlySchemaAttributes {
+	if ctx.schemaNode == nil && ing.OnlySchemaAttributes {
 		return nil, nil
 	}
 	if ctx.schemaNode != nil && ctx.schemaNode.HasLabel(ls.AttributeTypePolymorphic) {
@@ -95,6 +100,7 @@ func (ing Parser) parseObject(ctx parserContext, input *jsonom.Object) (*ParsedD
 		schemaNode: ctx.schemaNode,
 		typeTerm:   ls.AttributeTypeObject,
 		children:   make([]ls.ParsedDocNode, 0, input.Len()),
+		id:         ctx.path.String(),
 	}
 
 	processChildren := func(f func(jsonom.Node) bool) error {
@@ -114,7 +120,7 @@ func (ing Parser) parseObject(ctx parserContext, input *jsonom.Object) (*ParsedD
 			}
 
 			newCtx := ctx
-			newCtx.path.AppendString(keyValue.Key())
+			newCtx.path = newCtx.path.AppendString(keyValue.Key())
 			newCtx.schemaNode = schNode
 
 			childNode, err := ing.parseDoc(newCtx, keyValue.Value())
@@ -123,6 +129,7 @@ func (ing Parser) parseObject(ctx parserContext, input *jsonom.Object) (*ParsedD
 			}
 			if childNode != nil {
 				childNode.name = keyValue.Key()
+				ret.children = append(ret.children, childNode)
 			}
 		}
 		return nil
@@ -155,13 +162,14 @@ func (ing Parser) parseArray(ctx parserContext, input *jsonom.Array) (*ParsedDoc
 		schemaNode: ctx.schemaNode,
 		typeTerm:   ls.AttributeTypeArray,
 		children:   make([]ls.ParsedDocNode, 0, input.Len()),
+		id:         ctx.path.String(),
 	}
 	elementsNode := ls.GetArrayElementNode(ctx.schemaNode)
 
 	for i := 0; i < input.Len(); i++ {
 		child := input.N(i)
 		newCtx := ctx
-		newCtx.path.AppendInt(i)
+		newCtx.path = newCtx.path.AppendInt(i)
 		newCtx.schemaNode = elementsNode
 
 		childNode, err := ing.parseDoc(newCtx, child)
@@ -170,6 +178,7 @@ func (ing Parser) parseArray(ctx parserContext, input *jsonom.Array) (*ParsedDoc
 		}
 		if childNode != nil {
 			childNode.index = i
+			ret.children = append(ret.children, childNode)
 		}
 	}
 	return &ret, nil
@@ -202,6 +211,11 @@ func (ing Parser) parsePolymorphic(ctx parserContext, input jsonom.Node) (*Parse
 }
 
 func (ing Parser) parseValue(ctx parserContext, input *jsonom.Value) (*ParsedDocNode, error) {
+	if input.Value() == nil {
+		if !ing.IngestNullValues {
+			return nil, nil
+		}
+	}
 	if ctx.schemaNode != nil {
 		if !ctx.schemaNode.HasLabel(ls.AttributeTypeValue) {
 			return nil, ls.ErrSchemaValidation{Msg: fmt.Sprintf("A value is expected here but found %s", ctx.schemaNode.GetLabels()), Path: ctx.path.Copy()}
@@ -237,6 +251,7 @@ func (ing Parser) parseValue(ctx parserContext, input *jsonom.Value) (*ParsedDoc
 		typeTerm:   ls.AttributeTypeValue,
 		value:      value,
 		valueTypes: []string{typ},
+		id:         ctx.path.String(),
 	}
 	return &ret, nil
 }

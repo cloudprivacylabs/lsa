@@ -39,15 +39,15 @@ func (validator EnumValidator) validateValue(value *string, options []string) er
 	return ls.ErrValidation{Validator: "EnumTerm", Msg: "None of the options match", Value: fmt.Sprint(value)}
 }
 
-func (validator EnumValidator) ValidateValue(value string, schemaNode graph.Node) error {
+func (validator EnumValidator) ValidateValue(value *string, schemaNode graph.Node) error {
 	options := ls.AsPropertyValue(schemaNode.GetProperty(EnumTerm))
 	if options == nil {
 		return ls.ErrInvalidValidator{Validator: EnumTerm, Msg: "Invalid enum options"}
 	}
 	if options.IsString() {
-		return validator.validateValue(&value, []string{options.AsString()})
+		return validator.validateValue(value, []string{options.AsString()})
 	}
-	return validator.validateValue(&value, options.AsStringSlice())
+	return validator.validateValue(value, options.AsStringSlice())
 }
 
 // ValidateNode validates the node value if it is non-nil
@@ -57,5 +57,5 @@ func (validator EnumValidator) ValidateNode(docNode, schemaNode graph.Node) erro
 	}
 
 	value, _ := ls.GetRawNodeValue(docNode)
-	return validator.ValidateValue(value, schemaNode)
+	return validator.ValidateValue(&value, schemaNode)
 }

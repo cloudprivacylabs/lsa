@@ -28,16 +28,17 @@ func TestBasicVS(t *testing.T) {
 "valueType": "test",
 "layer" :{
   "@type": "Object",
- "@id": "http://schroot",
+ "@id": "schroot",
   "attributes": {
     "src": {
       "@type": "Value",
-      "attributeName": "src"
+      "attributeName": "src",
+      "https://lschema.org/vs/context":"schroot",
+      "https://lschema.org/vs/resultValues": "tgt"
     },
     "tgt": {
       "@type": "Value",
-      "attributeName": "tgt",
-      "https://lschema.org/vs/source":"src"
+      "attributeName": "tgt"
     }
   }
 }
@@ -53,42 +54,36 @@ func TestBasicVS(t *testing.T) {
 		return
 	}
 
-	ingester := Ingester{
-		Schema:           layer,
+	builder := NewGraphBuilder(nil, GraphBuilderOptions{
 		EmbedSchemaNodes: true,
-		Graph:            NewDocumentGraph(),
-		ValuesetFunc: func(req ValuesetLookupRequest) (ValuesetLookupResponse, error) {
-			ret := ValuesetLookupResponse{
-				KeyValues: map[string]string{"": "X"},
-			}
-			return ret, nil
-		},
+	})
+
+	vsFunc := func(_ *Context, req ValuesetLookupRequest) (ValuesetLookupResponse, error) {
+		ret := ValuesetLookupResponse{
+			KeyValues: map[string]string{"": "X"},
+		}
+		return ret, nil
+	}
+	root := builder.NewNode(layer.GetAttributeByID("schroot"))
+	builder.ValueAsNode(layer.GetAttributeByID("src"), root, "a")
+	// Graph must have 2 nodes
+	if builder.GetGraph().NumNodes() != 2 {
+		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
 	}
 
-	ctx := DefaultContext()
-	ictx := ingester.Start(ctx, "http://base")
-	_, _, rootNode, err := ingester.Object(ictx)
+	processor := NewValuesetProcessor(layer, vsFunc)
+	DefaultLogLevel = LogLevelDebug
+	err = processor.ProcessGraph(DefaultContext(), builder)
 	if err != nil {
 		t.Error(err)
-		return
-	}
-	newLevel := ictx.NewLevel(rootNode)
-	schNode := layer.GetAttributeByID("src")
-	ingester.Value(newLevel.New("src", schNode), "a")
-	// Graph must have 2 nodes
-	if ingester.Graph.NumNodes() != 2 {
-		t.Errorf("NumNodes: %d", ingester.Graph.NumNodes())
-	}
-	if err := ingester.Finish(ictx, rootNode); err != nil {
-		t.Error(err)
-		return
-	}
-	// Graph must have 3 nodes
-	if ingester.Graph.NumNodes() != 3 {
-		t.Errorf("NumNodes: %d", ingester.Graph.NumNodes())
 	}
 
-	nodes := FindChildInstanceOf(rootNode, "tgt")
+	// Graph must have 3 nodes
+	if builder.GetGraph().NumNodes() != 3 {
+		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
+	}
+
+	nodes := FindChildInstanceOf(root, "tgt")
 	if len(nodes) != 1 {
 		t.Errorf("Child nodes: %v", nodes)
 	}
@@ -103,11 +98,16 @@ func TestStructuredVS(t *testing.T) {
 "valueType": "test",
 "layer" :{
   "@type": "Object",
- "@id": "http://schroot",
+ "@id": "schroot",
   "attributes": {
     "src": {
       "@type": "Object",
       "attributeName": "src",
+      "https://lschema.org/vs/context":"schroot",
+      "https://lschema.org/vs/requestKeys": ["c","s"],
+      "https://lschema.org/vs/requestValues": ["code","system"],
+      "https://lschema.org/vs/resultKeys": ["tc","ts"],
+      "https://lschema.org/vs/resultValues": ["tgtcode","tgtsystem"],
       "attributes": {
         "code": {
           "@type": "Value",
@@ -119,24 +119,13 @@ func TestStructuredVS(t *testing.T) {
         }
       }
     },
-    "tgt": {
-      "@type": "Object",
-      "attributeName": "tgt",
-      "https://lschema.org/vs/source":"src",
-      "https://lschema.org/vs/requestKeys": ["c","s"],
-      "https://lschema.org/vs/requestValues": ["code","system"],
-      "https://lschema.org/vs/resultKeys": ["tc","ts"],
-      "https://lschema.org/vs/resultValues": ["tgtcode","tgtsystem"],
-      "attributes": {
-        "tgtcode": {
-          "@type": "Value",
-          "attributeName": "tgtcode"
-        },
-        "tgtsystem": {
-          "@type": "Value",
-          "attributeName": "tgtsystem"
-        }
-      }
+    "tgtcode": {
+       "@type": "Value",
+       "attributeName": "tgtcode"
+    },
+    "tgtsystem": {
+      "@type": "Value",
+      "attributeName": "tgtsystem"
     }
   }
 }
@@ -152,62 +141,48 @@ func TestStructuredVS(t *testing.T) {
 		return
 	}
 
-	ingester := Ingester{
-		Schema:           layer,
+	builder := NewGraphBuilder(nil, GraphBuilderOptions{
 		EmbedSchemaNodes: true,
-		Graph:            NewDocumentGraph(),
-		ValuesetFunc: func(req ValuesetLookupRequest) (ValuesetLookupResponse, error) {
-			ret := ValuesetLookupResponse{}
-			if req.KeyValues["c"] == "a" && req.KeyValues["s"] == "b" {
-				ret.KeyValues = map[string]string{"tc": "aa", "ts": "bb"}
-			}
-			return ret, nil
-		},
+	})
+	vsFunc := func(_ *Context, req ValuesetLookupRequest) (ValuesetLookupResponse, error) {
+		ret := ValuesetLookupResponse{}
+		if req.KeyValues["c"] == "a" && req.KeyValues["s"] == "b" {
+			ret.KeyValues = map[string]string{"tc": "aa", "ts": "bb"}
+		}
+		return ret, nil
 	}
 
-	ctx := DefaultContext()
-	ictx := ingester.Start(ctx, "http://base")
-	_, _, rootNode, err := ingester.Object(ictx)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	newLevel := ictx.NewLevel(rootNode)
-	schNode := layer.GetAttributeByID("src")
+	rootNode := builder.NewNode(layer.GetAttributeByID("schroot"))
+	srcNode := layer.GetAttributeByID("src")
 	codeNode := layer.GetAttributeByID("code")
 	systemNode := layer.GetAttributeByID("system")
 
-	{
-		ctx := ictx.New("src", schNode)
-		_, _, srcNode, _ := ingester.Object(newLevel.New("src", schNode))
-		ctx = ctx.NewLevel(srcNode)
-		ingester.Value(ctx.New("code", codeNode), "a")
-		ingester.Value(ctx.New("system", systemNode), "b")
-	}
+	_, src, _ := builder.ObjectAsNode(srcNode, rootNode)
+	builder.ValueAsNode(codeNode, src, "a")
+	builder.ValueAsNode(systemNode, src, "b")
 
 	// Graph must have 4 nodes
-	if ingester.Graph.NumNodes() != 4 {
-		t.Errorf("NumNodes: %d", ingester.Graph.NumNodes())
+	if builder.GetGraph().NumNodes() != 4 {
+		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
 	}
-	if err := ingester.Finish(ictx, rootNode); err != nil {
+	processor := NewValuesetProcessor(layer, vsFunc)
+	DefaultLogLevel = LogLevelDebug
+	ctx := DefaultContext()
+	err = processor.ProcessGraph(ctx, builder)
+	if err != nil {
 		t.Error(err)
-		return
 	}
 
-	// Graph must have 7 nodes
-	if ingester.Graph.NumNodes() != 7 {
-		t.Errorf("NumNodes: %d", ingester.Graph.NumNodes())
+	// Graph must have 6 nodes
+	if builder.GetGraph().NumNodes() != 6 {
+		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
 	}
 
-	nodes := FindChildInstanceOf(rootNode, "tgt")
-	if len(nodes) != 1 {
-		t.Errorf("Child nodes: %v", nodes)
-	}
-	tgtCodeNodes := FindChildInstanceOf(nodes[0], "tgtcode")
+	tgtCodeNodes := FindChildInstanceOf(rootNode, "tgtcode")
 	if len(tgtCodeNodes) != 1 {
 		t.Errorf("No tgtcode")
 	}
-	tgtSystemNodes := FindChildInstanceOf(nodes[0], "tgtsystem")
+	tgtSystemNodes := FindChildInstanceOf(rootNode, "tgtsystem")
 	if len(tgtSystemNodes) != 1 {
 		t.Errorf("No tgtsystem")
 	}
