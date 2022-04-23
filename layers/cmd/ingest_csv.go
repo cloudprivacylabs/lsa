@@ -52,8 +52,6 @@ var ingestCSVCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		valuesets := &Valuesets{}
-		loadValuesetsCmd(cmd, valuesets)
 
 		reader := csv.NewReader(f)
 		startRow, err := cmd.Flags().GetInt("startRow")
@@ -82,15 +80,17 @@ var ingestCSVCmd = &cobra.Command{
 		}
 		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
 		onlySchemaAttributes, _ := cmd.Flags().GetBool("onlySchemaAttributes")
-		ingester := csvingest.Ingester{
-			Ingester: ls.Ingester{
-				Schema:               layer,
-				EmbedSchemaNodes:     embedSchemaNodes,
-				OnlySchemaAttributes: onlySchemaAttributes,
-				ValuesetFunc:         valuesets.Lookup,
-				Graph:                grph,
-			},
+
+		parser := csvingest.Parser{
+			OnlySchemaAttributes: onlySchemaAttributes,
+			SchemaNode:           layer.GetSchemaRootNode(),
 		}
+
+		builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
+			EmbedSchemaNodes:     embedSchemaNodes,
+			OnlySchemaAttributes: onlySchemaAttributes,
+		})
+
 		idTemplate, _ := cmd.Flags().GetString("id")
 		idTmp, err := template.New("id").Parse(idTemplate)
 		if err != nil {
@@ -105,7 +105,7 @@ var ingestCSVCmd = &cobra.Command{
 				failErr(err)
 			}
 			if headerRow == row {
-				ingester.ColumnNames = rowData
+				parser.ColumnNames = rowData
 			} else if row >= startRow {
 				if endRow != -1 && row > endRow {
 					break
@@ -119,7 +119,12 @@ var ingestCSVCmd = &cobra.Command{
 				if err := idTmp.Execute(&buf, templateData); err != nil {
 					failErr(err)
 				}
-				_, err := ingester.Ingest(ctx, rowData, strings.TrimSpace(buf.String()))
+
+				parsed, err := parser.ParseDoc(ctx, strings.TrimSpace(buf.String()), rowData)
+				if err != nil {
+					failErr(err)
+				}
+				_, err = ls.Ingest(builder, parsed)
 				if err != nil {
 					failErr(err)
 				}
@@ -127,7 +132,7 @@ var ingestCSVCmd = &cobra.Command{
 		}
 		outFormat, _ := cmd.Flags().GetString("output")
 		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
-		err = OutputIngestedGraph(cmd, outFormat, ingester.Graph, os.Stdout, includeSchema)
+		err = OutputIngestedGraph(cmd, outFormat, grph, os.Stdout, includeSchema)
 		if err != nil {
 			failErr(err)
 		}

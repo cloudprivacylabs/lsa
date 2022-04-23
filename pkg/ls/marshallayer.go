@@ -111,10 +111,6 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 		}
 	}
 
-	if err := unmarshalAnnotations(target, rootNode, inputNodes, interner); err != nil {
-		return nil, err
-	}
-
 	if len(target.GetLayerType()) == 0 {
 		return nil, ErrNotALayer
 	}
@@ -127,10 +123,11 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 	}
 	// Deal with annotations
 	for _, node := range inputNodes {
-		if node.GraphNode != nil {
-			if !node.GraphNode.GetLabels().Has(AttributeNodeTerm) {
-				continue
-			}
+		if node.GraphNode == nil {
+			continue
+		}
+		if !node.GraphNode.GetLabels().Has(AttributeNodeTerm) && node != rootNode {
+			continue
 		}
 		// This is an attribute node
 		if err := unmarshalAnnotations(target, node, inputNodes, interner); err != nil {

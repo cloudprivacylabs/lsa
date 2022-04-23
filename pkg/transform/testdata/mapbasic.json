@@ -1,7 +1,7 @@
 [
     {
         "name": "Basic",
-        "term": "omop",
+        "rootId": "1",
         "target": {
             "@context": ["../../schemas/ls.json","../../schemas/transform.json"],
             "@id": "http://test",
@@ -9,14 +9,17 @@
             "layer": {
                 "@type": "Object",
                 "@id": "urn:root",
+                "mapProperty":"omop",
                 "attributeList": [
                     {
                         "@id": "urn:target:1",
-                        "@type": "Value"
+                        "@type": "Value",
+                        "mapProperty":"omop"
                     },
                     {
                         "@id": "urn:target:2",
-                        "@type": "Value"
+                        "@type": "Value",
+                        "mapProperty":"omop"
                     }
                 ]
             }
@@ -107,7 +110,7 @@
     },
     {
         "name": "Identity mapping",
-        "term": "https://lschema.org/schemaNodeId",
+        "rootId": "1",
         "target": {
             "@context": ["../../schemas/ls.json","../../schemas/transform.json"],
             "@id": "http://test",
@@ -118,11 +121,13 @@
                 "attributeList": [
                     {
                         "@id": "urn:target:1",
-                        "@type": "Value"
+                        "@type": "Value",
+                        "mapProperty": "https://lschema.org/schemaNodeId"
                     },
                     {
                         "@id": "urn:target:2",
-                        "@type": "Value"
+                        "@type": "Value",
+                        "mapProperty": "https://lschema.org/schemaNodeId"
                     }
                 ]
             }

@@ -48,15 +48,16 @@ var reshapeCmd = &cobra.Command{
 		layer := loadSchemaCmd(ctx, cmd)
 
 		reshaper := transform.Reshaper{}
-		reshaper.Schema = layer
-		reshaper.EmbedSchemaNodes = true
-		reshaper.Graph = ls.NewDocumentGraph()
+		reshaper.TargetSchema = layer
+		reshaper.Builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+			EmbedSchemaNodes: true,
+		})
 		err = reshaper.Reshape(ctx, g)
 		if err != nil {
 			failErr(err)
 		}
 		outFormat, _ := cmd.Flags().GetString("output")
-		err = OutputIngestedGraph(cmd, outFormat, reshaper.Graph, os.Stdout, false)
+		err = OutputIngestedGraph(cmd, outFormat, reshaper.Builder.GetGraph(), os.Stdout, false)
 		if err != nil {
 			failErr(err)
 		}

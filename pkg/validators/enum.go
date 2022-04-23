@@ -2,13 +2,20 @@ package validators
 
 import (
 	"fmt"
-	"reflect"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // EnumTerm is used for enumeration validator
+//
+// Enumeration is declared as a string slice:
+//
+//  {
+//     @id: attrId,
+//     @type: Value,
+//     validation/enumeration: ["a","b","c"]
+//  }
 var EnumTerm = ls.NewTerm(ls.LS, "validation/enumeration", false, false, ls.OverrideComposition, struct {
 	EnumValidator
 }{
@@ -18,38 +25,37 @@ var EnumTerm = ls.NewTerm(ls.LS, "validation/enumeration", false, false, ls.Over
 // EnumValidator checks if a value is equal to one of the given options.
 type EnumValidator struct{}
 
-// ValidateValue checks if the value is the same as one of the
+// validateValue checks if the value is the same as one of the
 // options.
-func (validator EnumValidator) ValidateValue(value interface{}, options []interface{}) error {
-	// Check for trivial match
-	for _, option := range options {
-		if option == value {
-			return nil
-		}
-	}
-	for _, option := range options {
-		if reflect.DeepEqual(option, value) {
-			return nil
+func (validator EnumValidator) validateValue(value *string, options []string) error {
+	if value != nil {
+		// Check for trivial match
+		for _, option := range options {
+			if option == *value {
+				return nil
+			}
 		}
 	}
 	return ls.ErrValidation{Validator: "EnumTerm", Msg: "None of the options match", Value: fmt.Sprint(value)}
 }
 
-// Validate validates the node value if it is non-nil
-func (validator EnumValidator) Validate(docNode, schemaNode graph.Node) error {
-	if docNode == nil {
-		return nil
-	}
-	value, ok := ls.GetRawNodeValue(docNode)
-	if !ok {
-		return nil
-	}
+func (validator EnumValidator) ValidateValue(value *string, schemaNode graph.Node) error {
 	options := ls.AsPropertyValue(schemaNode.GetProperty(EnumTerm))
 	if options == nil {
 		return ls.ErrInvalidValidator{Validator: EnumTerm, Msg: "Invalid enum options"}
 	}
 	if options.IsString() {
-		return validator.ValidateValue(value, []interface{}{options.AsString()})
+		return validator.validateValue(value, []string{options.AsString()})
 	}
-	return validator.ValidateValue(value, options.AsInterfaceSlice())
+	return validator.validateValue(value, options.AsStringSlice())
+}
+
+// ValidateNode validates the node value if it is non-nil
+func (validator EnumValidator) ValidateNode(docNode, schemaNode graph.Node) error {
+	if docNode == nil {
+		return nil
+	}
+
+	value, _ := ls.GetRawNodeValue(docNode)
+	return validator.ValidateValue(&value, schemaNode)
 }

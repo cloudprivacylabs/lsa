@@ -39,8 +39,6 @@ var ingestJSONCmd = &cobra.Command{
 		initialGraph, _ := cmd.Flags().GetString("initialGraph")
 		ctx := getContext()
 		layer := loadSchemaCmd(ctx, cmd)
-		valuesets := &Valuesets{}
-		loadValuesetsCmd(cmd, valuesets)
 		var input io.Reader
 		var err error
 		if layer != nil {
@@ -67,26 +65,26 @@ var ingestJSONCmd = &cobra.Command{
 		} else {
 			grph = ls.NewDocumentGraph()
 		}
-		onlySchemaAttributes, _ := cmd.Flags().GetBool("onlySchemaAttributes")
-		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
-		ingester := jsoningest.Ingester{
-			Ingester: ls.Ingester{
-				Schema:               layer,
-				EmbedSchemaNodes:     embedSchemaNodes,
-				OnlySchemaAttributes: onlySchemaAttributes,
-				ValuesetFunc:         valuesets.Lookup,
-				Graph:                grph,
-			},
-		}
 
+		parser := jsoningest.Parser{}
+
+		parser.OnlySchemaAttributes, _ = cmd.Flags().GetBool("onlySchemaAttributes")
+		parser.SchemaNode = layer.GetSchemaRootNode()
+		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
+
+		builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
+			EmbedSchemaNodes:     embedSchemaNodes,
+			OnlySchemaAttributes: parser.OnlySchemaAttributes,
+		})
 		baseID, _ := cmd.Flags().GetString("id")
-		_, err = jsoningest.IngestStream(ctx, &ingester, baseID, input)
+		_, err = jsoningest.IngestStream(ctx, baseID, input, parser, builder)
+
 		if err != nil {
 			failErr(err)
 		}
 		outFormat, _ := cmd.Flags().GetString("output")
 		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
-		err = OutputIngestedGraph(cmd, outFormat, ingester.Graph, os.Stdout, includeSchema)
+		err = OutputIngestedGraph(cmd, outFormat, grph, os.Stdout, includeSchema)
 		if err != nil {
 			failErr(err)
 		}

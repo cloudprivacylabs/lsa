@@ -52,31 +52,18 @@ func TestBasicLink(t *testing.T) {
 		return
 	}
 
-	ingester := Ingester{
-		Schema:           layer0,
+	builder := NewGraphBuilder(nil, GraphBuilderOptions{
 		EmbedSchemaNodes: true,
-		Graph:            NewDocumentGraph(),
-	}
+	})
+	_, root1, _ := builder.ObjectAsNode(layer0.GetSchemaRootNode(), nil)
+	builder.ValueAsNode(layer0.GetAttributeByID("https://idField"), root1, "123")
 
-	ctx := ingester.Start(DefaultContext(), "root")
+	_, root2, _ := builder.ObjectAsNode(layer2.GetSchemaRootNode(), nil)
+	builder.ValueAsNode(layer2.GetAttributeByID("idField"), root2, "456")
+	builder.ValueAsNode(layer2.GetAttributeByID("https://rootid"), root2, "123")
 
-	_, _, root1, _ := ingester.Object(ctx)
-	{
-		newCtx := ctx.NewLevel(root1)
-		ingester.Value(newCtx.New("id", layer0.GetAttributeByID("https://idField")), "123")
-	}
-
-	ingester.Schema = layer2
-	ctx = ingester.Start(DefaultContext(), "2")
-
-	_, _, root2, _ := ingester.Object(ctx)
-	{
-		newCtx := ctx.NewLevel(root2)
-		ingester.Value(newCtx.New("id", layer2.GetAttributeByID("idField")), "456")
-		ingester.Value(newCtx.New("fk", layer2.GetAttributeByID("https://rootid")), "123")
-	}
-	ingester.Finish(ctx, root1)
-
+	entityInfo := GetEntityRootNodes(builder.GetGraph())
+	builder.LinkNodes(layer2, entityInfo)
 	// There must be an edge from root1 to root2
 	found := false
 	for edges := root1.GetEdges(graph.OutgoingEdge); edges.Next(); {

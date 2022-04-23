@@ -83,22 +83,20 @@ func TestIngestFlat(t *testing.T) {
 		t.Error(err)
 	}
 
-	ingester := Ingester{
-		Ingester: ls.Ingester{
-			Schema:               schema,
-			OnlySchemaAttributes: false,
-			IngestEmptyValues:    true,
-			Graph:                ls.NewDocumentGraph(),
-		},
+	bldr := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		OnlySchemaAttributes: false,
+	})
+	parser := Parser{
+		SchemaNode: schema.GetSchemaRootNode(),
 	}
-	_, err = IngestBytes(ls.DefaultContext(), &ingester, "http://base", []byte(inputStr))
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
 	if err != nil {
 		t.Error(err)
 	}
 
 	findNodes := func(nodeId string) []graph.Node {
 		nodes := []graph.Node{}
-		for nx := ingester.Graph.GetNodes(); nx.Next(); {
+		for nx := bldr.GetGraph().GetNodes(); nx.Next(); {
 			node := nx.Node()
 			if ls.GetNodeID(node) == nodeId {
 				nodes = append(nodes, node)
@@ -122,18 +120,21 @@ func TestIngestFlat(t *testing.T) {
 	checkNodeValue("http://base.field1", "value1")
 	checkNodeValue("http://base.field2", "2")
 	checkNodeValue("http://base.field3", "true")
-	checkNodeValue("http://base.field4", "")
 	checkNodeValue("http://base.field5", "extra")
 
-	ingester = Ingester{
-		Ingester: ls.Ingester{
-			Schema:               schema,
-			OnlySchemaAttributes: true,
-			IngestEmptyValues:    true,
-			Graph:                ls.NewDocumentGraph(),
-		},
+	bldr = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		OnlySchemaAttributes: true,
+	})
+	parser = Parser{
+		SchemaNode: schema.GetSchemaRootNode(),
 	}
-	_, err = IngestBytes(ls.DefaultContext(), &ingester, "http://base", []byte(inputStr))
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
+	if err != nil {
+		t.Error(err)
+	}
+
+	parser.IngestNullValues = true
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
 	if err != nil {
 		t.Error(err)
 	}
@@ -209,23 +210,20 @@ func TestIngestPoly(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
-	ingester := Ingester{
-		Ingester: ls.Ingester{
-			Schema:               schema,
-			OnlySchemaAttributes: false,
-			IngestEmptyValues:    true,
-			Graph:                ls.NewDocumentGraph(),
-		},
+	bldr := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		OnlySchemaAttributes: false,
+	})
+	parser := Parser{
+		SchemaNode: schema.GetSchemaRootNode(),
 	}
-	_, err = IngestBytes(ls.DefaultContext(), &ingester, "http://base", []byte(inputStr))
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
 	if err != nil {
 		t.Error(err)
 	}
 
 	findNodes := func(nodeId string) []graph.Node {
 		nodes := []graph.Node{}
-		for nx := ingester.Graph.GetNodes(); nx.Next(); {
+		for nx := bldr.GetGraph().GetNodes(); nx.Next(); {
 			node := nx.Node()
 			if ls.GetNodeID(node) == nodeId {
 				nodes = append(nodes, node)
@@ -274,22 +272,20 @@ func TestIngestRootAnnotation(t *testing.T) {
 		return
 	}
 
-	ingester := Ingester{
-		Ingester: ls.Ingester{
-			Schema:               layers[0].Layer,
-			EmbedSchemaNodes:     true,
-			OnlySchemaAttributes: true,
-			Graph:                ls.NewDocumentGraph(),
-		},
+	bldr := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		OnlySchemaAttributes: false,
+	})
+	parser := Parser{
+		SchemaNode: layers[0].Layer.GetSchemaRootNode(),
 	}
-	_, err = IngestBytes(ls.DefaultContext(), &ingester, "http://base", []byte(inputStr))
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
 	if err != nil {
 		t.Error(err)
 	}
 
 	findNodes := func(nodeId string) []graph.Node {
 		nodes := []graph.Node{}
-		for nx := ingester.Graph.GetNodes(); nx.Next(); {
+		for nx := bldr.GetGraph().GetNodes(); nx.Next(); {
 			node := nx.Node()
 			t.Logf("%s", ls.GetNodeID(node))
 			if ls.GetNodeID(node) == nodeId {

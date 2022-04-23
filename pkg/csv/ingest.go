@@ -15,81 +15,81 @@
 package csv
 
 import (
-	"fmt"
+	//	"fmt"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
+	//	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 const CSV = ls.LS + "csv/"
 
-// Ingester is a wrapper for the ls/Ingester struct
-type Ingester struct {
-	ls.Ingester
-	ColumnNames []string
-}
+// // Ingester is a wrapper for the ls/Ingester struct
+// type Ingester struct {
+// 	ls.Ingester
+// 	ColumnNames []string
+// }
 
-// Ingest a row of CSV data. The `data` slice is a row of data. The ID
-// is the assigned identifier for the resulting object. ID is empty,
-// IDs are assigned based on schema-dictated identifiers.
-func (ingester Ingester) Ingest(context *ls.Context, data []string, ID string) (graph.Node, error) {
-	ictx := ingester.Start(context, ID)
-	// Retrieve map of schema attribute nodes from schemaRoot
-	attributes, err := ls.GetObjectAttributeNodesBy(ictx.GetSchemaNode(), ls.AttributeNameTerm)
-	if err != nil {
-		return nil, err
-	}
-	// create a new object node
-	_, _, retNode, err := ingester.Object(ictx)
-	if err != nil {
-		return nil, err
-	}
-	ctx := ictx.NewLevel(retNode)
-	// Iterate through each column of the CSV row
-	for columnIndex, columnData := range data {
-		var columnName string
-		if columnIndex < len(ingester.ColumnNames) {
-			columnName = ingester.ColumnNames[columnIndex]
-		}
-		var schemaNode graph.Node
-		// if column header exists, assign schemaNode to corresponding value in attributes map
-		var node graph.Node
-		if len(columnName) > 0 {
-			schemaNodes := attributes[columnName]
-			if len(schemaNodes) > 1 {
-				return nil, ls.ErrInvalidSchema(fmt.Sprintf("Multiple elements with key '%s'", columnName))
-			}
-			if len(schemaNodes) == 1 {
-				schemaNode = schemaNodes[0]
-			}
+// // Ingest a row of CSV data. The `data` slice is a row of data. The ID
+// // is the assigned identifier for the resulting object. ID is empty,
+// // IDs are assigned based on schema-dictated identifiers.
+// func (ingester Ingester) Ingest(context *ls.Context, data []string, ID string) (graph.Node, error) {
+// 	ictx := ingester.Start(context, ID)
+// 	// Retrieve map of schema attribute nodes from schemaRoot
+// 	attributes, err := ls.GetObjectAttributeNodesBy(ictx.GetSchemaNode(), ls.AttributeNameTerm)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	// create a new object node
+// 	_, _, retNode, err := ingester.Object(ictx)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	ctx := ictx.NewLevel(retNode)
+// 	// Iterate through each column of the CSV row
+// 	for columnIndex, columnData := range data {
+// 		var columnName string
+// 		if columnIndex < len(ingester.ColumnNames) {
+// 			columnName = ingester.ColumnNames[columnIndex]
+// 		}
+// 		var schemaNode graph.Node
+// 		// if column header exists, assign schemaNode to corresponding value in attributes map
+// 		var node graph.Node
+// 		if len(columnName) > 0 {
+// 			schemaNodes := attributes[columnName]
+// 			if len(schemaNodes) > 1 {
+// 				return nil, ls.ErrInvalidSchema(fmt.Sprintf("Multiple elements with key '%s'", columnName))
+// 			}
+// 			if len(schemaNodes) == 1 {
+// 				schemaNode = schemaNodes[0]
+// 			}
 
-			_, _, node, err = ingester.Value(ctx.New(columnName, schemaNode), columnData)
-			if err != nil {
-				return nil, err
-			}
-		} else if ingester.Schema != nil || !ingester.OnlySchemaAttributes {
-			schemaNode, _ = ingester.Schema.FindFirstAttribute(func(n graph.Node) bool {
-				p := ls.AsPropertyValue(n.GetProperty(ls.AttributeIndexTerm))
-				if p == nil {
-					return false
-				}
-				return p.IsInt() && p.AsInt() == columnIndex
-			})
-			if schemaNode != nil {
-				_, _, node, err = ingester.Value(ctx.New(columnIndex, schemaNode), columnData)
-				if err != nil {
-					return nil, err
-				}
-			}
-		}
-		if node != nil {
-			if len(columnName) > 0 {
-				node.SetProperty(ls.AttributeNameTerm, ls.StringPropertyValue(columnName))
-			}
-			node.SetProperty(ls.AttributeIndexTerm, ls.StringPropertyValue(fmt.Sprint(columnIndex)))
-		}
-	}
+// 			_, _, node, err = ingester.Value(ctx.New(columnName, schemaNode), columnData)
+// 			if err != nil {
+// 				return nil, err
+// 			}
+// 		} else if ingester.Schema != nil || !ingester.OnlySchemaAttributes {
+// 			schemaNode, _ = ingester.Schema.FindFirstAttribute(func(n graph.Node) bool {
+// 				p := ls.AsPropertyValue(n.GetProperty(ls.AttributeIndexTerm))
+// 				if p == nil {
+// 					return false
+// 				}
+// 				return p.IsInt() && p.AsInt() == columnIndex
+// 			})
+// 			if schemaNode != nil {
+// 				_, _, node, err = ingester.Value(ctx.New(columnIndex, schemaNode), columnData)
+// 				if err != nil {
+// 					return nil, err
+// 				}
+// 			}
+// 		}
+// 		if node != nil {
+// 			if len(columnName) > 0 {
+// 				node.SetProperty(ls.AttributeNameTerm, ls.StringPropertyValue(columnName))
+// 			}
+// 			node.SetProperty(ls.AttributeIndexTerm, ls.StringPropertyValue(fmt.Sprint(columnIndex)))
+// 		}
+// 	}
 
-	ingester.Finish(ictx, retNode)
-	return retNode, nil
-}
+// 	ingester.Finish(ictx, retNode)
+// 	return retNode, nil
+// }

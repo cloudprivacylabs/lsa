@@ -41,7 +41,8 @@ func (e EntityInfo) GetValueType() []string {
 	return FilterNonLayerTypes(e.root.GetLabels().Slice())
 }
 
-// GetEntityRootNodes returns all the nodes that are entity roots
+// GetEntityRootNodes returns all the nodes that are entity roots,
+// i.e. nodes containing EntitySchemaTerm
 func GetEntityRootNodes(g graph.Graph) map[graph.Node]EntityInfo {
 	ret := make(map[graph.Node]EntityInfo)
 	for nodes := g.GetNodesWithProperty(EntitySchemaTerm); nodes.Next(); {
@@ -104,7 +105,7 @@ func GetEntityRoot(node graph.Node) graph.Node {
 	return find(node)
 }
 
-// GetEntityIDFields returns the value of the entity ID fields from a document node
+// GetEntityIDFields returns the value of the entity ID fields from a document node.
 func GetEntityIDFields(node graph.Node) *PropertyValue {
 	if node == nil {
 		return nil
