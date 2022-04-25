@@ -188,9 +188,6 @@ func LoadSchemaFromFileOrRepo(ctx *ls.Context, compiledSchema, repoDir, schemaNa
 		}
 		compiler := ls.Compiler{
 			Loader: ls.SchemaLoaderFunc(func(x string) (*ls.Layer, error) {
-				if variant := repo.GetSchemaVariantByObjectType(x); variant != nil {
-					x = variant.ID
-				}
 				return repo.LoadAndCompose(ctx, x)
 			}),
 		}

@@ -188,19 +188,6 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 					File:      entry.Name(),
 				}
 				ret = append(ret, entry)
-			case hasType(ls.SchemaVariantTerm), hasType("SchemaVariant"):
-				variant, err := ls.UnmarshalSchemaVariant(obj)
-				if err != nil {
-					warnings = append(warnings, fmt.Sprintf("Cannot parse %s: %v", fname, err))
-					continue
-				}
-				entry := IndexEntry{
-					Type:      ls.SchemaVariantTerm,
-					ID:        variant.ID,
-					ValueType: variant.ValueType,
-					File:      entry.Name(),
-				}
-				ret = append(ret, entry)
 			}
 		}
 	}
@@ -217,15 +204,6 @@ func (repo *Repository) LoadAndCompose(context *ls.Context, id string) (*ls.Laye
 		return layer, nil
 	}
 	return repo.GetComposedSchema(context, id)
-}
-
-func (repo *Repository) GetSchemaVariant(id string) *ls.SchemaVariant {
-	for _, x := range repo.index {
-		if x.ID == id && x.Type == ls.SchemaVariantTerm {
-			return repo.mustLoadSchemaVariant(x.File)
-		}
-	}
-	return nil
 }
 
 func (repo *Repository) GetSchema(id string) *ls.Layer {
@@ -255,15 +233,6 @@ func (repo *Repository) GetLayer(id string) *ls.Layer {
 	return nil
 }
 
-func (repo *Repository) GetSchemaVariantByObjectType(t string) *ls.SchemaVariant {
-	for _, x := range repo.index {
-		if x.hasType(t) && x.Type == ls.SchemaVariantTerm {
-			return repo.mustLoadSchemaVariant(x.File)
-		}
-	}
-	return nil
-}
-
 func (repo *Repository) readJson(file string) (interface{}, error) {
 	data, err := ioutil.ReadFile(filepath.Join(repo.root, file))
 	if err != nil {
@@ -274,26 +243,6 @@ func (repo *Repository) readJson(file string) (interface{}, error) {
 		return nil, err
 	}
 	return v, nil
-}
-
-func (repo *Repository) mustLoadSchemaVariant(file string) *ls.SchemaVariant {
-	ret, err := repo.loadSchemaVariant(file)
-	if err != nil {
-		panic("Cannot load variant:" + err.Error())
-	}
-	return ret
-}
-
-func (repo *Repository) loadSchemaVariant(file string) (*ls.SchemaVariant, error) {
-	data, err := repo.readJson(file)
-	if err != nil {
-		return nil, err
-	}
-	ret, err := ls.UnmarshalSchemaVariant(data)
-	if err != nil {
-		return nil, err
-	}
-	return ret, nil
 }
 
 func (repo *Repository) loadLayer(file string) *ls.Layer {
@@ -327,7 +276,16 @@ func (repo *Repository) GetComposedSchemaByObjectType(context *ls.Context, t str
 }
 
 func (repo *Repository) compose(context *ls.Context, index IndexEntry) (*ls.Layer, error) {
-	m, err := repo.loadSchemaVariant(index.File)
+	data, err := repo.readJson(index.File)
+	if err != nil {
+		return nil, err
+	}
+	m := struct {
+		Schema   string   `json:"schema"`
+		Overlays []string `json:"overlays"`
+	}{}
+	b, err := json.Marshal(data)
+	err = json.Unmarshal(b, &m)
 	if err != nil {
 		return nil, err
 	}
