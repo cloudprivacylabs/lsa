@@ -30,12 +30,19 @@ func TestBasicWrite(t *testing.T) {
 		{"4", "m", "n", "o", "p"},
 	}
 
-	ing := Ingester{
+	parser := Parser{
 		ColumnNames: []string{"v", "w", "x", "y", "z"},
 	}
-	ing.Graph = ls.NewDocumentGraph()
+	builder := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
 	for _, row := range input {
-		_, err := ing.Ingest(ls.DefaultContext(), row, "row")
+		doc, err := parser.ParseDoc(ls.DefaultContext(), "row", row)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		_, err = ls.Ingest(builder, doc)
 		if err != nil {
 			t.Error(err)
 			return
@@ -43,14 +50,27 @@ func TestBasicWrite(t *testing.T) {
 	}
 
 	wr := Writer{
-		Columns: ing.ColumnNames,
+		Columns: []WriterColumn{
+			{Name: "v"},
+			{Name: "w"},
+			{Name: "x"},
+			{Name: "y"},
+			{Name: "z"},
+		},
 	}
 	var buf bytes.Buffer
 	writer := csv.NewWriter(&buf)
-	if err := wr.WriteRows(writer, ing.Graph); err != nil {
+	if err := wr.WriteRows(writer, builder.GetGraph()); err != nil {
 		t.Error(err)
 		return
 	}
 	writer.Flush()
 	t.Log(buf.String())
+	if buf.String() != `1,a,b,c,d
+2,e,f,g,h
+3,i,j,k,l
+4,m,n,o,p
+` {
+		t.Errorf(buf.String())
+	}
 }
