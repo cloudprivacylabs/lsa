@@ -51,15 +51,32 @@ processed with different processing directives to handle data
 variations. The layered schema architecture provides the framework to
 extend traditional schemas using such layers.
 
-### Bundles, schemas, overlays
+### Schemas, overlays, and bundles
 
-A *schema* defines a data type by specifying its attributes. The name
-of the data type is the *valueType* for the schema.
+A *schema* defines a data structure (attributes). A schema has a
+`valueType` which is the the type of data structure defined by the
+schema (e.g. `Person`).
+
+An *overlay* defines semantics for attributes, and may override schema
+definitions. A `Person` schema can only be composed with `Person`
+overlays.
+
+A *schema variant* is a schema that is the result of the composition
+of a schema with zero or more overlays. 
+
+A *bundle* defines the schema variants for multiple `valueType`s. That
+is, a bundle specifies all the schemas and overlays for each type of
+object used in a particular use case. For instance, a bundle may
+specify that `Person` means the composition of a `Person` schema and
+an overlay containing terms from data privacy vocabulary. Data
+ingested using this bundle will have annotations using data privacy
+vocabulary terms. 
 
 Below is an example schema for a `Person` data type containing
 `firstName` and `lastName`.
 
 ```
+person.schema.json:
 {
   "@context": "https://lschema.org/ls.json",
   "@id": "https://example.org/Person/schema",
@@ -87,6 +104,7 @@ attributes. The following overlay adds personal data category `Name`
 to the `lastName` attribute:
 
 ```
+person-dpv.overlay.json:
 {
   "@context": "https://lschema.org/ls.json",
   "@id": "https://example.org/Person/dpv-ovl",
@@ -98,6 +116,24 @@ to the `lastName` attribute:
       "http://www.w3.org/ns/dpv#hasPersonalDataCategory": "http://www.w3.org/dpv#Name"
     }
   }
+}
+```
+
+A bundle that defines `Person` by composing the person schema and the
+dpv overlay is:
+
+```
+{
+    "typeNames" : {
+        "Person": {
+            "schema" : "person.schema.json",
+            "overlays" : [
+                {
+                    "schema" : "person-dpv.overlay.json"
+                }
+            ]
+        }
+    }
 }
 ```
 
