@@ -1,0 +1,43 @@
+{
+    "nodes": [
+        {
+            "n":0,
+            "id": "https://test.org/person_schema",
+            "labels": ["Schema"],
+            "properties": {
+                "valueType": "Person"
+            }
+        },
+        {
+            "n":1,
+            "id": "https://test.org/Person",
+            "labels": ["Object","Attribute"],
+            "properties": {
+                "valueType": "Person"
+            }
+        },
+        {
+            "n":2,
+            "id": "https://test.org/firstName",
+            "labels": ["Value","Attribute"],
+            "properties": {
+                "attributeName": "firstName",
+                "attributeIndex": "0"
+            }
+        },
+        {
+            "n":3,
+            "id": "https://test.org/lastName",
+            "labels": ["Value","Attribute"],
+            "properties": {
+                "attributeName": "lastName",
+                "attributeIndex": "1"
+            }
+        }
+    ],
+    "edges": [
+        {"from":0, "to":1, "label":"layer"},
+        {"from":1, "to":2, "label":"attributeList"},
+        {"from":1, "to":3, "label":"attributeList"}
+    ]
+}

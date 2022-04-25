@@ -22,7 +22,7 @@ import (
 	"github.com/nleeper/goment"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type ErrCannotParseTemporalValue string
@@ -133,7 +133,7 @@ var XSDGDayTerm = ls.NewTerm(XSD, "gDay", false, false, ls.OverrideComposition, 
 	XSDGDayParser
 }{
 	XSDGDayParser: XSDGDayParser{},
-})
+}, "xsd:gDay", "xs:gDay")
 
 // GMonth is XML Gregorian month part of date
 type GMonth int
@@ -143,7 +143,7 @@ var XSDGMonthTerm = ls.NewTerm(XSD, "gMonth", false, false, ls.OverrideCompositi
 	XSDGMonthParser
 }{
 	XSDGMonthParser: XSDGMonthParser{},
-})
+}, "xsd:gMonth", "xs:gMonth")
 
 // GMonth is XML Gregorian year part of date
 type GYear int
@@ -153,7 +153,7 @@ var XSDGYearTerm = ls.NewTerm(XSD, "gYear", false, false, ls.OverrideComposition
 	XSDGYearParser
 }{
 	XSDGYearParser: XSDGYearParser{},
-})
+}, "xsd:gYear", "xs:gYear")
 
 // GMonthDay is XML Gregorian part of Month/Day
 type GMonthDay struct {
@@ -166,7 +166,7 @@ var XSDGMonthDayTerm = ls.NewTerm(XSD, "gMonthDay", false, false, ls.OverrideCom
 	XSDGMonthDayParser
 }{
 	XSDGMonthDayParser: XSDGMonthDayParser{},
-})
+}, "xsd:gMonthDay", "xs:gMonthDay")
 
 // GYearMonth is XML Gregorian part of Year/Month
 type GYearMonth struct {
@@ -179,7 +179,7 @@ var XSDGYearMonthTerm = ls.NewTerm(XSD, "gYearMonth", false, false, ls.OverrideC
 	XSDGYearMonthParser
 }{
 	XSDGYearMonthParser: XSDGYearMonthParser{},
-})
+}, "xsd:gYearMonth", "xs:gYearMonth")
 
 // XSDDate is a node-type that identifies the underlying value as an XML date. The format is:
 //
@@ -188,21 +188,21 @@ var XSDDateTerm = ls.NewTerm(XSD, "date", false, false, ls.OverrideComposition, 
 	XSDDateParser
 }{
 	XSDDateParser: XSDDateParser{},
-})
+}, "xsd:date", "xs:date")
 
 // XSDTime is a node-type that identifies the underlying value as an XML time.
 var XSDTimeTerm = ls.NewTerm(XSD, "time", false, false, ls.OverrideComposition, struct {
 	XSDTimeParser
 }{
 	XSDTimeParser: XSDTimeParser{},
-})
+}, "xsd:time", "xs:time")
 
 // XSDDateTime is a node-type that identifies the underlying value as an XML date-time value
 var XSDDateTimeTerm = ls.NewTerm(XSD, "dateTime", false, false, ls.OverrideComposition, struct {
 	XSDDateTimeParser
 }{
 	XSDDateTimeParser: XSDDateTimeParser{},
-})
+}, "xsd:dateTime", "xs:dateTime")
 
 // JSONDate is a node-type that identifies the underlying value as a JSON date value
 //
@@ -211,7 +211,7 @@ var JSONDateTerm = ls.NewTerm(JSON, "date", false, false, ls.OverrideComposition
 	JSONDateParser
 }{
 	JSONDateParser: JSONDateParser{},
-})
+}, "json:date")
 
 // JSONDateTime is a node-type that identifies the underlying value as
 // a JSON datetime value, RFC3339 or RFC3339Nano
@@ -222,7 +222,7 @@ var JSONDateTimeTerm = ls.NewTerm(JSON, "date-time", false, false, ls.OverrideCo
 	JSONDateTimeParser
 }{
 	JSONDateTimeParser: JSONDateTimeParser{},
-})
+}, "json:date-time")
 
 // JSONTime is a node-type that identifies the underlying value as a
 // JSON time value
@@ -234,40 +234,40 @@ var JSONTimeTerm = ls.NewTerm(JSON, "time", false, false, ls.OverrideComposition
 	JSONTimeParser
 }{
 	JSONTimeParser: JSONTimeParser{},
-})
+}, "json:time")
 
 var UnixTimeTerm = ls.NewTerm(Unix, "time", false, false, ls.OverrideComposition, struct {
 	UnixTimeParser
 }{
 	UnixTimeParser: UnixTimeParser{},
-})
+}, "unix:time")
 
 var UnixTimeNanoTerm = ls.NewTerm(Unix, "timeNano", false, false, ls.OverrideComposition, struct {
 	UnixTimeNanoParser
 }{
 	UnixTimeNanoParser: UnixTimeNanoParser{},
-})
+}, "unix:timeNano")
 
 var PatternDateTimeTerm = ls.NewTerm(ls.LS, "dateTime", false, false, ls.OverrideComposition, struct {
 	PatternDateTimeParser
 }{
 	PatternDateTimeParser: PatternDateTimeParser{},
-})
+}, "ls:dateTime")
 
 var PatternDateTerm = ls.NewTerm(ls.LS, "date", false, false, ls.OverrideComposition, struct {
 	PatternDateParser
 }{
 	PatternDateParser: PatternDateParser{},
-})
+}, "ls:date")
 
 var PatternTimeTerm = ls.NewTerm(ls.LS, "time", false, false, ls.OverrideComposition, struct {
 	PatternTimeParser
 }{
 	PatternTimeParser: PatternTimeParser{},
-})
+}, "ls:time")
 
-var GoTimeFormatTerm = ls.NewTerm(ls.LS, "goTimeFormat", false, false, ls.SetComposition, nil)
-var MomentTimeFormatTerm = ls.NewTerm(ls.LS, "momentTimeFormat", false, false, ls.SetComposition, nil)
+var GoTimeFormatTerm = ls.NewTerm(ls.LS, "goTimeFormat", false, false, ls.SetComposition, nil, "ls:goTimeFormat")
+var MomentTimeFormatTerm = ls.NewTerm(ls.LS, "momentTimeFormat", false, false, ls.SetComposition, nil, "ls:momentTimeFormat")
 
 type XSDDateParser struct{}
 
@@ -450,10 +450,7 @@ func (f gomentFormat) formatTime(in TimeOfDay) (string, error) {
 //
 //  [-]CCYY-MM-DD[Z|(+|-)hh:mm]
 func (XSDDateParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -547,10 +544,7 @@ func (XSDDateParser) SetNodeValue(node graph.Node, value interface{}) error {
 type XSDDateTimeParser struct{}
 
 func (XSDDateTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -657,10 +651,7 @@ func (XSDDateTimeParser) SetNodeValue(node graph.Node, value interface{}) error 
 type XSDTimeParser struct{}
 
 func (XSDTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -716,10 +707,7 @@ type JSONDateParser struct{}
 //
 //   YYYY-MM-DD
 func (JSONDateParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -824,10 +812,7 @@ type JSONDateTimeParser struct{}
 //
 //   YYYY-MM-DD
 func (JSONDateTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -893,10 +878,7 @@ type JSONTimeParser struct{}
 //   HH:mm:ss
 //   HH:mm:ssZ
 func (JSONTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -961,10 +943,7 @@ type PatternDateTimeParser struct{}
 // in the node, and parses the datetime using that. The format
 // property can be an array, giving all possible formats
 func (PatternDateTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -1097,10 +1076,7 @@ type PatternDateParser struct{}
 // in the node, and parses the datetime using that. The format
 // property can be an array, giving all possible formats
 func (PatternDateParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -1225,10 +1201,7 @@ type PatternTimeParser struct{}
 // in the node, and parses the datetime using that. The format
 // property can be an array, giving all possible formats
 func (PatternTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -1302,10 +1275,7 @@ func (PatternTimeParser) SetNodeValue(node graph.Node, value interface{}) error 
 type XSDGDayParser struct{}
 
 func (XSDGDayParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -1351,10 +1321,7 @@ func (XSDGDayParser) SetNodeValue(node graph.Node, value interface{}) error {
 type XSDGMonthParser struct{}
 
 func (XSDGMonthParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -1391,10 +1358,7 @@ func (XSDGMonthParser) SetNodeValue(node graph.Node, value interface{}) error {
 type XSDGMonthDayParser struct{}
 
 func (XSDGMonthDayParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -1437,10 +1401,7 @@ func (XSDGMonthDayParser) SetNodeValue(node graph.Node, value interface{}) error
 type XSDGYearParser struct{}
 
 func (XSDGYearParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -1475,10 +1436,7 @@ func (XSDGYearParser) SetNodeValue(node graph.Node, value interface{}) error {
 type XSDGYearMonthParser struct{}
 
 func (XSDGYearMonthParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -1515,10 +1473,7 @@ func (XSDGYearMonthParser) SetNodeValue(node graph.Node, value interface{}) erro
 type UnixTimeParser struct{}
 
 func (UnixTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -1584,10 +1539,7 @@ func (UnixTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
 type UnixTimeNanoParser struct{}
 
 func (UnixTimeNanoParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}

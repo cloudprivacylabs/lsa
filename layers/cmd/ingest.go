@@ -22,8 +22,8 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func init() {
@@ -34,7 +34,6 @@ func init() {
 	ingestCmd.PersistentFlags().String("type", "", "Use if a bundle is given for data types. The type name to ingest.")
 	ingestCmd.PersistentFlags().String("bundle", "", "Schema bundle.")
 	ingestCmd.PersistentFlags().String("compiledschema", "", "Use the given compiled schema")
-	ingestCmd.PersistentFlags().StringSlice("valueset", nil, "Value set file (s)")
 	ingestCmd.PersistentFlags().Bool("includeSchema", false, "Include schema in the output")
 	ingestCmd.PersistentFlags().Bool("embedSchemaNodes", false, "Embed schema nodes into document nodes")
 	ingestCmd.PersistentFlags().Bool("onlySchemaAttributes", false, "Only ingest nodes that have an associated schema attribute")
@@ -189,9 +188,6 @@ func LoadSchemaFromFileOrRepo(ctx *ls.Context, compiledSchema, repoDir, schemaNa
 		}
 		compiler := ls.Compiler{
 			Loader: ls.SchemaLoaderFunc(func(x string) (*ls.Layer, error) {
-				if variant := repo.GetSchemaVariantByObjectType(x); variant != nil {
-					x = variant.ID
-				}
 				return repo.LoadAndCompose(ctx, x)
 			}),
 		}
@@ -223,7 +219,7 @@ func LoadSchemaFromFileOrRepo(ctx *ls.Context, compiledSchema, repoDir, schemaNa
 	return compiler.Compile(ctx, schemaName)
 }
 
-func OutputIngestedGraph(outFormat string, target graph.Graph, wr io.Writer, includeSchema bool) error {
+func OutputIngestedGraph(cmd *cobra.Command, outFormat string, target graph.Graph, wr io.Writer, includeSchema bool) error {
 	if !includeSchema {
 		schemaNodes := make(map[graph.Node]struct{})
 		for nodes := target.GetNodes(); nodes.Next(); {
@@ -249,5 +245,5 @@ func OutputIngestedGraph(outFormat string, target graph.Graph, wr io.Writer, inc
 			})
 		target = newTarget
 	}
-	return cmdutil.WriteGraph(target, outFormat, wr)
+	return cmdutil.WriteGraph(cmd, target, outFormat, wr)
 }

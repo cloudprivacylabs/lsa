@@ -15,7 +15,7 @@
 package ls
 
 import (
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // NodeCompiler interface represents term compilation algorithm when
@@ -39,7 +39,7 @@ type NodeCompiler interface {
 // implements EdgeCompiler, this method is called.
 type EdgeCompiler interface {
 	// CompileEdge gets an edge and compiles the associated term on that
-	// edge. It should store tje compiled state into edge.Compiled with
+	// edge. It should store the compiled state into edge.Compiled with
 	// an opaque key
 	CompileEdge(*Layer, graph.Edge) error
 }

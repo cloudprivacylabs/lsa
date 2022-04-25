@@ -15,22 +15,38 @@
 package transform
 
 import (
-	"errors"
 	"fmt"
 )
 
-// ErrInvalidSchemaNodeType is returned if the schema node type cannot
-// be projected (such as a reference, which cannot happen after
-// compilation)
-type ErrInvalidSchemaNodeType []string
+type ErrMultipleValues struct{}
 
-func (e ErrInvalidSchemaNodeType) Error() string {
-	return fmt.Sprintf("Invalid schema node type for reshaping: %v", []string(e))
+func (e ErrMultipleValues) Error() string { return "Multiple values/result columns" }
+
+type ErrReshape struct {
+	Wrapped      error
+	SchemaNodeID string
 }
 
-var (
-	ErrInvalidSource      = errors.New("Invalid source")
-	ErrInvalidSourceValue = errors.New("Invalid source value")
-	ErrSourceMustBeString = errors.New("source term value must be a string")
-	ErrMultipleValues     = errors.New("Multiple values/result columns found")
-)
+func (e ErrReshape) Unwrap() error { return e.Wrapped }
+func (e ErrReshape) Error() string {
+	return fmt.Sprintf("Reshape error at %s: %s", e.SchemaNodeID, e.Wrapped.Error())
+}
+
+func wrapReshapeError(err error, schemaNodeID string) error {
+	if err == nil {
+		return nil
+	}
+	if r, ok := err.(ErrReshape); ok {
+		if r.SchemaNodeID == schemaNodeID {
+			return r
+		}
+		return ErrReshape{
+			Wrapped:      r.Wrapped,
+			SchemaNodeID: schemaNodeID + " . " + r.SchemaNodeID,
+		}
+	}
+	return ErrReshape{
+		Wrapped:      err,
+		SchemaNodeID: schemaNodeID,
+	}
+}

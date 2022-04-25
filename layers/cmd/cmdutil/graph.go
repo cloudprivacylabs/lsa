@@ -19,9 +19,11 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/spf13/cobra"
+
 	"github.com/cloudprivacylabs/lsa/pkg/dot"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func ReadGraph(gfile []string, interner ls.Interner, inputFormat string) (graph.Graph, error) {
@@ -59,7 +61,7 @@ func ReadJSONGraph(gfile []string, interner ls.Interner) (graph.Graph, error) {
 	return target, err
 }
 
-func WriteGraph(graph graph.Graph, format string, out io.Writer) error {
+func WriteGraph(cmd *cobra.Command, graph graph.Graph, format string, out io.Writer) error {
 	switch format {
 	case "json":
 		m := ls.JSONMarshaler{}
@@ -71,6 +73,7 @@ func WriteGraph(graph graph.Graph, format string, out io.Writer) error {
 		return enc.Encode(intf)
 	case "dot":
 		renderer := dot.Renderer{Options: dot.DefaultOptions()}
+		renderer.Options.Rankdir, _ = cmd.Flags().GetString("rankdir")
 		renderer.Render(graph, "g", out)
 		return nil
 	}

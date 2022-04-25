@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 	"github.com/stretchr/testify/require"
 )
 
@@ -17,6 +17,7 @@ func TestIngest(t *testing.T) {
 		"@id": "http://example.com/id",
 		"layer": {
 			"@type": "Object",
+      "@id": "root",
 			"attributeList": [
 				{
 					"@id": "https://www.example.com/id1",
@@ -84,25 +85,32 @@ func TestIngest(t *testing.T) {
 		t.Error(err)
 	}
 
-	ingester := Ingester{
-		Ingester: ls.Ingester{
-			Schema: schema,
-			Graph:  ls.NewDocumentGraph(),
-		},
+	parser := Parser{
+		SchemaNode:  schema.GetSchemaRootNode(),
 		ColumnNames: []string{"field1", "field2", "field3", "field4", "field5", "field6"},
 	}
+	builder := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		EmbedSchemaNodes:     false,
+		OnlySchemaAttributes: false,
+	})
 
 	// Test with OnlySchemaAttributes flag set to false (ingest all nodes)
-	ingester.OnlySchemaAttributes = false
 	for idx, tt := range inputStrColData {
-		_, err := ingester.Ingest(ls.DefaultContext(), tt, "https://www.example.com/id")
+		parsed, err := parser.ParseDoc(ls.DefaultContext(), "https://www.example.com/id", tt)
+		if err != nil {
+			t.Error(err)
+		}
+		_, err = ls.Ingest(builder, parsed)
+		if err != nil {
+			t.Error(err)
+		}
 		nodesRow := make([][]string, 0, len(inputStrColData))
-		require.NoError(t, err)
-		const nodeID = "https://www.example.com/id"
+		const nodeID = "https://www.example.com/id.field"
 		for i := 0; i < len(tt); i++ {
 			nodes := make([]graph.Node, 0)
-			for nx := ingester.Graph.GetNodes(); nx.Next(); {
+			for nx := builder.GetGraph().GetNodes(); nx.Next(); {
 				node := nx.Node()
+				t.Logf("NodeID: %s", ls.GetNodeID(node))
 				if ls.GetNodeID(node) == (nodeID + strconv.Itoa(idx+1)) {
 					nodes = append(nodes, node)
 				}
@@ -116,16 +124,25 @@ func TestIngest(t *testing.T) {
 	}
 
 	// Test with OnlySchemaAttributes flag set
-	ingester.OnlySchemaAttributes = true
-	ingester.Graph = ls.NewDocumentGraph()
+	builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		EmbedSchemaNodes:     false,
+		OnlySchemaAttributes: true,
+	})
 	for idx, tt := range inputStrColData {
-		_, err := ingester.Ingest(ls.DefaultContext(), tt, "https://www.example.com/id")
+		parsed, err := parser.ParseDoc(ls.DefaultContext(), "https://www.example.com/id", tt)
+		if err != nil {
+			t.Error(err)
+		}
+		_, err = ls.Ingest(builder, parsed)
+		if err != nil {
+			t.Error(err)
+		}
 		nodesRow := make([][]string, 0, len(inputStrColData))
 		require.NoError(t, err)
-		const nodeID = "https://www.example.com/id"
+		const nodeID = "https://www.example.com/id.field"
 		for i := 0; i < len(tt); i++ {
 			nodes := make([]graph.Node, 0)
-			for nx := ingester.Graph.GetNodes(); nx.Next(); {
+			for nx := builder.GetGraph().GetNodes(); nx.Next(); {
 				node := nx.Node()
 				if ls.GetNodeID(node) == (nodeID + strconv.Itoa(idx+1)) {
 					nodes = append(nodes, node)

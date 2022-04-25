@@ -17,23 +17,23 @@ package ls
 import (
 	"fmt"
 
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // A CompiledGraph is a graph of compiled schemas
 type CompiledGraph interface {
 	GetCompiledSchema(string) *Layer
 	PutCompiledSchema(*Context, string, *Layer) *Layer
-	GetLayerNodes(string) []graph.Node
 	GetGraph() graph.Graph
 }
 
 // DefaultCompiledGraph keeps compiled graphs in a map. Zero value of
 // DefaultCompiledGraph is ready to use
 type DefaultCompiledGraph struct {
-	layers     map[string]*Layer
-	g          graph.Graph
-	layerNodes map[string][]graph.Node
+	layers map[string]*Layer
+	g      graph.Graph
+	// schemaNodeMap contains the map of the source layers -> compiled graph nodes
+	schemaNodeMap map[graph.Node]graph.Node
 }
 
 func (d DefaultCompiledGraph) GetGraph() graph.Graph { return d.g }
@@ -46,27 +46,82 @@ func (d DefaultCompiledGraph) GetCompiledSchema(ref string) *Layer {
 	return d.layers[ref]
 }
 
+func (d *DefaultCompiledGraph) copyNode(source graph.Node) graph.Node {
+	newNode := graph.CopyNode(source, d.g, ClonePropertyValueFunc)
+	SetNodeID(newNode, GetNodeID(source))
+	return newNode
+}
+
+func (d *DefaultCompiledGraph) copyEdge(from, to graph.Node, edge graph.Edge) {
+	d.g.NewEdge(from, to, edge.GetLabel(), CloneProperties(edge))
+}
+
 // PutCompiledSchema adds the copy of the schema to the common graph
 func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, layer *Layer) *Layer {
 	if d.layers == nil {
 		d.layers = make(map[string]*Layer)
-		d.layerNodes = make(map[string][]graph.Node)
+		d.schemaNodeMap = make(map[graph.Node]graph.Node)
 	}
 	if d.g == nil {
-		d.g = graph.NewOCGraph()
+		d.g = NewLayerGraph()
 	}
-	newLayer, nodeMap := layer.CloneInto(d.g)
-	d.layers[ref] = newLayer
-	nodes := make([]graph.Node, 0, len(nodeMap))
-	for _, x := range nodeMap {
-		nodes = append(nodes, x)
-	}
-	d.layerNodes[ref] = nodes
-	return newLayer
-}
 
-func (d *DefaultCompiledGraph) GetLayerNodes(ref string) []graph.Node {
-	return d.layerNodes[ref]
+	// This algorithm relies on unique attribute IDs
+	newLayer := NewLayerInGraph(d.g)
+	newLayer.SetID(layer.GetID())
+	newLayer.SetLayerType(SchemaTerm)
+	// attributeMap keeps track of copied attribute nodes. Key belongs
+	// to layer, value belongs to d.g
+	attributeMap := make(map[graph.Node]graph.Node)
+	// Copy the root node of the layer into the compiled graph.
+	layerRoot := layer.GetSchemaRootNode()
+
+	newRoot := d.copyNode(layerRoot)
+	d.g.NewEdge(newLayer.GetLayerRootNode(), newRoot, LayerRootTerm, nil)
+	attributeMap[layerRoot] = newRoot
+	// newAttributes contains only those attributes that are copied. The
+	// key belongs to layer
+	newAttributes := make(map[graph.Node]struct{})
+
+	// Copy the attributes in this layer
+	ForEachAttributeNode(layerRoot, func(node graph.Node, _ []graph.Node) bool {
+		attrID := GetNodeID(node)
+		existingAttr := newLayer.GetAttributeByID(attrID)
+		if existingAttr == nil {
+			existingAttr = d.copyNode(node)
+			newAttributes[node] = struct{}{}
+			d.schemaNodeMap[node] = existingAttr
+		}
+		attributeMap[node] = existingAttr
+		return true
+	})
+	// Iterate all nodes again. This time, link them
+	ForEachAttributeNode(layerRoot, func(node graph.Node, _ []graph.Node) bool {
+		compiledNode := attributeMap[node]
+		_, isNewNode := newAttributes[node]
+
+		for edges := node.GetEdges(graph.OutgoingEdge); edges.Next(); {
+			layerEdge := edges.Edge()
+			if IsAttributeNode(layerEdge.GetTo()) {
+				// If either the from or to is in newAttributes, then we need to add this edge
+				_, toNew := newAttributes[layerEdge.GetTo()]
+				if isNewNode || toNew {
+					d.copyEdge(compiledNode, attributeMap[layerEdge.GetTo()], layerEdge)
+				}
+			} else {
+				// Link to a non-attribute node
+				// If this is a new node, we have to copy this subtree
+				if isNewNode {
+					graph.CopySubgraph(layerEdge.GetTo(), d.g, ClonePropertyValueFunc, d.schemaNodeMap)
+					d.g.NewEdge(compiledNode, d.schemaNodeMap[layerEdge.GetTo()], layerEdge.GetLabel(), nil)
+				}
+			}
+		}
+		return true
+	})
+
+	d.layers[ref] = newLayer
+	return newLayer
 }
 
 // SchemaLoader interface defines the LoadSchema method that loads schemas by reference
@@ -84,7 +139,7 @@ type Compiler struct {
 	// Loader loads a layer using a strong reference.
 	Loader SchemaLoader
 	// CGraph keeps the compiled interlinked schemas. If this is
-	// initalized before compilation, then it is used during compilation
+	// initialized before compilation, then it is used during compilation
 	// and new schemas are added to it. If it is left uninitialized,
 	// compilation initializes it to default compiled graph
 	CGraph CompiledGraph
@@ -93,8 +148,6 @@ type Compiler struct {
 type compilerContext struct {
 	loadedSchemas map[string]*Layer
 	blankNodeID   uint
-	// This layer will not be cached
-	doNotCache *Layer
 }
 
 func (c *compilerContext) blankNodeNamer(node graph.Node) {
@@ -133,16 +186,6 @@ func (compiler *Compiler) CompileSchema(context *Context, schema *Layer) (*Layer
 	return compiler.compile(context, ctx, schema.GetID())
 }
 
-// RecompileSchema uses the cache to resolve the references of the
-// schema, but does not put the schema back into the cache
-func (compiler *Compiler) RecompileSchema(context *Context, schema *Layer) (*Layer, error) {
-	ctx := &compilerContext{
-		loadedSchemas: map[string]*Layer{schema.GetID(): schema},
-		doNotCache:    schema,
-	}
-	return compiler.compile(context, ctx, schema.GetID())
-}
-
 func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref string) (*Layer, error) {
 	context.GetLogger().Debug(map[string]interface{}{"mth": "compile", "ref": ref})
 	if compiler.CGraph == nil {
@@ -153,106 +196,88 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 	if compiled != nil {
 		return compiled, nil
 	}
-
-	schema, err := compiler.compileRefs(context, ctx, ref)
+	compiled, err := compiler.loadSchema(ctx, ref)
 	if err != nil {
 		return nil, err
 	}
-	if err := compiler.resolveCompositions(context, schema.GetSchemaRootNode()); err != nil {
+	compiled = compiler.CGraph.PutCompiledSchema(context, ref, compiled)
+	compiled.GetSchemaRootNode().SetProperty(EntitySchemaTerm, StringPropertyValue(compiled.GetID()))
+
+	if err := compiler.compileReferences(context, ctx); err != nil {
 		return nil, err
 	}
-	if err := CompileTerms(schema); err != nil {
+	if err := compiler.resolveCompositions(context, compiled.GetSchemaRootNode()); err != nil {
 		return nil, err
 	}
-	return schema, nil
+	if err := CompileTerms(compiled); err != nil {
+		return nil, err
+	}
+	return compiled, nil
 }
 
-func (compiler *Compiler) compileRefs(context *Context, ctx *compilerContext, ref string) (*Layer, error) {
-	context.GetLogger().Debug(map[string]interface{}{"mth": "compileRefs", "ref": ref})
-	var err error
-	// If compiled already, return the compiled node
-	if c := compiler.CGraph.GetCompiledSchema(ref); c != nil {
-		return c, nil
-	}
-	// Load the schema
-	context.GetLogger().Debug(map[string]interface{}{"mth": "compileRefs", "ref": ref, "stage": "Loading"})
-	schema, err := compiler.loadSchema(ctx, ref)
-	if err != nil {
-		return nil, err
-	}
-	if schema == nil {
-		return nil, ErrNotFound(ref)
-	}
-	context.GetLogger().Debug(map[string]interface{}{"mth": "compileRefs", "ref": ref, "stage": "Loaded"})
-	// Here, schema is loaded but not compiled
-	// If this is the top-level, we set the target layer as this schema
-	var compileRoot graph.Node
-	schema.RenameBlankNodes(ctx.blankNodeNamer)
-	compileRoot = schema.GetSchemaRootNode()
-	if compileRoot == nil {
-		return nil, ErrNotFound(ref)
-	}
-	// Record the schema ID in the entity root
-	context.GetLogger().Debug(map[string]interface{}{"mth": "compileRefs", "entitySchema": schema.GetID()})
-	compileRoot.SetProperty(EntitySchemaTerm, StringPropertyValue(schema.GetID()))
-
-	// Resolve all references
-	if schema != ctx.doNotCache {
-		schema = compiler.CGraph.PutCompiledSchema(context, ref, schema)
-	}
-	schemaNodes := compiler.CGraph.GetLayerNodes(ref)
-	context.GetLogger().Debug(map[string]interface{}{"mth": "compileRefs", "schemaNodes": len(schemaNodes)})
-	if err := compiler.resolveReferences(context, ctx, schema, schemaNodes); err != nil {
-		return nil, err
-	}
-	return schema, nil
-}
-
-func (compiler *Compiler) resolveReferences(context *Context, ctx *compilerContext, layer *Layer, nodes []graph.Node) error {
-	// Collect all reference nodes
-	references := make([]graph.Node, 0)
-	for _, nd := range nodes {
-		if nd.GetLabels().Has(AttributeTypeReference) {
-			references = append(references, nd)
+func (compiler *Compiler) compileReferences(context *Context, ctx *compilerContext) error {
+	context.GetLogger().Debug(map[string]interface{}{"mth": "compileReferences"})
+	// Process until there are reference nodes left
+	refset := graph.NewStringSet(AttributeTypeReference)
+	for {
+		refNodes := compiler.CGraph.GetGraph().GetNodesWithAllLabels(refset)
+		if !refNodes.Next() {
+			break
 		}
-	}
-	// Resolve each reference
-	for _, node := range references {
-		if err := compiler.resolveReference(context, ctx, layer, node); err != nil {
+		context.GetLogger().Debug(map[string]interface{}{"mth": "compileReferences", "nReferences": refNodes.MaxSize(), "nNodes": compiler.CGraph.GetGraph().NumNodes()})
+
+		refNode := refNodes.Node()
+		ref := AsPropertyValue(refNode.GetProperty(ReferenceTerm)).AsString()
+		context.GetLogger().Debug(map[string]interface{}{"mth": "compileReferences", "ref": ref})
+		// already loaded and added to the graph?
+		compiledSchema := compiler.CGraph.GetCompiledSchema(ref)
+		if compiledSchema != nil {
+			if err := compiler.linkReference(context, refNode, compiledSchema, ref); err != nil {
+				return err
+			}
+			continue
+		}
+		// Schema is not yet loaded
+		context.GetLogger().Debug(map[string]interface{}{"mth": "compileReferences", "ref": ref, "stage": "Loading"})
+
+		schema, err := compiler.loadSchema(ctx, ref)
+		if err != nil {
 			return err
 		}
+		if schema == nil {
+			return ErrNotFound(ref)
+		}
+		context.GetLogger().Debug(map[string]interface{}{"mth": "compileReferences", "ref": ref, "stage": "Loaded"})
+		compileRoot := schema.GetSchemaRootNode()
+		if compileRoot == nil {
+			return ErrNotFound(ref)
+		}
+		// Record the schema ID in the entity root
+		context.GetLogger().Debug(map[string]interface{}{"mth": "compileReferences", "entitySchema": schema.GetID()})
+
+		compiler.CGraph.PutCompiledSchema(context, ref, schema)
 	}
 	return nil
 }
 
-func (compiler *Compiler) resolveReference(context *Context, ctx *compilerContext, layer *Layer, node graph.Node) error {
-	ref := AsPropertyValue(node.GetProperty(ReferenceTerm)).AsString()
-	context.GetLogger().Debug(map[string]interface{}{"mth": "resolveReference", "ref": ref})
-	// already compiled, or being compiled?
-	compiledSchema := compiler.CGraph.GetCompiledSchema(ref)
-	if compiledSchema == nil {
-		var err error
-		compiledSchema, err = compiler.compileRefs(context, ctx, ref)
-		if err != nil {
-			return err
-		}
-	}
-	rootNode := compiledSchema.GetSchemaRootNode()
+func (compiler *Compiler) linkReference(context *Context, refNode graph.Node, schema *Layer, ref string) error {
 	// This is no longer a reference node
-	types := node.GetLabels()
+	linkTo := schema.GetSchemaRootNode()
+	types := refNode.GetLabels()
 	types.Remove(AttributeTypeReference)
-	types.Add(rootNode.GetLabels().Slice()...)
-	node.SetLabels(types)
+	types.Add(linkTo.GetLabels().Slice()...)
+	refNode.SetLabels(types)
 	// Compose the properties of the compiled root node with the referenced node
-	if err := ComposeProperties(context, node, rootNode); err != nil {
+	if err := ComposeProperties(context, refNode, linkTo); err != nil {
 		return err
 	}
-	node.SetProperty(ReferenceTerm, StringPropertyValue(ref))
+	refNode.SetProperty(ReferenceTerm, StringPropertyValue(ref))
 	// Attach the node to all the children of the compiled node
-	for edges := rootNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+	for edges := linkTo.GetEdges(graph.OutgoingEdge); edges.Next(); {
 		edge := edges.Edge()
-		CloneEdge(node, edge.GetTo(), edge, compiler.CGraph.GetGraph())
+		CloneEdge(refNode, edge.GetTo(), edge, compiler.CGraph.GetGraph())
 	}
+	refNode.SetProperty(EntitySchemaTerm, StringPropertyValue(schema.GetID()))
 	return nil
 }
 
@@ -339,7 +364,7 @@ func (compiler Compiler) resolveComposition(context *Context, compositeNode grap
 // CompileTerms compiles all node and edge terms of the layer
 func CompileTerms(layer *Layer) error {
 	var err error
-	IterateDescendants(layer.GetSchemaRootNode(), func(node graph.Node, _ []graph.Node) bool {
+	IterateDescendants(layer.GetSchemaRootNode(), func(node graph.Node) bool {
 		// Compile all non-attribute nodes
 		if !IsAttributeNode(node) {
 			if err = GetNodeCompiler(GetNodeID(node)).CompileNode(layer, node); err != nil {
@@ -377,7 +402,7 @@ func CompileTerms(layer *Layer) error {
 			return false
 		}
 		return true
-	}, func(edge graph.Edge, _ []graph.Node) EdgeFuncResult {
+	}, func(edge graph.Edge) EdgeFuncResult {
 		return FollowEdgeResult
 	}, false)
 	return err

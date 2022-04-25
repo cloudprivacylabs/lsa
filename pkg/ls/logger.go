@@ -45,8 +45,10 @@ type DefaultLogger struct {
 	Trace bool
 }
 
+var DefaultLogLevel = LogLevelError
+
 func NewDefaultLogger() *DefaultLogger {
-	return &DefaultLogger{Level: LogLevelError}
+	return &DefaultLogger{Level: DefaultLogLevel}
 }
 
 func (l DefaultLogger) Info(properties map[string]interface{}) {

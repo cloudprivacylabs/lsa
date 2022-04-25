@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 	"github.com/cloudprivacylabs/lsa/pkg/validators"
 )
 
@@ -228,7 +228,6 @@ func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.No
 		}
 		return nil
 	}
-	newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeValue))
 	return nil
 }
 

@@ -1,27 +1,39 @@
 package validators
 
 import (
-	"fmt"
 	"regexp"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
-// PatternTerm validates agains a regex
+// PatternTerm validates against a regex
 var PatternTerm = ls.NewTerm(ls.LS, "validation/pattern", false, false, ls.OverrideComposition, struct {
 	PatternValidator
 }{
 	PatternValidator{},
 })
 
-// PatternValidator validates a string value agains a regex
+// PatternValidator validates a string value against a regex
 type PatternValidator struct{}
 
 const compiledPatternTerm = "$compiledPattern"
 
+// ValidateValue validates the  value
+func (validator PatternValidator) ValidateValue(value *string, schemaNode graph.Node) error {
+	if value == nil {
+		return nil
+	}
+	ipattern, _ := schemaNode.GetProperty(compiledPatternTerm)
+	pattern := ipattern.(*regexp.Regexp)
+	if pattern.MatchString(*value) {
+		return nil
+	}
+	return ls.ErrValidation{Validator: PatternTerm, Msg: "Value does not match pattern " + pattern.String()}
+}
+
 // Validate validates the node value if it is non-nil
-func (validator PatternValidator) Validate(docNode, schemaNode graph.Node) error {
+func (validator PatternValidator) ValidateNode(docNode, schemaNode graph.Node) error {
 	if docNode == nil {
 		return nil
 	}
@@ -29,12 +41,7 @@ func (validator PatternValidator) Validate(docNode, schemaNode graph.Node) error
 	if !ok {
 		return nil
 	}
-	ipattern, _ := schemaNode.GetProperty(compiledPatternTerm)
-	pattern := ipattern.(*regexp.Regexp)
-	if pattern.MatchString(fmt.Sprint(value)) {
-		return nil
-	}
-	return ls.ErrValidation{Validator: PatternTerm, Msg: "Value does not match pattern " + pattern.String()}
+	return validator.ValidateValue(&value, schemaNode)
 }
 
 // Compile the pattern

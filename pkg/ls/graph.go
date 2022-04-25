@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // IsDocumentNode returns if the node has the DocumentNodeTerm as one of its labels
@@ -190,8 +190,8 @@ func SkipEdgesToNodeWithType(typ string) func(graph.Edge, []graph.Node) EdgeFunc
 
 // FollowEdgesToNodeWithType returns a function that only follows edges that go
 // to a node with the given type
-func FollowEdgesToNodeWithType(typ string) func(graph.Edge, []graph.Node) EdgeFuncResult {
-	return func(edge graph.Edge, _ []graph.Node) EdgeFuncResult {
+func FollowEdgesToNodeWithType(typ string) func(graph.Edge) EdgeFuncResult {
+	return func(edge graph.Edge) EdgeFuncResult {
 		if edge.GetTo().GetLabels().Has(typ) {
 			return FollowEdgeResult
 		}
@@ -200,11 +200,17 @@ func FollowEdgesToNodeWithType(typ string) func(graph.Edge, []graph.Node) EdgeFu
 }
 
 // FollowEdgesInEntity follows only the document edges that do not cross entity boundaries
-func FollowEdgesInEntity(edge graph.Edge, _ []graph.Node) EdgeFuncResult {
+func FollowEdgesInEntity(edge graph.Edge) EdgeFuncResult {
 	if _, ok := GetNodeOrSchemaProperty(edge.GetTo(), EntitySchemaTerm); ok {
 		return SkipEdgeResult
 	}
 	return FollowEdgeResult
+}
+
+// IsNodeEntityRoot checks if node is an entity root
+func IsNodeEntityRoot(node graph.Node) bool {
+	_, ok := GetNodeOrSchemaProperty(node, EntitySchemaTerm)
+	return ok
 }
 
 // SkipSchemaNodes can be used in IterateDescendants edge func
@@ -228,22 +234,20 @@ var OnlyDocumentNodes = FollowEdgesToNodeWithType(DocumentNodeTerm)
 //
 // For each outgoing edge, if edgeFunc is not nil, edgeFunc is called
 // with the edge and the path to the source node. If edgeFunc returns
-// FollowEdgeResult, the edge is followed. If edgeFunc returnd
+// FollowEdgeResult, the edge is followed. If edgeFunc returned
 // DontFollowEdgeResult, edge is skipped. If edgeFunc returns
 // StopEdgeResult, iteration stops.
-func IterateDescendants(from graph.Node, nodeFunc func(graph.Node, []graph.Node) bool, edgeFunc func(graph.Edge, []graph.Node) EdgeFuncResult, ordered bool) bool {
-	return iterateDescendants(from, []graph.Node{}, nodeFunc, edgeFunc, ordered, map[graph.Node]struct{}{})
+func IterateDescendants(from graph.Node, nodeFunc func(graph.Node) bool, edgeFunc func(graph.Edge) EdgeFuncResult, ordered bool) bool {
+	return iterateDescendants(from, nodeFunc, edgeFunc, ordered, map[graph.Node]struct{}{})
 }
 
-func iterateDescendants(root graph.Node, path []graph.Node, nodeFunc func(graph.Node, []graph.Node) bool, edgeFunc func(graph.Edge, []graph.Node) EdgeFuncResult, ordered bool, seen map[graph.Node]struct{}) bool {
+func iterateDescendants(root graph.Node, nodeFunc func(graph.Node) bool, edgeFunc func(graph.Edge) EdgeFuncResult, ordered bool, seen map[graph.Node]struct{}) bool {
 	if _, exists := seen[root]; exists {
 		return true
 	}
 	seen[root] = struct{}{}
 
-	path = append(path, root)
-
-	if nodeFunc != nil && !nodeFunc(root, path) {
+	if nodeFunc != nil && !nodeFunc(root) {
 		return false
 	}
 
@@ -256,7 +260,7 @@ func iterateDescendants(root graph.Node, path []graph.Node, nodeFunc func(graph.
 		edge := outgoing.Edge()
 		follow := FollowEdgeResult
 		if edgeFunc != nil {
-			follow = edgeFunc(edge, path)
+			follow = edgeFunc(edge)
 		}
 		switch follow {
 		case StopEdgeResult:
@@ -264,7 +268,7 @@ func iterateDescendants(root graph.Node, path []graph.Node, nodeFunc func(graph.
 		case SkipEdgeResult:
 		case FollowEdgeResult:
 			next := edge.GetTo()
-			if !iterateDescendants(next, path, nodeFunc, edgeFunc, ordered, seen) {
+			if !iterateDescendants(next, nodeFunc, edgeFunc, ordered, seen) {
 				return false
 			}
 		}
@@ -331,12 +335,12 @@ func CombineNodeTypes(nodes []graph.Node) graph.StringSet {
 func DocumentNodesUnder(node ...graph.Node) []graph.Node {
 	set := make(map[graph.Node]struct{})
 	for _, x := range node {
-		IterateDescendants(x, func(n graph.Node, _ []graph.Node) bool {
+		IterateDescendants(x, func(n graph.Node) bool {
 			if IsDocumentNode(n) {
 				set[n] = struct{}{}
 			}
 			return true
-		}, func(e graph.Edge, _ []graph.Node) EdgeFuncResult {
+		}, func(e graph.Edge) EdgeFuncResult {
 			if IsDocumentNode(e.GetTo()) {
 				return FollowEdgeResult
 			}
@@ -452,4 +456,48 @@ func FindChildInstanceOf(parent graph.Node, childAttrID string) []graph.Node {
 		}
 	}
 	return ret
+}
+
+// GetEntityRootNode returns the entity root node containing this node
+func GetEntityRootNode(aNode graph.Node) graph.Node {
+	trc := aNode
+	for {
+		if IsNodeEntityRoot(trc) {
+			return trc
+		}
+
+		nNodes := 0
+		for edges := trc.GetEdges(graph.IncomingEdge); edges.Next(); {
+			edge := edges.Edge()
+			nextNode := edge.GetFrom()
+			if nextNode == edge.GetTo() {
+				continue
+			}
+			if !nextNode.GetLabels().Has(DocumentNodeTerm) {
+				continue
+			}
+			nNodes++
+			if nNodes > 1 {
+				// Cannot find root
+				return nil
+			}
+			trc = nextNode
+		}
+		if nNodes == 0 {
+			return nil
+		}
+	}
+}
+
+// WalkNodesInEntity walks through all the nodes without crossing
+// entity boundaries. It calls the function f for each node. The
+// entity root containing the given node is also traversed.
+func WalkNodesInEntity(aNode graph.Node, f func(graph.Node) bool) bool {
+	root := GetEntityRootNode(aNode)
+	if root == nil {
+		return true
+	}
+	return IterateDescendants(root, func(node graph.Node) bool {
+		return f(node)
+	}, FollowEdgesInEntity, false)
 }

@@ -66,15 +66,17 @@ func ParseBundle(text string, contentType string) (*Bundle, error) {
 	return &ret, nil
 }
 
-func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importEntities []jsonsch.Entity) (map[string]*ls.Layer, error) {
-	compiler := jsonschema.NewCompiler()
-	compiler.LoadURL = func(s string) (io.ReadCloser, error) {
-		obj, err := cmdutil.ReadURL(s)
-		if err != nil {
-			return nil, err
-		}
-		return ioutil.NopCloser(bytes.NewReader(obj)), nil
+var DefaultFileLoader = func(s string) (io.ReadCloser, error) {
+	obj, err := cmdutil.ReadURL(s)
+	if err != nil {
+		return nil, err
 	}
+	return ioutil.NopCloser(bytes.NewReader(obj)), nil
+}
+
+func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importEntities []jsonsch.Entity, fileLoader func(s string) (io.ReadCloser, error)) (map[string]*ls.Layer, error) {
+	compiler := jsonschema.NewCompiler()
+	compiler.LoadURL = fileLoader
 	// Import all JSON schemas into a graph
 	jsonLayers := make(map[string]*ls.Layer)
 	if len(importEntities) > 0 {
@@ -95,7 +97,7 @@ func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importE
 }
 
 // GetLayers returns the layers of the bundle keyed by variant type
-func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s string) (*ls.Layer, error)) (map[string]*ls.Layer, error) {
+func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s string) (*ls.Layer, error), fileLoader func(string) (io.ReadCloser, error)) (map[string]*ls.Layer, error) {
 	// layers keyed by layer id
 	layers := make(map[string]*ls.Layer)
 
@@ -159,7 +161,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 			importEntities = append(importEntities, entity)
 		}
 		if len(importEntities) > 0 {
-			jlayers, err := bundle.importJSONSchema(ctx, typeTerm, importEntities)
+			jlayers, err := bundle.importJSONSchema(ctx, typeTerm, importEntities, fileLoader)
 			if err != nil {
 				return err
 			}
@@ -192,14 +194,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 			return nil, err
 		}
 	}
-	ret := make(map[string]*ls.Layer)
-	for variantId := range bundle.TypeNames {
-		layer, _ := resultBundle.LoadSchema(variantId)
-		if layer != nil {
-			ret[variantId] = layer
-		}
-	}
-	return ret, nil
+	return resultBundle.Variants, nil
 }
 
 func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
@@ -219,7 +214,7 @@ func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
 			return nil, err
 		}
 		return ls.UnmarshalLayer(input, nil)
-	})
+	}, DefaultFileLoader)
 	if err != nil {
 		return nil, err
 	}

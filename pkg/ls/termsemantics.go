@@ -22,6 +22,7 @@ type TermSemantics struct {
 
 	Namespace string
 	LName     string
+	Aliases   []string
 
 	// If true, the term value is an @id (IRI). In JSON-LD, the values for
 	// this term will be marshalled as @id
@@ -37,10 +38,11 @@ type TermSemantics struct {
 }
 
 // NewTerm registers a term with given semantics, and returns the term.
-func NewTerm(ns, lname string, isID, isList bool, comp CompositionType, md interface{}) string {
+func NewTerm(ns, lname string, isID, isList bool, comp CompositionType, md interface{}, aliases ...string) string {
 	t := TermSemantics{Term: ns + lname,
 		Namespace:   ns,
 		LName:       lname,
+		Aliases:     aliases,
 		IsID:        isID,
 		IsList:      isList,
 		Composition: comp,
@@ -67,11 +69,17 @@ func knownTerm(s string) string {
 }
 
 func RegisterTerm(t TermSemantics) {
-	_, ok := registeredTerms[t.Term]
-	if ok {
-		panic("Duplicate term :" + t.Term)
+	reg := func(s string) {
+		_, ok := registeredTerms[s]
+		if ok {
+			panic("Duplicate term :" + t.Term)
+		}
+		registeredTerms[s] = t
 	}
-	registeredTerms[t.Term] = t
+	reg(t.Term)
+	for _, alias := range t.Aliases {
+		reg(alias)
+	}
 }
 
 func GetTermInfo(term string) TermSemantics {

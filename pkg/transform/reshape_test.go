@@ -19,15 +19,17 @@ import (
 	"testing"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type testCase struct {
-	Name        string      `json:"name"`
-	Target      interface{} `json:"target"`
-	RootID      string      `json:"rootId"`
-	SourceGraph interface{} `json:"sourceGraph"`
-	Expected    interface{} `json:"expected"`
+	Name          string          `json:"name"`
+	Target        interface{}     `json:"target"`
+	RootID        string          `json:"rootId"`
+	SourceGraph   json.RawMessage `json:"sourceGraph"`
+	SourceLDGraph interface{}     `json:"sourceLdGraph"`
+	ExpectedLD    interface{}     `json:"expectedLd"`
+	Expected      json.RawMessage `json:"expected"`
 }
 
 func (tc testCase) GetName() string { return tc.Name }
@@ -44,7 +46,13 @@ func (tc testCase) Run(t *testing.T) {
 		return
 	}
 	sourceGraph := graph.NewOCGraph()
-	err = ls.UnmarshalJSONLDGraph(tc.SourceGraph, sourceGraph, nil)
+
+	if tc.SourceGraph != nil {
+		m := ls.JSONMarshaler{}
+		err = m.Unmarshal(tc.SourceGraph, sourceGraph)
+	} else {
+		err = ls.UnmarshalJSONLDGraph(tc.SourceLDGraph, sourceGraph, nil)
+	}
 	if err != nil {
 		t.Errorf("Test case: %s Cannot unmarshal source graph: %v", tc.Name, err)
 		return
@@ -62,24 +70,31 @@ func (tc testCase) Run(t *testing.T) {
 		return
 	}
 	reshaper := Reshaper{}
-	reshaper.EmbedSchemaNodes = true
-	reshaper.Schema = targetLayer
-	reshaper.Graph = ls.NewDocumentGraph()
+	reshaper.TargetSchema = targetLayer
+	reshaper.Builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
+	ls.DefaultLogLevel = ls.LogLevelDebug
 	err = reshaper.Reshape(ls.DefaultContext(), sourceGraph)
 	if err != nil {
 		t.Errorf("Test case: %s Reshaper error: %v", tc.Name, err)
 		return
 	}
-	result := graph.Sources(reshaper.Graph)[0]
+	result := graph.Sources(reshaper.Builder.GetGraph())[0]
 	ls.SetNodeID(result, "root")
 
 	expectedGraph := graph.NewOCGraph()
-	err = ls.UnmarshalJSONLDGraph(tc.Expected, expectedGraph, nil)
+	if tc.Expected != nil {
+		m := ls.JSONMarshaler{}
+		err = m.Unmarshal(tc.Expected, expectedGraph)
+	} else {
+		err = ls.UnmarshalJSONLDGraph(tc.ExpectedLD, expectedGraph, nil)
+	}
 	if err != nil {
 		t.Errorf("Test case: %s Cannot unmarshal expected graph: %v", tc.Name, err)
 		return
 	}
-	eq := graph.CheckIsomorphism(reshaper.Graph, expectedGraph, func(n1, n2 graph.Node) bool {
+	eq := graph.CheckIsomorphism(reshaper.Builder.GetGraph(), expectedGraph, func(n1, n2 graph.Node) bool {
 		t.Logf("Cmp: %+v %+v\n", n1, n2)
 		s1, _ := ls.GetRawNodeValue(n1)
 		s2, _ := ls.GetRawNodeValue(n2)
@@ -120,7 +135,7 @@ func (tc testCase) Run(t *testing.T) {
 
 	if !eq {
 		m := ls.JSONMarshaler{}
-		result, _ := m.Marshal(reshaper.Graph)
+		result, _ := m.Marshal(reshaper.Builder.GetGraph())
 		expected, _ := m.Marshal(expectedGraph)
 		t.Errorf("Test case: %s Result is different from the expected: Result:\n%s\nExpected:\n%s", tc.Name, string(result), string(expected))
 	}
@@ -133,6 +148,15 @@ func TestBasicReshape(t *testing.T) {
 		return c, err
 	}
 	ls.RunTestsFromFile(t, "testdata/basic.json", run)
+}
+
+func TestBasicMap(t *testing.T) {
+	run := func(in json.RawMessage) (ls.TestCase, error) {
+		var c testCase
+		err := json.Unmarshal(in, &c)
+		return c, err
+	}
+	ls.RunTestsFromFile(t, "testdata/mapbasic.json", run)
 }
 
 func TestFHIRReshape(t *testing.T) {

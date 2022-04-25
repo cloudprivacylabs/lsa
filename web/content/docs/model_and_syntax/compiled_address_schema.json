@@ -1,0 +1,61 @@
+{
+    "nodes": [
+        {
+            "n":0,
+            "id": "https://test.org/person_schema",
+            "labels": ["Schema"],
+            "properties": {
+                "valueType": "Person"
+            }
+        },
+        {
+            "n":1,
+            "id": "https://test.org/Person",
+            "labels": ["Object","Attribute"],
+            "properties": {
+                "valueType": "Person"
+            }
+        },
+        {
+            "n":2,
+            "id": "https://test.org/address",
+            "labels": ["Object","Attribute"],
+            "properties": {
+                "attributeName": "address",
+                "valueType": "Address",
+                "Reference/ref": "Address"
+            }
+        },
+        {
+            "n":3,
+            "id": "https://test.org/Address/street",
+            "labels": ["Value","Attribute"],
+            "properties": {
+                "attributeName": "street"
+            }
+        },
+        {
+            "n":4,
+            "id": "https://test.org/Address/state",
+            "labels": ["Value","Attribute"],
+            "properties": {
+                "attributeName": "state"
+            }
+        },
+        {
+            "n":5,
+            "id": "https://test.org/Address/country",
+            "labels": ["Value","Attribute"],
+            "properties": {
+                "attributeName": "country"
+            }
+        }
+    ],
+    "edges": [
+        {"from":0, "to":1, "label":"layer"},
+        {"from":1, "to":2, "label":"attributes"},
+        {"from":2, "to":3, "label":"attributes"},
+        {"from":2, "to":4, "label":"attributes"},
+        {"from":2, "to":5, "label":"attributes"}
+    ]
+}

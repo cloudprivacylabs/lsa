@@ -1,0 +1,112 @@
+[
+    {
+        "name": "Basic",
+        "graph": {
+            "nodes": [
+                {
+                    "n":0,
+                    "labels": [ "https://lschema.org/Object","https://lschema.org/DocumentNode"],
+                    "properties": {
+                        "https://lschema.org/schemaNodeId": "root"
+                    }
+                },
+                {
+                    "n":1,
+                    "labels": [ "https://lschema.org/Value","https://lschema.org/DocumentNode"],
+                    "properties": {
+                        "https://lschema.org/value": "2002-01-02",
+                        "https://lschema.org/schemaNodeId": "https://attr1"
+                    }
+                },
+                {
+                    "n":2,
+                    "labels": [ "https://lschema.org/Value","https://lschema.org/DocumentNode"],
+                    "properties": {
+                        "https://lschema.org/value": "2002-03-02",
+                        "https://lschema.org/schemaNodeId": "https://attr2"
+                    }
+                },
+                {
+                    "n":3,
+                    "labels": [ "https://lschema.org/Value","https://lschema.org/DocumentNode"],
+                    "properties": {
+                        "https://lschema.org/value": "abc",
+                        "https://lschema.org/schemaNodeId": "https://attr3"
+                    }
+                }
+            ],
+            "edges": [
+                { "from": 0, "to": 1, "label": "https://lschema.org/has" },
+                { "from": 0, "to": 2, "label": "https://lschema.org/has" },
+                { "from": 0, "to": 3, "label": "https://lschema.org/has" }
+            ]
+        },
+        "layer": {
+            "@context": "../../schemas/ls.json",
+            "@type": "Overlay",
+            "@id": "https://layer",
+            "layer": {
+                "@id": "root",
+                "@type": "Object",
+                "attributes": {
+                    "https://attr1": {
+                        "@type": "Value",
+                        "https://someAnnotation": "someValue",
+                        "valueType": "xsd:date"
+                    },
+                    "https://attr2": {
+                        "@type": "Value",
+                        "https://someAnnotation2": "someValue2",
+                        "valueType": "string"
+                    }
+                }
+            }
+        },
+        "expected": {
+            "nodes":[
+                {
+                    "n":0,
+                    "labels":["https://lschema.org/Object","https://lschema.org/DocumentNode"],
+                    "properties":{
+                        "https://lschema.org/schemaNodeId":"root"
+                    }
+                },
+                {
+                    "n":1,
+                    "labels":["https://lschema.org/Value","https://lschema.org/DocumentNode"],
+                    "properties":{
+                        "https://lschema.org/attributeIndex":"0",
+                        "https://lschema.org/schemaNodeId":"https://attr1",
+                        "https://lschema.org/value":"2002-01-02",
+                        "https://lschema.org/valueType":"xsd:date",
+                        "https://someAnnotation":"someValue"
+                    }
+                },
+                {
+                    "n":2,
+                    "labels":["https://lschema.org/Value","https://lschema.org/DocumentNode"],
+                    "properties":{
+                        "https://lschema.org/attributeIndex":"1",
+                        "https://lschema.org/schemaNodeId":"https://attr2",
+                        "https://lschema.org/value":"2002-03-02",
+                        "https://lschema.org/valueType":"string",
+                        "https://someAnnotation2":"someValue2"
+                    }
+                },
+                {
+                    "n":3,
+                    "labels":["https://lschema.org/Value","https://lschema.org/DocumentNode"],
+                    "properties":{
+                        "https://lschema.org/schemaNodeId":"https://attr3",
+                        "https://lschema.org/value":"abc"
+                    }
+                }
+            ],
+            "edges":[
+                {"from":0,"to":1,"label":"https://lschema.org/has"},
+                {"from":0,"to":2,"label":"https://lschema.org/has"},
+                {"from":0,"to":3,"label":"https://lschema.org/has"}
+            ]
+        }
+    }
+]

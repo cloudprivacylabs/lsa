@@ -129,3 +129,23 @@ associated schema node. To ignore such fields:
 ```
 layers ingest json --bundle person-dpv.bundle.json --type Person --embedSchemaNodes --onlySchemaAttributes person_sample.json
 ```
+
+## Applying layer onto ingested graph
+
+It is possible to apply a layer onto an already ingested graph. For
+example, ingest using dpv bundle:
+
+```
+layers ingest json --bundle person-dpv.bundle.json --type Person --embedSchemaNodes person_sample.json >dpv.json
+```
+
+The ingested graph contains DPV  annotations.
+
+Then:
+
+```
+layer applylayer --bundle person-pii.bundle.json --type Person dpv.json
+```
+
+The output graph now contains both PII annotations and DPV
+annotations.

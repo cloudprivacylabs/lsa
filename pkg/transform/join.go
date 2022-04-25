@@ -15,28 +15,20 @@
 package transform
 
 import (
-	"errors"
-	"fmt"
 	"strings"
+
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-const (
-	JoinMethodJoin  = "join"
-	JoinMethodError = "error"
-)
+// JoinWithTerm specifies how to join multiple values. JoinWith: " " will join them using a space.
+var JoinWithTerm = ls.NewTerm(TRANSFORM, "joinWith", false, false, ls.OverrideComposition, nil)
 
-var ErrJoinFailure = errors.New("Join failure")
-
-func JoinValues(values []interface{}, method, delimiter string) (string, error) {
-	strs := make([]string, 0, len(values))
-	for _, n := range values {
-		strs = append(strs, fmt.Sprint(n))
+func JoinValues(values []string, delimiter string) string {
+	if len(values) == 0 {
+		return ""
 	}
-	if len(strs) > 1 && method == JoinMethodError {
-		return "", ErrJoinFailure
+	if len(values) == 1 {
+		return values[0]
 	}
-	if method == JoinMethodJoin {
-		return strings.Join(strs, delimiter), nil
-	}
-	return "", ErrJoinFailure
+	return strings.Join(values, delimiter)
 }

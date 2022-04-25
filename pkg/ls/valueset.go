@@ -17,34 +17,94 @@ package ls
 import (
 	"fmt"
 
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
+// ValuesetLookupRequest specifies an optional list of lookup tables
+// and key-value pairs to lookup. If the lookup tables list is empty,
+// the valueset lookup should check all compatible tables. The
+// key-values may contain a single value with empty key for simple
+// dictionay lookups
 type ValuesetLookupRequest struct {
 	TableIDs  []string
 	KeyValues map[string]string
 }
 
+// ValuesetLookupResponse returns the key-value pairs that should be
+// inserted into the graph
 type ValuesetLookupResponse struct {
 	KeyValues map[string]string
 }
 
 var (
-	ValuesetSourceIDTerm      = NewTerm(LS, "vs/source", false, false, OverrideComposition, nil)
-	ValuesetTablesTerm        = NewTerm(LS, "vs/valuesets", false, false, OverrideComposition, nil)
-	ValuesetRequestKeysTerm   = NewTerm(LS, "vs/requestKeys", false, false, OverrideComposition, nil)
+	// ValuesetContextTerm specifies the context under which valueset related values are to be looked up.
+	//
+	// For instance, consider a row of data:
+	//
+	//   root ----> item1
+	//        ----> item2
+	//
+	// If item1 and item2 are values that can be used as an input to
+	// valueset lookup, then the context should be set to root
+	//
+	// A node must contain either the ValuesetContextTerm or the ValuesetTablesTerm to be used in lookup
+	ValuesetContextTerm = NewTerm(LS, "vs/context", false, false, OverrideComposition, nil)
+
+	// ValuesetTablesTerm specifies the list of table IDs to
+	// lookup. This is optional.  A node must contain either the
+	// ValuesetContextTerm or the ValuesetTablesTerm to be used in
+	// lookup
+	ValuesetTablesTerm = NewTerm(LS, "vs/valuesets", false, false, OverrideComposition, nil)
+
+	// ValuesetRequestKeysTerm specifies the keys that will be used in
+	// the valueset request. These keys are interpreted by the valueset
+	// lookup.
+	ValuesetRequestKeysTerm = NewTerm(LS, "vs/requestKeys", false, false, OverrideComposition, nil)
+
+	// ValuesetRequestValuesTerm contains entries matching
+	// ValuesetRequestKeysTerm. It specifies the schema node IDs of the
+	// nodes containing values to lookup
 	ValuesetRequestValuesTerm = NewTerm(LS, "vs/requestValues", false, false, OverrideComposition, nil)
-	ValuesetResultKeysTerm    = NewTerm(LS, "vs/resultKeys", false, false, OverrideComposition, nil)
-	ValuesetResultValuesTerm  = NewTerm(LS, "vs/resultValues", false, false, OverrideComposition, nil)
+
+	// ValuesetResultKeys term contains the keys that will be returned
+	// from the valueset lookup. Values of these keys will be inserted under the context
+	ValuesetResultKeysTerm = NewTerm(LS, "vs/resultKeys", false, false, OverrideComposition, nil)
+
+	// ValuesetResultValuesTerm specifies the schema node IDs for the
+	// nodes that will receive the matching key values. If there is only one, resultKeys is optional
+	ValuesetResultValuesTerm = NewTerm(LS, "vs/resultValues", false, false, OverrideComposition, nil)
 )
 
+// ValuesetInfo describes value set information for a schema node.
+//
+// A schema node containing valueset information requests the use of a
+// dictionary or valueset to manipulate the graph. The results of
+// valueset lookup can be placed under new nodes of the schema node.
+//
+// The valueset or dictionary lookup is envisioned as an external
+// service. This service is called with the list of valueset ids, and
+// a set of key:value pairs as the request. The response is another
+// set of key:value pairs. Valueset processing adds the response to
+// the graph.
+//
+// The valueset context node specifies a node that is either the
+// current node or one of its ancestors. All the nodes for the
+// valueset lookup are found under this context, and valueset lookup
+// results are added under this context node.
+//
+// The valueset info may specify one or mode valuesets to lookup
+// (TableIDs). If none specified, all compatible valuesets should be
+// looked up.
+//
 type ValuesetInfo struct {
 	// If the valueset lookup requires a single value, the attribute id
 	// of the source node. Otherwise, the root node containing all the
-	// required values.
-	SourceID string
+	// required values. Results of the valueset lookup will also be
+	// inserted under this node. If this is empty, then the current node
+	// is the context node
+	ContextID string
 
-	// Optional lookup table IDs. If ommitted, all compatible tables are
+	// Optional lookup table IDs. If omitted, all compatible tables are
 	// looked up
 	TableIDs []string
 
@@ -61,6 +121,9 @@ type ValuesetInfo struct {
 
 	// The attribute ids of the nodes under this node to receive values
 	ResultValues []string
+
+	// The schemanode containing the valueset info
+	SchemaNode graph.Node
 }
 
 type ErrInvalidValuesetSpec struct {
@@ -72,41 +135,55 @@ func (e ErrInvalidValuesetSpec) Error() string {
 }
 
 type ErrValueset struct {
-	Msg string
+	Msg          string
+	SchemaNodeID string
 }
 
 func (e ErrValueset) Error() string {
-	return fmt.Sprintf("Value set processing error: %s", e.Msg)
+	return fmt.Sprintf("Value set processing error %s: %s", e.SchemaNodeID, e.Msg)
 }
 
 // ValueSetInfoFromNode parses the valuese information from a
 // node. Returns nil if the node does not have valueset info
 func ValuesetInfoFromNode(node graph.Node) *ValuesetInfo {
-	v, ok := node.GetProperty(ValuesetSourceIDTerm)
-	if !ok {
-		return nil
-	}
-	pv, _ := v.(*PropertyValue)
-	if pv == nil {
+	ctxp := AsPropertyValue(node.GetProperty(ValuesetContextTerm))
+	tablep := AsPropertyValue(node.GetProperty(ValuesetTablesTerm))
+	if ctxp == nil && tablep == nil {
 		return nil
 	}
 	ret := &ValuesetInfo{
-		SourceID:      pv.AsString(),
-		TableIDs:      AsPropertyValue(node.GetProperty(ValuesetTablesTerm)).MustStringSlice(),
+		ContextID:     ctxp.AsString(),
+		TableIDs:      tablep.MustStringSlice(),
 		RequestKeys:   AsPropertyValue(node.GetProperty(ValuesetRequestKeysTerm)).MustStringSlice(),
 		RequestValues: AsPropertyValue(node.GetProperty(ValuesetRequestValuesTerm)).MustStringSlice(),
 		ResultKeys:    AsPropertyValue(node.GetProperty(ValuesetResultKeysTerm)).MustStringSlice(),
 		ResultValues:  AsPropertyValue(node.GetProperty(ValuesetResultValuesTerm)).MustStringSlice(),
+		SchemaNode:    node,
 	}
-	if len(ret.SourceID) == 0 {
-		return nil
+	if len(ret.ContextID) == 0 {
+		ret.ContextID = GetNodeID(node)
 	}
 	return ret
 }
 
-func (vsi *ValuesetInfo) GetRequest(sourceDocumentNode graph.Node) (map[string]string, error) {
-	value, _ := GetRawNodeValue(sourceDocumentNode)
+// GetRequest builds a valueset service request in the form of
+// key:value pairs. All the request values are expected to be under the
+// contextDocumentNode.
+//
+// If ValuesetInfo contains no RequestValues, then the
+// vsiDocumentNode is used as the request value. If there are
+// RequestKeys specified, there must be only one, and that is used as
+// the key. Otherwise, the request is prepared with empty key.
+//
+// vsiDocumentNode can be nil
+//
+// If ValuesetInfo contains RequestValues, the request values
+func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.Node) (map[string]string, error) {
 	if len(vsi.RequestValues) == 0 {
+		if vsiDocumentNode == nil {
+			return nil, ErrInvalidValuesetSpec{Msg: fmt.Sprintf("Document node is nil for the value set")}
+		}
+		value, _ := GetRawNodeValue(vsiDocumentNode)
 		// Document node is the source node
 		// There can be at most one key
 		if len(vsi.RequestKeys) > 1 {
@@ -127,7 +204,8 @@ func (vsi *ValuesetInfo) GetRequest(sourceDocumentNode graph.Node) (map[string]s
 	req := make(map[string]string)
 	// There are some request value fields under this node. Collect them.
 	for index, reqv := range vsi.RequestValues {
-		if reqv == AsPropertyValue(sourceDocumentNode.GetProperty(SchemaNodeIDTerm)).AsString() {
+		if reqv == AsPropertyValue(contextDocumentNode.GetProperty(SchemaNodeIDTerm)).AsString() {
+			value, _ := GetRawNodeValue(contextDocumentNode)
 			if len(vsi.RequestKeys) == 0 {
 				req[""] = value
 			} else {
@@ -148,8 +226,8 @@ func (vsi *ValuesetInfo) GetRequest(sourceDocumentNode graph.Node) (map[string]s
 					Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(reqv)},
 				}}
 			p := graph.PatternSymbol{}
-			p.Add(sourceDocumentNode)
-			acc, err := pattern.FindPaths(sourceDocumentNode.GetGraph(), map[string]*graph.PatternSymbol{"n": &p})
+			p.Add(contextDocumentNode)
+			acc, err := pattern.FindPaths(contextDocumentNode.GetGraph(), map[string]*graph.PatternSymbol{"n": &p})
 			if err != nil {
 				return nil, err
 			}
@@ -165,154 +243,239 @@ func (vsi *ValuesetInfo) GetRequest(sourceDocumentNode graph.Node) (map[string]s
 	return req, nil
 }
 
-func (ingester *Ingester) ProcessValueset(ctx IngestionContext, rootDocumentNode, schemaNode graph.Node) error {
-	if !schemaNode.GetLabels().Has(AttributeNodeTerm) {
-		return nil
-	}
-	vsi := ValuesetInfoFromNode(schemaNode)
-	if vsi == nil {
-		return nil
-	}
-	// Node has valueset info
-	ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process", "schemaNodeId": GetNodeID(schemaNode)})
-
-	// Find all instances of the source node under the given root document node
+// GetContextNodes returns the contexts node for the given document
+func (vsi *ValuesetInfo) GetContextNodes(g graph.Graph) ([]graph.Node, error) {
 	pattern := graph.Pattern{
 		{
-			Name: "root",
+			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(vsi.ContextID)},
+		},
+	}
+	return pattern.FindNodes(g, nil)
+}
+
+// GetContextNode returns the context node for the given document
+// node. The context node must be the node itself, or an ancestor of
+// the node
+func (vsi *ValuesetInfo) GetContextNode(docNode graph.Node) (graph.Node, error) {
+	pattern := graph.Pattern{
+		{
+			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(vsi.ContextID)},
 		},
 		{
-			Min: 1,
+			Min: 0,
 			Max: -1,
 		},
 		{
-			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(vsi.SourceID)},
+			Name: "start",
+		},
+	}
+	ps := graph.PatternSymbol{}
+	ps.AddNode(docNode)
+	nodes, err := pattern.FindNodes(docNode.GetGraph(), map[string]*graph.PatternSymbol{"start": &ps})
+	if err != nil {
+		return nil, err
+	}
+	if len(nodes) > 1 {
+		return nil, ErrValueset{SchemaNodeID: GetNodeID(vsi.SchemaNode), Msg: "Multiple context nodes"}
+	}
+	if len(nodes) == 0 {
+		return nil, nil
+	}
+	return nodes[0], nil
+}
+
+// GetDocNodes returns the document nodes that are instance of the vsi schema node
+func (vsi *ValuesetInfo) GetDocNodes(g graph.Graph) []graph.Node {
+	pattern := graph.Pattern{
+		{
+			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(GetNodeID(vsi.SchemaNode))},
 		}}
-	p := graph.PatternSymbol{}
-	p.Add(rootDocumentNode)
-	acc, err := pattern.FindPaths(rootDocumentNode.GetGraph(), map[string]*graph.PatternSymbol{"root": &p})
+	nodes, err := pattern.FindNodes(g, nil)
+	if err != nil {
+		panic(err)
+	}
+	return nodes
+}
+
+func (vsi *ValuesetInfo) createResultNodes(builder GraphBuilder, layer *Layer, contextDocumentNode graph.Node, resultSchemaNodeID string, resultValue string) error {
+	// There is value. If there is a node, update it. Otherwise, insert it
+	resultSchemaNode := layer.GetAttributeByID(resultSchemaNodeID)
+	if resultSchemaNode == nil {
+		return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Target schema node %s does not exist in layer", resultSchemaNodeID)}
+	}
+	resultNodes := FindChildInstanceOf(contextDocumentNode, resultSchemaNodeID)
+	switch len(resultNodes) {
+	case 0: // insert it
+		switch GetIngestAs(resultSchemaNode) {
+		case "node":
+			_, _, err := builder.ValueAsNode(resultSchemaNode, contextDocumentNode, resultValue)
+			if err != nil {
+				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
+			}
+		case "edge":
+			_, err := builder.ValueAsEdge(resultSchemaNode, contextDocumentNode, resultValue)
+			if err != nil {
+				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
+			}
+		case "property":
+			err := builder.ValueAsProperty(resultSchemaNode, []graph.Node{contextDocumentNode}, resultValue)
+			if err != nil {
+				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
+			}
+		}
+	case 1: // update it
+		switch GetIngestAs(resultSchemaNode) {
+		case "node", "edge":
+			SetRawNodeValue(resultNodes[0], resultValue)
+		default:
+			return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: "Cannot update value in property, inconsistent graph"}
+		}
+	}
+	return nil
+}
+
+func (vsi *ValuesetInfo) ApplyValuesetResponse(builder GraphBuilder, layer *Layer, contextDocumentNode, contextSchemaNode graph.Node, result ValuesetLookupResponse) error {
+	if len(result.KeyValues) == 0 {
+		return nil
+	}
+	if len(vsi.ResultKeys) == 0 && len(vsi.ResultValues) == 0 {
+		// Target is this document node
+		if len(result.KeyValues) != 1 {
+			return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: "Multiple results from valueset lookup, but no ResultKeys specified in the schema"}
+		}
+		for _, v := range result.KeyValues {
+			SetRawNodeValue(contextDocumentNode, v)
+			return nil
+		}
+	}
+	// If only one resultValues is specified and there is one result
+	if len(vsi.ResultKeys) == 0 && len(vsi.ResultValues) == 1 && len(result.KeyValues) == 1 {
+		resultNodeID := vsi.ResultValues[0]
+		var resultValue string
+		for _, v := range result.KeyValues {
+			resultValue = v
+		}
+		if err := vsi.createResultNodes(builder, layer, contextDocumentNode, resultNodeID, resultValue); err != nil {
+			return err
+		}
+	}
+	for resultKeyIndex, resultKey := range vsi.ResultKeys {
+		if len(vsi.ResultValues) < resultKeyIndex {
+			continue
+		}
+		// Assign resultValue to resultNodeID
+		resultNodeID := vsi.ResultValues[resultKeyIndex]
+		resultValue, ok := result.KeyValues[resultKey]
+		if !ok {
+			// No value. If there is a resultNodeID, remove it
+			resultNodes := FindChildInstanceOf(contextDocumentNode, resultNodeID)
+			for _, n := range resultNodes {
+				n.DetachAndRemove()
+			}
+			return nil
+		}
+		if err := vsi.createResultNodes(builder, layer, contextDocumentNode, resultNodeID, resultValue); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// ProcessByContextNode processes the value set of the given context  node and the schema node containing the vsi
+func (prc *ValuesetProcessor) ProcessByContextNode(ctx *Context, builder GraphBuilder, contextDocNode, contextSchemaNode, vsiDocNode graph.Node, vsi *ValuesetInfo) error {
+	kv, err := vsi.GetRequest(contextDocNode, vsiDocNode)
 	if err != nil {
 		return err
 	}
-	nodes := acc.GetTailNodes()
-	ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process", "numInstances": len(nodes)})
-
-	rootDocumentNodeAttrID := AsPropertyValue(rootDocumentNode.GetProperty(SchemaNodeIDTerm)).AsString()
-	rootDocumentNodeAttrs := FindNodeByID(schemaNode.GetGraph(), rootDocumentNodeAttrID)
-	if len(rootDocumentNodeAttrs) != 1 {
-		return ErrValueset{Msg: fmt.Sprintf("Cannot find the schema for the root node: %s", rootDocumentNodeAttrID)}
-	}
-	rootDocumentNodeAttr := rootDocumentNodeAttrs[0]
-
-	// Process each source node. The source node may itself be the
-	// value source, or all values are under it
-	for _, sourceNode := range nodes {
-		ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process",
-			"sourceNode": sourceNode})
-		kv, err := vsi.GetRequest(sourceNode)
+	ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process", "request": kv})
+	if len(kv) != 0 {
+		// Perform the lookup
+		result, err := prc.lookupFunc(ctx, ValuesetLookupRequest{
+			TableIDs:  vsi.TableIDs,
+			KeyValues: kv,
+		})
 		if err != nil {
 			return err
 		}
-		ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process", "request": kv})
-		if len(kv) != 0 {
-			// Perform the lookup
-			result, err := ingester.ValuesetFunc(ValuesetLookupRequest{
-				TableIDs:  vsi.TableIDs,
-				KeyValues: kv,
-			})
-			if err != nil {
-				return err
-			}
-			ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process", "result": result})
-			// If there is nonzero result, put it back into the doc
-			if len(result.KeyValues) > 0 {
-				// The target schema node is `schemaNode`
-				// The root of the source document node is `rootDocumentNode`
-				// Find the schema path from schemaNode to the schema node of rootDocumentNode
-				path := GetAttributePath(rootDocumentNodeAttr, schemaNode)
-				if len(path) == 0 {
-					return ErrValueset{Msg: fmt.Sprintf("Cannot find schema path to %s", GetNodeID(schemaNode))}
-				}
-				// Tandem walk: root node is already known, and do not create the target node itself
-				ictx := newIngestionContext(ctx.Context, "", rootDocumentNodeAttr)
-				ictx = ictx.NewLevel(rootDocumentNode)
-				currentParent := rootDocumentNode
-				for i := 1; i < len(path)-1; i++ {
-					// Find the node under the current root that is
-					// instance of the schema path element
-					children := FindChildInstanceOf(currentParent, GetNodeID(path[i]))
-					if len(children) > 1 {
-						return ErrValueset{Msg: fmt.Sprintf("Multiple children while setting valueset results: %s", GetNodeID(path[i]))}
-					}
-					if len(children) == 0 {
-						// TODO: do a property ingester node creation here
-
-					}
-					currentParent = children[0]
-					ictx = ictx.New("", path[i])
-					ictx = ictx.NewLevel(currentParent)
-				}
-				// Create the new node
-				ictx = ictx.New("", schemaNode)
-				// Do we already have the target node?
-				children := FindChildInstanceOf(currentParent, GetNodeID(schemaNode))
-				if len(children) > 1 {
-					return ErrValueset{Msg: fmt.Sprintf("Multiple nodes already exist for valueset target %s", GetNodeID(schemaNode))}
-				}
-				switch {
-				case schemaNode.GetLabels().Has(AttributeTypeValue):
-					if len(result.KeyValues) != 1 {
-						return ErrValueset{Msg: "Multiple values cannot be set to value node: %s"}
-					}
-					switch len(children) {
-					case 0:
-						// Create the new node
-						for _, v := range result.KeyValues {
-							ingester.Value(ictx, v)
-						}
-					case 1:
-						// Overwrite the existing node
-						for _, v := range result.KeyValues {
-							SetRawNodeValue(children[0], v)
-						}
-					}
-				case schemaNode.GetLabels().Has(AttributeTypeObject):
-					// Create the object node
-					_, _, node, nictx, err := ingester.Instantiate(ictx)
-					if err != nil {
-						return ErrValueset{Msg: fmt.Sprintf("In %s: %s", GetNodeID(schemaNode), err)}
-					}
-					nictx = nictx.NewLevel(node)
-					// Create children
-					// TODO: For now, this only creates single-level flat structures
-					if len(vsi.ResultValues) == 0 {
-						return ErrValueset{Msg: fmt.Sprintf("In %s: target is an object node, but there are no ids to receive result values", GetNodeID(schemaNode))}
-					}
-					for i, key := range vsi.ResultKeys {
-						value, ok := result.KeyValues[key]
-						if !ok {
-							continue
-						}
-						// Get the schema node for this one
-						valueSchemaNode := FindNodeByID(schemaNode.GetGraph(), vsi.ResultValues[i])
-						if len(valueSchemaNode) != 1 {
-							return ErrValueset{Msg: fmt.Sprintf("Expecting one %s node in schema, got %d", vsi.ResultValues[i], len(valueSchemaNode))}
-						}
-
-						// Insert a value node
-						_, _, node, _, err := ingester.Instantiate(nictx.New("", valueSchemaNode[0]))
-						if err != nil {
-							return ErrValueset{Msg: fmt.Sprintf("While setting %s: %s", GetNodeID(valueSchemaNode[0]), err)}
-						}
-						SetRawNodeValue(node, value)
-					}
-
-				default:
-					return ErrValueset{Msg: fmt.Sprintf("Unsupported schema node type: %s", GetNodeID(schemaNode))}
-				}
-			}
+		ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process", "result": result, "contextDocNode": contextDocNode})
+		// If there is nonzero result, put it back into the doc
+		if len(result.KeyValues) > 0 {
+			vsi.ApplyValuesetResponse(builder, prc.layer, contextDocNode, contextSchemaNode, result)
 		}
 	}
+	return nil
+}
 
+// Process processes the value set of the given context document node and the schema node containing the vsi
+func (prc *ValuesetProcessor) Process(ctx *Context, builder GraphBuilder, vsiDocNode, contextSchemaNode graph.Node, vsi *ValuesetInfo) error {
+	contextDocNode, err := vsi.GetContextNode(vsiDocNode)
+	if err != nil {
+		return err
+	}
+	ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process", "contextNode": contextSchemaNode, "docNode": vsiDocNode})
+	return prc.ProcessByContextNode(ctx, builder, contextDocNode, contextSchemaNode, vsiDocNode, vsi)
+}
+
+type ValuesetProcessor struct {
+	layer      *Layer
+	lookupFunc func(*Context, ValuesetLookupRequest) (ValuesetLookupResponse, error)
+	vsis       []ValuesetInfo
+}
+
+func NewValuesetProcessor(layer *Layer, lookupFunc func(*Context, ValuesetLookupRequest) (ValuesetLookupResponse, error)) ValuesetProcessor {
+	ret := ValuesetProcessor{
+		layer:      layer,
+		lookupFunc: lookupFunc,
+	}
+	ret.init()
+	return ret
+}
+
+func (prc *ValuesetProcessor) init() {
+	if prc.vsis != nil {
+		return
+	}
+	for nodes := prc.layer.Graph.GetNodes(); nodes.Next(); {
+		node := nodes.Node()
+		vsi := ValuesetInfoFromNode(node)
+		if vsi == nil {
+			continue
+		}
+		prc.vsis = append(prc.vsis, *vsi)
+	}
+}
+
+func (prc *ValuesetProcessor) ProcessGraphValueset(ctx *Context, builder GraphBuilder, vsi *ValuesetInfo) error {
+	vsiDocNodes := vsi.GetDocNodes(builder.GetGraph())
+	contextSchemaNode := prc.layer.GetAttributeByID(vsi.ContextID)
+	if contextSchemaNode == nil {
+		return nil
+	}
+	if len(vsiDocNodes) == 0 {
+		contextNodes, err := vsi.GetContextNodes(builder.GetGraph())
+		if err != nil {
+			return err
+		}
+		for _, contextNode := range contextNodes {
+			if err := prc.ProcessByContextNode(ctx, builder, contextNode, contextSchemaNode, nil, vsi); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+	for _, vsiDocNode := range vsiDocNodes {
+		if err := prc.Process(ctx, builder, vsiDocNode, contextSchemaNode, vsi); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (prc *ValuesetProcessor) ProcessGraph(ctx *Context, builder GraphBuilder) error {
+	for i := range prc.vsis {
+		if err := prc.ProcessGraphValueset(ctx, builder, &prc.vsis[i]); err != nil {
+			return err
+		}
+	}
 	return nil
 }
