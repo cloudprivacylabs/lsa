@@ -39,26 +39,16 @@ func init() {
 	ingestCmd.PersistentFlags().Bool("onlySchemaAttributes", false, "Only ingest nodes that have an associated schema attribute")
 }
 
-type Step interface {
-	Run(*ls.Context)
-}
-
-type BaseIngester struct {
-	Repo                 string
-	Output               string
-	Schema               string
-	Type                 string
-	Bundle               string
-	CompiledSchema       string
-	IncludeSchema        bool
-	EmbedSchemaNodes     bool
-	OnlySchemaAttributes bool
-}
-
-type PipelineContext struct {
-	Graph graph.Graph
-	Roots []graph.Node
-	Input io.Reader
+type BaseIngestParams struct {
+	Repo                 string `json:"repo" yaml:"repo"`
+	Output               string `json:"output" yaml:"output"`
+	Schema               string `json:"schema" yaml:"schema"`
+	Type                 string `json:"type" yaml:"type"`
+	Bundle               string `json:"bundle" yaml:"bundle"`
+	CompiledSchema       string `json:"compiledSchema" yaml:"compiledSchema"`
+	IncludeSchema        bool   `json:"includeSchema" yaml:"includeSchema"`
+	EmbedSchemaNodes     bool   `json:"embedSchemaNodes" yaml:"embedSchemaNodes"`
+	OnlySchemaAttributes bool   `json:"onlySchemaAttributes" yaml:"onlySchemaAttributes"`
 }
 
 var ingestCmd = &cobra.Command{

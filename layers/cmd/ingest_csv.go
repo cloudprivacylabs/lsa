@@ -16,10 +16,7 @@ package cmd
 
 import (
 	"bytes"
-	"context"
 	"encoding/csv"
-	"encoding/json"
-	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -34,8 +31,7 @@ import (
 )
 
 type CSVIngester struct {
-	BaseIngester
-	PipelineContext
+	BaseIngestParams
 	StartRow     int
 	EndRow       int
 	HeaderRow    int
@@ -43,25 +39,22 @@ type CSVIngester struct {
 	InitialGraph string
 }
 
-func (ci *CSVIngester) Run(ctx *ls.Context, file string) {
-	ctx = ls.NewContext(context.WithValue(context.Background(), "filename", file))
-	ci.Input = strings.NewReader(context.Background().Value("filename").(string))
-}
+func (ci CSVIngester) Run(pipeline *PipelineContext, file string) {
+	// ctx := ls.NewContext(context.WithValue(context.Background(), "filename", file))
+	ctx := ls.DefaultContext()
+	// pipeline.Input = strings.NewReader(context.Background().Value("filename").(string))
 
-func (ci CSVIngester) Ingest() {
 	initialGraph := ci.InitialGraph
-	ctx := getContext()
-	ctx = ls.NewContext(context.Background())
 	layer, err := LoadSchemaFromFileOrRepo(ctx, ci.CompiledSchema, ci.Repo, ci.Schema, ci.Type, ci.Bundle)
 	if err != nil {
 		failErr(err)
 	}
-	// f, err := ci.Input.Read()
-	// if err != nil {
-	// 	failErr(err)
-	// }
-
-	reader := csv.NewReader(ci.Input)
+	f, err := os.Open(file)
+	defer f.Close()
+	if err != nil {
+		failErr(err)
+	}
+	reader := csv.NewReader(f)
 	startRow := ci.StartRow
 	endRow := ci.EndRow
 	headerRow := ci.HeaderRow
@@ -70,7 +63,7 @@ func (ci CSVIngester) Ingest() {
 	}
 	var grph graph.Graph
 	if layer != nil && initialGraph != "" {
-		grph = ci.Graph
+		grph = pipeline.Graph
 	} else {
 		grph = ls.NewDocumentGraph()
 	}
@@ -126,50 +119,7 @@ func (ci CSVIngester) Ingest() {
 			}
 		}
 	}
-	csvPipeline := struct {
-		Operation string        `json:"operation"`
-		Params    []interface{} `json:"params"`
-	}{
-		Operation: "ingestCSV",
-		Params: []interface{}{
-			ci.Repo,
-			ci.Output,
-			ci.Schema,
-			ci.Type,
-			ci.Bundle,
-			ci.CompiledSchema,
-			ci.IncludeSchema,
-			ci.EmbedSchemaNodes,
-			ci.OnlySchemaAttributes,
-			ci.StartRow,
-			ci.EndRow,
-			ci.HeaderRow,
-			ci.ID,
-			ci.InitialGraph,
-		},
-	}
-	b, err := json.MarshalIndent(csvPipeline, "", "  ")
-	fmt.Println(string(b))
-	// outputGraph := func(graph graph.Graph, format string, out io.Writer) error {
-	// 	switch format {
-	// 	case "json":
-	// 		m := ls.JSONMarshaler{}
-	// 		return m.Encode(graph, out)
-	// 	case "jsonld":
-	// 		marshaler := ls.LDMarshaler{}
-	// 		intf := marshaler.Marshal(graph)
-	// 		enc := json.NewEncoder(out)
-	// 		return enc.Encode(intf)
-	// 	}
-	// 	return fmt.Errorf("Unrecognized output format: %s", format)
-	// }
-	// var buf bytes.Buffer
-	// outputGraph(ci.Graph, ci.Output, &buf)
-
-	// err = OutputIngestedGraph(cmd, outFormat, grph, os.Stdout, includeSchema)
-	// if err != nil {
-	// 	failErr(err)
-	// }
+	pipeline.Graph = builder.GetGraph()
 }
 
 func init() {
