@@ -26,7 +26,7 @@ import (
 
 func init() {
 	exportCmd.AddCommand(exportJSONCmd)
-	exportCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
+	exportJSONCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 }
 
 var exportJSONCmd = &cobra.Command{
