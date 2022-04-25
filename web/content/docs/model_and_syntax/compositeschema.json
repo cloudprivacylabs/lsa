@@ -1,0 +1,50 @@
+{
+    "nodes": [
+        {
+            "n":0,
+            "id": "https://test.org/person_schema",
+            "labels": ["Schema"],
+            "properties": {
+                "valueType": "Person"
+            }
+        },
+        {
+            "n":1,
+            "id": "https://test.org/Person",
+            "labels": ["Object","Attribute"],
+            "properties": {
+                "valueType": "Person"
+            }
+        },
+        {
+            "n":2,
+            "id": "https://test.org/address",
+            "labels": ["Composite","Attribute"],
+            "properties": {
+                "attributeName": "address"
+            }
+        },
+        {
+            "n":3,
+            "id": "https://test.org/address/base",
+            "labels": ["Reference","Attribute"],
+            "properties": {
+                "ref": "BaseAddress"
+            }
+        },
+        {
+            "n":4,
+            "id": "https://test.org/address/state",
+            "labels": ["Value","Attribute"],
+            "properties": {
+                "attributeName":"state"
+            }
+        }
+    ],
+    "edges": [
+        {"from":0, "to":1, "label":"layer"},
+        {"from":1, "to":2, "label":"attributes"},
+        {"from":2, "to":3, "label":"allOf"},
+        {"from":2, "to":4, "label":"allOf"}
+    ]
+}

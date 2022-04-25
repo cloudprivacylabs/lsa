@@ -34,14 +34,13 @@ func TestCSVImport(t *testing.T) {
 		return
 	}
 
-	idSpec := AttributeSpec{TermCol: 1}
 	colSpecs := []TermSpec{
 		{
-			Term:    "https://lschema.org/validation#format",
-			TermCol: 5,
+			Term:         "https://lschema.org/validation#format",
+			TermTemplate: "{{index .row 5}}",
 		},
 	}
-	layer, err := Import(idSpec, colSpecs, 3, 0, records)
+	layer, err := Import("{{index .row 1}}", colSpecs, 3, 0, nil, "", "", records)
 	if err != nil {
 		t.Error(err)
 		return

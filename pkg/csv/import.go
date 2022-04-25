@@ -21,43 +21,21 @@ import (
 	"text/template"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lsa/pkg/validators"
 )
-
-type ImportSpec struct {
-	AttributeID TermSpec
-
-	Terms []TermSpec
-}
 
 type TermSpec struct {
 	// The term
 	Term string `json:"term"`
-	// The 0-based column containing term data
-	TermCol int `json:"column"`
 	// If nonempty, this template is used to build the term contents
-	// with {{.term}}, {{.data}}, and {{.row}} in template context. {{.term}} gives
-	// the Term, and {{.data}} gives the value of the term in the
-	// current cell.
+	// with {{.term}}, and {{.row}} in template context. {{.term}} gives
+	// the Term, and {{.row}} gives the cells of the current row
 	TermTemplate string `json:"template"`
 	// Is property an array
 	Array bool `json:"array"`
 	// Array separator character
 	ArraySeparator string `json:"separator"`
-}
-
-type AttributeSpec struct {
-	// The 0-based column containing term data
-	TermCol int `json:"column"`
-	// If nonempty, this template is used to build the term contents
-	// with {{.term}}, {{.data}}, and {{.row}} in template context. {{.term}} gives
-	// the Term, and {{.data}} gives the value of the term in the
-	// current cell.
-	TermTemplate string `json:"template"`
-
-	// If evaluates to a nonempty string, the attribute is an array whose elements are of this type
-	ArrayTypeTemplate string `json:"arrayTypeTemplate"`
-	ArrayIDTemplate   string `json:"arrayIdTemplate"`
 }
 
 type ErrColIndexOutOfBounds struct {
@@ -85,34 +63,32 @@ func (e ErrInvalidID) Error() string {
 // column for base attribute names, and other columns for
 // overlays. CSV does not support nested attributes. Returns an array
 // of Layer objects
-func Import(attributeID AttributeSpec, terms []TermSpec, startRow, nRows int, input [][]string) (*ls.Layer, error) {
+func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []int, entityID string, required string, input [][]string) (*ls.Layer, error) {
 	layer := ls.NewLayer()
 	root := layer.Graph.NewNode([]string{ls.AttributeTypeObject, ls.AttributeNodeTerm}, nil)
 	layer.Graph.NewEdge(layer.GetLayerRootNode(), root, ls.LayerRootTerm, nil)
 
-	var idTemplate, arrayIdTemplate, arrayTypeTemplate *template.Template
+	idTemplate, err := template.New("").Parse(attributeID)
+	if err != nil {
+		return nil, err
+	}
 
-	if len(attributeID.TermTemplate) > 0 {
-		var err error
-		idTemplate, err = template.New("").Parse(attributeID.TermTemplate)
+	var entityIDTemplate *template.Template
+	if len(entityID) > 0 {
+		entityIDTemplate, err = template.New("").Parse(entityID)
 		if err != nil {
 			return nil, err
 		}
 	}
-	if len(attributeID.ArrayTypeTemplate) > 0 {
-		var err error
-		arrayTypeTemplate, err = template.New("").Parse(attributeID.ArrayTypeTemplate)
+
+	var requiredTemplate *template.Template
+	if len(required) > 0 {
+		requiredTemplate, err = template.New("").Parse(required)
 		if err != nil {
 			return nil, err
 		}
 	}
-	if len(attributeID.ArrayIDTemplate) > 0 {
-		var err error
-		arrayIdTemplate, err = template.New("").Parse(attributeID.ArrayIDTemplate)
-		if err != nil {
-			return nil, err
-		}
-	}
+
 	templates := make([]*template.Template, len(terms))
 	for i, t := range terms {
 		if len(t.TermTemplate) > 0 {
@@ -127,71 +103,67 @@ func Import(attributeID AttributeSpec, terms []TermSpec, startRow, nRows int, in
 	nAttributeID := 0
 	nTerms := make([]int, len(terms))
 	index := 0
+	entityIDFields := make([]string, 0)
+	requiredFields := make([]string, 0)
 	for rowIndex, row := range input {
-		runtmp := func(t *template.Template, term, data string) (string, error) {
+		runtmp := func(t *template.Template, term string) (string, error) {
 			if t == nil {
-				return data, nil
+				return "", nil
 			}
 			var out bytes.Buffer
-			if err := t.Execute(&out, map[string]interface{}{"term": term, "data": data, "row": row}); err != nil {
+			if err := t.Execute(&out, map[string]interface{}{"term": term, "row": row}); err != nil {
 				return "", err
 			}
 			return strings.TrimSpace(out.String()), nil
 		}
 		if rowIndex >= startRow && (nRows == 0 || nAttributeID < nRows) {
-			var err error
 			nAttributeID++
-			if attributeID.TermCol < 0 || attributeID.TermCol >= len(row) {
-				return nil, ErrColIndexOutOfBounds{For: "@id", Index: attributeID.TermCol}
-			}
-			id := strings.TrimSpace(row[attributeID.TermCol])
-			if len(id) == 0 {
-				break
-			}
-			id, err = runtmp(idTemplate, "@id", id)
+			id, err := runtmp(idTemplate, "@id")
 			if err != nil {
 				return nil, err
 			}
 			if len(id) == 0 {
 				return nil, ErrInvalidID{rowIndex}
 			}
-			var attr graph.Node
-			if arrayIdTemplate != nil {
-				attr = layer.Graph.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeArray}, nil)
-				ls.SetNodeID(attr, id)
-				arrId, err := runtmp(arrayIdTemplate, "@id", id)
+			for i, x := range idRows {
+				if rowIndex == x {
+					for len(entityIDFields) <= i {
+						entityIDFields = append(entityIDFields, "")
+					}
+					entityIDFields[i] = id
+					break
+				}
+			}
+
+			if entityIDTemplate != nil {
+				s, err := runtmp(entityIDTemplate, "")
 				if err != nil {
 					return nil, err
 				}
-				if len(arrId) == 0 {
-					attr = layer.Graph.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeValue}, nil)
-					ls.SetNodeID(attr, id)
-				} else {
-					typ, err := runtmp(arrayTypeTemplate, "@id", id)
-					if err != nil {
-						return nil, err
-					}
-					if len(typ) == 0 {
-						typ = ls.AttributeTypeValue
-					}
-					elems := layer.Graph.NewNode([]string{ls.AttributeNodeTerm, typ}, nil)
-					ls.SetNodeID(elems, arrId)
-					layer.Graph.NewEdge(attr, elems, ls.ArrayItemsTerm, nil)
+				if s == "true" {
+					entityIDFields = append(entityIDFields, id)
 				}
-			} else {
-				attr = layer.Graph.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeValue}, nil)
-				ls.SetNodeID(attr, id)
 			}
+
+			if requiredTemplate != nil {
+				s, err := runtmp(requiredTemplate, "")
+				if err != nil {
+					return nil, err
+				}
+				if s == "true" {
+					requiredFields = append(requiredFields, id)
+				}
+			}
+
+			var attr graph.Node
+			attr = layer.Graph.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeValue}, nil)
+			ls.SetNodeID(attr, id)
 			layer.Graph.NewEdge(root, attr, ls.ObjectAttributeListTerm, nil)
 			ls.SetNodeIndex(attr, index)
 			index++
 			for ti, term := range terms {
 				nTerms[ti]++
-				if term.TermCol < 0 || term.TermCol >= len(row) {
-					return nil, ErrColIndexOutOfBounds{For: term.Term, Index: term.TermCol}
-				}
-				data := strings.TrimSpace(row[term.TermCol])
-				data, err = runtmp(templates[ti], term.Term, data)
+				data, err := runtmp(templates[ti], term.Term)
 				if err != nil {
 					return nil, err
 				}
@@ -205,6 +177,18 @@ func Import(attributeID AttributeSpec, terms []TermSpec, startRow, nRows int, in
 				}
 			}
 		}
+	}
+	if len(entityIDFields) > 0 {
+		var v *ls.PropertyValue
+		if len(entityIDFields) == 1 {
+			v = ls.StringPropertyValue(entityIDFields[0])
+		} else {
+			v = ls.StringSlicePropertyValue(entityIDFields)
+		}
+		root.SetProperty(ls.EntityIDFieldsTerm, v)
+	}
+	if len(requiredFields) > 0 {
+		root.SetProperty(validators.RequiredTerm, ls.StringSlicePropertyValue(requiredFields))
 	}
 	return layer, nil
 }

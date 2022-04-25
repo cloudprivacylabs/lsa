@@ -68,6 +68,10 @@ func (c CompositionType) Compose(target, src *PropertyValue) (*PropertyValue, er
 		return target, nil
 	case ErrorComposition:
 		if target != nil && src != nil {
+			// Composition is valid if values are the same
+			if target.Equal(src) {
+				return target, nil
+			}
 			return nil, ErrInvalidComposition
 		}
 		if target != nil {

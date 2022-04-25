@@ -15,7 +15,7 @@
 package ls
 
 import (
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 	"golang.org/x/text/encoding"
 )
 
@@ -240,6 +240,11 @@ func GetObjectAttributeNodes(objectSchemaNode graph.Node) []graph.Node {
 	return nextNodes
 }
 
+// GetPolymorphicOptions returns the polymorphic options of a schema node
+func GetPolymorphicOptions(polymorphicSchemaNode graph.Node) []graph.Node {
+	return graph.TargetNodes(polymorphicSchemaNode.GetEdgesWithLabel(graph.OutgoingEdge, OneOfTerm))
+}
+
 // GetEntityIDNodes returns the entity id attribute IDs from the layer
 // root node
 func (l *Layer) GetEntityIDNodes() []string {
@@ -277,18 +282,6 @@ func (l *Layer) ForEachAttributeOrdered(f func(graph.Node, []graph.Node) bool) b
 		return ForEachAttributeNodeOrdered(oi, f)
 	}
 	return true
-}
-
-// RenameBlankNodes will call namerFunc for each blank node, so they
-// can be renamed and won't cause name clashes
-func (l *Layer) RenameBlankNodes(namer func(graph.Node)) {
-	for nodes := l.Graph.GetNodes(); nodes.Next(); {
-		node := nodes.Node()
-		id := GetAttributeID(node)
-		if len(id) == 0 || id[0] == '_' {
-			namer(node)
-		}
-	}
 }
 
 // GetParentAttribute returns the parent attribute of the given node

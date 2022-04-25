@@ -22,7 +22,7 @@ import (
 	"strings"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type HorizontalAlignment string
@@ -154,8 +154,9 @@ func (e EdgeOptions) String() string {
 }
 
 type Options struct {
-	Font  FontConfig
-	Color string
+	Font    FontConfig
+	Color   string
+	Rankdir string
 
 	Table      TableOptions
 	Labels     TableCellOptions
@@ -261,8 +262,10 @@ func (r Renderer) Render(g graph.Graph, graphName string, out io.Writer) error {
 	if _, err := fmt.Fprintf(out, "digraph %s {\n", graphName); err != nil {
 		return err
 	}
-	if _, err := fmt.Fprintf(out, "rankdir=\"LR\";\n"); err != nil {
-		return err
+	if len(r.Options.Rankdir) > 0 {
+		if _, err := fmt.Fprintf(out, "rankdir=\"%s\";\n", r.Options.Rankdir); err != nil {
+			return err
+		}
 	}
 
 	if len(r.Options.Font.Face) > 0 {

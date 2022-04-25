@@ -34,8 +34,8 @@ type Bundle struct {
 }
 
 type BundleSchemaRef struct {
-	LayerID    string               `json:"layerId,omitempty" yaml:"layerId,omitempty" bson:"layerId,omitempty"`
-	JSONSchema *JSONSchemaReference `json:"jsonSchema" yaml:"jsonSchema" bson:"jsonSchema,omitempty"`
+	Schema     string               `json:"schema,omitempty" yaml:"schema,omitempty"`
+	JSONSchema *JSONSchemaReference `json:"jsonSchema" yaml:"jsonSchema"`
 }
 
 // GetLayerID returns the layer id for the schema reference
@@ -43,7 +43,7 @@ func (ref BundleSchemaRef) GetLayerID() string {
 	if ref.JSONSchema != nil {
 		return ref.JSONSchema.LayerID
 	}
-	return ref.LayerID
+	return ref.Schema
 }
 
 type JSONSchemaReference struct {
@@ -66,15 +66,17 @@ func ParseBundle(text string, contentType string) (*Bundle, error) {
 	return &ret, nil
 }
 
-func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importEntities []jsonsch.Entity) (map[string]*ls.Layer, error) {
-	compiler := jsonschema.NewCompiler()
-	compiler.LoadURL = func(s string) (io.ReadCloser, error) {
-		obj, err := cmdutil.ReadURL(s)
-		if err != nil {
-			return nil, err
-		}
-		return ioutil.NopCloser(bytes.NewReader(obj)), nil
+var DefaultFileLoader = func(s string) (io.ReadCloser, error) {
+	obj, err := cmdutil.ReadURL(s)
+	if err != nil {
+		return nil, err
 	}
+	return ioutil.NopCloser(bytes.NewReader(obj)), nil
+}
+
+func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importEntities []jsonsch.Entity, fileLoader func(s string) (io.ReadCloser, error)) (map[string]*ls.Layer, error) {
+	compiler := jsonschema.NewCompiler()
+	compiler.LoadURL = fileLoader
 	// Import all JSON schemas into a graph
 	jsonLayers := make(map[string]*ls.Layer)
 	if len(importEntities) > 0 {
@@ -95,26 +97,33 @@ func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importE
 }
 
 // GetLayers returns the layers of the bundle keyed by variant type
-func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s string) (*ls.Layer, error)) (map[string]*ls.Layer, error) {
+func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s string) (*ls.Layer, error), fileLoader func(string) (io.ReadCloser, error)) (map[string]*ls.Layer, error) {
 	// layers keyed by layer id
 	layers := make(map[string]*ls.Layer)
+
+	// For JSON-LS schemas, layerId refers to the filename. We use this map to map that filename to loaded layerid
+	layerIDMap := make(map[string]string)
 	// entities keyed by layer id
 	schemaEntities := make(map[string]jsonsch.Entity)
 	ovlEntities := make(map[string]jsonsch.Entity)
 
 	processRef := func(variantType string, ref BundleSchemaRef, entitiesMap map[string]jsonsch.Entity) error {
 		switch {
-		case len(ref.LayerID) > 0:
+		case len(ref.Schema) > 0:
+			// ref.LayerID refers to a file
 			// Load the layer if not loaded before
-			_, loaded := layers[ref.LayerID]
+			fileName := ref.Schema
+			_, loaded := layerIDMap[fileName]
 			if loaded {
 				break
 			}
-			layer, err := loader(ref.LayerID)
+			layer, err := loader(getRelativeFileName(path, fileName))
 			if err != nil {
 				return err
 			}
-			layers[layer.GetID()] = layer
+			layerID := layer.GetID()
+			layers[layerID] = layer
+			layerIDMap[fileName] = layerID
 
 		case ref.JSONSchema != nil:
 			_, loaded := entitiesMap[ref.JSONSchema.LayerID]
@@ -127,6 +136,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 				Ref:       getRelativeFileName(path, ref.JSONSchema.Ref),
 			}
 			entitiesMap[entity.LayerID] = entity
+			layerIDMap[entity.LayerID] = entity.LayerID
 		}
 		return nil
 	}
@@ -151,7 +161,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 			importEntities = append(importEntities, entity)
 		}
 		if len(importEntities) > 0 {
-			jlayers, err := bundle.importJSONSchema(ctx, typeTerm, importEntities)
+			jlayers, err := bundle.importJSONSchema(ctx, typeTerm, importEntities, fileLoader)
 			if err != nil {
 				return err
 			}
@@ -174,40 +184,37 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 
 	resultBundle := ls.BundleByType{}
 	for variantType, variant := range bundle.TypeNames {
-		sch := layers[variant.GetLayerID()]
+		sch := layers[layerIDMap[variant.GetLayerID()]]
 		ovl := make([]*ls.Layer, 0, len(variant.Overlays))
 		for _, o := range variant.Overlays {
-			ovl = append(ovl, layers[o.GetLayerID()])
+			ovl = append(ovl, layers[layerIDMap[o.GetLayerID()]])
 		}
 		_, err := resultBundle.Add(ctx, variantType, sch, ovl...)
 		if err != nil {
 			return nil, err
 		}
 	}
-	ret := make(map[string]*ls.Layer)
-	for variantId := range bundle.TypeNames {
-		layer, _ := resultBundle.LoadSchema(variantId)
-		if layer != nil {
-			ret[variantId] = layer
-		}
-	}
-	return ret, nil
+	return resultBundle.Variants, nil
 }
 
 func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
 	var bundle Bundle
 	dir := filepath.Dir(file)
-	if err := cmdutil.ReadJSON(file, &bundle); err != nil {
+	if err := cmdutil.ReadJSONOrYAML(file, &bundle); err != nil {
 		return nil, err
 	}
-	items, err := bundle.GetLayers(ctx, dir, ls.SchemaLoaderFunc(func(data string) (*ls.Layer, error) {
+	items, err := bundle.GetLayers(ctx, dir, func(fname string) (*ls.Layer, error) {
+		data, err := ioutil.ReadFile(fname)
+		if err != nil {
+			return nil, err
+		}
 		var input interface{}
-		err := json.Unmarshal([]byte(data), &input)
+		err = json.Unmarshal([]byte(data), &input)
 		if err != nil {
 			return nil, err
 		}
 		return ls.UnmarshalLayer(input, nil)
-	}))
+	}, DefaultFileLoader)
 	if err != nil {
 		return nil, err
 	}

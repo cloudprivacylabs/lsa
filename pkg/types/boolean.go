@@ -19,28 +19,25 @@ import (
 	"strings"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 var JSONBooleanTerm = ls.NewTerm(JSON, "boolean", false, false, ls.OverrideComposition, struct {
 	JSONBooleanParser
 }{
 	JSONBooleanParser{},
-})
+}, "json:boolean")
 
 var XMLBooleanTerm = ls.NewTerm(XSD, "boolean", false, false, ls.OverrideComposition, struct {
 	XMLBooleanParser
 }{
 	XMLBooleanParser{},
-})
+}, "xsd:boolean", "xs:boolean")
 
 type JSONBooleanParser struct{}
 
 func (JSONBooleanParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}
@@ -80,10 +77,7 @@ func (JSONBooleanParser) SetNodeValue(node graph.Node, value interface{}) error 
 type XMLBooleanParser struct{}
 
 func (XMLBooleanParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists, err := getStringNodeValue(node)
-	if err != nil {
-		return nil, err
-	}
+	value, exists := ls.GetRawNodeValue(node)
 	if !exists {
 		return nil, nil
 	}

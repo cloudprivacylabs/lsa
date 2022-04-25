@@ -3,30 +3,30 @@
 [![Build Status](https://github.com/cloudprivacylabs/lsa/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/cloudprivacylabs/lsa/actions/workflows/CI.yml)
 # Layered Schemas
 
-Layered schemas is a semantic interoperability tool. It uses a schema
-to define data elements, and additional layers (overlays) to define
-semantic annotations for those data elements. These are open-ended
-semantic annotations that can be used to mark data using various
-ontologies (for instance, privacy/security attributes, retention
-policies), localization information (labels, enumerations in different
-languages), constraints (format, patterns, encoding). Different sets
-of layers can be used to construct different variations of a schema to
-account for internationalization, constraint variations, and different
-use-cases.
+Layered Schema Architecture (LSA) enables semantic interoperability
+between heterogeneous systems. LSA uses a schema base (such as FHIR
+schemas for health data) to define data structures, and overlays to
+add semantics, contextual metadata, and processing directives. A
+schema variant is the composition of the schema base and use-case
+specific overlays. Different schema variants can be used to ingest
+data from or export data to disparate systems. Each variant encodes
+source specific metadata and rules to ingest data into a knowledge
+graph, or target specific metadata and rules to translate the
+knowledge graph into another format.
 
 A layered schema defines a mapping from structured data (in JSON, XML,
 tabular format) to linked data. For instance, when a JSON document is
 ingested using a layered schema, a labeled property graph is
-constructed where every element in the schema is a node in the graph,
-and each node is linked to its corresponding schema node describing
-its semantics. This allows processing data based on its semantic
-attributes instead of its name and/or location in the input. For
-example, it is possible to use layered schema to ingest health data,
-mark certain attributes as "identifiable", and then, remove all
-attributes that are marked as such. The algorithm to remove
-"identifiable" elements can be written without any knowledge of the
-input structure. Same algorithm can be used to de-identify health data
-as well as marketing data.
+constructed by combining schema information with the input data
+elements. The resulting graph contains both the input data, and the
+schema annotations. This allows processing data based on its semantic
+attributes instead of its attributes names or other structural
+properties. For example, it is possible to use layered schema to
+ingest health data, mark certain attributes as "identifiable", and
+then, remove all attributes that are marked as such. The algorithm to
+remove "identifiable" elements can be written without any knowledge of
+the input structure. Same algorithm can be used to de-identify health
+data as well as marketing data.
 
 The main documentation site for layered schemas is:
 

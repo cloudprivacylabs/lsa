@@ -23,6 +23,9 @@ var (
 	// OverlayTerm is the layer type for overlays
 	OverlayTerm = NewTerm(LS, "Overlay", false, false, NoComposition, nil)
 
+	// ComposeTerm is used for overlays to redefine term compositions. One of CompositionType constants
+	ComposeTerm = NewTerm(LS, "compose", false, false, OverrideComposition, nil)
+
 	// LayerIDTerm is the schema or overlay id
 	LayerIDTerm = NewTerm(LS, "layerId", true, false, NoComposition, nil)
 

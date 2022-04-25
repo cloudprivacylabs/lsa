@@ -7,17 +7,18 @@
             "@id": "http://example.org/TestTarget",
             "ls:layer": {
                 "@type": ["ls:Object","http://example.org/ValueType"],
+                "@id":"root",
                 "ls:Object/attributes": [
                     {
                         "@id": "val1",
                         "@type": "ls:Value",
-                        "ls:reshape/valueExpr": "return 'literal'"
+                        "ls:transform/valueExpr": "return 'literal'"
                     }
                 ]
             }
         },
         "rootId": "http://example.org/obj1",
-        "sourceGraph": {
+        "sourceLdGraph": {
             "@graph": [
                 {
                     "@id": "http://example.org/obj1",
@@ -39,7 +40,7 @@
                 }
             ]
         },
-        "expected": {
+        "expectedLd": {
             "@graph": [
                 {
                     "@id": "root",
@@ -64,17 +65,18 @@
             "@id": "http://example.org/TestTarget",
             "ls:layer": {
                 "@type": ["ls:Object","http://example.org/ValueType"],
+                "@id":"root",
                 "ls:Object/attributes": [
                     {
                         "@id": "val1",
                         "@type": "ls:Value",
-                        "ls:reshape/valueExpr": "match (n) where n.`https://prop`=\"propValue\" return n"
+                        "ls:transform/valueExpr": "match (n) where n.`https://prop`=\"propValue\" return n"
                     }
                 ]
             }
         },
         "rootId": "http://example.org/obj1",
-        "sourceGraph": {
+        "sourceLdGraph": {
             "@graph": [
                 {
                     "@id": "http://example.org/obj1",
@@ -97,7 +99,7 @@
                 }
             ]
         },
-        "expected": {
+        "expectedLd": {
             "@graph": [
                 {
                     "@id": "root",
@@ -122,11 +124,12 @@
             "@id": "http://example.org/TestTarget",
             "ls:layer": {
                 "@type": ["ls:Object","http://example.org/ValueType","https://1"],
+                "@id": "root",
                 "ls:Object/attributes": [
                     {
                         "@id": "val1",
                         "@type": "ls:Value",
-                        "ls:reshape/valueExpr": "match (n:`https://test1`) return n"
+                        "ls:transform/valueExpr": "match (n:`https://test1`) return n"
                     },
                     {
                         "@id": "obj1",
@@ -135,7 +138,7 @@
                             {
                                 "@id": "val2",
                                 "@type": "ls:Value",
-                                "ls:reshape/valueExpr": "match (n:`https://test2`) return n"
+                                "ls:transform/valueExpr": "match (n:`https://test2`) return n"
                             }
                         ]
                     }
@@ -143,7 +146,7 @@
             }
         },
         "rootId": "http://example.org/obj1",
-        "sourceGraph": {
+        "sourceLdGraph": {
             "@graph": [
                 {
                     "@id": "http://example.org/obj1",
@@ -165,7 +168,7 @@
                 }
             ]
         },
-        "expected": {
+        "expectedLd": {
             "@graph": [
                 {
                     "@id": "root",

@@ -23,7 +23,7 @@ import (
 	"github.com/santhosh-tekuri/jsonschema/v5"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func expand(t *testing.T, in string) []interface{} {
@@ -48,6 +48,7 @@ func TestIngestFlat(t *testing.T) {
  "@type": "Schema",
  "layer": {
   "@type": "Object",
+  "@id": "root",
   "required": [ "id2"],
  "attributes": {
    "id1": {
@@ -82,22 +83,20 @@ func TestIngestFlat(t *testing.T) {
 		t.Error(err)
 	}
 
-	ingester := Ingester{
-		Ingester: ls.Ingester{
-			Schema:               schema,
-			OnlySchemaAttributes: false,
-			IngestEmptyValues:    true,
-			Graph:                ls.NewDocumentGraph(),
-		},
+	bldr := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		OnlySchemaAttributes: false,
+	})
+	parser := Parser{
+		SchemaNode: schema.GetSchemaRootNode(),
 	}
-	_, err = IngestBytes(ls.DefaultContext(), &ingester, "http://base", []byte(inputStr))
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
 	if err != nil {
 		t.Error(err)
 	}
 
 	findNodes := func(nodeId string) []graph.Node {
 		nodes := []graph.Node{}
-		for nx := ingester.Graph.GetNodes(); nx.Next(); {
+		for nx := bldr.GetGraph().GetNodes(); nx.Next(); {
 			node := nx.Node()
 			if ls.GetNodeID(node) == nodeId {
 				nodes = append(nodes, node)
@@ -121,18 +120,21 @@ func TestIngestFlat(t *testing.T) {
 	checkNodeValue("http://base.field1", "value1")
 	checkNodeValue("http://base.field2", "2")
 	checkNodeValue("http://base.field3", "true")
-	checkNodeValue("http://base.field4", "")
 	checkNodeValue("http://base.field5", "extra")
 
-	ingester = Ingester{
-		Ingester: ls.Ingester{
-			Schema:               schema,
-			OnlySchemaAttributes: true,
-			IngestEmptyValues:    true,
-			Graph:                ls.NewDocumentGraph(),
-		},
+	bldr = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		OnlySchemaAttributes: true,
+	})
+	parser = Parser{
+		SchemaNode: schema.GetSchemaRootNode(),
 	}
-	_, err = IngestBytes(ls.DefaultContext(), &ingester, "http://base", []byte(inputStr))
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
+	if err != nil {
+		t.Error(err)
+	}
+
+	parser.IngestNullValues = true
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
 	if err != nil {
 		t.Error(err)
 	}
@@ -145,6 +147,96 @@ func TestIngestFlat(t *testing.T) {
 		t.Errorf("Unexpected node found")
 	}
 
+}
+
+func TestIngestPoly(t *testing.T) {
+	schStr := `{
+ "@context": "../../schemas/ls.json",
+ "@id":"http://example.org/id",
+ "@type": "Schema",
+ "layer": {
+  "@type": "Object",
+  "@id": "root",
+ "attributes": {
+   "id1": {
+     "@type": "Value",
+     "attributeName":"field1"
+   },
+   "id2": {
+     "@type": "Polymorphic",
+     "attributeName":"field2",
+     "oneOf": [
+       {
+         "@id": "option1",
+         "@type": "Object",
+         "attributes": {
+           "objType1": {
+             "@type": "Value",
+             "@id": "objType1",
+             "attributeName": "t",
+             "enumeration": "type1"
+           }
+         }
+       },
+       {
+         "@id": "option2",
+         "@type": "Object",
+         "attributes": {
+           "objType2": {
+             "@type": "Value",
+             "@id": "objType2",
+             "attributeName": "t",
+             "enumeration": "type2"
+           }
+         }
+       }
+     ]
+   }
+  }
+ }
+}`
+	inputStr := `{
+  "field1": "value1",
+  "field2": {
+     "t": "type1"
+  }
+}`
+
+	var schMap interface{}
+	if err := json.Unmarshal([]byte(schStr), &schMap); err != nil {
+		t.Fatal(err)
+	}
+	schema, err := ls.UnmarshalLayer(schMap, nil)
+	if err != nil {
+		t.Error(err)
+	}
+	bldr := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		OnlySchemaAttributes: false,
+	})
+	parser := Parser{
+		SchemaNode: schema.GetSchemaRootNode(),
+	}
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
+	if err != nil {
+		t.Error(err)
+	}
+
+	findNodes := func(nodeId string) []graph.Node {
+		nodes := []graph.Node{}
+		for nx := bldr.GetGraph().GetNodes(); nx.Next(); {
+			node := nx.Node()
+			if ls.GetNodeID(node) == nodeId {
+				nodes = append(nodes, node)
+			}
+		}
+		return nodes
+	}
+
+	nodes := findNodes("objType1")
+	t.Logf("%+v", nodes)
+	if len(nodes) != 1 {
+		t.Errorf("Expecting 1 type node")
+	}
 }
 
 func TestIngestRootAnnotation(t *testing.T) {
@@ -180,22 +272,20 @@ func TestIngestRootAnnotation(t *testing.T) {
 		return
 	}
 
-	ingester := Ingester{
-		Ingester: ls.Ingester{
-			Schema:               layers[0].Layer,
-			EmbedSchemaNodes:     true,
-			OnlySchemaAttributes: true,
-			Graph:                ls.NewDocumentGraph(),
-		},
+	bldr := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		OnlySchemaAttributes: false,
+	})
+	parser := Parser{
+		SchemaNode: layers[0].Layer.GetSchemaRootNode(),
 	}
-	_, err = IngestBytes(ls.DefaultContext(), &ingester, "http://base", []byte(inputStr))
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
 	if err != nil {
 		t.Error(err)
 	}
 
 	findNodes := func(nodeId string) []graph.Node {
 		nodes := []graph.Node{}
-		for nx := ingester.Graph.GetNodes(); nx.Next(); {
+		for nx := bldr.GetGraph().GetNodes(); nx.Next(); {
 			node := nx.Node()
 			t.Logf("%s", ls.GetNodeID(node))
 			if ls.GetNodeID(node) == nodeId {

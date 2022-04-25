@@ -1,0 +1,24 @@
+{
+    "@context":[ "https://layeredschemas.org/ls.json",
+         { 
+            "dpv": "http://www.w3.org/ns/dpv#",
+             "hasPersonalDataCategory": {
+               "@id":"dpv:hasPersonalDataCategory",
+               "@type":"@id"
+             }
+         }
+               ],
+    "@id": "http://example.org/Contact/ovl1",
+    "@type": "Overlay",
+    "valueType": "Contact",
+    "layer": {
+        "@type": "Object",
+        "@id": "http://example.org/Contact",
+        "attributes": {
+            "http://example.org/Contact/value": {
+                "@type": "Value",
+                "hasPersonalDataCategory": [ "dpv:TelephoneNumber", "dpv:Identifying" ]
+            }
+        }
+    }
+}

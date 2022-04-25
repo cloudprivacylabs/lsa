@@ -29,7 +29,7 @@ func (ctx *Context) GetInterner() Interner {
 func DefaultContext() *Context {
 	return &Context{
 		context:  context.Background(),
-		logger:   DefaultLogger{},
+		logger:   NewDefaultLogger(),
 		interner: NewInterner(),
 	}
 }
@@ -37,6 +37,6 @@ func DefaultContext() *Context {
 func NewContext(ctx context.Context) *Context {
 	return &Context{
 		context:  ctx,
-		logger:   DefaultLogger{},
+		logger:   NewDefaultLogger(),
 		interner: NewInterner()}
 }

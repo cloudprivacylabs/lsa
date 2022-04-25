@@ -119,3 +119,71 @@ type ErrNoParentNode struct {
 }
 
 func (e ErrNoParentNode) Error() string { return "No parent node for:" + e.Of }
+
+type ErrSchemaValidation struct {
+	Msg  string
+	Path NodePath
+}
+
+type ErrCannotDetermineEdgeLabel struct {
+	Msg          string
+	Path         NodePath
+	SchemaNodeID string
+}
+
+type ErrCannotDeterminePropertyName struct {
+	Path         NodePath
+	SchemaNodeID string
+}
+
+func (e ErrCannotDeterminePropertyName) Error() string {
+	return fmt.Sprintf("Cannot determine property name %s: %s", e.SchemaNodeID, e.Path.String())
+}
+
+type ErrCannotFindAncestor struct {
+	Path         NodePath
+	SchemaNodeID string
+}
+
+func (e ErrCannotFindAncestor) Error() string {
+	return fmt.Sprintf("Cannot find ancestor %s: %s", e.SchemaNodeID, e.Path.String())
+}
+
+type ErrInvalidEntityID struct {
+	Path NodePath
+}
+
+func (e ErrInvalidEntityID) Error() string {
+	return "Invalid entity ID: " + e.Path.String()
+}
+
+func (e ErrSchemaValidation) Error() string {
+	ret := "Schema validation error: " + e.Msg
+	if e.Path != nil {
+		ret += " path:" + e.Path.String()
+	}
+	return ret
+}
+
+func (e ErrCannotDetermineEdgeLabel) Error() string {
+	ret := fmt.Sprintf("Cannot determine edge label %s: %s", e.SchemaNodeID, e.Msg)
+	if e.Path != nil {
+		ret += " path:" + e.Path.String()
+	}
+	return ret
+}
+
+type ErrInvalidSchema string
+
+func (e ErrInvalidSchema) Error() string { return "Invalid schema: " + string(e) }
+
+type ErrDataIngestion struct {
+	Key string
+	Err error
+}
+
+func (e ErrDataIngestion) Error() string {
+	return fmt.Sprintf("Data ingestion error: Key: %s - %s", e.Key, e.Err)
+}
+
+func (e ErrDataIngestion) Unwrap() error { return e.Err }

@@ -15,9 +15,11 @@ require (
 	golang.org/x/text v0.3.6
 )
 
+require github.com/cloudprivacylabs/opencypher v0.0.0-20220424003559-1819e6803a31 // indirect
+
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/emirpasic/gods v1.12.0 // indirect
+	github.com/emirpasic/gods v1.18.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/neo4j/neo4j-go-driver v1.8.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

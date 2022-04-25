@@ -22,7 +22,7 @@ import (
 	"github.com/santhosh-tekuri/jsonschema/v5"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/opencypher/graph"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 const X_LS = "x-ls"
@@ -113,7 +113,8 @@ func CompileEntities(entities ...Entity) ([]CompiledEntity, error) {
 	return CompileEntitiesWith(compiler, entities...)
 }
 
-// The meta-schema for annotations mem:// is required for WASM
+// The meta-schema for annotations
+// mem:// is required for WASM
 // compilation. Without that, JSON schema compiler tries to resolve
 // relative dir and fails.
 var annotationsMeta = jsonschema.MustCompileString("mem://annotations.json", `{}`)
@@ -207,8 +208,7 @@ func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkR
 
 		// Set the layer ID from the entity layer ID
 		imported.Layer.SetID(ctx.currentEntity.LayerID)
-		// Set the root node ID from the entity ID
-		rootNode := imported.Layer.Graph.NewNode(nil, nil)
+		rootNode := imported.Layer.Graph.NewNode([]string{ls.AttributeNodeTerm, ctx.currentEntity.ValueType}, nil)
 		//ls.SetNodeID(rootNode, ctx.currentEntity.ID)
 		// Set the value type of the layer to root node ID
 		imported.Layer.SetValueType(ctx.currentEntity.ValueType)
@@ -218,6 +218,9 @@ func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkR
 			layer:    imported.Layer,
 			interner: ctx.interner,
 			linkRefs: linkRefsBy,
+		}
+		if err := importer.setNodeProperties(s, rootNode); err != nil {
+			return nil, err
 		}
 		if err := importer.buildChildAttrs(s, rootNode); err != nil {
 			return nil, err
