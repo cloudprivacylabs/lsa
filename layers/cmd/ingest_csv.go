@@ -16,7 +16,10 @@ package cmd
 
 import (
 	"bytes"
+	"context"
 	"encoding/csv"
+	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -29,6 +32,145 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
+
+type CSVIngester struct {
+	BaseIngester
+	PipelineContext
+	StartRow     int
+	EndRow       int
+	HeaderRow    int
+	ID           string
+	InitialGraph string
+}
+
+func (ci *CSVIngester) Run(ctx *ls.Context, file string) {
+	ctx = ls.NewContext(context.WithValue(context.Background(), "filename", file))
+	ci.Input = strings.NewReader(context.Background().Value("filename").(string))
+}
+
+func (ci CSVIngester) Ingest() {
+	initialGraph := ci.InitialGraph
+	ctx := getContext()
+	ctx = ls.NewContext(context.Background())
+	layer, err := LoadSchemaFromFileOrRepo(ctx, ci.CompiledSchema, ci.Repo, ci.Schema, ci.Type, ci.Bundle)
+	if err != nil {
+		failErr(err)
+	}
+	// f, err := ci.Input.Read()
+	// if err != nil {
+	// 	failErr(err)
+	// }
+
+	reader := csv.NewReader(ci.Input)
+	startRow := ci.StartRow
+	endRow := ci.EndRow
+	headerRow := ci.HeaderRow
+	if headerRow >= startRow {
+		fail("Header row is ahead of start row")
+	}
+	var grph graph.Graph
+	if layer != nil && initialGraph != "" {
+		grph = ci.Graph
+	} else {
+		grph = ls.NewDocumentGraph()
+	}
+	embedSchemaNodes := ci.EmbedSchemaNodes
+	onlySchemaAttributes := ci.OnlySchemaAttributes
+
+	parser := csvingest.Parser{
+		OnlySchemaAttributes: onlySchemaAttributes,
+		SchemaNode:           layer.GetSchemaRootNode(),
+	}
+
+	builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
+		EmbedSchemaNodes:     embedSchemaNodes,
+		OnlySchemaAttributes: onlySchemaAttributes,
+	})
+
+	idTemplate := ci.ID
+	idTmp, err := template.New("id").Parse(idTemplate)
+	if err != nil {
+		failErr(err)
+	}
+	for row := 0; ; row++ {
+		rowData, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			failErr(err)
+		}
+		if headerRow == row {
+			parser.ColumnNames = rowData
+		} else if row >= startRow {
+			if endRow != -1 && row > endRow {
+				break
+			}
+			templateData := map[string]interface{}{
+				"rowIndex":  row,
+				"dataIndex": row - startRow,
+				"columns":   rowData,
+			}
+			buf := bytes.Buffer{}
+			if err := idTmp.Execute(&buf, templateData); err != nil {
+				failErr(err)
+			}
+
+			parsed, err := parser.ParseDoc(ctx, strings.TrimSpace(buf.String()), rowData)
+			if err != nil {
+				failErr(err)
+			}
+			_, err = ls.Ingest(builder, parsed)
+			if err != nil {
+				failErr(err)
+			}
+		}
+	}
+	csvPipeline := struct {
+		Operation string        `json:"operation"`
+		Params    []interface{} `json:"params"`
+	}{
+		Operation: "ingestCSV",
+		Params: []interface{}{
+			ci.Repo,
+			ci.Output,
+			ci.Schema,
+			ci.Type,
+			ci.Bundle,
+			ci.CompiledSchema,
+			ci.IncludeSchema,
+			ci.EmbedSchemaNodes,
+			ci.OnlySchemaAttributes,
+			ci.StartRow,
+			ci.EndRow,
+			ci.HeaderRow,
+			ci.ID,
+			ci.InitialGraph,
+		},
+	}
+	b, err := json.MarshalIndent(csvPipeline, "", "  ")
+	fmt.Println(string(b))
+	// outputGraph := func(graph graph.Graph, format string, out io.Writer) error {
+	// 	switch format {
+	// 	case "json":
+	// 		m := ls.JSONMarshaler{}
+	// 		return m.Encode(graph, out)
+	// 	case "jsonld":
+	// 		marshaler := ls.LDMarshaler{}
+	// 		intf := marshaler.Marshal(graph)
+	// 		enc := json.NewEncoder(out)
+	// 		return enc.Encode(intf)
+	// 	}
+	// 	return fmt.Errorf("Unrecognized output format: %s", format)
+	// }
+	// var buf bytes.Buffer
+	// outputGraph(ci.Graph, ci.Output, &buf)
+
+	// err = OutputIngestedGraph(cmd, outFormat, grph, os.Stdout, includeSchema)
+	// if err != nil {
+	// 	failErr(err)
+	// }
+}
 
 func init() {
 	ingestCmd.AddCommand(ingestCSVCmd)
