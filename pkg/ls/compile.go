@@ -139,7 +139,7 @@ type Compiler struct {
 	// Loader loads a layer using a strong reference.
 	Loader SchemaLoader
 	// CGraph keeps the compiled interlinked schemas. If this is
-	// initalized before compilation, then it is used during compilation
+	// initialized before compilation, then it is used during compilation
 	// and new schemas are added to it. If it is left uninitialized,
 	// compilation initializes it to default compiled graph
 	CGraph CompiledGraph

@@ -234,7 +234,7 @@ var OnlyDocumentNodes = FollowEdgesToNodeWithType(DocumentNodeTerm)
 //
 // For each outgoing edge, if edgeFunc is not nil, edgeFunc is called
 // with the edge and the path to the source node. If edgeFunc returns
-// FollowEdgeResult, the edge is followed. If edgeFunc returnd
+// FollowEdgeResult, the edge is followed. If edgeFunc returned
 // DontFollowEdgeResult, edge is skipped. If edgeFunc returns
 // StopEdgeResult, iteration stops.
 func IterateDescendants(from graph.Node, nodeFunc func(graph.Node) bool, edgeFunc func(graph.Edge) EdgeFuncResult, ordered bool) bool {
