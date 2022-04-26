@@ -15,7 +15,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"io"
 	"os"
 
@@ -29,12 +28,10 @@ import (
 
 type JSONIngester struct {
 	BaseIngestParams
-	ID           string
-	InitialGraph string
+	ID string
 }
 
 func (ji JSONIngester) Run(pipeline *PipelineContext) error {
-	initialGraph := ji.InitialGraph
 	ctx := pipeline.Context
 	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, ji.CompiledSchema, ji.Repo, ji.Schema, ji.Type, ji.Bundle)
 	if err != nil {
@@ -46,27 +43,17 @@ func (ji JSONIngester) Run(pipeline *PipelineContext) error {
 		if err != nil {
 			failErr(err)
 		}
-		input = enc.NewDecoder().Reader(pipeline.Input)
-		// pipeline.Input, err = cmdutil.StreamFileOrStdin([]string{}, enc)
-		// if err != nil {
-		// 	failErr(err)
-		// }
-	} else {
-		input = json.NewDecoder(pipeline.Input).Buffered()
-		// pipeline.Input, err = cmdutil.StreamFileOrStdin([]string{})
-		// if err != nil {
-		// 	failErr(err)
-		// }
-	}
-	var grph graph.Graph
-	if layer != nil && initialGraph != "" {
-		grph, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
+		input, err = cmdutil.StreamFileOrStdin(pipeline.InputFiles, enc)
 		if err != nil {
 			failErr(err)
 		}
 	} else {
-		grph = ls.NewDocumentGraph()
+		input, err = cmdutil.StreamFileOrStdin(pipeline.InputFiles)
+		if err != nil {
+			failErr(err)
+		}
 	}
+	grph := pipeline.Graph
 
 	parser := jsoningest.Parser{}
 
@@ -85,6 +72,7 @@ func (ji JSONIngester) Run(pipeline *PipelineContext) error {
 	}
 
 	pipeline.Graph = grph
+	pipeline.Next()
 	return nil
 }
 

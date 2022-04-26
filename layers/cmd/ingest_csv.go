@@ -33,22 +33,19 @@ import (
 
 type CSVIngester struct {
 	BaseIngestParams
-	StartRow     int
-	EndRow       int
-	HeaderRow    int
-	ID           string
-	InitialGraph string
+	StartRow  int
+	EndRow    int
+	HeaderRow int
+	ID        string
 }
 
 func (ci CSVIngester) Run(pipeline *PipelineContext) error {
-	// pipeline.Input = strings.NewReader(context.Background().Value("filename").(string))
-	initialGraph := ci.InitialGraph
 	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, ci.CompiledSchema, ci.Repo, ci.Schema, ci.Type, ci.Bundle)
 	if err != nil {
 		return err
 	}
 
-	reader := csv.NewReader(pipeline.Input)
+	reader := csv.NewReader(strings.NewReader(pipeline.InputFiles[0]))
 	startRow := ci.StartRow
 	endRow := ci.EndRow
 	headerRow := ci.HeaderRow
@@ -56,12 +53,7 @@ func (ci CSVIngester) Run(pipeline *PipelineContext) error {
 		return errors.New("Header row is ahead of start row")
 
 	}
-	var grph graph.Graph
-	if layer != nil && initialGraph != "" {
-		grph = pipeline.Graph
-	} else {
-		grph = ls.NewDocumentGraph()
-	}
+	grph := pipeline.Graph
 	embedSchemaNodes := ci.EmbedSchemaNodes
 	onlySchemaAttributes := ci.OnlySchemaAttributes
 
@@ -112,6 +104,7 @@ func (ci CSVIngester) Run(pipeline *PipelineContext) error {
 			if err != nil {
 				return err
 			}
+			pipeline.Next()
 		}
 	}
 	pipeline.Graph = builder.GetGraph()
