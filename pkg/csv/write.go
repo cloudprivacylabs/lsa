@@ -71,8 +71,29 @@ func (wr *Writer) BuildRow(root graph.Node) ([]string, error) {
 		return nil, err
 	}
 
-	row := make([]string, 0, len(wr.Columns))
-	for _, col := range wr.Columns {
+	row := make([]string, len(wr.Columns))
+
+	for edges := root.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		node := edges.Edge().GetTo()
+		if !node.HasLabel(ls.DocumentNodeTerm) {
+			continue
+		}
+		attrName := ls.AsPropertyValue(node.GetProperty(ls.AttributeNameTerm)).AsString()
+		if len(attrName) == 0 {
+			continue
+		}
+		for i := range wr.Columns {
+			if wr.Columns[i].Name == attrName {
+				row[i], _ = ls.GetRawNodeValue(node)
+				break
+			}
+		}
+	}
+
+	for i, col := range wr.Columns {
+		if col.parsedQuery == nil {
+			continue
+		}
 		ctx := opencypher.NewEvalContext(root.GetGraph())
 		ctx.SetVar("root", opencypher.Value{Value: root})
 		result, err := col.parsedQuery.Evaluate(ctx)
@@ -85,7 +106,7 @@ func (wr *Writer) BuildRow(root graph.Node) ([]string, error) {
 			return nil, opencypher.ErrExpectingResultSet
 		}
 		if len(rs.Rows) == 0 {
-			row = append(row, "")
+			row[i] = ""
 			continue
 		}
 		if len(rs.Rows) > 1 {
@@ -97,7 +118,7 @@ func (wr *Writer) BuildRow(root graph.Node) ([]string, error) {
 				return nil, fmt.Errorf("Expecting a node in resultset")
 			}
 			val, _ := ls.GetRawNodeValue(node)
-			row = append(row, val)
+			row[i] = val
 		}
 	}
 	return row, nil
@@ -115,15 +136,13 @@ func (wr *Writer) WriteRow(writer *csv.Writer, root graph.Node) error {
 func (wr *Writer) parseColumnQueries() error {
 	// Are there column queries? Parse them
 	for k, col := range wr.Columns {
-		query := col.Query
-		if len(query) == 0 {
-			query = fmt.Sprintf(`match (root)-[]->(n:%s {%s:%s}) return n`, opencypher.EscapeLabelLiteral(ls.DocumentNodeTerm), opencypher.EscapePropertyKeyLiteral(ls.AttributeNameTerm), opencypher.EscapeStringLiteral(col.Name))
+		if len(col.Query) > 0 {
+			ev, err := opencypher.Parse(col.Query)
+			if err != nil {
+				return err
+			}
+			wr.Columns[k].parsedQuery = ev
 		}
-		ev, err := opencypher.Parse(query)
-		if err != nil {
-			return err
-		}
-		wr.Columns[k].parsedQuery = ev
 	}
 	return nil
 }

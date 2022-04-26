@@ -16,7 +16,8 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
+	"os"
+	"unicode"
 
 	"github.com/spf13/cobra"
 
@@ -61,15 +62,35 @@ func (v ValuesetValue) buildResult() *ls.ValuesetLookupResponse {
 
 func (v ValuesetValue) IsDefault() bool { return len(v.Values) == 0 && len(v.KeyValues) == 0 }
 
+func wordCompare(s1, s2 string, caseSensitive bool) bool {
+	toWords := func(in string) string {
+		out := make([]rune, 0, len(in))
+		lastWasSpace := true
+		for _, x := range in {
+			if unicode.IsSpace(x) {
+				lastWasSpace = true
+				continue
+			}
+			if lastWasSpace {
+				if len(out) != 0 {
+					out = append(out, ' ')
+				}
+				lastWasSpace = false
+			}
+			if !caseSensitive {
+				x = unicode.ToLower(x)
+			}
+			out = append(out, x)
+		}
+		return string(out)
+	}
+	return toWords(s1) == toWords(s2)
+}
+
 func (v ValuesetValue) Match(req ls.ValuesetLookupRequest) (*ls.ValuesetLookupResponse, error) {
 	if v.IsDefault() {
 		return v.buildResult(), nil
 	}
-	filter := func(s string) string { return strings.ToLower(s) }
-	if v.CaseSensitive {
-		filter = func(s string) string { return s }
-	}
-
 	if len(req.KeyValues) == 0 {
 		return nil, nil
 	}
@@ -88,7 +109,7 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest) (*ls.ValuesetLookupRe
 		case len(v.KeyValues) == 0:
 			// Check values array
 			for _, val := range v.Values {
-				if filter(val) == filter(value) {
+				if wordCompare(val, value, v.CaseSensitive) {
 					return v.buildResult(), nil
 				}
 			}
@@ -97,7 +118,7 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest) (*ls.ValuesetLookupRe
 			// If input did not give a key, still applies
 			if len(key) == 0 {
 				for _, val := range v.KeyValues {
-					if filter(value) == filter(val) {
+					if wordCompare(value, val, v.CaseSensitive) {
 						return v.buildResult(), nil
 					}
 				}
@@ -108,7 +129,7 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest) (*ls.ValuesetLookupRe
 			if !ok {
 				return nil, nil
 			}
-			if filter(val) == filter(value) {
+			if wordCompare(val, value, v.CaseSensitive) {
 				return v.buildResult(), nil
 			}
 		}
@@ -126,7 +147,7 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest) (*ls.ValuesetLookupRe
 		if !ok {
 			return nil, nil
 		}
-		if filter(vvalue) == filter(reqv) {
+		if wordCompare(vvalue, reqv, v.CaseSensitive) {
 			return v.buildResult(), nil
 		}
 	}
@@ -165,7 +186,7 @@ func (vs Valueset) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupRespon
 }
 
 // Lookup can be used as the external lookup func of LookupProcessor
-func (vsets Valuesets) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, error) {
+func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, error) {
 	found := ls.ValuesetLookupResponse{}
 	lookup := func(v Valueset) error {
 		rsp, err := v.Lookup(req)
@@ -180,12 +201,15 @@ func (vsets Valuesets) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupRe
 		}
 		return nil
 	}
+	ctx.GetLogger().Debug(map[string]interface{}{"valueset.lookup": req})
 	if len(req.TableIDs) == 0 {
 		for _, v := range vsets.Sets {
 			if err := lookup(v); err != nil {
+				ctx.GetLogger().Debug(map[string]interface{}{"valueset.err": err})
 				return ls.ValuesetLookupResponse{}, err
 			}
 		}
+		ctx.GetLogger().Debug(map[string]interface{}{"valueset.found": found})
 		return found, nil
 	}
 	for _, id := range req.TableIDs {
@@ -239,4 +263,78 @@ func loadValuesetsCmd(cmd *cobra.Command, valuesets *Valuesets) {
 			failErr(err)
 		}
 	}
+}
+
+func init() {
+	rootCmd.AddCommand(valuesetCmd)
+	valuesetCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
+	valuesetCmd.Flags().String("output", "json", "Output format, json, jsonld, or dot")
+	valuesetCmd.Flags().StringSlice("valueset", nil, "Valueset file(s)")
+	addSchemaFlags(valuesetCmd.Flags())
+}
+
+var valuesetCmd = &cobra.Command{
+	Use:   "valueset",
+	Short: "Apply valueset to a graph",
+	Long: `Apply valueset processing to a graph.
+
+The valuesets are defined in JSON or YAML files with the following structure:
+{
+  "valuesets": [
+    valueSet
+  ]
+}
+
+Individual valueset objects can be given as separate files as well:
+
+{
+  "id": "valueset id",
+  "values": [
+     // Multiple input values mapping to a result value
+   {
+     "values": [ "possible input values" ],
+     "caseSensitive": "true",
+     "result": "resultValue"
+   },
+    // Input key-value pairs mapping to a key-value object
+   {
+     "keyValues": {
+        "i1": "v1",
+        "i2": "v2"
+     },
+     "results": {
+        "r1": "result1",
+        "r2": "result2"
+     }
+   }
+  ]
+}
+
+`,
+	Args: cobra.MaximumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		ctx := getContext()
+		layer := loadSchemaCmd(ctx, cmd)
+		input, _ := cmd.Flags().GetString("input")
+		g, err := cmdutil.ReadGraph(args, ctx.GetInterner(), input)
+		if err != nil {
+			failErr(err)
+		}
+		builder := ls.NewGraphBuilder(g, ls.GraphBuilderOptions{
+			EmbedSchemaNodes: true,
+		})
+		var vset Valuesets
+		loadValuesetsCmd(cmd, &vset)
+
+		prc := ls.NewValuesetProcessor(layer, vset.Lookup)
+		err = prc.ProcessGraph(ctx, builder)
+		if err != nil {
+			failErr(err)
+		}
+		outFormat, _ := cmd.Flags().GetString("output")
+		err = OutputIngestedGraph(cmd, outFormat, builder.GetGraph(), os.Stdout, false)
+		if err != nil {
+			failErr(err)
+		}
+	},
 }

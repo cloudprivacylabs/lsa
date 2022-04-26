@@ -27,10 +27,7 @@ import (
 
 func init() {
 	rootCmd.AddCommand(compileCmd)
-	compileCmd.Flags().String("repo", "", "Schema repository directory")
-	compileCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
-	compileCmd.Flags().String("type", "", "If bundle is given, type name to compile.")
-	compileCmd.Flags().String("bundle", "", "Schema bundle.")
+	addSchemaFlags(compileCmd.Flags())
 }
 
 var compileCmd = &cobra.Command{

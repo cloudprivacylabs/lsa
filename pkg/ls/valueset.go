@@ -297,7 +297,7 @@ func (vsi *ValuesetInfo) GetDocNodes(g graph.Graph) []graph.Node {
 	return nodes
 }
 
-func (vsi *ValuesetInfo) createResultNodes(builder GraphBuilder, layer *Layer, contextDocumentNode graph.Node, resultSchemaNodeID string, resultValue string) error {
+func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, layer *Layer, contextDocumentNode graph.Node, resultSchemaNodeID string, resultValue string) error {
 	// There is value. If there is a node, update it. Otherwise, insert it
 	resultSchemaNode := layer.GetAttributeByID(resultSchemaNodeID)
 	if resultSchemaNode == nil {
@@ -306,12 +306,14 @@ func (vsi *ValuesetInfo) createResultNodes(builder GraphBuilder, layer *Layer, c
 	resultNodes := FindChildInstanceOf(contextDocumentNode, resultSchemaNodeID)
 	switch len(resultNodes) {
 	case 0: // insert it
+		ctx.GetLogger().Debug(map[string]interface{}{"valueset.createResultNodes": "inserting"})
 		switch GetIngestAs(resultSchemaNode) {
 		case "node":
 			_, _, err := builder.ValueAsNode(resultSchemaNode, contextDocumentNode, resultValue)
 			if err != nil {
 				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
 			}
+			ctx.GetLogger().Debug(map[string]interface{}{"valueset.createResultNodes": "insert", "schma": resultSchemaNode, "parent": contextDocumentNode})
 		case "edge":
 			_, err := builder.ValueAsEdge(resultSchemaNode, contextDocumentNode, resultValue)
 			if err != nil {
@@ -334,11 +336,12 @@ func (vsi *ValuesetInfo) createResultNodes(builder GraphBuilder, layer *Layer, c
 	return nil
 }
 
-func (vsi *ValuesetInfo) ApplyValuesetResponse(builder GraphBuilder, layer *Layer, contextDocumentNode, contextSchemaNode graph.Node, result ValuesetLookupResponse) error {
+func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilder, layer *Layer, contextDocumentNode, contextSchemaNode graph.Node, result ValuesetLookupResponse) error {
 	if len(result.KeyValues) == 0 {
 		return nil
 	}
 	if len(vsi.ResultKeys) == 0 && len(vsi.ResultValues) == 0 {
+		ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.applyThisNode"})
 		// Target is this document node
 		if len(result.KeyValues) != 1 {
 			return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: "Multiple results from valueset lookup, but no ResultKeys specified in the schema"}
@@ -350,15 +353,18 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(builder GraphBuilder, layer *Laye
 	}
 	// If only one resultValues is specified and there is one result
 	if len(vsi.ResultKeys) == 0 && len(vsi.ResultValues) == 1 && len(result.KeyValues) == 1 {
+		ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.applyOneNode"})
 		resultNodeID := vsi.ResultValues[0]
 		var resultValue string
 		for _, v := range result.KeyValues {
 			resultValue = v
 		}
-		if err := vsi.createResultNodes(builder, layer, contextDocumentNode, resultNodeID, resultValue); err != nil {
+		if err := vsi.createResultNodes(ctx, builder, layer, contextDocumentNode, resultNodeID, resultValue); err != nil {
 			return err
 		}
+		return nil
 	}
+	ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.keyValues"})
 	for resultKeyIndex, resultKey := range vsi.ResultKeys {
 		if len(vsi.ResultValues) < resultKeyIndex {
 			continue
@@ -374,7 +380,7 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(builder GraphBuilder, layer *Laye
 			}
 			return nil
 		}
-		if err := vsi.createResultNodes(builder, layer, contextDocumentNode, resultNodeID, resultValue); err != nil {
+		if err := vsi.createResultNodes(ctx, builder, layer, contextDocumentNode, resultNodeID, resultValue); err != nil {
 			return err
 		}
 	}
@@ -400,7 +406,7 @@ func (prc *ValuesetProcessor) ProcessByContextNode(ctx *Context, builder GraphBu
 		ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process", "result": result, "contextDocNode": contextDocNode})
 		// If there is nonzero result, put it back into the doc
 		if len(result.KeyValues) > 0 {
-			vsi.ApplyValuesetResponse(builder, prc.layer, contextDocNode, contextSchemaNode, result)
+			vsi.ApplyValuesetResponse(ctx, builder, prc.layer, contextDocNode, contextSchemaNode, result)
 		}
 	}
 	return nil

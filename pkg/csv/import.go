@@ -21,8 +21,8 @@ import (
 	"text/template"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 	"github.com/cloudprivacylabs/lsa/pkg/validators"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type TermSpec struct {
@@ -104,7 +104,6 @@ func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []
 	nTerms := make([]int, len(terms))
 	index := 0
 	entityIDFields := make([]string, 0)
-	requiredFields := make([]string, 0)
 	for rowIndex, row := range input {
 		runtmp := func(t *template.Template, term string) (string, error) {
 			if t == nil {
@@ -145,21 +144,21 @@ func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []
 				}
 			}
 
+			var attr graph.Node
+			attr = layer.Graph.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeValue}, nil)
+			ls.SetNodeID(attr, id)
+			layer.Graph.NewEdge(root, attr, ls.ObjectAttributeListTerm, nil)
+			ls.SetNodeIndex(attr, index)
 			if requiredTemplate != nil {
 				s, err := runtmp(requiredTemplate, "")
 				if err != nil {
 					return nil, err
 				}
 				if s == "true" {
-					requiredFields = append(requiredFields, id)
+					attr.SetProperty(validators.RequiredTerm, ls.StringPropertyValue("true"))
 				}
 			}
 
-			var attr graph.Node
-			attr = layer.Graph.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeValue}, nil)
-			ls.SetNodeID(attr, id)
-			layer.Graph.NewEdge(root, attr, ls.ObjectAttributeListTerm, nil)
-			ls.SetNodeIndex(attr, index)
 			index++
 			for ti, term := range terms {
 				nTerms[ti]++
@@ -186,9 +185,6 @@ func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []
 			v = ls.StringSlicePropertyValue(entityIDFields)
 		}
 		root.SetProperty(ls.EntityIDFieldsTerm, v)
-	}
-	if len(requiredFields) > 0 {
-		root.SetProperty(validators.RequiredTerm, ls.StringSlicePropertyValue(requiredFields))
 	}
 	return layer, nil
 }

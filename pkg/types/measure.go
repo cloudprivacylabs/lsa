@@ -77,19 +77,19 @@ var MeasureTerm = ls.NewTerm(ls.LS, "Measure", false, false, ls.OverrideComposit
 })
 
 // MeasureUnitTerm is a node property term giving measure unit
-var MeasureUnitTerm = ls.NewTerm(ls.LS, "measureUnit", false, false, ls.OverrideComposition, nil)
+var MeasureUnitTerm = ls.NewTerm(ls.LS, "measure/unit", false, false, ls.OverrideComposition, nil)
 
 // MeasureUnitNodeTerm gives the schema node ID of the unit node
-var MeasureUnitNodeTerm = ls.NewTerm(ls.LS, "measureUnitNode", false, false, ls.OverrideComposition, nil)
+var MeasureUnitNodeTerm = ls.NewTerm(ls.LS, "measure/unitNode", false, false, ls.OverrideComposition, nil)
 
 // MeasureValueNodeTerm gives the schema node ID of the value node
-var MeasureValueNodeTerm = ls.NewTerm(ls.LS, "measureValueNode", false, false, ls.OverrideComposition, nil)
+var MeasureValueNodeTerm = ls.NewTerm(ls.LS, "measure/valueNode", false, false, ls.OverrideComposition, nil)
 
 // MeasureUnitPathTerm gives the path to the unit node
-var MeasureUnitPathTerm = ls.NewTerm(ls.LS, "measureUnitPath", false, false, ls.OverrideComposition, nil)
+var MeasureUnitPathTerm = ls.NewTerm(ls.LS, "measure/unitPath", false, false, ls.OverrideComposition, nil)
 
 // MeasureValuePathTerm gives the path to the  value node
-var MeasureValuePathTerm = ls.NewTerm(ls.LS, "measureValuePath", false, false, ls.OverrideComposition, nil)
+var MeasureValuePathTerm = ls.NewTerm(ls.LS, "measure/valuePath", false, false, ls.OverrideComposition, nil)
 
 type ErrMultipleNodesMatch struct {
 	Src string

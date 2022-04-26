@@ -19,6 +19,7 @@ import (
 	"io"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -26,14 +27,18 @@ import (
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
+func addSchemaFlags(flags *pflag.FlagSet) {
+	flags.String("repo", "", "Schema repository directory")
+	flags.String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
+	flags.String("type", "", "Use if a bundle is given for data types. The type name to ingest.")
+	flags.String("bundle", "", "Schema bundle.")
+}
+
 func init() {
 	rootCmd.AddCommand(ingestCmd)
-	ingestCmd.PersistentFlags().String("repo", "", "Schema repository directory")
-	ingestCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
-	ingestCmd.PersistentFlags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
-	ingestCmd.PersistentFlags().String("type", "", "Use if a bundle is given for data types. The type name to ingest.")
-	ingestCmd.PersistentFlags().String("bundle", "", "Schema bundle.")
+	addSchemaFlags(ingestCmd.PersistentFlags())
 	ingestCmd.PersistentFlags().String("compiledschema", "", "Use the given compiled schema")
+	ingestCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
 	ingestCmd.PersistentFlags().Bool("includeSchema", false, "Include schema in the output")
 	ingestCmd.PersistentFlags().Bool("embedSchemaNodes", false, "Embed schema nodes into document nodes")
 	ingestCmd.PersistentFlags().Bool("onlySchemaAttributes", false, "Only ingest nodes that have an associated schema attribute")
@@ -81,24 +86,6 @@ type. The bundle is a JSON file:
     ...
 }
 
-A bundle can also be defined using IDs:
-
-{
-  "variants": {
-    "variantId": {
-       "schema": "schemaFile",
-       "overlays": [
-          "overlayFile","overlayFile"
-       ]
-    },
-    "variantId": {
-       "schema": "schemaFile",
-       "overlays": [
-          "overlayFile","overlayFile"
-       ]
-    },
-    ...
-}
 
   layers ingest csv --compiledSchema <schemaGraphFile> --schema <schemaId>
 
