@@ -15,6 +15,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"io"
 	"os"
 
@@ -25,6 +26,67 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
+
+type JSONIngester struct {
+	BaseIngestParams
+	ID           string
+	InitialGraph string
+}
+
+func (ji JSONIngester) Run(pipeline *PipelineContext) error {
+	initialGraph := ji.InitialGraph
+	ctx := pipeline.Context
+	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, ji.CompiledSchema, ji.Repo, ji.Schema, ji.Type, ji.Bundle)
+	if err != nil {
+		return err
+	}
+	var input io.Reader
+	if layer != nil {
+		enc, err := layer.GetEncoding()
+		if err != nil {
+			failErr(err)
+		}
+		input = enc.NewDecoder().Reader(pipeline.Input)
+		// pipeline.Input, err = cmdutil.StreamFileOrStdin([]string{}, enc)
+		// if err != nil {
+		// 	failErr(err)
+		// }
+	} else {
+		input = json.NewDecoder(pipeline.Input).Buffered()
+		// pipeline.Input, err = cmdutil.StreamFileOrStdin([]string{})
+		// if err != nil {
+		// 	failErr(err)
+		// }
+	}
+	var grph graph.Graph
+	if layer != nil && initialGraph != "" {
+		grph, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
+		if err != nil {
+			failErr(err)
+		}
+	} else {
+		grph = ls.NewDocumentGraph()
+	}
+
+	parser := jsoningest.Parser{}
+
+	parser.OnlySchemaAttributes = ji.OnlySchemaAttributes
+	parser.SchemaNode = layer.GetSchemaRootNode()
+	embedSchemaNodes := ji.EmbedSchemaNodes
+
+	builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
+		EmbedSchemaNodes:     embedSchemaNodes,
+		OnlySchemaAttributes: parser.OnlySchemaAttributes,
+	})
+	baseID := ji.ID
+	_, err = jsoningest.IngestStream(ctx, baseID, input, parser, builder)
+	if err != nil {
+		failErr(err)
+	}
+
+	pipeline.Graph = grph
+	return nil
+}
 
 func init() {
 	ingestCmd.AddCommand(ingestJSONCmd)

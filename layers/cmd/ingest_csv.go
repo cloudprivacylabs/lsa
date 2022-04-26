@@ -17,6 +17,7 @@ package cmd
 import (
 	"bytes"
 	"encoding/csv"
+	"errors"
 	"io"
 	"os"
 	"strings"
@@ -39,27 +40,21 @@ type CSVIngester struct {
 	InitialGraph string
 }
 
-func (ci CSVIngester) Run(pipeline *PipelineContext, file string) {
-	// ctx := ls.NewContext(context.WithValue(context.Background(), "filename", file))
-	ctx := ls.DefaultContext()
+func (ci CSVIngester) Run(pipeline *PipelineContext) error {
 	// pipeline.Input = strings.NewReader(context.Background().Value("filename").(string))
-
 	initialGraph := ci.InitialGraph
-	layer, err := LoadSchemaFromFileOrRepo(ctx, ci.CompiledSchema, ci.Repo, ci.Schema, ci.Type, ci.Bundle)
+	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, ci.CompiledSchema, ci.Repo, ci.Schema, ci.Type, ci.Bundle)
 	if err != nil {
-		failErr(err)
+		return err
 	}
-	f, err := os.Open(file)
-	defer f.Close()
-	if err != nil {
-		failErr(err)
-	}
-	reader := csv.NewReader(f)
+
+	reader := csv.NewReader(pipeline.Input)
 	startRow := ci.StartRow
 	endRow := ci.EndRow
 	headerRow := ci.HeaderRow
 	if headerRow >= startRow {
-		fail("Header row is ahead of start row")
+		return errors.New("Header row is ahead of start row")
+
 	}
 	var grph graph.Graph
 	if layer != nil && initialGraph != "" {
@@ -83,7 +78,7 @@ func (ci CSVIngester) Run(pipeline *PipelineContext, file string) {
 	idTemplate := ci.ID
 	idTmp, err := template.New("id").Parse(idTemplate)
 	if err != nil {
-		failErr(err)
+		return err
 	}
 	for row := 0; ; row++ {
 		rowData, err := reader.Read()
@@ -91,7 +86,7 @@ func (ci CSVIngester) Run(pipeline *PipelineContext, file string) {
 			break
 		}
 		if err != nil {
-			failErr(err)
+			return err
 		}
 		if headerRow == row {
 			parser.ColumnNames = rowData
@@ -106,20 +101,21 @@ func (ci CSVIngester) Run(pipeline *PipelineContext, file string) {
 			}
 			buf := bytes.Buffer{}
 			if err := idTmp.Execute(&buf, templateData); err != nil {
-				failErr(err)
+				return err
 			}
 
-			parsed, err := parser.ParseDoc(ctx, strings.TrimSpace(buf.String()), rowData)
+			parsed, err := parser.ParseDoc(pipeline.Context, strings.TrimSpace(buf.String()), rowData)
 			if err != nil {
-				failErr(err)
+				return err
 			}
 			_, err = ls.Ingest(builder, parsed)
 			if err != nil {
-				failErr(err)
+				return err
 			}
 		}
 	}
 	pipeline.Graph = builder.GetGraph()
+	return nil
 }
 
 func init() {
