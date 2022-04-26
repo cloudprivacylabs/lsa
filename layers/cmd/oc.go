@@ -20,9 +20,33 @@ import (
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
+
 	//	"github.com/cloudprivacylabs/opencypher/graph"
 	"github.com/spf13/cobra"
 )
+
+type OCpipeline struct {
+	Input string
+	Expr  string
+}
+
+func (oc OCpipeline) Run(pipeline *PipelineContext) error {
+	interner := ls.NewInterner()
+	input := oc.Input
+	g, err := cmdutil.ReadGraph(pipeline.InputFiles, interner, input)
+	if err != nil {
+		failErr(err)
+	}
+	expr := oc.Expr
+	ctx := opencypher.NewEvalContext(g)
+	output, err := opencypher.ParseAndEvaluate(expr, ctx)
+	if err != nil {
+		failErr(err)
+	}
+	fmt.Println(output)
+	pipeline.Next()
+	return nil
+}
 
 func init() {
 	rootCmd.AddCommand(ocCmd)
