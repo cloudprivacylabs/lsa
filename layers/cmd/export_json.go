@@ -24,6 +24,28 @@ import (
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
+type ExportJSON struct {
+	Input string
+}
+
+func (ejson ExportJSON) Run(pipeline *PipelineContext) error {
+	input := ejson.Input
+	g, err := cmdutil.ReadGraph(pipeline.InputFiles, nil, input)
+	if err != nil {
+		failErr(err)
+	}
+	for _, node := range graph.Sources(g) {
+		exportOptions := jsoningest.ExportOptions{}
+		data, err := jsoningest.Export(node, exportOptions)
+		if err != nil {
+			failErr(err)
+		}
+		data.Encode(os.Stdout)
+	}
+	pipeline.Next()
+	return nil
+}
+
 func init() {
 	exportCmd.AddCommand(exportJSONCmd)
 	exportJSONCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")

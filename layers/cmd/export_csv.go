@@ -24,6 +24,34 @@ import (
 	lscsv "github.com/cloudprivacylabs/lsa/pkg/csv"
 )
 
+type ExportCSV struct {
+	Input string
+	Spec  string
+}
+
+func (ecsv ExportCSV) Run(pipeline *PipelineContext) error {
+	input := ecsv.Input
+	g, err := cmdutil.ReadGraph(pipeline.InputFiles, nil, input)
+	if err != nil {
+		failErr(err)
+	}
+	csvExporter := lscsv.Writer{}
+	spec := ecsv.Spec
+	if len(spec) > 0 {
+		if err := cmdutil.ReadJSONOrYAML(spec, &csvExporter); err != nil {
+			failErr(err)
+		}
+	}
+
+	wr := csv.NewWriter(os.Stdout)
+	csvExporter.WriteHeader(wr)
+	csvExporter.WriteRows(wr, g)
+	wr.Flush()
+
+	pipeline.Next()
+	return nil
+}
+
 func init() {
 	exportCmd.AddCommand(exportCSVCmd)
 	exportCSVCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
