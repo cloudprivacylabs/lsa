@@ -7,14 +7,14 @@ import (
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
-// PatternTerm validates agains a regex
+// PatternTerm validates against a regex
 var PatternTerm = ls.NewTerm(ls.LS, "validation/pattern", false, false, ls.OverrideComposition, struct {
 	PatternValidator
 }{
 	PatternValidator{},
 })
 
-// PatternValidator validates a string value agains a regex
+// PatternValidator validates a string value against a regex
 type PatternValidator struct{}
 
 const compiledPatternTerm = "$compiledPattern"

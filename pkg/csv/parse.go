@@ -42,6 +42,7 @@ type cellNode struct {
 	name       string
 	index      int
 	id         string
+	properties map[string]interface{}
 }
 
 func (i cellNode) GetSchemaNode() graph.Node             { return i.schemaNode }
@@ -50,7 +51,7 @@ func (i cellNode) GetValue() string                      { return i.value }
 func (i cellNode) GetValueTypes() []string               { return nil }
 func (i cellNode) GetChildren() []ls.ParsedDocNode       { return nil }
 func (i cellNode) GetID() string                         { return i.id }
-func (i cellNode) GetProperties() map[string]interface{} { return nil }
+func (i cellNode) GetProperties() map[string]interface{} { return i.properties }
 
 type Parser struct {
 	OnlySchemaAttributes bool
@@ -150,6 +151,11 @@ func (ing Parser) parseRow(ctx parserContext, row []string) (ls.ParsedDocNode, e
 			}
 		}
 		if newChild != nil {
+			newChild.properties = make(map[string]interface{})
+			newChild.properties[ls.AttributeIndexTerm] = ls.IntPropertyValue(columnIndex)
+			if len(columnName) > 0 {
+				newChild.properties[ls.AttributeNameTerm] = ls.StringPropertyValue(columnName)
+			}
 			children = append(children, newChild)
 		}
 	}

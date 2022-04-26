@@ -54,10 +54,7 @@ func (rs ReshapePipeline) Run(pipeline *PipelineContext) error {
 
 func init() {
 	rootCmd.AddCommand(reshapeCmd)
-	reshapeCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
-	reshapeCmd.Flags().String("repo", "", "Schema repository directory")
-	reshapeCmd.Flags().String("type", "", "Use if a bundle is given for data types. The type name to ingest.")
-	reshapeCmd.Flags().String("bundle", "", "Schema bundle.")
+	addSchemaFlags(reshapeCmd.Flags())
 	reshapeCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 	reshapeCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	reshapeCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
