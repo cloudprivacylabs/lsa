@@ -26,6 +26,63 @@ import (
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
+type XMLIngester struct {
+	BaseIngestParams
+	ID string
+}
+
+func (xml XMLIngester) Run(pipeline *PipelineContext) error {
+	ctx := pipeline.Context
+	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, xml.CompiledSchema, xml.Repo, xml.Schema, xml.Type, xml.Bundle)
+	if err != nil {
+		return err
+	}
+	var input io.Reader
+	if layer != nil {
+		enc, err := layer.GetEncoding()
+		if err != nil {
+			failErr(err)
+		}
+		input, err = cmdutil.StreamFileOrStdin(pipeline.InputFiles, enc)
+		if err != nil {
+			failErr(err)
+		}
+	} else {
+		input, err = cmdutil.StreamFileOrStdin(pipeline.InputFiles)
+		if err != nil {
+			failErr(err)
+		}
+	}
+	grph := pipeline.Graph
+
+	embedSchemaNodes := xml.EmbedSchemaNodes
+	onlySchemaAttributes := xml.OnlySchemaAttributes
+	parser := xmlingest.Parser{
+		OnlySchemaAttributes: onlySchemaAttributes,
+	}
+	if layer != nil {
+		parser.SchemaNode = layer.GetSchemaRootNode()
+	}
+	builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
+		EmbedSchemaNodes:     embedSchemaNodes,
+		OnlySchemaAttributes: onlySchemaAttributes,
+	})
+
+	baseID := xml.ID
+
+	parsed, err := parser.ParseStream(ctx, baseID, input)
+	if err != nil {
+		failErr(err)
+	}
+	_, err = ls.Ingest(builder, parsed)
+	if err != nil {
+		failErr(err)
+	}
+	pipeline.Graph = builder.GetGraph()
+	pipeline.Next()
+	return nil
+}
+
 func init() {
 	ingestCmd.AddCommand(ingestXMLCmd)
 	ingestXMLCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")

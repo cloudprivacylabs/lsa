@@ -71,7 +71,7 @@ func (ji JSONIngester) Run(pipeline *PipelineContext) error {
 		failErr(err)
 	}
 
-	pipeline.Graph = grph
+	pipeline.Graph = builder.GetGraph()
 	pipeline.Next()
 	return nil
 }
