@@ -23,6 +23,35 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type ReshapePipeline struct {
+	BaseIngestParams
+	Input string
+}
+
+func (rs ReshapePipeline) Run(pipeline *PipelineContext) error {
+	ctx := pipeline.Context
+	input := rs.Input
+	g, err := cmdutil.ReadGraph(pipeline.InputFiles, ctx.GetInterner(), input)
+	if err != nil {
+		failErr(err)
+	}
+	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, rs.CompiledSchema, rs.Repo, rs.Schema, rs.Type, rs.Bundle)
+
+	reshaper := transform.Reshaper{}
+	reshaper.TargetSchema = layer
+	reshaper.Builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
+	err = reshaper.Reshape(ctx, g)
+	if err != nil {
+		failErr(err)
+	}
+
+	pipeline.Graph = reshaper.Builder.GetGraph()
+	pipeline.Next()
+	return nil
+}
+
 func init() {
 	rootCmd.AddCommand(reshapeCmd)
 	reshapeCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
