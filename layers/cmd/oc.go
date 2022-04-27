@@ -26,11 +26,9 @@ import (
 )
 
 type OCpipeline struct {
-	Input string
-	Expr  string
+	Step
+	Expr string
 }
-
-func (OCpipeline) Next() error { return nil }
 
 func (oc OCpipeline) Run(pipeline *PipelineContext) error {
 	ctx := opencypher.NewEvalContext(pipeline.Graph)

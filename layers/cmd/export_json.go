@@ -24,9 +24,9 @@ import (
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
-type JSONExport struct{}
-
-func (JSONExport) Next() error { return nil }
+type JSONExport struct {
+	Step
+}
 
 func (JSONExport) Run(pipeline *PipelineContext) error {
 	for _, node := range graph.Sources(pipeline.Graph) {

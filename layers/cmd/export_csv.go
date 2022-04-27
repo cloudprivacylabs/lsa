@@ -25,11 +25,10 @@ import (
 )
 
 type CSVExport struct {
+	Step
 	SpecFile string
 	SliceByTermsSpec
 }
-
-func (CSVExport) Next() error { return nil }
 
 func (ecsv CSVExport) Run(pipeline *PipelineContext) error {
 	csvExporter := lscsv.Writer{}

@@ -24,10 +24,9 @@ import (
 )
 
 type ReshapePipeline struct {
+	Step
 	BaseIngestParams
 }
-
-func (ReshapePipeline) Next() error { return nil }
 
 func (rs ReshapePipeline) Run(pipeline *PipelineContext) error {
 	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, rs.CompiledSchema, rs.Repo, rs.Schema, rs.Type, rs.Bundle)
