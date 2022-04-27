@@ -23,7 +23,7 @@ type Step interface {
 	Next() error
 }
 
-var operations map[string]func() Step
+var operations = make(map[string]func() Step)
 
 func (ctx *PipelineContext) Next() error {
 	ctx.currentStep++
@@ -36,7 +36,7 @@ func (ctx *PipelineContext) Next() error {
 }
 
 func init() {
-	ingestCmd.AddCommand(pipelineCmd)
+	rootCmd.AddCommand(pipelineCmd)
 	pipelineCmd.Flags().String("file", "", "Pipeline build file")
 	pipelineCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
 	// pipelineCmd.Flags().String("inputFile", "", "User provided input file")
