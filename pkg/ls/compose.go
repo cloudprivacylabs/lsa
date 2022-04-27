@@ -33,12 +33,51 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 		}
 	}
 	sourceCompose := AsPropertyValue(source.GetLayerRootNode().GetProperty(ComposeTerm)).AsString()
-
 	nodeMap := make(map[graph.Node]graph.Node)
 	var err error
+
+	copySubtree := func(targetNode, sourceNode graph.Node) {
+		nodeMap[sourceNode] = targetNode
+		for edges := sourceNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+			edge := edges.Edge()
+			if IsAttributeTreeEdge(edge) {
+				continue
+			}
+			graph.CopySubgraph(edge.GetTo(), layer.Graph, ClonePropertyValueFunc, nodeMap)
+			graph.CopyEdge(edge, layer.Graph, ClonePropertyValueFunc, nodeMap)
+		}
+	}
+
+	processedSourceNodes := make(map[graph.Node]struct{})
+	// Process overlay attributes first
+	targetOverlayAttrs := make(map[string]graph.Node)
+	sourceOverlayAttrs := make(map[string]graph.Node)
+	for _, x := range layer.GetOverlayAttributes() {
+		targetOverlayAttrs[GetNodeID(x)] = x
+	}
+	for _, x := range source.GetOverlayAttributes() {
+		sourceOverlayAttrs[GetNodeID(x)] = x
+	}
+	for srcId, srcAttr := range sourceOverlayAttrs {
+		if tgt, ok := targetOverlayAttrs[srcId]; ok {
+			// Compose target
+			if err = mergeNodes(context, layer, tgt, srcAttr, sourceCompose, processedSourceNodes); err != nil {
+				return err
+			}
+			copySubtree(tgt, srcAttr)
+		}
+		targetNode, _ := layer.FindAttributeByID(srcId)
+		if targetNode == nil {
+			continue
+		}
+		if err = mergeNodes(context, layer, targetNode, srcAttr, sourceCompose, processedSourceNodes); err != nil {
+			return err
+		}
+		copySubtree(targetNode, srcAttr)
+	}
+
 	// Process attributes of the source layer depth-first
 	// Compose the source attribute nodes with the target attribute nodes, ignoring any nodes attached to them
-	processedSourceNodes := make(map[graph.Node]struct{})
 	source.ForEachAttribute(func(sourceNode graph.Node, sourcePath []graph.Node) bool {
 		if _, processed := processedSourceNodes[sourceNode]; processed {
 			return true
@@ -56,16 +95,7 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 					return false
 				}
 				// Add any annotation subtrees
-				nodeMap[sourceNode] = targetNode
-				for edges := sourceNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
-					edge := edges.Edge()
-					if IsAttributeTreeEdge(edge) {
-						continue
-					}
-					graph.CopySubgraph(edge.GetTo(), layer.Graph, ClonePropertyValueFunc, nodeMap)
-					graph.CopyEdge(edge, layer.Graph, ClonePropertyValueFunc, nodeMap)
-				}
-
+				copySubtree(targetNode, sourceNode)
 			}
 		} else {
 			// Target node does not exist.
