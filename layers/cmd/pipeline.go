@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
@@ -39,7 +40,6 @@ func init() {
 	rootCmd.AddCommand(pipelineCmd)
 	pipelineCmd.Flags().String("file", "", "Pipeline build file")
 	pipelineCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
-	// pipelineCmd.Flags().String("inputFile", "", "User provided input file")
 }
 
 var pipelineCmd = &cobra.Command{
@@ -60,7 +60,7 @@ var pipelineCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		pipeline := &PipelineContext{Context: ls.DefaultContext()}
+		pipeline := &PipelineContext{Context: ls.DefaultContext(), InputFiles: make([]string, 1, len(stepMarshals))}
 		for _, stage := range stepMarshals {
 			step := operations[stage.Operation]()
 			if err := json.Unmarshal([]byte(stage.Step), &step); err != nil {
@@ -73,10 +73,12 @@ var pipelineCmd = &cobra.Command{
 					failErr(err)
 				}
 			}
-			err = cmdutil.ReadJSONFileOrStdin(args, &pipeline.InputFiles)
+			var buf bytes.Buffer
+			err = cmdutil.ReadJSONFileOrStdin(args, &buf)
 			if err != nil {
 				failErr(err)
 			}
+			pipeline.InputFiles = append(pipeline.InputFiles, buf.String())
 			if err := step.Run(pipeline); err != nil {
 				failErr(err)
 			}
