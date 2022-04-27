@@ -24,19 +24,21 @@ import (
 	lscsv "github.com/cloudprivacylabs/lsa/pkg/csv"
 )
 
-type ExportCSV struct {
-	Input string
-	Spec  string
+type CSVExport struct {
+	SpecFile string
+	SliceByTermsSpec
 }
 
-func (ecsv ExportCSV) Run(pipeline *PipelineContext) error {
-	input := ecsv.Input
-	g, err := cmdutil.ReadGraph(pipeline.InputFiles, nil, input)
-	if err != nil {
-		failErr(err)
-	}
+func (CSVExport) Next() error
+
+func (ecsv CSVExport) Run(pipeline *PipelineContext) error {
 	csvExporter := lscsv.Writer{}
-	spec := ecsv.Spec
+	var spec string
+	if ecsv.SpecFile != "" {
+		spec = ecsv.SpecFile
+	} else {
+		spec = ecsv.File
+	}
 	if len(spec) > 0 {
 		if err := cmdutil.ReadJSONOrYAML(spec, &csvExporter); err != nil {
 			failErr(err)
@@ -45,10 +47,12 @@ func (ecsv ExportCSV) Run(pipeline *PipelineContext) error {
 
 	wr := csv.NewWriter(os.Stdout)
 	csvExporter.WriteHeader(wr)
-	csvExporter.WriteRows(wr, g)
+	csvExporter.WriteRows(wr, pipeline.Graph)
 	wr.Flush()
 
-	pipeline.Next()
+	if err := pipeline.Next(); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -56,6 +60,8 @@ func init() {
 	exportCmd.AddCommand(exportCSVCmd)
 	exportCSVCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	exportCSVCmd.Flags().String("spec", "", "Export spec")
+
+	operations["csvexport"] = func() Step { return &CSVExport{} }
 }
 
 var exportCSVCmd = &cobra.Command{

@@ -24,17 +24,12 @@ import (
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
-type ExportJSON struct {
-	Input string
-}
+type JSONExport struct{}
 
-func (ejson ExportJSON) Run(pipeline *PipelineContext) error {
-	input := ejson.Input
-	g, err := cmdutil.ReadGraph(pipeline.InputFiles, nil, input)
-	if err != nil {
-		failErr(err)
-	}
-	for _, node := range graph.Sources(g) {
+func (JSONExport) Next() error
+
+func (JSONExport) Run(pipeline *PipelineContext) error {
+	for _, node := range graph.Sources(pipeline.Graph) {
 		exportOptions := jsoningest.ExportOptions{}
 		data, err := jsoningest.Export(node, exportOptions)
 		if err != nil {
@@ -42,13 +37,17 @@ func (ejson ExportJSON) Run(pipeline *PipelineContext) error {
 		}
 		data.Encode(os.Stdout)
 	}
-	pipeline.Next()
+	if err := pipeline.Next(); err != nil {
+		return err
+	}
 	return nil
 }
 
 func init() {
 	exportCmd.AddCommand(exportJSONCmd)
 	exportJSONCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
+
+	operations["jsonexport"] = func() Step { return &JSONExport{} }
 }
 
 var exportJSONCmd = &cobra.Command{

@@ -31,8 +31,9 @@ type JSONIngester struct {
 	ID string
 }
 
+func (JSONIngester) Next() error
+
 func (ji JSONIngester) Run(pipeline *PipelineContext) error {
-	ctx := pipeline.Context
 	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, ji.CompiledSchema, ji.Repo, ji.Schema, ji.Type, ji.Bundle)
 	if err != nil {
 		return err
@@ -66,19 +67,22 @@ func (ji JSONIngester) Run(pipeline *PipelineContext) error {
 		OnlySchemaAttributes: parser.OnlySchemaAttributes,
 	})
 	baseID := ji.ID
-	_, err = jsoningest.IngestStream(ctx, baseID, input, parser, builder)
+	_, err = jsoningest.IngestStream(pipeline.Context, baseID, input, parser, builder)
 	if err != nil {
 		failErr(err)
 	}
 
-	pipeline.Graph = builder.GetGraph()
-	pipeline.Next()
+	if err := pipeline.Next(); err != nil {
+		return err
+	}
 	return nil
 }
 
 func init() {
 	ingestCmd.AddCommand(ingestJSONCmd)
 	ingestJSONCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
+
+	operations["jsoningest"] = func() Step { return &JSONIngester{} }
 }
 
 var ingestJSONCmd = &cobra.Command{

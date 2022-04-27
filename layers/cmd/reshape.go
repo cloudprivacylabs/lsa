@@ -25,30 +25,24 @@ import (
 
 type ReshapePipeline struct {
 	BaseIngestParams
-	Input string
 }
 
-func (rs ReshapePipeline) Run(pipeline *PipelineContext) error {
-	ctx := pipeline.Context
-	input := rs.Input
-	g, err := cmdutil.ReadGraph(pipeline.InputFiles, ctx.GetInterner(), input)
-	if err != nil {
-		failErr(err)
-	}
-	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, rs.CompiledSchema, rs.Repo, rs.Schema, rs.Type, rs.Bundle)
+func (ReshapePipeline) Next() error
 
+func (rs ReshapePipeline) Run(pipeline *PipelineContext) error {
+	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, rs.CompiledSchema, rs.Repo, rs.Schema, rs.Type, rs.Bundle)
 	reshaper := transform.Reshaper{}
 	reshaper.TargetSchema = layer
 	reshaper.Builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		EmbedSchemaNodes: true,
 	})
-	err = reshaper.Reshape(ctx, g)
+	err = reshaper.Reshape(pipeline.Context, pipeline.Graph)
 	if err != nil {
 		failErr(err)
 	}
-
-	pipeline.Graph = reshaper.Builder.GetGraph()
-	pipeline.Next()
+	if err := pipeline.Next(); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -58,6 +52,8 @@ func init() {
 	reshapeCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 	reshapeCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	reshapeCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
+
+	operations["reshape"] = func() Step { return &ReshapePipeline{} }
 }
 
 var reshapeCmd = &cobra.Command{

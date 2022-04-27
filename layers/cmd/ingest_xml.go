@@ -31,8 +31,9 @@ type XMLIngester struct {
 	ID string
 }
 
+func (XMLIngester) Next() error
+
 func (xml XMLIngester) Run(pipeline *PipelineContext) error {
-	ctx := pipeline.Context
 	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, xml.CompiledSchema, xml.Repo, xml.Schema, xml.Type, xml.Bundle)
 	if err != nil {
 		return err
@@ -70,7 +71,7 @@ func (xml XMLIngester) Run(pipeline *PipelineContext) error {
 
 	baseID := xml.ID
 
-	parsed, err := parser.ParseStream(ctx, baseID, input)
+	parsed, err := parser.ParseStream(pipeline.Context, baseID, input)
 	if err != nil {
 		failErr(err)
 	}
@@ -78,14 +79,17 @@ func (xml XMLIngester) Run(pipeline *PipelineContext) error {
 	if err != nil {
 		failErr(err)
 	}
-	pipeline.Graph = builder.GetGraph()
-	pipeline.Next()
+	if err := pipeline.Next(); err != nil {
+		return err
+	}
 	return nil
 }
 
 func init() {
 	ingestCmd.AddCommand(ingestXMLCmd)
 	ingestXMLCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
+
+	operations["xmlingest"] = func() Step { return &XMLIngester{} }
 }
 
 var ingestXMLCmd = &cobra.Command{

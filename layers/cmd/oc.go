@@ -30,21 +30,18 @@ type OCpipeline struct {
 	Expr  string
 }
 
+func (OCpipeline) Next() error
+
 func (oc OCpipeline) Run(pipeline *PipelineContext) error {
-	interner := ls.NewInterner()
-	input := oc.Input
-	g, err := cmdutil.ReadGraph(pipeline.InputFiles, interner, input)
-	if err != nil {
-		failErr(err)
-	}
-	expr := oc.Expr
-	ctx := opencypher.NewEvalContext(g)
-	output, err := opencypher.ParseAndEvaluate(expr, ctx)
+	ctx := opencypher.NewEvalContext(pipeline.Graph)
+	output, err := opencypher.ParseAndEvaluate(oc.Expr, ctx)
 	if err != nil {
 		failErr(err)
 	}
 	fmt.Println(output)
-	pipeline.Next()
+	if err := pipeline.Next(); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -53,6 +50,8 @@ func init() {
 	ocCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	ocCmd.Flags().String("expr", "", "Opencypher expression to run")
 	ocCmd.MarkFlagRequired("expr")
+
+	operations["oc"] = func() Step { return &OCpipeline{} }
 }
 
 var ocCmd = &cobra.Command{
