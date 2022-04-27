@@ -52,6 +52,10 @@ type Entity struct {
 	RootNodeID string `json:"rootNodeId,omitempty" bson:"rootNodeId,omitempty" yaml:"rootNodeId,omitempty"`
 	// ValueType is the value type of the schema, that is, the entity type defined with this schema
 	ValueType string `json:"valueType" bson:"valueType" yaml:"valueType"`
+
+	// If specified, all attribute will be imported in this
+	// namespace. If not, valueType, if that too is empty, rootNodeID
+	AttrNamespace string `json:"attrNamespace" bson:"attrNamespace" yaml:"attrNamespace"`
 }
 
 func (e Entity) GetLayerRoot() string {
@@ -234,14 +238,31 @@ func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, 
 	if p := ctx.findProp(sch); p != nil {
 		return p, nil
 	}
-	// Schema node ID is the layer ID + schema location
-	target := &schemaProperty{
-		ID: sch.Location,
+	target := &schemaProperty{}
+
+	// Determine attribute ID
+	namespace := ctx.currentEntity.Entity.AttrNamespace
+	if len(namespace) == 0 {
+		namespace = ctx.currentEntity.Entity.ValueType
+	}
+	if len(namespace) == 0 {
+		namespace = ctx.currentEntity.Entity.RootNodeID
 	}
 	{
 		u, err := url.Parse(sch.Location)
 		if err == nil {
-			target.ID = u.Fragment
+			// The schema location is a URL. Attribute ID is namespace + fragment
+			nsurl, err := url.Parse(namespace)
+			if err == nil {
+				nsurl.Fragment = u.Fragment
+				target.ID = nsurl.String()
+			} else {
+				// Namespace is not a URL
+				target.ID = namespace + "#" + u.Fragment
+			}
+		} else {
+			// location is not a URL
+			target.ID = namespace + sch.Location
 		}
 	}
 

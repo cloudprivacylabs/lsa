@@ -18,15 +18,17 @@ the FHIR schema. It contains entries of the form:
 ```
 {
     "typeNames" : {
-        "Patient": {
+        "https://hl7.org/fhir/Patient": {
             "jsonSchema": {
                 "ref": "fhir.schema.json#/definitions/Patient",
+                "namespace": "https://hl7.org/fhir",
                 "layerId": "https://hl7.org/fhir/Patient"
             }
         },
-        "Bundle": {
+        "https://hl7.org/fhir/Bundle": {
             "jsonSchema": {
                 "ref": "fhir.schema.json#/definitions/Bundle",
+                "namespace": "https://hl7.org/fhir",
                 "layerId": "https://hl7.org/fhir/Bundle"
             }
         },
@@ -77,14 +79,14 @@ This operation does the following:
 To ingest a sample patient, use:
 
 ```
-layers ingest json --bundle fhir.bundle.json --type Patient patient.json
+layers ingest json --bundle fhir.bundle.json --type https://hl7.org/fhir/Patient patient.json
 ```
 
 This will ingest the `Patient` record based on the schema with data
 nodes connected to schema nodes using `ls:instanceOf` edges.
 
 ```
-layers ingest json --bundle fhir.bundle.json --type Patient patient.json --embedSchemaNodes
+layers ingest json --bundle fhir.bundle.json --type https://hl7.org/fhir/Patient patient.json --embedSchemaNodes
 ```
 
 This will ingest `Patient` record, merging schema nodes with data nodes.
@@ -92,7 +94,7 @@ This will ingest `Patient` record, merging schema nodes with data nodes.
 Similarly, to ingest a FHIR Bundle:
 
 ```
-layers ingest json --bundle fhir.bundle.json --type Bundle simplebundle.json --embedSchemaNodes
+layers ingest json --bundle fhir.bundle.json --type https://hl7.org/fhir/Bundle simplebundle.json --embedSchemaNodes
 ```
 
 The result of this operation can be seen in [bundle.png](bundle.png) or [bundle.svg](bundle.svg).
