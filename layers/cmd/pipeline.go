@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"encoding/json"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
@@ -60,7 +59,7 @@ var pipelineCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		pipeline := &PipelineContext{Context: ls.DefaultContext(), InputFiles: make([]string, 1, len(stepMarshals))}
+		pipeline := &PipelineContext{Context: ls.DefaultContext(), InputFiles: make([]string, 0)}
 		for _, stage := range stepMarshals {
 			step := operations[stage.Operation]()
 			if err := json.Unmarshal([]byte(stage.Step), &step); err != nil {
@@ -73,12 +72,11 @@ var pipelineCmd = &cobra.Command{
 					failErr(err)
 				}
 			}
-			var buf bytes.Buffer
-			err = cmdutil.ReadJSONFileOrStdin(args, &buf)
-			if err != nil {
-				failErr(err)
+			if len(args) > 0 {
+				for _, arg := range args {
+					pipeline.InputFiles = append(pipeline.InputFiles, arg)
+				}
 			}
-			pipeline.InputFiles = append(pipeline.InputFiles, buf.String())
 			if err := step.Run(pipeline); err != nil {
 				failErr(err)
 			}
