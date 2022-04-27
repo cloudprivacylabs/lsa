@@ -30,7 +30,7 @@ type OCpipeline struct {
 	Expr  string
 }
 
-func (OCpipeline) Next() error
+func (OCpipeline) Next() error { return nil }
 
 func (oc OCpipeline) Run(pipeline *PipelineContext) error {
 	ctx := opencypher.NewEvalContext(pipeline.Graph)

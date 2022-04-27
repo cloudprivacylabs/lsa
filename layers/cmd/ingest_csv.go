@@ -39,7 +39,7 @@ type CSVIngester struct {
 	ID        string
 }
 
-func (CSVIngester) Next() error
+func (CSVIngester) Next() error { return nil }
 
 func (ci CSVIngester) Run(pipeline *PipelineContext) error {
 	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, ci.CompiledSchema, ci.Repo, ci.Schema, ci.Type, ci.Bundle)

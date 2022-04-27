@@ -31,7 +31,7 @@ type XMLIngester struct {
 	ID string
 }
 
-func (XMLIngester) Next() error
+func (XMLIngester) Next() error { return nil }
 
 func (xml XMLIngester) Run(pipeline *PipelineContext) error {
 	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, xml.CompiledSchema, xml.Repo, xml.Schema, xml.Type, xml.Bundle)

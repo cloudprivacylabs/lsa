@@ -26,7 +26,7 @@ import (
 
 type JSONExport struct{}
 
-func (JSONExport) Next() error
+func (JSONExport) Next() error { return nil }
 
 func (JSONExport) Run(pipeline *PipelineContext) error {
 	for _, node := range graph.Sources(pipeline.Graph) {

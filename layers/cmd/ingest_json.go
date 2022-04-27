@@ -31,7 +31,7 @@ type JSONIngester struct {
 	ID string
 }
 
-func (JSONIngester) Next() error
+func (JSONIngester) Next() error { return nil }
 
 func (ji JSONIngester) Run(pipeline *PipelineContext) error {
 	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, ji.CompiledSchema, ji.Repo, ji.Schema, ji.Type, ji.Bundle)
