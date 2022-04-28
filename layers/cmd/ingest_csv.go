@@ -34,10 +34,11 @@ import (
 type CSVIngester struct {
 	Step
 	BaseIngestParams
-	StartRow  int
-	EndRow    int
-	HeaderRow int
-	ID        string
+	StartRow     int
+	EndRow       int
+	HeaderRow    int
+	ID           string
+	IngestByRows bool
 }
 
 func (ci CSVIngester) Run(pipeline *PipelineContext) error {
@@ -105,9 +106,16 @@ func (ci CSVIngester) Run(pipeline *PipelineContext) error {
 				if err != nil {
 					return err
 				}
-				if err := pipeline.Next(); err != nil {
-					return err
+				if ci.IngestByRows {
+					if err := pipeline.Next(); err != nil {
+						return err
+					}
 				}
+			}
+		}
+		if !ci.IngestByRows {
+			if err := pipeline.Next(); err != nil {
+				return err
 			}
 		}
 	}

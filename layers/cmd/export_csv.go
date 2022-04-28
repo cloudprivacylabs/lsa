@@ -27,16 +27,16 @@ import (
 type CSVExport struct {
 	Step
 	SpecFile string
-	SliceByTermsSpec
+	lscsv.Writer
 }
 
 func (ecsv CSVExport) Run(pipeline *PipelineContext) error {
-	csvExporter := lscsv.Writer{}
+	csvExporter := ecsv.Writer
 	var spec string
 	if ecsv.SpecFile != "" {
 		spec = ecsv.SpecFile
 	} else {
-		spec = ecsv.File
+		spec = csvExporter.RowRootQuery
 	}
 	if len(spec) > 0 {
 		if err := cmdutil.ReadJSONOrYAML(spec, &csvExporter); err != nil {

@@ -53,7 +53,6 @@ func (ji JSONIngester) Run(pipeline *PipelineContext) error {
 			failErr(err)
 		}
 	}
-	grph := pipeline.Graph
 
 	parser := jsoningest.Parser{}
 
@@ -61,7 +60,7 @@ func (ji JSONIngester) Run(pipeline *PipelineContext) error {
 	parser.SchemaNode = layer.GetSchemaRootNode()
 	embedSchemaNodes := ji.EmbedSchemaNodes
 
-	builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
+	builder := ls.NewGraphBuilder(pipeline.Graph, ls.GraphBuilderOptions{
 		EmbedSchemaNodes:     embedSchemaNodes,
 		OnlySchemaAttributes: parser.OnlySchemaAttributes,
 	})

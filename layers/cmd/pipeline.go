@@ -44,7 +44,7 @@ func init() {
 var pipelineCmd = &cobra.Command{
 	Use:   "pipeline",
 	Short: "run pipeline",
-	Args:  cobra.MaximumNArgs(1),
+	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		file, err := cmd.Flags().GetString("file")
 		if err != nil {
@@ -60,6 +60,7 @@ var pipelineCmd = &cobra.Command{
 			failErr(err)
 		}
 		pipeline := &PipelineContext{
+			Graph:      ls.NewDocumentGraph(),
 			Context:    ls.DefaultContext(),
 			InputFiles: make([]string, 0),
 			steps:      []Step{},
@@ -76,16 +77,11 @@ var pipelineCmd = &cobra.Command{
 				if err != nil {
 					failErr(err)
 				}
-			} else {
-				pipeline.Graph = ls.NewDocumentGraph()
 			}
 			if len(args) > 0 {
 				pipeline.InputFiles = args
 			}
 			if err := step.Run(pipeline); err != nil {
-				failErr(err)
-			}
-			if err := step.Next(); err != nil {
 				failErr(err)
 			}
 		}
