@@ -59,23 +59,28 @@ var pipelineCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		pipeline := &PipelineContext{Context: ls.DefaultContext(), InputFiles: make([]string, 0)}
+		pipeline := &PipelineContext{
+			Context:    ls.DefaultContext(),
+			InputFiles: make([]string, 0),
+			steps:      []Step{},
+		}
 		for _, stage := range stepMarshals {
 			step := operations[stage.Operation]()
 			if err := json.Unmarshal([]byte(stage.Step), &step); err != nil {
 				failErr(err)
 			}
+			pipeline.steps = append(pipeline.steps, step)
 			initialGraph, _ := cmd.Flags().GetString("initialGraph")
 			if initialGraph != "" {
 				pipeline.Graph, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
 				if err != nil {
 					failErr(err)
 				}
+			} else {
+				pipeline.Graph = ls.NewDocumentGraph()
 			}
 			if len(args) > 0 {
-				for _, arg := range args {
-					pipeline.InputFiles = append(pipeline.InputFiles, arg)
-				}
+				pipeline.InputFiles = args
 			}
 			if err := step.Run(pipeline); err != nil {
 				failErr(err)
