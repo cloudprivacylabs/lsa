@@ -81,15 +81,15 @@ person.schema.json:
   "@context": "https://lschema.org/ls.json",
   "@id": "https://example.org/Person/schema",
   "@type": "Schema",
-  "valueType": "Person",
+  "valueType": "https://example.org/Person",
   "layer": {
     "@type": "Object",
     "@id": "https://example.org/Person",
     "attributes": {
-      "firstName": {
+      "https://example.org/Person/firstName": {
         "@type": "Value"
       },
-      "lastName": {
+      "https://example.org/Person/lastName": {
         "@type": "Value"
      }
    }
@@ -109,9 +109,9 @@ person-dpv.overlay.json:
   "@context": "https://lschema.org/ls.json",
   "@id": "https://example.org/Person/dpv-ovl",
   "@type": "Overlay",
-  "valueType": "Person",
+  "valueType": "https://example.org/Person",
   "layer": {
-    "lastName": {
+    "https://example.org/lastName": {
       "@type": "Value",
       "http://www.w3.org/ns/dpv#hasPersonalDataCategory": "http://www.w3.org/dpv#Name"
     }
@@ -125,7 +125,7 @@ dpv overlay is:
 ```
 {
     "typeNames" : {
-        "Person": {
+        "https://example.org/Person": {
             "schema" : "person.schema.json",
             "overlays" : [
                 {
