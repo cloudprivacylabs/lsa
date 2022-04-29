@@ -53,3 +53,12 @@ func (mapContextSemantics) GetEvaluatable(node graph.Node) opencypher.Evaluatabl
 	x, _ := v.(opencypher.Evaluatable)
 	return x
 }
+
+func (mapContextSemantics) Evaluate(node graph.Node, ctx *opencypher.EvalContext) (bool, opencypher.Value, error) {
+	ev := MapContextSemantics.GetEvaluatable(node)
+	if ev == nil {
+		return false, opencypher.Value{}, nil
+	}
+	v, err := ev.Evaluate(ctx)
+	return true, v, err
+}

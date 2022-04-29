@@ -134,6 +134,30 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 			return nil, err
 		}
 	}
+	// If this is an overlay, deal with attributeOverlays
+	if target.GetLayerType() == OverlayTerm {
+		for _, attr := range LDGetListElements(rootNode.Node[AttributeOverlaysTerm]) {
+			attrNode, ok := attr.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			id := LDGetNodeID(attrNode)
+			if len(id) == 0 {
+				continue
+			}
+			inputNode, ok := inputNodes[id]
+			if !ok {
+				return nil, MakeErrInvalidInput(id, "Cannot follow link")
+			}
+			if err := unmarshalAttributeNode(target, inputNode, inputNodes, interner); err != nil {
+				return nil, err
+			}
+			if err := unmarshalAnnotations(target, inputNode, inputNodes, interner); err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	if len(targetType) > 0 {
 		target.SetValueType(targetType)
 	}
@@ -261,12 +285,7 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 
 	types = attribute.GetLabels()
 	t := FilterAttributeTypes(types.Slice())
-	switch len(t) {
-	case 0:
-		types.Add(AttributeTypeValue)
-		attribute.SetLabels(types)
-	case 1:
-	default:
+	if len(t) > 1 {
 		return ErrMultipleTypes(fmt.Sprintf("%s: %s", inode.ID, t))
 	}
 	return nil
@@ -306,7 +325,20 @@ func MarshalLayer(layer *Layer) (interface{}, error) {
 			return nil, err
 		}
 	}
+	attrOverlays := make([]interface{}, 0)
+	for edges := layer.GetLayerRootNode().GetEdgesWithLabel(graph.OutgoingEdge, AttributeOverlaysTerm); edges.Next(); {
+		attr := edges.Edge().GetTo()
+		attrOut, err := marshalNode(layer, attr, nodeMap)
+		if err != nil {
+			return nil, err
+		}
+		attrOverlays = append(attrOverlays, attrOut)
+	}
 	v := map[string]interface{}{}
+	if len(attrOverlays) > 0 {
+		v[AttributeOverlaysTerm] = []interface{}{
+			map[string]interface{}{"@list": attrOverlays}}
+	}
 	if layerOut != nil {
 		v[LayerRootTerm] = []interface{}{layerOut}
 	}

@@ -47,8 +47,9 @@ func (ref BundleSchemaRef) GetLayerID() string {
 }
 
 type JSONSchemaReference struct {
-	LayerID string `json:"layerId" yaml:"layerId" bson:"layerId"`
-	Ref     string `json:"ref" yaml:"ref" bson:"ref"`
+	LayerID   string `json:"layerId" yaml:"layerId" bson:"layerId"`
+	Ref       string `json:"ref" yaml:"ref" bson:"ref"`
+	Namespace string `json:"namespace" yaml:"namespace" bson:"namespace"`
 }
 
 // BundleVariant combines a schema and overlays
@@ -131,9 +132,10 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 				break
 			}
 			entity := jsonsch.Entity{
-				LayerID:   ref.JSONSchema.LayerID,
-				ValueType: variantType,
-				Ref:       getRelativeFileName(path, ref.JSONSchema.Ref),
+				LayerID:       ref.JSONSchema.LayerID,
+				ValueType:     variantType,
+				Ref:           getRelativeFileName(path, ref.JSONSchema.Ref),
+				AttrNamespace: ref.JSONSchema.Namespace,
 			}
 			entitiesMap[entity.LayerID] = entity
 			layerIDMap[entity.LayerID] = entity.LayerID

@@ -99,6 +99,11 @@ func (l *Layer) CloneInto(targetGraph graph.Graph) (*Layer, map[graph.Node]graph
 // GetLayerRootNode returns the root node of the schema
 func (l *Layer) GetLayerRootNode() graph.Node { return l.layerInfo }
 
+// Returns the overlay attribute nodes if there are any
+func (l *Layer) GetOverlayAttributes() []graph.Node {
+	return graph.TargetNodes(l.layerInfo.GetEdgesWithLabel(graph.OutgoingEdge, AttributeOverlaysTerm))
+}
+
 // GetSchemaRootNode returns the root node of the object defined by the schema
 func (l *Layer) GetSchemaRootNode() graph.Node {
 	x := graph.TargetNodes(l.layerInfo.GetEdgesWithLabel(graph.OutgoingEdge, LayerRootTerm))
@@ -110,14 +115,12 @@ func (l *Layer) GetSchemaRootNode() graph.Node {
 
 // GetID returns the ID of the layer
 func (l *Layer) GetID() string {
-	v, _ := l.layerInfo.GetProperty(LayerIDTerm)
-	s, _ := v.(string)
-	return s
+	return GetNodeID(l.layerInfo)
 }
 
 // SetID sets the ID of the layer
 func (l *Layer) SetID(ID string) {
-	l.layerInfo.SetProperty(LayerIDTerm, ID)
+	SetNodeID(l.layerInfo, ID)
 }
 
 // GetLayerType returns the layer type, SchemaTerm or OverlayTerm.

@@ -52,6 +52,10 @@ type Entity struct {
 	RootNodeID string `json:"rootNodeId,omitempty" bson:"rootNodeId,omitempty" yaml:"rootNodeId,omitempty"`
 	// ValueType is the value type of the schema, that is, the entity type defined with this schema
 	ValueType string `json:"valueType" bson:"valueType" yaml:"valueType"`
+
+	// If specified, all attribute will be imported in this
+	// namespace. If not, valueType, if that too is empty, rootNodeID
+	AttrNamespace string `json:"attrNamespace" bson:"attrNamespace" yaml:"attrNamespace"`
 }
 
 func (e Entity) GetLayerRoot() string {
@@ -193,6 +197,9 @@ func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
 func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkRefsBy, entities ...CompiledEntity) ([]EntityLayer, error) {
 	ctx := importContext{entities: entities, interner: ls.NewInterner(), schMap: make(map[string]*schemaProperty)}
 	ret := make([]EntityLayer, 0, len(ctx.entities))
+
+	// First import everything
+	roots := make(map[*jsonschema.Schema]*schemaProperty)
 	for i := range ctx.entities {
 		ctx.currentEntity = &ctx.entities[i]
 
@@ -200,6 +207,13 @@ func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkR
 		if err != nil {
 			return nil, err
 		}
+		roots[ctx.currentEntity.Schema] = s
+	}
+
+	for i := range ctx.entities {
+		ctx.currentEntity = &ctx.entities[i]
+		s := roots[ctx.currentEntity.Schema]
+		s.resetNodes()
 
 		imported := EntityLayer{}
 		imported.Entity = *ctx.currentEntity
@@ -219,10 +233,19 @@ func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkR
 			interner: ctx.interner,
 			linkRefs: linkRefsBy,
 		}
-		if err := importer.setNodeProperties(s, rootNode); err != nil {
+		var path schemaPath
+		if len(ctx.currentEntity.Entity.AttrNamespace) > 0 {
+			path.name = []string{ctx.currentEntity.Entity.AttrNamespace}
+		} else if len(ctx.currentEntity.Entity.ValueType) > 0 {
+			path.name = []string{ctx.currentEntity.Entity.ValueType}
+		} else if len(ctx.currentEntity.Entity.RootNodeID) > 0 {
+			path.name = []string{ctx.currentEntity.Entity.RootNodeID}
+		}
+
+		if err := importer.setNodeProperties(s, rootNode, path); err != nil {
 			return nil, err
 		}
-		if err := importer.buildChildAttrs(s, rootNode); err != nil {
+		if err := importer.buildChildAttrs(s, rootNode, path); err != nil {
 			return nil, err
 		}
 		ret = append(ret, imported)
@@ -234,19 +257,38 @@ func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, 
 	if p := ctx.findProp(sch); p != nil {
 		return p, nil
 	}
-	// Schema node ID is the layer ID + schema location
-	target := &schemaProperty{
-		ID: sch.Location,
+	target := &schemaProperty{}
+
+	// Determine attribute ID
+	namespace := ctx.currentEntity.Entity.AttrNamespace
+	if len(namespace) == 0 {
+		namespace = ctx.currentEntity.Entity.ValueType
 	}
+	if len(namespace) == 0 {
+		namespace = ctx.currentEntity.Entity.RootNodeID
+	}
+	target.location = sch.Location
 	{
 		u, err := url.Parse(sch.Location)
 		if err == nil {
-			target.ID = u.Fragment
+			// The schema location is a URL. Attribute ID is namespace + fragment
+			nsurl, err := url.Parse(namespace)
+			if err == nil {
+				nsurl.Fragment = u.Fragment
+				target.ID = nsurl.String()
+			} else {
+				// Namespace is not a URL
+				target.ID = namespace + "#" + u.Fragment
+			}
+		} else {
+			// location is not a URL
+			target.ID = namespace + sch.Location
 		}
 	}
 
 	ctx.newProp(sch, target)
 	if sch.Ref != nil {
+		target.ref = sch.Ref.Location
 		ref := ctx.findEntity(sch.Ref)
 		if ref != nil {
 			target.reference = ref
@@ -260,7 +302,6 @@ func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, 
 		return target, nil
 	}
 
-	ctx.newProp(sch, target)
 	switch {
 	case len(sch.AllOf) > 0:
 		for _, x := range sch.AllOf {

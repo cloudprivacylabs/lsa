@@ -52,15 +52,19 @@ func TestIngestFlat(t *testing.T) {
   "required": [ "id2"],
  "attributes": {
    "id1": {
+    "@type": "Value",
      "attributeName":"field1"
    },
    "id2": {
+    "@type": "Value",
      "attributeName":"field2"
    },
    "id3": {
+    "@type": "Value",
      "attributeName": "field3"
    },
    "id4": {
+    "@type": "Value",
     "attributeName":"field4"
   }
  }

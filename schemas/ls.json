@@ -5,6 +5,7 @@
         "ls": "https://lschema.org/",
         "xsd": "http://www.w3.org/2001/XMLSchema#",
         "json": "https://json.org#",
+        "lstransform": "https://lschema.org/transform/",
         
         "Attribute": "ls:Attribute",
         "DocumentNode":"ls:DocumentNode",
@@ -62,11 +63,19 @@
         "Overlay": {
             "@id": "ls:Overlay",
             "@context": {
-                "compose": "ls:compose"
+                "compose": "ls:compose",
+                "layer": "ls:layer",
+                "attributeOverlays": {
+                    "@id": "ls:attributeOverlays",
+                    "@container": "@list"
+                }
             }
         },
         "Schema": {
-            "@id": "ls:Schema"
+            "@id": "ls:Schema",
+            "@context": {
+                "layer": "ls:layer"
+            }
         },
 
 
@@ -111,8 +120,16 @@
         "asPropertyOf" : "ls:asPropertyOf",
         "asProperty": "ls:asProperty",
 
-        "reference": "ls:Reference/ref"
+        "reference": "ls:Reference/ref",
 
+        "transformExport": "lstransform:export",
+        "transformEvaluate": "lstransform:evaluate",
+        "transformValueExpr": "lstransform:valueExpr",
+        "transformMulti": "lstransform:multi",
+        "transformJoinWith": "lstransform:joinWith",
+
+        "transformMapProperty": "lstransform:mapProperty",
+        "transformMapContext": "lstransform:mapContext"
         
     }
 }

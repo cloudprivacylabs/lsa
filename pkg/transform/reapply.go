@@ -25,8 +25,8 @@ import (
 // matching nodes of the graph.
 func ApplyLayer(ctx *ls.Context, g graph.Graph, layer *ls.Layer) error {
 	var applyErr error
-	// Process each node of the layer
-	layer.ForEachAttribute(func(layerNode graph.Node, layerPath []graph.Node) bool {
+
+	processNode := func(layerNode graph.Node) bool {
 		layerNodeID := ls.GetAttributeID(layerNode)
 		if len(layerNodeID) == 0 {
 			return true
@@ -71,6 +71,14 @@ func ApplyLayer(ctx *ls.Context, g graph.Graph, layer *ls.Layer) error {
 			}
 		}
 		return true
+	}
+
+	for _, layerNode := range layer.GetOverlayAttributes() {
+		processNode(layerNode)
+	}
+	// Process each node of the layer
+	layer.ForEachAttribute(func(layerNode graph.Node, _ []graph.Node) bool {
+		return processNode(layerNode)
 	})
 	return applyErr
 }

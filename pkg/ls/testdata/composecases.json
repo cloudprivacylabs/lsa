@@ -359,7 +359,7 @@
                     "ls:Object/attributes": [
                         {
                             "@id": "attr1",
-                            "@type": "ls:Polynorphic",
+                            "@type": "ls:Polymorphic",
                             "ls:Polymorphic/oneOf": [
                                 {
                                     "@list": [
@@ -507,6 +507,123 @@
                         "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
                         "https://lschema.org/attributeIndex": [{"@value":"2"}],
                         "https://lschema.org/privacy": [
+                            {"@value": "addFlg2"},
+                            {"@value": "addFlg3"}
+                         ]
+                    }
+                ]
+            }]
+        }]
+    },
+
+    {
+        "name": "AttrCompose",
+        "base": {
+            "@context": {
+                "ls":"https://lschema.org/"
+            },
+            "@type":"ls:Schema",
+            "@id": "http://testschema",
+            "https://lschema.org/layer": {
+                "@type": ["https://lschema.org/Object",
+                          "https://lschema.org/valueType"],
+                "@id": "root",
+                "ls:Object/attributes": [
+                    {
+                        "@id":  "attr1",
+                        "@type": "ls:Value"
+                    },
+                    {
+                        "@id":  "attr2" ,
+                        "@type": "ls:Value",
+                        "ls:privacy": [
+                            {
+                                "@value": "flg1"
+                            }
+                        ]
+                    },
+                    {
+                        "@id":"attr3",
+                        "@type": "ls:Value",
+                        "ls:privacy": [
+                            {"@value": "flg2"},
+                            {"@value": "flg3"}
+                        ]
+                    }
+                ]
+            }
+        },
+        "overlays": [
+            {
+                "@context": {
+                    "ls":"https://lschema.org/"
+                },
+                "@type":"ls:Overlay",
+                "@id": "http://testOvl",
+                "https://lschema.org/attributeOverlays": [
+                    {"@list": [
+                        {
+                            "@id":"attr1",
+                            "@type": "ls:Value",
+                            "http://someKey" : [
+                                {"@value": "someValue"}
+                            ]
+                        },
+                        {
+                            "@id":"attr2",
+                            "@type": "ls:Value",
+                            "ls:privacy" : [
+                                {"@value": "addFlg1"}
+                            ]
+                        },
+                        {
+                            "@id": "attr3",
+                            "@type": "ls:Value",
+                            "ls:privacy" : [
+                                {"@value": "addFlg2"},
+                                {"@value": "addFlg3"}
+                            ]
+                        }
+                    ]
+                    }
+                ]
+            }
+        ],
+        "expected": [{
+            "@id": "http://testschema",
+            "@type":["https://lschema.org/Schema"],
+            "https://lschema.org/layer": [{
+                "@type": ["https://lschema.org/Attribute",
+                          "https://lschema.org/Object",
+                          "https://lschema.org/valueType"],
+                "@id":"root",
+                "https://lschema.org/Object/attributes": [
+                    {
+                        "@id":  "attr1",
+                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
+                        "https://lschema.org/attributeIndex": [{"@value":"0"}],
+                        "http://someKey" : [
+                            {"@value": "someValue"}
+                        ]
+                    },
+                    {
+                        "@id":  "attr2" ,
+                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
+                        "https://lschema.org/attributeIndex": [{"@value":"1"}],
+                        "https://lschema.org/privacy": [
+                            {
+                                "@value": "flg1"
+                            },
+                            {"@value": "addFlg1"}
+                        ]
+                    },
+                    {
+                        "@id":"attr3",
+                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
+                        "https://lschema.org/attributeIndex": [{"@value":"2"}],
+                        "https://lschema.org/privacy": [
+                            {"@value": "flg2"},
+                            {"@value": "flg3"},
                             {"@value": "addFlg2"},
                             {"@value": "addFlg3"}
                          ]

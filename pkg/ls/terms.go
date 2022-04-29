@@ -26,8 +26,10 @@ var (
 	// ComposeTerm is used for overlays to redefine term compositions. One of CompositionType constants
 	ComposeTerm = NewTerm(LS, "compose", false, false, OverrideComposition, nil)
 
-	// LayerIDTerm is the schema or overlay id
-	LayerIDTerm = NewTerm(LS, "layerId", true, false, NoComposition, nil)
+	// AttributeOverlaysTerm lists the overlays for schema attributes
+	// that are matched by ID, as opposed to matching by ID and their
+	// place in the layer
+	AttributeOverlaysTerm = NewTerm(LS, "attributeOverlays", false, true, OverrideComposition, nil)
 
 	// CharacterEncodingTerm is used to specify a character encoding for
 	// the data processed with the layer

@@ -9,6 +9,7 @@
         "https://hl7.org/fhir/ChargeItem": {
             "jsonSchema": {
                 "ref": "fhir.schema.json#/definitions/ChargeItem",
+                
                 "layerId": "https://hl7.org/fhir/ChargeItem"
             }
         },
@@ -617,8 +618,14 @@
         "https://hl7.org/fhir/Patient": {
             "jsonSchema": {
                 "ref": "fhir.schema.json#/definitions/Patient",
+                
                 "layerId": "https://hl7.org/fhir/Patient"
-            }
+            },
+            "overlays": [
+                {
+                    "schema": "patient-dpv.overlay.json"
+                }
+            ]
         },
         "https://hl7.org/fhir/PaymentReconciliation": {
             "jsonSchema": {
