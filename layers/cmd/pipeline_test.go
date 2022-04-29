@@ -59,6 +59,12 @@ func mockPipeline(file string, args []string) error {
 			case *JSONIngester:
 				tmp := v.BaseIngestParams.Bundle
 				v.BaseIngestParams.Bundle = upDir + tmp
+			case *CSVIngester:
+				tmp := v.BaseIngestParams.Bundle
+				v.BaseIngestParams.Bundle = upDir + tmp
+			case *XMLIngester:
+				tmp := v.BaseIngestParams.Bundle
+				v.BaseIngestParams.Bundle = upDir + tmp
 			}
 			pipeline.steps = append(pipeline.steps, step)
 		}

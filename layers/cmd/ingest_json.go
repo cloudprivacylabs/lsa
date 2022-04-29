@@ -70,6 +70,7 @@ func (ji *JSONIngester) Run(pipeline *PipelineContext) error {
 		OnlySchemaAttributes: parser.OnlySchemaAttributes,
 	})
 	baseID := ji.ID
+
 	_, err = jsoningest.IngestStream(pipeline.Context, baseID, input, parser, builder)
 	if err != nil {
 		failErr(err)
