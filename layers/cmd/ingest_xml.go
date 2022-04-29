@@ -27,15 +27,20 @@ import (
 )
 
 type XMLIngester struct {
-	Step
 	BaseIngestParams
-	ID string
+	ID          string
+	initialized bool
 }
 
-func (xml XMLIngester) Run(pipeline *PipelineContext) error {
-	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, xml.CompiledSchema, xml.Repo, xml.Schema, xml.Type, xml.Bundle)
-	if err != nil {
-		return err
+func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
+	var layer *ls.Layer
+	var err error
+	if !xml.initialized {
+		layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, xml.CompiledSchema, xml.Repo, xml.Schema, xml.Type, xml.Bundle)
+		if err != nil {
+			return err
+		}
+		xml.initialized = true
 	}
 	var input io.Reader
 	if layer != nil {

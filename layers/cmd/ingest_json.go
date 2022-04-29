@@ -27,15 +27,20 @@ import (
 )
 
 type JSONIngester struct {
-	Step
 	BaseIngestParams
-	ID string
+	ID          string
+	initialized bool
 }
 
-func (ji JSONIngester) Run(pipeline *PipelineContext) error {
-	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, ji.CompiledSchema, ji.Repo, ji.Schema, ji.Type, ji.Bundle)
-	if err != nil {
-		return err
+func (ji *JSONIngester) Run(pipeline *PipelineContext) error {
+	var layer *ls.Layer
+	var err error
+	if !ji.initialized {
+		layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, ji.CompiledSchema, ji.Repo, ji.Schema, ji.Type, ji.Bundle)
+		if err != nil {
+			return err
+		}
+		ji.initialized = true
 	}
 	var input io.Reader
 	if layer != nil {

@@ -20,7 +20,6 @@ type PipelineContext struct {
 
 type Step interface {
 	Run(*PipelineContext) error
-	Next() error
 }
 
 var operations = make(map[string]func() Step)
@@ -59,31 +58,34 @@ var pipelineCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
+		initialGraph, _ := cmd.Flags().GetString("initialGraph")
 		pipeline := &PipelineContext{
 			Graph:      ls.NewDocumentGraph(),
 			Context:    ls.DefaultContext(),
 			InputFiles: make([]string, 0),
 			steps:      []Step{},
 		}
+		if initialGraph != "" {
+			pipeline.Graph, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
+			if err != nil {
+				failErr(err)
+			}
+		}
+		if len(args) > 0 {
+			pipeline.InputFiles = args
+		}
 		for _, stage := range stepMarshals {
 			step := operations[stage.Operation]()
-			if err := json.Unmarshal([]byte(stage.Step), &step); err != nil {
-				failErr(err)
-			}
-			pipeline.steps = append(pipeline.steps, step)
-			initialGraph, _ := cmd.Flags().GetString("initialGraph")
-			if initialGraph != "" {
-				pipeline.Graph, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
-				if err != nil {
+			if step != nil {
+				if err := json.Unmarshal(stage.Step, step); err != nil {
 					failErr(err)
 				}
+				pipeline.steps = append(pipeline.steps, step)
 			}
-			if len(args) > 0 {
-				pipeline.InputFiles = args
-			}
-			if err := step.Run(pipeline); err != nil {
-				failErr(err)
-			}
+		}
+		pipeline.currentStep--
+		if err := pipeline.Next(); err != nil {
+			failErr(err)
 		}
 	},
 }

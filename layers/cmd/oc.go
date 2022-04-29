@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -26,17 +27,16 @@ import (
 )
 
 type OCpipeline struct {
-	Step
 	Expr string
 }
 
-func (oc OCpipeline) Run(pipeline *PipelineContext) error {
+func (oc *OCpipeline) Run(pipeline *PipelineContext) error {
 	ctx := opencypher.NewEvalContext(pipeline.Graph)
 	output, err := opencypher.ParseAndEvaluate(oc.Expr, ctx)
 	if err != nil {
 		failErr(err)
 	}
-	fmt.Println(output)
+	log.Println(output)
 	if err := pipeline.Next(); err != nil {
 		return err
 	}

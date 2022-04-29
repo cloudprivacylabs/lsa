@@ -25,33 +25,31 @@ import (
 )
 
 type CSVExport struct {
-	Step
 	SpecFile string
 	lscsv.Writer
+	initialized   bool
+	writtenHeader bool
 }
 
-func (ecsv CSVExport) Run(pipeline *PipelineContext) error {
-	csvExporter := ecsv.Writer
+func (ecsv *CSVExport) Run(pipeline *PipelineContext) error {
 	var spec string
-	if ecsv.SpecFile != "" {
-		spec = ecsv.SpecFile
-	} else {
-		spec = csvExporter.RowRootQuery
-	}
-	if len(spec) > 0 {
-		if err := cmdutil.ReadJSONOrYAML(spec, &csvExporter); err != nil {
-			failErr(err)
+	if !ecsv.initialized {
+		if ecsv.SpecFile != "" {
+			if err := cmdutil.ReadJSONOrYAML(spec, &ecsv.Writer); err != nil {
+				failErr(err)
+			}
 		}
+		ecsv.initialized = true
 	}
+	csvExporter := ecsv.Writer
 
 	wr := csv.NewWriter(os.Stdout)
-	csvExporter.WriteHeader(wr)
+	if !ecsv.writtenHeader {
+		csvExporter.WriteHeader(wr)
+		ecsv.writtenHeader = true
+	}
 	csvExporter.WriteRows(wr, pipeline.Graph)
 	wr.Flush()
-
-	if err := pipeline.Next(); err != nil {
-		return err
-	}
 	return nil
 }
 

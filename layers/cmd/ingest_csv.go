@@ -32,19 +32,24 @@ import (
 )
 
 type CSVIngester struct {
-	Step
 	BaseIngestParams
 	StartRow     int
 	EndRow       int
 	HeaderRow    int
 	ID           string
 	IngestByRows bool
+	initialized  bool
 }
 
-func (ci CSVIngester) Run(pipeline *PipelineContext) error {
-	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, ci.CompiledSchema, ci.Repo, ci.Schema, ci.Type, ci.Bundle)
-	if err != nil {
-		return err
+func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
+	var layer *ls.Layer
+	var err error
+	if !ci.initialized {
+		layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, ci.CompiledSchema, ci.Repo, ci.Schema, ci.Type, ci.Bundle)
+		if err != nil {
+			return err
+		}
+		ci.initialized = true
 	}
 
 	for _, inputFile := range pipeline.InputFiles {

@@ -24,12 +24,17 @@ import (
 )
 
 type ReshapePipeline struct {
-	Step
 	BaseIngestParams
+	initialized bool
 }
 
-func (rs ReshapePipeline) Run(pipeline *PipelineContext) error {
-	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, rs.CompiledSchema, rs.Repo, rs.Schema, rs.Type, rs.Bundle)
+func (rs *ReshapePipeline) Run(pipeline *PipelineContext) error {
+	var layer *ls.Layer
+	var err error
+	if !rs.initialized {
+		layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, rs.CompiledSchema, rs.Repo, rs.Schema, rs.Type, rs.Bundle)
+		rs.initialized = true
+	}
 	reshaper := transform.Reshaper{}
 	reshaper.TargetSchema = layer
 	reshaper.Builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{

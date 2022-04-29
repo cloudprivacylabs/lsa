@@ -24,11 +24,12 @@ import (
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
-type JSONExport struct {
-	Step
-}
+type JSONExport struct{}
 
-func (JSONExport) Run(pipeline *PipelineContext) error {
+func (*JSONExport) Run(pipeline *PipelineContext) error {
+	// l := ls.NewJSONMarshaler(ls.NewInterner())
+	// b, _ := l.Marshal(pipeline.Graph)
+	// fmt.Println(string(b))
 	for _, node := range graph.Sources(pipeline.Graph) {
 		exportOptions := jsoningest.ExportOptions{}
 		data, err := jsoningest.Export(node, exportOptions)
@@ -36,9 +37,6 @@ func (JSONExport) Run(pipeline *PipelineContext) error {
 			failErr(err)
 		}
 		data.Encode(os.Stdout)
-	}
-	if err := pipeline.Next(); err != nil {
-		return err
 	}
 	return nil
 }
