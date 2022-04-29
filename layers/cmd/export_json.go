@@ -21,16 +21,22 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type JSONExport struct{}
 
 func (*JSONExport) Run(pipeline *PipelineContext) error {
-	// l := ls.NewJSONMarshaler(ls.NewInterner())
-	// b, _ := l.Marshal(pipeline.Graph)
-	// fmt.Println(string(b))
-	for _, node := range graph.Sources(pipeline.Graph) {
+	js := ls.NewJSONMarshaler(nil)
+	b, err := js.Marshal(pipeline.Graph)
+	if err != nil {
+		failErr(err)
+	}
+	g := ls.NewDocumentGraph()
+	js.Unmarshal(b, g)
+
+	for _, node := range graph.Sources(g) {
 		exportOptions := jsoningest.ExportOptions{}
 		data, err := jsoningest.Export(node, exportOptions)
 		if err != nil {
