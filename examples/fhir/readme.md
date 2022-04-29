@@ -21,14 +21,12 @@ the FHIR schema. It contains entries of the form:
         "https://hl7.org/fhir/Patient": {
             "jsonSchema": {
                 "ref": "fhir.schema.json#/definitions/Patient",
-                "namespace": "https://hl7.org/fhir",
                 "layerId": "https://hl7.org/fhir/Patient"
             }
         },
         "https://hl7.org/fhir/Bundle": {
             "jsonSchema": {
                 "ref": "fhir.schema.json#/definitions/Bundle",
-                "namespace": "https://hl7.org/fhir",
                 "layerId": "https://hl7.org/fhir/Bundle"
             }
         },
@@ -65,7 +63,7 @@ schema base is assigned the id given in `"layerId":
 For example, to ingest a FHIR resource of type `Patient`:
 
 ```
-layers ingest json --bundle fhir.bundle.json --type Patient patient.json
+layers ingest json --bundle fhir.bundle.json --type https://hl7.org/fhir/Patient patient.json
 ```
 
 This operation does the following:

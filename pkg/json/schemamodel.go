@@ -16,14 +16,18 @@ package json
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 	"github.com/cloudprivacylabs/lsa/pkg/validators"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type schemaProperty struct {
 	ID           string
+	location     string
+	ref          string
 	key          string
 	reference    *CompiledEntity
 	object       *objectSchema
@@ -41,15 +45,30 @@ type schemaProperty struct {
 	node graph.Node
 
 	localReference *schemaProperty
+	recurse        bool
 }
 
 type arraySchema struct {
 	items *schemaProperty
 }
 
+func (a *arraySchema) resetNodes() {
+	if a.items != nil {
+		a.items.resetNodes()
+	}
+}
+
 type objectSchema struct {
 	properties map[string]*schemaProperty
 	required   []string
+}
+
+func (o *objectSchema) resetNodes() {
+	for _, x := range o.properties {
+		if x != nil {
+			x.resetNodes()
+		}
+	}
 }
 
 type schemaImporter struct {
@@ -59,11 +78,66 @@ type schemaImporter struct {
 	linkRefs LinkRefsBy
 }
 
-func (imp schemaImporter) schemaAttrs(attr *schemaProperty) (graph.Node, error) {
-	if attr.node != nil {
-		return attr.node, nil
+func (p *schemaProperty) resetNodes() {
+	if p.recurse {
+		return
 	}
+	p.recurse = true
+	p.node = nil
+	if p.object != nil {
+		p.object.resetNodes()
+	}
+	if p.array != nil {
+		p.array.resetNodes()
+	}
+	for _, x := range p.allOf {
+		x.resetNodes()
+	}
+	for _, x := range p.oneOf {
+		x.resetNodes()
+	}
+	if p.localReference != nil {
+		p.localReference.resetNodes()
+	}
+	p.recurse = false
+}
+
+type schemaPath struct {
+	name []string
+	attr []*schemaProperty
+}
+
+// isLoop returns if adding the newAttr causes a loop
+func (s schemaPath) isLoop(newAttr *schemaProperty) bool {
+	for _, x := range s.attr {
+		if x == newAttr {
+			return true
+		}
+		if x.ref == newAttr.ref || x.location == newAttr.location {
+			return true
+		}
+	}
+	return false
+}
+
+func (s schemaPath) String() string {
+	return strings.Join(s.name, "/")
+}
+
+func (imp schemaImporter) schemaAttrs(attr *schemaProperty, path schemaPath, key string) (graph.Node, error) {
+	//if attr.node != nil {
+	//	return attr.node, nil
+	//}
+	if path.isLoop(attr) {
+		if attr.node != nil {
+			return attr.node, nil
+		}
+	}
+	path.name = append(path.name, key)
+	path.attr = append(path.attr, attr)
 	if attr.localReference != nil {
+		// If this is a ref that is not a separate entity, simply point to
+		// the contents of the referenced node
 		attr.object = attr.localReference.object
 		attr.array = attr.localReference.array
 		attr.allOf = attr.localReference.allOf
@@ -79,23 +153,25 @@ func (imp schemaImporter) schemaAttrs(attr *schemaProperty) (graph.Node, error) 
 		attr.localReference = nil
 	}
 
-	newNode, err := imp.newAttrNode(attr)
+	newNode, err := imp.newAttrNode(attr, path)
 	if err != nil {
 		return nil, err
 	}
-	return newNode, imp.buildChildAttrs(attr, newNode)
+	return newNode, imp.buildChildAttrs(attr, newNode, path)
 }
 
-func (imp schemaImporter) newAttrNode(attr *schemaProperty) (graph.Node, error) {
+func (imp schemaImporter) newAttrNode(attr *schemaProperty, path schemaPath) (graph.Node, error) {
 	newNode := imp.layer.Graph.NewNode([]string{ls.AttributeNodeTerm}, nil)
 	attr.node = newNode
-	return newNode, imp.setNodeProperties(attr, newNode)
+	return newNode, imp.setNodeProperties(attr, newNode, path)
 }
 
-func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode graph.Node) error {
-	if len(attr.ID) > 0 {
-		ls.SetNodeID(newNode, attr.ID)
-	}
+func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode graph.Node, path schemaPath) error {
+	//	if len(attr.ID) > 0 {
+	//		ls.SetNodeID(newNode, attr.ID)
+	//		fmt.Println(attr.ID)
+	//	}
+	ls.SetNodeID(newNode, path.String())
 	if len(attr.format) > 0 {
 		newNode.SetProperty(validators.JsonFormatTerm, ls.StringPropertyValue(attr.format))
 	}
@@ -159,12 +235,12 @@ func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode graph.
 	return nil
 }
 
-func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.Node) error {
+func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.Node, path schemaPath) error {
 	if attr.object != nil {
 		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeObject))
 		attrIds := make(map[string]string)
 		for _, v := range attr.object.properties {
-			node, err := imp.schemaAttrs(v)
+			node, err := imp.schemaAttrs(v, path, v.key)
 			if err != nil {
 				return err
 			}
@@ -187,7 +263,7 @@ func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.No
 	}
 	if attr.array != nil {
 		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeArray))
-		n, err := imp.schemaAttrs(attr.array.items)
+		n, err := imp.schemaAttrs(attr.array.items, path, "*")
 		if err != nil {
 			return err
 		}
@@ -197,8 +273,8 @@ func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.No
 
 	buildChoices := func(arr []*schemaProperty) ([]graph.Node, error) {
 		elements := make([]graph.Node, 0, len(arr))
-		for _, x := range arr {
-			node, err := imp.schemaAttrs(x)
+		for i, x := range arr {
+			node, err := imp.schemaAttrs(x, path, strconv.Itoa(i))
 			if err != nil {
 				return nil, err
 			}
