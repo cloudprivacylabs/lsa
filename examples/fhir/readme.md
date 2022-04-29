@@ -100,3 +100,132 @@ The result of this operation can be seen in [bundle.png](bundle.png) or [bundle.
 Note that the FHIR bundle contains a polymorphic array containing
 different entities. The layered schemas used to ingest those entities
 are define in the `fhir.bundle.json` file.
+
+## Annotating FHIR messages with Data Privacy Vocabulary
+
+The [Data Privacy Vocabulary](https://w3c.github.io/dpv/dpv) enables
+expressing machine-readable metadata about the use and processing of
+personal data based on legislative requirements such as the General
+Data Protection Regulation. Layered schemas can be used to annotate
+FHIR messages with DPV terms.
+
+For this purpose, a `Patient` overlay that adds DPV terms to patient
+data fields can be defined as follows:
+
+
+```
+patient-dpv.overlay.json:
+{
+    "@context": [
+        "https://lschema.org/ls.json",
+        {
+            "dpv":"http://www.w3id.org/dpv#"
+        }
+    ],
+    "@type": "Overlay",
+    "@id": "https://hl7.org/fhir/Patient/dpv-overlay",
+    "valueType": "https://hl7.org/fhir/Patient",
+    "attributeOverlays": [
+        {
+            "@id":"https://hl7.org/fhir/Patient",
+            "@type":  "dpv:DataSubject"
+        },
+        {
+            "@id":"https://hl7.org/fhir/Patient/name/*/family",
+            "dpv:hasPersonalDataCategory": [
+                {
+                    "@id": "dpv:Identifying"
+                },
+                {
+                    "@id": "dpv:Name"
+                }
+            ]
+        },
+        {
+            "@id":"https://hl7.org/fhir/Patient/name/*/given/*",
+            "dpv:hasPersonalDataCategory": [
+                {
+                    "@id": "dpv:Identifying"
+                },
+                {
+                    "@id": "dpv:Name"
+                }
+            ]
+        }
+    ]
+}
+```
+
+The `@context` defines `dpv:` as an alias for the DPV namespace `http://www.w3id.org/dpv#`
+
+`"@id": "https://hl7.org/fhir/Patient/dpv-overlay"` is the identifier for this overlay.
+
+`"valueType": "https://hl7.org/fhir/Patient"`: This overlay is for a FHIR patient.
+
+`"attributeOverlays"`: This object contains the entries that address
+attributes by ID, and annotate them.
+
+
+The following will add `dpv:DataSubject` to the `Patient` labels:
+```
+
+        {
+            "@id":"https://hl7.org/fhir/Patient",
+            "@type":  "dpv:DataSubject"
+        },
+```
+
+The following will add `dpv:Identifying` and `dpv:Name` personal data categories to patient family name attribute:
+
+```
+       {
+            "@id":"https://hl7.org/fhir/Patient/name/*/family",
+            "dpv:hasPersonalDataCategory": [
+                {
+                    "@id": "dpv:Identifying"
+                },
+                {
+                    "@id": "dpv:Name"
+                }
+            ]
+        },
+```
+
+The output graph has the following `Patient` node. The node has
+`DataSubject` annotation as one of the node labels.  ```
+
+```
+    {
+      "n": 34,
+      "id": "http://example.org/root.entry.1.resource",
+      "labels": [
+        "http://www.w3id.org/dpv#DataSubject",
+        "https://lschema.org/Object",
+        "https://lschema.org/DocumentNode",
+        "https://hl7.org/fhir/Patient"
+      ],
+      "properties": {
+        "https://lschema.org/Reference/ref": "https://hl7.org/fhir/Patient",
+        "https://lschema.org/attributeIndex": "0",
+        "https://lschema.org/entitySchema": "https://hl7.org/fhir/Patient",
+        "https://lschema.org/schemaNodeId": "https://hl7.org/fhir/Bundle/entry/*/resource/102"
+      }
+    },
+```
+
+To ingest data using the DPV annotations, use:
+
+```
+layers ingest json --bundle fhir-dpv.bundle.json --type https://hl7.org/fhir/Patient patient.json --embedSchemaNodes 
+```
+
+Since the overlay is defined for `Patient`, any data input that
+contains a `Patient` will use the DPV annotations. For example, a FHIR
+bundle containing a `Patient`:
+
+```
+layers ingest json --bundle fhir-dpv.bundle.json --type https://hl7.org/fhir/Bundle simplebundle.json --embedSchemaNodes 
+```
+
+
+

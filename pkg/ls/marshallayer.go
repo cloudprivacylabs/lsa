@@ -285,12 +285,7 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 
 	types = attribute.GetLabels()
 	t := FilterAttributeTypes(types.Slice())
-	switch len(t) {
-	case 0:
-		types.Add(AttributeTypeValue)
-		attribute.SetLabels(types)
-	case 1:
-	default:
+	if len(t) > 1 {
 		return ErrMultipleTypes(fmt.Sprintf("%s: %s", inode.ID, t))
 	}
 	return nil

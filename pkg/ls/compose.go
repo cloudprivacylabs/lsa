@@ -137,6 +137,10 @@ func mergeNodes(context *Context, targetLayer *Layer, target, source graph.Node,
 	if source == nil || target == nil {
 		return nil
 	}
+	// Apply labels
+	s := target.GetLabels()
+	s.AddSet(source.GetLabels())
+	target.SetLabels(s)
 
 	if len(sourceCompose) > 0 {
 		cType := CompositionType(sourceCompose)
