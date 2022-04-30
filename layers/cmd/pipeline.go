@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -40,6 +41,31 @@ func init() {
 	pipelineCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
 }
 
+func readPipeline(file string) ([]Step, error) {
+	type stepMarshal struct {
+		Operation string          `json:"operation" yaml:"operation"`
+		Step      json.RawMessage `json:"params" yaml:"params"`
+	}
+	var stepMarshals []stepMarshal
+	err := cmdutil.ReadJSONOrYAML(file, &stepMarshals)
+	if err != nil {
+		return nil, err
+	}
+	steps := make([]Step, 0, len(stepMarshals))
+	for _, stage := range stepMarshals {
+		step := operations[stage.Operation]()
+		if step == nil {
+			return nil, fmt.Errorf("Invalid step: %s", stage.Operation)
+		}
+
+		if err := json.Unmarshal(stage.Step, step); err != nil {
+			return nil, err
+		}
+		steps = append(steps, step)
+	}
+	return steps, nil
+}
+
 var pipelineCmd = &cobra.Command{
 	Use:   "pipeline",
 	Short: "run pipeline",
@@ -49,41 +75,27 @@ var pipelineCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		type stepMarshal struct {
-			Operation string          `json:"operation" yaml:"operation"`
-			Step      json.RawMessage `json:"params" yaml:"params"`
-		}
-		var stepMarshals []stepMarshal
-		err = cmdutil.ReadJSONOrYAML(file, &stepMarshals)
+		steps, err := readPipeline(file)
 		if err != nil {
 			failErr(err)
 		}
+		var g graph.Graph
 		initialGraph, _ := cmd.Flags().GetString("initialGraph")
-		pipeline := &PipelineContext{
-			Graph:      ls.NewDocumentGraph(),
-			Context:    ls.DefaultContext(),
-			InputFiles: make([]string, 0),
-			steps:      []Step{},
-		}
 		if initialGraph != "" {
-			pipeline.Graph, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
+			g, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
 			if err != nil {
 				failErr(err)
 			}
+		} else {
+			g = ls.NewDocumentGraph()
 		}
-		if len(args) > 0 {
-			pipeline.InputFiles = args
+		pipeline := &PipelineContext{
+			Graph:       g,
+			Context:     ls.DefaultContext(),
+			InputFiles:  args,
+			steps:       steps,
+			currentStep: -1,
 		}
-		for _, stage := range stepMarshals {
-			step := operations[stage.Operation]()
-			if step != nil {
-				if err := json.Unmarshal(stage.Step, step); err != nil {
-					failErr(err)
-				}
-				pipeline.steps = append(pipeline.steps, step)
-			}
-		}
-		pipeline.currentStep--
 		if err := pipeline.Next(); err != nil {
 			failErr(err)
 		}
