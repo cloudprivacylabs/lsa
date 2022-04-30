@@ -46,7 +46,6 @@ func init() {
 
 type BaseIngestParams struct {
 	Repo                 string `json:"repo" yaml:"repo"`
-	Output               string `json:"output" yaml:"output"`
 	Schema               string `json:"schema" yaml:"schema"`
 	Type                 string `json:"type" yaml:"type"`
 	Bundle               string `json:"bundle" yaml:"bundle"`
@@ -54,6 +53,17 @@ type BaseIngestParams struct {
 	IncludeSchema        bool   `json:"includeSchema" yaml:"includeSchema"`
 	EmbedSchemaNodes     bool   `json:"embedSchemaNodes" yaml:"embedSchemaNodes"`
 	OnlySchemaAttributes bool   `json:"onlySchemaAttributes" yaml:"onlySchemaAttributes"`
+}
+
+func (b *BaseIngestParams) fromCmd(cmd *cobra.Command) {
+	b.CompiledSchema, _ = cmd.Flags().GetString("compiledschema")
+	b.Repo, _ = cmd.Flags().GetString("repo")
+	b.Schema, _ = cmd.Flags().GetString("schema")
+	b.Bundle, _ = cmd.Flags().GetString("bundle")
+	b.Type, _ = cmd.Flags().GetString("type")
+	b.IncludeSchema, _ = cmd.Flags().GetBool("includeSchema")
+	b.EmbedSchemaNodes, _ = cmd.Flags().GetBool("embedSchemaNodes")
+	b.OnlySchemaAttributes, _ = cmd.Flags().GetBool("onlySchemaAttributes")
 }
 
 var ingestCmd = &cobra.Command{

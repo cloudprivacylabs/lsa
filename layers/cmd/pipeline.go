@@ -23,6 +23,10 @@ type Step interface {
 	Run(*PipelineContext) error
 }
 
+type StepFunc func(*PipelineContext) error
+
+func (f StepFunc) Run(ctx *PipelineContext) error { return f(ctx) }
+
 var operations = make(map[string]func() Step)
 
 func (ctx *PipelineContext) Next() error {

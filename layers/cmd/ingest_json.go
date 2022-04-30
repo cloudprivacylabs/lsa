@@ -23,7 +23,6 @@ import (
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type JSONIngester struct {
@@ -93,58 +92,20 @@ var ingestJSONCmd = &cobra.Command{
 	Use:   "json",
 	Short: "Ingest a JSON document and enrich it with a schema",
 	Args:  cobra.MaximumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		initialGraph, _ := cmd.Flags().GetString("initialGraph")
-		ctx := getContext()
-		layer := loadSchemaCmd(ctx, cmd)
-		var input io.Reader
-		var err error
-		if layer != nil {
-			enc, err := layer.GetEncoding()
-			if err != nil {
-				failErr(err)
-			}
-			input, err = cmdutil.StreamFileOrStdin(args, enc)
-			if err != nil {
-				failErr(err)
-			}
-		} else {
-			input, err = cmdutil.StreamFileOrStdin(args)
-			if err != nil {
-				failErr(err)
-			}
+		ing := JSONIngester{}
+		ing.fromCmd(cmd)
+		ing.ID, _ = cmd.Flags().GetString("id")
+		p := []Step{
+			&ing,
+			StepFunc(func(ctx *PipelineContext) error {
+				outFormat, _ := cmd.Flags().GetString("output")
+				includeSchema, _ := cmd.Flags().GetBool("includeSchema")
+				return OutputIngestedGraph(cmd, outFormat, ctx.Graph, os.Stdout, includeSchema)
+			}),
 		}
-		var grph graph.Graph
-		if layer != nil && initialGraph != "" {
-			grph, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
-			if err != nil {
-				failErr(err)
-			}
-		} else {
-			grph = ls.NewDocumentGraph()
-		}
-
-		parser := jsoningest.Parser{}
-
-		parser.OnlySchemaAttributes, _ = cmd.Flags().GetBool("onlySchemaAttributes")
-		parser.SchemaNode = layer.GetSchemaRootNode()
-		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
-
-		builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
-			EmbedSchemaNodes:     embedSchemaNodes,
-			OnlySchemaAttributes: parser.OnlySchemaAttributes,
-		})
-		baseID, _ := cmd.Flags().GetString("id")
-		_, err = jsoningest.IngestStream(ctx, baseID, input, parser, builder)
-
-		if err != nil {
-			failErr(err)
-		}
-		outFormat, _ := cmd.Flags().GetString("output")
-		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
-		err = OutputIngestedGraph(cmd, outFormat, grph, os.Stdout, includeSchema)
-		if err != nil {
-			failErr(err)
-		}
+		_, err := runPipeline(p, initialGraph, args)
+		return err
 	},
 }
