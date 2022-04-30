@@ -42,7 +42,7 @@ var applyLayerCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		err = transform.ApplyLayer(ctx, g, layer)
+		err = transform.ApplyLayer(ctx, g, layer, false)
 		if err != nil {
 			failErr(err)
 		}

@@ -24,16 +24,16 @@ import (
 	_ "github.com/cloudprivacylabs/lsa/pkg/types"
 )
 
-type reapplyTestCase struct {
+type reingestTestCase struct {
 	Name     string          `json:"name"`
 	Graph    json.RawMessage `json:"graph"`
 	Layer    interface{}     `json:"layer"`
 	Expected json.RawMessage `json:"expected"`
 }
 
-func (tc reapplyTestCase) GetName() string { return tc.Name }
+func (tc reingestTestCase) GetName() string { return tc.Name }
 
-func (tc reapplyTestCase) Run(t *testing.T) {
+func (tc reingestTestCase) Run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
 	layer, err := ls.UnmarshalLayer(tc.Layer, nil)
 	if err != nil {
@@ -53,12 +53,16 @@ func (tc reapplyTestCase) Run(t *testing.T) {
 	}
 
 	ctx := ls.DefaultContext()
-	if err := ApplyLayer(ctx, g, layer, false); err != nil {
-		t.Errorf("Test case: %s Apply error: %v", tc.Name, err)
+	target := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
+	root := graph.Sources(g)[0]
+	if err := Reingest(ctx, root, target, layer); err != nil {
+		t.Errorf("Test case: %s Reingest error: %v", tc.Name, err)
 		return
 	}
 
-	eq := graph.CheckIsomorphism(g, expectedGraph, func(n1, n2 graph.Node) bool {
+	eq := graph.CheckIsomorphism(target.GetGraph(), expectedGraph, func(n1, n2 graph.Node) bool {
 		t.Logf("Cmp: %+v %+v\n", n1, n2)
 		s1, _ := ls.GetRawNodeValue(n1)
 		s2, _ := ls.GetRawNodeValue(n2)
@@ -98,17 +102,17 @@ func (tc reapplyTestCase) Run(t *testing.T) {
 	})
 
 	if !eq {
-		result, _ := m.Marshal(g)
+		result, _ := m.Marshal(target.GetGraph())
 		expected, _ := m.Marshal(expectedGraph)
 		t.Errorf("Test case: %s Result is different from the expected: Result:\n%s\nExpected:\n%s", tc.Name, string(result), string(expected))
 	}
 }
 
-func TestApplyLayer(t *testing.T) {
+func TestReingest(t *testing.T) {
 	run := func(in json.RawMessage) (ls.TestCase, error) {
-		var c reapplyTestCase
+		var c reingestTestCase
 		err := json.Unmarshal(in, &c)
 		return c, err
 	}
-	ls.RunTestsFromFile(t, "testdata/apply.json", run)
+	ls.RunTestsFromFile(t, "testdata/reingest.json", run)
 }
