@@ -98,7 +98,7 @@ row root node. If a column query is not specified, it is assumed to be:
 			}
 		}
 
-		wr := csv.NewWriter(os.Stdout)
+		wr := csv.NewWriter(ExportTarget)
 		csvExporter.WriteHeader(wr)
 		csvExporter.WriteRows(wr, g)
 		wr.Flush()

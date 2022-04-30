@@ -15,8 +15,6 @@
 package cmd
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
@@ -42,7 +40,7 @@ func (*JSONExport) Run(pipeline *PipelineContext) error {
 		if err != nil {
 			failErr(err)
 		}
-		data.Encode(os.Stdout)
+		data.Encode(ExportTarget)
 	}
 	return nil
 }
@@ -70,7 +68,7 @@ var exportJSONCmd = &cobra.Command{
 			if err != nil {
 				failErr(err)
 			}
-			data.Encode(os.Stdout)
+			data.Encode(ExportTarget)
 		}
 	},
 }

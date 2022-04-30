@@ -66,11 +66,32 @@ func readPipeline(file string) ([]Step, error) {
 	return steps, nil
 }
 
+func runPipeline(steps []Step, initialGraph string, inputs []string) (*PipelineContext, error) {
+	var g graph.Graph
+	var err error
+	if initialGraph != "" {
+		g, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		g = ls.NewDocumentGraph()
+	}
+	pipeline := &PipelineContext{
+		Graph:       g,
+		Context:     ls.DefaultContext(),
+		InputFiles:  inputs,
+		steps:       steps,
+		currentStep: -1,
+	}
+	return pipeline, pipeline.Next()
+}
+
 var pipelineCmd = &cobra.Command{
 	Use:   "pipeline",
 	Short: "run pipeline",
 	Args:  cobra.MinimumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		file, err := cmd.Flags().GetString("file")
 		if err != nil {
 			failErr(err)
@@ -79,25 +100,8 @@ var pipelineCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		var g graph.Graph
 		initialGraph, _ := cmd.Flags().GetString("initialGraph")
-		if initialGraph != "" {
-			g, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
-			if err != nil {
-				failErr(err)
-			}
-		} else {
-			g = ls.NewDocumentGraph()
-		}
-		pipeline := &PipelineContext{
-			Graph:       g,
-			Context:     ls.DefaultContext(),
-			InputFiles:  args,
-			steps:       steps,
-			currentStep: -1,
-		}
-		if err := pipeline.Next(); err != nil {
-			failErr(err)
-		}
+		_, err = runPipeline(steps, initialGraph, args)
+		return err
 	},
 }

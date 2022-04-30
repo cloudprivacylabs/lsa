@@ -68,6 +68,9 @@ type ParsedDocNode interface {
 	GetValue() string
 	GetValueTypes() []string
 
+	GetAttributeIndex() int
+	GetAttributeName() string
+
 	GetChildren() []ParsedDocNode
 
 	GetProperties() map[string]interface{}
@@ -124,6 +127,10 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, er
 		}
 	}
 	setProp := func(node graph.Node) {
+		node.SetProperty(AttributeIndexTerm, StringPropertyValue(strconv.Itoa(root.GetAttributeIndex())))
+		if s := root.GetAttributeName(); len(s) > 0 {
+			node.SetProperty(AttributeNameTerm, StringPropertyValue(s))
+		}
 		for k, v := range root.GetProperties() {
 			node.SetProperty(k, v)
 		}
