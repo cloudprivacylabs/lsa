@@ -139,8 +139,10 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, er
 		switch GetIngestAs(schemaNode) {
 		case "node":
 			_, node, err := builder.ValueAsNode(schemaNode, cursor.getOutput(), root.GetValue(), root.GetValueTypes()...)
-			setID(node)
-			setProp(node)
+			if node != nil {
+				setID(node)
+				setProp(node)
+			}
 			return node, err
 		case "edge":
 			edge, err := builder.ValueAsEdge(schemaNode, cursor.getOutput(), root.GetValue(), root.GetValueTypes()...)
