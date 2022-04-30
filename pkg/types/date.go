@@ -57,6 +57,13 @@ func (d Date) ToTime() time.Time {
 	return time.Date(d.Year, time.Month(d.Month), d.Day, 0, 0, 0, 0, d.Location)
 }
 
+func (d Date) String() string {
+	if d.Location == nil {
+		return d.ToTime().Format("2006-01-02")
+	}
+	return d.ToTime().Format("2006-01-02 MST")
+}
+
 type UnixTime struct {
 	Seconds  int64
 	Location *time.Location
@@ -69,6 +76,10 @@ func (u UnixTime) ToTime() time.Time {
 	return time.Unix(u.Seconds, 0).In(u.Location)
 }
 
+func (u UnixTime) String() string {
+	return fmt.Sprint(u.ToTime().Unix())
+}
+
 type UnixTimeNano struct {
 	Nanoseconds int64
 	Location    *time.Location
@@ -79,6 +90,10 @@ func (u UnixTimeNano) ToTime() time.Time {
 		return time.Unix(0, u.Nanoseconds)
 	}
 	return time.Unix(0, u.Nanoseconds).In(u.Location)
+}
+
+func (u UnixTimeNano) String() string {
+	return fmt.Sprint(u.ToTime().UnixNano())
 }
 
 // try to convert to go native time with function ToGoTime then pass result as parameter
@@ -109,6 +124,10 @@ func (dt DateTime) ToTime() time.Time {
 	return time.Date(dt.Year, time.Month(dt.Month), dt.Day, int(dt.Hour), int(dt.Minute), int(dt.Seconds), int(dt.Nanoseconds), dt.Location)
 }
 
+func (dt DateTime) String() string {
+	return dt.ToTime().Format(time.RFC3339)
+}
+
 type TimeOfDay struct {
 	Nanoseconds  int64
 	Milliseconds int64
@@ -125,8 +144,14 @@ func (t TimeOfDay) ToTime() time.Time {
 	return time.Date(0, 0, 0, int(t.Hour), int(t.Minute), int(t.Seconds), int(t.Nanoseconds), t.Location)
 }
 
+func (t TimeOfDay) String() string {
+	return t.ToTime().Format("15:04:05.999999999Z07:00")
+}
+
 // GDay is XML Gregorian day part of date
 type GDay int
+
+func (g GDay) String() string { return strconv.Itoa(int(g)) }
 
 // XSDGday can be used as a node-type to interpret the underlying value as a day (GDay)
 var XSDGDayTerm = ls.NewTerm(XSD, "gDay", false, false, ls.OverrideComposition, struct {
@@ -138,6 +163,8 @@ var XSDGDayTerm = ls.NewTerm(XSD, "gDay", false, false, ls.OverrideComposition, 
 // GMonth is XML Gregorian month part of date
 type GMonth int
 
+func (g GMonth) String() string { return strconv.Itoa(int(g)) }
+
 // XSDGMonth can be used as node-type to interpret the underlying value as a month (int)
 var XSDGMonthTerm = ls.NewTerm(XSD, "gMonth", false, false, ls.OverrideComposition, struct {
 	XSDGMonthParser
@@ -147,6 +174,8 @@ var XSDGMonthTerm = ls.NewTerm(XSD, "gMonth", false, false, ls.OverrideCompositi
 
 // GMonth is XML Gregorian year part of date
 type GYear int
+
+func (g GYear) String() string { return strconv.Itoa(int(g)) }
 
 // XSDGYear can be used as a node-type to interpret the underlying value as a year value (int)
 var XSDGYearTerm = ls.NewTerm(XSD, "gYear", false, false, ls.OverrideComposition, struct {
@@ -161,6 +190,8 @@ type GMonthDay struct {
 	Month int
 }
 
+func (g GMonthDay) String() string { return fmt.Sprintf("%02d-%02d", g.Month, g.Day) }
+
 // XSDMonthDay can be used as a node-type to interpret the underlying value as a MM-DD
 var XSDGMonthDayTerm = ls.NewTerm(XSD, "gMonthDay", false, false, ls.OverrideComposition, struct {
 	XSDGMonthDayParser
@@ -173,6 +204,8 @@ type GYearMonth struct {
 	Year  int
 	Month int
 }
+
+func (g GYearMonth) String() string { return fmt.Sprintf("%04d-%02d", g.Year, g.Month) }
 
 // XSDGYearMonth can be used as a node-type to interpret the underlying value as a YYYY-MM
 var XSDGYearMonthTerm = ls.NewTerm(XSD, "gYearMonth", false, false, ls.OverrideComposition, struct {

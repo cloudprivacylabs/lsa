@@ -22,8 +22,10 @@ import (
 // ApplyLayer applies the given layer onto the graph.
 //
 // The annotations of the given layer will be composed with all
-// matching nodes of the graph.
-func ApplyLayer(ctx *ls.Context, g graph.Graph, layer *ls.Layer) error {
+// matching nodes of the graph. If reinterpretValues is set, the
+// operation will get the node value, compose, and set it back, so
+// this can be used for type conversions.
+func ApplyLayer(ctx *ls.Context, g graph.Graph, layer *ls.Layer, reinterpretValues bool) error {
 	var applyErr error
 
 	processNode := func(layerNode graph.Node) bool {
@@ -45,9 +47,23 @@ func ApplyLayer(ctx *ls.Context, g graph.Graph, layer *ls.Layer) error {
 			return false
 		}
 		for _, node := range nodes {
+			var value interface{}
+			if reinterpretValues && node.HasLabel(ls.AttributeTypeValue) {
+				value, err = ls.GetNodeValue(node)
+				if err != nil {
+					applyErr = err
+					return false
+				}
+			}
 			if err := ls.ComposeProperties(ctx, node, layerNode); err != nil {
 				applyErr = err
 				return false
+			}
+			if reinterpretValues && node.HasLabel(ls.AttributeTypeValue) {
+				if err := ls.SetNodeValue(node, value); err != nil {
+					applyErr = err
+					return false
+				}
 			}
 		}
 		// Find schema graph nodes for this layer node

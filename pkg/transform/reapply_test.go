@@ -53,7 +53,7 @@ func (tc reapplyTestCase) Run(t *testing.T) {
 	}
 
 	ctx := ls.DefaultContext()
-	if err := ApplyLayer(ctx, g, layer); err != nil {
+	if err := ApplyLayer(ctx, g, layer, false); err != nil {
 		t.Errorf("Test case: %s Apply error: %v", tc.Name, err)
 		return
 	}
