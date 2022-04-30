@@ -85,7 +85,7 @@ func init() {
 	ingestCmd.AddCommand(ingestJSONCmd)
 	ingestJSONCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
 
-	operations["jsoningest"] = func() Step { return &JSONIngester{} }
+	operations["ingest/json"] = func() Step { return &JSONIngester{} }
 }
 
 var ingestJSONCmd = &cobra.Command{

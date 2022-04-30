@@ -18,6 +18,7 @@ import (
 	"bytes"
 	"encoding/csv"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -25,10 +26,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type CSVIngester struct {
@@ -53,11 +52,16 @@ func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
 	}
 
 	for _, inputFile := range pipeline.InputFiles {
-		reader := csv.NewReader(strings.NewReader(inputFile))
+		file, err := os.Open(inputFile)
+		if err != nil {
+			return err
+		}
+		reader := csv.NewReader(file)
 		startRow := ci.StartRow
 		endRow := ci.EndRow
 		headerRow := ci.HeaderRow
 		if headerRow >= startRow {
+			file.Close()
 			return errors.New("Header row is ahead of start row")
 
 		}
@@ -73,11 +77,13 @@ func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
 		idTemplate := ci.ID
 		idTmp, err := template.New("id").Parse(idTemplate)
 		if err != nil {
+			file.Close()
 			return err
 		}
 		for row := 0; ; row++ {
 			rowData, err := reader.Read()
 			if err == io.EOF {
+				file.Close()
 				break
 			}
 			builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
@@ -85,6 +91,7 @@ func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
 				OnlySchemaAttributes: onlySchemaAttributes,
 			})
 			if err != nil {
+				file.Close()
 				return err
 			}
 			if headerRow == row {
@@ -100,19 +107,23 @@ func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
 				}
 				buf := bytes.Buffer{}
 				if err := idTmp.Execute(&buf, templateData); err != nil {
+					file.Close()
 					return err
 				}
 
 				parsed, err := parser.ParseDoc(pipeline.Context, strings.TrimSpace(buf.String()), rowData)
 				if err != nil {
+					file.Close()
 					return err
 				}
 				_, err = ls.Ingest(builder, parsed)
 				if err != nil {
+					file.Close()
 					return err
 				}
 				if ci.IngestByRows {
 					if err := pipeline.Next(); err != nil {
+						file.Close()
 						return err
 					}
 				}
@@ -135,105 +146,53 @@ func init() {
 	ingestCSVCmd.Flags().String("id", "row_{{.rowIndex}}", "Object ID Go template for ingested data if no ID is declared in the schema")
 	ingestCSVCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 	ingestCSVCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
+	ingestCSVCmd.Flags().Bool("byFile", false, "Ingest one file at a time. Default is row at a time.")
 
-	operations["csvingest"] = func() Step { return &CSVIngester{} }
+	operations["ingest/csv"] = func() Step { return &CSVIngester{} }
 }
 
 var ingestCSVCmd = &cobra.Command{
 	Use:   "csv",
 	Short: "Ingest a CSV document and enrich it with a schema",
 	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		initialGraph, _ := cmd.Flags().GetString("initialGraph")
-		ctx := getContext()
-		layer := loadSchemaCmd(ctx, cmd)
-		f, err := os.Open(args[0])
+		ing := CSVIngester{}
+		ing.fromCmd(cmd)
+		var err error
+		ing.StartRow, err = cmd.Flags().GetInt("startRow")
 		if err != nil {
-			failErr(err)
+			return err
 		}
-
-		reader := csv.NewReader(f)
-		startRow, err := cmd.Flags().GetInt("startRow")
+		ing.EndRow, err = cmd.Flags().GetInt("endRow")
 		if err != nil {
-			failErr(err)
+			return err
 		}
-		endRow, err := cmd.Flags().GetInt("endRow")
+		ing.HeaderRow, err = cmd.Flags().GetInt("headerRow")
 		if err != nil {
-			failErr(err)
+			return err
 		}
-		headerRow, err := cmd.Flags().GetInt("headerRow")
+		if ing.HeaderRow >= ing.StartRow {
+			return fmt.Errorf("Header row is ahead of start row")
+		}
+		ing.ID, err = cmd.Flags().GetString("id")
 		if err != nil {
-			failErr(err)
+			return err
 		}
-		if headerRow >= startRow {
-			fail("Header row is ahead of start row")
-		}
-		var grph graph.Graph
-		if layer != nil && initialGraph != "" {
-			grph, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
-			if err != nil {
-				failErr(err)
-			}
-		} else {
-			grph = ls.NewDocumentGraph()
-		}
-		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
-		onlySchemaAttributes, _ := cmd.Flags().GetBool("onlySchemaAttributes")
-
-		parser := csvingest.Parser{
-			OnlySchemaAttributes: onlySchemaAttributes,
-			SchemaNode:           layer.GetSchemaRootNode(),
-		}
-
-		builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
-			EmbedSchemaNodes:     embedSchemaNodes,
-			OnlySchemaAttributes: onlySchemaAttributes,
-		})
-
-		idTemplate, _ := cmd.Flags().GetString("id")
-		idTmp, err := template.New("id").Parse(idTemplate)
+		byFile, err := cmd.Flags().GetBool("byFile")
 		if err != nil {
-			failErr(err)
+			return err
 		}
-		for row := 0; ; row++ {
-			rowData, err := reader.Read()
-			if err == io.EOF {
-				break
-			}
-			if err != nil {
-				failErr(err)
-			}
-			if headerRow == row {
-				parser.ColumnNames = rowData
-			} else if row >= startRow {
-				if endRow != -1 && row > endRow {
-					break
-				}
-				templateData := map[string]interface{}{
-					"rowIndex":  row,
-					"dataIndex": row - startRow,
-					"columns":   rowData,
-				}
-				buf := bytes.Buffer{}
-				if err := idTmp.Execute(&buf, templateData); err != nil {
-					failErr(err)
-				}
-
-				parsed, err := parser.ParseDoc(ctx, strings.TrimSpace(buf.String()), rowData)
-				if err != nil {
-					failErr(err)
-				}
-				_, err = ls.Ingest(builder, parsed)
-				if err != nil {
-					failErr(err)
-				}
-			}
+		ing.IngestByRows = !byFile
+		p := []Step{
+			&ing,
+			StepFunc(func(ctx *PipelineContext) error {
+				outFormat, _ := cmd.Flags().GetString("output")
+				includeSchema, _ := cmd.Flags().GetBool("includeSchema")
+				return OutputIngestedGraph(cmd, outFormat, ctx.Graph, os.Stdout, includeSchema)
+			}),
 		}
-		outFormat, _ := cmd.Flags().GetString("output")
-		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
-		err = OutputIngestedGraph(cmd, outFormat, grph, os.Stdout, includeSchema)
-		if err != nil {
-			failErr(err)
-		}
+		_, err = runPipeline(p, initialGraph, args)
+		return err
 	},
 }
