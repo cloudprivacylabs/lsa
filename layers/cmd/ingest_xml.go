@@ -16,7 +16,6 @@ package cmd
 
 import (
 	"io"
-	"os"
 
 	"github.com/spf13/cobra"
 
@@ -106,11 +105,7 @@ var ingestXMLCmd = &cobra.Command{
 		ing.ID, _ = cmd.Flags().GetString("id")
 		p := []Step{
 			&ing,
-			StepFunc(func(ctx *PipelineContext) error {
-				outFormat, _ := cmd.Flags().GetString("output")
-				includeSchema, _ := cmd.Flags().GetBool("includeSchema")
-				return OutputIngestedGraph(cmd, outFormat, ctx.Graph, os.Stdout, includeSchema)
-			}),
+			NewWriteGraphStep(cmd),
 		}
 		_, err := runPipeline(p, initialGraph, args)
 		return err

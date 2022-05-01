@@ -15,20 +15,17 @@
 package cmd
 
 import (
-	"os"
-
-	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/transform"
 	"github.com/spf13/cobra"
 )
 
-type ReshapePipeline struct {
+type ReshapeStep struct {
 	BaseIngestParams
 	initialized bool
 }
 
-func (rs *ReshapePipeline) Run(pipeline *PipelineContext) error {
+func (rs *ReshapeStep) Run(pipeline *PipelineContext) error {
 	var layer *ls.Layer
 	var err error
 	if !rs.initialized {
@@ -42,8 +39,9 @@ func (rs *ReshapePipeline) Run(pipeline *PipelineContext) error {
 	})
 	err = reshaper.Reshape(pipeline.Context, pipeline.Graph)
 	if err != nil {
-		failErr(err)
+		return err
 	}
+	pipeline.Graph = reshaper.Builder.GetGraph()
 	if err := pipeline.Next(); err != nil {
 		return err
 	}
@@ -57,35 +55,22 @@ func init() {
 	reshapeCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	reshapeCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
 
-	operations["reshape"] = func() Step { return &ReshapePipeline{} }
+	operations["reshape"] = func() Step { return &ReshapeStep{} }
 }
 
 var reshapeCmd = &cobra.Command{
 	Use:   "reshape",
 	Short: "Reshape a graph using a target schema",
 	Args:  cobra.MaximumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		ctx := getContext()
-		input, _ := cmd.Flags().GetString("input")
-		g, err := cmdutil.ReadGraph(args, ctx.GetInterner(), input)
-		if err != nil {
-			failErr(err)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		step := &ReshapeStep{}
+		step.fromCmd(cmd)
+		p := []Step{
+			NewReadGraphStep(cmd),
+			step,
+			NewWriteGraphStep(cmd),
 		}
-		layer := loadSchemaCmd(ctx, cmd)
-
-		reshaper := transform.Reshaper{}
-		reshaper.TargetSchema = layer
-		reshaper.Builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
-			EmbedSchemaNodes: true,
-		})
-		err = reshaper.Reshape(ctx, g)
-		if err != nil {
-			failErr(err)
-		}
-		outFormat, _ := cmd.Flags().GetString("output")
-		err = OutputIngestedGraph(cmd, outFormat, reshaper.Builder.GetGraph(), os.Stdout, false)
-		if err != nil {
-			failErr(err)
-		}
+		_, err := runPipeline(p, "", args)
+		return err
 	},
 }

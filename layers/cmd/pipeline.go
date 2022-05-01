@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -11,12 +12,13 @@ import (
 )
 
 type PipelineContext struct {
-	Context     *ls.Context
+	*ls.Context
 	Graph       graph.Graph
 	Roots       []graph.Node
 	InputFiles  []string
 	currentStep int
 	steps       []Step
+	Properties  map[string]interface{}
 }
 
 type Step interface {
@@ -28,6 +30,42 @@ type StepFunc func(*PipelineContext) error
 func (f StepFunc) Run(ctx *PipelineContext) error { return f(ctx) }
 
 var operations = make(map[string]func() Step)
+
+type ReadGraphStep struct {
+	Format string
+}
+
+func NewReadGraphStep(cmd *cobra.Command) ReadGraphStep {
+	rd := ReadGraphStep{}
+	rd.Format, _ = cmd.Flags().GetString("input")
+	return rd
+}
+
+func (rd ReadGraphStep) Run(pipeline *PipelineContext) error {
+	g, err := cmdutil.ReadGraph(pipeline.InputFiles, pipeline.Context.GetInterner(), rd.Format)
+	if err != nil {
+		return err
+	}
+	pipeline.Graph = g
+	return pipeline.Next()
+}
+
+type WriteGraphStep struct {
+	Format        string
+	IncludeSchema bool
+	Cmd           *cobra.Command
+}
+
+func NewWriteGraphStep(cmd *cobra.Command) WriteGraphStep {
+	wr := WriteGraphStep{Cmd: cmd}
+	wr.Format, _ = cmd.Flags().GetString("output")
+	wr.IncludeSchema, _ = cmd.Flags().GetBool("includeSchema")
+	return wr
+}
+
+func (wr WriteGraphStep) Run(pipeline *PipelineContext) error {
+	return OutputIngestedGraph(wr.Cmd, wr.Format, pipeline.Graph, os.Stdout, wr.IncludeSchema)
+}
 
 func (ctx *PipelineContext) Next() error {
 	ctx.currentStep++
@@ -83,10 +121,11 @@ func runPipeline(steps []Step, initialGraph string, inputs []string) (*PipelineC
 	}
 	pipeline := &PipelineContext{
 		Graph:       g,
-		Context:     ls.DefaultContext(),
+		Context:     getContext(),
 		InputFiles:  inputs,
 		steps:       steps,
 		currentStep: -1,
+		Properties:  make(map[string]interface{}),
 	}
 	return pipeline, pipeline.Next()
 }
