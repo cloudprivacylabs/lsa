@@ -23,7 +23,6 @@ import (
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	xmlingest "github.com/cloudprivacylabs/lsa/pkg/xml"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type XMLIngester struct {
@@ -93,71 +92,27 @@ func init() {
 	ingestCmd.AddCommand(ingestXMLCmd)
 	ingestXMLCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
 
-	operations["xmlingest"] = func() Step { return &XMLIngester{} }
+	operations["ingest/xml"] = func() Step { return &XMLIngester{} }
 }
 
 var ingestXMLCmd = &cobra.Command{
 	Use:   "xml",
 	Short: "Ingest an XML document and enrich it with a schema",
 	Args:  cobra.MaximumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		initialGraph, _ := cmd.Flags().GetString("initialGraph")
-		ctx := getContext()
-		layer := loadSchemaCmd(ctx, cmd)
-		var input io.Reader
-		var err error
-		if layer != nil {
-			enc, err := layer.GetEncoding()
-			if err != nil {
-				failErr(err)
-			}
-			input, err = cmdutil.StreamFileOrStdin(args, enc)
-			if err != nil {
-				failErr(err)
-			}
-		} else {
-			input, err = cmdutil.StreamFileOrStdin(args)
-			if err != nil {
-				failErr(err)
-			}
+		ing := XMLIngester{}
+		ing.fromCmd(cmd)
+		ing.ID, _ = cmd.Flags().GetString("id")
+		p := []Step{
+			&ing,
+			StepFunc(func(ctx *PipelineContext) error {
+				outFormat, _ := cmd.Flags().GetString("output")
+				includeSchema, _ := cmd.Flags().GetBool("includeSchema")
+				return OutputIngestedGraph(cmd, outFormat, ctx.Graph, os.Stdout, includeSchema)
+			}),
 		}
-		var grph graph.Graph
-		if layer != nil && initialGraph != "" {
-			grph, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)
-			if err != nil {
-				failErr(err)
-			}
-		} else {
-			grph = ls.NewDocumentGraph()
-		}
-		embedSchemaNodes, _ := cmd.Flags().GetBool("embedSchemaNodes")
-		onlySchemaAttributes, _ := cmd.Flags().GetBool("onlySchemaAttributes")
-		parser := xmlingest.Parser{
-			OnlySchemaAttributes: onlySchemaAttributes,
-		}
-		if layer != nil {
-			parser.SchemaNode = layer.GetSchemaRootNode()
-		}
-		builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
-			EmbedSchemaNodes:     embedSchemaNodes,
-			OnlySchemaAttributes: onlySchemaAttributes,
-		})
-
-		baseID, _ := cmd.Flags().GetString("id")
-
-		parsed, err := parser.ParseStream(ctx, baseID, input)
-		if err != nil {
-			failErr(err)
-		}
-		_, err = ls.Ingest(builder, parsed)
-		if err != nil {
-			failErr(err)
-		}
-		outFormat, _ := cmd.Flags().GetString("output")
-		includeSchema, _ := cmd.Flags().GetBool("includeSchema")
-		err = OutputIngestedGraph(cmd, outFormat, grph, os.Stdout, includeSchema)
-		if err != nil {
-			failErr(err)
-		}
+		_, err := runPipeline(p, initialGraph, args)
+		return err
 	},
 }

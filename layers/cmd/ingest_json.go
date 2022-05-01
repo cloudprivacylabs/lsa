@@ -45,16 +45,16 @@ func (ji *JSONIngester) Run(pipeline *PipelineContext) error {
 	if layer != nil {
 		enc, err := layer.GetEncoding()
 		if err != nil {
-			failErr(err)
+			return err
 		}
 		input, err = cmdutil.StreamFileOrStdin(pipeline.InputFiles, enc)
 		if err != nil {
-			failErr(err)
+			return err
 		}
 	} else {
 		input, err = cmdutil.StreamFileOrStdin(pipeline.InputFiles)
 		if err != nil {
-			failErr(err)
+			return err
 		}
 	}
 
@@ -72,7 +72,7 @@ func (ji *JSONIngester) Run(pipeline *PipelineContext) error {
 
 	_, err = jsoningest.IngestStream(pipeline.Context, baseID, input, parser, builder)
 	if err != nil {
-		failErr(err)
+		return err
 	}
 
 	if err := pipeline.Next(); err != nil {
