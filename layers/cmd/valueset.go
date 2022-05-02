@@ -266,10 +266,24 @@ func loadValuesetsCmd(cmd *cobra.Command, valuesets *Valuesets) {
 
 type ValuesetStep struct {
 	BaseIngestParams
-	ValuesetFiles []string
+	ValuesetFiles []string `json:"valuesetFiles" yaml:"valuesetFiles"`
 	initialized   bool
 	valuesets     Valuesets
 	layer         *ls.Layer
+}
+
+func (ValuesetStep) Help() {
+	fmt.Println(`Valueset Lookup
+Perform valueset lookup on an ingested graph
+
+operation: valueset
+params:
+  valuesetFiles:
+  - f1
+  - f2
+
+  # Specify the schema the input graph was ingested with`)
+	fmt.Println(baseIngestParamsHelp)
 }
 
 func (vs *ValuesetStep) Run(pipeline *PipelineContext) error {

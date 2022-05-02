@@ -15,6 +15,7 @@
 package cmd
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/spf13/cobra"
@@ -28,6 +29,17 @@ type JSONIngester struct {
 	BaseIngestParams
 	ID          string
 	initialized bool
+}
+
+func (JSONIngester) Help() {
+	fmt.Println(`Ingest JSON data
+Ingest a JSON file using a schema variant and output a graph
+
+operation: ingest/json
+params:`)
+	fmt.Println(baseIngestParamsHelp)
+	fmt.Println(`  id:""   # Base ID for the root node
+`)
 }
 
 func (ji *JSONIngester) Run(pipeline *PipelineContext) error {

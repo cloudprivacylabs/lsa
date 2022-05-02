@@ -32,12 +32,32 @@ import (
 
 type CSVIngester struct {
 	BaseIngestParams
-	StartRow     int
-	EndRow       int
-	HeaderRow    int
-	ID           string
-	IngestByRows bool
+	StartRow     int    `json:"startRow" yaml:"startRow"`
+	EndRow       int    `json:"endRow" yaml:"endRow"`
+	HeaderRow    int    `json:"headerRow" yaml:"headerRow"`
+	ID           string `json:"id" yaml:"id"`
+	IngestByRows bool   `json:"ingestByRows" yaml:"ingestByRows"`
 	initialized  bool
+}
+
+func (CSVIngester) Help() {
+	fmt.Println(`Ingest CSV Data
+Ingest CSV data from files using a schema variant and output a graph
+
+operation: ingest/csv
+params:`)
+	fmt.Println(baseIngestParamsHelp)
+	fmt.Println(`  # CSV Specifics
+  startRow: 0   # Data starts at this row. 0-based
+  endRow: -1    # Data ends at this row. 0-based
+  headerRow: -1 # The row containing CSV header. 0-based
+  id:"row_{{.rowIndex}}"   # Go template for node ID generation 
+  # The template is evaluated with these variables:
+  #  .rowIndex: The index of the current row in file
+  #  .dataIndex: The index of the current data row
+  #  .columns: The current row data
+  ingestByRows: false  # If true, ingest row by row. Otherwise, ingest one file at a time.
+`)
 }
 
 func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
@@ -75,6 +95,9 @@ func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
 		}
 
 		idTemplate := ci.ID
+		if idTemplate == "" {
+			idTemplate = "row_{{.rowIndex}}"
+		}
 		idTmp, err := template.New("id").Parse(idTemplate)
 		if err != nil {
 			file.Close()

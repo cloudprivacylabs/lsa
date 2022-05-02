@@ -15,6 +15,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/transform"
 	"github.com/spf13/cobra"
@@ -23,6 +25,15 @@ import (
 type ReshapeStep struct {
 	BaseIngestParams
 	initialized bool
+}
+
+func (ReshapeStep) Help() {
+	fmt.Println(`Reshape graph to fit into another schema
+
+operation: reshape
+params:
+  # Specify the schema the input graph should be reshaped to`)
+	fmt.Println(baseIngestParamsHelp)
 }
 
 func (rs *ReshapeStep) Run(pipeline *PipelineContext) error {

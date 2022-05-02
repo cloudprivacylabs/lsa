@@ -81,6 +81,19 @@ func init() {
 	rootCmd.AddCommand(pipelineCmd)
 	pipelineCmd.Flags().String("file", "", "Pipeline build file")
 	pipelineCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
+
+	oldHelp := pipelineCmd.HelpFunc()
+	pipelineCmd.SetHelpFunc(func(cmd *cobra.Command, _ []string) {
+		oldHelp(cmd, []string{})
+		type helper interface{ Help() }
+		fmt.Println("\nPipeline steps:")
+		for _, x := range operations {
+			w := x()
+			if h, ok := w.(helper); ok {
+				h.Help()
+			}
+		}
+	})
 }
 
 func readPipeline(file string) ([]Step, error) {

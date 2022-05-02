@@ -26,6 +26,15 @@ type OCStep struct {
 	Expr string
 }
 
+func (OCStep) Help() {
+	fmt.Println(`Run Opencypher expression on the graph
+
+operation: oc
+params:
+  expr: opencypherExpression
+`)
+}
+
 func (oc *OCStep) Run(pipeline *PipelineContext) error {
 	ctx := opencypher.NewEvalContext(pipeline.Graph)
 	output, err := opencypher.ParseAndEvaluate(oc.Expr, ctx)

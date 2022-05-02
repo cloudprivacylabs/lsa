@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"encoding/csv"
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -25,10 +26,27 @@ import (
 )
 
 type CSVExport struct {
-	SpecFile string
+	SpecFile string `json:"specFile" yaml:"specFile"`
 	lscsv.Writer
 	initialized   bool
 	writtenHeader bool
+}
+
+func (CSVExport) Help() {
+	fmt.Println(`Export CSV Data from Graph
+Export the graph in the pipeline context as a CSV file
+
+operation: export/csv
+params:`)
+	fmt.Println(`  specFile: File containing export spec, or
+  rowQuery: openCypher query that returns nodes, the roots of CSV rows
+            if omitted, all source nodes of the graph are used
+  columns:
+  - name: column name. This name is written to the output as the column header
+    query: column query. If empty, the query is
+        match (root)-[]->(n:DocumentNode {attributeName: <attributeName>}) return n
+        The query is evauated with 'root' pointing to the current row root node
+`)
 }
 
 func (ecsv *CSVExport) Run(pipeline *PipelineContext) error {
@@ -58,7 +76,7 @@ func init() {
 	exportCSVCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	exportCSVCmd.Flags().String("spec", "", "Export spec")
 
-	operations["csvexport"] = func() Step { return &CSVExport{} }
+	operations["export/csv"] = func() Step { return &CSVExport{} }
 }
 
 var exportCSVCmd = &cobra.Command{
@@ -84,23 +102,14 @@ row root node. If a column query is not specified, it is assumed to be:
   (root) -[]-> (:DocumentNode {attributeName: <attrName>})
 `,
 	Args: cobra.MaximumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		input, _ := cmd.Flags().GetString("input")
-		g, err := cmdutil.ReadGraph(args, nil, input)
-		if err != nil {
-			failErr(err)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		step := &CSVExport{}
+		step.SpecFile, _ = cmd.Flags().GetString("spec")
+		p := []Step{
+			NewReadGraphStep(cmd),
+			step,
 		}
-		csvExporter := lscsv.Writer{}
-		spec, _ := cmd.Flags().GetString("spec")
-		if len(spec) > 0 {
-			if err := cmdutil.ReadJSONOrYAML(spec, &csvExporter); err != nil {
-				failErr(err)
-			}
-		}
-
-		wr := csv.NewWriter(ExportTarget)
-		csvExporter.WriteHeader(wr)
-		csvExporter.WriteRows(wr, g)
-		wr.Flush()
+		_, err := runPipeline(p, "", args)
+		return err
 	},
 }

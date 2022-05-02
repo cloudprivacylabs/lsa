@@ -50,7 +50,6 @@ type BaseIngestParams struct {
 	Type                 string `json:"type" yaml:"type"`
 	Bundle               string `json:"bundle" yaml:"bundle"`
 	CompiledSchema       string `json:"compiledSchema" yaml:"compiledSchema"`
-	IncludeSchema        bool   `json:"includeSchema" yaml:"includeSchema"`
 	EmbedSchemaNodes     bool   `json:"embedSchemaNodes" yaml:"embedSchemaNodes"`
 	OnlySchemaAttributes bool   `json:"onlySchemaAttributes" yaml:"onlySchemaAttributes"`
 }
@@ -61,10 +60,29 @@ func (b *BaseIngestParams) fromCmd(cmd *cobra.Command) {
 	b.Schema, _ = cmd.Flags().GetString("schema")
 	b.Bundle, _ = cmd.Flags().GetString("bundle")
 	b.Type, _ = cmd.Flags().GetString("type")
-	b.IncludeSchema, _ = cmd.Flags().GetBool("includeSchema")
 	b.EmbedSchemaNodes, _ = cmd.Flags().GetBool("embedSchemaNodes")
 	b.OnlySchemaAttributes, _ = cmd.Flags().GetBool("onlySchemaAttributes")
 }
+
+const baseIngestParamsHelp = `  
+  # Schema loading parameters
+  # One of:
+  #   bundle/type
+  #   repo/schema (schemaID)
+  #   schema (schema file)
+  #   compiledSchema
+
+  bundle: bundleFileName
+  type: typeName in bundle
+  repo: schema repository directory
+  schema: if repo is given, the ID of the schema. Otherwise, the schema file
+  compiledSchema: compiled schema graph file
+
+  # Ingestion control
+
+  embedSchemaNodes: false
+  onlySchemaAttributes: false
+`
 
 var ingestCmd = &cobra.Command{
 	Use:   "ingest",

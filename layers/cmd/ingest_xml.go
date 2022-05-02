@@ -15,6 +15,7 @@
 package cmd
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/spf13/cobra"
@@ -28,6 +29,17 @@ type XMLIngester struct {
 	BaseIngestParams
 	ID          string
 	initialized bool
+}
+
+func (XMLIngester) Help() {
+	fmt.Println(`Ingest XML data
+Ingest an XML file based on a schema variant and output a graph
+
+operation: ingest/xml
+params:`)
+	fmt.Println(baseIngestParamsHelp)
+	fmt.Println(`  id:""   # Base ID for the root node
+`)
 }
 
 func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
