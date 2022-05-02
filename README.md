@@ -137,6 +137,128 @@ dpv overlay is:
 }
 ```
 
+### Composing Schema Variants
+
+A schema variant is a schema and zero or more overlays that modify the
+semantics of the schema for a use-case. A schema variant is composed
+by combining attributes of overlays with matching attributes of the
+schema. By default, the terms specified for the attributes of the
+overlays are combined as a set with the same terms of the schema. That
+is, if a schema has
+
+```
+{
+   "@id": <attributeId>,
+   "@type": "Value",
+   "someAnnotation": "someValue"
+}
+```
+
+and the overlay has:
+
+```
+{
+   "@id": <attributeId>,
+   "@type": ["Value","someType"],
+   "someAnnotation": "otherValue"
+}
+```
+
+the schema variant will have:
+
+```
+{
+   "@id": <attributeId>,
+   "@type": ["Value","someType"],
+   "someAnnotation": ["someValue", "otherValue"]
+}
+```
+
+Some of the terms have override semantics, and can be used to modify
+schema behavior using overlays. For example:
+
+```
+{
+   "@id": <attributeId>,
+   "@type": "Value",
+   "valueType": "string"
+}
+```
+
+The `valueType` can be overridden by an overlay:
+
+```
+{
+   "@id": <attributeId>,
+   "@type": "Value",
+   "valueType": "xsd:date"
+}
+```
+
+To compose schema variants using the `layers` binary, use:
+
+```
+layers compose --bundle person-dpv.bundle.json --type https://example.org/Person
+```
+
+This will compose and output the schema variant for `Person` as defined in the `person-dpv.bundle`.
+
+
+### Compiling Schemas
+
+A schema variant may reference other schema variants. For example, the
+`Person` object in the `examples/contact` directory refers to a
+`Contact` object to represent contact information. Compiling a schema
+variant resolves these references and creates a single self-contained
+schema. Such a schema can be used for data ingestion.
+
+To compile the `Person` schema, use:
+
+```
+layers compile --bundle person-dpv.bundle.json --type https://example.org/Person
+```
+
+This operation will attach the `Contact` schema variant as configured
+in the bundle to the `Person` variant, resulting in a schema that has
+no external references.
+
+### Ingesting Data
+
+Data ingestion process parses an input object, combines the data
+attributes with the matching schema attributes and builds a labeled
+property graph (LPG). The LPG contains both the input object and the
+relevant schema information, so it can be processed using the
+annotations in the graph without any external references.
+
+To ingest data using the `layers` binary, use:
+
+```
+layers ingest json person_sample.json --bundle person-dpv.bundle.json --type https://example.org/Person
+```
+
+This operation will output a graph containing the nodes for the input
+as well as nodes for the schema. All the input nodes will have the
+label `https://lschema.org/DocumentNode`, and all schema nodes will
+have the label `https://lschema.org/Attribute`. Every input node will
+be connected to its corresponding schema node with a
+`https://lschema.org/instanceOf` edge. The input nodes will contain
+`https://lschema.org/schemaNodeId` annotation giving the ID of the
+schema node for the attribute.
+
+The schema nodes and input nodes can be combined using the
+`embedSchemaNodes` flag:
+
+```
+layers ingest json person_sample.json --bundle person-dpv.bundle.json --type https://example.org/Person --embedSchemaNodes
+```
+
+The output graph will have nodes containing only
+`https://lschema.org/DocumentNode`s that include all the annotations
+given in the corresponding schema node. The original schema node can
+still be found using the `https://lschema.org/schemaNodeId`
+annotation.
+
+
 ## Building
 
 Once you clone the repository, you can build the schema compiler using

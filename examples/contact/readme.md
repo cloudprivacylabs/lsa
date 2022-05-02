@@ -86,13 +86,13 @@ as personally identifiable information.
 To compose the `Person` schema, use:
 
 ```
-layers compose --bundle person-dpv.bundle.json --type Person
+layers compose --bundle person-dpv.bundle.json --type https://example.org/Person
 ```
 
 Similarly:
 
 ```
-layers compose --bundle person-pii.bundle.json --type Person
+layers compose --bundle person-pii.bundle.json --type https://example.org/Person
 ```
 
 These will print the `Person` schema with different compositions.
@@ -100,7 +100,7 @@ These will print the `Person` schema with different compositions.
 To resolve links between the schemas and get a complete schema object, use the `compile` option:
 
 ```
-layers compile --bundle person-dpv.bundle.json --type Person
+layers compile --bundle person-dpv.bundle.json --type https://example.org/Person
 ```
 
 In a compiled schema, all other schema references are resolved an a
@@ -110,13 +110,13 @@ composite schema graph is returned.
 The `person_sample.json` file contains a sample record. To ingest this:
 
 ```
-layers ingest json --bundle person-dpv.bundle.json  --type Person  person_sample.json
+layers ingest json --bundle person-dpv.bundle.json  --type https://example.org/Person  person_sample.json
 ```
 
 Similarly:
 
 ```
-layers ingest json --bundle person-dpv.bundle.json --type Person --embedSchemaNodes person_sample.json
+layers ingest json --bundle person-dpv.bundle.json --type https://example.org/Person --embedSchemaNodes person_sample.json
 ```
 
 This will output the ingested graph, with schema nodes embedded into document nodes.
@@ -127,7 +127,7 @@ associated schema node. To ignore such fields:
 
 
 ```
-layers ingest json --bundle person-dpv.bundle.json --type Person --embedSchemaNodes --onlySchemaAttributes person_sample.json
+layers ingest json --bundle person-dpv.bundle.json --type https://example.org/Person --embedSchemaNodes --onlySchemaAttributes person_sample.json
 ```
 
 ## Applying layer onto ingested graph
@@ -136,7 +136,7 @@ It is possible to apply a layer onto an already ingested graph. For
 example, ingest using dpv bundle:
 
 ```
-layers ingest json --bundle person-dpv.bundle.json --type Person --embedSchemaNodes person_sample.json >dpv.json
+layers ingest json --bundle person-dpv.bundle.json --type https://example.org/Person --embedSchemaNodes person_sample.json >dpv.json
 ```
 
 The ingested graph contains DPV  annotations.
@@ -144,7 +144,7 @@ The ingested graph contains DPV  annotations.
 Then:
 
 ```
-layer applylayer --bundle person-pii.bundle.json --type Person dpv.json
+layer applylayer --bundle person-pii.bundle.json --type https://example.org/Person dpv.json
 ```
 
 The output graph now contains both PII annotations and DPV

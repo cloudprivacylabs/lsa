@@ -4,12 +4,9 @@
     "@type": "Schema",
     "description": [
     "This schema defines a Person object with firstName, lastName, and a list of contacts.",
-    "Elements of the contact list are references to a Contact schema.",
-    "This example uses a direct reference to the contact schema variant.",
-    "Other implementations of a layered schema repository may refer to variants of a Contact object",
-    "that is determined at runtime using criteria available during processing."
+    "Elements of the contact list are references to a Contact schema."
     ],
-    "valueType": "Person",
+    "valueType": "https://example.org/Person",
     "layer": {
         "@type": "Object",
         "@id": "http://example.org/Person",
@@ -31,7 +28,7 @@
                 "arrayElements": {
                     "@type": "Reference",
                     "@id": "http://example.org/Person/contact/items",
-                    "ref": "Contact"
+                    "ref": "https://example.org/Contact"
                 }
             }
         ]
