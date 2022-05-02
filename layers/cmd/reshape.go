@@ -24,6 +24,7 @@ import (
 
 type ReshapeStep struct {
 	BaseIngestParams
+	layer       *ls.Layer
 	initialized bool
 }
 
@@ -37,14 +38,20 @@ params:
 }
 
 func (rs *ReshapeStep) Run(pipeline *PipelineContext) error {
-	var layer *ls.Layer
 	var err error
 	if !rs.initialized {
-		layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, rs.CompiledSchema, rs.Repo, rs.Schema, rs.Type, rs.Bundle)
+		if rs.IsEmptySchema() {
+			rs.layer, _ = pipeline.Properties["layer"].(*ls.Layer)
+		} else {
+			rs.layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, rs.CompiledSchema, rs.Repo, rs.Schema, rs.Type, rs.Bundle)
+			if err != nil {
+				return err
+			}
+		}
 		rs.initialized = true
 	}
 	reshaper := transform.Reshaper{}
-	reshaper.TargetSchema = layer
+	reshaper.TargetSchema = rs.layer
 	reshaper.Builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		EmbedSchemaNodes: true,
 	})
