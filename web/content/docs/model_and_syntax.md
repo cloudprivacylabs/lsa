@@ -110,6 +110,79 @@ An overlay compatible with this schema is as follows:
 }
 {{</highlight>}}
 
+## Overlay Specific Syntax
+
+Overlays can include these additional information:
+
+### `compose`
+
+`https://lschema.org/compose` specifies how to combine annotations of
+the overlay attributes with the schema. Possible values are:
+
+`set` 
+: All terms will be combined as a set with the composed schema
+annotations.
+`list`
+: The terms of this overlay will be added to the composed schema
+  annotations. Duplications may occur, ordering is preserved.
+`override`
+: The terms of this overlay overrides the schema terms.
+  
+As an example, consider the overlay:
+
+{{< highlight json >}}
+{
+  "@context": "https://lschema.org/ls.json",
+  "@type": "Overlay",
+  "@id": "https://ovl_id",
+  "valueType": "https://example.org/Person",
+  "compose": "override",
+  "layer": {
+    "@type": "Object",
+    "@id": "https://example.org/Person",
+    "attributes": {
+       "https://example.org/Person/firstName": {
+         "@type": "Value",
+         "pattern": "[a-zA-Z]+"
+       }
+    }
+  }
+}
+{{</ highlight >}}
+This overlay overrides the `pattern` in the composed schema for `firstName`. 
+
+### `attributeOverlays`
+
+This is a convenient way to compose semantics for individual attribute
+without specifying the full path. Attributes listed under `layer` term
+must match the path of the underlying schema to modify an
+attribute. Attributes listed under
+`https://lschema.org/attributeOverlays` only match by attribute id.
+
+As an example, consider the following overlay:
+
+{{< highlight json >}}
+{
+  "@context": "https://lschema.org/ls.json",
+  "@type": "Overlay",
+  "@id": "https://ovl_id",
+  "valueType": "https://hl7.org/fhir/Patient",
+  "attributeOverlays": [
+    {
+       "@id": "https://hl7.org/fhir/Patient/name/*/given/*",
+       "@type": "Value",
+      "pattern": "[a-zA-Z]+"
+    }
+  ]
+}
+{{</ highlight >}}
+
+This overlay defines the `pattern` for patient given name, which is an
+array field under `/name/*/given`. Without `attributeOverlays`, the
+only way to define this overlay is to specify all attributes in the
+path: `Patient`, `Patient/name`, `Patient/name/*`, and
+`Patient/name/*/given`.
+
 ## Attributes
 
 Attributes are data elements of the object described by the
@@ -123,7 +196,7 @@ unique within the schema. Attribute types are:
   * [Composite](#composite)
   * [Polymorphic](#polymorphic)
 
-### Value 
+### `Value`
 
 A `Value` is a string of bytes whose content will be interpreted by a
 program. The actual underlying value may have parts when interpreted
@@ -160,7 +233,7 @@ The `attributeName` annotation is used during data ingestion or data
 export to name the value. It may correspond to a JSON object key, or
 the column name of tabular data.
 
-### Object
+### `Object`
 
 An `Object` contains a set of named attributes. An object can be used
 to represent a JSON object containing key-value pairs, an XML element
@@ -233,7 +306,7 @@ an object with `attributes` edges is nondeterministic. The ordering of
 attributes for `attributeList` edges is fixed by the order in which
 the object is defined.
 
-### Array
+### `Array`
 
 An `Array` contains repeated attributes that share the same definition
 (which can be polymorphic). Array attributes can be used to represent
@@ -271,7 +344,7 @@ The JSON-LD schema for this is:
 {{</highlight>}}
 
 
-### Reference
+### `Reference`
 
 A `Reference` points to another entity defined by a schema or schema
 variant. How the reference is resolved is implementation
@@ -320,7 +393,7 @@ After compilation, the schema looks like:
 {{<figure src="compiled_address_schema.png" class="text-center my-3" >}} 
 
 
-### Composite
+### `Composite`
 
 A `Composite` attribute is a composition of other attributes. When a
 schema containing composite attributes is compiled, all such
@@ -367,7 +440,7 @@ combined to make up a new `Object` node in place of the `Composite`
 node.
 
 
-### Polymorphic
+### `Polymorphic`
 
 A `Polymorphic` attribute can be one of the types of attributes listed
 in its definition. The reference implementation of data ingestion

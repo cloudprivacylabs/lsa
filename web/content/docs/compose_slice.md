@@ -6,7 +6,7 @@ title: Composition and Slicing
 Use a schema base to describe the data elements for a particular data
 capture scenario, and compose it with different overlays to add
 semantics that may differ based on data source. The composed schema is
-a schema variant. The semantic annotations classify data, add
+a *schema variant*. The semantic annotations classify data, add
 processing instructions, or add use-case specific metadata.
 
 If you have a schema variant, you can slice it to separate into a
@@ -14,10 +14,9 @@ schema with fewer annotations, and one or more overlays.
 
 ## Composition 
 
-Composition operation combines a schema and overlays to create a new
-variant of the schema, or combines multiple overlays to create a new
-overlay that is a combination of several overlays. A schema cannot be
-composed with another schema.
+*Composition* combines a schema and overlays to create a new variant
+of the schema, or combines multiple overlays to create a new
+overlay.
 
 When composing schema layers, all layers must agree on the same
 nonempty `valueType`. That is, composing two layers with different
