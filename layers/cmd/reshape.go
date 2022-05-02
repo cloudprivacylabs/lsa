@@ -15,13 +15,49 @@
 package cmd
 
 import (
-	"os"
+	"fmt"
 
-	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/transform"
 	"github.com/spf13/cobra"
 )
+
+type ReshapeStep struct {
+	BaseIngestParams
+	initialized bool
+}
+
+func (ReshapeStep) Help() {
+	fmt.Println(`Reshape graph to fit into another schema
+
+operation: reshape
+params:
+  # Specify the schema the input graph should be reshaped to`)
+	fmt.Println(baseIngestParamsHelp)
+}
+
+func (rs *ReshapeStep) Run(pipeline *PipelineContext) error {
+	var layer *ls.Layer
+	var err error
+	if !rs.initialized {
+		layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, rs.CompiledSchema, rs.Repo, rs.Schema, rs.Type, rs.Bundle)
+		rs.initialized = true
+	}
+	reshaper := transform.Reshaper{}
+	reshaper.TargetSchema = layer
+	reshaper.Builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
+	err = reshaper.Reshape(pipeline.Context, pipeline.Graph)
+	if err != nil {
+		return err
+	}
+	pipeline.Graph = reshaper.Builder.GetGraph()
+	if err := pipeline.Next(); err != nil {
+		return err
+	}
+	return nil
+}
 
 func init() {
 	rootCmd.AddCommand(reshapeCmd)
@@ -29,34 +65,23 @@ func init() {
 	reshapeCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 	reshapeCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	reshapeCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
+
+	operations["reshape"] = func() Step { return &ReshapeStep{} }
 }
 
 var reshapeCmd = &cobra.Command{
 	Use:   "reshape",
 	Short: "Reshape a graph using a target schema",
 	Args:  cobra.MaximumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		ctx := getContext()
-		input, _ := cmd.Flags().GetString("input")
-		g, err := cmdutil.ReadGraph(args, ctx.GetInterner(), input)
-		if err != nil {
-			failErr(err)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		step := &ReshapeStep{}
+		step.fromCmd(cmd)
+		p := []Step{
+			NewReadGraphStep(cmd),
+			step,
+			NewWriteGraphStep(cmd),
 		}
-		layer := loadSchemaCmd(ctx, cmd)
-
-		reshaper := transform.Reshaper{}
-		reshaper.TargetSchema = layer
-		reshaper.Builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
-			EmbedSchemaNodes: true,
-		})
-		err = reshaper.Reshape(ctx, g)
-		if err != nil {
-			failErr(err)
-		}
-		outFormat, _ := cmd.Flags().GetString("output")
-		err = OutputIngestedGraph(cmd, outFormat, reshaper.Builder.GetGraph(), os.Stdout, false)
-		if err != nil {
-			failErr(err)
-		}
+		_, err := runPipeline(p, "", args)
+		return err
 	},
 }

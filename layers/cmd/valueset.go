@@ -16,7 +16,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"unicode"
 
 	"github.com/spf13/cobra"
@@ -265,12 +264,67 @@ func loadValuesetsCmd(cmd *cobra.Command, valuesets *Valuesets) {
 	}
 }
 
+type ValuesetStep struct {
+	BaseIngestParams
+	ValuesetFiles []string `json:"valuesetFiles" yaml:"valuesetFiles"`
+	initialized   bool
+	valuesets     Valuesets
+	layer         *ls.Layer
+}
+
+func (ValuesetStep) Help() {
+	fmt.Println(`Valueset Lookup
+Perform valueset lookup on an ingested graph
+
+operation: valueset
+params:
+  valuesetFiles:
+  - f1
+  - f2
+
+  # Specify the schema the input graph was ingested with`)
+	fmt.Println(baseIngestParamsHelp)
+}
+
+func (vs *ValuesetStep) Run(pipeline *PipelineContext) error {
+	if !vs.initialized {
+		err := LoadValuesetFiles(&vs.valuesets, vs.ValuesetFiles)
+		if err != nil {
+			return err
+		}
+		if vs.IsEmptySchema() {
+			vs.layer, _ = pipeline.Properties["layer"].(*ls.Layer)
+		} else {
+			vs.layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, vs.CompiledSchema, vs.Repo, vs.Schema, vs.Type, vs.Bundle)
+			if err != nil {
+				return err
+			}
+		}
+		if vs.layer == nil {
+			return fmt.Errorf("No schema")
+		}
+		vs.initialized = true
+	}
+	builder := ls.NewGraphBuilder(pipeline.Graph, ls.GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
+
+	prc := ls.NewValuesetProcessor(vs.layer, vs.valuesets.Lookup)
+	err := prc.ProcessGraph(pipeline.Context, builder)
+	if err != nil {
+		return err
+	}
+	return pipeline.Next()
+}
+
 func init() {
 	rootCmd.AddCommand(valuesetCmd)
 	valuesetCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	valuesetCmd.Flags().String("output", "json", "Output format, json, jsonld, or dot")
 	valuesetCmd.Flags().StringSlice("valueset", nil, "Valueset file(s)")
 	addSchemaFlags(valuesetCmd.Flags())
+
+	operations["valueset"] = func() Step { return &ValuesetStep{} }
 }
 
 var valuesetCmd = &cobra.Command{
@@ -312,29 +366,15 @@ Individual valueset objects can be given as separate files as well:
 
 `,
 	Args: cobra.MaximumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		ctx := getContext()
-		layer := loadSchemaCmd(ctx, cmd)
-		input, _ := cmd.Flags().GetString("input")
-		g, err := cmdutil.ReadGraph(args, ctx.GetInterner(), input)
-		if err != nil {
-			failErr(err)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		step := &ValuesetStep{}
+		step.fromCmd(cmd)
+		p := []Step{
+			NewReadGraphStep(cmd),
+			step,
+			NewWriteGraphStep(cmd),
 		}
-		builder := ls.NewGraphBuilder(g, ls.GraphBuilderOptions{
-			EmbedSchemaNodes: true,
-		})
-		var vset Valuesets
-		loadValuesetsCmd(cmd, &vset)
-
-		prc := ls.NewValuesetProcessor(layer, vset.Lookup)
-		err = prc.ProcessGraph(ctx, builder)
-		if err != nil {
-			failErr(err)
-		}
-		outFormat, _ := cmd.Flags().GetString("output")
-		err = OutputIngestedGraph(cmd, outFormat, builder.GetGraph(), os.Stdout, false)
-		if err != nil {
-			failErr(err)
-		}
+		_, err := runPipeline(p, "", args)
+		return err
 	},
 }

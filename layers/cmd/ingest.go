@@ -44,6 +44,50 @@ func init() {
 	ingestCmd.PersistentFlags().Bool("onlySchemaAttributes", false, "Only ingest nodes that have an associated schema attribute")
 }
 
+type BaseIngestParams struct {
+	Repo                 string `json:"repo" yaml:"repo"`
+	Schema               string `json:"schema" yaml:"schema"`
+	Type                 string `json:"type" yaml:"type"`
+	Bundle               string `json:"bundle" yaml:"bundle"`
+	CompiledSchema       string `json:"compiledSchema" yaml:"compiledSchema"`
+	EmbedSchemaNodes     bool   `json:"embedSchemaNodes" yaml:"embedSchemaNodes"`
+	OnlySchemaAttributes bool   `json:"onlySchemaAttributes" yaml:"onlySchemaAttributes"`
+}
+
+// IsEmptySchema returns true if none of the schema properties are set
+func (b BaseIngestParams) IsEmptySchema() bool {
+	return len(b.Repo) == 0 && len(b.Schema) == 0 && len(b.Type) == 0 && len(b.Bundle) == 0 && len(b.CompiledSchema) == 0
+}
+
+func (b *BaseIngestParams) fromCmd(cmd *cobra.Command) {
+	b.CompiledSchema, _ = cmd.Flags().GetString("compiledschema")
+	b.Repo, _ = cmd.Flags().GetString("repo")
+	b.Schema, _ = cmd.Flags().GetString("schema")
+	b.Bundle, _ = cmd.Flags().GetString("bundle")
+	b.Type, _ = cmd.Flags().GetString("type")
+	b.EmbedSchemaNodes, _ = cmd.Flags().GetBool("embedSchemaNodes")
+	b.OnlySchemaAttributes, _ = cmd.Flags().GetBool("onlySchemaAttributes")
+}
+
+const baseIngestParamsHelp = `  
+  # Schema loading parameters
+  # One of:
+  #   bundle/type
+  #   repo/schema (schemaID)
+  #   schema (schema file)
+  #   compiledSchema
+
+  bundle: bundleFileName
+  type: typeName in bundle
+  repo: schema repository directory
+  schema: if repo is given, the ID of the schema. Otherwise, the schema file
+  compiledSchema: compiled schema graph file
+
+  # Ingestion control
+
+  embedSchemaNodes: false
+  onlySchemaAttributes: false`
+
 var ingestCmd = &cobra.Command{
 	Use:   "ingest",
 	Short: "Ingest and enrich data with a schema",

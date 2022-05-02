@@ -42,6 +42,8 @@ func (i ParsedDocNode) GetValueTypes() []string               { return i.valueTy
 func (i ParsedDocNode) GetChildren() []ls.ParsedDocNode       { return i.children }
 func (i ParsedDocNode) GetID() string                         { return i.id }
 func (i ParsedDocNode) GetProperties() map[string]interface{} { return nil }
+func (i ParsedDocNode) GetAttributeIndex() int                { return i.index }
+func (i ParsedDocNode) GetAttributeName() string              { return i.name }
 
 type Parser struct {
 	OnlySchemaAttributes bool

@@ -15,6 +15,9 @@
 package cmd
 
 import (
+	"io"
+	"os"
+
 	"github.com/spf13/cobra"
 )
 
@@ -26,3 +29,5 @@ var exportCmd = &cobra.Command{
 	Use:   "export",
 	Short: "Export a graph",
 }
+
+var ExportTarget = io.Writer(os.Stdout)

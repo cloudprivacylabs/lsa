@@ -15,37 +15,54 @@
 package cmd
 
 import (
-	"os"
-
+	"fmt"
 	"github.com/spf13/cobra"
 
-	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
+type JSONExport struct{}
+
+func (JSONExport) Help() {
+	fmt.Println(`Export JSON Data from Graph
+Export the graph in the pipeline context as a JSON file.
+The output is constructed using "attributeName" annotations.
+
+operation: export/json
+params:`)
+}
+
+func (*JSONExport) Run(pipeline *PipelineContext) error {
+	for _, node := range graph.Sources(pipeline.Graph) {
+		exportOptions := jsoningest.ExportOptions{}
+		data, err := jsoningest.Export(node, exportOptions)
+		if err != nil {
+			failErr(err)
+		}
+		data.Encode(ExportTarget)
+	}
+	return nil
+}
+
 func init() {
 	exportCmd.AddCommand(exportJSONCmd)
 	exportJSONCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
+
+	operations["export/json"] = func() Step { return &JSONExport{} }
 }
 
 var exportJSONCmd = &cobra.Command{
 	Use:   "json",
 	Short: "Export a graph as a JSON document",
 	Args:  cobra.MaximumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		input, _ := cmd.Flags().GetString("input")
-		g, err := cmdutil.ReadGraph(args, nil, input)
-		if err != nil {
-			failErr(err)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		step := &JSONExport{}
+		p := []Step{
+			NewReadGraphStep(cmd),
+			step,
 		}
-		for _, node := range graph.Sources(g) {
-			exportOptions := jsoningest.ExportOptions{}
-			data, err := jsoningest.Export(node, exportOptions)
-			if err != nil {
-				failErr(err)
-			}
-			data.Encode(os.Stdout)
-		}
+		_, err := runPipeline(p, "", args)
+		return err
 	},
 }

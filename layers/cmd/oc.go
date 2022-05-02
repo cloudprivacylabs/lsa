@@ -17,38 +17,62 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
-	//	"github.com/cloudprivacylabs/opencypher/graph"
+
 	"github.com/spf13/cobra"
 )
+
+type OCStep struct {
+	Expr string
+}
+
+func (OCStep) Help() {
+	fmt.Println(`Run Opencypher expression on the graph
+
+operation: oc
+params:
+  expr: opencypherExpression`)
+}
+
+func (oc *OCStep) Run(pipeline *PipelineContext) error {
+	ctx := opencypher.NewEvalContext(pipeline.Graph)
+	output, err := opencypher.ParseAndEvaluate(oc.Expr, ctx)
+	if err != nil {
+		return err
+	}
+	pipeline.Properties["ocResult"] = output
+	if err := pipeline.Next(); err != nil {
+		return err
+	}
+	return nil
+}
 
 func init() {
 	rootCmd.AddCommand(ocCmd)
 	ocCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	ocCmd.Flags().String("expr", "", "Opencypher expression to run")
 	ocCmd.MarkFlagRequired("expr")
+
+	operations["oc"] = func() Step { return &OCStep{} }
 }
 
 var ocCmd = &cobra.Command{
 	Use:   "oc",
 	Short: "Run an opencypher expression on a graph",
 	Args:  cobra.MaximumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		interner := ls.NewInterner()
-		input, _ := cmd.Flags().GetString("input")
-		g, err := cmdutil.ReadGraph(args, interner, input)
-		if err != nil {
-			failErr(err)
-		}
-		expr, _ := cmd.Flags().GetString("expr")
-		ctx := opencypher.NewEvalContext(g)
-		output, err := opencypher.ParseAndEvaluate(expr, ctx)
-		if err != nil {
-			failErr(err)
-		}
+	RunE: func(cmd *cobra.Command, args []string) error {
+		step := &OCStep{}
+		step.Expr, _ = cmd.Flags().GetString("expr")
 
-		fmt.Println(output)
+		p := []Step{
+			NewReadGraphStep(cmd),
+			step,
+		}
+		ctx, err := runPipeline(p, "", args)
+		if err != nil {
+			return err
+		}
+		fmt.Println(ctx.Properties["ocResult"])
+		return nil
 	},
 }

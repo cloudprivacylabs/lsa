@@ -35,6 +35,8 @@ func (i rootNode) GetValueTypes() []string               { return nil }
 func (i rootNode) GetChildren() []ls.ParsedDocNode       { return i.children }
 func (i rootNode) GetID() string                         { return i.id }
 func (i rootNode) GetProperties() map[string]interface{} { return nil }
+func (i rootNode) GetAttributeIndex() int                { return 0 }
+func (i rootNode) GetAttributeName() string              { return "" }
 
 type cellNode struct {
 	schemaNode graph.Node
@@ -52,6 +54,8 @@ func (i cellNode) GetValueTypes() []string               { return nil }
 func (i cellNode) GetChildren() []ls.ParsedDocNode       { return nil }
 func (i cellNode) GetID() string                         { return i.id }
 func (i cellNode) GetProperties() map[string]interface{} { return i.properties }
+func (i cellNode) GetAttributeIndex() int                { return i.index }
+func (i cellNode) GetAttributeName() string              { return i.name }
 
 type Parser struct {
 	OnlySchemaAttributes bool
