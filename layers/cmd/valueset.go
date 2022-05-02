@@ -16,6 +16,9 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/url"
 	"unicode"
 
 	"github.com/spf13/cobra"
@@ -25,7 +28,8 @@ import (
 )
 
 type Valuesets struct {
-	Sets map[string]Valueset `json:"valuesets" yaml:"valuesets"`
+	Services map[string]string   `json:"services"`
+	Sets     map[string]Valueset `json:"valuesets" yaml:"valuesets"`
 }
 
 type Valueset struct {
@@ -216,6 +220,20 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 			if err := lookup(v); err != nil {
 				return ls.ValuesetLookupResponse{}, err
 			}
+		} else if v, ok := vsets.Services[id]; ok {
+			resp, err := http.Get(url.QueryEscape(v))
+			if err != nil {
+				return ls.ValuesetLookupResponse{}, err
+			}
+			defer resp.Body.Close()
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return ls.ValuesetLookupResponse{}, err
+			}
+			return ls.ValuesetLookupResponse{
+				KeyValues: map[string]string{
+					id: string(body),
+				}}, nil
 		} else {
 			return found, fmt.Errorf("Valueset not found: %s", id)
 		}
