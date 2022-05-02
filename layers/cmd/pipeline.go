@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 
@@ -67,12 +68,29 @@ func (wr WriteGraphStep) Run(pipeline *PipelineContext) error {
 	return OutputIngestedGraph(wr.Cmd, wr.Format, pipeline.Graph, os.Stdout, wr.IncludeSchema)
 }
 
+type pipelineError struct {
+	wrapped error
+	step    int
+}
+
+func (e pipelineError) Error() string {
+	return fmt.Sprintf("Pipeline error at step %d: %v", e.step, e.wrapped)
+}
+
+func (e pipelineError) Unwrap() error {
+	return e.wrapped
+}
+
 func (ctx *PipelineContext) Next() error {
 	ctx.currentStep++
 	if ctx.currentStep >= len(ctx.steps) {
 		return nil
 	}
 	err := ctx.steps[ctx.currentStep].Run(ctx)
+	var perr pipelineError
+	if err != nil && !errors.As(err, &perr) {
+		err = pipelineError{wrapped: err, step: ctx.currentStep}
+	}
 	ctx.currentStep--
 	return err
 }
@@ -86,10 +104,10 @@ func init() {
 	pipelineCmd.SetHelpFunc(func(cmd *cobra.Command, _ []string) {
 		oldHelp(cmd, []string{})
 		type helper interface{ Help() }
-		fmt.Println("\nPipeline steps:")
 		for _, x := range operations {
 			w := x()
 			if h, ok := w.(helper); ok {
+				fmt.Println("------------------------")
 				h.Help()
 			}
 		}
@@ -98,8 +116,8 @@ func init() {
 
 func readPipeline(file string) ([]Step, error) {
 	type stepMarshal struct {
-		Operation string          `json:"operation" yaml:"operation"`
-		Step      json.RawMessage `json:"params" yaml:"params"`
+		Operation string      `json:"operation" yaml:"operation"`
+		Step      interface{} `json:"params" yaml:"params"`
 	}
 	var stepMarshals []stepMarshal
 	err := cmdutil.ReadJSONOrYAML(file, &stepMarshals)
@@ -108,13 +126,23 @@ func readPipeline(file string) ([]Step, error) {
 	}
 	steps := make([]Step, 0, len(stepMarshals))
 	for _, stage := range stepMarshals {
-		step := operations[stage.Operation]()
+		op := operations[stage.Operation]
+		if op == nil {
+			return nil, fmt.Errorf("Unknown pipeline operation: %s", stage.Operation)
+		}
+		step := op()
 		if step == nil {
 			return nil, fmt.Errorf("Invalid step: %s", stage.Operation)
 		}
-
-		if err := json.Unmarshal(stage.Step, step); err != nil {
-			return nil, err
+		if stage.Step != nil {
+			stage.Step = cmdutil.YAMLToMap(stage.Step)
+			d, err := json.Marshal(stage.Step)
+			if err != nil {
+				panic(err)
+			}
+			if err := json.Unmarshal(d, step); err != nil {
+				return nil, err
+			}
 		}
 		steps = append(steps, step)
 	}

@@ -152,3 +152,22 @@ func ReadJSONMultiple(input []string) ([]interface{}, error) {
 	}
 	return out, nil
 }
+
+func YAMLToMap(in interface{}) interface{} {
+	if arr, ok := in.([]interface{}); ok {
+		out := make([]interface{}, 0, len(arr))
+		for _, x := range arr {
+			out = append(out, YAMLToMap(x))
+		}
+		return out
+	}
+	if m, ok := in.(map[interface{}]interface{}); ok {
+		out := map[string]interface{}{}
+		for k, v := range m {
+			out[fmt.Sprint(k)] = YAMLToMap(v)
+		}
+		return out
+	}
+	return in
+
+}

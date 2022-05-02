@@ -292,9 +292,16 @@ func (vs *ValuesetStep) Run(pipeline *PipelineContext) error {
 		if err != nil {
 			return err
 		}
-		vs.layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, vs.CompiledSchema, vs.Repo, vs.Schema, vs.Type, vs.Bundle)
-		if err != nil {
-			return err
+		if vs.IsEmptySchema() {
+			vs.layer, _ = pipeline.Properties["layer"].(*ls.Layer)
+		} else {
+			vs.layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, vs.CompiledSchema, vs.Repo, vs.Schema, vs.Type, vs.Bundle)
+			if err != nil {
+				return err
+			}
+		}
+		if vs.layer == nil {
+			return fmt.Errorf("No schema")
 		}
 		vs.initialized = true
 	}

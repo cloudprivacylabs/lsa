@@ -56,8 +56,7 @@ params:`)
   #  .rowIndex: The index of the current row in file
   #  .dataIndex: The index of the current data row
   #  .columns: The current row data
-  ingestByRows: false  # If true, ingest row by row. Otherwise, ingest one file at a time.
-`)
+  ingestByRows: false  # If true, ingest row by row. Otherwise, ingest one file at a time.`)
 }
 
 func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
@@ -68,7 +67,24 @@ func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
 		if err != nil {
 			return err
 		}
+		pipeline.Properties["layer"] = layer
 		ci.initialized = true
+	}
+
+	parser := csvingest.Parser{
+		OnlySchemaAttributes: ci.OnlySchemaAttributes,
+		SchemaNode:           layer.GetSchemaRootNode(),
+	}
+	idTemplate := ci.ID
+	if idTemplate == "" {
+		idTemplate = "row_{{.rowIndex}}"
+	}
+	idTmp, err := template.New("id").Parse(idTemplate)
+	if err != nil {
+		return err
+	}
+	if ci.HeaderRow >= ci.StartRow {
+		return errors.New("Header row is ahead of start row")
 	}
 
 	for _, inputFile := range pipeline.InputFiles {
@@ -77,85 +93,67 @@ func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
 			return err
 		}
 		reader := csv.NewReader(file)
-		startRow := ci.StartRow
-		endRow := ci.EndRow
-		headerRow := ci.HeaderRow
-		if headerRow >= startRow {
-			file.Close()
-			return errors.New("Header row is ahead of start row")
-
-		}
 		grph := pipeline.Graph
-		embedSchemaNodes := ci.EmbedSchemaNodes
-		onlySchemaAttributes := ci.OnlySchemaAttributes
 
-		parser := csvingest.Parser{
-			OnlySchemaAttributes: onlySchemaAttributes,
-			SchemaNode:           layer.GetSchemaRootNode(),
-		}
-
-		idTemplate := ci.ID
-		if idTemplate == "" {
-			idTemplate = "row_{{.rowIndex}}"
-		}
-		idTmp, err := template.New("id").Parse(idTemplate)
-		if err != nil {
-			file.Close()
-			return err
-		}
 		for row := 0; ; row++ {
 			rowData, err := reader.Read()
 			if err == io.EOF {
 				file.Close()
 				break
 			}
-			builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
-				EmbedSchemaNodes:     embedSchemaNodes,
-				OnlySchemaAttributes: onlySchemaAttributes,
-			})
 			if err != nil {
 				file.Close()
 				return err
 			}
-			if headerRow == row {
+			if ci.HeaderRow == row {
 				parser.ColumnNames = rowData
-			} else if row >= startRow {
-				if endRow != -1 && row > endRow {
-					break
-				}
-				templateData := map[string]interface{}{
-					"rowIndex":  row,
-					"dataIndex": row - startRow,
-					"columns":   rowData,
-				}
-				buf := bytes.Buffer{}
-				if err := idTmp.Execute(&buf, templateData); err != nil {
+				continue
+			}
+			if row < ci.StartRow {
+				continue
+			}
+			if ci.EndRow != -1 && row > ci.EndRow {
+				file.Close()
+				break
+			}
+			builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
+				EmbedSchemaNodes:     ci.EmbedSchemaNodes,
+				OnlySchemaAttributes: ci.OnlySchemaAttributes,
+			})
+			templateData := map[string]interface{}{
+				"rowIndex":  row,
+				"dataIndex": row - ci.StartRow,
+				"columns":   rowData,
+			}
+			buf := bytes.Buffer{}
+			if err := idTmp.Execute(&buf, templateData); err != nil {
+				file.Close()
+				return err
+			}
+			parsed, err := parser.ParseDoc(pipeline.Context, strings.TrimSpace(buf.String()), rowData)
+			if err != nil {
+				file.Close()
+				return err
+			}
+			_, err = ls.Ingest(builder, parsed)
+			if err != nil {
+				file.Close()
+				return err
+			}
+			if ci.IngestByRows {
+				if err := pipeline.Next(); err != nil {
 					file.Close()
 					return err
 				}
-
-				parsed, err := parser.ParseDoc(pipeline.Context, strings.TrimSpace(buf.String()), rowData)
-				if err != nil {
-					file.Close()
-					return err
-				}
-				_, err = ls.Ingest(builder, parsed)
-				if err != nil {
-					file.Close()
-					return err
-				}
-				if ci.IngestByRows {
-					if err := pipeline.Next(); err != nil {
-						file.Close()
-						return err
-					}
-				}
+				// New graph here
+				pipeline.Graph = ls.NewDocumentGraph()
 			}
 		}
 		if !ci.IngestByRows {
 			if err := pipeline.Next(); err != nil {
 				return err
 			}
+			pipeline.Graph = ls.NewDocumentGraph()
 		}
 	}
 	return nil
@@ -171,7 +169,13 @@ func init() {
 	ingestCSVCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
 	ingestCSVCmd.Flags().Bool("byFile", false, "Ingest one file at a time. Default is row at a time.")
 
-	operations["ingest/csv"] = func() Step { return &CSVIngester{} }
+	operations["ingest/csv"] = func() Step {
+		return &CSVIngester{
+			EndRow:    -1,
+			HeaderRow: -1,
+			StartRow:  0,
+		}
+	}
 }
 
 var ingestCSVCmd = &cobra.Command{

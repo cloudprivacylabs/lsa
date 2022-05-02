@@ -31,8 +31,7 @@ func (OCStep) Help() {
 
 operation: oc
 params:
-  expr: opencypherExpression
-`)
+  expr: opencypherExpression`)
 }
 
 func (oc *OCStep) Run(pipeline *PipelineContext) error {

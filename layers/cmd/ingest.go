@@ -54,6 +54,11 @@ type BaseIngestParams struct {
 	OnlySchemaAttributes bool   `json:"onlySchemaAttributes" yaml:"onlySchemaAttributes"`
 }
 
+// IsEmptySchema returns true if none of the schema properties are set
+func (b BaseIngestParams) IsEmptySchema() bool {
+	return len(b.Repo) == 0 && len(b.Schema) == 0 && len(b.Type) == 0 && len(b.Bundle) == 0 && len(b.CompiledSchema) == 0
+}
+
 func (b *BaseIngestParams) fromCmd(cmd *cobra.Command) {
 	b.CompiledSchema, _ = cmd.Flags().GetString("compiledschema")
 	b.Repo, _ = cmd.Flags().GetString("repo")
@@ -81,8 +86,7 @@ const baseIngestParamsHelp = `
   # Ingestion control
 
   embedSchemaNodes: false
-  onlySchemaAttributes: false
-`
+  onlySchemaAttributes: false`
 
 var ingestCmd = &cobra.Command{
 	Use:   "ingest",

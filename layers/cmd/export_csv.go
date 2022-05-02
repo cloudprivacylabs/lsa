@@ -45,15 +45,13 @@ params:`)
   - name: column name. This name is written to the output as the column header
     query: column query. If empty, the query is
         match (root)-[]->(n:DocumentNode {attributeName: <attributeName>}) return n
-        The query is evauated with 'root' pointing to the current row root node
-`)
+        The query is evauated with 'root' pointing to the current row root node`)
 }
 
 func (ecsv *CSVExport) Run(pipeline *PipelineContext) error {
-	var spec string
 	if !ecsv.initialized {
 		if ecsv.SpecFile != "" {
-			if err := cmdutil.ReadJSONOrYAML(spec, &ecsv.Writer); err != nil {
+			if err := cmdutil.ReadJSONOrYAML(ecsv.SpecFile, &ecsv.Writer); err != nil {
 				failErr(err)
 			}
 		}

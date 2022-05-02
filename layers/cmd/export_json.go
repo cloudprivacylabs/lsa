@@ -30,7 +30,7 @@ Export the graph in the pipeline context as a JSON file.
 The output is constructed using "attributeName" annotations.
 
 operation: export/json
-`)
+params:`)
 }
 
 func (*JSONExport) Run(pipeline *PipelineContext) error {

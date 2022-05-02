@@ -38,8 +38,7 @@ Ingest a JSON file using a schema variant and output a graph
 operation: ingest/json
 params:`)
 	fmt.Println(baseIngestParamsHelp)
-	fmt.Println(`  id:""   # Base ID for the root node
-`)
+	fmt.Println(`  id:""   # Base ID for the root node`)
 }
 
 func (ji *JSONIngester) Run(pipeline *PipelineContext) error {
@@ -50,6 +49,7 @@ func (ji *JSONIngester) Run(pipeline *PipelineContext) error {
 		if err != nil {
 			return err
 		}
+		pipeline.Properties["layer"] = layer
 		ji.initialized = true
 	}
 	var input io.Reader

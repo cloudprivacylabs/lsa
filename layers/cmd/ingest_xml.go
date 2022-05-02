@@ -38,8 +38,7 @@ Ingest an XML file based on a schema variant and output a graph
 operation: ingest/xml
 params:`)
 	fmt.Println(baseIngestParamsHelp)
-	fmt.Println(`  id:""   # Base ID for the root node
-`)
+	fmt.Println(`  id:""   # Base ID for the root node`)
 }
 
 func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
@@ -50,6 +49,7 @@ func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
 		if err != nil {
 			return err
 		}
+		pipeline.Properties["layer"] = layer
 		xml.initialized = true
 	}
 	var input io.Reader
