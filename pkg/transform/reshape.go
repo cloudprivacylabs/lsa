@@ -102,11 +102,9 @@ func (ctx *reshapeContext) nestedContext() *reshapeContext {
 }
 
 // Export the variables in the resultset
-func (ctx *reshapeContext) exportVars(varNames []string, row map[string]opencypher.Value) {
-	for _, varName := range varNames {
-		rowValue, _ := row[varName]
-		// This will export nil for non-existant export names
-		ctx.setSymbolValue(varName, rowValue)
+func (ctx *reshapeContext) exportVars(row map[string]opencypher.Value) {
+	for varName, val := range row {
+		ctx.setSymbolValue(varName, val)
 	}
 }
 
@@ -163,17 +161,11 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 			return false, wrapReshapeError(err, schemaNodeID)
 		}
 		if rs, ok := v.Value.(opencypher.ResultSet); ok {
-			for _, export := range ExportTermSemantics.GetExportVars(schemaNode) {
-				if col, ok := getResultSetColumn(rs, export); ok {
-					if len(col) > 1 {
-						return false, wrapReshapeError(fmt.Errorf("Multiple values found for export var '%s'", export), schemaNodeID)
-					}
-					if len(col) == 0 {
-						ctx.setSymbolValue(export, opencypher.Value{})
-					} else {
-						ctx.setSymbolValue(export, col[0])
-					}
-				}
+			if len(rs.Rows) > 1 {
+				return false, wrapReshapeError(fmt.Errorf("Multiple values for resultset"), schemaNodeID)
+			}
+			if len(rs.Rows) == 1 {
+				ctx.exportVars(rs.Rows[0])
 			}
 		} else {
 			return false, wrapReshapeError(fmt.Errorf("evaluate result is not a resultset"), schemaNodeID)
@@ -498,7 +490,7 @@ func (reshaper Reshaper) handleResultSet(ctx *reshapeContext, rs opencypher.Resu
 			"row":     index,
 		})
 		// Export values
-		ctx.exportVars(ExportTermSemantics.GetExportVars(schemaNode), row)
+		ctx.exportVars(row)
 		r, err := reshaper.handleRow(ctx, row)
 		if err != nil {
 			return hasResults, err
