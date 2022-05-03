@@ -1,5 +1,3 @@
-from re import L
-import pkg_resources
 import requests
 import psycopg
 from psycopg import sql
@@ -13,6 +11,7 @@ config_file_path : Is the configuration file saved path, the configuration file 
 section_name : This is the section name in above configuration file. The options in this section record the postgresql database server connection info.
 
 '''
+
 class PostgresqlManager:
     def get_connection_by_config(self, config_file_path, section_name):
         if(len(config_file_path) > 0 and len(section_name) > 0):
@@ -35,7 +34,11 @@ class PostgresqlManager:
                     # add the key value pair in the dictionary object.
                     db_conn_dict[key] = value
                 # get connection object use above dictionary object.
-                conn = psycopg.connect(**db_conn_dict)
+                # conn = psycopg.connect(**db_conn_dict)
+                print(*db_conn_dict)
+                result = " ".join(str(key + "=") + str(value) for key, value in db_conn_dict.items())
+                print(result)
+                conn = psycopg.connect(result)
                 self._conn = conn
                 print("******* get postgresql database connection with configuration file ********", "\n")
 
@@ -58,6 +61,7 @@ class PostgresqlManager:
         # get the sql execution result.
         result = self._cursor.fetchone()
         print("Record is : ", result, "\n")
+        return result 
 
 if __name__ == '__main__':
     # first create an instance of PostgresqlManager class.
@@ -74,18 +78,24 @@ with open("queries.sql", 'r') as query_file:
         name, val = line.split('=')
         constants[name] = val
 
-def processSQL(url):
+
+def main(url):
     # url as param -> received from Go?
     # query_params = {
     #     "service": "gender_valueset"
     # }
 
     # use CLI cmd python3 -m http.server to start listening on port 8000
-    resp = requests.get(url)
+    # input ([terminology:loinc, value: male] table: gender) --> output: (value:8503)
+    print("HERE")
+    resp = requests.get("http://localhost:8000")
     for block in resp.json():
         for key, val in block.items():
-            if key == "service" and val == "gender_valueset":
-                psql.execute_sql(sql.SQL(constants['gender_query']))
-
+            # example
+            if key == "gender" and val == "male":
+                result = psql.execute_sql(sql.SQL(constants['gender_query']))
+                return result
 
     #query = pkg_resources.resource_string('package_name', 'queries.sql')
+
+# main(None)
