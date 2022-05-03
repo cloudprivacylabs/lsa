@@ -457,6 +457,7 @@ func (prc *ValuesetProcessor) ProcessGraphValueset(ctx *Context, builder GraphBu
 	if contextSchemaNode == nil {
 		return nil
 	}
+	ctx.GetLogger().Debug(map[string]interface{}{"mth": "processGraphValueset", "stage": "found context node"})
 	if len(vsiDocNodes) == 0 {
 		contextNodes, err := vsi.GetContextNodes(builder.GetGraph())
 		if err != nil {
@@ -478,6 +479,7 @@ func (prc *ValuesetProcessor) ProcessGraphValueset(ctx *Context, builder GraphBu
 }
 
 func (prc *ValuesetProcessor) ProcessGraph(ctx *Context, builder GraphBuilder) error {
+	ctx.GetLogger().Debug(map[string]interface{}{"mth": "processGraph", "nVSI": len(prc.vsis)})
 	for i := range prc.vsis {
 		if err := prc.ProcessGraphValueset(ctx, builder, &prc.vsis[i]); err != nil {
 			return err
