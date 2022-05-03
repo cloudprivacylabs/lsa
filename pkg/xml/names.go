@@ -38,6 +38,6 @@ func MatchName(name, requiredName xml.Name) bool {
 func GetXMLName(node graph.Node) xml.Name {
 	return xml.Name{
 		Space: ls.AsPropertyValue(node.GetProperty(NamespaceTerm)).AsString(),
-		Local: ls.AsPropertyValue(node.GetProperty(LocalNameTerm)).AsString(),
+		Local: ls.AsPropertyValue(node.GetProperty(ls.AttributeNameTerm)).AsString(),
 	}
 }

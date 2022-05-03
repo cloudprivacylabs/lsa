@@ -146,7 +146,7 @@ func (ing Parser) parseValue(ctx parserContext, element *xmlElement) (*ParsedDoc
 		ret.properties[makeFullName(attribute.name)] = ls.StringPropertyValue(attribute.value)
 	}
 
-	ret.properties[LocalNameTerm] = ls.StringPropertyValue(element.name.Local)
+	ret.properties[ls.AttributeNameTerm] = ls.StringPropertyValue(element.name.Local)
 	if len(element.name.Space) > 0 {
 		ret.properties[NamespaceTerm] = ls.StringPropertyValue(element.name.Space)
 	}
@@ -178,7 +178,7 @@ func (ing Parser) attributes(ctx parserContext, element *xmlElement, childSchema
 		if len(attribute.name.Space) > 0 {
 			attrNode.properties[NamespaceTerm] = ls.StringPropertyValue(ctx.context.GetInterner().Intern(attribute.name.Space))
 		}
-		attrNode.properties[LocalNameTerm] = ls.StringPropertyValue(ctx.context.GetInterner().Intern(attribute.name.Local))
+		attrNode.properties[ls.AttributeNameTerm] = ls.StringPropertyValue(ctx.context.GetInterner().Intern(attribute.name.Local))
 		children = append(children, attrNode)
 	}
 	return children, nil
@@ -196,7 +196,7 @@ func (ing Parser) parseObject(ctx parserContext, element *xmlElement) (*ParsedDo
 		properties: make(map[string]interface{}),
 		id:         ctx.path.String(),
 	}
-	ret.properties[LocalNameTerm] = ls.StringPropertyValue(element.name.Local)
+	ret.properties[ls.AttributeNameTerm] = ls.StringPropertyValue(element.name.Local)
 	if len(element.name.Space) > 0 {
 		ret.properties[NamespaceTerm] = ls.StringPropertyValue(element.name.Space)
 	}
@@ -262,7 +262,7 @@ func (ing Parser) parseArray(ctx parserContext, element *xmlElement) (*ParsedDoc
 		properties: make(map[string]interface{}),
 		id:         ctx.path.String(),
 	}
-	ret.properties[LocalNameTerm] = ls.StringPropertyValue(element.name.Local)
+	ret.properties[ls.AttributeNameTerm] = ls.StringPropertyValue(element.name.Local)
 	if len(element.name.Space) > 0 {
 		ret.properties[NamespaceTerm] = ls.StringPropertyValue(element.name.Space)
 	}

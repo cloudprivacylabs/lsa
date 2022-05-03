@@ -25,12 +25,5 @@ const XML = "https://lschema.org/xml/"
 // schema element/attribute.
 var NamespaceTerm = ls.NewTerm(XML, "ns", false, false, ls.OverrideComposition, nil)
 
-// LocalNameTerm captures the element/attribute local name in the
-// ingested data graph
-var LocalNameTerm = ls.NewTerm(XML, "lname", false, false, ls.OverrideComposition, nil)
-
 // AttributeTerm marks the attribute as an XML attribute of an element
 var AttributeTerm = ls.NewTerm(XML, "attribute", false, false, ls.OverrideComposition, nil)
-
-var ProcessingInstructionTerm = ls.NewTerm(XML, "procInst", false, false, ls.OverrideComposition, nil)
-var DirectiveTerm = ls.NewTerm(XML, "directive", false, false, ls.OverrideComposition, nil)
