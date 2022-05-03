@@ -123,6 +123,9 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 				return err
 			}
 			layerID := layer.GetID()
+			if _, exists := layers[layerID]; exists {
+				return fmt.Errorf("Duplicate id %s in %s", layerID, ref.Schema)
+			}
 			layers[layerID] = layer
 			layerIDMap[fileName] = layerID
 
@@ -190,6 +193,9 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 		ovl := make([]*ls.Layer, 0, len(variant.Overlays))
 		for _, o := range variant.Overlays {
 			ovl = append(ovl, layers[layerIDMap[o.GetLayerID()]])
+		}
+		if len(ovl) > 0 {
+			sch = sch.Clone()
 		}
 		_, err := resultBundle.Add(ctx, variantType, sch, ovl...)
 		if err != nil {

@@ -309,6 +309,7 @@ func (vs *ValuesetStep) Run(pipeline *PipelineContext) error {
 		EmbedSchemaNodes: true,
 	})
 
+	pipeline.Context.GetLogger().Debug(map[string]interface{}{"pipeline": "valueset"})
 	prc := ls.NewValuesetProcessor(vs.layer, vs.valuesets.Lookup)
 	err := prc.ProcessGraph(pipeline.Context, builder)
 	if err != nil {

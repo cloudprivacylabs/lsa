@@ -47,6 +47,7 @@ func (rs *ReshapeStep) Run(pipeline *PipelineContext) error {
 			if err != nil {
 				return err
 			}
+			pipeline.Properties["layer"] = rs.layer
 		}
 		rs.initialized = true
 	}

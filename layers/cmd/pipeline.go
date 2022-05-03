@@ -57,6 +57,15 @@ type WriteGraphStep struct {
 	Cmd           *cobra.Command
 }
 
+func (WriteGraphStep) Help() {
+	fmt.Println(`Write graph as a JSON file
+
+operation: writeGraph
+params:
+  format: json, jsonld, dot. Json is the default
+  includeSchema: If false, filter out schema nodes`)
+}
+
 func NewWriteGraphStep(cmd *cobra.Command) WriteGraphStep {
 	wr := WriteGraphStep{Cmd: cmd}
 	wr.Format, _ = cmd.Flags().GetString("output")
@@ -65,6 +74,9 @@ func NewWriteGraphStep(cmd *cobra.Command) WriteGraphStep {
 }
 
 func (wr WriteGraphStep) Run(pipeline *PipelineContext) error {
+	if len(wr.Format) == 0 {
+		wr.Format = "json"
+	}
 	return OutputIngestedGraph(wr.Cmd, wr.Format, pipeline.Graph, os.Stdout, wr.IncludeSchema)
 }
 
@@ -99,6 +111,8 @@ func init() {
 	rootCmd.AddCommand(pipelineCmd)
 	pipelineCmd.Flags().String("file", "", "Pipeline build file")
 	pipelineCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
+
+	operations["writeGraph"] = func() Step { return &WriteGraphStep{} }
 
 	oldHelp := pipelineCmd.HelpFunc()
 	pipelineCmd.SetHelpFunc(func(cmd *cobra.Command, _ []string) {
