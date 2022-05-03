@@ -218,31 +218,38 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 	}
 	var wg sync.WaitGroup
 	wg.Add(len(req.TableIDs))
+	vsr := make(chan ls.ValuesetLookupResponse, 1)
+	errs := make(chan error)
 	for _, id := range req.TableIDs {
-		go func() (ls.ValuesetLookupResponse, error) {
+		go func() {
 			defer wg.Done()
 			if v, ok := vsets.Services[id]; ok {
 				base, err := url.Parse(v)
 				if err != nil {
-					return ls.ValuesetLookupResponse{}, err
+					errs <- err
 				}
-				qparams := url.Values{}
+				qparams := base.Query()
 				qparams[id] = []string{vsets.Services[id]}
 				base.RawQuery = qparams.Encode()
-				resp, err := http.Get(url.QueryEscape(base.String()))
+				resp, err := http.Get(base.String())
 				if err != nil {
-					return ls.ValuesetLookupResponse{}, err
+					errs <- err
 				}
 				var m map[string]string
 				err = json.NewDecoder(resp.Body).Decode(&m)
 				defer resp.Body.Close()
 				if err != nil {
-					return ls.ValuesetLookupResponse{}, err
+					errs <- err
 				}
-				return ls.ValuesetLookupResponse{KeyValues: m}, nil
+				vsr <- ls.ValuesetLookupResponse{KeyValues: m}
 			}
-			return ls.ValuesetLookupResponse{}, nil
 		}()
+		wg.Wait()
+		if len(vsr) > 0 {
+			close(vsr)
+			ret := <-vsr
+			return ret, nil
+		}
 		if v, ok := vsets.Sets[id]; ok {
 			if err := lookup(v); err != nil {
 				return ls.ValuesetLookupResponse{}, err
