@@ -217,14 +217,15 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 		return found, nil
 	}
 	var n int = len(req.TableIDs)
-	var wg sync.WaitGroup
-	wg.Add(n)
+	var wg *sync.WaitGroup
 	results := make([]ls.ValuesetLookupResponse, n)
 	errs := make([]error, n)
 	for idx, id := range req.TableIDs {
-		go func(i int) {
-			defer wg.Done()
-			if v, ok := vsets.Services[id]; ok {
+		if v, ok := vsets.Services[id]; ok {
+			id := id
+			wg.Add(1)
+			go func(i int) {
+				defer wg.Done()
 				base, err := url.Parse(v)
 				if err != nil {
 					errs = append(errs, err)
@@ -235,17 +236,19 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 				resp, err := http.Get(base.String())
 				if err != nil {
 					errs[i] = err
+					return
 				}
 				var m map[string]string
 				err = json.NewDecoder(resp.Body).Decode(&m)
 				defer resp.Body.Close()
 				if err != nil {
 					errs[i] = err
+					return
 				}
 				results[i] = ls.ValuesetLookupResponse{KeyValues: m}
-			}
-		}(idx)
-		wg.Wait()
+			}(idx)
+			wg.Wait()
+		}
 		if v, ok := vsets.Sets[id]; ok {
 			if err := lookup(v); err != nil {
 				return ls.ValuesetLookupResponse{}, err
