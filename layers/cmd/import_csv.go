@@ -215,9 +215,6 @@ will result:
 		}
 		if valueType := exec(spec.ValueType, map[string]interface{}{"rows": rows}); len(valueType) > 0 {
 			layer.SetValueType(valueType)
-			t := layer.GetSchemaRootNode().GetLabels()
-			t.Add(valueType)
-			layer.GetSchemaRootNode().SetLabels(t)
 		}
 		marshaled, err := ls.MarshalLayer(layer)
 		if err != nil {
