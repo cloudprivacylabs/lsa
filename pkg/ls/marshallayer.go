@@ -348,6 +348,19 @@ func MarshalLayer(layer *Layer) (interface{}, error) {
 	if t := layer.GetLayerType(); len(t) > 0 {
 		v["@type"] = []string{t}
 	}
+	layer.GetLayerRootNode().ForEachProperty(func(k string, value interface{}) bool {
+		if _, p := value.(*PropertyValue); !p {
+			return true
+		}
+		val, err := GetTermMarshaler(k).MarshalLd(layer, layer.GetLayerRootNode(), k)
+		if err != nil {
+			return false
+		}
+		if val != nil {
+			v[k] = val
+		}
+		return true
+	})
 	return []interface{}{v}, nil
 }
 
