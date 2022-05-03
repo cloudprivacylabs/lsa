@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"sync"
 	"unicode"
 
 	"github.com/spf13/cobra"
@@ -215,31 +216,37 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 		ctx.GetLogger().Debug(map[string]interface{}{"valueset.found": found})
 		return found, nil
 	}
+	var wg sync.WaitGroup
+	wg.Add(len(req.TableIDs))
 	for _, id := range req.TableIDs {
+		go func() (ls.ValuesetLookupResponse, error) {
+			defer wg.Done()
+			if v, ok := vsets.Services[id]; ok {
+				base, err := url.Parse(v)
+				if err != nil {
+					return ls.ValuesetLookupResponse{}, err
+				}
+				qparams := url.Values{}
+				qparams[id] = []string{vsets.Services[id]}
+				base.RawQuery = qparams.Encode()
+				resp, err := http.Get(url.QueryEscape(base.String()))
+				if err != nil {
+					return ls.ValuesetLookupResponse{}, err
+				}
+				var m map[string]string
+				err = json.NewDecoder(resp.Body).Decode(&m)
+				defer resp.Body.Close()
+				if err != nil {
+					return ls.ValuesetLookupResponse{}, err
+				}
+				return ls.ValuesetLookupResponse{KeyValues: m}, nil
+			}
+			return ls.ValuesetLookupResponse{}, nil
+		}()
 		if v, ok := vsets.Sets[id]; ok {
 			if err := lookup(v); err != nil {
 				return ls.ValuesetLookupResponse{}, err
 			}
-		} else if v, ok := vsets.Services[id]; ok {
-			req, err := http.NewRequest("GET", v, nil)
-			if err != nil {
-				return ls.ValuesetLookupResponse{}, err
-			}
-			q := req.URL.Query()
-			q.Add("service", fmt.Sprintf("%s_valueset", id))
-			req.URL.RawQuery = q.Encode()
-			resp, err := http.Get(url.QueryEscape(req.URL.String()))
-			if err != nil {
-				return ls.ValuesetLookupResponse{}, err
-			}
-			defer resp.Body.Close()
-			var m map[string]string
-			err = json.NewDecoder(resp.Body).Decode(&m)
-			if err != nil {
-				return ls.ValuesetLookupResponse{}, err
-			}
-			return ls.ValuesetLookupResponse{KeyValues: m}, nil
-
 		} else {
 			return found, fmt.Errorf("Valueset not found: %s", id)
 		}
