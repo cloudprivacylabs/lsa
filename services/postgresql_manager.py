@@ -80,6 +80,7 @@ def processSQL(url):
     #     "service": "gender_valueset"
     # }
 
+    # use CLI cmd python3 -m http.server to start listening on port 8000
     resp = requests.get(url)
     for block in resp.json():
         for key, val in block.items():
