@@ -15,8 +15,8 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"unicode"
@@ -28,7 +28,7 @@ import (
 )
 
 type Valuesets struct {
-	Services map[string]string   `json:"services"`
+	Services map[string]string   `json:"services" yaml:"valuesets"`
 	Sets     map[string]Valueset `json:"valuesets" yaml:"valuesets"`
 }
 
@@ -221,19 +221,25 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 				return ls.ValuesetLookupResponse{}, err
 			}
 		} else if v, ok := vsets.Services[id]; ok {
-			resp, err := http.Get(url.QueryEscape(v))
+			req, err := http.NewRequest("GET", v, nil)
+			if err != nil {
+				return ls.ValuesetLookupResponse{}, err
+			}
+			q := req.URL.Query()
+			q.Add("service", fmt.Sprintf("%s_valueset", id))
+			req.URL.RawQuery = q.Encode()
+			resp, err := http.Get(url.QueryEscape(req.URL.String()))
 			if err != nil {
 				return ls.ValuesetLookupResponse{}, err
 			}
 			defer resp.Body.Close()
-			body, err := ioutil.ReadAll(resp.Body)
+			var m map[string]string
+			err = json.NewDecoder(resp.Body).Decode(&m)
 			if err != nil {
 				return ls.ValuesetLookupResponse{}, err
 			}
-			return ls.ValuesetLookupResponse{
-				KeyValues: map[string]string{
-					id: string(body),
-				}}, nil
+			return ls.ValuesetLookupResponse{KeyValues: m}, nil
+
 		} else {
 			return found, fmt.Errorf("Valueset not found: %s", id)
 		}

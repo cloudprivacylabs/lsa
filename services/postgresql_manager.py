@@ -1,11 +1,9 @@
+from re import L
 import pkg_resources
 import requests
 import psycopg
 from psycopg import sql
 from configparser import ConfigParser
-
-# url as param -> received from Go?
-req = requests.get()
 
 '''
 This method will use the connection data saved in configuration file to get postgresql database server connection.
@@ -76,8 +74,17 @@ with open("queries.sql", 'r') as query_file:
         name, val = line.split('=')
         constants[name] = val
 
-def processSQL():
-    #query = pkg_resources.resource_string('package_name', 'queries.sql')
-    psql.execute_sql(
-        sql.SQL(constants['gender_query']))
+def processSQL(url):
+    # url as param -> received from Go?
+    # query_params = {
+    #     "service": "gender_valueset"
+    # }
 
+    resp = requests.get(url)
+    for block in resp.json():
+        for key, val in block.items():
+            if key == "service" and val == "gender_valueset":
+                psql.execute_sql(sql.SQL(constants['gender_query']))
+
+
+    #query = pkg_resources.resource_string('package_name', 'queries.sql')
