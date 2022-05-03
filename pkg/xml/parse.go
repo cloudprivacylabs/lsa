@@ -169,6 +169,7 @@ func (ing Parser) attributes(ctx parserContext, element *xmlElement, childSchema
 		}
 		attrNode := &ParsedDocNode{
 			name:       attribute.name,
+			value:      attribute.value,
 			schemaNode: attrSchema,
 			typeTerm:   ls.AttributeTypeValue,
 			id:         fmt.Sprintf("%s#%s", ctx.path.String(), attribute.name.Local),
@@ -223,7 +224,7 @@ func (ing Parser) parseObject(ctx parserContext, element *xmlElement) (*ParsedDo
 					newCtx := ctx
 					newCtx.schemaNode = childSchemaNode
 					// A polymorphic node
-					newChildNode, err = ing.element(newCtx, childNode)
+					newChildNode, err = ing.parsePolymorphic(newCtx, childNode)
 					if err != nil {
 						return nil, err
 					}
@@ -231,7 +232,7 @@ func (ing Parser) parseObject(ctx parserContext, element *xmlElement) (*ParsedDo
 			}
 			if newChildNode == nil {
 				newCtx := ctx
-				newCtx.path = newCtx.path.Append(childNode.name.Local)
+				//newCtx.path = newCtx.path.Append(childNode.name.Local)
 				newCtx.schemaNode = childSchema
 				newChildNode, err = ing.element(newCtx, childNode)
 				if err != nil {
@@ -315,9 +316,10 @@ func (ing Parser) parsePolymorphic(ctx parserContext, element *xmlElement) (*Par
 			found = option
 		}
 	}
-	if found == nil {
-		return nil, ls.ErrSchemaValidation{Msg: "None of the options of the polymorphic node matched:" + ls.GetNodeID(ctx.schemaNode), Path: ctx.path.Copy()}
-	}
+	ctx.context.GetLogger().Info(map[string]interface{}{"xml.parse.polymorphic": "None of the options of the polymorphic node matched", "nodeId": ls.GetNodeID(ctx.schemaNode), "elem": element, "path": ctx.path.Copy()})
+	//if found == nil {
+	//	return nil, ls.ErrSchemaValidation{Msg: fmt.Sprintf("None of the options of the polymorphic node matched: %s (%+v)"+ls.GetNodeID(ctx.schemaNode), element), Path: ctx.path.Copy()}
+	//}
 
 	ctx.schemaNode = found
 	return ing.element(ctx, element)
