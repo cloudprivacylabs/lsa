@@ -228,10 +228,11 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 				defer wg.Done()
 				base, err := url.Parse(v)
 				if err != nil {
-					errs = append(errs, err)
+					errs[i] = err
+					return
 				}
 				qparams := base.Query()
-				qparams[id] = []string{vsets.Services[id]}
+				qparams[id] = []string{v}
 				base.RawQuery = qparams.Encode()
 				resp, err := http.Get(base.String())
 				if err != nil {
@@ -247,7 +248,9 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 				}
 				results[i] = ls.ValuesetLookupResponse{KeyValues: m}
 			}(idx)
-			wg.Wait()
+		}
+		if len(results) > 0 {
+			//
 		}
 		if v, ok := vsets.Sets[id]; ok {
 			if err := lookup(v); err != nil {
@@ -257,6 +260,7 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 			return found, fmt.Errorf("Valueset not found: %s", id)
 		}
 	}
+	wg.Wait()
 	return found, nil
 }
 
