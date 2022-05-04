@@ -22,6 +22,23 @@ var EnumTerm = ls.NewTerm(ls.LS, "validation/enumeration", false, false, ls.Over
 	EnumValidator{},
 })
 
+// ConstTerm is used for constant value validator
+//
+// Const is declared as a string value:
+//
+//  {
+//     @id: attrId,
+//     @type: Value,
+//     validation/const: "a"
+//  }
+//
+// Const is syntactic sugar for enum with a single value
+var ConstTerm = ls.NewTerm(ls.LS, "validation/const", false, false, ls.OverrideComposition, struct {
+	EnumValidator
+}{
+	EnumValidator{},
+})
+
 // EnumValidator checks if a value is equal to one of the given options.
 type EnumValidator struct{}
 
