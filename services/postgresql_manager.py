@@ -79,19 +79,21 @@ with open("queries.sql", 'r') as query_file:
         name, val = line.split('=')
         constants[name] = val
 
-queries = defaultdict(list)
-with open("queries.yaml") as yaml_file:
-    vs_list = yaml.full_load(yaml_file)
-    for item, doc in vs_list.items():
-        for key,val in doc[0].items():
-            if key == "tableId":
-                id = val
-            elif key == "queries":
-                for i in range(len(val)):
-                    for k, query in val[i].items():
-                        if k == "query":
-                            queries[id].append(query)
-print(queries)
+def parseYAML() -> defaultdict:
+    queries = defaultdict(list)
+    with open("queries.yaml") as yaml_file:
+        vs_list = yaml.full_load(yaml_file)
+        for item, doc in vs_list.items():
+            for key,val in doc[0].items():
+                if key == "tableId":
+                    id = val
+                elif key == "queries":
+                    for i in range(len(val)):
+                        for k, query in val[i].items():
+                            if k == "query":
+                                queries[id].append(query)
+    return queries
+
 
 def main(url):
     # url as param -> received from Go?
@@ -102,6 +104,7 @@ def main(url):
     # use CLI cmd python3 -m http.server to start listening on port 8000
     # input ([terminology:loinc, value: male] table: gender) --> output: (value:8503)
     resp = requests.get("http://localhost:8000")
+    queries = parseYAML()
     for block in resp.json():
         for key, val in block.items():
             # example
