@@ -217,7 +217,7 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 		return found, nil
 	}
 	var n int = len(req.TableIDs)
-	var wg *sync.WaitGroup
+	var wg sync.WaitGroup
 	results := make([]ls.ValuesetLookupResponse, n)
 	errs := make([]error, n)
 	for idx, id := range req.TableIDs {
@@ -250,7 +250,9 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 			}(idx)
 		}
 		if len(results) > 0 {
-			//
+			for _, res := range results {
+				return res, nil
+			}
 		}
 		if v, ok := vsets.Sets[id]; ok {
 			if err := lookup(v); err != nil {
