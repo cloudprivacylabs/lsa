@@ -62,4 +62,3 @@ class PostgresqlManager:
         return result 
 
     
-
