@@ -35,6 +35,15 @@ type xmlText struct {
 	text []byte
 }
 
+func (el xmlElement) findAttr(name xml.Name) (string, bool) {
+	for _, x := range el.attributes {
+		if MatchName(x.name, name) {
+			return x.value, true
+		}
+	}
+	return "", false
+}
+
 func decode(decoder *xml.Decoder) (*xmlElement, error) {
 	wsFacet, _ := GetWhitespaceFacet("collapse")
 

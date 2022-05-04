@@ -25,5 +25,8 @@ const XML = "https://lschema.org/xml/"
 // schema element/attribute.
 var NamespaceTerm = ls.NewTerm(XML, "ns", false, false, ls.OverrideComposition, nil)
 
+// ValueAttributeTerm gives the name of the attribute containing the value of the node
+var ValueAttributeTerm = ls.NewTerm(XML, "valueAttr", false, false, ls.OverrideComposition, nil)
+
 // AttributeTerm marks the attribute as an XML attribute of an element
 var AttributeTerm = ls.NewTerm(XML, "attribute", false, false, ls.OverrideComposition, nil)

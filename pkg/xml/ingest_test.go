@@ -119,3 +119,9 @@ func TestBasicIngestWithSchema1(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestAttrValue(t *testing.T) {
+	if err := xmlIngestAndCheck("attrTest", "attrTestSchema", "attrTestExpected"); err != nil {
+		t.Error(err)
+	}
+}

@@ -118,8 +118,31 @@ func (ing Parser) element(ctx parserContext, element *xmlElement) (*ParsedDocNod
 }
 
 func (ing Parser) parseValue(ctx parserContext, element *xmlElement) (*ParsedDocNode, error) {
-	// element has at most one text node
+	// element has at most one text node, or valueAttr is set
 	var value string
+	if ctx.schemaNode != nil {
+		pvalue := ls.AsPropertyValue(ctx.schemaNode.GetProperty(ValueAttributeTerm)).AsString()
+		if len(pvalue) > 0 {
+			v, ok := element.findAttr(xml.Name{Local: pvalue})
+			if ok {
+				ret := &ParsedDocNode{
+					name:       element.name,
+					schemaNode: ctx.schemaNode,
+					typeTerm:   ls.AttributeTypeValue,
+					properties: make(map[string]interface{}),
+					id:         ctx.path.Append(element.name.Local).Append(pvalue).String(),
+					value:      v,
+				}
+				ret.properties[ls.AttributeNameTerm] = ls.StringPropertyValue(element.name.Local)
+				if len(element.name.Space) > 0 {
+					ret.properties[NamespaceTerm] = ls.StringPropertyValue(element.name.Space)
+				}
+				return ret, nil
+			}
+			return nil, nil
+		}
+	}
+
 	if len(element.children) > 1 {
 		return nil, ls.ErrSchemaValidation{Msg: "Cannot ingest element as a value because it has multiple child nodes", Path: ctx.path.Copy()}
 	}

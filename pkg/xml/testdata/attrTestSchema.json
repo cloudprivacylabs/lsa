@@ -1,0 +1,30 @@
+{
+    "@context": "../../schemas/ls.json",
+    "@id": "http://testschema",
+    "@type": "Schema",
+    "layer":  {
+        "@type": ["Attribute", "Object", "http://targetType"],
+        "@id": "root",
+        "https://lschema.org/attributeName": "root",
+        "attributes": {
+            "http://f1": {
+                "@type": ["Attribute", "Value"],
+                "https://lschema.org/attributeName": "field1",
+                "https://lschema.org/xml/valueAttr": "value"
+            },
+            "http://f2": {
+                "@type": ["Attribute", "Value"],
+                "https://lschema.org/attributeName": "field2"
+            },
+            "http://f3": {
+                "@type": ["Attribute", "Array"],
+                "https://lschema.org/attributeName": "nested",
+                "arrayElements": {
+                    "@id": "elem",
+                    "@type": ["Attribute", "Value"],
+                    "https://lschema.org/attributeName": "nestedField"
+                }
+            }
+        }
+    }
+}
