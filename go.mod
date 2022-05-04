@@ -14,6 +14,11 @@ require (
 )
 
 require (
+	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
+	golang.org/x/sys v0.0.0-20201119102817-f84b799fce68 // indirect
+)
+
+require (
 	github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210803070921-b358b509191a // indirect
 	github.com/cloudprivacylabs/opencypher v0.0.0-20220425194611-c2feea6d527b
 )

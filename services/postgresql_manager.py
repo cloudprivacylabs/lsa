@@ -1,6 +1,8 @@
+from collections import defaultdict
 import requests
 import psycopg
 from psycopg import sql
+import yaml
 from configparser import ConfigParser
 
 '''
@@ -35,7 +37,6 @@ class PostgresqlManager:
                     db_conn_dict[key] = value
                 # get connection object use above dictionary object.
                 # conn = psycopg.connect(**db_conn_dict)
-                print(*db_conn_dict)
                 result = " ".join(str(key + "=") + str(value) for key, value in db_conn_dict.items())
                 print(result)
                 conn = psycopg.connect(result)
@@ -78,6 +79,19 @@ with open("queries.sql", 'r') as query_file:
         name, val = line.split('=')
         constants[name] = val
 
+queries = defaultdict(list)
+with open("queries.yaml") as yaml_file:
+    vs_list = yaml.full_load(yaml_file)
+    for item, doc in vs_list.items():
+        for key,val in doc[0].items():
+            if key == "tableId":
+                id = val
+            elif key == "queries":
+                for i in range(len(val)):
+                    for k, query in val[i].items():
+                        if k == "query":
+                            queries[id].append(query)
+print(queries)
 
 def main(url):
     # url as param -> received from Go?
@@ -87,13 +101,13 @@ def main(url):
 
     # use CLI cmd python3 -m http.server to start listening on port 8000
     # input ([terminology:loinc, value: male] table: gender) --> output: (value:8503)
-    print("HERE")
     resp = requests.get("http://localhost:8000")
     for block in resp.json():
         for key, val in block.items():
             # example
             if key == "gender" and val == "male":
-                result = psql.execute_sql(sql.SQL(constants['gender_query']))
+                # may be multiple queries under a key, change to iterate over dict
+                result = psql.execute_sql(sql.SQL(queries['gender']))
                 return result
 
     #query = pkg_resources.resource_string('package_name', 'queries.sql')
