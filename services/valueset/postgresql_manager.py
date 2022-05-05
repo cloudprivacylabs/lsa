@@ -61,10 +61,5 @@ class PostgresqlManager:
         print("Record is : ", result, "\n")
         return result 
 
-if __name__ == '__main__':
-    # first create an instance of PostgresqlManager class.
-    postgresql_manager = PostgresqlManager()                        
-    postgresql_manager.get_connection_by_config('database.ini', 'postgresql_conn_data')
-    # postgresql_manager.close_connection()
     
 
