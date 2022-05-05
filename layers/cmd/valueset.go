@@ -232,7 +232,7 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 					return
 				}
 				qparams := base.Query()
-				qparams[id] = []string{v}
+				qparams["tableId"] = append(qparams["tableId"], id)
 				base.RawQuery = qparams.Encode()
 				resp, err := http.Get(base.String())
 				if err != nil {
@@ -249,10 +249,24 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 				results[i] = ls.ValuesetLookupResponse{KeyValues: m}
 			}(idx)
 		}
-		if len(results) > 0 {
-			for _, res := range results {
-				return res, nil
+		for _, err := range errs {
+			if err != nil {
+				return ls.ValuesetLookupResponse{}, err
 			}
+		}
+		var counter int
+		var resultIdx int
+		for idx, res := range results {
+			if len(res.KeyValues) > 0 {
+				counter++
+				if counter >= 2 {
+					return ls.ValuesetLookupResponse{}, fmt.Errorf("Ambiguous lookup for %s", req)
+				}
+				resultIdx = idx
+			}
+		}
+		if counter == 1 {
+			return results[resultIdx], nil
 		}
 		if v, ok := vsets.Sets[id]; ok {
 			if err := lookup(v); err != nil {
