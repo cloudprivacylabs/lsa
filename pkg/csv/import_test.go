@@ -18,6 +18,8 @@ import (
 	"encoding/csv"
 	"os"
 	"testing"
+
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 func TestCSVImport(t *testing.T) {
@@ -53,4 +55,54 @@ func TestCSVImport(t *testing.T) {
 		}
 	}
 
+}
+
+func TestImportSchema(t *testing.T) {
+	csv := [][]string{
+		{"@id", "@type", "valueType", "entityIdFields", "https://dpv_something"},
+		{"https://sch", "Schema", "", "field1", ""},
+		{"https://ovl", "Overlay", "true", "", "true"},
+		{"testObj", "Object"},
+		{"field1", "Value", "string", "", "dpv:value"},
+		{"field2", "Value", "xsd:date", "", ""},
+	}
+	layers, err := ImportSchema(ls.DefaultContext(), csv, map[string]interface{}{"@context": "../../schemas/ls.json"})
+	if err != nil {
+		t.Error(err)
+	}
+	if len(layers) != 2 {
+		t.Errorf("Expecting 2 layers")
+	}
+	if layers[0].GetID() != "https://sch" {
+		t.Errorf("Wrong id")
+	}
+	if layers[0].GetLayerType() != ls.SchemaTerm {
+		t.Errorf("Wrong type")
+	}
+	if layers[1].GetID() != "https://ovl" {
+		t.Errorf("Wrong id")
+	}
+	if layers[1].GetLayerType() != ls.OverlayTerm {
+		t.Errorf("Wrong type")
+	}
+	m := ls.JSONMarshaler{}
+	d, _ := m.Marshal(layers[0].Graph)
+	t.Log(string(d))
+	d, _ = m.Marshal(layers[1].Graph)
+	t.Log(string(d))
+
+	attr := layers[0].GetAttributeByID("field1")
+	if !attr.HasLabel(ls.AttributeTypeValue) {
+		t.Errorf("Not value")
+	}
+	if ls.AsPropertyValue(attr.GetProperty("https://dpv_something")).AsString() != "" {
+		t.Error("Wrong dpv")
+	}
+	attr = layers[1].GetAttributeByID("field1")
+	if ls.AsPropertyValue(attr.GetProperty(ls.ValueTypeTerm)).AsString() != "string" {
+		t.Errorf("Wrong type")
+	}
+	if ls.AsPropertyValue(attr.GetProperty("https://dpv_something")).AsString() != "dpv:value" {
+		t.Error("Wrong dpv")
+	}
 }

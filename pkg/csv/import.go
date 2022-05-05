@@ -188,3 +188,141 @@ func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []
 	}
 	return layer, nil
 }
+
+// ImportSchema imports a schema from a CSV file. The CSV file is organized as follows:
+//
+//   @id,   @type,    entityId,   <term>,     <term>
+//  layerId, Schema,attrId ,...
+//  layerId, Overlay,        , true,        true   --> true means include this attribute in overlay
+//  attrId, Object,          , termValue, termValue
+//  attrId, Value, true/false, termValue, termValue
+//   ...
+//
+// The terms are expanded using the JSON-LD context given.
+func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface{}) ([]*ls.Layer, error) {
+	// Locate the header row
+	headerRowIndex := -1
+	for index, row := range rows {
+		if len(row) > 1 {
+			if row[0] == "@id" && row[1] == "@type" {
+				headerRowIndex = index
+				break
+			}
+		}
+	}
+	if headerRowIndex == -1 {
+		return nil, fmt.Errorf("Cannot locate the header row. The header row must have @id and @type in the first two columns.")
+	}
+
+	header := make([]string, 0, len(rows[headerRowIndex]))
+	for _, x := range rows[headerRowIndex] {
+		header = append(header, strings.TrimSpace(x))
+	}
+
+	layerInfo := make([]map[string][]string, 0, len(rows))
+	attrRows := make([]map[string][]string, 0, len(rows))
+
+	rowToMap := func(row []string, rowIndex int) (map[string][]string, error) {
+		ret := make(map[string][]string, len(row))
+		for i := range row {
+			value := strings.TrimSpace(row[i])
+			if len(value) == 0 {
+				continue
+			}
+			if len(header) <= i {
+				return nil, fmt.Errorf("At row %d: More columns than headers", rowIndex)
+			}
+			ret[header[i]] = append(ret[header[i]], value)
+		}
+		if len(ret["@id"]) == 0 || len(ret["@type"]) == 0 {
+			return nil, nil
+		}
+		return ret, nil
+	}
+	// Parse spreadsheet
+	for index := headerRowIndex + 1; index < len(rows); index++ {
+		row := rows[index]
+		if len(row) < 2 {
+			continue
+		}
+		mrow, err := rowToMap(row, index)
+		if err != nil {
+			return nil, err
+		}
+		if mrow == nil {
+			continue
+		}
+		typ := mrow["@type"]
+		if len(typ) != 1 {
+			continue
+		}
+		if len(mrow["@id"]) != 1 {
+			continue
+		}
+		// This must be an overlay or schema
+		if typ[0] == "Schema" || typ[0] == ls.SchemaTerm || typ[0] == "Overlay" || typ[0] == ls.OverlayTerm {
+			layerInfo = append(layerInfo, mrow)
+		} else {
+			// Attr row
+			if len(layerInfo) == 0 {
+				return nil, fmt.Errorf("The schema must have at least one layer definition row")
+			}
+			attrRows = append(attrRows, mrow)
+		}
+	}
+
+	ret := make([]*ls.Layer, 0, len(layerInfo))
+	copyMap := func(target map[string]interface{}, source, filter map[string][]string) {
+		for k, v := range source {
+			if !strings.HasPrefix(k, "@") && filter != nil {
+				// Check source if this is to be set
+				bvalue := filter[k]
+				if len(bvalue) != 1 || bvalue[0] != "true" {
+					continue
+				}
+			}
+			if len(v) == 1 {
+				target[k] = v[0]
+			} else if len(v) > 1 {
+				target[k] = v
+			}
+		}
+	}
+	// Build layers
+	for _, layer := range layerInfo {
+		// Create a compact jsonld
+		layerMap := make(map[string]interface{})
+		if context != nil {
+			for k, v := range context {
+				layerMap[k] = v
+			}
+		}
+		copyMap(layerMap, layer, map[string][]string{"entityIdFields": []string{"true"}, ls.EntityIDFieldsTerm: []string{"true"}})
+
+		layerNode := make(map[string]interface{})
+		layerMap[ls.LayerRootTerm] = layerNode
+		objectNode := []interface{}{}
+		// Attributes
+		for attrIndex, attrRow := range attrRows {
+			if attrIndex == 0 {
+				// Must be object
+				if attrRow["@type"][0] != "Object" && attrRow["@type"][0] != ls.AttributeTypeObject {
+					return nil, fmt.Errorf("First attribute row must define an object")
+				}
+				copyMap(layerNode, attrRow, layer)
+			} else {
+				attrNode := make(map[string]interface{})
+				copyMap(attrNode, attrRow, layer)
+				objectNode = append(objectNode, attrNode)
+			}
+		}
+		layerNode[ls.ObjectAttributeListTerm] = objectNode
+
+		l, err := ls.UnmarshalLayer(layerMap, ctx.GetInterner())
+		if err != nil {
+			return nil, fmt.Errorf("Cannot create layer %s: %w", layer["@id"][0], err)
+		}
+		ret = append(ret, l)
+	}
+	return ret, nil
+}

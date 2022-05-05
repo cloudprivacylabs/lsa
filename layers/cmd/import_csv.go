@@ -32,13 +32,56 @@ import (
 func init() {
 	importCmd.AddCommand(importCSVCmd)
 	importCSVCmd.Flags().String("spec", "", "Import specification JSON file")
-	importCSVCmd.MarkFlagRequired("spec")
+	importCSVCmd.Flags().String("context", "", "When imported without a spec file, the JSON-LD context")
 }
 
 var importCSVCmd = &cobra.Command{
 	Use:   "csv",
 	Short: "Import a CSV file as a schema a slice it into layers",
-	Long: `The CSV file is organized as follows:
+	Long: `Without a spec file, import csv expects to work with a CSV file of the following format:
+
+
+@id,   @type,    entityIdFields,   <term>,     <term>
+layerId, Schema,attrId ,...
+layerId, Overlay,        , true,        true   --> true means include this attribute in overlay
+attrId, Object,          , termValue, termValue
+attrId, Value, true/false, termValue, termValue
+ ...
+
+The head row defines the terms to be imported from the CSV
+specification. The first two columns must be @id and @type
+respectively.
+
+The next one or more rows specify the layers defined in the CSV file.
+The @id column contains the id of the layer, and the @type specified
+if this is an overlay or a schema. The entityIdField contain the
+entity ID fields for the object, if any. The remaining terms are the
+terms used in the schema/overlay.
+
+After schema/overlay rows, there is the attribute rows. The first
+attribute row must be an object. All attributes are included in
+schemas and overlays, but the terms for that attribute will only be
+included in the corresponding layer if the cell for the layer:term
+contains "true".
+
+For example:
+
+@id,@type,valueType
+https://example.org/Person/schema,Schema
+https://example.org/Person/ovl, Overlay, true
+https://example.org/Person, Object
+https://example.org/Person/birthDate,Value,xsd:date
+
+This CSV file will generate two layers, a schema and an overlay for a
+Person object. The schema will have the birthDate field without a
+valueType. The overlay will have the birthDate field with the
+valueType.
+
+The importer will create JSON-LD objects from the CSV file and
+interpret it with the given context.
+
+
+If a spec is given the CSV file is organized as follows:
 
   * Each row describes an attribute of the schema.
   * Each column describes a property of that attribute.
@@ -145,6 +188,7 @@ will result:
 `,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		ctx := ls.DefaultContext()
 		f, err := os.Open(args[0])
 		if err != nil {
 			failErr(err)
@@ -167,6 +211,11 @@ will result:
 			return buf.String()
 		}
 
+		var context map[string]interface{}
+		if c, _ := cmd.Flags().GetString("context"); len(c) > 0 {
+			context = map[string]interface{}{"@context": c}
+		}
+
 		type importSpec struct {
 			AttributeID  string         `json:"attributeId"`
 			LayerType    string         `json:"layerType"`
@@ -183,47 +232,61 @@ will result:
 
 		var spec importSpec
 		s, _ := cmd.Flags().GetString("spec")
-		data, err := ioutil.ReadFile(s)
+		if len(s) > 0 {
+			data, err := ioutil.ReadFile(s)
+			if err != nil {
+				failErr(err)
+			}
+			if err := json.Unmarshal(data, &spec); err != nil {
+				failErr(err)
+			}
+			rows := records[spec.StartRow:]
+			if spec.NRows > 0 && spec.NRows > len(rows) {
+				rows = rows[:spec.NRows]
+			}
+			layerType := exec(spec.LayerType, map[string]interface{}{"rows": rows})
+			if layerType == "Overlay" {
+				layerType = ls.OverlayTerm
+			} else if layerType == "Schema" {
+				layerType = ls.SchemaTerm
+			}
+			layer, err := dec.Import(spec.AttributeID, spec.Terms, spec.StartRow, spec.NRows, spec.EntityIDRows, spec.EntityID, spec.Required, records)
+			if err != nil {
+				failErr(err)
+			}
+			if len(layerType) > 0 {
+				layer.SetLayerType(layerType)
+			}
+			if layerID := exec(spec.LayerID, map[string]interface{}{"rows": rows}); len(layerID) > 0 {
+				layer.SetID(layerID)
+			}
+			if rootID := exec(spec.RootID, map[string]interface{}{"rows": rows}); len(rootID) > 0 {
+				ls.SetNodeID(layer.GetSchemaRootNode(), rootID)
+			}
+			if valueType := exec(spec.ValueType, map[string]interface{}{"rows": rows}); len(valueType) > 0 {
+				layer.SetValueType(valueType)
+			}
+			marshaled, err := ls.MarshalLayer(layer)
+			if err != nil {
+				failErr(err)
+			}
+			data, err = json.MarshalIndent(marshaled, "", "  ")
+			if err != nil {
+				failErr(err)
+			}
+			fmt.Println(string(data))
+			return
+		}
+
+		// No spec
+		layers, err := dec.ImportSchema(ctx, records, context)
 		if err != nil {
 			failErr(err)
 		}
-		if err := json.Unmarshal(data, &spec); err != nil {
-			failErr(err)
+		for _, l := range layers {
+			intf, _ := ls.MarshalLayer(l)
+			d, _ := json.MarshalIndent(intf, "", "  ")
+			fmt.Println(string(d))
 		}
-		rows := records[spec.StartRow:]
-		if spec.NRows > 0 && spec.NRows > len(rows) {
-			rows = rows[:spec.NRows]
-		}
-		layerType := exec(spec.LayerType, map[string]interface{}{"rows": rows})
-		if layerType == "Overlay" {
-			layerType = ls.OverlayTerm
-		} else if layerType == "Schema" {
-			layerType = ls.SchemaTerm
-		}
-		layer, err := dec.Import(spec.AttributeID, spec.Terms, spec.StartRow, spec.NRows, spec.EntityIDRows, spec.EntityID, spec.Required, records)
-		if err != nil {
-			failErr(err)
-		}
-		if len(layerType) > 0 {
-			layer.SetLayerType(layerType)
-		}
-		if layerID := exec(spec.LayerID, map[string]interface{}{"rows": rows}); len(layerID) > 0 {
-			layer.SetID(layerID)
-		}
-		if rootID := exec(spec.RootID, map[string]interface{}{"rows": rows}); len(rootID) > 0 {
-			ls.SetNodeID(layer.GetSchemaRootNode(), rootID)
-		}
-		if valueType := exec(spec.ValueType, map[string]interface{}{"rows": rows}); len(valueType) > 0 {
-			layer.SetValueType(valueType)
-		}
-		marshaled, err := ls.MarshalLayer(layer)
-		if err != nil {
-			failErr(err)
-		}
-		data, err = json.MarshalIndent(marshaled, "", "  ")
-		if err != nil {
-			failErr(err)
-		}
-		fmt.Println(string(data))
 	},
 }
