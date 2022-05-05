@@ -15,6 +15,7 @@
 package cmdutil
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -76,6 +77,12 @@ func WriteGraph(cmd *cobra.Command, graph graph.Graph, format string, out io.Wri
 		renderer.Options.Rankdir, _ = cmd.Flags().GetString("rankdir")
 		renderer.Render(graph, "g", out)
 		return nil
+	case "web":
+		dotOut := bytes.Buffer{}
+		renderer := dot.Renderer{Options: dot.DefaultOptions()}
+		renderer.Options.Rankdir, _ = cmd.Flags().GetString("rankdir")
+		renderer.Render(graph, "g", &dotOut)
+		renderDot(dotOut.Bytes())
 	}
 
 	return fmt.Errorf("Unrecognized output format: %s", format)
