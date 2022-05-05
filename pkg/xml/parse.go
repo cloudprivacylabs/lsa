@@ -125,6 +125,9 @@ func (ing Parser) parseValue(ctx parserContext, element *xmlElement) (*ParsedDoc
 		if len(pvalue) > 0 {
 			v, ok := element.findAttr(xml.Name{Local: pvalue})
 			if ok {
+				if err := ls.ValidateValueBySchema(&v, ctx.schemaNode); err != nil {
+					return nil, err
+				}
 				ret := &ParsedDocNode{
 					name:       element.name,
 					schemaNode: ctx.schemaNode,
@@ -152,6 +155,9 @@ func (ing Parser) parseValue(ctx parserContext, element *xmlElement) (*ParsedDoc
 			return nil, ls.ErrSchemaValidation{Msg: "Cannot ingest element as a value because it has elements as children", Path: ctx.path.Copy()}
 		}
 		value = string(t.text)
+	}
+	if err := ls.ValidateValueBySchema(&value, ctx.schemaNode); err != nil {
+		return nil, err
 	}
 	ret := &ParsedDocNode{
 		name:       element.name,
@@ -328,10 +334,12 @@ func (ing Parser) testOption(option graph.Node, ctx parserContext, element *xmlE
 }
 
 func (ing Parser) parsePolymorphic(ctx parserContext, element *xmlElement) (*ParsedDocNode, error) {
+	ctx.context.GetLogger().Debug(map[string]interface{}{"xml.parse.polymorphic": ctx.schemaNode})
 	options := ls.GetPolymorphicOptions(ctx.schemaNode)
 	var found graph.Node
 	for _, option := range options {
 		if ing.testOption(option, ctx, element) {
+			ctx.context.GetLogger().Debug(map[string]interface{}{"xml.parse.polymorphic.testOption": option, "sch": ctx.schemaNode, "el": element})
 			if found != nil {
 				return nil, ls.ErrSchemaValidation{Msg: "Multiple options of the polymorphic node matched:" + ls.GetNodeID(ctx.schemaNode), Path: ctx.path.Copy()}
 
@@ -339,10 +347,7 @@ func (ing Parser) parsePolymorphic(ctx parserContext, element *xmlElement) (*Par
 			found = option
 		}
 	}
-	ctx.context.GetLogger().Info(map[string]interface{}{"xml.parse.polymorphic": "None of the options of the polymorphic node matched", "nodeId": ls.GetNodeID(ctx.schemaNode), "elem": element, "path": ctx.path.Copy()})
-	//if found == nil {
-	//	return nil, ls.ErrSchemaValidation{Msg: fmt.Sprintf("None of the options of the polymorphic node matched: %s (%+v)"+ls.GetNodeID(ctx.schemaNode), element), Path: ctx.path.Copy()}
-	//}
+	ctx.context.GetLogger().Debug(map[string]interface{}{"xml.parse.polymorphic": found, "nodeId": ls.GetNodeID(ctx.schemaNode), "elem": element, "path": ctx.path.Copy()})
 
 	ctx.schemaNode = found
 	return ing.element(ctx, element)
