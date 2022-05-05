@@ -31,7 +31,7 @@ func addSchemaFlags(flags *pflag.FlagSet) {
 	flags.String("repo", "", "Schema repository directory")
 	flags.String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
 	flags.String("type", "", "Use if a bundle is given for data types. The type name to ingest.")
-	flags.String("bundle", "", "Schema bundle.")
+	flags.StringSlice("bundle", nil, "Schema bundle(s).")
 }
 
 func init() {
@@ -45,13 +45,13 @@ func init() {
 }
 
 type BaseIngestParams struct {
-	Repo                 string `json:"repo" yaml:"repo"`
-	Schema               string `json:"schema" yaml:"schema"`
-	Type                 string `json:"type" yaml:"type"`
-	Bundle               string `json:"bundle" yaml:"bundle"`
-	CompiledSchema       string `json:"compiledSchema" yaml:"compiledSchema"`
-	EmbedSchemaNodes     bool   `json:"embedSchemaNodes" yaml:"embedSchemaNodes"`
-	OnlySchemaAttributes bool   `json:"onlySchemaAttributes" yaml:"onlySchemaAttributes"`
+	Repo                 string   `json:"repo" yaml:"repo"`
+	Schema               string   `json:"schema" yaml:"schema"`
+	Type                 string   `json:"type" yaml:"type"`
+	Bundle               []string `json:"bundle" yaml:"bundle"`
+	CompiledSchema       string   `json:"compiledSchema" yaml:"compiledSchema"`
+	EmbedSchemaNodes     bool     `json:"embedSchemaNodes" yaml:"embedSchemaNodes"`
+	OnlySchemaAttributes bool     `json:"onlySchemaAttributes" yaml:"onlySchemaAttributes"`
 }
 
 // IsEmptySchema returns true if none of the schema properties are set
@@ -63,7 +63,7 @@ func (b *BaseIngestParams) fromCmd(cmd *cobra.Command) {
 	b.CompiledSchema, _ = cmd.Flags().GetString("compiledschema")
 	b.Repo, _ = cmd.Flags().GetString("repo")
 	b.Schema, _ = cmd.Flags().GetString("schema")
-	b.Bundle, _ = cmd.Flags().GetString("bundle")
+	b.Bundle, _ = cmd.Flags().GetStringSlice("bundle")
 	b.Type, _ = cmd.Flags().GetString("type")
 	b.EmbedSchemaNodes, _ = cmd.Flags().GetBool("embedSchemaNodes")
 	b.OnlySchemaAttributes, _ = cmd.Flags().GetBool("onlySchemaAttributes")
@@ -141,9 +141,9 @@ func loadSchemaCmd(ctx *ls.Context, cmd *cobra.Command) *ls.Layer {
 	compiledSchema, _ := cmd.Flags().GetString("compiledschema")
 	repoDir, _ := cmd.Flags().GetString("repo")
 	schemaName, _ := cmd.Flags().GetString("schema")
-	bundleName, _ := cmd.Flags().GetString("bundle")
+	bundleNames, _ := cmd.Flags().GetStringSlice("bundle")
 	typeName, _ := cmd.Flags().GetString("type")
-	layer, err := LoadSchemaFromFileOrRepo(ctx, compiledSchema, repoDir, schemaName, typeName, bundleName)
+	layer, err := LoadSchemaFromFileOrRepo(ctx, compiledSchema, repoDir, schemaName, typeName, bundleNames)
 	if err != nil {
 		failErr(err)
 	}
@@ -180,13 +180,13 @@ func loadCompiledSchema(ctx *ls.Context, compiledSchema, schemaName string) (*ls
 	return layer, layers, nil
 }
 
-func LoadSchemaFromFileOrRepo(ctx *ls.Context, compiledSchema, repoDir, schemaName, typeName, bundleName string) (*ls.Layer, error) {
+func LoadSchemaFromFileOrRepo(ctx *ls.Context, compiledSchema, repoDir, schemaName, typeName string, bundleNames []string) (*ls.Layer, error) {
 	if len(compiledSchema) > 0 {
 		l, _, err := loadCompiledSchema(ctx, compiledSchema, schemaName)
 		return l, err
 	}
-	if len(bundleName) > 0 {
-		schLoader, err := LoadBundle(ctx, bundleName)
+	if len(bundleNames) > 0 {
+		schLoader, err := LoadBundle(ctx, bundleNames)
 		if err != nil {
 			return nil, err
 		}

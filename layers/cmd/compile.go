@@ -37,14 +37,14 @@ var compileCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := getContext()
 		repoDir, _ := cmd.Flags().GetString("repo")
-		bundleName, _ := cmd.Flags().GetString("bundle")
+		bundleNames, _ := cmd.Flags().GetStringSlice("bundle")
 		schemaName, _ := cmd.Flags().GetString("schema")
 		typeName, _ := cmd.Flags().GetString("type")
-		if len(repoDir) > 0 && len(bundleName) > 0 {
+		if len(repoDir) > 0 && len(bundleNames) > 0 {
 			fail("One of repo or bundle is required")
 		}
 		var layer *ls.Layer
-		if len(bundleName) == 0 {
+		if len(bundleNames) == 0 {
 			if len(schemaName) == 0 {
 				fail("Schema is required")
 			}
@@ -99,8 +99,8 @@ var compileCmd = &cobra.Command{
 				}
 			}
 		} else {
-			logf("Loading bundle %s", bundleName)
-			loader, err := LoadBundle(ctx, bundleName)
+			logf("Loading bundles %v", bundleNames)
+			loader, err := LoadBundle(ctx, bundleNames)
 			if err != nil {
 				failErr(err)
 			}

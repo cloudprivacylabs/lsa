@@ -30,12 +30,46 @@ import (
 
 // Bundle defines type names for variants so references can be resolved
 type Bundle struct {
+	Base      string                   `json:"base" yaml:"base"`
 	TypeNames map[string]BundleVariant `json:"typeNames" yaml:"typeNames"`
+}
+
+// Merge bundle into b
+func (b *Bundle) Merge(bundle Bundle) {
+	if b.TypeNames == nil {
+		b.TypeNames = make(map[string]BundleVariant)
+	}
+	for typeName, variant := range bundle.TypeNames {
+		existingVariant, ok := b.TypeNames[typeName]
+		if !ok {
+			b.TypeNames[typeName] = variant
+			continue
+		}
+		existingVariant.Merge(variant)
+		b.TypeNames[typeName] = existingVariant
+	}
+}
+
+func (b *Bundle) ResolveFilenames(dir string) {
+	for k, v := range b.TypeNames {
+		v.ResolveFilenames(dir)
+		b.TypeNames[k] = v
+	}
+	if len(b.Base) > 0 {
+		b.Base = getRelativeFileName(dir, b.Base)
+	}
 }
 
 type BundleSchemaRef struct {
 	Schema     string               `json:"schema,omitempty" yaml:"schema,omitempty"`
 	JSONSchema *JSONSchemaReference `json:"jsonSchema" yaml:"jsonSchema"`
+}
+
+// Merge resets b with ref if ref is nonempty
+func (b *BundleSchemaRef) Merge(ref BundleSchemaRef) {
+	if len(ref.Schema) > 0 || ref.JSONSchema != nil {
+		*b = ref
+	}
 }
 
 // GetLayerID returns the layer id for the schema reference
@@ -46,8 +80,21 @@ func (ref BundleSchemaRef) GetLayerID() string {
 	return ref.Schema
 }
 
+func (ref *BundleSchemaRef) ResolveFilenames(dir string) {
+	if len(ref.Schema) > 0 {
+		ref.Schema = getRelativeFileName(dir, ref.Schema)
+	}
+	if ref.JSONSchema != nil {
+		if len(ref.JSONSchema.Ref) > 0 {
+			ref.JSONSchema.Ref = getRelativeFileName(dir, ref.JSONSchema.Ref)
+		}
+	}
+}
+
 type JSONSchemaReference struct {
-	LayerID   string `json:"layerId" yaml:"layerId" bson:"layerId"`
+	// This is here for compatibility with commercial version
+	LayerID string `json:"layerId" yaml:"layerId" bson:"layerId"`
+	// This is the filename
 	Ref       string `json:"ref" yaml:"ref" bson:"ref"`
 	Namespace string `json:"namespace" yaml:"namespace" bson:"namespace"`
 }
@@ -56,6 +103,19 @@ type JSONSchemaReference struct {
 type BundleVariant struct {
 	BundleSchemaRef
 	Overlays []BundleSchemaRef `json:"overlays" yaml:"overlays"`
+}
+
+func (b *BundleVariant) ResolveFilenames(dir string) {
+	b.BundleSchemaRef.ResolveFilenames(dir)
+	for i := range b.Overlays {
+		b.Overlays[i].ResolveFilenames(dir)
+	}
+}
+
+// Merge variant into b
+func (b *BundleVariant) Merge(variant BundleVariant) {
+	b.BundleSchemaRef.Merge(variant.BundleSchemaRef)
+	b.Overlays = append(b.Overlays, variant.Overlays...)
 }
 
 // ParseBundle parses a bundle from JSON
@@ -98,7 +158,7 @@ func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importE
 }
 
 // GetLayers returns the layers of the bundle keyed by variant type
-func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s string) (*ls.Layer, error), fileLoader func(string) (io.ReadCloser, error)) (map[string]*ls.Layer, error) {
+func (bundle *Bundle) GetLayers(ctx *ls.Context, loader func(s string) (*ls.Layer, error), fileLoader func(string) (io.ReadCloser, error)) (map[string]*ls.Layer, error) {
 	// layers keyed by layer id
 	layers := make(map[string]*ls.Layer)
 
@@ -118,7 +178,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 			if loaded {
 				break
 			}
-			layer, err := loader(getRelativeFileName(path, fileName))
+			layer, err := loader(fileName)
 			if err != nil {
 				return err
 			}
@@ -137,7 +197,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 			entity := jsonsch.Entity{
 				LayerID:       ref.JSONSchema.LayerID,
 				ValueType:     variantType,
-				Ref:           getRelativeFileName(path, ref.JSONSchema.Ref),
+				Ref:           ref.JSONSchema.Ref,
 				AttrNamespace: ref.JSONSchema.Namespace,
 			}
 			entitiesMap[entity.LayerID] = entity
@@ -205,13 +265,32 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, path string, loader func(s stri
 	return resultBundle.Variants, nil
 }
 
-func LoadBundle(ctx *ls.Context, file string) (ls.SchemaLoader, error) {
-	var bundle Bundle
-	dir := filepath.Dir(file)
-	if err := cmdutil.ReadJSONOrYAML(file, &bundle); err != nil {
-		return nil, err
+func loadBundleChain(ctx *ls.Context, file string) (Bundle, error) {
+	var b Bundle
+	if err := cmdutil.ReadJSONOrYAML(file, &b); err != nil {
+		return Bundle{}, fmt.Errorf("While reading %s: %w", file, err)
 	}
-	items, err := bundle.GetLayers(ctx, dir, func(fname string) (*ls.Layer, error) {
+	b.ResolveFilenames(filepath.Dir(file))
+	if len(b.Base) > 0 {
+		base, err := loadBundleChain(ctx, b.Base)
+		if err != nil {
+			return Bundle{}, err
+		}
+		b.Merge(base)
+	}
+	return b, nil
+}
+
+func LoadBundle(ctx *ls.Context, file []string) (ls.SchemaLoader, error) {
+	var bundle Bundle
+	for _, f := range file {
+		b, err := loadBundleChain(ctx, f)
+		if err != nil {
+			return nil, fmt.Errorf("While reading %s: %w", f, err)
+		}
+		bundle.Merge(b)
+	}
+	items, err := bundle.GetLayers(ctx, func(fname string) (*ls.Layer, error) {
 		data, err := ioutil.ReadFile(fname)
 		if err != nil {
 			return nil, err

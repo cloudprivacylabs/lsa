@@ -28,7 +28,7 @@ func init() {
 	rootCmd.AddCommand(composeCmd)
 	composeCmd.Flags().StringP("output", "o", "", "Output file")
 	composeCmd.Flags().String("repo", "", "Schema repository directory. If a repository is given, all layers are resolved using that repository. Otherwise, all layers are read as files.")
-	composeCmd.Flags().String("bundle", "", "Bundle file")
+	composeCmd.Flags().StringSlice("bundle", nil, "Bundle file(s)")
 	composeCmd.Flags().String("type", "", "Value Type")
 }
 
@@ -40,13 +40,13 @@ var composeCmd = &cobra.Command{
 	Args: cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		repoDir, _ := cmd.Flags().GetString("repo")
-		bundleName, _ := cmd.Flags().GetString("bundle")
+		bundleNames, _ := cmd.Flags().GetStringSlice("bundle")
 		typeName, _ := cmd.Flags().GetString("type")
 		interner := ls.NewInterner()
 		var output *ls.Layer
 		if len(repoDir) == 0 {
-			if len(bundleName) > 0 && len(typeName) > 0 {
-				bundle, err := LoadBundle(ls.DefaultContext(), bundleName)
+			if len(bundleNames) > 0 && len(typeName) > 0 {
+				bundle, err := LoadBundle(ls.DefaultContext(), bundleNames)
 				if err != nil {
 					failErr(err)
 				}

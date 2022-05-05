@@ -28,7 +28,7 @@ func init() {
 	applyLayerCmd.Flags().String("repo", "", "Schema repository directory")
 	applyLayerCmd.Flags().String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
 	applyLayerCmd.Flags().String("type", "", "Use if a bundle is given for data types. The type name to ingest.")
-	applyLayerCmd.Flags().String("bundle", "", "Schema bundle.")
+	applyLayerCmd.Flags().StringSlice("bundle", nil, "Schema bundle(s)")
 }
 
 var applyLayerCmd = &cobra.Command{
