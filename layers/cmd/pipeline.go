@@ -62,7 +62,7 @@ func (WriteGraphStep) Help() {
 
 operation: writeGraph
 params:
-  format: json, jsonld, dot. Json is the default
+  format: json, jsonld, dot, web. Json is the default
   includeSchema: If false, filter out schema nodes`)
 }
 

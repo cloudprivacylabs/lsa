@@ -204,7 +204,37 @@ type Renderer struct {
 	EdgeSelectorFunc func(graph.Edge) bool
 }
 
-func (r Renderer) NodeRenderer(ID string, node graph.Node, wr io.Writer) (bool, error) {
+// escapeForDot escapes double quotes and backslashes, and replaces Graphviz's
+// "center" character (\n) with a left-justified character.
+// See https://graphviz.org/docs/attr-types/escString/ for more info.
+func escapeForDot(str string) string {
+	return strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(str, `\`, `\\`), `"`, `\"`), "\n", `\l`)
+}
+
+func (r Renderer) NodeBoxRenderer(ID string, node graph.Node, wr io.Writer) (bool, error) {
+	label := strings.Builder{}
+	for l := range node.GetLabels() {
+		label.WriteRune(':')
+		label.WriteString(l)
+		label.WriteString(`\n`)
+	}
+	label.WriteString(`\n`)
+	if id := ls.GetNodeID(node); len(id) > 0 {
+		label.WriteString(fmt.Sprintf("id=%s\\l", escapeForDot(id)))
+	}
+	node.ForEachProperty(func(k string, v interface{}) bool {
+		if pv, ok := v.(*ls.PropertyValue); ok {
+			label.WriteString(fmt.Sprintf("%s=%v\\l", escapeForDot(k), escapeForDot(fmt.Sprint(pv.GetNativeValue()))))
+		}
+		return true
+	})
+
+	io.WriteString(wr, fmt.Sprintf("%s [shape=box %s label=\"%s\"];\n", ID, r.Options.Font.String(), label.String()))
+
+	return true, nil
+}
+
+func (r Renderer) NodeTableRenderer(ID string, node graph.Node, wr io.Writer) (bool, error) {
 	to := r.Options.Table
 	to.ID = ID
 	io.WriteString(wr, fmt.Sprintf("%s [shape=plaintext label=<", ID))
@@ -239,7 +269,7 @@ func (r Renderer) NodeRenderer(ID string, node graph.Node, wr io.Writer) (bool, 
 func (r Renderer) renderEdge(fromNode, toNode string, edge graph.Edge, w io.Writer) error {
 	lbl := edge.GetLabel()
 	if len(lbl) != 0 {
-		if _, err := fmt.Fprintf(w, "  %s -> %s [label=\"%s\" %s];\n", fromNode, toNode, lbl, r.Options.Edges); err != nil {
+		if _, err := fmt.Fprintf(w, "  %s -> %s [label=\"%s\" %s];\n", fromNode, toNode, escapeForDot(lbl), r.Options.Edges); err != nil {
 			return err
 		}
 	} else {
@@ -258,7 +288,7 @@ func (r Renderer) EdgeRenderer(fromID, toID string, edge graph.Edge, w io.Writer
 }
 
 func (r Renderer) Render(g graph.Graph, graphName string, out io.Writer) error {
-	dr := graph.DOTRenderer{NodeRenderer: r.NodeRenderer, EdgeRenderer: r.EdgeRenderer}
+	dr := graph.DOTRenderer{NodeRenderer: r.NodeBoxRenderer, EdgeRenderer: r.EdgeRenderer}
 	if _, err := fmt.Fprintf(out, "digraph %s {\n", graphName); err != nil {
 		return err
 	}
