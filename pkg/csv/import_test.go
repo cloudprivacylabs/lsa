@@ -59,12 +59,14 @@ func TestCSVImport(t *testing.T) {
 
 func TestImportSchema(t *testing.T) {
 	csv := [][]string{
-		{"@id", "@type", "valueType", "entityIdFields", "https://dpv_something"},
-		{"https://sch", "Schema", "", "field1", ""},
-		{"https://ovl", "Overlay", "true", "", "true"},
+		{"valueType", "type"},
+		{"entityIdFields", "fld1", "fld2"},
+		{"@id", "@type", "valueType", "https://dpv_something (,)"},
+		{"https://sch", "Schema", "", ""},
+		{"https://ovl", "Overlay", "true", "true"},
 		{"testObj", "Object"},
-		{"field1", "Value", "string", "", "dpv:value"},
-		{"field2", "Value", "xsd:date", "", ""},
+		{"field1", "Value", "string", "dpv:value, dpv:otherValue"},
+		{"field2", "Value", "xsd:date", ""},
 	}
 	layers, err := ImportSchema(ls.DefaultContext(), csv, map[string]interface{}{"@context": "../../schemas/ls.json"})
 	if err != nil {
@@ -85,6 +87,18 @@ func TestImportSchema(t *testing.T) {
 	if layers[1].GetLayerType() != ls.OverlayTerm {
 		t.Errorf("Wrong type")
 	}
+	if layers[0].GetValueType() != "type" {
+		t.Errorf("Wrong value type")
+	}
+	if layers[1].GetValueType() != "type" {
+		t.Errorf("Wrong value type: %s", layers[1].GetValueType())
+	}
+	if layers[0].GetEntityIDNodes()[0] != "fld1" {
+		t.Errorf("Wrong id")
+	}
+	if layers[0].GetEntityIDNodes()[1] != "fld2" {
+		t.Errorf("Wrong id")
+	}
 	m := ls.JSONMarshaler{}
 	d, _ := m.Marshal(layers[0].Graph)
 	t.Log(string(d))
@@ -102,7 +116,7 @@ func TestImportSchema(t *testing.T) {
 	if ls.AsPropertyValue(attr.GetProperty(ls.ValueTypeTerm)).AsString() != "string" {
 		t.Errorf("Wrong type")
 	}
-	if ls.AsPropertyValue(attr.GetProperty("https://dpv_something")).AsString() != "dpv:value" {
+	if ls.AsPropertyValue(attr.GetProperty("https://dpv_something")).AsStringSlice()[0] != "dpv:value" {
 		t.Error("Wrong dpv")
 	}
 }

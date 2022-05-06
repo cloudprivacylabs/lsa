@@ -191,32 +191,80 @@ func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []
 
 // ImportSchema imports a schema from a CSV file. The CSV file is organized as follows:
 //
-//   @id,   @type,    entityId,   <term>,     <term>
-//  layerId, Schema,attrId ,...
-//  layerId, Overlay,        , true,        true   --> true means include this attribute in overlay
-//  attrId, Object,          , termValue, termValue
-//  attrId, Value, true/false, termValue, termValue
+// valueType determines the schema header start
+//
+//  valueType, v
+//  entityIdFields, f, f, ...
+//
+//   @id,   @type,      <term>,     <term>
+//  layerId, Schema,,...
+//  layerId, Overlay,  true,        true   --> true means include this attribute in overlay
+//  attrId, Object,   termValue, termValue
+//  attrId, Value,   termValue, termValue
 //   ...
 //
 // The terms are expanded using the JSON-LD context given.
 func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface{}) ([]*ls.Layer, error) {
 	// Locate the header row
+	var valueType string
+	schemaAnnotations := make(map[string][]interface{})
 	headerRowIndex := -1
 	for index, row := range rows {
+		for i := range row {
+			row[i] = strings.TrimSpace(row[i])
+		}
 		if len(row) > 1 {
+			if row[0] == "valueType" || row[0] == ls.ValueTypeTerm {
+				if len(valueType) > 0 {
+					return nil, fmt.Errorf("valueType is duplicated at row %d", index+1)
+				}
+				valueType = strings.TrimSpace(row[1])
+				if len(valueType) == 0 {
+					return nil, fmt.Errorf("Empty valueType at row %d", index+1)
+				}
+				continue
+			}
 			if row[0] == "@id" && row[1] == "@type" {
 				headerRowIndex = index
 				break
 			}
+			if len(valueType) > 0 && len(row) > 1 {
+				// Value type seen, record schema metadata
+				term := strings.TrimSpace(row[0])
+				if len(row) > 1 {
+					for _, x := range row[1:] {
+						x := strings.TrimSpace(x)
+						if len(x) > 0 {
+							if term == "entityIdFields" {
+								term = ls.EntityIDFieldsTerm
+							}
+							schemaAnnotations[term] = append(schemaAnnotations[term], x)
+						}
+					}
+				}
+			}
 		}
 	}
+
 	if headerRowIndex == -1 {
 		return nil, fmt.Errorf("Cannot locate the header row. The header row must have @id and @type in the first two columns.")
 	}
 
-	header := make([]string, 0, len(rows[headerRowIndex]))
-	for _, x := range rows[headerRowIndex] {
-		header = append(header, strings.TrimSpace(x))
+	header := make([]string, len(rows[headerRowIndex]))
+	separators := make([]string, len(rows[headerRowIndex]))
+	for i, x := range rows[headerRowIndex] {
+		ix := strings.IndexRune(x, '(')
+		if ix != -1 {
+			sep := x[ix+1:]
+			ixe := strings.IndexRune(sep, ')')
+			if ixe == -1 {
+				return nil, fmt.Errorf("Syntax error in header %s: unmatched paranthesis", x)
+			}
+			sep = strings.TrimSpace(sep[:ixe])
+			separators[i] = sep
+			x = x[:ix]
+		}
+		header[i] = strings.TrimSpace(x)
 	}
 
 	layerInfo := make([]map[string][]string, 0, len(rows))
@@ -232,7 +280,13 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 			if len(header) <= i {
 				return nil, fmt.Errorf("At row %d: More columns than headers", rowIndex)
 			}
-			ret[header[i]] = append(ret[header[i]], value)
+			if len(separators[i]) > 0 {
+				for _, x := range strings.Split(value, separators[i]) {
+					ret[header[i]] = append(ret[header[i]], x)
+				}
+			} else {
+				ret[header[i]] = []string{value}
+			}
 		}
 		if len(ret["@id"]) == 0 || len(ret["@type"]) == 0 {
 			return nil, nil
@@ -284,7 +338,11 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 			if len(v) == 1 {
 				target[k] = v[0]
 			} else if len(v) > 1 {
-				target[k] = v
+				arr := make([]interface{}, 0, len(v))
+				for _, x := range v {
+					arr = append(arr, x)
+				}
+				target[k] = arr
 			}
 		}
 	}
@@ -297,10 +355,25 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 				layerMap[k] = v
 			}
 		}
-		copyMap(layerMap, layer, map[string][]string{"entityIdFields": []string{"true"}, ls.EntityIDFieldsTerm: []string{"true"}})
+		if len(valueType) > 0 {
+			layerMap[ls.ValueTypeTerm] = valueType
+		}
+		for k, v := range schemaAnnotations {
+			if k != ls.EntityIDFieldsTerm {
+				layerMap[k] = v
+			}
+		}
+		layerMap["@id"] = layer["@id"][0]
+		layerMap["@type"] = layer["@type"][0]
 
 		layerNode := make(map[string]interface{})
 		layerMap[ls.LayerRootTerm] = layerNode
+		if len(valueType) > 0 {
+			layerNode[ls.ValueTypeTerm] = valueType
+		}
+		if x, ok := schemaAnnotations[ls.EntityIDFieldsTerm]; ok {
+			layerNode[ls.EntityIDFieldsTerm] = x
+		}
 		objectNode := []interface{}{}
 		// Attributes
 		for attrIndex, attrRow := range attrRows {

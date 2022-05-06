@@ -81,7 +81,9 @@ func (defaultTermMarshaler) UnmarshalLd(target *Layer, key string, value interfa
 		// This is a value or an @id
 		if len(m) == 1 {
 			if v := m["@value"]; v != nil {
-				setValue(fmt.Sprint(v))
+				for _, x := range LDGetValueArr(m) {
+					setValue(fmt.Sprint(x))
+				}
 			} else if v := m["@id"]; v != nil {
 				if id, ok := v.(string); ok {
 					// Is this a link?

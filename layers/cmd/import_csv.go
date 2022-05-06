@@ -29,6 +29,76 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
+type CSVImportSpec struct {
+	AttributeID  string         `json:"attributeId"`
+	LayerType    string         `json:"layerType"`
+	LayerID      string         `json:"layerId"`
+	RootID       string         `json:"rootId"`
+	ValueType    string         `json:"valueType"`
+	EntityIDRows []int          `json:"entityIdRows"`
+	EntityID     string         `json:"entityId"`
+	Required     string         `json:"required"`
+	StartRow     int            `json:"startRow"`
+	NRows        int            `json:"nrows"`
+	Terms        []dec.TermSpec `json:"terms"`
+}
+
+func (spec CSVImportSpec) Import(records [][]string) (*ls.Layer, error) {
+	exec := func(tmpl string, data interface{}) (string, error) {
+		t, err := template.New("").Parse(tmpl)
+		if err != nil {
+			return "", err
+		}
+		var buf bytes.Buffer
+		if err := t.Execute(&buf, data); err != nil {
+			return "", err
+		}
+		return buf.String(), nil
+	}
+	rows := records[spec.StartRow:]
+	if spec.NRows > 0 && spec.NRows > len(rows) {
+		rows = rows[:spec.NRows]
+	}
+	layerType, err := exec(spec.LayerType, map[string]interface{}{"rows": rows})
+	if err != nil {
+		return nil, err
+	}
+	if layerType == "Overlay" {
+		layerType = ls.OverlayTerm
+	} else if layerType == "Schema" {
+		layerType = ls.SchemaTerm
+	}
+	layer, err := dec.Import(spec.AttributeID, spec.Terms, spec.StartRow, spec.NRows, spec.EntityIDRows, spec.EntityID, spec.Required, records)
+	if err != nil {
+		return nil, err
+	}
+	if len(layerType) > 0 {
+		layer.SetLayerType(layerType)
+	}
+	layerID, err := exec(spec.LayerID, map[string]interface{}{"rows": rows})
+	if err != nil {
+		return nil, err
+	}
+	if len(layerID) > 0 {
+		layer.SetID(layerID)
+	}
+	rootID, err := exec(spec.RootID, map[string]interface{}{"rows": rows})
+	if err != nil {
+		return nil, err
+	}
+	if len(rootID) > 0 {
+		ls.SetNodeID(layer.GetSchemaRootNode(), rootID)
+	}
+	valueType, err := exec(spec.ValueType, map[string]interface{}{"rows": rows})
+	if err != nil {
+		return nil, err
+	}
+	if len(valueType) > 0 {
+		layer.SetValueType(valueType)
+	}
+	return layer, nil
+}
+
 func init() {
 	importCmd.AddCommand(importCSVCmd)
 	importCSVCmd.Flags().String("spec", "", "Import specification JSON file")
@@ -193,44 +263,20 @@ will result:
 		if err != nil {
 			failErr(err)
 		}
-		records, err := csv.NewReader(f).ReadAll()
+		reader := csv.NewReader(f)
+		reader.FieldsPerRecord = -1
+		records, err := reader.ReadAll()
 		if err != nil {
 			failErr(err)
 		}
 		f.Close()
-
-		exec := func(tmpl string, data interface{}) string {
-			t, err := template.New("").Parse(tmpl)
-			if err != nil {
-				failErr(err)
-			}
-			var buf bytes.Buffer
-			if err := t.Execute(&buf, data); err != nil {
-				failErr(err)
-			}
-			return buf.String()
-		}
 
 		var context map[string]interface{}
 		if c, _ := cmd.Flags().GetString("context"); len(c) > 0 {
 			context = map[string]interface{}{"@context": c}
 		}
 
-		type importSpec struct {
-			AttributeID  string         `json:"attributeId"`
-			LayerType    string         `json:"layerType"`
-			LayerID      string         `json:"layerId"`
-			RootID       string         `json:"rootId"`
-			ValueType    string         `json:"valueType"`
-			EntityIDRows []int          `json:"entityIdRows"`
-			EntityID     string         `json:"entityId"`
-			Required     string         `json:"required"`
-			StartRow     int            `json:"startRow"`
-			NRows        int            `json:"nrows"`
-			Terms        []dec.TermSpec `json:"terms"`
-		}
-
-		var spec importSpec
+		var spec CSVImportSpec
 		s, _ := cmd.Flags().GetString("spec")
 		if len(s) > 0 {
 			data, err := ioutil.ReadFile(s)
@@ -240,31 +286,9 @@ will result:
 			if err := json.Unmarshal(data, &spec); err != nil {
 				failErr(err)
 			}
-			rows := records[spec.StartRow:]
-			if spec.NRows > 0 && spec.NRows > len(rows) {
-				rows = rows[:spec.NRows]
-			}
-			layerType := exec(spec.LayerType, map[string]interface{}{"rows": rows})
-			if layerType == "Overlay" {
-				layerType = ls.OverlayTerm
-			} else if layerType == "Schema" {
-				layerType = ls.SchemaTerm
-			}
-			layer, err := dec.Import(spec.AttributeID, spec.Terms, spec.StartRow, spec.NRows, spec.EntityIDRows, spec.EntityID, spec.Required, records)
+			layer, err := spec.Import(records)
 			if err != nil {
 				failErr(err)
-			}
-			if len(layerType) > 0 {
-				layer.SetLayerType(layerType)
-			}
-			if layerID := exec(spec.LayerID, map[string]interface{}{"rows": rows}); len(layerID) > 0 {
-				layer.SetID(layerID)
-			}
-			if rootID := exec(spec.RootID, map[string]interface{}{"rows": rows}); len(rootID) > 0 {
-				ls.SetNodeID(layer.GetSchemaRootNode(), rootID)
-			}
-			if valueType := exec(spec.ValueType, map[string]interface{}{"rows": rows}); len(valueType) > 0 {
-				layer.SetValueType(valueType)
 			}
 			marshaled, err := ls.MarshalLayer(layer)
 			if err != nil {

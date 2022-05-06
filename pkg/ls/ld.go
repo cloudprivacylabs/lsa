@@ -113,3 +113,15 @@ func LDDescendToListElements(in []interface{}) []interface{} {
 	}
 	return in
 }
+
+// LDGetValueArr returns the result of a "@value" as an array regardless of the number of items it contains
+func LDGetValueArr(in map[string]interface{}) []interface{} {
+	v := in["@value"]
+	if v == nil {
+		return nil
+	}
+	if arr, ok := v.([]interface{}); ok {
+		return arr
+	}
+	return []interface{}{v}
+}

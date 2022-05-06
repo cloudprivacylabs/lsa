@@ -16,13 +16,16 @@ package cmd
 
 import (
 	"bytes"
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	csvimport "github.com/cloudprivacylabs/lsa/pkg/csv"
 	jsonsch "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/santhosh-tekuri/jsonschema/v5"
@@ -30,27 +33,89 @@ import (
 
 // Bundle defines type names for variants so references can be resolved
 type Bundle struct {
-	Base      string                   `json:"base" yaml:"base"`
-	TypeNames map[string]BundleVariant `json:"typeNames" yaml:"typeNames"`
+	Base               string                    `json:"base" yaml:"base"`
+	SchemaSpreadsheets []SpreadsheetReference    `json:"schemaSpreadsheets" yaml:"schemaSpreadsheets"`
+	TypeNames          map[string]*BundleVariant `json:"typeNames" yaml:"typeNames"`
+}
+
+type SpreadsheetReference struct {
+	File    string         `json:"file" yaml:"file"`
+	Spec    *CSVImportSpec `json:"spec" yaml:"spec"`
+	Context []interface{}  `json:"context" yaml:"context"`
+}
+
+func (s SpreadsheetReference) Import(ctx *ls.Context) (map[string]*ls.Layer, error) {
+	f, err := os.Open(s.File)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	reader := csv.NewReader(f)
+	reader.FieldsPerRecord = -1
+	records, err := reader.ReadAll()
+	if err != nil {
+		return nil, err
+	}
+
+	if s.Spec != nil {
+		layer, err := s.Spec.Import(records)
+		if err != nil {
+			return nil, err
+		}
+		return map[string]*ls.Layer{layer.GetID(): layer}, nil
+	}
+	var context map[string]interface{}
+	if len(s.Context) > 0 {
+		context = map[string]interface{}{"@context": cmdutil.YAMLToMap(s.Context)}
+	}
+	layers, err := csvimport.ImportSchema(ctx, records, context)
+	if err != nil {
+		return nil, err
+	}
+	ret := make(map[string]*ls.Layer)
+	for _, l := range layers {
+		ret[l.GetID()] = l
+	}
+	return ret, nil
+}
+
+func (b Bundle) LoadSpreadsheets(ctx *ls.Context) (map[string]*ls.Layer, error) {
+	ret := make(map[string]*ls.Layer)
+	for _, x := range b.SchemaSpreadsheets {
+		m, err := x.Import(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("While loading spreadsheet %s: %w", x.File, err)
+		}
+		for k, v := range m {
+			if _, exists := ret[k]; exists {
+				return nil, fmt.Errorf("Duplicate layer %s", k)
+			}
+			ret[k] = v
+		}
+	}
+	return ret, nil
 }
 
 // Merge bundle into b
 func (b *Bundle) Merge(bundle Bundle) {
 	if b.TypeNames == nil {
-		b.TypeNames = make(map[string]BundleVariant)
+		b.TypeNames = make(map[string]*BundleVariant)
 	}
+	b.SchemaSpreadsheets = append(b.SchemaSpreadsheets, bundle.SchemaSpreadsheets...)
 	for typeName, variant := range bundle.TypeNames {
 		existingVariant, ok := b.TypeNames[typeName]
 		if !ok {
 			b.TypeNames[typeName] = variant
 			continue
 		}
-		existingVariant.Merge(variant)
-		b.TypeNames[typeName] = existingVariant
+		existingVariant.Merge(*variant)
 	}
 }
 
 func (b *Bundle) ResolveFilenames(dir string) {
+	for i := range b.SchemaSpreadsheets {
+		b.SchemaSpreadsheets[i].File = getRelativeFileName(dir, b.SchemaSpreadsheets[i].File)
+	}
 	for k, v := range b.TypeNames {
 		v.ResolveFilenames(dir)
 		b.TypeNames[k] = v
@@ -62,7 +127,10 @@ func (b *Bundle) ResolveFilenames(dir string) {
 
 type BundleSchemaRef struct {
 	Schema     string               `json:"schema,omitempty" yaml:"schema,omitempty"`
+	LayerID    string               `json:"layerId,omitempty" yaml:"layerId,omitempty"`
 	JSONSchema *JSONSchemaReference `json:"jsonSchema" yaml:"jsonSchema"`
+
+	layer *ls.Layer
 }
 
 // Merge resets b with ref if ref is nonempty
@@ -92,7 +160,7 @@ func (ref *BundleSchemaRef) ResolveFilenames(dir string) {
 }
 
 type JSONSchemaReference struct {
-	// This is here for compatibility with commercial version
+	// Refer to a layer by ID. Layer can be imported as a spreadsheet
 	LayerID string `json:"layerId" yaml:"layerId" bson:"layerId"`
 	// This is the filename
 	Ref       string `json:"ref" yaml:"ref" bson:"ref"`
@@ -158,17 +226,14 @@ func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importE
 }
 
 // GetLayers returns the layers of the bundle keyed by variant type
-func (bundle *Bundle) GetLayers(ctx *ls.Context, loader func(s string) (*ls.Layer, error), fileLoader func(string) (io.ReadCloser, error)) (map[string]*ls.Layer, error) {
-	// layers keyed by layer id
-	layers := make(map[string]*ls.Layer)
-
-	// For JSON-LS schemas, layerId refers to the filename. We use this map to map that filename to loaded layerid
+func (bundle *Bundle) GetLayers(ctx *ls.Context, layers map[string]*ls.Layer, loader func(s string) (*ls.Layer, error), fileLoader func(string) (io.ReadCloser, error)) (map[string]*ls.Layer, error) {
+	// For JSON-LD schemas, layerId refers to the filename. We use this map to map that filename to loaded layerid
 	layerIDMap := make(map[string]string)
 	// entities keyed by layer id
 	schemaEntities := make(map[string]jsonsch.Entity)
 	ovlEntities := make(map[string]jsonsch.Entity)
 
-	processRef := func(variantType string, ref BundleSchemaRef, entitiesMap map[string]jsonsch.Entity) error {
+	processRef := func(variantType string, ref *BundleSchemaRef, entitiesMap map[string]jsonsch.Entity) error {
 		switch {
 		case len(ref.Schema) > 0:
 			// ref.LayerID refers to a file
@@ -187,7 +252,15 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, loader func(s string) (*ls.Laye
 				return fmt.Errorf("Duplicate id %s in %s", layerID, ref.Schema)
 			}
 			layers[layerID] = layer
+			ref.layer = layer
 			layerIDMap[fileName] = layerID
+
+		case len(ref.LayerID) > 0:
+			layer := layers[ref.LayerID]
+			if layer == nil {
+				return fmt.Errorf("Cannot find layer %s", ref.LayerID)
+			}
+			ref.layer = layer
 
 		case ref.JSONSchema != nil:
 			_, loaded := entitiesMap[ref.JSONSchema.LayerID]
@@ -201,18 +274,17 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, loader func(s string) (*ls.Laye
 				AttrNamespace: ref.JSONSchema.Namespace,
 			}
 			entitiesMap[entity.LayerID] = entity
-			layerIDMap[entity.LayerID] = entity.LayerID
 		}
 		return nil
 	}
 
 	// Load all layers, construct entities
 	for variantType, variant := range bundle.TypeNames {
-		if err := processRef(variantType, variant.BundleSchemaRef, schemaEntities); err != nil {
+		if err := processRef(variantType, &variant.BundleSchemaRef, schemaEntities); err != nil {
 			return nil, err
 		}
-		for _, ovl := range variant.Overlays {
-			if err := processRef(variantType, ovl, ovlEntities); err != nil {
+		for ovl := range variant.Overlays {
+			if err := processRef(variantType, &variant.Overlays[ovl], ovlEntities); err != nil {
 				return nil, err
 			}
 		}
@@ -247,12 +319,34 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, loader func(s string) (*ls.Laye
 		return nil, err
 	}
 
+	// Assign layers for imported JSON schemas
+	for variantType, variant := range bundle.TypeNames {
+		if variant.layer == nil {
+			if variant.JSONSchema != nil {
+				variant.layer = layers[variant.JSONSchema.LayerID]
+			}
+		}
+		if variant.layer == nil {
+			return nil, fmt.Errorf("Cannot find the schema for variant %s", variantType)
+		}
+		for ovl := range variant.Overlays {
+			if variant.Overlays[ovl].layer == nil {
+				if variant.Overlays[ovl].JSONSchema != nil {
+					variant.Overlays[ovl].layer = layers[variant.Overlays[ovl].JSONSchema.LayerID]
+				}
+				if variant.Overlays[ovl].layer == nil {
+					return nil, fmt.Errorf("Cannot find schema for overlay %d of variant %s", ovl, variantType)
+				}
+			}
+		}
+	}
+
 	resultBundle := ls.BundleByType{}
 	for variantType, variant := range bundle.TypeNames {
-		sch := layers[layerIDMap[variant.GetLayerID()]]
+		sch := variant.layer
 		ovl := make([]*ls.Layer, 0, len(variant.Overlays))
 		for _, o := range variant.Overlays {
-			ovl = append(ovl, layers[layerIDMap[o.GetLayerID()]])
+			ovl = append(ovl, o.layer)
 		}
 		if len(ovl) > 0 {
 			sch = sch.Clone()
@@ -290,7 +384,11 @@ func LoadBundle(ctx *ls.Context, file []string) (ls.SchemaLoader, error) {
 		}
 		bundle.Merge(b)
 	}
-	items, err := bundle.GetLayers(ctx, func(fname string) (*ls.Layer, error) {
+	schemaMap, err := bundle.LoadSpreadsheets(ctx)
+	if err != nil {
+		return nil, err
+	}
+	items, err := bundle.GetLayers(ctx, schemaMap, func(fname string) (*ls.Layer, error) {
 		data, err := ioutil.ReadFile(fname)
 		if err != nil {
 			return nil, err
