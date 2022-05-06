@@ -29,6 +29,7 @@ def process(url):
     url_query_params = {k:v[0] if v and len(v) == 1 else v for k,v in url_query.items()}
     # For example, http://example.com/?foo=bar&foo=baz&bar=baz would return:
     # {'foo': ['bar', 'baz'], 'bar': 'baz'}
+    print(url_query_params)
 
     yaml_queries = parseYAML()
     # defaultdict(<class 'list'>, {'gender': ["select concept_id,concept_name from concepts where vocabulary_id='gender' 
@@ -55,5 +56,5 @@ if __name__ == '__main__':
     # first create an instance of PostgresqlManager class.
     postgresql_manager = PostgresqlManager()                        
    
-process("http://localhost:8000?id=gender&concept_id=8507&concept_name=rf")
+# process("http://localhost:8000?id=gender&concept_id=8507&concept_name=rf")
 # http://localhost:8000?id=gender&concept_id=123&concept_name=blah
