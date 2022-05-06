@@ -56,12 +56,6 @@ a *label* that represents the relationship between the nodes, and
   layer root node defines a `Person` object (`valueType`), and the
   type id is `https://test.org/Person` (layer root node `id`).
 
-`https://lschema.org/entityIdFields`
-: Optional annotation that specifies the unique identifier(s)
-attribute ids for the entity. Contents of this property can be a
-string value, or string array. `entityIdFields` can only be specified
-for a schema. An overlay cannot override id fields.
-
 `https://lschema.org/encoding`
 : Optional annotation that specifies the data encoding. If specified, data
   processed using this schema will be read using the defined encoding.
@@ -74,7 +68,13 @@ for a schema. An overlay cannot override id fields.
   annotation is optional for overlays. If `valueType` is specified for
   an overlay, it can only be composed with a schema that has the same
   `valueType`.
-  
+
+`https://lschema.org/entityIdFields`
+: Optional annotation that specifies the unique identifier(s)
+attribute ids for the entity. Contents of this property can be a
+string value, or string array. Note that this is given under `layer`.
+
+
 The JSON-LD representation for a schema is as follows:
 
 {{< highlight json >}}
@@ -83,11 +83,11 @@ The JSON-LD representation for a schema is as follows:
   "@type": "Schema",
   "@id": "https://schema_id",
   "valueType": "Person",
-  "entityIdFields": "https://test.org/Person/id",
   "encoding": "utf-8",
   "layer": {
     "@type": "Object",
     "@id": "https://test.org/Person",
+    "entityIdFields": "https://test.org/Person/id",
     "attributes": {
     ...
     }
