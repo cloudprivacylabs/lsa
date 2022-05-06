@@ -16,16 +16,15 @@ package cmd
 
 import (
 	"bytes"
-	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"text/template"
 
 	dec "github.com/cloudprivacylabs/lsa/pkg/csv"
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -259,17 +258,10 @@ will result:
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := ls.DefaultContext()
-		f, err := os.Open(args[0])
+		records, err := cmdutil.ReadSpreadsheetFile(args[0])
 		if err != nil {
 			failErr(err)
 		}
-		reader := csv.NewReader(f)
-		reader.FieldsPerRecord = -1
-		records, err := reader.ReadAll()
-		if err != nil {
-			failErr(err)
-		}
-		f.Close()
 
 		var context map[string]interface{}
 		if c, _ := cmd.Flags().GetString("context"); len(c) > 0 {
@@ -286,7 +278,10 @@ will result:
 			if err := json.Unmarshal(data, &spec); err != nil {
 				failErr(err)
 			}
-			layer, err := spec.Import(records)
+			if len(records) != 1 {
+				fail("Use a spreadsheet with a single sheet to import with spec")
+			}
+			layer, err := spec.Import(records[0])
 			if err != nil {
 				failErr(err)
 			}
@@ -303,14 +298,16 @@ will result:
 		}
 
 		// No spec
-		layers, err := dec.ImportSchema(ctx, records, context)
-		if err != nil {
-			failErr(err)
-		}
-		for _, l := range layers {
-			intf, _ := ls.MarshalLayer(l)
-			d, _ := json.MarshalIndent(intf, "", "  ")
-			fmt.Println(string(d))
+		for _, sheet := range records {
+			layers, err := dec.ImportSchema(ctx, sheet, context)
+			if err != nil {
+				failErr(err)
+			}
+			for _, l := range layers {
+				intf, _ := ls.MarshalLayer(l)
+				d, _ := json.MarshalIndent(intf, "", "  ")
+				fmt.Println(string(d))
+			}
 		}
 	},
 }

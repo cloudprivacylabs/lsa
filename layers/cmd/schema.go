@@ -16,12 +16,10 @@ package cmd
 
 import (
 	"bytes"
-	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
@@ -45,20 +43,16 @@ type SpreadsheetReference struct {
 }
 
 func (s SpreadsheetReference) Import(ctx *ls.Context) (map[string]*ls.Layer, error) {
-	f, err := os.Open(s.File)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	reader := csv.NewReader(f)
-	reader.FieldsPerRecord = -1
-	records, err := reader.ReadAll()
+	records, err := cmdutil.ReadSpreadsheetFile(s.File)
 	if err != nil {
 		return nil, err
 	}
 
 	if s.Spec != nil {
-		layer, err := s.Spec.Import(records)
+		if len(records) != 1 {
+			return nil, fmt.Errorf("Use a spreadsheet with a single sheet to import with spec")
+		}
+		layer, err := s.Spec.Import(records[0])
 		if err != nil {
 			return nil, err
 		}
@@ -68,13 +62,16 @@ func (s SpreadsheetReference) Import(ctx *ls.Context) (map[string]*ls.Layer, err
 	if len(s.Context) > 0 {
 		context = map[string]interface{}{"@context": cmdutil.YAMLToMap(s.Context)}
 	}
-	layers, err := csvimport.ImportSchema(ctx, records, context)
-	if err != nil {
-		return nil, err
-	}
+
 	ret := make(map[string]*ls.Layer)
-	for _, l := range layers {
-		ret[l.GetID()] = l
+	for _, sheet := range records {
+		layers, err := csvimport.ImportSchema(ctx, sheet, context)
+		if err != nil {
+			return nil, err
+		}
+		for _, l := range layers {
+			ret[l.GetID()] = l
+		}
 	}
 	return ret, nil
 }
