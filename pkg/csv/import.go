@@ -17,6 +17,7 @@ package csv
 import (
 	"bytes"
 	"fmt"
+	"net/url"
 	"strings"
 	"text/template"
 
@@ -331,7 +332,7 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 			if !strings.HasPrefix(k, "@") && filter != nil {
 				// Check source if this is to be set
 				bvalue := filter[k]
-				if len(bvalue) != 1 || bvalue[0] != "true" {
+				if len(bvalue) != 1 || strings.ToLower(bvalue[0]) != "true" {
 					continue
 				}
 			}
@@ -347,6 +348,8 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 		}
 	}
 	// Build layers
+	// Set the namespace URL from the ID of the object row
+	var namespaceURL *url.URL
 	for _, layer := range layerInfo {
 		// Create a compact jsonld
 		layerMap := make(map[string]interface{})
@@ -382,8 +385,26 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 				if attrRow["@type"][0] != "Object" && attrRow["@type"][0] != ls.AttributeTypeObject {
 					return nil, fmt.Errorf("First attribute row must define an object")
 				}
+				id := attrRow["@id"][0]
+				u, err := url.Parse(id)
+				if err == nil {
+					if !strings.HasSuffix(u.Path, "/") {
+						u.Path += "/"
+					}
+					namespaceURL = u
+					ctx.GetLogger().Debug(map[string]interface{}{"importCSV.namespace": namespaceURL.String()})
+				}
 				copyMap(layerNode, attrRow, layer)
 			} else {
+				// Apply namespace if row is not a URI
+				if namespaceURL != nil {
+					id := attrRow["@id"][0]
+					u, err := url.Parse(id)
+					if err == nil && !u.IsAbs() {
+						u := namespaceURL.ResolveReference(u)
+						attrRow["@id"] = []string{u.String()}
+					}
+				}
 				attrNode := make(map[string]interface{})
 				copyMap(attrNode, attrRow, layer)
 				objectNode = append(objectNode, attrNode)

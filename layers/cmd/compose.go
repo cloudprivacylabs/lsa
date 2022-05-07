@@ -39,6 +39,7 @@ var composeCmd = &cobra.Command{
 
 	Args: cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
+		ctx := getContext()
 		repoDir, _ := cmd.Flags().GetString("repo")
 		bundleNames, _ := cmd.Flags().GetStringSlice("bundle")
 		typeName, _ := cmd.Flags().GetString("type")
@@ -46,7 +47,7 @@ var composeCmd = &cobra.Command{
 		var output *ls.Layer
 		if len(repoDir) == 0 {
 			if len(bundleNames) > 0 && len(typeName) > 0 {
-				bundle, err := LoadBundle(ls.DefaultContext(), bundleNames)
+				bundle, err := LoadBundle(ctx, bundleNames)
 				if err != nil {
 					failErr(err)
 				}
@@ -70,7 +71,7 @@ var composeCmd = &cobra.Command{
 					if output == nil {
 						output = layer
 					} else {
-						if err := output.Compose(ls.DefaultContext(), layer); err != nil {
+						if err := output.Compose(ctx, layer); err != nil {
 							fail(fmt.Sprintf("Cannot compose %s: %s", args[i], err))
 						}
 					}
@@ -81,7 +82,7 @@ var composeCmd = &cobra.Command{
 			if err != nil {
 				failErr(err)
 			}
-			output, err = repo.GetComposedSchema(ls.DefaultContext(), args[0])
+			output, err = repo.GetComposedSchema(ctx, args[0])
 			if err != nil {
 				failErr(err)
 			}

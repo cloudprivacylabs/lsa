@@ -43,6 +43,7 @@ type SpreadsheetReference struct {
 }
 
 func (s SpreadsheetReference) Import(ctx *ls.Context) (map[string]*ls.Layer, error) {
+	ctx.GetLogger().Debug(map[string]interface{}{"spreadSheet": s.File})
 	records, err := cmdutil.ReadSpreadsheetFile(s.File)
 	if err != nil {
 		return nil, err
@@ -71,6 +72,7 @@ func (s SpreadsheetReference) Import(ctx *ls.Context) (map[string]*ls.Layer, err
 		}
 		for _, l := range layers {
 			ret[l.GetID()] = l
+			ctx.GetLogger().Debug(map[string]interface{}{"spreadSheet": s.File, "layer": l.GetID()})
 		}
 	}
 	return ret, nil
@@ -340,6 +342,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, layers map[string]*ls.Layer, lo
 
 	resultBundle := ls.BundleByType{}
 	for variantType, variant := range bundle.TypeNames {
+		ctx.GetLogger().Debug(map[string]interface{}{"bundle": "getLayer", "variantType": variantType})
 		sch := variant.layer
 		ovl := make([]*ls.Layer, 0, len(variant.Overlays))
 		for _, o := range variant.Overlays {
