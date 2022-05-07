@@ -148,6 +148,8 @@ A JSON-LD layered schema looks like this:
   "@type": "Schema",
   "valueType": "Person",
   "layer": {
+    "@type": "Object",
+    "@id": "https://example.org/Person",
     "attributes": {
       "firstName": {
          "@type": "Value",
@@ -178,6 +180,8 @@ first and last names.
   "@type": "Overlay",
   "valueType": "Person",
   "layer": {
+    "@type": "Object",
+    "@id": "https://example.org/Person",
     "attributes": {
       "firstName": {
         "@type": "Value",
@@ -203,6 +207,8 @@ for the above schema and overlay is:
   "@type": "Schema",
   "valueType": "Person",
   "layer": {
+    "@type": "Object",
+    "@id": "https://example.org/Person",
     "attributes": {
       "firstName": {
         "@type": "Value",
