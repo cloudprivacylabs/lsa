@@ -387,7 +387,7 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 				}
 				id := attrRow["@id"][0]
 				u, err := url.Parse(id)
-				if err == nil {
+				if err == nil && u.IsAbs() {
 					if !strings.HasSuffix(u.Path, "/") {
 						u.Path += "/"
 					}
