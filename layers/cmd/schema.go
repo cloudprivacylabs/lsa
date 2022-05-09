@@ -168,8 +168,8 @@ type JSONSchemaReference struct {
 
 // BundleVariant combines a schema and overlays
 type BundleVariant struct {
-	BundleSchemaRef
-	Overlays []BundleSchemaRef `json:"overlays" yaml:"overlays"`
+	BundleSchemaRef `yaml:",inline"`
+	Overlays        []BundleSchemaRef `json:"overlays" yaml:"overlays"`
 }
 
 func (b *BundleVariant) ResolveFilenames(dir string) {
@@ -240,6 +240,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, layers map[string]*ls.Layer, lo
 			fileName := ref.Schema
 			_, loaded := layerIDMap[fileName]
 			if loaded {
+				ref.layer = layers[layerIDMap[fileName]]
 				break
 			}
 			layer, err := loader(fileName)

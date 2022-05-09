@@ -264,38 +264,43 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 
 func (reshaper Reshaper) getMapNodes(ctx *reshapeContext, mapProperty, schemaNodeID string) ([]graph.Node, error) {
 	mapContext := ctx.getMapContext()
-	var pat graph.Pattern
-	var patsym map[string]*graph.PatternSymbol
+	var found []graph.Node
+	checkNodeProperty := func(node graph.Node) bool {
+		pv := ls.AsPropertyValue(node.GetProperty(mapProperty))
+		if pv == nil {
+			return false
+		}
+		if pv.IsString() {
+			if pv.AsString() == schemaNodeID {
+				found = append(found, node)
+				return true
+			}
+		}
+		if pv.IsStringSlice() {
+			for _, x := range pv.AsStringSlice() {
+				if x == schemaNodeID {
+					found = append(found, node)
+					return true
+				}
+			}
+		}
+		return false
+	}
 	if mapContext != nil {
-		pat = graph.Pattern{
-			{
-				Name: "mapContext",
-			},
-			{
-				Min: 0,
-				Max: -1,
-			},
-			{
-				Labels:     graph.NewStringSet(ls.DocumentNodeTerm),
-				Properties: map[string]interface{}{mapProperty: ls.StringPropertyValue(schemaNodeID)},
-			},
-		}
-		ps := graph.PatternSymbol{}
-		ps.AddNode(mapContext)
-		patsym = map[string]*graph.PatternSymbol{"mapContext": &ps}
+		ls.IterateDescendants(mapContext, func(node graph.Node) bool {
+			checkNodeProperty(node)
+			return true
+		}, ls.OnlyDocumentNodes, true)
 	} else {
-		pat = graph.Pattern{
-			{
-				Labels:     graph.NewStringSet(ls.DocumentNodeTerm),
-				Properties: map[string]interface{}{mapProperty: ls.StringPropertyValue(schemaNodeID)},
-			},
+		for nodes := ctx.sourceGraph.GetNodes(); nodes.Next(); {
+			node := nodes.Node()
+			if !node.HasLabel(ls.DocumentNodeTerm) {
+				continue
+			}
+			checkNodeProperty(node)
 		}
 	}
-	acc, err := pat.FindPaths(ctx.sourceGraph, patsym)
-	if err != nil {
-		return nil, err
-	}
-	return acc.GetTailNodes(), nil
+	return found, nil
 }
 
 // Returns true if operation produced any output
