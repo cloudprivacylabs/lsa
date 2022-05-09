@@ -58,7 +58,7 @@ An LSA spreadsheet specification looks like this:
 </table>
 
 The LSA specification contains four distinct sections. The first
-section starts with the `valueType` or `https://lschema.org/valueType`
+section (colored purple) starts with the `valueType` or `https://lschema.org/valueType`
 term in the first column. Any rows in the spreadsheet before this is
 ignored, so if there are any documantation necessary they can be
 included before this term. The second column gives the type of the
@@ -66,16 +66,16 @@ object defined by the schema. This section may include the
 `entityIdFields` term that lists the identity fields. If there is more
 than one, the additional fields must be listed in subsequent
 columns. Note the naming of the identity fields: all the schema fields
-are by defult in the same namespace as the schema root. More on this
+are by default in the same namespace as the schema root. More on this
 will be later. If there are additional schema-level metadata, they can
 be included here as well. 
 
-The first section ends at the header row, which is identified by `@id`
+The second section (colored light blue) starts at the header row, which is identified by `@id`
 in the first column, and `@type` in the second column. Subsequent
 columns list the terms used to define the schema.
 
-The next section lists the schema and the overlays defined in this
-spreadsheet. The `@id` column specifies the id of the schema or
+The third section (colored gray) lists the schema and the overlays defined in this
+spreadsheet. In the previous section, the `@id` column specifies the id of the schema or
 overlay, and the `@type` column specifies whether that column defines
 a schema or an overlay. The remaining columns determine which terms
 are included in that layer. If a cell has `true` value, then the
@@ -85,7 +85,7 @@ the schema `https://example.org/Person/schema` will include the
 `https://example.org/Person/dpvoverlay` overlay will include the
 `hasPersonalDataCategory` term, but not the `valueType` term.
 
-The fourth section defines the schema attributes. The first attribute
+The fourth section (colored yellow) defines the schema attributes. The first attribute
 must be an `Object` that is the root node of the schema/overlays. The
 root node also specifies the namespace for the remaining
 attributes. In the above example, all the attributes will be in the
@@ -126,8 +126,8 @@ These layers can be referenced in a bundle using their layer ids.
 {{</highlight>}}
 
 The `schemaSpreadsheets` is an array listing all the spreadsheet
-files. These can be `.xlsx` or `.csv` files. To enable JSON-LD name
-expansion, and context must be specified. This is necessary because
+files. These can be `.xlsx` or `.csv` files. To enable JSON-LD, name
+expansion and context must be specified. This is necessary because
 spreadsheet schema specification are first translated into JSON-LD,
 and then expanded using the given context.
 
