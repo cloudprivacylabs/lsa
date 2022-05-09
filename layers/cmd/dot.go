@@ -26,6 +26,7 @@ func init() {
 	rootCmd.AddCommand(dotCmd)
 	dotCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	dotCmd.Flags().String("rankdir", "LR", "rankdir")
+	dotCmd.Flags().String("output", "dot", "Output format (dot, json, jsonld, web)")
 }
 
 var dotCmd = &cobra.Command{
@@ -38,7 +39,7 @@ var dotCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-
-		cmdutil.WriteGraph(cmd, g, "dot", os.Stdout)
+		output, _ := cmd.Flags().GetString("output")
+		cmdutil.WriteGraph(cmd, g, output, os.Stdout)
 	},
 }

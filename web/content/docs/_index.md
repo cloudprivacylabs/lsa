@@ -10,6 +10,9 @@ description: "Layered schema architecture documentation"
 : Layered schema meta model described as labeled property graphs and
   JSON-LD serialization
   
+[Working with Layers: Schemas, Overlays, and Bundles](schemas_bundles)
+: A tutorial on how to work with schemas and overlays using bundles
+  
 [Using Spreadsheets for Layered Schemas](spreadsheet_representation)
 : Using spreadsheets and CSV files to define layered schemas
 
