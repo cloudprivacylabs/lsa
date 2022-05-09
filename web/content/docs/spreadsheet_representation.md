@@ -126,7 +126,7 @@ These layers can be referenced in a bundle using their layer ids.
 {{</highlight>}}
 
 The `schemaSpreadsheets` is an array listing all the spreadsheet
-files. These can be `.xlsx` or `.csv` files. To enable JSON-LD, name
+files. These can be `.xlsx` or `.csv` files. To enable JSON-LD name
 expansion and context must be specified. This is necessary because
 spreadsheet schema specification are first translated into JSON-LD,
 and then expanded using the given context.
