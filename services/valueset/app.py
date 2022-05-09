@@ -4,11 +4,12 @@ from postgresql_manager import PostgresqlManager
 from urllib import parse
 
 psql = PostgresqlManager
+psql.get_connection_by_config(psql, 'database.ini', 'postgresql_conn_data') 
 
 def parseYAML() -> defaultdict:
     queries = defaultdict(list)
     columns = []
-    with open("queries.yaml") as yaml_file:
+    with open("example_queries.yaml") as yaml_file:
         vs_list = yaml.full_load(yaml_file)
         for item, doc in vs_list.items():
             for key,val in doc[0].items():
@@ -29,15 +30,13 @@ def process(url):
     url_query_params = {k:v[0] if v and len(v) == 1 else v for k,v in url_query.items()}
     # For example, http://example.com/?foo=bar&foo=baz&bar=baz would return:
     # {'foo': ['bar', 'baz'], 'bar': 'baz'}
-    print(url_query_params)
 
     yaml_queries = parseYAML()
     # defaultdict(<class 'list'>, {'gender': ["select concept_id,concept_name from concepts where vocabulary_id='gender' 
     # and concept_id=$concept_id", "select concept_id,concept_name from concepts where vocabulary_id='gender' 
     # and concept_name=$concept_name"]})
     
-    # grab cursor needed to executing SQL calls
-    psql.get_connection_by_config(psql, 'database.ini', 'postgresql_conn_data')            
+    # grab cursor needed to executing SQL calls           
     cursor = psql.get_cursor(psql)
 
     # iterate through yaml dictionary and for each query, execute statement, binding url query parameters
