@@ -3,7 +3,11 @@ serverPort = 8000
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib import parse
 
+<<<<<<< HEAD
 from app import process
+=======
+from main import process
+>>>>>>> 17f0247b91fe4a000d45f6bdab665369a43a81d7
 
 class VS_Server(BaseHTTPRequestHandler):
     def do_GET(self):
