@@ -15,7 +15,11 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/url"
+	"sync"
 	"unicode"
 
 	"github.com/spf13/cobra"
@@ -25,7 +29,8 @@ import (
 )
 
 type Valuesets struct {
-	Sets map[string]Valueset `json:"valuesets" yaml:"valuesets"`
+	Services map[string]string   `json:"services" yaml:"valuesets"`
+	Sets     map[string]Valueset `json:"valuesets" yaml:"valuesets"`
 }
 
 type Valueset struct {
@@ -211,7 +216,58 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 		ctx.GetLogger().Debug(map[string]interface{}{"valueset.found": found})
 		return found, nil
 	}
-	for _, id := range req.TableIDs {
+	var n int = len(req.TableIDs)
+	var wg sync.WaitGroup
+	results := make([]ls.ValuesetLookupResponse, n)
+	errs := make([]error, n)
+	for idx, id := range req.TableIDs {
+		if v, ok := vsets.Services[id]; ok {
+			id := id
+			wg.Add(1)
+			go func(i int) {
+				defer wg.Done()
+				base, err := url.Parse(v)
+				if err != nil {
+					errs[i] = err
+					return
+				}
+				qparams := base.Query()
+				qparams["tableId"] = append(qparams["tableId"], id)
+				base.RawQuery = qparams.Encode()
+				resp, err := http.Get(base.String())
+				if err != nil {
+					errs[i] = err
+					return
+				}
+				var m map[string]string
+				err = json.NewDecoder(resp.Body).Decode(&m)
+				defer resp.Body.Close()
+				if err != nil {
+					errs[i] = err
+					return
+				}
+				results[i] = ls.ValuesetLookupResponse{KeyValues: m}
+			}(idx)
+		}
+		for _, err := range errs {
+			if err != nil {
+				return ls.ValuesetLookupResponse{}, err
+			}
+		}
+		var counter int
+		var resultIdx int
+		for idx, res := range results {
+			if len(res.KeyValues) > 0 {
+				counter++
+				if counter >= 2 {
+					return ls.ValuesetLookupResponse{}, fmt.Errorf("Ambiguous lookup for %s", req)
+				}
+				resultIdx = idx
+			}
+		}
+		if counter == 1 {
+			return results[resultIdx], nil
+		}
 		if v, ok := vsets.Sets[id]; ok {
 			if err := lookup(v); err != nil {
 				return ls.ValuesetLookupResponse{}, err
@@ -220,6 +276,7 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 			return found, fmt.Errorf("Valueset not found: %s", id)
 		}
 	}
+	wg.Wait()
 	return found, nil
 }
 
