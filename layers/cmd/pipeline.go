@@ -142,20 +142,20 @@ func (ctx *PipelineContext) GetGraphRO() graph.Graph {
 func (ctx *PipelineContext) GetGraphRW() graph.Graph {
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
-	if ctx != ctx.graphOwner {
-		newTarget := graph.NewOCGraph()
-		ls.CopyGraph(newTarget, ctx.GetGraphRO(), func(n graph.Node) bool {
-			if !ls.IsAttributeNode(n) {
-				return true
-			}
-			return false
-		},
-			func(edge graph.Edge) bool {
-				return !ls.IsAttributeTreeEdge(edge)
-			})
-		ctx.SetGraph(newTarget)
-		ctx.graphOwner = ctx
-	}
+	// if ctx != ctx.graphOwner {
+	// 	newTarget := graph.NewOCGraph()
+	// 	ls.CopyGraph(newTarget, ctx.GetGraphRO(), func(n graph.Node) bool {
+	// 		if !ls.IsAttributeNode(n) {
+	// 			return true
+	// 		}
+	// 		return false
+	// 	},
+	// 		func(edge graph.Edge) bool {
+	// 			return !ls.IsAttributeTreeEdge(edge)
+	// 		})
+	// 	ctx.SetGraph(newTarget)
+	// 	ctx.graphOwner = ctx
+	// }
 	return ctx.graph
 }
 
