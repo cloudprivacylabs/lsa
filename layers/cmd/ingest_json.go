@@ -95,17 +95,15 @@ func (ji *JSONIngester) Run(pipeline *PipelineContext) error {
 			break
 		}
 
-		parser := jsoningest.Parser{}
-
-		parser.OnlySchemaAttributes = ji.OnlySchemaAttributes
+		parser := jsoningest.Parser{
+			OnlySchemaAttributes: ji.OnlySchemaAttributes,
+		}
 		if layer != nil {
 			parser.SchemaNode = layer.GetSchemaRootNode()
 		}
-		embedSchemaNodes := ji.EmbedSchemaNodes
-
 		builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
-			EmbedSchemaNodes:     embedSchemaNodes,
-			OnlySchemaAttributes: parser.OnlySchemaAttributes,
+			EmbedSchemaNodes:     ji.EmbedSchemaNodes,
+			OnlySchemaAttributes: ji.OnlySchemaAttributes,
 		})
 		baseID := ji.ID
 
