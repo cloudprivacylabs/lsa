@@ -65,6 +65,7 @@ func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
 	}
 
 	inputIndex := 0
+	var inputName string
 	nextInput := func() (io.Reader, error) {
 		if len(pipeline.InputFiles) == 0 {
 			if inputIndex > 0 {
@@ -72,12 +73,14 @@ func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
 			}
 			inputIndex++
 			inp, err := cmdutil.StreamFileOrStdin(nil, enc)
+			inputName = "stdin"
 			return inp, err
 		}
 		if inputIndex >= len(pipeline.InputFiles) {
 			return nil, nil
 		}
-		data, err := cmdutil.ReadURL(pipeline.InputFiles[inputIndex], enc)
+		inputName = pipeline.InputFiles[inputIndex]
+		data, err := cmdutil.ReadURL(inputName, enc)
 		if err != nil {
 			return nil, err
 		}
@@ -110,14 +113,14 @@ func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
 
 		parsed, err := parser.ParseStream(pipeline.Context, baseID, input)
 		if err != nil {
-			return err
+			return fmt.Errorf("While reading input %s: %w", inputName, err)
 		}
 		_, err = ls.Ingest(builder, parsed)
 		if err != nil {
-			return err
+			return fmt.Errorf("While reading input %s: %w", inputName, err)
 		}
 		if err := pipeline.Next(); err != nil {
-			return err
+			return fmt.Errorf("Input was %s: %w", inputName, err)
 		}
 	}
 	return nil
