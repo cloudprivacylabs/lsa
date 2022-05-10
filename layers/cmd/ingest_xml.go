@@ -15,8 +15,11 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"io"
+
+	"golang.org/x/text/encoding"
 
 	"github.com/spf13/cobra"
 
@@ -52,49 +55,70 @@ func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
 		pipeline.Properties["layer"] = layer
 		xml.initialized = true
 	}
-	var input io.Reader
+
+	enc := encoding.Nop
 	if layer != nil {
-		enc, err := layer.GetEncoding()
+		enc, err = layer.GetEncoding()
 		if err != nil {
-			failErr(err)
-		}
-		input, err = cmdutil.StreamFileOrStdin(pipeline.InputFiles, enc)
-		if err != nil {
-			failErr(err)
-		}
-	} else {
-		input, err = cmdutil.StreamFileOrStdin(pipeline.InputFiles)
-		if err != nil {
-			failErr(err)
+			return err
 		}
 	}
-	grph := pipeline.Graph
 
-	embedSchemaNodes := xml.EmbedSchemaNodes
-	onlySchemaAttributes := xml.OnlySchemaAttributes
-	parser := xmlingest.Parser{
-		OnlySchemaAttributes: onlySchemaAttributes,
+	inputIndex := 0
+	nextInput := func() (io.Reader, error) {
+		if len(pipeline.InputFiles) == 0 {
+			if inputIndex > 0 {
+				return nil, nil
+			}
+			inputIndex++
+			inp, err := cmdutil.StreamFileOrStdin(nil, enc)
+			return inp, err
+		}
+		if inputIndex >= len(pipeline.InputFiles) {
+			return nil, nil
+		}
+		data, err := cmdutil.ReadURL(pipeline.InputFiles[inputIndex], enc)
+		if err != nil {
+			return nil, err
+		}
+		inputIndex++
+		return bytes.NewReader(data), nil
 	}
-	if layer != nil {
-		parser.SchemaNode = layer.GetSchemaRootNode()
-	}
-	builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
-		EmbedSchemaNodes:     embedSchemaNodes,
-		OnlySchemaAttributes: onlySchemaAttributes,
-	})
+	for {
+		input, err := nextInput()
+		if err != nil {
+			return err
+		}
+		if input == nil {
+			break
+		}
 
-	baseID := xml.ID
+		grph := pipeline.Graph
 
-	parsed, err := parser.ParseStream(pipeline.Context, baseID, input)
-	if err != nil {
-		failErr(err)
-	}
-	_, err = ls.Ingest(builder, parsed)
-	if err != nil {
-		failErr(err)
-	}
-	if err := pipeline.Next(); err != nil {
-		return err
+		parser := xmlingest.Parser{
+			OnlySchemaAttributes: xml.OnlySchemaAttributes,
+		}
+		if layer != nil {
+			parser.SchemaNode = layer.GetSchemaRootNode()
+		}
+		builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
+			EmbedSchemaNodes:     xml.EmbedSchemaNodes,
+			OnlySchemaAttributes: xml.OnlySchemaAttributes,
+		})
+
+		baseID := xml.ID
+
+		parsed, err := parser.ParseStream(pipeline.Context, baseID, input)
+		if err != nil {
+			return err
+		}
+		_, err = ls.Ingest(builder, parsed)
+		if err != nil {
+			return err
+		}
+		if err := pipeline.Next(); err != nil {
+			return err
+		}
 	}
 	return nil
 }

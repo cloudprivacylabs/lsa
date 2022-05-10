@@ -194,6 +194,7 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 
 	compiled := compiler.CGraph.GetCompiledSchema(ref)
 	if compiled != nil {
+		context.GetLogger().Debug(map[string]interface{}{"mth": "compile", "ref": ref, "stage": "Already compiled"})
 		return compiled, nil
 	}
 	compiled, err := compiler.loadSchema(ctx, ref)
