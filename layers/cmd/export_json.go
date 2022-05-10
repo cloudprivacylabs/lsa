@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
@@ -34,7 +35,7 @@ params:`)
 }
 
 func (*JSONExport) Run(pipeline *PipelineContext) error {
-	for _, node := range graph.Sources(pipeline.Graph) {
+	for _, node := range graph.Sources(pipeline.GetGraphRO()) {
 		exportOptions := jsoningest.ExportOptions{}
 		data, err := jsoningest.Export(node, exportOptions)
 		if err != nil {

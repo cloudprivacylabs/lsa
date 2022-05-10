@@ -96,15 +96,13 @@ func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
 			break
 		}
 
-		grph := pipeline.Graph
-
 		parser := xmlingest.Parser{
 			OnlySchemaAttributes: xml.OnlySchemaAttributes,
 		}
 		if layer != nil {
 			parser.SchemaNode = layer.GetSchemaRootNode()
 		}
-		builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
+		builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
 			EmbedSchemaNodes:     xml.EmbedSchemaNodes,
 			OnlySchemaAttributes: xml.OnlySchemaAttributes,
 		})

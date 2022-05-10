@@ -56,11 +56,11 @@ func (rs *ReshapeStep) Run(pipeline *PipelineContext) error {
 	reshaper.Builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		EmbedSchemaNodes: true,
 	})
-	err = reshaper.Reshape(pipeline.Context, pipeline.Graph)
+	err = reshaper.Reshape(pipeline.Context, pipeline.GetGraphRO())
 	if err != nil {
 		return err
 	}
-	pipeline.Graph = reshaper.Builder.GetGraph()
+	pipeline.SetGraph(reshaper.Builder.GetGraph())
 	if err := pipeline.Next(); err != nil {
 		return err
 	}
