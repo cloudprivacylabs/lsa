@@ -98,7 +98,9 @@ func (ji *JSONIngester) Run(pipeline *PipelineContext) error {
 		parser := jsoningest.Parser{}
 
 		parser.OnlySchemaAttributes = ji.OnlySchemaAttributes
-		parser.SchemaNode = layer.GetSchemaRootNode()
+		if layer != nil {
+			parser.SchemaNode = layer.GetSchemaRootNode()
+		}
 		embedSchemaNodes := ji.EmbedSchemaNodes
 
 		builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{

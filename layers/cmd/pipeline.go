@@ -22,6 +22,7 @@ type PipelineContext struct {
 	steps       []Step
 	Properties  map[string]interface{}
 	mu          sync.RWMutex
+	graphOwner  *PipelineContext
 }
 
 type Step interface {
@@ -38,28 +39,15 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 	errs := make([]error, 0, len(fork.Steps))
 	for _, pipe := range fork.Steps {
 		go func(steps []Step, currCtx *PipelineContext) {
+			defer wg.Done()
 			pctx := &PipelineContext{
 				Context:     getContext(),
 				InputFiles:  make([]string, 0),
 				currentStep: 0,
 				Properties:  make(map[string]interface{}),
+				mu:          sync.RWMutex{},
 			}
-			switch currCtx.graph {
-			case currCtx.GetGraphRO():
-				pctx.SetGraph(currCtx.GetGraphRO())
-			case currCtx.GetGraphRW():
-				newTarget := graph.NewOCGraph()
-				ls.CopyGraph(newTarget, currCtx.GetGraphRW(), func(n graph.Node) bool {
-					if !ls.IsAttributeNode(n) {
-						return true
-					}
-					return false
-				},
-					func(edge graph.Edge) bool {
-						return !ls.IsAttributeTreeEdge(edge)
-					})
-				pctx.SetGraph(newTarget)
-			}
+			pctx.SetGraph(currCtx.GetGraphRW())
 			err := steps[pctx.currentStep].Run(pctx)
 			var perr pipelineError
 			if err != nil && !errors.As(err, &perr) {
@@ -154,6 +142,20 @@ func (ctx *PipelineContext) GetGraphRO() graph.Graph {
 func (ctx *PipelineContext) GetGraphRW() graph.Graph {
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
+	if ctx != ctx.graphOwner {
+		newTarget := graph.NewOCGraph()
+		ls.CopyGraph(newTarget, ctx.GetGraphRO(), func(n graph.Node) bool {
+			if !ls.IsAttributeNode(n) {
+				return true
+			}
+			return false
+		},
+			func(edge graph.Edge) bool {
+				return !ls.IsAttributeTreeEdge(edge)
+			})
+		ctx.SetGraph(newTarget)
+		ctx.graphOwner = ctx
+	}
 	return ctx.graph
 }
 
