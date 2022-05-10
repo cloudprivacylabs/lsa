@@ -50,10 +50,13 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 			case currCtx.GetGraphRW():
 				newTarget := graph.NewOCGraph()
 				ls.CopyGraph(newTarget, currCtx.GetGraphRW(), func(n graph.Node) bool {
+					if !ls.IsAttributeNode(n) {
+						return true
+					}
 					return false
 				},
 					func(edge graph.Edge) bool {
-						return false
+						return !ls.IsAttributeTreeEdge(edge)
 					})
 				pctx.SetGraph(newTarget)
 			}
