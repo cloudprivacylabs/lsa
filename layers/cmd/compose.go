@@ -27,7 +27,7 @@ import (
 
 func init() {
 	rootCmd.AddCommand(composeCmd)
-	composeCmd.Flags().String("output", "jdonld", "Output format (dot, json, jsonld, web)")
+	composeCmd.Flags().String("output", "jsonld", "Output format (dot, json, jsonld, web)")
 	composeCmd.Flags().String("repo", "", "Schema repository directory. If a repository is given, all layers are resolved using that repository. Otherwise, all layers are read as files.")
 	composeCmd.Flags().StringSlice("bundle", nil, "Bundle file(s)")
 	composeCmd.Flags().String("type", "", "Value Type")
