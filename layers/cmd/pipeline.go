@@ -143,9 +143,21 @@ func (ctx *PipelineContext) GetGraphRW() graph.Graph {
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
 	if ctx != ctx.graphOwner {
-		newTarget := ls.NewDocumentGraph()
+		schemaNodes := make(map[graph.Node]struct{})
+		for nodes := ctx.GetGraphRO().GetNodes(); nodes.Next(); {
+			node := nodes.Node()
+			if ls.IsDocumentNode(node) {
+				for _, edge := range graph.EdgeSlice(node.GetEdgesWithLabel(graph.OutgoingEdge, ls.InstanceOfTerm)) {
+					schemaNodes[edge.GetTo()] = struct{}{}
+				}
+			}
+		}
+		newTarget := graph.NewOCGraph()
 		ls.CopyGraph(newTarget, ctx.GetGraphRO(), func(n graph.Node) bool {
 			if !ls.IsAttributeNode(n) {
+				return true
+			}
+			if _, ok := schemaNodes[n]; ok {
 				return true
 			}
 			return false
