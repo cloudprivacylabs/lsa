@@ -146,7 +146,7 @@ func (ctx *PipelineContext) GetGraphRW() graph.Graph {
 	defer ctx.mu.Unlock()
 	if ctx != ctx.graphOwner {
 		newTarget := graph.NewOCGraph()
-		nodeMap := ls.CopyGraph(newTarget, ctx.GetGraphRO(), nil, nil)
+		nodeMap := ls.CopyGraph(newTarget, ctx.graph, nil, nil)
 		ctx.graph = newTarget
 
 		ctx.graphOwner.mu.Lock()
