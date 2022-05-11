@@ -36,29 +36,27 @@ type ForkStep struct {
 func (fork ForkStep) Run(ctx *PipelineContext) error {
 	var wg sync.WaitGroup
 	wg.Add(len(fork.Steps))
-	errs := make([]error, 0, len(fork.Steps))
-	for _, pipe := range fork.Steps {
-		go func(steps []Step, currCtx *PipelineContext) {
+	errs := make([]error, len(fork.Steps))
+	for idx, pipe := range fork.Steps {
+		go func(steps []Step, currCtx *PipelineContext, index int) {
 			defer wg.Done()
 			pctx := &PipelineContext{
-				Context:     getContext(),
+				graph:       currCtx.graph,
+				roots:       currCtx.roots,
+				Context:     currCtx.Context,
 				InputFiles:  make([]string, 0),
 				currentStep: 0,
 				Properties:  make(map[string]interface{}),
+				graphOwner:  currCtx,
 				mu:          sync.RWMutex{},
-			}
-			if currCtx != currCtx.graphOwner {
-				pctx.SetGraph(currCtx.GetGraphRW())
-			} else {
-				pctx.SetGraph(currCtx.GetGraphRO())
 			}
 			err := steps[pctx.currentStep].Run(pctx)
 			var perr pipelineError
 			if err != nil && !errors.As(err, &perr) {
-				err = pipelineError{wrapped: err, step: pctx.currentStep}
-				errs = append(errs, err)
+				err = pipelineError{wrapped: fmt.Errorf("fork number: %d, %w", index, err), step: pctx.currentStep}
+				errs[index] = err
 			}
-		}(pipe, ctx)
+		}(pipe, ctx, idx)
 	}
 	wg.Wait()
 	for _, err := range errs {
@@ -150,15 +148,11 @@ func (ctx *PipelineContext) GetGraphRW() graph.Graph {
 		newTarget := graph.NewOCGraph()
 		nodeMap := ls.CopyGraph(newTarget, ctx.GetGraphRO(), nil, nil)
 		ctx.graph = newTarget
-		for nx := ctx.graph.GetNodes(); nx.Next(); {
-			node := nx.Node()
-			if _, ok := nodeMap[node]; ok {
-				if ls.IsNodeEntityRoot(node) {
-					ctx.roots = append(ctx.roots, node)
-				}
-			}
-		}
+
 		ctx.graphOwner.mu.Lock()
+		for _, root := range ctx.graphOwner.roots {
+			ctx.roots = append(ctx.roots, nodeMap[root])
+		}
 		ctx.graphOwner = ctx
 		ctx.graphOwner.mu.Unlock()
 	}
