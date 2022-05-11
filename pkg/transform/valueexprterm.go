@@ -20,6 +20,9 @@ import (
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
+// ValueExprTerm defines one or more opencypher expressions that
+// defines the value of the node. The first one that returns nonempty
+// resultset will be evaluated
 var ValueExprTerm = ls.NewTerm(TRANSFORM, "valueExpr", false, false, ls.OverrideComposition, ValueExprTermSemantics)
 
 type valueExprTermSemantics struct{}
@@ -27,26 +30,24 @@ type valueExprTermSemantics struct{}
 var ValueExprTermSemantics = valueExprTermSemantics{}
 
 func (valueExprTermSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
-	e, err := opencypher.Parse(value.AsString())
-	if err != nil {
-		return err
+	if value == nil {
+		return nil
 	}
-	target.SetProperty("$compiled_"+ValueExprTerm, e)
+	expr := make([]opencypher.Evaluatable, 0)
+	for _, str := range value.MustStringSlice() {
+		e, err := opencypher.Parse(str)
+		if err != nil {
+			return err
+		}
+		expr = append(expr, e)
+	}
+	target.SetProperty("$compiled_"+ValueExprTerm, expr)
 	return nil
 }
 
-// GetEvaluatable returns the contents of the compiled valueExpr term
-func (valueExprTermSemantics) GetEvaluatable(node graph.Node) opencypher.Evaluatable {
+// GetEvaluatables returns the contents of the compiled valueExpr terms
+func (valueExprTermSemantics) GetEvaluatables(node graph.Node) []opencypher.Evaluatable {
 	v, _ := node.GetProperty("$compiled_" + ValueExprTerm)
-	x, _ := v.(opencypher.Evaluatable)
+	x, _ := v.([]opencypher.Evaluatable)
 	return x
-}
-
-func (valueExprTermSemantics) Evaluate(node graph.Node, ctx *opencypher.EvalContext) (bool, opencypher.Value, error) {
-	ev := ValueExprTermSemantics.GetEvaluatable(node)
-	if ev == nil {
-		return false, opencypher.Value{}, nil
-	}
-	v, err := ev.Evaluate(ctx)
-	return true, v, err
 }
