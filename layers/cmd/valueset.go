@@ -311,6 +311,50 @@ func LoadValuesetFiles(vs *Valuesets, files []string) error {
 	return nil
 }
 
+// func LoadValuesetSpreadSheets(vs *Valuesets, spreadsheets []string) error {
+//  if vs.Sets == nil {
+//      vs.Sets = make(map[string]Valueset)
+//  }
+//  for _, ss := range spreadsheets {
+//      sheet, err := cmdutil.ReadSpreadsheetFilev2(ss)
+//      if err != nil {
+//          return fmt.Errorf("While reading file: %s, %w", ss, err)
+//      }
+//      for name, value := range sheet {
+//          if _, exists := vs.Sets[name]; exists {
+//              return fmt.Errorf("Value set %s already defined", name)
+//          }
+//          for rowIdx, colData := range value {
+
+//          }
+//      }
+//  }
+// }
+
+func (vsets Valuesets) SpreadsheetAsValueset(ctx *ls.Context, req ls.ValuesetLookupRequest, file string) ([]string, error) {
+	spreadsheet, err := cmdutil.ReadSpreadsheetFilev2(file)
+	if err != nil {
+		return []string{}, fmt.Errorf("While reading file: %s, %w", spreadsheet, err)
+	}
+	for name, value := range spreadsheet {
+		if _, exists := vsets.Sets[name]; exists {
+			return []string{}, fmt.Errorf("Value set %s already defined", name)
+		}
+		for rowIdx := 0; rowIdx < len(value); rowIdx++ {
+			if len(req.KeyValues) == 0 || req.KeyValues[""] != "" {
+				return value[rowIdx], nil
+			}
+			// switch {
+			// case len(req.KeyValues) == 0:
+			//  return value[rowIdx], nil
+			// case req.KeyValues[""] != "":
+			//  return value[rowIdx], nil
+			// }
+		}
+	}
+	return []string{}, nil
+}
+
 func loadValuesetsCmd(cmd *cobra.Command, valuesets *Valuesets) {
 	vsf, _ := cmd.Flags().GetStringSlice("valueset")
 	if len(vsf) > 0 {

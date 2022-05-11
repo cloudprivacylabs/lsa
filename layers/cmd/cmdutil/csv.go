@@ -60,3 +60,39 @@ func ReadSpreadsheetFile(fileName string) ([][][]string, error) {
 	}
 	return ret, nil
 }
+
+func ReadSpreadsheetFilev2(fileName string) (map[string][][]string, error) {
+	if strings.HasSuffix(strings.ToLower(fileName), ".csv") {
+		file, err := os.Open(fileName)
+		if err != nil {
+			return nil, err
+		}
+		defer file.Close()
+		reader := csv.NewReader(file)
+		reader.LazyQuotes = true
+		reader.FieldsPerRecord = -1
+		if s := os.Getenv("CSV_SEPARATOR"); len(s) > 0 {
+			reader.Comma = rune(s[0])
+		}
+		data, err := reader.ReadAll()
+		if err != nil {
+			return nil, err
+		}
+		return map[string][][]string{fileName: data}, nil
+	}
+	f, err := excelize.OpenFile(fileName)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	sheets := f.GetSheetList()
+	ret := make(map[string][][]string)
+	for _, sheet := range sheets {
+		rows, err := f.GetRows(sheet)
+		if err != nil {
+			return nil, err
+		}
+		ret[sheet] = rows
+	}
+	return ret, nil
+}
