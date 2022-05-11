@@ -493,9 +493,7 @@ func (reshaper Reshaper) handleRow(ctx *reshapeContext, row map[string]opencyphe
 
 	case schemaNode.HasLabel(ls.AttributeTypeObject) || schemaNode.HasLabel(ls.AttributeTypeArray):
 		var siblings []graph.Node
-		if parent == nil {
-			siblings = graph.Sources(ctx.builder.GetGraph())
-		} else {
+		if parent != nil {
 			siblings = ls.FindChildInstanceOf(parent, ls.GetNodeID(schemaNode))
 		}
 		if len(siblings) > 0 && !multi {
