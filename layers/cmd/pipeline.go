@@ -47,7 +47,11 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 				Properties:  make(map[string]interface{}),
 				mu:          sync.RWMutex{},
 			}
-			pctx.SetGraph(currCtx.GetGraphRW())
+			if currCtx != currCtx.graphOwner {
+				pctx.SetGraph(currCtx.GetGraphRW())
+			} else {
+				pctx.SetGraph(currCtx.GetGraphRO())
+			}
 			err := steps[pctx.currentStep].Run(pctx)
 			var perr pipelineError
 			if err != nil && !errors.As(err, &perr) {
@@ -141,20 +145,23 @@ func (ctx *PipelineContext) GetGraphRO() graph.Graph {
 
 func (ctx *PipelineContext) GetGraphRW() graph.Graph {
 	ctx.mu.Lock()
-	ctx.graphOwner.mu.Lock()
 	defer ctx.mu.Unlock()
-	defer ctx.graphOwner.mu.Unlock()
 	if ctx != ctx.graphOwner {
 		newTarget := graph.NewOCGraph()
 		nodeMap := ls.CopyGraph(newTarget, ctx.GetGraphRO(), nil, nil)
-		for _, node := range nodeMap {
-			if ls.IsNodeEntityRoot(node) {
-				ctx.roots = append(ctx.roots, node)
+		ctx.graph = newTarget
+		for nx := ctx.graph.GetNodes(); nx.Next(); {
+			node := nx.Node()
+			if _, ok := nodeMap[node]; ok {
+				if ls.IsNodeEntityRoot(node) {
+					ctx.roots = append(ctx.roots, node)
+				}
 			}
 		}
-		ctx.graph = newTarget
+		ctx.graphOwner.mu.Lock()
+		ctx.graphOwner = ctx
+		ctx.graphOwner.mu.Unlock()
 	}
-	ctx.graphOwner = ctx
 	return ctx.graph
 }
 
