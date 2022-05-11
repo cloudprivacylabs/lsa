@@ -172,70 +172,13 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 		}
 	}
 
-	// Determine the source nodes for ingestion
-	evalContext := ctx.getEvalContext()
-	ok, sourceValue, err := ValueExprTermSemantics.Evaluate(schemaNode, evalContext)
-	if err != nil {
-		return false, wrapReshapeError(err, schemaNodeID)
-	}
-	if ok {
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "Evaluated value expression"})
-		if err != nil {
-			return false, wrapReshapeError(err, schemaNodeID)
-		}
-		v, err := reshaper.handle(ctx, sourceValue)
-		if err != nil {
-			return false, wrapReshapeError(err, schemaNodeID)
-		}
-		return v, nil
-	}
-	// Evaluate map context
-	ok, mapContext, err := MapContextSemantics.Evaluate(schemaNode, evalContext)
-	if err != nil {
-		return false, wrapReshapeError(err, schemaNodeID)
-	}
-	if ok {
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "mapContext": "mapContext"})
-		// Map context can be a node, or a node slice with one element, or an rs with a node
-		switch c := mapContext.Value.(type) {
-		case graph.Node:
-			ctx.pushMapContext(c)
-			defer ctx.popMapContext()
-
-		case []graph.Node:
-			switch len(c) {
-			case 1:
-				ctx.pushMapContext(c[0])
-				defer ctx.popMapContext()
-			case 0:
-				ctx.pushMapContext(nil)
-				defer ctx.popMapContext()
-			default:
-				return false, wrapReshapeError(fmt.Errorf("Map context has multiple nodes"), schemaNodeID)
-			}
-		case opencypher.ResultSet:
-			switch len(c.Rows) {
-			case 0:
-				ctx.pushMapContext(nil)
-				defer ctx.popMapContext()
-			case 1:
-				if len(c.Rows[0]) != 1 {
-					return false, wrapReshapeError(fmt.Errorf("Map context resultset has to have one column"), schemaNodeID)
-				}
-				for _, v := range c.Rows[0] {
-					n, ok := v.Value.(graph.Node)
-					if !ok {
-						return false, wrapReshapeError(fmt.Errorf("Map context expression must return a single node"), schemaNodeID)
-					}
-					ctx.pushMapContext(n)
-					defer ctx.popMapContext()
-				}
-			default:
-				return false, wrapReshapeError(fmt.Errorf("Map context has multiple items"), schemaNodeID)
-			}
-		}
-	}
-
+	// The node can get its value in one of the following ways:
+	//
+	//    mapProperty: If set, get the mapped value, which is []Node, and process each
+	//    valueExpr: If has values, get the results of the expression, process each
+	//
+	// otherwise, if this is a non-value node, process children and
+	// create the node if there are nonempty children
 	// Is it a map node?
 	if mapProperty := ls.AsPropertyValue(schemaNode.GetProperty(MapPropertyTerm)).AsString(); len(mapProperty) > 0 {
 		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "state": "Running map", "mapProperty": mapProperty})
@@ -244,12 +187,74 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 		if err != nil {
 			return false, wrapReshapeError(err, schemaNodeID)
 		}
-		v, err := reshaper.handleNodeSlice(ctx, nodes)
+		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "nMapNodes": len(nodes)})
+		v, err := reshaper.handle(ctx, opencypher.Value{Value: nodes})
 		if err != nil {
 			return false, wrapReshapeError(err, schemaNodeID)
 		}
 		return v, nil
 	}
+	if evaluatable := ValueExprTermSemantics.GetEvaluatable(schemaNode); evaluatable != nil {
+		// Determine the source nodes for ingestion
+		evalContext := ctx.getEvalContext()
+		sv, err := evaluatable.Evaluate(evalContext)
+		if err != nil {
+			return false, wrapReshapeError(err, schemaNodeID)
+		}
+		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "Evaluated value expression"})
+		v, err := reshaper.handle(ctx, sv)
+		if err != nil {
+			return false, wrapReshapeError(err, schemaNodeID)
+		}
+		return v, nil
+	}
+
+	// // Evaluate map context
+	// ok, mapContext, err := MapContextSemantics.Evaluate(schemaNode, evalContext)
+	// if err != nil {
+	// 	return false, wrapReshapeError(err, schemaNodeID)
+	// }
+	// if ok {
+	// 	ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "mapContext": "mapContext"})
+	// 	// Map context can be a node, or a node slice with one element, or an rs with a node
+	// 	switch c := mapContext.Value.(type) {
+	// 	case graph.Node:
+	// 		ctx.pushMapContext(c)
+	// 		defer ctx.popMapContext()
+
+	// 	case []graph.Node:
+	// 		switch len(c) {
+	// 		case 1:
+	// 			ctx.pushMapContext(c[0])
+	// 			defer ctx.popMapContext()
+	// 		case 0:
+	// 			ctx.pushMapContext(nil)
+	// 			defer ctx.popMapContext()
+	// 		default:
+	// 			return false, wrapReshapeError(fmt.Errorf("Map context has multiple nodes"), schemaNodeID)
+	// 		}
+	// 	case opencypher.ResultSet:
+	// 		switch len(c.Rows) {
+	// 		case 0:
+	// 			ctx.pushMapContext(nil)
+	// 			defer ctx.popMapContext()
+	// 		case 1:
+	// 			if len(c.Rows[0]) != 1 {
+	// 				return false, wrapReshapeError(fmt.Errorf("Map context resultset has to have one column"), schemaNodeID)
+	// 			}
+	// 			for _, v := range c.Rows[0] {
+	// 				n, ok := v.Value.(graph.Node)
+	// 				if !ok {
+	// 					return false, wrapReshapeError(fmt.Errorf("Map context expression must return a single node"), schemaNodeID)
+	// 				}
+	// 				ctx.pushMapContext(n)
+	// 				defer ctx.popMapContext()
+	// 			}
+	// 		default:
+	// 			return false, wrapReshapeError(fmt.Errorf("Map context has multiple items"), schemaNodeID)
+	// 		}
+	// 	}
+	// }
 
 	// If not a value node, try reshaping subtree
 	if !schemaNode.HasLabel(ls.AttributeTypeValue) {
@@ -262,8 +267,62 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 	return false, nil
 }
 
+func (reshaper Reshaper) evaluateMapContext(ctx *reshapeContext) (bool, error) {
+	schemaNode := ctx.getSchemaNode()
+	ev := MapContextSemantics.GetEvaluatable(schemaNode)
+	if ev == nil {
+		return false, nil
+	}
+	evalContext := ctx.getEvalContext()
+	mapContext, err := ev.Evaluate(evalContext)
+	if err != nil {
+		return false, nil
+	}
+	ctx.GetLogger().Debug(map[string]interface{}{"reshape": ls.GetNodeID(schemaNode), "mapContext": mapContext})
+	// Map context can be a node, or a node slice with one element, or an rs with a node
+	switch c := mapContext.Value.(type) {
+	case graph.Node:
+		ctx.pushMapContext(c)
+		return true, nil
+
+	case []graph.Node:
+		switch len(c) {
+		case 1:
+			ctx.pushMapContext(c[0])
+			return true, nil
+		case 0:
+			ctx.pushMapContext(nil)
+			return true, nil
+		default:
+			return false, fmt.Errorf("Map context has multiple nodes")
+		}
+	case opencypher.ResultSet:
+		switch len(c.Rows) {
+		case 0:
+			ctx.pushMapContext(nil)
+			return true, nil
+		case 1:
+			if len(c.Rows[0]) != 1 {
+				return false, fmt.Errorf("Map context resultset has to have one column")
+			}
+			for _, v := range c.Rows[0] {
+				n, ok := v.Value.(graph.Node)
+				if !ok {
+					return false, fmt.Errorf("Map context expression must return a single node")
+				}
+				ctx.pushMapContext(n)
+				return true, nil
+			}
+		default:
+			return false, fmt.Errorf("Map context has multiple items")
+		}
+	}
+	return false, nil
+}
+
 func (reshaper Reshaper) getMapNodes(ctx *reshapeContext, mapProperty, schemaNodeID string) ([]graph.Node, error) {
 	mapContext := ctx.getMapContext()
+	ctx.GetLogger().Debug(map[string]interface{}{"reshaper.getMapNodes.context": mapContext})
 	var found []graph.Node
 	checkNodeProperty := func(node graph.Node) bool {
 		pv := ls.AsPropertyValue(node.GetProperty(mapProperty))
@@ -412,6 +471,13 @@ func (reshaper Reshaper) handleRow(ctx *reshapeContext, row map[string]opencyphe
 	if len(row) == 0 {
 		return false, nil
 	}
+	mc, err := reshaper.evaluateMapContext(ctx)
+	if err != nil {
+		return false, nil
+	}
+	if mc {
+		defer ctx.popMapContext()
+	}
 	schemaNode := ctx.getSchemaNode()
 	parent := ctx.getParentGraphNode()
 	multi := ls.AsPropertyValue(schemaNode.GetProperty(MultipleTerm)).AsString() == "true"
@@ -456,7 +522,14 @@ func (reshaper Reshaper) handleNonValueNode(ctx *reshapeContext) (bool, error) {
 		for _, node := range nodes {
 			ctx.GetLogger().Debug(map[string]interface{}{"reshaper.handleNonValueNode": node})
 			ctx.pushSchemaNode(node)
+			mc, err := reshaper.evaluateMapContext(ctx)
+			if err != nil {
+				return false, nil
+			}
 			r, err := reshaper.reshapeNode(ctx)
+			if mc {
+				ctx.popMapContext()
+			}
 			ctx.popSchemaNode()
 			if err != nil {
 				return false, err
@@ -469,7 +542,14 @@ func (reshaper Reshaper) handleNonValueNode(ctx *reshapeContext) (bool, error) {
 	case schemaNode.HasLabel(ls.AttributeTypeArray):
 		elemNode := ls.GetArrayElementNode(schemaNode)
 		ctx.pushSchemaNode(elemNode)
+		mc, err := reshaper.evaluateMapContext(ctx)
+		if err != nil {
+			return false, nil
+		}
 		r, err := reshaper.reshapeNode(ctx)
+		if mc {
+			ctx.popMapContext()
+		}
 		ctx.popSchemaNode()
 		if err != nil {
 			return false, err
@@ -496,7 +576,14 @@ func (reshaper Reshaper) handleResultSet(ctx *reshapeContext, rs opencypher.Resu
 		})
 		// Export values
 		ctx.exportVars(row)
+		mc, err := reshaper.evaluateMapContext(ctx)
+		if err != nil {
+			return false, nil
+		}
 		r, err := reshaper.handleRow(ctx, row)
+		if mc {
+			ctx.popMapContext()
+		}
 		if err != nil {
 			return hasResults, err
 		}
@@ -517,7 +604,13 @@ func (reshaper Reshaper) handleNodeSlice(ctx *reshapeContext, nodes []graph.Node
 			"stage":   "processing nodes for each value",
 			"row":     index,
 		})
-		ctx.pushMapContext(node)
+		mc, err := reshaper.evaluateMapContext(ctx)
+		if err != nil {
+			return false, nil
+		}
+		if !mc {
+			ctx.pushMapContext(node)
+		}
 		parent := ctx.getParentGraphNode()
 		multi := ls.AsPropertyValue(schemaNode.GetProperty(MultipleTerm)).AsString() == "true"
 		switch {
@@ -533,11 +626,13 @@ func (reshaper Reshaper) handleNodeSlice(ctx *reshapeContext, nodes []graph.Node
 
 		case schemaNode.HasLabel(ls.AttributeTypeObject) || schemaNode.HasLabel(ls.AttributeTypeArray):
 			var siblings []graph.Node
-			if parent == nil {
-				siblings = graph.Sources(ctx.builder.GetGraph())
-			} else {
+			if parent != nil {
 				siblings = ls.FindChildInstanceOf(parent, ls.GetNodeID(schemaNode))
 			}
+			ctx.GetLogger().Debug(map[string]interface{}{"reshape": ls.GetNodeID(schemaNode),
+				"type":     schemaNode.GetLabels(),
+				"parent":   parent,
+				"siblings": siblings})
 			if len(siblings) > 0 && !multi {
 				ctx.popMapContext()
 				return false, fmt.Errorf("Multiple values in mapping")

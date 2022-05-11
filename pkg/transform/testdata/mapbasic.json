@@ -1,6 +1,7 @@
 [
     {
         "name": "Basic",
+        "disable": false,
         "rootId": "1",
         "target": {
             "@context": ["../../schemas/ls.json"],
@@ -110,6 +111,7 @@
     },
     {
         "name": "Identity mapping",
+        "disable": false,
         "rootId": "1",
         "target": {
             "@context": ["../../schemas/ls.json"],
@@ -219,6 +221,202 @@
                 }
             ]
         }
+    },
+    {
+        "name": "Multi",
+        "rootId": "1",
+        "target": {
+            "@context": ["../../schemas/ls.json"],
+            "@id": "http://test",
+            "@type": "Schema",
+            "layer": {
+                "@type": "Object",
+                "@id": "urn:root",
+                "transformMapProperty":"omop",
+                "attributeList": [
+                    {
+                        "@id": "urn:target:1",
+                        "@type": "Value",
+                        "transformMapProperty":"omop"
+                    },
+                    {
+                        "@id": "urn:target:2",
+                        "@type": "Value",
+                        "transformMapProperty":"omop"
+                    }
+                ]
+            }
+        },
+        "sourceGraph": {
+            "nodes": [
+                {
+                    "n":0,
+                    "id": "1",
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Object"],
+                    "properties": {
+                        "omop":"urn:root"
+                    }
+                },
+                {
+                    "n":1,
+                    "id": "2",
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "properties": {
+                        "omop":"urn:target:1",
+                        "https://lschema.org/value":"a"
+                    }
+                },
+                {
+                    "n":2,
+                    "id": "3",
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "properties": {
+                        "omop":"urn:target:2",
+                        "https://lschema.org/value":"b"
+                    }
+                },
+                {
+                    "n":3,
+                    "id": "4",
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Object"],
+                    "properties": {
+                        "omop":"urn:root"
+                    }
+                },
+                {
+                    "n":5,
+                    "id": "5",
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "properties": {
+                        "omop":"urn:target:1",
+                        "https://lschema.org/value":"c"
+                    }
+                },
+                {
+                    "n":6,
+                    "id": "6",
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "properties": {
+                        "omop":"urn:target:2",
+                        "https://lschema.org/value":"d"
+                    }
+                },
+                {
+                    "n": 7,
+                    "id": "7",
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Object"]
+                }
+            ],
+            "edges": [
+                {
+                    "from": 0,
+                    "to": 1,
+                    "label": "https://lschema.org/has"
+                },
+                {
+                    "from": 0,
+                    "to": 2,
+                    "label": "https://lschema.org/has"
+                },
+                {
+                    "from": 3,
+                    "to": 5,
+                    "label": "https://lschema.org/has"
+                },
+                {
+                    "from": 3,
+                    "to": 6,
+                    "label": "https://lschema.org/has"
+                },
+                {
+                    "from": 7,
+                    "to": 0,
+                    "label": "https://lschema.org/has"
+                },
+                {
+                    "from": 7,
+                    "to": 3,
+                    "label": "https://lschema.org/has"
+                }
+            ]
+        },
+        "expected": {
+            "nodes":[
+                {
+                    "n":0,
+                    "labels":["https://lschema.org/DocumentNode","https://lschema.org/Object"],
+                    "properties":{
+                        "https://lschema.org/schemaNodeId":"urn:root"
+                    }
+                },
+                {
+                    "n":1,
+                    "labels":["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "properties":{
+                        "https://lschema.org/attributeIndex":"0",
+                        "https://lschema.org/schemaNodeId":"urn:target:1",
+                        "https://lschema.org/value":"a"
+                    }
+                },
+                {
+                    "n":2,
+                    "labels":["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "properties":{
+                        "https://lschema.org/attributeIndex":"1",
+                        "https://lschema.org/schemaNodeId":"urn:target:2",
+                        "https://lschema.org/value":"b"
+                    }
+                },
+                {
+                    "n":3,
+                    "labels":["https://lschema.org/DocumentNode","https://lschema.org/Object"],
+                    "properties":{
+                        "https://lschema.org/schemaNodeId":"urn:root"
+                    }
+                },
+                {
+                    "n":4,
+                    "labels":["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "properties":{
+                        "https://lschema.org/attributeIndex":"0",
+                        "https://lschema.org/schemaNodeId":"urn:target:1",
+                        "https://lschema.org/value":"c"
+                    }
+                },
+                {
+                    "n":5,
+                    "labels":["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "properties":{
+                        "https://lschema.org/attributeIndex":"1",
+                        "https://lschema.org/schemaNodeId":"urn:target:2",
+                        "https://lschema.org/value":"d"
+                    }
+                }
+            ],
+            "edges":[
+                {
+                    "from":0,
+                    "to":1,
+                    "label":"https://lschema.org/has"
+                },
+                {
+                    "from":0,
+                    "to":2,
+                    "label":"https://lschema.org/has"
+                },
+                {
+                    "from":3,
+                    "to":4,
+                    "label":"https://lschema.org/has"
+                },
+                {
+                    "from":3,
+                    "to":5,
+                    "label":"https://lschema.org/has"
+                }
+            ]
+        }
     }
+    
 ]
 

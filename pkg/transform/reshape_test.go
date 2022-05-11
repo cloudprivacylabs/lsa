@@ -30,11 +30,15 @@ type testCase struct {
 	SourceLDGraph interface{}     `json:"sourceLdGraph"`
 	ExpectedLD    interface{}     `json:"expectedLd"`
 	Expected      json.RawMessage `json:"expected"`
+	Disable       bool            `json:"disable"`
 }
 
 func (tc testCase) GetName() string { return tc.Name }
 
 func (tc testCase) Run(t *testing.T) {
+	if tc.Disable {
+		return
+	}
 	t.Logf("Running %s", tc.Name)
 	targetLayer, err := ls.UnmarshalLayer(tc.Target, nil)
 	if err != nil {
@@ -80,8 +84,6 @@ func (tc testCase) Run(t *testing.T) {
 		t.Errorf("Test case: %s Reshaper error: %v", tc.Name, err)
 		return
 	}
-	result := graph.Sources(reshaper.Builder.GetGraph())[0]
-	ls.SetNodeID(result, "root")
 
 	expectedGraph := graph.NewOCGraph()
 	if tc.Expected != nil {
@@ -94,50 +96,84 @@ func (tc testCase) Run(t *testing.T) {
 		t.Errorf("Test case: %s Cannot unmarshal expected graph: %v", tc.Name, err)
 		return
 	}
-	eq := graph.CheckIsomorphism(reshaper.Builder.GetGraph(), expectedGraph, func(n1, n2 graph.Node) bool {
-		t.Logf("Cmp: %+v %+v\n", n1, n2)
-		s1, _ := ls.GetRawNodeValue(n1)
-		s2, _ := ls.GetRawNodeValue(n2)
-		if s1 != s2 {
-			return false
-		}
-		// Expected properties must be a subset
-		propertiesOK := true
-		n2.ForEachProperty(func(k string, v interface{}) bool {
-			pv, ok := v.(*ls.PropertyValue)
-			if !ok {
-				return true
-			}
-			v2, ok := n1.GetProperty(k)
-			if !ok {
-				propertiesOK = false
-				return false
-			}
-			pv2, ok := v2.(*ls.PropertyValue)
-			if !ok {
-				propertiesOK = false
-				return false
-			}
-			if !pv2.IsEqual(pv) {
-				propertiesOK = false
-				return false
-			}
-			return true
-		})
-		if !propertiesOK {
-			return false
-		}
-		t.Logf("True\n")
-		return true
-	}, func(e1, e2 graph.Edge) bool {
-		return ls.IsPropertiesEqual(ls.PropertiesAsMap(e1), ls.PropertiesAsMap(e2))
-	})
 
-	if !eq {
-		m := ls.JSONMarshaler{}
-		result, _ := m.Marshal(reshaper.Builder.GetGraph())
-		expected, _ := m.Marshal(expectedGraph)
-		t.Errorf("Test case: %s Result is different from the expected: Result:\n%s\nExpected:\n%s", tc.Name, string(result), string(expected))
+	// If there are multiple sources, test equivalence of each root
+	gotSources := graph.Sources(reshaper.Builder.GetGraph())
+	expectedSources := graph.Sources(expectedGraph)
+	if len(gotSources) != len(expectedSources) {
+		t.Errorf("Got %d sources, expecting %d", len(gotSources), len(expectedSources))
+		return
+	}
+
+	// For each source we got, it must match one expected source
+	for g := range gotSources {
+		matched := false
+		for e := range expectedSources {
+			eq := graph.CheckIsomorphism(gotSources[g].GetGraph(), expectedSources[e].GetGraph(), func(n1, n2 graph.Node) bool {
+				// If only one of the source nodes match, return false
+				if n1 == gotSources[g] {
+					if n2 == expectedSources[e] {
+						return true
+					}
+					return false
+				}
+				if n2 == expectedSources[e] {
+					return false
+				}
+				t.Logf("Cmp: %+v %+v\n", n1, n2)
+				s1, _ := ls.GetRawNodeValue(n1)
+				s2, _ := ls.GetRawNodeValue(n2)
+				if s1 != s2 {
+					t.Logf("Wrong value: %s %s", s1, s2)
+					return false
+				}
+				// Expected properties must be a subset
+				propertiesOK := true
+				n2.ForEachProperty(func(k string, v interface{}) bool {
+					pv, ok := v.(*ls.PropertyValue)
+					if !ok {
+						t.Logf("Error at %s: %v", k, v)
+						return true
+					}
+					v2, ok := n1.GetProperty(k)
+					if !ok {
+						t.Logf("Error at %s: %v", k, v)
+						propertiesOK = false
+						return false
+					}
+					pv2, ok := v2.(*ls.PropertyValue)
+					if !ok {
+						t.Logf("Error at %s: %v", k, v)
+						propertiesOK = false
+						return false
+					}
+					if !pv2.IsEqual(pv) {
+						t.Logf("Error at %s: %v", k, v)
+						propertiesOK = false
+						return false
+					}
+					return true
+				})
+				if !propertiesOK {
+					t.Logf("Properties not same")
+					return false
+				}
+				t.Logf("True\n")
+				return true
+			}, func(e1, e2 graph.Edge) bool {
+				return ls.IsPropertiesEqual(ls.PropertiesAsMap(e1), ls.PropertiesAsMap(e2))
+			})
+			if eq {
+				matched = true
+				break
+			}
+		}
+		if !matched {
+			m := ls.JSONMarshaler{}
+			result, _ := m.Marshal(reshaper.Builder.GetGraph())
+			expected, _ := m.Marshal(expectedGraph)
+			t.Errorf("Test case: %s Result is different from the expected: Result:\n%s\nExpected:\n%s", tc.Name, string(result), string(expected))
+		}
 	}
 }
 
@@ -151,6 +187,7 @@ func TestBasicReshape(t *testing.T) {
 }
 
 func TestBasicMap(t *testing.T) {
+	ls.DefaultLogLevel = ls.LogLevelDebug
 	run := func(in json.RawMessage) (ls.TestCase, error) {
 		var c testCase
 		err := json.Unmarshal(in, &c)
