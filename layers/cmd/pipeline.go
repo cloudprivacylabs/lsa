@@ -144,18 +144,18 @@ func (ctx *PipelineContext) GetGraphRO() graph.Graph {
 func (ctx *PipelineContext) GetGraphRW() graph.Graph {
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
-	if ctx != ctx.graphOwner {
-		newTarget := graph.NewOCGraph()
-		nodeMap := ls.CopyGraph(newTarget, ctx.graph, nil, nil)
-		ctx.graph = newTarget
+	// if ctx != ctx.graphOwner {
+	// 	newTarget := graph.NewOCGraph()
+	// 	nodeMap := ls.CopyGraph(newTarget, ctx.graph, nil, nil)
+	// 	ctx.graph = newTarget
 
-		ctx.graphOwner.mu.Lock()
-		for _, root := range ctx.graphOwner.roots {
-			ctx.roots = append(ctx.roots, nodeMap[root])
-		}
-		ctx.graphOwner = ctx
-		ctx.graphOwner.mu.Unlock()
-	}
+	// 	ctx.graphOwner.mu.Lock()
+	// 	for _, root := range ctx.graphOwner.roots {
+	// 		ctx.roots = append(ctx.roots, nodeMap[root])
+	// 	}
+	// 	ctx.graphOwner = ctx
+	// 	ctx.graphOwner.mu.Unlock()
+	// }
 	return ctx.graph
 }
 
