@@ -5,7 +5,7 @@ import (
 )
 
 type Context struct {
-	Context  context.Context
+	context.Context
 	logger   Logger
 	interner Interner
 }
