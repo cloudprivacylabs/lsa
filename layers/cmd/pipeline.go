@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"sync"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -14,16 +15,57 @@ import (
 
 type PipelineContext struct {
 	*ls.Context
-	Graph       graph.Graph
-	Roots       []graph.Node
+	graph       graph.Graph
+	roots       []graph.Node
 	InputFiles  []string
 	currentStep int
 	steps       []Step
 	Properties  map[string]interface{}
+	mu          sync.RWMutex
+	graphOwner  *PipelineContext
 }
 
 type Step interface {
 	Run(*PipelineContext) error
+}
+
+type ForkStep struct {
+	Steps [][]Step
+}
+
+func (fork ForkStep) Run(ctx *PipelineContext) error {
+	var wg sync.WaitGroup
+	wg.Add(len(fork.Steps))
+	errs := make([]error, len(fork.Steps))
+	for idx, pipe := range fork.Steps {
+		go func(steps []Step, currCtx *PipelineContext, index int) {
+			defer wg.Done()
+			pctx := &PipelineContext{
+				graph:       currCtx.graph,
+				roots:       currCtx.roots,
+				Context:     currCtx.Context,
+				InputFiles:  make([]string, 0),
+				currentStep: -1,
+				Properties:  make(map[string]interface{}),
+				graphOwner:  currCtx.graphOwner,
+				mu:          sync.RWMutex{},
+			}
+			err := pctx.Next()
+			var perr pipelineError
+			if err != nil && !errors.As(err, &perr) {
+				err = pipelineError{wrapped: fmt.Errorf("fork number: %d, %w", index, err), step: pctx.currentStep}
+				errs[index] = err
+				return
+			}
+		}(pipe, ctx, idx)
+	}
+	wg.Wait()
+	for _, err := range errs {
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 type StepFunc func(*PipelineContext) error
@@ -47,7 +89,7 @@ func (rd ReadGraphStep) Run(pipeline *PipelineContext) error {
 	if err != nil {
 		return err
 	}
-	pipeline.Graph = g
+	pipeline.SetGraph(g)
 	return pipeline.Next()
 }
 
@@ -77,7 +119,8 @@ func (wr WriteGraphStep) Run(pipeline *PipelineContext) error {
 	if len(wr.Format) == 0 {
 		wr.Format = "json"
 	}
-	return OutputIngestedGraph(wr.Cmd, wr.Format, pipeline.Graph, os.Stdout, wr.IncludeSchema)
+	grph := pipeline.GetGraphRO()
+	return OutputIngestedGraph(wr.Cmd, wr.Format, grph, os.Stdout, wr.IncludeSchema)
 }
 
 type pipelineError struct {
@@ -91,6 +134,36 @@ func (e pipelineError) Error() string {
 
 func (e pipelineError) Unwrap() error {
 	return e.wrapped
+}
+
+func (ctx *PipelineContext) GetGraphRO() graph.Graph {
+	ctx.mu.RLock()
+	defer ctx.mu.RUnlock()
+	return ctx.graph
+}
+
+func (ctx *PipelineContext) GetGraphRW() graph.Graph {
+	ctx.mu.Lock()
+	defer ctx.mu.Unlock()
+	if ctx != ctx.graphOwner {
+		ctx.graphOwner.mu.Lock()
+		newTarget := graph.NewOCGraph()
+		nodeMap := ls.CopyGraph(newTarget, ctx.graph, nil, nil)
+		ctx.graph = newTarget
+		for _, root := range ctx.graphOwner.roots {
+			ctx.roots = append(ctx.roots, nodeMap[root])
+		}
+		ctx.graphOwner = ctx
+		ctx.graphOwner.mu.Unlock()
+	}
+	return ctx.graph
+}
+
+func (ctx *PipelineContext) SetGraph(g graph.Graph) *PipelineContext {
+	ctx.mu.Lock()
+	defer ctx.mu.Unlock()
+	ctx.graph = g
+	return ctx
 }
 
 func (ctx *PipelineContext) Next() error {
@@ -175,13 +248,14 @@ func runPipeline(steps []Step, initialGraph string, inputs []string) (*PipelineC
 		g = ls.NewDocumentGraph()
 	}
 	pipeline := &PipelineContext{
-		Graph:       g,
+		graph:       g,
 		Context:     getContext(),
 		InputFiles:  inputs,
 		steps:       steps,
 		currentStep: -1,
 		Properties:  make(map[string]interface{}),
 	}
+	pipeline.graphOwner = pipeline
 	return pipeline, pipeline.Next()
 }
 

@@ -15,10 +15,12 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 
 	"github.com/spf13/cobra"
+	"golang.org/x/text/encoding"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
@@ -52,42 +54,67 @@ func (ji *JSONIngester) Run(pipeline *PipelineContext) error {
 		pipeline.Properties["layer"] = layer
 		ji.initialized = true
 	}
-	var input io.Reader
+
+	enc := encoding.Nop
 	if layer != nil {
-		enc, err := layer.GetEncoding()
-		if err != nil {
-			return err
-		}
-		input, err = cmdutil.StreamFileOrStdin(pipeline.InputFiles, enc)
-		if err != nil {
-			return err
-		}
-	} else {
-		input, err = cmdutil.StreamFileOrStdin(pipeline.InputFiles)
+		enc, err = layer.GetEncoding()
 		if err != nil {
 			return err
 		}
 	}
 
-	parser := jsoningest.Parser{}
-
-	parser.OnlySchemaAttributes = ji.OnlySchemaAttributes
-	parser.SchemaNode = layer.GetSchemaRootNode()
-	embedSchemaNodes := ji.EmbedSchemaNodes
-
-	builder := ls.NewGraphBuilder(pipeline.Graph, ls.GraphBuilderOptions{
-		EmbedSchemaNodes:     embedSchemaNodes,
-		OnlySchemaAttributes: parser.OnlySchemaAttributes,
-	})
-	baseID := ji.ID
-
-	_, err = jsoningest.IngestStream(pipeline.Context, baseID, input, parser, builder)
-	if err != nil {
-		return err
+	inputIndex := 0
+	var inputName string
+	nextInput := func() (io.Reader, error) {
+		if len(pipeline.InputFiles) == 0 {
+			if inputIndex > 0 {
+				return nil, nil
+			}
+			inputIndex++
+			inp, err := cmdutil.StreamFileOrStdin(nil, enc)
+			inputName = "stdin"
+			return inp, err
+		}
+		if inputIndex >= len(pipeline.InputFiles) {
+			return nil, nil
+		}
+		inputName = pipeline.InputFiles[inputIndex]
+		data, err := cmdutil.ReadURL(inputName, enc)
+		if err != nil {
+			return nil, err
+		}
+		inputIndex++
+		return bytes.NewReader(data), nil
 	}
+	for {
+		input, err := nextInput()
+		if err != nil {
+			return err
+		}
+		if input == nil {
+			break
+		}
 
-	if err := pipeline.Next(); err != nil {
-		return err
+		parser := jsoningest.Parser{
+			OnlySchemaAttributes: ji.OnlySchemaAttributes,
+		}
+		if layer != nil {
+			parser.SchemaNode = layer.GetSchemaRootNode()
+		}
+		builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
+			EmbedSchemaNodes:     ji.EmbedSchemaNodes,
+			OnlySchemaAttributes: ji.OnlySchemaAttributes,
+		})
+		baseID := ji.ID
+
+		_, err = jsoningest.IngestStream(pipeline.Context, baseID, input, parser, builder)
+		if err != nil {
+			return fmt.Errorf("While reading input %s: %w", inputName, err)
+		}
+
+		if err := pipeline.Next(); err != nil {
+			return fmt.Errorf("Input was %s: %w", inputName, err)
+		}
 	}
 	return nil
 }

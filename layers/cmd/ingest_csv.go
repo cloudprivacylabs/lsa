@@ -90,10 +90,9 @@ func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
 	for _, inputFile := range pipeline.InputFiles {
 		file, err := os.Open(inputFile)
 		if err != nil {
-			return err
+			return fmt.Errorf("While reading input %s: %w", inputFile, err)
 		}
 		reader := csv.NewReader(file)
-		grph := pipeline.Graph
 
 		for row := 0; ; row++ {
 			rowData, err := reader.Read()
@@ -116,7 +115,7 @@ func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
 				file.Close()
 				break
 			}
-			builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
+			builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
 				EmbedSchemaNodes:     ci.EmbedSchemaNodes,
 				OnlySchemaAttributes: ci.OnlySchemaAttributes,
 			})
@@ -146,14 +145,14 @@ func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
 					return err
 				}
 				// New graph here
-				pipeline.Graph = ls.NewDocumentGraph()
+				pipeline.SetGraph(ls.NewDocumentGraph())
 			}
 		}
 		if !ci.IngestByRows {
 			if err := pipeline.Next(); err != nil {
-				return err
+				return fmt.Errorf("While reading input %s: %w", inputFile, err)
 			}
-			pipeline.Graph = ls.NewDocumentGraph()
+			pipeline.SetGraph(ls.NewDocumentGraph())
 		}
 	}
 	return nil
