@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"sync"
 	"unicode"
 
@@ -318,13 +319,37 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 		if err != nil {
 			return fmt.Errorf("While reading file: %s, %w", spreadsheet, err)
 		}
+		sheetHeaders := make(map[string]string)
+		determineHeaderType := func(s string) string {
+			s = strings.TrimSpace(s)
+			suffix := s[len(s)-2:] // (i) or (o)
+			switch suffix {
+			case "(i)":
+				return "input"
+			case "(o)":
+				return "output"
+			}
+			return fmt.Sprint("Cannot determine header type")
+		}
 		for name, value := range spreadsheet {
 			if _, exists := vsets.Sets[name]; exists {
 				return fmt.Errorf("Value set %s already defined", name)
 			}
-			for rowIdx := 0; rowIdx < len(value); rowIdx++ {
-				columnData := value[rowIdx]
-				vsets.Sets[name].Values[rowIdx].Values = columnData
+			for rowIdx := range value {
+				for colIdx, columnData := range value[rowIdx] {
+					columnHeader := value[0][rowIdx]
+					if rowIdx == 0 {
+						hdr := determineHeaderType(columnData)
+						sheetHeaders[columnHeader] = hdr
+						continue
+					}
+					if sheetHeaders[columnHeader] == "input" || sheetHeaders[columnHeader] == "output" {
+						vsets.Sets[name].Values[rowIdx].KeyValues[columnHeader] = value[rowIdx][colIdx]
+					} else {
+						continue
+					}
+					// vsets.Sets[name].Values[rowIdx].Values = columnData
+				}
 			}
 		}
 	}
