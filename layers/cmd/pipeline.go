@@ -47,17 +47,13 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 				InputFiles:  make([]string, 0),
 				currentStep: -1,
 				Properties:  make(map[string]interface{}),
-				graphOwner:  currCtx,
+				graphOwner:  currCtx.graphOwner,
 				mu:          sync.RWMutex{},
 			}
-			err := steps[pctx.currentStep].Run(pctx)
+			err := pctx.Next()
 			var perr pipelineError
 			if err != nil && !errors.As(err, &perr) {
 				err = pipelineError{wrapped: fmt.Errorf("fork number: %d, %w", index, err), step: pctx.currentStep}
-				errs[index] = err
-				return
-			}
-			if err := pctx.Next(); err != nil {
 				errs[index] = err
 				return
 			}
@@ -150,11 +146,10 @@ func (ctx *PipelineContext) GetGraphRW() graph.Graph {
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
 	if ctx != ctx.graphOwner {
+		ctx.graphOwner.mu.Lock()
 		newTarget := graph.NewOCGraph()
 		nodeMap := ls.CopyGraph(newTarget, ctx.graph, nil, nil)
 		ctx.graph = newTarget
-
-		ctx.graphOwner.mu.Lock()
 		for _, root := range ctx.graphOwner.roots {
 			ctx.roots = append(ctx.roots, nodeMap[root])
 		}
@@ -260,6 +255,7 @@ func runPipeline(steps []Step, initialGraph string, inputs []string) (*PipelineC
 		currentStep: -1,
 		Properties:  make(map[string]interface{}),
 	}
+	pipeline.graphOwner = pipeline
 	return pipeline, pipeline.Next()
 }
 
