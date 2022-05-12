@@ -44,7 +44,7 @@ type SpreadsheetReference struct {
 
 func (s SpreadsheetReference) Import(ctx *ls.Context) (map[string]*ls.Layer, error) {
 	ctx.GetLogger().Debug(map[string]interface{}{"spreadSheet": s.File})
-	records, err := cmdutil.ReadSpreadsheetFile(s.File)
+	records, err := cmdutil.ReadSheets(s.File)
 	if err != nil {
 		return nil, err
 	}
