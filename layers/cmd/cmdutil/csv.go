@@ -25,7 +25,7 @@ import (
 // ReadSpreadsheetFile reads a CSV or Excel file. For CSV, it will
 // look at the environment variable CSV_SEPARATOR. For Excel, it will
 // load all the spreadsheets
-func ReadSpreadsheetFile(fileName string) ([][][]string, error) {
+func ReadSheets(fileName string) ([][][]string, error) {
 	if strings.HasSuffix(strings.ToLower(fileName), ".csv") {
 		file, err := os.Open(fileName)
 		if err != nil {
@@ -61,7 +61,7 @@ func ReadSpreadsheetFile(fileName string) ([][][]string, error) {
 	return ret, nil
 }
 
-func ReadSpreadsheetFilev2(fileName string) (map[string][][]string, error) {
+func ReadSpreadsheetFile(fileName string) (map[string][][]string, error) {
 	if strings.HasSuffix(strings.ToLower(fileName), ".csv") {
 		file, err := os.Open(fileName)
 		if err != nil {
