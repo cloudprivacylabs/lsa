@@ -45,7 +45,7 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 				roots:       currCtx.roots,
 				Context:     currCtx.Context,
 				InputFiles:  make([]string, 0),
-				currentStep: 0,
+				currentStep: -1,
 				Properties:  make(map[string]interface{}),
 				graphOwner:  currCtx,
 				mu:          sync.RWMutex{},
@@ -55,6 +55,11 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 			if err != nil && !errors.As(err, &perr) {
 				err = pipelineError{wrapped: fmt.Errorf("fork number: %d, %w", index, err), step: pctx.currentStep}
 				errs[index] = err
+				return
+			}
+			if err := pctx.Next(); err != nil {
+				errs[index] = err
+				return
 			}
 		}(pipe, ctx, idx)
 	}
