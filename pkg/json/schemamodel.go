@@ -143,7 +143,7 @@ func (imp schemaImporter) schemaAttrs(attr *schemaProperty, path schemaPath, key
 		attr.allOf = attr.localReference.allOf
 		attr.oneOf = attr.localReference.oneOf
 		attr.typ = attr.localReference.typ
-		attr.description = attr.localReference.description
+		//attr.description = attr.localReference.description
 		for k, v := range attr.localReference.annotations {
 			if attr.annotations == nil {
 				attr.annotations = make(map[string]interface{})
@@ -178,9 +178,9 @@ func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode graph.
 	if len(attr.pattern) > 0 {
 		newNode.SetProperty(validators.PatternTerm, ls.StringPropertyValue(attr.pattern))
 	}
-	if len(attr.description) > 0 {
-		newNode.SetProperty(ls.DescriptionTerm, ls.StringPropertyValue(attr.description))
-	}
+	//if len(attr.description) > 0 {
+	//	newNode.SetProperty(ls.DescriptionTerm, ls.StringPropertyValue(attr.description))
+	//}
 	if len(attr.typ) > 0 {
 		newNode.SetProperty(ls.ValueTypeTerm, ls.StringSlicePropertyValue(attr.typ))
 	}
