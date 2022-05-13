@@ -343,12 +343,13 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 						sheetHeaders[columnHeader] = hdr
 						continue
 					}
-					if sheetHeaders[columnHeader] == "input" || sheetHeaders[columnHeader] == "output" {
+					if sheetHeaders[columnHeader] == "input" {
 						vsets.Sets[name].Values[rowIdx].KeyValues[columnHeader] = value[rowIdx][colIdx]
+					} else if sheetHeaders[columnHeader] == "output" {
+						vsets.Sets[name].Values[rowIdx].ResultValues[columnHeader] = value[rowIdx][colIdx]
 					} else {
 						continue
 					}
-					// vsets.Sets[name].Values[rowIdx].Values = columnData
 				}
 			}
 		}

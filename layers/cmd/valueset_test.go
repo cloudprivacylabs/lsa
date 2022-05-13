@@ -21,9 +21,8 @@ func TestMatch(t *testing.T) {
 		}
 		vslResp, err := vsv.Match(tt)
 		if err != nil || vslResp == nil {
-			t.Fatalf("Match failed %v", err)
+			t.Errorf("Match failed %v", err)
 		}
 		t.Log(vslResp)
 	}
-	t.Fail()
 }
