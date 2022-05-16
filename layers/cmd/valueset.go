@@ -374,10 +374,9 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 	return nil
 }
 
-// How to determine which header is input or output? XLSX header == "CODE/DESCRIPTIVE_TEXT"?
 func kvPairHeaderType(sheetName, columnHeader string, rowIdx, colIdx int, value [][]string, vsets *Valuesets) {
 	if entry, ok := vsets.Sets[sheetName]; ok {
-		entry.Values = append(entry.Values, ValuesetValue{Result: strings.Join(value[rowIdx], " ")})
+		entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{columnHeader: strings.Join(value[rowIdx], " ")}})
 		vsets.Sets[sheetName] = entry
 	}
 }
