@@ -170,6 +170,9 @@ func init() {
 
 	operations["ingest/csv"] = func() Step {
 		return &CSVIngester{
+			BaseIngestParams: BaseIngestParams{
+				EmbedSchemaNodes: true,
+			},
 			EndRow:    -1,
 			HeaderRow: -1,
 			StartRow:  0,

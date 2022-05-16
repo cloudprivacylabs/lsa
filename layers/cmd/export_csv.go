@@ -28,8 +28,11 @@ import (
 type CSVExport struct {
 	SpecFile string `json:"specFile" yaml:"specFile"`
 	lscsv.Writer
+	File string `json:"file" yaml:"file"`
+
 	initialized   bool
 	writtenHeader bool
+	csvWriter     *csv.Writer
 }
 
 func (CSVExport) Help() {
@@ -52,20 +55,34 @@ func (ecsv *CSVExport) Run(pipeline *PipelineContext) error {
 	if !ecsv.initialized {
 		if ecsv.SpecFile != "" {
 			if err := cmdutil.ReadJSONOrYAML(ecsv.SpecFile, &ecsv.Writer); err != nil {
-				failErr(err)
+				return err
 			}
+		}
+		if len(ecsv.File) > 0 {
+			f, err := os.OpenFile(ecsv.File, os.O_CREATE|os.O_WRONLY, 0644)
+			if err != nil {
+				return err
+			}
+			off, err := f.Seek(0, 2)
+			if err != nil {
+				return err
+			}
+			if off > 0 {
+				// Assume header written
+				ecsv.writtenHeader = true
+			}
+			ecsv.csvWriter = csv.NewWriter(f)
+		} else {
+			ecsv.csvWriter = csv.NewWriter(os.Stdout)
 		}
 		ecsv.initialized = true
 	}
-	csvExporter := ecsv.Writer
-
-	wr := csv.NewWriter(os.Stdout)
 	if !ecsv.writtenHeader {
-		csvExporter.WriteHeader(wr)
+		ecsv.Writer.WriteHeader(ecsv.csvWriter)
 		ecsv.writtenHeader = true
 	}
-	csvExporter.WriteRows(wr, pipeline.GetGraphRO())
-	wr.Flush()
+	ecsv.Writer.WriteRows(ecsv.csvWriter, pipeline.GetGraphRO())
+	ecsv.csvWriter.Flush()
 	return nil
 }
 

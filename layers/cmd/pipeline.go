@@ -29,22 +29,89 @@ type Step interface {
 	Run(*PipelineContext) error
 }
 
+type Pipeline []Step
+
+func unmarshalStep(operation string, stepData interface{}) (Step, error) {
+	op := operations[operation]
+	if op == nil {
+		return nil, fmt.Errorf("Unknown pipeline operation: %s", operation)
+	}
+	step := op()
+	if step == nil {
+		return nil, fmt.Errorf("Invalid step: %s", operation)
+	}
+	stepData = cmdutil.YAMLToMap(stepData)
+	d, err := json.Marshal(stepData)
+	if err != nil {
+		panic(err)
+	}
+	if err := json.Unmarshal(d, step); err != nil {
+		return nil, err
+	}
+	return step, nil
+}
+
+type stepMarshal struct {
+	Operation string      `json:"operation" yaml:"operation"`
+	Step      interface{} `json:"params" yaml:"params"`
+}
+
+func unmarshalPipeline(stepMarshals []stepMarshal) ([]Step, error) {
+	steps := make([]Step, 0, len(stepMarshals))
+	for _, stage := range stepMarshals {
+		step, err := unmarshalStep(stage.Operation, stage.Step)
+		if err != nil {
+			return nil, err
+		}
+		steps = append(steps, step)
+	}
+	return steps, nil
+}
+
+func (p *Pipeline) UnmarshalJSON(in []byte) error {
+	var steps []stepMarshal
+	err := json.Unmarshal(in, &steps)
+	if err != nil {
+		return err
+	}
+	*p, err = unmarshalPipeline(steps)
+	return err
+}
+
 type ForkStep struct {
-	Steps [][]Step
+	Steps map[string]Pipeline `json:"pipelines" yaml:"pipelines"`
+}
+
+func (ForkStep) Help() {
+	fmt.Println(`Create multiple parallel pipelines.
+
+operation: fork
+params: 
+  pipelines:
+    pipelineName:
+      -
+      -
+    pipelineName:
+      -
+      -`)
 }
 
 func (fork ForkStep) Run(ctx *PipelineContext) error {
 	var wg sync.WaitGroup
 	wg.Add(len(fork.Steps))
-	errs := make([]error, len(fork.Steps))
+	errs := make(map[string]error)
+	for k := range fork.Steps {
+		errs[k] = nil
+	}
 	for idx, pipe := range fork.Steps {
-		go func(steps []Step, currCtx *PipelineContext, index int) {
+		go func(steps []Step, currCtx *PipelineContext, index string) {
 			defer wg.Done()
 			pctx := &PipelineContext{
 				graph:       currCtx.graph,
 				roots:       currCtx.roots,
 				Context:     currCtx.Context,
 				InputFiles:  make([]string, 0),
+				steps:       steps,
 				currentStep: -1,
 				Properties:  make(map[string]interface{}),
 				graphOwner:  currCtx.graphOwner,
@@ -53,7 +120,7 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 			err := pctx.Next()
 			var perr pipelineError
 			if err != nil && !errors.As(err, &perr) {
-				err = pipelineError{wrapped: fmt.Errorf("fork number: %d, %w", index, err), step: pctx.currentStep}
+				err = pipelineError{wrapped: fmt.Errorf("fork: %s, %w", index, err), step: pctx.currentStep}
 				errs[index] = err
 				return
 			}
@@ -153,8 +220,8 @@ func (ctx *PipelineContext) GetGraphRW() graph.Graph {
 		for _, root := range ctx.graphOwner.roots {
 			ctx.roots = append(ctx.roots, nodeMap[root])
 		}
-		ctx.graphOwner = ctx
 		ctx.graphOwner.mu.Unlock()
+		ctx.graphOwner = ctx
 	}
 	return ctx.graph
 }
@@ -186,6 +253,7 @@ func init() {
 	pipelineCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
 
 	operations["writeGraph"] = func() Step { return &WriteGraphStep{} }
+	operations["fork"] = func() Step { return &ForkStep{} }
 
 	oldHelp := pipelineCmd.HelpFunc()
 	pipelineCmd.SetHelpFunc(func(cmd *cobra.Command, _ []string) {
@@ -202,38 +270,12 @@ func init() {
 }
 
 func readPipeline(file string) ([]Step, error) {
-	type stepMarshal struct {
-		Operation string      `json:"operation" yaml:"operation"`
-		Step      interface{} `json:"params" yaml:"params"`
-	}
 	var stepMarshals []stepMarshal
 	err := cmdutil.ReadJSONOrYAML(file, &stepMarshals)
 	if err != nil {
 		return nil, err
 	}
-	steps := make([]Step, 0, len(stepMarshals))
-	for _, stage := range stepMarshals {
-		op := operations[stage.Operation]
-		if op == nil {
-			return nil, fmt.Errorf("Unknown pipeline operation: %s", stage.Operation)
-		}
-		step := op()
-		if step == nil {
-			return nil, fmt.Errorf("Invalid step: %s", stage.Operation)
-		}
-		if stage.Step != nil {
-			stage.Step = cmdutil.YAMLToMap(stage.Step)
-			d, err := json.Marshal(stage.Step)
-			if err != nil {
-				panic(err)
-			}
-			if err := json.Unmarshal(d, step); err != nil {
-				return nil, err
-			}
-		}
-		steps = append(steps, step)
-	}
-	return steps, nil
+	return unmarshalPipeline(stepMarshals)
 }
 
 func runPipeline(steps []Step, initialGraph string, inputs []string) (*PipelineContext, error) {

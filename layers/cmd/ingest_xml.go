@@ -128,7 +128,13 @@ func init() {
 	ingestCmd.AddCommand(ingestXMLCmd)
 	ingestXMLCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
 
-	operations["ingest/xml"] = func() Step { return &XMLIngester{} }
+	operations["ingest/xml"] = func() Step {
+		return &XMLIngester{
+			BaseIngestParams: BaseIngestParams{
+				EmbedSchemaNodes: true,
+			},
+		}
+	}
 }
 
 var ingestXMLCmd = &cobra.Command{
