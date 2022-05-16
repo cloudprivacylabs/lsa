@@ -317,8 +317,8 @@ func LoadValuesetFiles(vs *Valuesets, files []string) error {
 var re = regexp.MustCompile(`\([^()]*.?[^()]*\)$`)
 
 const (
-	InputHeader  string = "input"
-	OutputHeader string = "output"
+	sheetInputHeader  string = "input"
+	sheetOutputHeader string = "output"
 )
 
 func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
@@ -335,9 +335,9 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 			headerType = strings.Trim(e, ")")
 			switch strings.ToLower(strings.TrimSpace(headerType)) {
 			case "i":
-				return str[:strings.Index(str, "(")], InputHeader
+				return str[:strings.Index(str, "(")], sheetInputHeader
 			case "o":
-				return str[:strings.Index(str, "(")], OutputHeader
+				return str[:strings.Index(str, "(")], sheetOutputHeader
 			}
 			return "", ""
 		}
@@ -362,10 +362,11 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 						continue
 					}
 					columnHeader := value[headerIdx][colIdx]
-					if sheetHeaders[columnHeader] == InputHeader || sheetHeaders[columnHeader] == OutputHeader {
+					if sheetHeaders[columnHeader] == sheetInputHeader || sheetHeaders[columnHeader] == sheetOutputHeader {
 						ioHeaderType(sheetHeaders, name, columnHeader, rowIdx, colIdx, value, &vsets)
 					} else {
-						kvPairHeaderType(name, columnHeader, rowIdx, colIdx, value, &vsets)
+						// kvPairHeaderType(name, columnHeader, rowIdx, colIdx, value, &vsets)
+						continue
 					}
 				}
 			}
@@ -390,7 +391,7 @@ func kvPairHeaderType(sheetName, columnHeader string, rowIdx, colIdx int, value 
 }
 
 func ioHeaderType(sheetHeaders map[string]string, sheetName, columnHeader string, rowIdx, colIdx int, value [][]string, vsets *Valuesets) {
-	if sheetHeaders[columnHeader] == InputHeader {
+	if sheetHeaders[columnHeader] == sheetInputHeader {
 		if entry, ok := vsets.Sets[sheetName]; ok {
 			if rowIdx < len(entry.Values) {
 				entryAtIdx := entry.Values[rowIdx]
@@ -402,7 +403,7 @@ func ioHeaderType(sheetHeaders map[string]string, sheetName, columnHeader string
 				}
 			}
 		}
-	} else if sheetHeaders[columnHeader] == OutputHeader {
+	} else if sheetHeaders[columnHeader] == sheetOutputHeader {
 		if entry, ok := vsets.Sets[sheetName]; ok {
 			if rowIdx < len(entry.Values) {
 				entryAtIdx := entry.Values[rowIdx]
