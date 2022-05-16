@@ -322,6 +322,12 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 		}
 		sheetHeaders := make(map[string]string)
 		determineHeaderType := func(str string) (string, string) {
+			switch str {
+			case "CODE":
+				return "CODE", "input"
+			case "DESCRIPTIVE_TEXT":
+				return "DESCRIPTIVE_TEXT", "input"
+			}
 			str = strings.TrimSpace(str)
 			re := regexp.MustCompile(`\((.*?)\)`)
 			e := re.FindString(str) // "(     i )"
@@ -357,14 +363,29 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 					}
 					columnHeader := value[headerIdx][colIdx]
 					if sheetHeaders[columnHeader] == "input" {
-						if entry, ok := vsets.Sets[name]; ok {
-							if rowIdx < len(entry.Values) {
-								entryAtIdx := entry.Values[rowIdx]
-								if len(entryAtIdx.KeyValues) > 0 {
-									entryAtIdx.KeyValues[columnHeader] = value[rowIdx][colIdx]
-								} else {
-									entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: value[rowIdx][colIdx]}})
-									vsets.Sets[name] = entry
+						// output whole row
+						if columnHeader == "CODE" || columnHeader == "DESCRIPTIVE_TEXT" {
+							if entry, ok := vsets.Sets[name]; ok {
+								if rowIdx < len(entry.Values) {
+									entryAtIdx := entry.Values[rowIdx]
+									if len(entryAtIdx.ResultValues) > 0 {
+										entryAtIdx.ResultValues[columnHeader] = value[rowIdx][colIdx]
+									} else {
+										entry.Values = append(entry.Values, ValuesetValue{Result: strings.Join(value[rowIdx], " ")})
+										vsets.Sets[name] = entry
+									}
+								}
+							}
+						} else {
+							if entry, ok := vsets.Sets[name]; ok {
+								if rowIdx < len(entry.Values) {
+									entryAtIdx := entry.Values[rowIdx]
+									if len(entryAtIdx.KeyValues) > 0 {
+										entryAtIdx.KeyValues[columnHeader] = value[rowIdx][colIdx]
+									} else {
+										entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: value[rowIdx][colIdx]}})
+										vsets.Sets[name] = entry
+									}
 								}
 							}
 						}
