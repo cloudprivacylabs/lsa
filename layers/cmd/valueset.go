@@ -361,10 +361,10 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 						continue
 					}
 					columnHeader := value[headerIdx][colIdx]
-					if columnHeader == InputHeader || columnHeader == OutputHeader {
+					if sheetHeaders[columnHeader] == InputHeader || sheetHeaders[columnHeader] == OutputHeader {
 						ioHeaderType(sheetHeaders, name, columnHeader, rowIdx, colIdx, value, &vsets)
 					} else {
-						kvPairHeaderType(sheetHeaders, name, columnHeader, rowIdx, colIdx, value, &vsets)
+						kvPairHeaderType(name, columnHeader, rowIdx, colIdx, value, &vsets)
 					}
 				}
 			}
@@ -373,8 +373,19 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 	return nil
 }
 
-func kvPairHeaderType(sheetHeaders map[string]string, sheetName, columnHeader string, rowIdx, colIdx int, value [][]string, vsets *Valuesets) {
-	// TODO
+// How to determine which header is input or output? XLSX header == "CODE/DESCRIPTIVE_TEXT"?
+func kvPairHeaderType(sheetName, columnHeader string, rowIdx, colIdx int, value [][]string, vsets *Valuesets) {
+	if entry, ok := vsets.Sets[sheetName]; ok {
+		if rowIdx < len(entry.Values) {
+			entryAtIdx := entry.Values[rowIdx]
+			if len(entryAtIdx.ResultValues) > 0 {
+				entryAtIdx.ResultValues[columnHeader] = value[rowIdx][colIdx]
+			} else {
+				entry.Values = append(entry.Values, ValuesetValue{Result: strings.Join(value[rowIdx], " ")})
+				vsets.Sets[sheetName] = entry
+			}
+		}
+	}
 }
 
 func ioHeaderType(sheetHeaders map[string]string, sheetName, columnHeader string, rowIdx, colIdx int, value [][]string, vsets *Valuesets) {
