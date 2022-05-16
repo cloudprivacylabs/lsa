@@ -316,6 +316,11 @@ func LoadValuesetFiles(vs *Valuesets, files []string) error {
 
 var re = regexp.MustCompile(`\([^()]*.?[^()]*\)$`)
 
+const (
+	InputHeader  string = "input"
+	OutputHeader string = "output"
+)
+
 func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 	for _, spreadsheet := range vsets.Spreadsheets {
 		sheet, err := cmdutil.ReadSpreadsheetFile(spreadsheet)
@@ -323,10 +328,6 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 			return fmt.Errorf("While reading file: %s, %w", spreadsheet, err)
 		}
 		sheetHeaders := make(map[string]string)
-		const (
-			InputHeader  string = "input"
-			OutputHeader string = "output"
-		)
 		determineHeaderType := func(str string) (string, string) {
 			str = strings.TrimSpace(str)
 			e := re.FindString(str) // "(     i )"
@@ -389,7 +390,7 @@ func kvPairHeaderType(sheetName, columnHeader string, rowIdx, colIdx int, value 
 }
 
 func ioHeaderType(sheetHeaders map[string]string, sheetName, columnHeader string, rowIdx, colIdx int, value [][]string, vsets *Valuesets) {
-	if sheetHeaders[columnHeader] == "input" {
+	if sheetHeaders[columnHeader] == InputHeader {
 		if entry, ok := vsets.Sets[sheetName]; ok {
 			if rowIdx < len(entry.Values) {
 				entryAtIdx := entry.Values[rowIdx]
@@ -401,7 +402,7 @@ func ioHeaderType(sheetHeaders map[string]string, sheetName, columnHeader string
 				}
 			}
 		}
-	} else if sheetHeaders[columnHeader] == "output" {
+	} else if sheetHeaders[columnHeader] == OutputHeader {
 		if entry, ok := vsets.Sets[sheetName]; ok {
 			if rowIdx < len(entry.Values) {
 				entryAtIdx := entry.Values[rowIdx]
