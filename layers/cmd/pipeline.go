@@ -109,7 +109,7 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 			pctx := &PipelineContext{
 				graph:       currCtx.graph,
 				roots:       currCtx.roots,
-				Context:     currCtx.Context,
+				Context:     getContext(),
 				InputFiles:  make([]string, 0),
 				steps:       steps,
 				currentStep: -1,
@@ -117,6 +117,7 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 				graphOwner:  currCtx.graphOwner,
 				mu:          sync.RWMutex{},
 			}
+			pctx.Context.GetLogger().Debug(map[string]interface{}{"Starting new fork": index})
 			err := pctx.Next()
 			var perr pipelineError
 			if err != nil && !errors.As(err, &perr) {
