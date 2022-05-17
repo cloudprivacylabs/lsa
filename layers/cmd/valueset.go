@@ -432,7 +432,7 @@ Individual valueset objects can be given as separate files as well:
 			step,
 			NewWriteGraphStep(cmd),
 		}
-		_, err := runPipeline(p, "", args)
+		_, err := runPipeline(p, "", args, false)
 		return err
 	},
 }

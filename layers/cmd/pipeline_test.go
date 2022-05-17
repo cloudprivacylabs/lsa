@@ -17,7 +17,7 @@ func TestPersonPipeline(t *testing.T) {
 	oldTarget := ExportTarget
 	var buf bytes.Buffer
 	ExportTarget = &buf
-	_, err = runPipeline(steps, "", []string{"testdata/person_sample.json"})
+	_, err = runPipeline(steps, "", []string{"testdata/person_sample.json"}, false)
 	ExportTarget = oldTarget
 	if err != nil {
 		t.Error(err)
