@@ -17,7 +17,6 @@ package transform
 import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // MultipleTerm is used to specify if multiple values are allowed. If so, one node will be constructed for each value
@@ -48,13 +47,13 @@ func (mapContextSemantics) CompileTerm(target ls.CompilablePropertyContainer, te
 }
 
 // GetEvaluatable returns the contents of the compiled mapContext term
-func (mapContextSemantics) GetEvaluatable(node graph.Node) opencypher.Evaluatable {
+func (mapContextSemantics) GetEvaluatable(node ls.CompilablePropertyContainer) opencypher.Evaluatable {
 	v, _ := node.GetProperty("$compiled_" + MapContextTerm)
 	x, _ := v.(opencypher.Evaluatable)
 	return x
 }
 
-func (mapContextSemantics) Evaluate(node graph.Node, ctx *opencypher.EvalContext) (bool, opencypher.Value, error) {
+func (mapContextSemantics) Evaluate(node ls.CompilablePropertyContainer, ctx *opencypher.EvalContext) (bool, opencypher.Value, error) {
 	ev := MapContextSemantics.GetEvaluatable(node)
 	if ev == nil {
 		return false, opencypher.Value{}, nil

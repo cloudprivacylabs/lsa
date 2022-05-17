@@ -17,7 +17,6 @@ package transform
 import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // ValueExprTerm defines one or more opencypher expressions that
@@ -46,7 +45,7 @@ func (valueExprTermSemantics) CompileTerm(target ls.CompilablePropertyContainer,
 }
 
 // GetEvaluatables returns the contents of the compiled valueExpr terms
-func (valueExprTermSemantics) GetEvaluatables(node graph.Node) []opencypher.Evaluatable {
+func (valueExprTermSemantics) GetEvaluatables(node ls.CompilablePropertyContainer) []opencypher.Evaluatable {
 	v, _ := node.GetProperty("$compiled_" + ValueExprTerm)
 	x, _ := v.([]opencypher.Evaluatable)
 	return x

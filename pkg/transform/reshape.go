@@ -27,6 +27,7 @@ const TRANSFORM = ls.LS + "transform/"
 type Reshaper struct {
 	TargetSchema *ls.Layer
 	Builder      ls.GraphBuilder
+	Script       *TransformScript
 }
 
 type reshapeContext struct {
@@ -154,7 +155,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 	ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID})
 
 	// Evaluate expressions and export values
-	for _, expr := range EvaluateTermSemantics.GetEvaluatables(schemaNode) {
+	for _, expr := range EvaluateTermSemantics.GetEvaluatables(reshaper.Script.GetProperties(schemaNode)) {
 		evalContext := ctx.getEvalContext()
 		v, err := expr.Evaluate(evalContext)
 		if err != nil {
@@ -180,7 +181,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 	// otherwise, if this is a non-value node, process children and
 	// create the node if there are nonempty children
 	// Is it a map node?
-	if mapProperty := ls.AsPropertyValue(schemaNode.GetProperty(MapPropertyTerm)).AsString(); len(mapProperty) > 0 {
+	if mapProperty := ls.AsPropertyValue(reshaper.Script.GetProperties(schemaNode).GetProperty(MapPropertyTerm)).AsString(); len(mapProperty) > 0 {
 		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "state": "Running map", "mapProperty": mapProperty})
 		// Find the nodes under the map context whose mapProperty property points to this
 		nodes, err := reshaper.getMapNodes(ctx, mapProperty, schemaNodeID)
@@ -194,7 +195,21 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 		}
 		return v, nil
 	}
-	if evaluatables := ValueExprTermSemantics.GetEvaluatables(schemaNode); len(evaluatables) != 0 {
+	// Script may contain a direct mapping
+	if nodeMapping := reshaper.Script.GetMappingByTarget(schemaNodeID); nodeMapping != nil {
+		nodes, err := reshaper.getNodeMappingNodes(ctx, nodeMapping)
+		if err != nil {
+			return false, wrapReshapeError(err, schemaNodeID)
+		}
+		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "nMapNodes": len(nodes)})
+		v, err := reshaper.handle(ctx, opencypher.Value{Value: nodes})
+		if err != nil {
+			return false, wrapReshapeError(err, schemaNodeID)
+		}
+		return v, nil
+	}
+
+	if evaluatables := ValueExprTermSemantics.GetEvaluatables(reshaper.Script.GetProperties(schemaNode)); len(evaluatables) != 0 {
 		// Determine the source nodes for ingestion
 		evalContext := ctx.getEvalContext()
 		for _, evaluatable := range evaluatables {
@@ -242,7 +257,7 @@ func isEmptyValue(v opencypher.Value) bool {
 
 func (reshaper Reshaper) evaluateMapContext(ctx *reshapeContext) (bool, error) {
 	schemaNode := ctx.getSchemaNode()
-	ev := MapContextSemantics.GetEvaluatable(schemaNode)
+	ev := MapContextSemantics.GetEvaluatable(reshaper.Script.GetProperties(schemaNode))
 	if ev == nil {
 		return false, nil
 	}
@@ -291,6 +306,35 @@ func (reshaper Reshaper) evaluateMapContext(ctx *reshapeContext) (bool, error) {
 		}
 	}
 	return false, nil
+}
+
+func (reshaper Reshaper) getNodeMappingNodes(ctx *reshapeContext, mapping *NodeMapping) ([]graph.Node, error) {
+	mapContext := ctx.getMapContext()
+	ctx.GetLogger().Debug(map[string]interface{}{"reshaper.getNodeMappingNodes.context": mapContext})
+	var found []graph.Node
+	checkNodeProperty := func(node graph.Node) bool {
+		schNode := ls.AsPropertyValue(node.GetProperty(ls.SchemaNodeIDTerm)).AsString()
+		if schNode == mapping.SourceNodeID {
+			found = append(found, node)
+			return true
+		}
+		return false
+	}
+	if mapContext != nil {
+		ls.IterateDescendants(mapContext, func(node graph.Node) bool {
+			checkNodeProperty(node)
+			return true
+		}, ls.OnlyDocumentNodes, true)
+	} else {
+		for nodes := ctx.sourceGraph.GetNodes(); nodes.Next(); {
+			node := nodes.Node()
+			if !node.HasLabel(ls.DocumentNodeTerm) {
+				continue
+			}
+			checkNodeProperty(node)
+		}
+	}
+	return found, nil
 }
 
 func (reshaper Reshaper) getMapNodes(ctx *reshapeContext, mapProperty, schemaNodeID string) ([]graph.Node, error) {
@@ -389,7 +433,7 @@ func (reshaper Reshaper) handleValue(ctx *reshapeContext, value interface{}) (bo
 			ctx.GetLogger().Debug(map[string]interface{}{"reshape.handleValue": value, "siblings": len(siblings)})
 			// There are already instances of this node
 			// Can there be multiple?
-			joinWithp, ok := schemaNode.GetProperty(JoinWithTerm)
+			joinWithp, ok := reshaper.Script.GetProperties(schemaNode).GetProperty(JoinWithTerm)
 			if ok {
 				// join them
 				lastSibling := siblings[len(siblings)-1]
@@ -404,7 +448,7 @@ func (reshaper Reshaper) handleValue(ctx *reshapeContext, value interface{}) (bo
 				return true, nil
 			}
 			// Multiple siblings, no join. Is multiple allowed?
-			if ls.AsPropertyValue(schemaNode.GetProperty(MultipleTerm)).AsString() != "true" {
+			if ls.AsPropertyValue(reshaper.Script.GetProperties(schemaNode).GetProperty(MultipleTerm)).AsString() != "true" {
 				return false, fmt.Errorf("Multiple values in a single value context")
 			}
 		}
@@ -453,7 +497,7 @@ func (reshaper Reshaper) handleRow(ctx *reshapeContext, row map[string]opencyphe
 	}
 	schemaNode := ctx.getSchemaNode()
 	parent := ctx.getParentGraphNode()
-	multi := ls.AsPropertyValue(schemaNode.GetProperty(MultipleTerm)).AsString() == "true"
+	multi := ls.AsPropertyValue(reshaper.Script.GetProperties(schemaNode).GetProperty(MultipleTerm)).AsString() == "true"
 	switch {
 	case schemaNode.HasLabel(ls.AttributeTypeValue):
 		// If there is a single column, use that
@@ -583,7 +627,7 @@ func (reshaper Reshaper) handleNodeSlice(ctx *reshapeContext, nodes []graph.Node
 			ctx.pushMapContext(node)
 		}
 		parent := ctx.getParentGraphNode()
-		multi := ls.AsPropertyValue(schemaNode.GetProperty(MultipleTerm)).AsString() == "true"
+		multi := ls.AsPropertyValue(reshaper.Script.GetProperties(schemaNode).GetProperty(MultipleTerm)).AsString() == "true"
 		switch {
 		case schemaNode.HasLabel(ls.AttributeTypeValue):
 			r, err := reshaper.handle(ctx, opencypher.Value{Value: node})
