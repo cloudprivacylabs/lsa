@@ -34,6 +34,7 @@ type Valuesets struct {
 	Services     map[string]string   `json:"services" yaml:"valuesets"`
 	Spreadsheets []string            `json:"spreadsheets" yaml:"spreadsheets"`
 	Sets         map[string]Valueset `json:"valuesets" yaml:"valuesets"`
+	Options      ValuesetLookupOptions
 }
 
 type Valueset struct {
@@ -51,6 +52,10 @@ type ValuesetValue struct {
 	Result string `json:"result" yaml:"result"`
 	// Result output values as key-value pairs
 	ResultValues map[string]string `json:"results" yaml:"results"`
+}
+
+type ValuesetLookupOptions struct {
+	lookupInput []string
 }
 
 func (v ValuesetValue) buildResult() *ls.ValuesetLookupResponse {
@@ -376,9 +381,13 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 
 // spreadsheet - multiple k-v pairs as input. output the whole row
 func kvPairHeaderType(sheetName, columnHeader string, rowIdx, colIdx int, value [][]string, vsets *Valuesets) {
-	if entry, ok := vsets.Sets[sheetName]; ok {
-		entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{columnHeader: strings.Join(value[rowIdx], " ")}})
-		vsets.Sets[sheetName] = entry
+	for _, opt := range vsets.Options.lookupInput {
+		if opt == columnHeader {
+			if entry, ok := vsets.Sets[sheetName]; ok {
+				entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{columnHeader: strings.Join(value[rowIdx], " | ")}})
+				vsets.Sets[sheetName] = entry
+			}
+		}
 	}
 }
 
