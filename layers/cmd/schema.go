@@ -103,7 +103,7 @@ func (b *Bundle) Merge(bundle Bundle) {
 	b.SchemaSpreadsheets = append(b.SchemaSpreadsheets, bundle.SchemaSpreadsheets...)
 	for typeName, variant := range bundle.TypeNames {
 		existingVariant, ok := b.TypeNames[typeName]
-		if !ok {
+		if !ok || existingVariant == nil {
 			b.TypeNames[typeName] = variant
 			continue
 		}
@@ -112,6 +112,9 @@ func (b *Bundle) Merge(bundle Bundle) {
 }
 
 func (b *Bundle) ResolveFilenames(dir string) {
+	if b == nil {
+		return
+	}
 	for i := range b.SchemaSpreadsheets {
 		b.SchemaSpreadsheets[i].File = getRelativeFileName(dir, b.SchemaSpreadsheets[i].File)
 	}
@@ -173,6 +176,9 @@ type BundleVariant struct {
 }
 
 func (b *BundleVariant) ResolveFilenames(dir string) {
+	if b == nil {
+		return
+	}
 	b.BundleSchemaRef.ResolveFilenames(dir)
 	for i := range b.Overlays {
 		b.Overlays[i].ResolveFilenames(dir)

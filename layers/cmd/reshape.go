@@ -106,6 +106,9 @@ func (rs *ReshapeStep) Run(pipeline *PipelineContext) error {
 			if err := cmdutil.ReadJSONOrYAML(rs.ScriptFile, &rs.script); err != nil {
 				return err
 			}
+			if err := rs.script.Compile(pipeline.Context); err != nil {
+				return err
+			}
 		}
 		rs.initialized = true
 	}

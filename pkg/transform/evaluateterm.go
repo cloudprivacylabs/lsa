@@ -25,6 +25,10 @@ type evaluateTermSemantics struct{}
 
 var EvaluateTermSemantics = evaluateTermSemantics{}
 
+func (evaluateTermSemantics) Get(node ls.CompilablePropertyContainer) []string {
+	return ls.AsPropertyValue(node.GetProperty(EvaluateTerm)).MustStringSlice()
+}
+
 func (evaluateTermSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	if value == nil {
 		return nil
