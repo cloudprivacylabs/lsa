@@ -161,6 +161,9 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 		if err != nil {
 			return false, wrapReshapeError(err, schemaNodeID)
 		}
+		ctx.GetLogger().Info(map[string]interface{}{"reshape": schemaNodeID,
+			"evaluateTermExpr": EvaluateTermSemantics.Get(reshaper.Script.GetProperties(schemaNode)),
+			"result":           v})
 		if rs, ok := v.Value.(opencypher.ResultSet); ok {
 			if len(rs.Rows) > 1 {
 				return false, wrapReshapeError(fmt.Errorf("Multiple values for resultset"), schemaNodeID)
@@ -217,6 +220,9 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 			if err != nil {
 				return false, wrapReshapeError(err, schemaNodeID)
 			}
+			ctx.GetLogger().Info(map[string]interface{}{"reshape": schemaNodeID,
+				"valueExpr": ValueExprTermSemantics.Get(reshaper.Script.GetProperties(schemaNode)),
+				"result":    sv})
 			if isEmptyValue(sv) {
 				continue
 			}

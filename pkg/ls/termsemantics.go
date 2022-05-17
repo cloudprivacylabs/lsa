@@ -95,3 +95,8 @@ func GetTermMetadata(term string) interface{} {
 	t := GetTermInfo(term)
 	return t.Metadata
 }
+
+func IsTermRegistered(term string) bool {
+	_, ok := registeredTerms[term]
+	return ok
+}

@@ -55,23 +55,19 @@ var compileCmd = &cobra.Command{
 				if err != nil {
 					failErr(err)
 				}
-				logf("Loading composed schema for %s", schemaName)
 				layer, err = repo.GetComposedSchema(ctx, schemaName)
 				if err != nil {
 					failErr(err)
 				}
 				compiler := ls.Compiler{
 					Loader: ls.SchemaLoaderFunc(func(x string) (*ls.Layer, error) {
-						logf("Loading %s", x)
 						return repo.LoadAndCompose(ctx, x)
 					}),
 				}
-				logf("Compiling schema %s", schemaName)
 				layer, err = compiler.Compile(ctx, schemaName)
 				if err != nil {
 					failErr(err)
 				}
-				logf("Compilation complete")
 			} else {
 				data, err := cmdutil.ReadURL(schemaName)
 				if err != nil {
@@ -99,7 +95,6 @@ var compileCmd = &cobra.Command{
 				}
 			}
 		} else {
-			logf("Loading bundles %v", bundleNames)
 			loader, err := LoadBundle(ctx, bundleNames)
 			if err != nil {
 				failErr(err)

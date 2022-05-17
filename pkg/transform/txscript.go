@@ -16,6 +16,7 @@ package transform
 
 import (
 	"encoding/json"
+	"net/url"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher/graph"
@@ -37,14 +38,18 @@ type NodeMapping struct {
 	TargetNodeID string `json:"target" yaml:"target"`
 }
 
-func (t *TransformScript) Compile() error {
+func (t *TransformScript) Compile(ctx *ls.Context) error {
 	if t == nil {
 		return nil
 	}
-	for _, ann := range t.TargetSchemaNodes {
+	for sid, ann := range t.TargetSchemaNodes {
+		ctx.GetLogger().Debug(map[string]interface{}{"script.compile.schemaNodeId": sid})
 		for k, v := range ann {
 			pv, ok := v.(*ls.PropertyValue)
 			if ok {
+				if !ls.IsTermRegistered(k) {
+					ctx.GetLogger().Info(map[string]interface{}{"script.compile": "Unknown term", "term": k})
+				}
 				if err := ls.GetTermCompiler(k).CompileTerm(ann, k, pv); err != nil {
 					return err
 				}
@@ -94,15 +99,26 @@ type SourceAnnotations struct {
 // NodeTransformAnnotations contains a term, and one or more annotations
 type NodeTransformAnnotations map[string]interface{}
 
+func (nd *NodeTransformAnnotations) setProperties(mv map[string]*ls.PropertyValue) {
+	*nd = make(map[string]interface{})
+	for k, v := range mv {
+		u, err := url.Parse(k)
+		if err != nil || u.IsAbs() {
+			(*nd)[k] = v
+			continue
+		}
+		u.Scheme = "https"
+		u.Path = "lschema.org/transform/" + u.Path
+		(*nd)[u.String()] = v
+	}
+}
+
 func (nd *NodeTransformAnnotations) UnmarshalJSON(in []byte) error {
 	var mv map[string]*ls.PropertyValue
 	if err := json.Unmarshal(in, &mv); err != nil {
 		return err
 	}
-	*nd = make(map[string]interface{})
-	for k, v := range mv {
-		(*nd)[k] = v
-	}
+	nd.setProperties(mv)
 	return nil
 }
 
@@ -111,9 +127,6 @@ func (nd *NodeTransformAnnotations) UnmarshalYAML(parse func(interface{}) error)
 	if err := parse(&mv); err != nil {
 		return err
 	}
-	*nd = make(map[string]interface{})
-	for k, v := range mv {
-		(*nd)[k] = v
-	}
+	nd.setProperties(mv)
 	return nil
 }

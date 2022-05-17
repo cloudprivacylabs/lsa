@@ -28,6 +28,10 @@ type valueExprTermSemantics struct{}
 
 var ValueExprTermSemantics = valueExprTermSemantics{}
 
+func (valueExprTermSemantics) Get(node ls.CompilablePropertyContainer) []string {
+	return ls.AsPropertyValue(node.GetProperty(ValueExprTerm)).MustStringSlice()
+}
+
 func (valueExprTermSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	if value == nil {
 		return nil
