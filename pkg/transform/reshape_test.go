@@ -77,7 +77,7 @@ func (tc testCase) Run(t *testing.T) {
 	reshaper := Reshaper{
 		Script: tc.Script,
 	}
-	if err := reshaper.Script.Compile(); err != nil {
+	if err := reshaper.Script.Compile(ls.DefaultContext()); err != nil {
 		t.Error(err)
 		return
 	}
