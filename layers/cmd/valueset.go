@@ -352,6 +352,7 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 			}
 			var headerIdx int
 			var headerFlag bool
+		ROWS:
 			for rowIdx, row := range value {
 				if len(row) == 0 {
 					continue
@@ -371,6 +372,7 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 						ioHeaderType(sheetHeaders, name, columnHeader, rowIdx, colIdx, value, &vsets)
 					} else {
 						kvPairHeaderType(name, columnHeader, rowIdx, colIdx, value, &vsets)
+						continue ROWS
 					}
 				}
 			}
