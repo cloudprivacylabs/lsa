@@ -26,7 +26,7 @@ import (
 type TransformScript struct {
 	// TargetSchemaNodes are keyed by schema node ID, and contains
 	// transformation elements for each target schema node
-	TargetSchemaNodes map[string]NodeTransformAnnotations `json:"targetSchemaNodes,omitempty" yaml:"targetSchemaNodes,ommitempty"`
+	TargetSchemaNodes map[string]NodeTransformAnnotations `json:"reshapeNodes,omitempty" yaml:"reshapeNodes,omitempty"`
 
 	// Map specifies source schema nodes that map to one or more target schema nodes
 	Map []NodeMapping `json:"map,omitempty" yaml:"map,omitempty"`
