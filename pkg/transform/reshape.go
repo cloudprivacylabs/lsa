@@ -164,7 +164,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 		ctx.GetLogger().Info(map[string]interface{}{"reshape": schemaNodeID,
 			"evaluateTermExpr": EvaluateTermSemantics.Get(reshaper.Script.GetProperties(schemaNode)),
 			"result":           v})
-		if rs, ok := v.Value.(opencypher.ResultSet); ok {
+		if rs, ok := v.Get().(opencypher.ResultSet); ok {
 			if len(rs.Rows) > 1 {
 				return false, wrapReshapeError(fmt.Errorf("Multiple values for resultset"), schemaNodeID)
 			}
@@ -192,7 +192,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 			return false, wrapReshapeError(err, schemaNodeID)
 		}
 		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "nMapNodes": len(nodes)})
-		v, err := reshaper.handle(ctx, opencypher.Value{Value: nodes})
+		v, err := reshaper.handle(ctx, opencypher.RValue{Value: nodes})
 		if err != nil {
 			return false, wrapReshapeError(err, schemaNodeID)
 		}
@@ -205,7 +205,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 			return false, wrapReshapeError(err, schemaNodeID)
 		}
 		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "nMapNodes": len(nodes)})
-		v, err := reshaper.handle(ctx, opencypher.Value{Value: nodes})
+		v, err := reshaper.handle(ctx, opencypher.RValue{Value: nodes})
 		if err != nil {
 			return false, wrapReshapeError(err, schemaNodeID)
 		}
@@ -248,10 +248,10 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 }
 
 func isEmptyValue(v opencypher.Value) bool {
-	if v.Value == nil {
+	if v.Get() == nil {
 		return true
 	}
-	rs, ok := v.Value.(opencypher.ResultSet)
+	rs, ok := v.Get().(opencypher.ResultSet)
 	if !ok {
 		return false
 	}
@@ -274,7 +274,7 @@ func (reshaper Reshaper) evaluateMapContext(ctx *reshapeContext) (bool, error) {
 	}
 	ctx.GetLogger().Debug(map[string]interface{}{"reshape": ls.GetNodeID(schemaNode), "mapContext": mapContext})
 	// Map context can be a node, or a node slice with one element, or an rs with a node
-	switch c := mapContext.Value.(type) {
+	switch c := mapContext.Get().(type) {
 	case graph.Node:
 		ctx.pushMapContext(c)
 		return true, nil
@@ -300,7 +300,7 @@ func (reshaper Reshaper) evaluateMapContext(ctx *reshapeContext) (bool, error) {
 				return false, fmt.Errorf("Map context resultset has to have one column")
 			}
 			for _, v := range c.Rows[0] {
-				n, ok := v.Value.(graph.Node)
+				n, ok := v.Get().(graph.Node)
 				if !ok {
 					return false, fmt.Errorf("Map context expression must return a single node")
 				}
@@ -388,24 +388,25 @@ func (reshaper Reshaper) getMapNodes(ctx *reshapeContext, mapProperty, schemaNod
 // Returns true if operation produced any output
 func (reshaper Reshaper) handle(ctx *reshapeContext, value opencypher.Value) (bool, error) {
 	schemaNodeID := ls.GetNodeID(ctx.getSchemaNode())
-	if value.Value == nil {
+	val := value.Get()
+	if val == nil {
 		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "source is nil"})
 		return false, nil
 	}
-	if value.IsPrimitive() {
+	if opencypher.IsValuePrimitive(value) {
 		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "source is primitive"})
 		// We have a single value. Nothing to export
-		return reshaper.handleValue(ctx, value.Value)
+		return reshaper.handleValue(ctx, val)
 	}
-	if node, ok := value.Value.(graph.Node); ok {
+	if node, ok := val.(graph.Node); ok {
 		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "source is a node"})
 		return reshaper.handleNode(ctx, node)
 	}
-	if nodes, ok := value.Value.([]graph.Node); ok {
+	if nodes, ok := val.([]graph.Node); ok {
 		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "source is a []node"})
 		return reshaper.handleNodeSlice(ctx, nodes)
 	}
-	if rs, ok := value.Value.(opencypher.ResultSet); ok {
+	if rs, ok := val.(opencypher.ResultSet); ok {
 		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "source is a result set"})
 		if len(rs.Rows) == 0 {
 			ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "no results"})
@@ -416,7 +417,7 @@ func (reshaper Reshaper) handle(ctx *reshapeContext, value opencypher.Value) (bo
 
 	}
 	return false, ErrReshape{
-		Wrapped:      fmt.Errorf("Unhandled result type: %T", value.Value),
+		Wrapped:      fmt.Errorf("Unhandled result type: %T", val),
 		SchemaNodeID: schemaNodeID,
 	}
 }
@@ -636,7 +637,7 @@ func (reshaper Reshaper) handleNodeSlice(ctx *reshapeContext, nodes []graph.Node
 		multi := ls.AsPropertyValue(reshaper.Script.GetProperties(schemaNode).GetProperty(MultipleTerm)).AsString() == "true"
 		switch {
 		case schemaNode.HasLabel(ls.AttributeTypeValue):
-			r, err := reshaper.handle(ctx, opencypher.Value{Value: node})
+			r, err := reshaper.handle(ctx, opencypher.RValue{Value: node})
 			if err != nil {
 				ctx.popMapContext()
 				return false, err
