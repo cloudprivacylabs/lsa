@@ -105,30 +105,15 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 		errs[k] = nil
 	}
 	for idx, pipe := range fork.Steps {
-		go func(steps []Step, currCtx *PipelineContext, grname string) {
-			defer wg.Done()
-			pctx := &PipelineContext{
-				graph:       currCtx.graph,
-				roots:       currCtx.roots,
-				Context:     getContext(),
-				InputFiles:  make([]string, 0),
-				steps:       steps,
-				currentStep: -1,
-				Properties:  make(map[string]interface{}),
-				graphOwner:  currCtx.graphOwner,
-				mu:          sync.RWMutex{},
-			}
-			pctx.Context.GetLogger().Debug(map[string]interface{}{"Starting new fork": grname})
-			err := pctx.Next()
-			var perr pipelineError
-			if err != nil && !errors.As(err, &perr) {
-				err = pipelineError{wrapped: fmt.Errorf("fork: %s, %w", grname, err), step: pctx.currentStep}
-				errs[grname] = err
-				return
-			}
-		}(pipe, ctx, idx)
+		if ctx.concurrent {
+			concurrentPipelineStep(pipe, ctx, idx, errs, &wg)
+		} else {
+			serialPipelineStep(pipe, ctx, idx, errs)
+		}
 	}
-	wg.Wait()
+	if ctx.concurrent {
+		wg.Wait()
+	}
 	for _, err := range errs {
 		if err != nil {
 			return err
@@ -137,7 +122,7 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 	return nil
 }
 
-func concurrentPipelineStep(pipe Pipeline, ctx *PipelineContext, name string, errs map[string]error, wg sync.WaitGroup) {
+func concurrentPipelineStep(pipe Pipeline, ctx *PipelineContext, name string, errs map[string]error, wg *sync.WaitGroup) {
 	go func(steps []Step, currCtx *PipelineContext, grname string) {
 		defer wg.Done()
 		pctx := &PipelineContext{
