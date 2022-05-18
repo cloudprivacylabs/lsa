@@ -139,8 +139,10 @@ func concurrentPipelineStep(pipe Pipeline, ctx *PipelineContext, name string, er
 		pctx.Context.GetLogger().Debug(map[string]interface{}{"Starting new fork": grname})
 		err := pctx.Next()
 		var perr pipelineError
-		if err != nil && !errors.As(err, &perr) {
-			err = pipelineError{wrapped: fmt.Errorf("fork: %s, %w", grname, err), step: pctx.currentStep}
+		if err != nil {
+			if !errors.As(err, &perr) {
+				err = pipelineError{wrapped: fmt.Errorf("fork: %s, %w", grname, err), step: pctx.currentStep}
+			}
 			errs[grname] = err
 			return
 		}
@@ -166,8 +168,10 @@ func sequentialPipelineStep(pipe Pipeline, ctx *PipelineContext, name string, er
 	pctx.Context.GetLogger().Debug(map[string]interface{}{"Starting new fork": name})
 	err := pctx.Next()
 	var perr pipelineError
-	if err != nil && !errors.As(err, &perr) {
-		err = pipelineError{wrapped: fmt.Errorf("fork: %s, %w", name, err), step: pctx.currentStep}
+	if err != nil {
+		if !errors.As(err, &perr) {
+			err = pipelineError{wrapped: fmt.Errorf("fork: %s, %w", name, err), step: pctx.currentStep}
+		}
 		errs[name] = err
 		return
 	}
@@ -289,7 +293,7 @@ func init() {
 	rootCmd.AddCommand(pipelineCmd)
 	pipelineCmd.Flags().String("file", "", "Pipeline build file")
 	pipelineCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
-	pipelineCmd.Flags().String("concurrent", "", "Run pipeline steps concurrently")
+	pipelineCmd.Flags().Bool("concurrent", false, "Run pipeline steps concurrently")
 
 	operations["writeGraph"] = func() Step { return &WriteGraphStep{} }
 	operations["fork"] = func() Step { return &ForkStep{} }
