@@ -56,7 +56,7 @@ func (mapContextSemantics) GetEvaluatable(node ls.CompilablePropertyContainer) o
 func (mapContextSemantics) Evaluate(node ls.CompilablePropertyContainer, ctx *opencypher.EvalContext) (bool, opencypher.Value, error) {
 	ev := MapContextSemantics.GetEvaluatable(node)
 	if ev == nil {
-		return false, opencypher.Value{}, nil
+		return false, opencypher.RValue{}, nil
 	}
 	v, err := ev.Evaluate(ctx)
 	return true, v, err
