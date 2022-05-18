@@ -108,7 +108,7 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 		if ctx.concurrent {
 			concurrentPipelineStep(pipe, ctx, idx, errs, &wg)
 		} else {
-			serialPipelineStep(pipe, ctx, idx, errs)
+			sequentialPipelineStep(pipe, ctx, idx, errs)
 		}
 	}
 	if ctx.concurrent {
@@ -147,18 +147,22 @@ func concurrentPipelineStep(pipe Pipeline, ctx *PipelineContext, name string, er
 	}(pipe, ctx, name)
 }
 
-func serialPipelineStep(pipe Pipeline, ctx *PipelineContext, name string, errs map[string]error) {
+func sequentialPipelineStep(pipe Pipeline, ctx *PipelineContext, name string, errs map[string]error) {
 	pctx := &PipelineContext{
+		Context:     getContext(),
 		graph:       ctx.graph,
 		roots:       ctx.roots,
-		Context:     getContext(),
-		InputFiles:  make([]string, 0),
+		InputFiles:  ctx.InputFiles,
 		steps:       pipe,
 		currentStep: -1,
-		Properties:  make(map[string]interface{}),
 		graphOwner:  ctx.graphOwner,
 		mu:          sync.RWMutex{},
 	}
+	cpMap := make(map[string]interface{})
+	for k, prop := range ctx.Properties {
+		cpMap[k] = ls.ClonePropertyValueFunc(k, prop)
+	}
+	pctx.Properties = cpMap
 	pctx.Context.GetLogger().Debug(map[string]interface{}{"Starting new fork": name})
 	err := pctx.Next()
 	var perr pipelineError
@@ -238,31 +242,31 @@ func (e pipelineError) Unwrap() error {
 }
 
 func (ctx *PipelineContext) GetGraphRO() graph.Graph {
-	ctx.mu.RLock()
-	defer ctx.mu.RUnlock()
+	// ctx.mu.RLock()
+	// defer ctx.mu.RUnlock()
 	return ctx.graph
 }
 
 func (ctx *PipelineContext) GetGraphRW() graph.Graph {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
+	// ctx.mu.Lock()
+	// defer ctx.mu.Unlock()
 	if ctx != ctx.graphOwner {
-		ctx.graphOwner.mu.Lock()
+		// ctx.graphOwner.mu.Lock()
 		newTarget := graph.NewOCGraph()
 		nodeMap := ls.CopyGraph(newTarget, ctx.graph, nil, nil)
 		ctx.graph = newTarget
 		for _, root := range ctx.graphOwner.roots {
 			ctx.roots = append(ctx.roots, nodeMap[root])
 		}
-		ctx.graphOwner.mu.Unlock()
+		// ctx.graphOwner.mu.Unlock()
 		ctx.graphOwner = ctx
 	}
 	return ctx.graph
 }
 
 func (ctx *PipelineContext) SetGraph(g graph.Graph) *PipelineContext {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
+	// ctx.mu.Lock()
+	// defer ctx.mu.Unlock()
 	ctx.graph = g
 	return ctx
 }

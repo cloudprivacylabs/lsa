@@ -81,6 +81,10 @@ func (ecsv *CSVExport) Run(pipeline *PipelineContext) error {
 		ecsv.Writer.WriteHeader(ecsv.csvWriter)
 		ecsv.writtenHeader = true
 	}
+	for node := pipeline.GetGraphRO().GetNodes(); node.Next(); {
+		fmt.Println(node)
+	}
+	fmt.Println(pipeline.GetGraphRO())
 	ecsv.Writer.WriteRows(ecsv.csvWriter, pipeline.GetGraphRO())
 	ecsv.csvWriter.Flush()
 	return nil
