@@ -337,7 +337,7 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 			str = strings.TrimSpace(str)
 			e := re.FindString(str) // "(     i )"
 			headerType := strings.Trim(e, "(")
-			headerType = strings.Trim(e, ")")
+			headerType = strings.Trim(headerType, ")")
 			switch strings.ToLower(strings.TrimSpace(headerType)) {
 			case "i":
 				return str[:strings.Index(str, "(")], sheetInputHeader
@@ -393,27 +393,25 @@ func kvPairHeaderType(sheetName, columnHeader string, rowIdx, colIdx int, sheet 
 func ioHeaderType(sheetHeaders map[string]string, sheetName, columnHeader string, rowIdx, colIdx int, sheet [][]string, vsets *Valuesets) {
 	if sheetHeaders[columnHeader] == sheetInputHeader {
 		if entry, ok := vsets.Sets[sheetName]; ok {
-			if rowIdx < len(entry.Values) {
-				entryAtIdx := entry.Values[rowIdx]
-				if len(entryAtIdx.KeyValues) > 0 {
-					entryAtIdx.KeyValues[columnHeader] = sheet[rowIdx][colIdx]
-				} else {
-					entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: sheet[rowIdx][colIdx]}})
-					vsets.Sets[sheetName] = entry
-				}
-			}
+
+			entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: sheet[rowIdx][colIdx]}})
+			vsets.Sets[sheetName] = entry
+
+		} else {
+			vsets.Sets[sheetName] = Valueset{}
+			entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: sheet[rowIdx][colIdx]}})
+			vsets.Sets[sheetName] = entry
 		}
 	} else if sheetHeaders[columnHeader] == sheetOutputHeader {
 		if entry, ok := vsets.Sets[sheetName]; ok {
-			if rowIdx < len(entry.Values) {
-				entryAtIdx := entry.Values[rowIdx]
-				if len(entryAtIdx.ResultValues) > 0 {
-					entryAtIdx.ResultValues[columnHeader] = sheet[rowIdx][colIdx]
-				} else {
-					entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{columnHeader: sheet[rowIdx][colIdx]}})
-					vsets.Sets[sheetName] = entry
-				}
-			}
+
+			entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{columnHeader: sheet[rowIdx][colIdx]}})
+			vsets.Sets[sheetName] = entry
+
+		} else {
+			vsets.Sets[sheetName] = Valueset{}
+			entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{columnHeader: sheet[rowIdx][colIdx]}})
+			vsets.Sets[sheetName] = entry
 		}
 	}
 }
