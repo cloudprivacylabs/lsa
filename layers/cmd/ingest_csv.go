@@ -115,6 +115,7 @@ func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
 				file.Close()
 				break
 			}
+			pipeline.SetGraph(ls.NewDocumentGraph())
 			builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
 				EmbedSchemaNodes:     ci.EmbedSchemaNodes,
 				OnlySchemaAttributes: ci.OnlySchemaAttributes,
