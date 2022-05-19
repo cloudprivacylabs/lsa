@@ -151,7 +151,7 @@ var ingestXMLCmd = &cobra.Command{
 			&ing,
 			NewWriteGraphStep(cmd),
 		}
-		_, err := runPipeline(p, initialGraph, args, false)
+		_, err := runPipeline(p, initialGraph, args)
 		return err
 	},
 }

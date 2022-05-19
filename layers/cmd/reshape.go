@@ -154,7 +154,7 @@ var reshapeCmd = &cobra.Command{
 			step,
 			NewWriteGraphStep(cmd),
 		}
-		_, err := runPipeline(p, "", args, false)
+		_, err := runPipeline(p, "", args)
 		return err
 	},
 }

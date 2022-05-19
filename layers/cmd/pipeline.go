@@ -21,9 +21,7 @@ type PipelineContext struct {
 	currentStep int
 	steps       []Step
 	Properties  map[string]interface{}
-	mu          sync.RWMutex
 	graphOwner  *PipelineContext
-	concurrent  bool
 }
 
 type Step interface {
@@ -105,15 +103,11 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 		errs[k] = nil
 	}
 	for idx, pipe := range fork.Steps {
-		if ctx.concurrent {
-			concurrentPipelineStep(pipe, ctx, idx, errs, &wg)
-		} else {
-			sequentialPipelineStep(pipe, ctx, idx, errs)
-		}
+
+		forkPipeline(pipe, ctx, idx, errs)
+
 	}
-	if ctx.concurrent {
-		wg.Wait()
-	}
+
 	for _, err := range errs {
 		if err != nil {
 			return err
@@ -122,34 +116,7 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 	return nil
 }
 
-func concurrentPipelineStep(pipe Pipeline, ctx *PipelineContext, name string, errs map[string]error, wg *sync.WaitGroup) {
-	go func(steps []Step, currCtx *PipelineContext, grname string) {
-		defer wg.Done()
-		pctx := &PipelineContext{
-			graph:       currCtx.graph,
-			roots:       currCtx.roots,
-			Context:     getContext(),
-			InputFiles:  make([]string, 0),
-			steps:       steps,
-			currentStep: -1,
-			Properties:  make(map[string]interface{}),
-			graphOwner:  currCtx.graphOwner,
-			mu:          sync.RWMutex{},
-		}
-		pctx.Context.GetLogger().Debug(map[string]interface{}{"Starting new fork": grname})
-		err := pctx.Next()
-		var perr pipelineError
-		if err != nil {
-			if !errors.As(err, &perr) {
-				err = pipelineError{wrapped: fmt.Errorf("fork: %s, %w", grname, err), step: pctx.currentStep}
-			}
-			errs[grname] = err
-			return
-		}
-	}(pipe, ctx, name)
-}
-
-func sequentialPipelineStep(pipe Pipeline, ctx *PipelineContext, name string, errs map[string]error) {
+func forkPipeline(pipe Pipeline, ctx *PipelineContext, name string, errs map[string]error) {
 	pctx := &PipelineContext{
 		Context:     getContext(),
 		graph:       ctx.graph,
@@ -158,7 +125,6 @@ func sequentialPipelineStep(pipe Pipeline, ctx *PipelineContext, name string, er
 		steps:       pipe,
 		currentStep: -1,
 		graphOwner:  ctx.graphOwner,
-		mu:          sync.RWMutex{},
 	}
 	cpMap := make(map[string]interface{})
 	for k, prop := range ctx.Properties {
@@ -246,31 +212,23 @@ func (e pipelineError) Unwrap() error {
 }
 
 func (ctx *PipelineContext) GetGraphRO() graph.Graph {
-	// ctx.mu.RLock()
-	// defer ctx.mu.RUnlock()
 	return ctx.graph
 }
 
 func (ctx *PipelineContext) GetGraphRW() graph.Graph {
-	// ctx.mu.Lock()
-	// defer ctx.mu.Unlock()
 	if ctx != ctx.graphOwner {
-		// ctx.graphOwner.mu.Lock()
 		newTarget := graph.NewOCGraph()
 		nodeMap := ls.CopyGraph(newTarget, ctx.graph, nil, nil)
 		ctx.graph = newTarget
 		for _, root := range ctx.graphOwner.roots {
 			ctx.roots = append(ctx.roots, nodeMap[root])
 		}
-		// ctx.graphOwner.mu.Unlock()
 		ctx.graphOwner = ctx
 	}
 	return ctx.graph
 }
 
 func (ctx *PipelineContext) SetGraph(g graph.Graph) *PipelineContext {
-	// ctx.mu.Lock()
-	// defer ctx.mu.Unlock()
 	ctx.graph = g
 	return ctx
 }
@@ -293,7 +251,6 @@ func init() {
 	rootCmd.AddCommand(pipelineCmd)
 	pipelineCmd.Flags().String("file", "", "Pipeline build file")
 	pipelineCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
-	pipelineCmd.Flags().Bool("concurrent", false, "Run pipeline steps concurrently")
 
 	operations["writeGraph"] = func() Step { return &WriteGraphStep{} }
 	operations["fork"] = func() Step { return &ForkStep{} }
@@ -321,7 +278,7 @@ func readPipeline(file string) ([]Step, error) {
 	return unmarshalPipeline(stepMarshals)
 }
 
-func runPipeline(steps []Step, initialGraph string, inputs []string, concurrent bool) (*PipelineContext, error) {
+func runPipeline(steps []Step, initialGraph string, inputs []string) (*PipelineContext, error) {
 	var g graph.Graph
 	var err error
 	if initialGraph != "" {
@@ -339,7 +296,6 @@ func runPipeline(steps []Step, initialGraph string, inputs []string, concurrent 
 		steps:       steps,
 		currentStep: -1,
 		Properties:  make(map[string]interface{}),
-		concurrent:  concurrent,
 	}
 	pipeline.graphOwner = pipeline
 	return pipeline, pipeline.Next()
@@ -358,9 +314,8 @@ var pipelineCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		concurrent, _ := cmd.Flags().GetBool("concurrent")
 		initialGraph, _ := cmd.Flags().GetString("initialGraph")
-		_, err = runPipeline(steps, initialGraph, args, concurrent)
+		_, err = runPipeline(steps, initialGraph, args)
 		return err
 	},
 }

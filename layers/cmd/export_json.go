@@ -63,7 +63,7 @@ var exportJSONCmd = &cobra.Command{
 			NewReadGraphStep(cmd),
 			step,
 		}
-		_, err := runPipeline(p, "", args, false)
+		_, err := runPipeline(p, "", args)
 		return err
 	},
 }
