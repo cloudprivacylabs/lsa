@@ -23,3 +23,6 @@ description: "Layered schema architecture documentation"
 : Composing a schema involves building a schema variant from a schema
   base and overlays. Slicing a schema creates a schema base and one or
   more overlays.
+
+[Value sets and dictionaries](valuesets)
+: Value sets and dictioaries are used to normalize and codify data
