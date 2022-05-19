@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"sync"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -21,7 +20,6 @@ type PipelineContext struct {
 	currentStep int
 	steps       []Step
 	Properties  map[string]interface{}
-	mu          sync.RWMutex
 	graphOwner  *PipelineContext
 }
 
@@ -97,41 +95,37 @@ params:
 }
 
 func (fork ForkStep) Run(ctx *PipelineContext) error {
-	var wg sync.WaitGroup
-	wg.Add(len(fork.Steps))
-	errs := make(map[string]error)
-	for k := range fork.Steps {
-		errs[k] = nil
-	}
 	for idx, pipe := range fork.Steps {
-		go func(steps []Step, currCtx *PipelineContext, index string) {
-			defer wg.Done()
-			pctx := &PipelineContext{
-				graph:       currCtx.graph,
-				roots:       currCtx.roots,
-				Context:     getContext(),
-				InputFiles:  make([]string, 0),
-				steps:       steps,
-				currentStep: -1,
-				Properties:  make(map[string]interface{}),
-				graphOwner:  currCtx.graphOwner,
-				mu:          sync.RWMutex{},
-			}
-			pctx.Context.GetLogger().Debug(map[string]interface{}{"Starting new fork": index})
-			err := pctx.Next()
-			var perr pipelineError
-			if err != nil && !errors.As(err, &perr) {
-				err = pipelineError{wrapped: fmt.Errorf("fork: %s, %w", index, err), step: pctx.currentStep}
-				errs[index] = err
-				return
-			}
-		}(pipe, ctx, idx)
-	}
-	wg.Wait()
-	for _, err := range errs {
-		if err != nil {
+		if err := forkPipeline(pipe, ctx, idx); err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+func forkPipeline(pipe Pipeline, ctx *PipelineContext, name string) error {
+	pctx := &PipelineContext{
+		Context:     getContext(),
+		graph:       ctx.graph,
+		roots:       ctx.roots,
+		InputFiles:  ctx.InputFiles,
+		steps:       pipe,
+		currentStep: -1,
+		graphOwner:  ctx.graphOwner,
+	}
+	cpMap := make(map[string]interface{})
+	for k, prop := range ctx.Properties {
+		cpMap[k] = prop
+	}
+	pctx.Properties = cpMap
+	pctx.Context.GetLogger().Debug(map[string]interface{}{"Starting new fork": name})
+	err := pctx.Next()
+	var perr pipelineError
+	if err != nil {
+		if !errors.As(err, &perr) {
+			err = pipelineError{wrapped: fmt.Errorf("fork: %s, %w", name, err), step: pctx.currentStep}
+		}
+		return err
 	}
 	return nil
 }
@@ -205,31 +199,23 @@ func (e pipelineError) Unwrap() error {
 }
 
 func (ctx *PipelineContext) GetGraphRO() graph.Graph {
-	ctx.mu.RLock()
-	defer ctx.mu.RUnlock()
 	return ctx.graph
 }
 
 func (ctx *PipelineContext) GetGraphRW() graph.Graph {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
 	if ctx != ctx.graphOwner {
-		ctx.graphOwner.mu.Lock()
 		newTarget := graph.NewOCGraph()
 		nodeMap := ls.CopyGraph(newTarget, ctx.graph, nil, nil)
 		ctx.graph = newTarget
 		for _, root := range ctx.graphOwner.roots {
 			ctx.roots = append(ctx.roots, nodeMap[root])
 		}
-		ctx.graphOwner.mu.Unlock()
 		ctx.graphOwner = ctx
 	}
 	return ctx.graph
 }
 
 func (ctx *PipelineContext) SetGraph(g graph.Graph) *PipelineContext {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
 	ctx.graph = g
 	return ctx
 }

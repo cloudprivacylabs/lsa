@@ -96,6 +96,7 @@ func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
 			break
 		}
 
+		pipeline.SetGraph(ls.NewDocumentGraph())
 		parser := xmlingest.Parser{
 			OnlySchemaAttributes: xml.OnlySchemaAttributes,
 		}
