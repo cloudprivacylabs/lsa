@@ -5,8 +5,8 @@ title: Value sets
 # Value Sets and Dictionaries
 
 Value sets and dictionaries are used to assign normalized values to
-input data that may come in different variations. As an example,
-consider the following data sets:
+input data that may come in different variations. Let's start with an
+example. Consider the following data sets:
 
 Data Set A:
 ```
@@ -82,3 +82,66 @@ receive the normalized value for the gender field.
     }
 }
 {{</highlight>}}
+
+When ingested, the first row becomes:
+
+{{<figure src="ingested.png" class="text-center my-3" >}} 
+
+We now add the valueset annotations using an overlay:
+
+{{< highlight json >}}
+{
+    "@context": "https://lschema.org/ls.json",
+    "@id": "https://example.org/Person/vs_overlay",
+    "@type": "Overlay",
+    "valueType": "https://example.org/Person",
+    "attributeOverlays": [
+       {
+          "@id": "https://example.org/Person/gender",
+          "vsValuesets": "gender",
+          "vsContext": "https://example.org/Person",
+          "vsResultValues": "https://example.org/Person/normalized_gender"
+       }
+    ]
+}
+{{</highlight>}}
+
+
+`"@id": "https://example.org/Person/gender"`: This is the attribute
+where the valueset information is overlayed. The value of `gender`
+field will be used to lookup in the valueset.
+
+`"vsValuesets": "gender"`: This specifies the name of the valueset to
+use. In this case, the "gender" valueset will be used to lookup the
+value.
+
+`"vsContext": "https://example.org/Person"`: This annotation gives the
+closes ancestor node of the `gender` node that is an instance of the
+`https://example.org/Person` schema node. In this case, it is the root
+node corresponding to the current row in the input file. The context
+node is the common parent node that contains all the values that will
+be looked up, and the root node for all the found values. In this
+case, the result of the valueset lookup will be inserted under this
+`vsContext` node.
+
+`"vsResultValues": "https://example.org/Person/normalized_gender"`:
+This gives the schema node ID under the context node that will receive
+the lookup result.
+
+The valueset lookup will run for each `gender` node. In the above
+example, the `gender` node has value `female`, so this will be looked
+up in the `gender` valueset, and the result will be `1`. This result
+will be inserted as a new node `normalized_gender` under the context
+node, which is the root node for the `Person`. When exported as a CSV 
+file, this will result in:
+
+```
+person_id,gender,normalized_gender
+1,female,1
+2,male,2
+3,male,2
+4,unknown,0
+5,F,1
+6,M,2
+7,F,1
+```

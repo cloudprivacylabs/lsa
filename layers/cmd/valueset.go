@@ -29,7 +29,7 @@ import (
 )
 
 type Valuesets struct {
-	Services map[string]string   `json:"services" yaml:"valuesets"`
+	Services map[string]string   `json:"services" yaml:"services"`
 	Sets     map[string]Valueset `json:"valuesets" yaml:"valuesets"`
 }
 

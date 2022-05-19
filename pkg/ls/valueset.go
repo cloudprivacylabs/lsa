@@ -236,7 +236,11 @@ func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.N
 				return nil, ErrInvalidValuesetSpec{Msg: fmt.Sprintf("Multiple nodes instance of %s", reqv)}
 			}
 			if len(nodes) == 1 {
-				req[vsi.RequestKeys[index]], _ = GetRawNodeValue(nodes[0])
+				if len(vsi.RequestKeys) == 0 {
+					req[""], _ = GetRawNodeValue(nodes[0])
+				} else {
+					req[vsi.RequestKeys[index]], _ = GetRawNodeValue(nodes[0])
+				}
 			}
 		}
 	}
@@ -341,10 +345,13 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilde
 		return nil
 	}
 	if len(vsi.ResultKeys) == 0 && len(vsi.ResultValues) == 0 {
-		ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.applyThisNode"})
+		ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.applyThisNode", "contextSchemaNode": contextSchemaNode})
 		// Target is this document node
 		if len(result.KeyValues) != 1 {
 			return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: "Multiple results from valueset lookup, but no ResultKeys specified in the schema"}
+		}
+		if !contextSchemaNode.HasLabel(AttributeTypeValue) {
+			return ErrValueset{SchemaNodeID: GetNodeID(contextSchemaNode), Msg: "Trying to set the value of a non-value node using valueset"}
 		}
 		for _, v := range result.KeyValues {
 			SetRawNodeValue(contextDocumentNode, v)
@@ -406,7 +413,9 @@ func (prc *ValuesetProcessor) ProcessByContextNode(ctx *Context, builder GraphBu
 		ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process", "result": result, "contextDocNode": contextDocNode})
 		// If there is nonzero result, put it back into the doc
 		if len(result.KeyValues) > 0 {
-			vsi.ApplyValuesetResponse(ctx, builder, prc.layer, contextDocNode, contextSchemaNode, result)
+			if err := vsi.ApplyValuesetResponse(ctx, builder, prc.layer, contextDocNode, contextSchemaNode, result); err != nil {
+				return err
+			}
 		}
 	}
 	return nil
