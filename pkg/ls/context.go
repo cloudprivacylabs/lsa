@@ -5,7 +5,7 @@ import (
 )
 
 type Context struct {
-	context  context.Context
+	context.Context
 	logger   Logger
 	interner Interner
 }
@@ -28,7 +28,7 @@ func (ctx *Context) GetInterner() Interner {
 
 func DefaultContext() *Context {
 	return &Context{
-		context:  context.Background(),
+		Context:  context.Background(),
 		logger:   NewDefaultLogger(),
 		interner: NewInterner(),
 	}
@@ -36,7 +36,7 @@ func DefaultContext() *Context {
 
 func NewContext(ctx context.Context) *Context {
 	return &Context{
-		context:  ctx,
+		Context:  ctx,
 		logger:   NewDefaultLogger(),
 		interner: NewInterner()}
 }

@@ -23,14 +23,15 @@ import (
 )
 
 type testCase struct {
-	Name          string          `json:"name"`
-	Target        interface{}     `json:"target"`
-	RootID        string          `json:"rootId"`
-	SourceGraph   json.RawMessage `json:"sourceGraph"`
-	SourceLDGraph interface{}     `json:"sourceLdGraph"`
-	ExpectedLD    interface{}     `json:"expectedLd"`
-	Expected      json.RawMessage `json:"expected"`
-	Disable       bool            `json:"disable"`
+	Name          string           `json:"name"`
+	Target        interface{}      `json:"target"`
+	RootID        string           `json:"rootId"`
+	SourceGraph   json.RawMessage  `json:"sourceGraph"`
+	SourceLDGraph interface{}      `json:"sourceLdGraph"`
+	ExpectedLD    interface{}      `json:"expectedLd"`
+	Expected      json.RawMessage  `json:"expected"`
+	Disable       bool             `json:"disable"`
+	Script        *TransformScript `json:"script"`
 }
 
 func (tc testCase) GetName() string { return tc.Name }
@@ -73,7 +74,13 @@ func (tc testCase) Run(t *testing.T) {
 		t.Errorf(" Test case: %s No root node", tc.Name)
 		return
 	}
-	reshaper := Reshaper{}
+	reshaper := Reshaper{
+		Script: tc.Script,
+	}
+	if err := reshaper.Script.Compile(ls.DefaultContext()); err != nil {
+		t.Error(err)
+		return
+	}
 	reshaper.TargetSchema = targetLayer
 	reshaper.Builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		EmbedSchemaNodes: true,
@@ -132,23 +139,22 @@ func (tc testCase) Run(t *testing.T) {
 				n2.ForEachProperty(func(k string, v interface{}) bool {
 					pv, ok := v.(*ls.PropertyValue)
 					if !ok {
-						t.Logf("Error at %s: %v", k, v)
 						return true
 					}
 					v2, ok := n1.GetProperty(k)
 					if !ok {
-						t.Logf("Error at %s: %v", k, v)
+						t.Logf("Error at %s: %v: Property does not exist", k, v)
 						propertiesOK = false
 						return false
 					}
 					pv2, ok := v2.(*ls.PropertyValue)
 					if !ok {
-						t.Logf("Error at %s: %v", k, v)
+						t.Logf("Error at %s: %v: Not property value", k, v)
 						propertiesOK = false
 						return false
 					}
 					if !pv2.IsEqual(pv) {
-						t.Logf("Error at %s: %v", k, v)
+						t.Logf("Error at %s: %v: Values are not equal", k, v)
 						propertiesOK = false
 						return false
 					}
@@ -186,6 +192,15 @@ func TestBasicReshape(t *testing.T) {
 	ls.RunTestsFromFile(t, "testdata/basic.json", run)
 }
 
+func TestBasicScriptReshape(t *testing.T) {
+	run := func(in json.RawMessage) (ls.TestCase, error) {
+		var c testCase
+		err := json.Unmarshal(in, &c)
+		return c, err
+	}
+	ls.RunTestsFromFile(t, "testdata/basic_script.json", run)
+}
+
 func TestBasicMap(t *testing.T) {
 	ls.DefaultLogLevel = ls.LogLevelDebug
 	run := func(in json.RawMessage) (ls.TestCase, error) {
@@ -194,6 +209,16 @@ func TestBasicMap(t *testing.T) {
 		return c, err
 	}
 	ls.RunTestsFromFile(t, "testdata/mapbasic.json", run)
+}
+
+func TestBasicMapScript(t *testing.T) {
+	ls.DefaultLogLevel = ls.LogLevelDebug
+	run := func(in json.RawMessage) (ls.TestCase, error) {
+		var c testCase
+		err := json.Unmarshal(in, &c)
+		return c, err
+	}
+	ls.RunTestsFromFile(t, "testdata/mapbasic_script.json", run)
 }
 
 func TestFHIRReshape(t *testing.T) {

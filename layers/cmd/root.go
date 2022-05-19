@@ -62,11 +62,22 @@ func Execute() error {
 func init() {
 	rootCmd.PersistentFlags().String("cpuprofile", "", "Write cpu profile to file")
 	rootCmd.PersistentFlags().Bool("log", false, "Enable logging")
+	rootCmd.PersistentFlags().Bool("log.debug", false, "Enable logging at debug level")
+	rootCmd.PersistentFlags().Bool("log.info", false, "Enable logging at info level")
 
 	rootCmd.PersistentFlags().String("rankdir", "LR", "DOT: rankdir option")
 }
 
 func getContext() *ls.Context {
+	l1, _ := rootCmd.PersistentFlags().GetBool("log")
+	l2, _ := rootCmd.PersistentFlags().GetBool("log.debug")
+	if l1 || l2 {
+		logger.Level = ls.LogLevelDebug
+	}
+	l1, _ = rootCmd.PersistentFlags().GetBool("log.info")
+	if l1 {
+		logger.Level = ls.LogLevelInfo
+	}
 	return ls.DefaultContext().SetLogger(logger)
 }
 
@@ -76,13 +87,6 @@ func failErr(err error) {
 
 func fail(msg string) {
 	log.Fatalf(msg)
-}
-
-func logf(pattern string, args ...interface{}) {
-	b, _ := rootCmd.PersistentFlags().GetBool("log")
-	if b {
-		log.Printf(pattern, args...)
-	}
 }
 
 func unroll(in interface{}, depth int) interface{} {
@@ -108,7 +112,6 @@ func unroll(in interface{}, depth int) interface{} {
 }
 
 func getRepo(repodir string, interner ls.Interner) (*fs.Repository, error) {
-	logf("Loading repository %s", repodir)
 	repo := fs.NewWithInterner(repodir, interner)
 	if err := repo.Load(); err != nil {
 		if errors.Is(err, fs.ErrNoIndex) || errors.Is(err, fs.ErrBadIndex) {
@@ -126,7 +129,6 @@ func getRepo(repodir string, interner ls.Interner) (*fs.Repository, error) {
 		}
 	}
 	if repo.IsIndexStale() {
-		logf("Rebuilding repository index")
 		warnings, err := repo.UpdateIndex()
 		if len(warnings) > 0 {
 			for _, x := range warnings {
@@ -137,6 +139,5 @@ func getRepo(repodir string, interner ls.Interner) (*fs.Repository, error) {
 			return nil, err
 		}
 	}
-	logf("Done loading repository")
 	return repo, nil
 }

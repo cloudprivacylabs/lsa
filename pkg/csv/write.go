@@ -95,13 +95,13 @@ func (wr *Writer) BuildRow(root graph.Node) ([]string, error) {
 			continue
 		}
 		ctx := opencypher.NewEvalContext(root.GetGraph())
-		ctx.SetVar("root", opencypher.Value{Value: root})
+		ctx.SetVar("root", opencypher.RValue{Value: root})
 		result, err := col.parsedQuery.Evaluate(ctx)
 		if err != nil {
 			return nil, err
 		}
 		// Expexting a single result
-		rs, ok := result.Value.(opencypher.ResultSet)
+		rs, ok := result.Get().(opencypher.ResultSet)
 		if !ok {
 			return nil, opencypher.ErrExpectingResultSet
 		}
@@ -113,7 +113,7 @@ func (wr *Writer) BuildRow(root graph.Node) ([]string, error) {
 			return nil, ErrMultipleNodesMatched
 		}
 		for _, v := range rs.Rows[0] {
-			node, ok := v.Value.(graph.Node)
+			node, ok := v.Get().(graph.Node)
 			if !ok {
 				return nil, fmt.Errorf("Expecting a node in resultset")
 			}
@@ -157,14 +157,14 @@ func (wr *Writer) WriteRows(writer *csv.Writer, g graph.Graph) error {
 		if err != nil {
 			return err
 		}
-		rs, ok := v.Value.(opencypher.ResultSet)
+		rs, ok := v.Get().(opencypher.ResultSet)
 		if !ok {
 			return opencypher.ErrExpectingResultSet
 		}
 		for _, row := range rs.Rows {
 			if len(row) == 1 {
 				for _, v := range row {
-					if node, ok := v.Value.(graph.Node); ok {
+					if node, ok := v.Get().(graph.Node); ok {
 						roots = append(roots, node)
 					} else {
 						return fmt.Errorf("Expecting a node in resultset")

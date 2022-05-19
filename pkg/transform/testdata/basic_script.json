@@ -1,0 +1,224 @@
+[
+    {
+        "name": "Literal",
+        "script": {
+            "reshapeNodes": {
+                "val1": {
+                    "https://lschema.org/transform/valueExpr": "return 'literal'"
+                }
+            }
+        },
+        "target": {
+            "@context": {"ls": "https://lschema.org/"},
+            "@type": "ls:Schema",
+            "@id": "http://example.org/TestTarget",
+            "ls:layer": {
+                "@type": ["ls:Object","http://example.org/ValueType"],
+                "@id":"root",
+                "ls:Object/attributes": [
+                    {
+                        "@id": "val1",
+                        "@type": "ls:Value"
+                    }
+                ]
+            }
+        },
+        "rootId": "http://example.org/obj1",
+        "sourceLdGraph": {
+            "@graph": [
+                {
+                    "@id": "http://example.org/obj1",
+                    "@type": ["https://lschema.org/DocumentNode","http://example.org/ValueType"],
+                    "https://lschema.org/has": [
+                        {"@id": "http://example.org/attr1"},
+                        {"@id": "http://example.org/attr2"}
+                    ]
+                },
+                {
+                    "@id": "http://example.org/attr1",
+                    "@type": "https://lschema.org/DocumentNode",
+                    "https://lschema.org/attributeValue": "123"
+                },
+                {
+                    "@id": "http://example.org/attr2",
+                    "@type": "https://lschema.org/DocumentNode",
+                    "https://lschema.org/attributeValue": "true"
+                }
+            ]
+        },
+        "expectedLd": {
+            "@graph": [
+                {
+                    "@id": "root",
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","http://example.org/ValueType"],
+                    "https://lschema.org/schemaNodeId": "root",
+                    "https://lschema.org/has": [
+                        {"@id": "val1"}
+                    ]
+                },
+                {
+                    "@id":"val1",
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "https://lschema.org/schemaNodeId": "val1",
+                    "https://lschema.org/attributeIndex": "0",
+                    "https://lschema.org/attributeValue":"literal"
+                }
+            ]
+        }
+    },
+    {
+        "name": "Basic 1",
+        "script": {
+            "reshapeNodes": {
+                "val1": {
+                    "https://lschema.org/transform/valueExpr": "match (n) where n.`https://prop`=\"propValue\" return n"
+                }
+            }
+        },
+        "target": {
+            "@context": {"ls": "https://lschema.org/"},
+            "@type": "ls:Schema",
+            "@id": "http://example.org/TestTarget",
+            "ls:layer": {
+                "@type": ["ls:Object","http://example.org/ValueType"],
+                "@id":"root",
+                "ls:Object/attributes": [
+                    {
+                        "@id": "val1",
+                        "@type": "ls:Value"
+                    }
+                ]
+            }
+        },
+        "rootId": "http://example.org/obj1",
+        "sourceLdGraph": {
+            "@graph": [
+                {
+                    "@id": "http://example.org/obj1",
+                    "@type": ["https://lschema.org/DocumentNode"],
+                    "https://lschema.org/has": [
+                        {"@id": "http://example.org/attr1"},
+                        {"@id": "http://example.org/attr2"}
+                    ]
+                },
+                {
+                    "@id": "http://example.org/attr1",
+                    "https://prop": "propValue",
+                    "@type": "https://lschema.org/DocumentNode",
+                    "https://lschema.org/attributeValue": "123"
+                },
+                {
+                    "@id": "http://example.org/attr2",
+                    "@type": "https://lschema.org/DocumentNode",
+                    "https://lschema.org/attributeValue": "true"
+                }
+            ]
+        },
+        "expectedLd": {
+            "@graph": [
+                {
+                    "@id": "root",
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","http://example.org/ValueType"],
+                    "https://lschema.org/has": [
+                        {"@id": "val1"}
+                    ]
+                },
+                {
+                    "@id":"val1",
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "https://lschema.org/attributeValue":"123"
+                }
+            ]
+        }
+    },
+    {
+        "name": "Basic 2",
+        "script": {
+            "reshapeNodes": {
+                "val1": {
+                    "https://lschema.org/transform/valueExpr": "match (n:`https://test1`) return n"
+                },
+                "val2": {
+                    "https://lschema.org/transform/valueExpr": "match (n:`https://test2`) return n"
+                }
+            }
+        },
+        "target": {
+            "@context": {"ls": "https://lschema.org/"},
+            "@type": "ls:Schema",
+            "@id": "http://example.org/TestTarget",
+            "ls:layer": {
+                "@type": ["ls:Object","http://example.org/ValueType","https://1"],
+                "@id": "root",
+                "ls:Object/attributes": [
+                    {
+                        "@id": "val1",
+                        "@type": "ls:Value"
+                    },
+                    {
+                        "@id": "obj1",
+                        "@type": ["ls:Object","https://2"],
+                        "ls:Object/attributes": [
+                            {
+                                "@id": "val2",
+                                "@type": "ls:Value"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "rootId": "http://example.org/obj1",
+        "sourceLdGraph": {
+            "@graph": [
+                {
+                    "@id": "http://example.org/obj1",
+                    "@type": ["https://lschema.org/DocumentNode"],
+                    "https://lschema.org/has": [
+                        {"@id": "http://example.org/attr1"},
+                        {"@id": "http://example.org/attr2"}
+                    ]
+                },
+                {
+                    "@id": "http://example.org/attr1",
+                    "@type": ["https://lschema.org/DocumentNode","https://test1"],
+                    "https://lschema.org/attributeValue": "123"
+                },
+                {
+                    "@id": "http://example.org/attr2",
+                    "@type": ["https://lschema.org/DocumentNode","https://test2"],
+                    "https://lschema.org/attributeValue": "true"
+                }
+            ]
+        },
+        "expectedLd": {
+            "@graph": [
+                {
+                    "@id": "root",
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","https://1","http://example.org/ValueType"],
+                    "https://lschema.org/has": [
+                        {"@id": "val1"},
+                        {"@id": "obj1"}
+                    ]
+                },
+                {
+                    "@id":"val1",
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "https://lschema.org/attributeValue":"123"
+                },
+                {
+                    "@id":"obj1",
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","https://2"],
+                    "https://lschema.org/has": [
+                        {"@id": "val2"}
+                    ]
+                },
+                {
+                    "@id":"val2",
+                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "https://lschema.org/attributeValue":"true"
+                }
+            ]
+        }
+    }
+]

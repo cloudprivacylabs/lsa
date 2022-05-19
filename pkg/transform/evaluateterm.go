@@ -17,7 +17,6 @@ package transform
 import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 var EvaluateTerm = ls.NewTerm(TRANSFORM, "evaluate", false, false, ls.SetComposition, EvaluateTermSemantics)
@@ -25,6 +24,10 @@ var EvaluateTerm = ls.NewTerm(TRANSFORM, "evaluate", false, false, ls.SetComposi
 type evaluateTermSemantics struct{}
 
 var EvaluateTermSemantics = evaluateTermSemantics{}
+
+func (evaluateTermSemantics) Get(node ls.CompilablePropertyContainer) []string {
+	return ls.AsPropertyValue(node.GetProperty(EvaluateTerm)).MustStringSlice()
+}
 
 func (evaluateTermSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	if value == nil {
@@ -43,7 +46,7 @@ func (evaluateTermSemantics) CompileTerm(target ls.CompilablePropertyContainer, 
 }
 
 // GetEvaluatables returns the contents of the compiled evaluate term
-func (evaluateTermSemantics) GetEvaluatables(node graph.Node) []opencypher.Evaluatable {
+func (evaluateTermSemantics) GetEvaluatables(node ls.CompilablePropertyContainer) []opencypher.Evaluatable {
 	v, _ := node.GetProperty("$compiled_" + EvaluateTerm)
 	x, _ := v.([]opencypher.Evaluatable)
 	return x

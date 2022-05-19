@@ -96,15 +96,14 @@ func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
 			break
 		}
 
-		grph := pipeline.Graph
-
+		pipeline.SetGraph(ls.NewDocumentGraph())
 		parser := xmlingest.Parser{
 			OnlySchemaAttributes: xml.OnlySchemaAttributes,
 		}
 		if layer != nil {
 			parser.SchemaNode = layer.GetSchemaRootNode()
 		}
-		builder := ls.NewGraphBuilder(grph, ls.GraphBuilderOptions{
+		builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
 			EmbedSchemaNodes:     xml.EmbedSchemaNodes,
 			OnlySchemaAttributes: xml.OnlySchemaAttributes,
 		})
@@ -130,7 +129,13 @@ func init() {
 	ingestCmd.AddCommand(ingestXMLCmd)
 	ingestXMLCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
 
-	operations["ingest/xml"] = func() Step { return &XMLIngester{} }
+	operations["ingest/xml"] = func() Step {
+		return &XMLIngester{
+			BaseIngestParams: BaseIngestParams{
+				EmbedSchemaNodes: true,
+			},
+		}
+	}
 }
 
 var ingestXMLCmd = &cobra.Command{

@@ -35,7 +35,7 @@ params:
 }
 
 func (oc *OCStep) Run(pipeline *PipelineContext) error {
-	ctx := opencypher.NewEvalContext(pipeline.Graph)
+	ctx := opencypher.NewEvalContext(pipeline.GetGraphRW())
 	output, err := opencypher.ParseAndEvaluate(oc.Expr, ctx)
 	if err != nil {
 		return err
