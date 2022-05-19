@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"sync"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -96,27 +95,15 @@ params:
 }
 
 func (fork ForkStep) Run(ctx *PipelineContext) error {
-	var wg sync.WaitGroup
-	wg.Add(len(fork.Steps))
-	errs := make(map[string]error)
-	for k := range fork.Steps {
-		errs[k] = nil
-	}
 	for idx, pipe := range fork.Steps {
-
-		forkPipeline(pipe, ctx, idx, errs)
-
-	}
-
-	for _, err := range errs {
-		if err != nil {
+		if err := forkPipeline(pipe, ctx, idx); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func forkPipeline(pipe Pipeline, ctx *PipelineContext, name string, errs map[string]error) {
+func forkPipeline(pipe Pipeline, ctx *PipelineContext, name string) error {
 	pctx := &PipelineContext{
 		Context:     getContext(),
 		graph:       ctx.graph,
@@ -128,7 +115,7 @@ func forkPipeline(pipe Pipeline, ctx *PipelineContext, name string, errs map[str
 	}
 	cpMap := make(map[string]interface{})
 	for k, prop := range ctx.Properties {
-		cpMap[k] = ls.ClonePropertyValueFunc(k, prop)
+		cpMap[k] = prop
 	}
 	pctx.Properties = cpMap
 	pctx.Context.GetLogger().Debug(map[string]interface{}{"Starting new fork": name})
@@ -138,9 +125,9 @@ func forkPipeline(pipe Pipeline, ctx *PipelineContext, name string, errs map[str
 		if !errors.As(err, &perr) {
 			err = pipelineError{wrapped: fmt.Errorf("fork: %s, %w", name, err), step: pctx.currentStep}
 		}
-		errs[name] = err
-		return
+		return err
 	}
+	return nil
 }
 
 type StepFunc func(*PipelineContext) error
