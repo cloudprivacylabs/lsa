@@ -352,6 +352,7 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 			}
 			var headerIdx int
 			var headerFlag bool
+		ROWS:
 			for rowIdx, row := range sheet {
 				if len(row) == 0 {
 					continue
@@ -363,13 +364,14 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 						headerIdx = rowIdx
 						if colIdx == len(row)-1 {
 							headerFlag = true
+							continue ROWS
 						}
 						continue
 					}
-					columnHeader := sheet[headerIdx][colIdx]
-					if sheetHeaders[columnHeader] == sheetInputHeader || sheetHeaders[columnHeader] == sheetOutputHeader {
-						ioHeaderType(sheetHeaders, sheetName, columnHeader, rowIdx, colIdx, sheet, &vsets)
-					}
+					// columnHeader := sheet[headerIdx][colIdx]
+					// if sheetHeaders[columnHeader] == sheetInputHeader || sheetHeaders[columnHeader] == sheetOutputHeader {
+					// 	ioHeaderType(sheetHeaders, sheetName, columnHeader, rowIdx, colIdx, sheet, &vsets)
+					// }
 				}
 				kvPairHeaderType(sheetName, row, headerIdx, sheet, &vsets)
 			}
@@ -381,6 +383,13 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 // spreadsheet - multiple k-v pairs as input. output the whole row
 func kvPairHeaderType(sheetName string, row []string, headerIdx int, sheet [][]string, vsets *Valuesets) {
 	if entry, ok := vsets.Sets[sheetName]; ok {
+		for idx, cell := range row {
+			columnHeader := sheet[headerIdx][idx]
+			entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: cell}})
+			vsets.Sets[sheetName] = entry
+		}
+	} else {
+		vsets.Sets[sheetName] = Valueset{}
 		for idx, cell := range row {
 			columnHeader := sheet[headerIdx][idx]
 			entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: cell}})
