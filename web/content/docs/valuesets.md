@@ -215,7 +215,7 @@ normalized values:
 
 {{<figure src="processed-narrow.png" class="text-center my-3" >}} 
 
-## Composite values
+## Composite Values
 
 When dealing with data that may include terms/codes from multiple
 ontologies, it may make sense to perform valueset lookupe using
@@ -314,3 +314,59 @@ When this document is exported as CSV, the output becomes:
 id, code_system, measure_name, code
 1,LOINC,Body height, 8302-2
 ```
+
+## Building Value Sets
+
+Value sets can be built using a spreadsheet. The following spreadsheet
+can be used to convert between languages and their codes (taken from
+PCORNet valuesets). Note that the same code is repeated multiple times
+if there are multiple descriptive texts for the same language. This
+spreadsheet can be used to translate languages entered as text to
+language codes. 
+
+<table class="table table-sm table-bordered">
+<thead>
+<tr><th>CODE</th><th>DESCRIPTIVE_TEXT</th></tr>
+</thead>
+<tbody>
+<tr><td>ACH</td><td>Acoli</td></tr>
+<tr><td>ADA</td><td>	Adangme</td></tr>
+<tr><td>ADY</td><td>	Adyghe</td></tr>
+<tr><td>ADY</td><td>   Adygei</td></tr>
+<tr><td>AFR</td><td>	Afrikaans</td></tr>
+<tr><td>AIN</td><td>	Ainu</td></tr>
+</tbody>
+<table>
+
+Possible valueset requests and responses are:
+
+<table class="table table-sm table-bordered">
+<thead>
+<tr><th>Request</th><th>Response</th></tr>
+</thead>
+<tbody>
+<tr><td><code>{DESCRIPTIVE_TEXT: adyegi}</code> </td><td> <code>{CODE: ADY, DESCRIPTIVE_TEXT: Adyegi}</code></td></tr>
+<tr><td><code>{DESCRIPTIVE_TEXT: Ainu}</code> </td><td> <code>{CODE: AIN, DESCRIPTIVE_TEXT: Ainu}</code></td></tr>
+</tbody>
+</table>
+
+Sometimes the input data is unreliable, and it may be necessary to
+conduct a less restrictive search on valuesets. Such behavior can be
+controlled using valueset options.
+
+The following valueset will search the input value in the *code*
+column first, and then in the *text* column, and return the result
+found in the *code* column only. This will handle data that contains
+both codes and textual descriptions as the input value.
+
+<table class="table table-sm table-bordered">
+<tbody>
+<tr><td>options.lookupOrder</td><td>code</td><td>text</td></tr>
+<tr><td>options.output</td><td colspan="2">code</td></tr>
+<tr><th>code</th><th colspan="2">text</th></tr>
+<tr><td>8532</td><td colspan="2">F</td></tr>
+<tr><td>8532</td><td colspan="2">Female</td></tr>
+<tr><td>8507</td><td colspan="2">M</td></tr>
+<tr><td>8507</td><td colspan="2">Male</td></tr>
+</tbody>
+</table>
