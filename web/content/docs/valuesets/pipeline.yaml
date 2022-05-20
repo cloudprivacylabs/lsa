@@ -1,0 +1,15 @@
+- operation: ingest/csv
+  params:
+    schema: person.schema.json
+    headerRow: 0
+    startRow: 1
+- operation: valueset
+  params:
+    valuesetFiles:
+      - valueset.json
+- operation: export/csv
+  params:
+    columns:
+      - name: person_id
+      - name: gender
+      - name: normalized_gender

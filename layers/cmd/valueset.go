@@ -282,12 +282,14 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 
 type valuesetMarshal struct {
 	Valueset
-	Sets []Valueset `json:"valuesets" yaml:"valuesets"`
+	Services map[string]string `json:"services" yaml:"services"`
+	Sets     []Valueset        `json:"valuesets" yaml:"valuesets"`
 }
 
 func LoadValuesetFiles(vs *Valuesets, files []string) error {
 	if vs.Sets == nil {
 		vs.Sets = make(map[string]Valueset)
+		vs.Services = make(map[string]string)
 	}
 	for _, file := range files {
 		var vm valuesetMarshal
@@ -306,6 +308,12 @@ func LoadValuesetFiles(vs *Valuesets, files []string) error {
 				return fmt.Errorf("Value set %s already defined", vm.ID)
 			}
 			vs.Sets[vm.ID] = vm.Valueset
+		}
+		for k, v := range vm.Services {
+			if _, exists := vs.Services[k]; exists {
+				return fmt.Errorf("Service %s already defined", k)
+			}
+			vs.Services[k] = v
 		}
 	}
 	return nil
@@ -427,6 +435,7 @@ Individual valueset objects can be given as separate files as well:
 	RunE: func(cmd *cobra.Command, args []string) error {
 		step := &ValuesetStep{}
 		step.fromCmd(cmd)
+		step.ValuesetFiles, _ = cmd.Flags().GetStringSlice("valueset")
 		p := []Step{
 			NewReadGraphStep(cmd),
 			step,
