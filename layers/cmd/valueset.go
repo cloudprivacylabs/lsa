@@ -31,7 +31,7 @@ import (
 )
 
 type Valuesets struct {
-	Services     map[string]string   `json:"services" yaml:"valuesets"`
+	Services     map[string]string   `json:"services" yaml:"services"`
 	Spreadsheets []string            `json:"spreadsheets" yaml:"spreadsheets"`
 	Sets         map[string]Valueset `json:"valuesets" yaml:"valuesets"`
 }
@@ -352,7 +352,6 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 			}
 			var headerIdx int
 			var headerFlag bool
-		ROWS:
 			for rowIdx, row := range sheet {
 				if len(row) == 0 {
 					continue
@@ -370,11 +369,9 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 					columnHeader := sheet[headerIdx][colIdx]
 					if sheetHeaders[columnHeader] == sheetInputHeader || sheetHeaders[columnHeader] == sheetOutputHeader {
 						ioHeaderType(sheetHeaders, sheetName, columnHeader, rowIdx, colIdx, sheet, &vsets)
-					} else {
-						kvPairHeaderType(sheetName, columnHeader, rowIdx, colIdx, sheet, &vsets)
-						continue ROWS
 					}
 				}
+				kvPairHeaderType(sheetName, row, headerIdx, sheet, &vsets)
 			}
 		}
 	}
@@ -382,10 +379,13 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 }
 
 // spreadsheet - multiple k-v pairs as input. output the whole row
-func kvPairHeaderType(sheetName, columnHeader string, rowIdx, colIdx int, sheet [][]string, vsets *Valuesets) {
+func kvPairHeaderType(sheetName string, row []string, headerIdx int, sheet [][]string, vsets *Valuesets) {
 	if entry, ok := vsets.Sets[sheetName]; ok {
-		entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: strings.Join(sheet[rowIdx], " | ")}})
-		vsets.Sets[sheetName] = entry
+		for idx, cell := range row {
+			columnHeader := sheet[headerIdx][idx]
+			entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: cell}})
+			vsets.Sets[sheetName] = entry
+		}
 	}
 }
 
@@ -393,10 +393,8 @@ func kvPairHeaderType(sheetName, columnHeader string, rowIdx, colIdx int, sheet 
 func ioHeaderType(sheetHeaders map[string]string, sheetName, columnHeader string, rowIdx, colIdx int, sheet [][]string, vsets *Valuesets) {
 	if sheetHeaders[columnHeader] == sheetInputHeader {
 		if entry, ok := vsets.Sets[sheetName]; ok {
-
 			entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: sheet[rowIdx][colIdx]}})
 			vsets.Sets[sheetName] = entry
-
 		} else {
 			vsets.Sets[sheetName] = Valueset{}
 			entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: sheet[rowIdx][colIdx]}})
@@ -404,10 +402,8 @@ func ioHeaderType(sheetHeaders map[string]string, sheetName, columnHeader string
 		}
 	} else if sheetHeaders[columnHeader] == sheetOutputHeader {
 		if entry, ok := vsets.Sets[sheetName]; ok {
-
 			entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{columnHeader: sheet[rowIdx][colIdx]}})
 			vsets.Sets[sheetName] = entry
-
 		} else {
 			vsets.Sets[sheetName] = Valueset{}
 			entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{columnHeader: sheet[rowIdx][colIdx]}})
