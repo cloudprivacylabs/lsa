@@ -354,7 +354,7 @@ func parseOptions(optionsRows [][]string) map[string][]string {
 	return optionsMap
 }
 
-func parseData(vsets *Valuesets, sheetName string, headers []string, data [][]string, optionsMap map[string][]string, headerRowStart int) {
+func parseSheet(vsets *Valuesets, sheetName string, headers []string, data [][]string, optionsMap map[string][]string, headerRowStart int) {
 	// lookupOrder (header based search)
 	if len(optionsMap) > 0 {
 		if opt, exists := optionsMap["lookupOrder"]; exists {
@@ -450,7 +450,7 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 				return fmt.Errorf("Error parsing sheet %s, %w", sheetName, err)
 			}
 			optionsMap := parseOptions(optionsRows)
-			parseData(&vsets, sheetName, headers, data, optionsMap, headerIdx)
+			parseSheet(&vsets, sheetName, headers, data, optionsMap, headerIdx)
 		}
 	}
 	return nil
