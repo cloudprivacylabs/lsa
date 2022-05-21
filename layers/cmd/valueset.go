@@ -20,7 +20,6 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
-	"strings"
 	"sync"
 	"unicode"
 
@@ -319,12 +318,122 @@ func LoadValuesetFiles(vs *Valuesets, files []string) error {
 	return nil
 }
 
-var re = regexp.MustCompile(`\([^()]*.?[^()]*\)$`)
+var options_re = regexp.MustCompile(`options`)
 
-const (
-	sheetInputHeader  string = "input"
-	sheetOutputHeader string = "output"
-)
+func parseSpreadsheet(sheet [][]string) (optionsRows [][]string, headers []string, headerIdx int, data [][]string, err error) {
+ROWS:
+	for rowIdx, row := range sheet {
+		if len(row) == 0 {
+			continue
+		}
+		for _, columnData := range row {
+			if options_re.MatchString(columnData) {
+				optionsRows = append(optionsRows, row)
+				continue ROWS
+			} else {
+				headers = row
+				headerIdx = rowIdx
+				break ROWS
+			}
+		}
+	}
+	data = sheet[headerIdx+1:][:]
+	if len(data) == 0 {
+		err = fmt.Errorf("Empty data")
+	}
+	return optionsRows, headers, headerIdx, data, err
+}
+
+func parseOptions(optionsRows [][]string) map[string][]string {
+	optionsMap := make(map[string][]string, len(optionsRows))
+	for _, opt := range optionsRows {
+		optionType := opt[0]
+		// options.lookupOrder -- code | text | ...
+		optionsMap[optionType] = opt[1:]
+	}
+	return optionsMap
+}
+
+func parseData(vsets *Valuesets, sheetName string, headers []string, data [][]string, optionsMap map[string][]string, headerRowStart int) {
+	// lookupOrder (header based search)
+	if len(optionsMap) > 0 {
+		if opt, exists := optionsMap["lookupOrder"]; exists {
+			for hdrIdx, hdr := range headers {
+				if hdr == opt[hdrIdx] {
+					// vertical scan
+					for rowIdx := headerRowStart; rowIdx < len(data); rowIdx++ {
+						colData := data[rowIdx][hdrIdx]
+						if entry, ok := vsets.Sets[sheetName]; ok {
+							entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{hdr: colData}})
+							vsets.Sets[sheetName] = entry
+						} else {
+							vsets.Sets[sheetName] = Valueset{}
+							entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{hdr: colData}})
+							vsets.Sets[sheetName] = entry
+						}
+						if opt, exists := optionsMap["output"]; exists {
+							entry := vsets.Sets[sheetName]
+							// CODE
+							if len(opt) == 1 {
+								if hdr == opt[0] {
+									entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{hdr: colData}})
+								}
+							} else {
+								for _, val := range opt {
+									if hdr == val {
+										entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{hdr: colData}})
+										continue
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return
+	}
+
+	// if no lookup, traverse in (row x col) manner
+	for rowIdx, row := range data {
+		for colIdx, col := range row {
+			if entry, ok := vsets.Sets[sheetName]; ok {
+				header := headers[colIdx]
+				entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{header: col}})
+				vsets.Sets[sheetName] = entry
+			} else {
+				vsets.Sets[sheetName] = Valueset{}
+				header := headers[colIdx]
+				entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{header: col}})
+				vsets.Sets[sheetName] = entry
+			}
+			if len(optionsMap) > 0 {
+				entry := vsets.Sets[sheetName]
+				if opt, exists := optionsMap["output"]; exists {
+					// CODE
+				HEADERS:
+					for hdrIdx, hdr := range headers {
+						if len(opt) == 1 {
+							if hdr == opt[0] {
+								entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{hdr: data[rowIdx][hdrIdx]}})
+							}
+						} else {
+							for _, val := range opt {
+								if hdr == val {
+									entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{hdr: data[rowIdx][hdrIdx]}})
+									continue HEADERS
+								}
+							}
+						}
+					}
+
+					// } else if opt, exists := optionsMap["caseSensitive"]; exists {
+
+				}
+			}
+		}
+	}
+}
 
 func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 	for _, spreadsheet := range vsets.Spreadsheets {
@@ -332,93 +441,19 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 		if err != nil {
 			return fmt.Errorf("While reading file: %s, %w", spreadsheet, err)
 		}
-		sheetHeaders := make(map[string]string)
-		determineHeaderType := func(str string) (string, string) {
-			str = strings.TrimSpace(str)
-			e := re.FindString(str) // "(     i )"
-			headerType := strings.Trim(e, "(")
-			headerType = strings.Trim(headerType, ")")
-			switch strings.ToLower(strings.TrimSpace(headerType)) {
-			case "i":
-				return str[:strings.Index(str, "(")], sheetInputHeader
-			case "o":
-				return str[:strings.Index(str, "(")], sheetOutputHeader
-			}
-			return "", ""
-		}
 		for sheetName, sheet := range sheets {
 			if _, exists := vsets.Sets[sheetName]; exists {
 				return fmt.Errorf("Value set %s already defined -- in file: %s", sheetName, sheet)
 			}
-			var headerIdx int
-			var headerFlag bool
-		ROWS:
-			for rowIdx, row := range sheet {
-				if len(row) == 0 {
-					continue
-				}
-				for colIdx, columnData := range row {
-					if !headerFlag {
-						_, headerType := determineHeaderType(columnData)
-						sheetHeaders[columnData] = headerType
-						headerIdx = rowIdx
-						if colIdx == len(row)-1 {
-							headerFlag = true
-							continue ROWS
-						}
-						continue
-					}
-					// columnHeader := sheet[headerIdx][colIdx]
-					// if sheetHeaders[columnHeader] == sheetInputHeader || sheetHeaders[columnHeader] == sheetOutputHeader {
-					// 	ioHeaderType(sheetHeaders, sheetName, columnHeader, rowIdx, colIdx, sheet, &vsets)
-					// }
-				}
-				kvPairHeaderType(sheetName, row, headerIdx, sheet, &vsets)
+			optionsRows, headers, headerIdx, data, err := parseSpreadsheet(sheet)
+			if err != nil {
+				return fmt.Errorf("Error parsing sheet %s, %w", sheetName, err)
 			}
+			optionsMap := parseOptions(optionsRows)
+			parseData(&vsets, sheetName, headers, data, optionsMap, headerIdx)
 		}
 	}
 	return nil
-}
-
-// spreadsheet - multiple k-v pairs as input. output the whole row
-func kvPairHeaderType(sheetName string, row []string, headerIdx int, sheet [][]string, vsets *Valuesets) {
-	if entry, ok := vsets.Sets[sheetName]; ok {
-		for idx, cell := range row {
-			columnHeader := sheet[headerIdx][idx]
-			entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: cell}})
-			vsets.Sets[sheetName] = entry
-		}
-	} else {
-		vsets.Sets[sheetName] = Valueset{}
-		for idx, cell := range row {
-			columnHeader := sheet[headerIdx][idx]
-			entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: cell}})
-			vsets.Sets[sheetName] = entry
-		}
-	}
-}
-
-// spreadsheet - input or output
-func ioHeaderType(sheetHeaders map[string]string, sheetName, columnHeader string, rowIdx, colIdx int, sheet [][]string, vsets *Valuesets) {
-	if sheetHeaders[columnHeader] == sheetInputHeader {
-		if entry, ok := vsets.Sets[sheetName]; ok {
-			entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: sheet[rowIdx][colIdx]}})
-			vsets.Sets[sheetName] = entry
-		} else {
-			vsets.Sets[sheetName] = Valueset{}
-			entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{columnHeader: sheet[rowIdx][colIdx]}})
-			vsets.Sets[sheetName] = entry
-		}
-	} else if sheetHeaders[columnHeader] == sheetOutputHeader {
-		if entry, ok := vsets.Sets[sheetName]; ok {
-			entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{columnHeader: sheet[rowIdx][colIdx]}})
-			vsets.Sets[sheetName] = entry
-		} else {
-			vsets.Sets[sheetName] = Valueset{}
-			entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{columnHeader: sheet[rowIdx][colIdx]}})
-			vsets.Sets[sheetName] = entry
-		}
-	}
 }
 
 func loadValuesetsCmd(cmd *cobra.Command, valuesets *Valuesets) {
