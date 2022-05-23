@@ -437,17 +437,54 @@ func parseData(vsets *Valuesets, sheetName string, headers []string, data [][]st
 	}
 
 	// if no lookup, traverse in (row x col) manner
+	var headers_with_sep map[string]struct{}
+	var sep string
 	for rowIdx, row := range data {
 		for colIdx, col := range row {
+			if sep_opt, exists := optionsMap["separator"]; exists {
+				// assume all separators are the same for each header
+				// =; or =,
+				sep = separator_re.FindString(sep_opt[0])
+				for _, sep_opt_header := range sep_opt {
+					x := strings.Split(sep_opt_header, sep)
+					headers_with_sep[strings.TrimSpace(strings.Join(x, ""))] = struct{}{}
+				}
+			}
 			if entry, ok := vsets.Sets[sheetName]; ok {
 				header := headers[colIdx]
-				entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{header: col}})
-				vsets.Sets[sheetName] = entry
+				if _, exists := headers_with_sep[header]; exists {
+					// Asturian;  Bable;  Leonese;  Asturleonese
+					sep_split := strings.Split(col, sep)
+					// handles case where last value ends with sep
+					if sep_split[len(sep_split)-1] == "" {
+						sep_split = sep_split[:len(sep_split)-1]
+					}
+					for _, colVal := range sep_split {
+						entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{header: colVal}})
+					}
+					vsets.Sets[sheetName] = entry
+				} else {
+					entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{header: col}})
+					vsets.Sets[sheetName] = entry
+				}
 			} else {
 				vsets.Sets[sheetName] = Valueset{}
 				header := headers[colIdx]
-				entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{header: col}})
-				vsets.Sets[sheetName] = entry
+				if _, exists := headers_with_sep[header]; exists {
+					// Asturian;  Bable;  Leonese;  Asturleonese
+					sep_split := strings.Split(col, sep)
+					// handles case where last value ends with sep
+					if sep_split[len(sep_split)-1] == "" {
+						sep_split = sep_split[:len(sep_split)-1]
+					}
+					for _, colVal := range sep_split {
+						entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{header: colVal}})
+					}
+					vsets.Sets[sheetName] = entry
+				} else {
+					entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{header: col}})
+					vsets.Sets[sheetName] = entry
+				}
 			}
 			if len(optionsMap) > 0 {
 				entry := vsets.Sets[sheetName]
