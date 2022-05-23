@@ -20,6 +20,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strings"
 	"sync"
 	"unicode"
 
@@ -319,6 +320,7 @@ func LoadValuesetFiles(vs *Valuesets, files []string) error {
 }
 
 var options_re = regexp.MustCompile(`options`)
+var separator_re = regexp.MustCompile("=.")
 
 func parseSpreadsheet(sheet [][]string) (optionsRows [][]string, headers []string, headerIdx int, data [][]string, err error) {
 ROWS:
@@ -354,35 +356,75 @@ func parseOptions(optionsRows [][]string) map[string][]string {
 	return optionsMap
 }
 
-func parseSheet(vsets *Valuesets, sheetName string, headers []string, data [][]string, optionsMap map[string][]string, headerRowStart int) {
+func parseData(vsets *Valuesets, sheetName string, headers []string, data [][]string, optionsMap map[string][]string, headerRowStart int) {
 	// lookupOrder (header based search)
 	if len(optionsMap) > 0 {
-		if opt, exists := optionsMap["lookupOrder"]; exists {
+		if lookup_opt, exists := optionsMap["lookupOrder"]; exists {
+			var headers_with_sep map[string]struct{}
+			var sep string
+		HEADERS_OPTIONS:
 			for hdrIdx, hdr := range headers {
-				if hdr == opt[hdrIdx] {
+				if hdr == lookup_opt[hdrIdx] {
+					if sep_opt, exists := optionsMap["separator"]; exists {
+						// assume all separators are the same for each header
+						// =; or =,
+						sep = separator_re.FindString(sep_opt[0])
+						for _, sep_opt_header := range sep_opt {
+							x := strings.Split(sep_opt_header, sep)
+							headers_with_sep[strings.TrimSpace(strings.Join(x, ""))] = struct{}{}
+						}
+					}
 					// vertical scan
 					for rowIdx := headerRowStart; rowIdx < len(data); rowIdx++ {
 						colData := data[rowIdx][hdrIdx]
 						if entry, ok := vsets.Sets[sheetName]; ok {
-							entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{hdr: colData}})
-							vsets.Sets[sheetName] = entry
+							if _, exists := headers_with_sep[hdr]; exists {
+								// Asturian;  Bable;  Leonese;  Asturleonese
+								sep_split := strings.Split(colData, sep)
+								// handles case where last value ends with sep
+								if sep_split[len(sep_split)-1] == "" {
+									sep_split = sep_split[:len(sep_split)-1]
+								}
+								for _, colVal := range sep_split {
+									entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{hdr: colVal}})
+								}
+								vsets.Sets[sheetName] = entry
+							} else {
+								// if no separator, then treat whole cell as value
+								entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{hdr: colData}})
+								vsets.Sets[sheetName] = entry
+							}
 						} else {
 							vsets.Sets[sheetName] = Valueset{}
-							entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{hdr: colData}})
-							vsets.Sets[sheetName] = entry
+							if _, exists := headers_with_sep[hdr]; exists {
+								// Asturian;  Bable;  Leonese;  Asturleonese
+								sep_split := strings.Split(colData, sep)
+								// handles case where last value ends with sep
+								if sep_split[len(sep_split)-1] == "" {
+									sep_split = sep_split[:len(sep_split)-1]
+								}
+								for _, colVal := range sep_split {
+									entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{hdr: colVal}})
+								}
+								vsets.Sets[sheetName] = entry
+							} else {
+								entry.Values = append(entry.Values, ValuesetValue{KeyValues: map[string]string{hdr: colData}})
+								vsets.Sets[sheetName] = entry
+							}
 						}
-						if opt, exists := optionsMap["output"]; exists {
+						if out_opt, exists := optionsMap["output"]; exists {
 							entry := vsets.Sets[sheetName]
 							// CODE
-							if len(opt) == 1 {
-								if hdr == opt[0] {
+							if len(out_opt) == 1 {
+								if hdr == out_opt[0] {
 									entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{hdr: colData}})
 								}
 							} else {
-								for _, val := range opt {
-									if hdr == val {
+								// CODE | TEXT | OTHER | ...
+								for _, out := range out_opt {
+									if hdr == out {
 										entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{hdr: colData}})
-										continue
+										continue HEADERS_OPTIONS
 									}
 								}
 							}
@@ -450,7 +492,7 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 				return fmt.Errorf("Error parsing sheet %s, %w", sheetName, err)
 			}
 			optionsMap := parseOptions(optionsRows)
-			parseSheet(&vsets, sheetName, headers, data, optionsMap, headerIdx)
+			parseData(&vsets, sheetName, headers, data, optionsMap, headerIdx)
 		}
 	}
 	return nil
