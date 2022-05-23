@@ -319,13 +319,13 @@ func LoadValuesetFiles(vs *Valuesets, files []string) error {
 	return nil
 }
 
-type options struct {
+type Options struct {
 	lookupOrder []string
 	output      []string
 	separator   map[string]string
 }
 
-func (opt options) splitCell(header, cell string) []string {
+func (opt Options) splitCell(header, cell string) []string {
 	sep := opt.separator[header]
 	// if separator is empty, default to space
 	if sep == "" || sep == " " {
@@ -362,8 +362,8 @@ ROWS:
 	return optionsRows, headers, data, err
 }
 
-func parseOptions(optionsRows [][]string) options {
-	options := options{
+func parseOptions(optionsRows [][]string) Options {
+	options := Options{
 		lookupOrder: make([]string, 0),
 		output:      make([]string, 0),
 		separator:   map[string]string{},
@@ -383,7 +383,7 @@ func parseOptions(optionsRows [][]string) options {
 	return options
 }
 
-func parseData(sheetName string, headers []string, data [][]string, options options) (Valuesets, error) {
+func parseData(sheetName string, headers []string, data [][]string, options Options) (Valuesets, error) {
 	vs := Valuesets{Sets: map[string]Valueset{}}
 	vs.Sets[sheetName] = Valueset{}
 	var entry = vs.Sets[sheetName]
