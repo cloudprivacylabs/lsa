@@ -39,7 +39,7 @@ type Valuesets struct {
 type Valueset struct {
 	ID      string          `json:"id" yaml:"id"`
 	Values  []ValuesetValue `json:"values" yaml:"values"`
-	Options Options
+	Options Options         `json:"options" yaml:"options"`
 }
 
 type ValuesetValue struct {
