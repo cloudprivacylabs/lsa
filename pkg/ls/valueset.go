@@ -181,7 +181,7 @@ func ValuesetInfoFromNode(node graph.Node) *ValuesetInfo {
 func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.Node) (map[string]string, error) {
 	if len(vsi.RequestValues) == 0 {
 		if vsiDocumentNode == nil {
-			return nil, ErrInvalidValuesetSpec{Msg: fmt.Sprintf("Document node is nil for the value set")}
+			return nil, ErrInvalidValuesetSpec{Msg: fmt.Sprintf("Document node is nil for the value set in context node %v", contextDocumentNode)}
 		}
 		value, _ := GetRawNodeValue(vsiDocumentNode)
 		// Document node is the source node
@@ -466,7 +466,7 @@ func (prc *ValuesetProcessor) ProcessGraphValueset(ctx *Context, builder GraphBu
 	if contextSchemaNode == nil {
 		return nil
 	}
-	ctx.GetLogger().Debug(map[string]interface{}{"mth": "processGraphValueset", "stage": "found context node"})
+	ctx.GetLogger().Debug(map[string]interface{}{"mth": "processGraphValueset", "stage": "found context node", "vsi": vsi})
 	if len(vsiDocNodes) == 0 {
 		contextNodes, err := vsi.GetContextNodes(builder.GetGraph())
 		if err != nil {

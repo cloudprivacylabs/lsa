@@ -258,6 +258,15 @@ func isEmptyValue(v opencypher.Value) bool {
 	if len(rs.Rows) == 0 {
 		return true
 	}
+	if len(rs.Rows) == 1 {
+		if len(rs.Rows[0]) == 1 {
+			for _, v := range rs.Rows[0] {
+				if v.Get() == nil {
+					return true
+				}
+			}
+		}
+	}
 	return false
 }
 
