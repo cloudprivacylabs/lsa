@@ -45,7 +45,7 @@ func TestValuesetSpreadSheet(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	io_tt := []map[string]string{
+	expected := []map[string]string{
 		{"CODE": "A2:CODE"},
 		{"CODE": "A3:CODE"},
 		{"CODE": "A4"},
@@ -77,8 +77,8 @@ func TestValuesetSpreadSheet(t *testing.T) {
 	sort.SliceStable(got, func(i, j int) bool {
 		return got[i]["DESCRIPTIVE_TEXT"] < got[j]["DESCRIPTIVE_TEXT"]
 	})
-	if !reflect.DeepEqual(io_tt, got) {
-		t.Errorf("Got %v expected %v", io_tt, got)
+	if !reflect.DeepEqual(got, expected) {
+		t.Errorf("Got %v expected %v", got, expected)
 	}
 }
 
@@ -130,17 +130,17 @@ func TestParseSpreadsheet(t *testing.T) {
 
 func TestSplitCell(t *testing.T) {
 	testdata := []struct {
-		opt      options
+		opt      Options
 		header   string
 		cell     string
 		expected []string
 	}{
-		{options{separator: map[string]string{"DESCRIPTIVE_TEXT": ";"}}, "DESCRIPTIVE_TEXT", "a; b; c; d", []string{"a", "b", "c", "d"}},
-		{options{separator: map[string]string{"DESCRIPTIVE_TEXT": ","}}, "DESCRIPTIVE_TEXT", "a, b, c, d", []string{"a", "b", "c", "d"}},
-		{options{separator: map[string]string{"DESCRIPTIVE_TEXT": "|"}}, "DESCRIPTIVE_TEXT", "a | b | c | d", []string{"a", "b", "c", "d"}},
-		{options{separator: map[string]string{"DESCRIPTIVE_TEXT": ""}}, "DESCRIPTIVE_TEXT", "a b c d", []string{"a", "b", "c", "d"}},
-		{options{separator: map[string]string{"DESCRIPTIVE_TEXT": " "}}, "DESCRIPTIVE_TEXT", "a b c d", []string{"a", "b", "c", "d"}},
-		{options{separator: map[string]string{"CODE": ""}}, "CODE", "ABC", []string{"ABC"}},
+		{Options{Separator: map[string]string{"DESCRIPTIVE_TEXT": ";"}}, "DESCRIPTIVE_TEXT", "a; b; c; d", []string{"a", "b", "c", "d"}},
+		{Options{Separator: map[string]string{"DESCRIPTIVE_TEXT": ","}}, "DESCRIPTIVE_TEXT", "a, b, c, d", []string{"a", "b", "c", "d"}},
+		{Options{Separator: map[string]string{"DESCRIPTIVE_TEXT": "|"}}, "DESCRIPTIVE_TEXT", "a | b | c | d", []string{"a", "b", "c", "d"}},
+		{Options{Separator: map[string]string{"DESCRIPTIVE_TEXT": ""}}, "DESCRIPTIVE_TEXT", "a b c d", []string{"a", "b", "c", "d"}},
+		{Options{Separator: map[string]string{"DESCRIPTIVE_TEXT": " "}}, "DESCRIPTIVE_TEXT", "a b c d", []string{"a", "b", "c", "d"}},
+		{Options{Separator: map[string]string{"CODE": ""}}, "CODE", "ABC", []string{"ABC"}},
 	}
 	for _, tt := range testdata {
 		got := tt.opt.splitCell(tt.header, tt.cell)
