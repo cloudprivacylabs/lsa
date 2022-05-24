@@ -49,11 +49,32 @@ func TestValuesetSpreadSheet(t *testing.T) {
 		{"CODE": "A2:CODE"},
 		{"CODE": "A3:CODE"},
 		{"CODE": "A4"},
+		//{"CODE": "A5"},
+		{"CODE": "A5"},
+		{"CODE": "A5"},
+		{"CODE": "A5"},
+		{"CODE": "A6"},
+		{"CODE": "A6"},
+		{"CODE": "A6"},
+		{"CODE": "A6"},
+		{"CODE": "A7"},
+		{"CODE": "A7"},
+		{"CODE": "A7"},
+		{"CODE": "A7"},
 		{"DESCRIPTIVE_TEXT": "B2:DESCRIPTIVE_TEXT"},
 		{"DESCRIPTIVE_TEXT": "B3:DESCRIPTIVE_TEXT"},
 		{"DESCRIPTIVE_TEXT": "X"},
 		{"DESCRIPTIVE_TEXT": "Y"},
 		{"DESCRIPTIVE_TEXT": "Z"},
+		{"DESCRIPTIVE_TEXT": "B5"},
+		{"DESCRIPTIVE_TEXT": "B5"},
+		{"DESCRIPTIVE_TEXT": "B5"},
+		{"DESCRIPTIVE_TEXT": "B6"},
+		{"DESCRIPTIVE_TEXT": "B6"},
+		{"DESCRIPTIVE_TEXT": "B6"},
+		{"DESCRIPTIVE_TEXT": "B7"},
+		{"DESCRIPTIVE_TEXT": "B7"},
+		{"DESCRIPTIVE_TEXT": "B7"},
 	}
 	if _, exists := vs.Sets[sheetName]; !exists {
 		t.Errorf("Valueset with sheet name: %s does not exist", sheetName)
@@ -76,6 +97,12 @@ func TestValuesetSpreadSheet(t *testing.T) {
 	})
 	sort.SliceStable(got, func(i, j int) bool {
 		return got[i]["DESCRIPTIVE_TEXT"] < got[j]["DESCRIPTIVE_TEXT"]
+	})
+	sort.SliceStable(expected, func(i, j int) bool {
+		return expected[i]["CODE"] < expected[j]["CODE"]
+	})
+	sort.SliceStable(expected, func(i, j int) bool {
+		return expected[i]["DESCRIPTIVE_TEXT"] < expected[j]["DESCRIPTIVE_TEXT"]
 	})
 	if !reflect.DeepEqual(got, expected) {
 		t.Errorf("Got %v expected %v", got, expected)
@@ -129,6 +156,10 @@ func TestParseSpreadsheet(t *testing.T) {
 }
 
 func TestSplitCell(t *testing.T) {
+	optRows := [][]string{
+		{"CODE", "ABC"},
+	}
+	opts := parseOptions(optRows)
 	testdata := []struct {
 		opt      Options
 		header   string
@@ -140,7 +171,7 @@ func TestSplitCell(t *testing.T) {
 		{Options{Separator: map[string]string{"DESCRIPTIVE_TEXT": "|"}}, "DESCRIPTIVE_TEXT", "a | b | c | d", []string{"a", "b", "c", "d"}},
 		{Options{Separator: map[string]string{"DESCRIPTIVE_TEXT": ""}}, "DESCRIPTIVE_TEXT", "a b c d", []string{"a", "b", "c", "d"}},
 		{Options{Separator: map[string]string{"DESCRIPTIVE_TEXT": " "}}, "DESCRIPTIVE_TEXT", "a b c d", []string{"a", "b", "c", "d"}},
-		{Options{Separator: map[string]string{"CODE": ""}}, "CODE", "ABC", []string{"ABC"}},
+		{opts, "CODE", "ABC", []string{"ABC"}},
 	}
 	for _, tt := range testdata {
 		got := tt.opt.splitCell(tt.header, tt.cell)

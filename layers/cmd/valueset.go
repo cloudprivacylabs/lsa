@@ -55,9 +55,12 @@ type ValuesetValue struct {
 }
 
 type Options struct {
-	LookupOrder []string
-	Output      []string
-	Separator   map[string]string
+	// Order in which to search valueset
+	LookupOrder []string `json:"lookupOrder" yaml:"lookupOrder"`
+	// Which value to return
+	Output []string `json:"output" yaml:"output"`
+	// Types of string separation i.e. ";", "|", ",", " "
+	Separator map[string]string `json:"separator" yaml:"separator"`
 }
 
 func (v ValuesetValue) buildResult() *ls.ValuesetLookupResponse {
@@ -326,20 +329,9 @@ func (opt Options) splitCell(header, cell string) []string {
 		return []string{cell}
 	} else {
 		var ret []string
-		// if separator is empty, default to space
-		sep = strings.TrimSpace(sep)
-		if sep == "" {
-			s := strings.Split(cell, " ")
-			for _, str := range s {
-				if str != "" {
-					ret = append(ret, str)
-				}
-			}
-			return ret
-		}
-		s := strings.ReplaceAll(cell, " ", "")
-		spl := strings.Split(s, sep)
+		spl := strings.Split(cell, sep)
 		for _, str := range spl {
+			str = strings.TrimSpace(str)
 			if str != "" {
 				ret = append(ret, str)
 			}
@@ -390,46 +382,38 @@ func parseOptions(optionsRows [][]string) Options {
 		case "options.output":
 			options.Output = opt[1:]
 		case "options.separator":
-			// options.separator | DESCRIPTIVE_TEXT | ;
-			options.Separator[strings.TrimSpace(opt[1])] = strings.TrimSpace(opt[2])
+			// options.separator | DESCRIPTIVE_TEXT | ; | CODE | ;
+			for i := 1; i < len(opt)-1; i += 2 {
+				sep := strings.TrimSpace(opt[i+1])
+				if sep == "" {
+					sep = " "
+				}
+				options.Separator[strings.TrimSpace(opt[i])] = sep
+			}
 		}
 	}
 	return options
 }
 
-func permutations(split []string) [][]string {
-	var ans [][]string
-	var swap = func(arr []string, i, j int) {
-		temp := arr[i]
-		arr[i] = arr[j]
-		arr[j] = temp
-	}
-	var backtrack func(start int)
-	backtrack = func(start int) {
-		if start == len(split) {
-			ans = append(ans, split)
-		}
-		for j := start; j < len(split); j++ {
-			swap(split, start, j)
-			backtrack(start + 1)
-			swap(split, start, j)
-		}
-	}
-	backtrack(0)
-	return ans
-}
-
-func cartesianProductPair(a, b []string) [][]string {
-	var ans [][]string
-	if len(a) == 0 {
+func cartesianProduct(arr [][]string) [][]string {
+	// n := 1
+	// for _, a := range arr {
+	// 	n *= len(a)
+	// }
+	ans := make([][]string, 0)
+	if len(arr) == 0 {
 		return ans
 	}
-	if len(b) == 0 {
+	if len(arr) == 1 {
+		for _, val := range arr[0] {
+			ans = append(ans, []string{val})
+		}
 		return ans
 	}
-	for _, e1 := range a {
-		for _, e2 := range b {
-			ans = append(ans, []string{e1, e2})
+	cross := cartesianProduct(arr[1:])
+	for _, val := range arr[0] {
+		for _, perm := range cross {
+			ans = append(ans, append([]string{val}, perm...))
 		}
 	}
 	return ans
@@ -442,17 +426,23 @@ func parseData(sheetName string, headers []string, data [][]string, options Opti
 		var splits [][]string
 		for hdrIdx, header := range headers {
 			cellData := data[rowIdx][hdrIdx]
+			if len(cellData) == 0 {
+				continue
+			}
 			// return Valuesets{}, fmt.Errorf("Multiple header columns have separators")
 
 			// Asturian;  Bable;  Leonese;  Asturleonese;
 			sep_split := options.splitCell(header, cellData)
 			// {{code1,code2}, {descr1, descr2}}
-			splits = append(splits, sep_split)
+			if len(sep_split) > 1 {
+				splits = append(splits, sep_split)
+			}
 			if len(splits) > 1 {
-				permutes := cartesianProductPair(splits[0], splits[1])
-				for _, sl := range permutes {
-					for _, cell := range sl {
-						vs.Values = append(vs.Values, ValuesetValue{KeyValues: map[string]string{header: cell}})
+				for _, permute := range cartesianProduct(splits) {
+					//fmt.Println(permute)
+					//fmt.Println(strings.Join(permute, ","))
+					for headerIdx, hdr := range headers {
+						vs.Values = append(vs.Values, ValuesetValue{KeyValues: map[string]string{hdr: permute[headerIdx]}})
 					}
 				}
 			} else if len(splits) == 1 {
@@ -462,25 +452,6 @@ func parseData(sheetName string, headers []string, data [][]string, options Opti
 			} else {
 				vs.Values = append(vs.Values, ValuesetValue{KeyValues: map[string]string{header: cellData}})
 			}
-
-			// if len(options.output) > 0 {
-			// 	// CODE
-			// HEADERS:
-			// 	for hdrIdx, hdr := range headers {
-			// 		if len(options.output) == 1 {
-			// 			if hdr == options.output[0] {
-			// 				entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{hdr: data[rowIdx][hdrIdx]}})
-			// 			}
-			// 		} else {
-			// 			for _, val := range options.output {
-			// 				if hdr == val {
-			// 					entry.Values = append(entry.Values, ValuesetValue{ResultValues: map[string]string{hdr: data[rowIdx][hdrIdx]}})
-			// 					continue HEADERS
-			// 				}
-			// 			}
-			// 		}
-			// 	}
-			// }
 		}
 	}
 	return vs, nil
