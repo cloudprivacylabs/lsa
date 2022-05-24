@@ -423,28 +423,27 @@ func parseData(sheetName string, headers []string, data [][]string, options Opti
 	vs := Valueset{Values: make([]ValuesetValue, 0), Options: options}
 
 	for rowIdx := range data {
-		var splits [][]string
+		splits := make([][]string, 0, len(headers))
 		for hdrIdx, header := range headers {
 			cellData := data[rowIdx][hdrIdx]
 			if len(cellData) == 0 {
 				continue
 			}
-			// return Valuesets{}, fmt.Errorf("Multiple header columns have separators")
-
-			// Asturian;  Bable;  Leonese;  Asturleonese;
+			// [A5;A6;A7]
 			sep_split := options.splitCell(header, cellData)
-			// {{code1,code2}, {descr1, descr2}}
+
+			// [A5;A6;A7]
 			if len(sep_split) > 1 {
 				splits = append(splits, sep_split)
 			}
+			// [[A5;A6;A7], [B5;B6;B7]]
 			if len(splits) > 1 {
 				for _, permute := range cartesianProduct(splits) {
-					//fmt.Println(permute)
-					//fmt.Println(strings.Join(permute, ","))
 					for headerIdx, hdr := range headers {
 						vs.Values = append(vs.Values, ValuesetValue{KeyValues: map[string]string{hdr: permute[headerIdx]}})
 					}
 				}
+				// [[A5;A6;A7]]
 			} else if len(splits) == 1 {
 				for _, cell := range sep_split {
 					vs.Values = append(vs.Values, ValuesetValue{KeyValues: map[string]string{header: cell}})

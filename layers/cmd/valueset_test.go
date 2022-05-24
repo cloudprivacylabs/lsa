@@ -49,7 +49,7 @@ func TestValuesetSpreadSheet(t *testing.T) {
 		{"CODE": "A2:CODE"},
 		{"CODE": "A3:CODE"},
 		{"CODE": "A4"},
-		//{"CODE": "A5"},
+		{"CODE": "A5"},
 		{"CODE": "A5"},
 		{"CODE": "A5"},
 		{"CODE": "A5"},
