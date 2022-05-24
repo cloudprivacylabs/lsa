@@ -439,12 +439,12 @@ func parseData(sheetName string, headers []string, data [][]string, options Opti
 	vs := Valueset{Values: make([]ValuesetValue, 0), Options: options}
 
 	for rowIdx := range data {
+		var splits [][]string
 		for hdrIdx, header := range headers {
 			cellData := data[rowIdx][hdrIdx]
 			// return Valuesets{}, fmt.Errorf("Multiple header columns have separators")
 
 			// Asturian;  Bable;  Leonese;  Asturleonese;
-			var splits [][]string
 			sep_split := options.splitCell(header, cellData)
 			// {{code1,code2}, {descr1, descr2}}
 			splits = append(splits, sep_split)
