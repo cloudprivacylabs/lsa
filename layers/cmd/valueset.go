@@ -104,7 +104,7 @@ func wordCompare(s1, s2 string, caseSensitive bool) bool {
 	return toWords(s1) == toWords(s2)
 }
 
-func (v ValuesetValue) Match(req ls.ValuesetLookupRequest, lookupOrder []string) (*ls.ValuesetLookupResponse, error) {
+func (v ValuesetValue) Match(req ls.ValuesetLookupRequest, lookup string) (*ls.ValuesetLookupResponse, error) {
 	if v.IsDefault() {
 		return v.buildResult(), nil
 	}
@@ -161,19 +161,17 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest, lookupOrder []string)
 
 	for reqk, reqv := range req.KeyValues {
 		var key string
-		for _, lookup := range lookupOrder {
-			if lookup != "" {
-				key = lookup
-			} else {
-				key = reqk
-			}
-			vvalue, ok := v.KeyValues[key]
-			if !ok {
-				return nil, nil
-			}
-			if wordCompare(vvalue, reqv, v.CaseSensitive) {
-				return v.buildResult(), nil
-			}
+		if lookup != "" {
+			key = lookup
+		} else {
+			key = reqk
+		}
+		vvalue, ok := v.KeyValues[key]
+		if !ok {
+			return nil, nil
+		}
+		if wordCompare(vvalue, reqv, v.CaseSensitive) {
+			return v.buildResult(), nil
 		}
 	}
 	return nil, nil
@@ -182,7 +180,7 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest, lookupOrder []string)
 func (vs Valueset) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, error) {
 	var nondef *ls.ValuesetLookupResponse
 	var def *ls.ValuesetLookupResponse
-	for _, x := range vs.Values {
+	for i, x := range vs.Values {
 		if x.IsDefault() {
 			if def != nil {
 				return ls.ValuesetLookupResponse{}, fmt.Errorf("Multiple defaults in %s", vs.ID)
@@ -190,7 +188,13 @@ func (vs Valueset) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupRespon
 			def = x.buildResult()
 			continue
 		}
-		res, err := x.Match(req, vs.Options.LookupOrder)
+		var res *ls.ValuesetLookupResponse
+		var err error
+		if i < len(vs.Options.LookupOrder) {
+			res, err = x.Match(req, vs.Options.LookupOrder[i])
+		} else {
+			res, err = x.Match(req, "")
+		}
 		if err != nil {
 			return ls.ValuesetLookupResponse{}, err
 		}

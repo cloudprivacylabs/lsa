@@ -48,7 +48,13 @@ func TestMatch(t *testing.T) {
 		// 		Result:       "some_value",
 		// 		ResultValues: tt.KeyValues,
 		// 	}
-		vslResp, err := vs.Values[ix].Match(tt, vs.Options.LookupOrder)
+		var vslResp *ls.ValuesetLookupResponse
+		var err error
+		if ix < len(vs.Options.LookupOrder) {
+			vslResp, err = vs.Values[ix].Match(tt, vs.Options.LookupOrder[ix])
+		} else {
+			vslResp, err = vs.Values[ix].Match(tt, "")
+		}
 		if err != nil || vslResp == nil {
 			t.Errorf("Match failed %v", err)
 		}
