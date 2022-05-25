@@ -104,7 +104,7 @@ func wordCompare(s1, s2 string, caseSensitive bool) bool {
 	return toWords(s1) == toWords(s2)
 }
 
-func (v ValuesetValue) Match(req ls.ValuesetLookupRequest, lookup string) (*ls.ValuesetLookupResponse, error) {
+func (v ValuesetValue) Match(req ls.ValuesetLookupRequest, lookup string, output string) (*ls.ValuesetLookupResponse, error) {
 	if v.IsDefault() {
 		return v.buildResult(), nil
 	}
@@ -174,6 +174,11 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest, lookup string) (*ls.V
 		if !ok {
 			return nil, nil
 		}
+		if output != "" {
+			if wordCompare(v.KeyValues[output], reqv, v.CaseSensitive) {
+				return v.buildResult(), nil
+			}
+		}
 		if wordCompare(vvalue, reqv, v.CaseSensitive) {
 			return v.buildResult(), nil
 		}
@@ -195,9 +200,13 @@ func (vs Valueset) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupRespon
 		var res *ls.ValuesetLookupResponse
 		var err error
 		if i < len(vs.Options.LookupOrder) {
-			res, err = x.Match(req, vs.Options.LookupOrder[i])
+			if i < len(vs.Options.Output) {
+				res, err = x.Match(req, vs.Options.LookupOrder[i], vs.Options.Output[i])
+			} else {
+				res, err = x.Match(req, vs.Options.LookupOrder[i], "")
+			}
 		} else {
-			res, err = x.Match(req, "")
+			res, err = x.Match(req, "", "")
 		}
 		if err != nil {
 			return ls.ValuesetLookupResponse{}, err
