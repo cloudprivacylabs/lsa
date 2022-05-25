@@ -171,9 +171,13 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest) (*ls.ValuesetLookupRe
 	return nil, nil
 }
 
+// lookuporder
 func (vs Valueset) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, error) {
 	var nondef *ls.ValuesetLookupResponse
 	var def *ls.ValuesetLookupResponse
+	if len(vs.Options.LookupOrder) > 0 {
+		req.TableIDs = vs.Options.LookupOrder
+	}
 	for _, x := range vs.Values {
 		if x.IsDefault() {
 			if def != nil {
@@ -420,37 +424,24 @@ func cartesianProduct(arr [][]string) [][]string {
 }
 
 func parseData(sheetName string, headers []string, data [][]string, options Options) (Valueset, error) {
-	vs := Valueset{Values: make([]ValuesetValue, 0), Options: options}
+	vs := Valueset{Values: make([]ValuesetValue, 0)}
 
 	for rowIdx := range data {
-		splits := make([][]string, 0, len(headers))
+		splits := make([][]string, len(headers))
 		for hdrIdx, header := range headers {
 			cellData := data[rowIdx][hdrIdx]
-			if len(cellData) == 0 {
+			if cellData == "" {
 				continue
 			}
-			// [A5;A6;A7]
 			sep_split := options.splitCell(header, cellData)
-
-			// [A5;A6;A7]
-			if len(sep_split) > 1 {
-				splits = append(splits, sep_split)
+			splits[hdrIdx] = sep_split
+		}
+		for _, permute := range cartesianProduct(splits) {
+			vsv := ValuesetValue{KeyValues: map[string]string{}}
+			for headerIdx, hdr := range headers {
+				vsv.KeyValues[hdr] = permute[headerIdx]
 			}
-			// [[A5;A6;A7], [B5;B6;B7]]
-			if len(splits) > 1 {
-				for _, permute := range cartesianProduct(splits) {
-					for headerIdx, hdr := range headers {
-						vs.Values = append(vs.Values, ValuesetValue{KeyValues: map[string]string{hdr: permute[headerIdx]}})
-					}
-				}
-				// [[A5;A6;A7]]
-			} else if len(splits) == 1 {
-				for _, cell := range sep_split {
-					vs.Values = append(vs.Values, ValuesetValue{KeyValues: map[string]string{header: cell}})
-				}
-			} else {
-				vs.Values = append(vs.Values, ValuesetValue{KeyValues: map[string]string{header: cellData}})
-			}
+			vs.Values = append(vs.Values, vsv)
 		}
 	}
 	return vs, nil
