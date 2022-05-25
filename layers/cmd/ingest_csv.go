@@ -37,6 +37,7 @@ type CSVIngester struct {
 	HeaderRow    int    `json:"headerRow" yaml:"headerRow"`
 	ID           string `json:"id" yaml:"id"`
 	IngestByRows bool   `json:"ingestByRows" yaml:"ingestByRows"`
+	Delimiter    string `json:"delimiter" yaml:"delimiter"`
 	initialized  bool
 }
 
@@ -51,6 +52,7 @@ params:`)
   startRow: 0   # Data starts at this row. 0-based
   endRow: -1    # Data ends at this row. 0-based
   headerRow: -1 # The row containing CSV header. 0-based
+  delimiter: ,  # separator character
   id:"row_{{.rowIndex}}"   # Go template for node ID generation 
   # The template is evaluated with these variables:
   #  .rowIndex: The index of the current row in file
@@ -96,6 +98,7 @@ func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
 		if !ci.IngestByRows {
 			pipeline.SetGraph(ls.NewDocumentGraph())
 		}
+		reader.Comma = rune(ci.Delimiter[0])
 
 		for row := 0; ; row++ {
 			rowData, err := reader.Read()
@@ -168,6 +171,7 @@ func init() {
 	ingestCSVCmd.Flags().Int("headerRow", -1, "Header row 0-based (default: no header)")
 	ingestCSVCmd.Flags().String("id", "row_{{.rowIndex}}", "Object ID Go template for ingested data if no ID is declared in the schema")
 	ingestCSVCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
+	ingestCSVCmd.Flags().String("delimiter", ",", "Delimiter char")
 	ingestCSVCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
 	ingestCSVCmd.Flags().Bool("byFile", false, "Ingest one file at a time. Default is row at a time.")
 
@@ -208,6 +212,10 @@ var ingestCSVCmd = &cobra.Command{
 			return fmt.Errorf("Header row is ahead of start row")
 		}
 		ing.ID, err = cmd.Flags().GetString("id")
+		if err != nil {
+			return err
+		}
+		ing.Delimiter, err = cmd.Flags().GetString("delimiter")
 		if err != nil {
 			return err
 		}
