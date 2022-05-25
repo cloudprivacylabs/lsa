@@ -421,11 +421,11 @@ func parseOptions(optionsRows [][]string) Options {
 }
 
 func cartesianProduct(arr [][]string) [][]string {
-	// n := 1
-	// for _, a := range arr {
-	// 	n *= len(a)
-	// }
-	ans := make([][]string, 0)
+	n := 1
+	for _, a := range arr {
+		n *= len(a)
+	}
+	ans := make([][]string, 0, n)
 	if len(arr) == 0 {
 		return ans
 	}
