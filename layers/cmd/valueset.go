@@ -115,7 +115,11 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest, lookup string) (*ls.V
 	if len(req.KeyValues) == 1 {
 		var key, value string
 		for k, v := range req.KeyValues {
-			key = k
+			if lookup != "" {
+				key = lookup
+			} else {
+				key = k
+			}
 			value = v
 		}
 		switch {
