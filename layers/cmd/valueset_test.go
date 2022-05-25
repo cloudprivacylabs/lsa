@@ -44,30 +44,11 @@ func TestMatch(t *testing.T) {
 	}
 
 	for ix, tt := range tests {
-		// 	vsv := ValuesetValue{
-		// 		Result:       "some_value",
-		// 		ResultValues: tt.KeyValues,
-		// 	}
-		var vslResp *ls.ValuesetLookupResponse
-		var err error
-		if ix < len(vs.Options.LookupOrder) {
-			if ix < len(vs.Options.Output) {
-				vslResp, err = vs.Values[ix].Match(tt, vs.Options.LookupOrder[ix], vs.Options.Output[ix])
-			} else {
-				vslResp, err = vs.Values[ix].Match(tt, vs.Options.LookupOrder[ix], "")
-			}
-		} else {
-			vslResp, err = vs.Values[ix].Match(tt, "", "")
-		}
+		vslResp, err := vs.Values[ix].Match(tt)
 		if err != nil || vslResp == nil {
 			t.Errorf("Match failed %v", err)
 		}
-		// for k, v := range vslResp.KeyValues {
-		// 	t.Log(k, v)
-		// }
-		// t.Log(vslResp.KeyValues)
 	}
-	// t.Fail()
 }
 
 func TestValuesetSpreadSheet(t *testing.T) {

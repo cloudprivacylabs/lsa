@@ -104,7 +104,7 @@ func wordCompare(s1, s2 string, caseSensitive bool) bool {
 	return toWords(s1) == toWords(s2)
 }
 
-func (v ValuesetValue) Match(req ls.ValuesetLookupRequest, lookup string, output string) (*ls.ValuesetLookupResponse, error) {
+func (v ValuesetValue) Match(req ls.ValuesetLookupRequest) (*ls.ValuesetLookupResponse, error) {
 	if v.IsDefault() {
 		return v.buildResult(), nil
 	}
@@ -115,11 +115,7 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest, lookup string, output
 	if len(req.KeyValues) == 1 {
 		var key, value string
 		for k, v := range req.KeyValues {
-			if lookup != "" {
-				key = lookup
-			} else {
-				key = k
-			}
+			key = k
 			value = v
 		}
 		switch {
@@ -164,20 +160,9 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest, lookup string, output
 	}
 
 	for reqk, reqv := range req.KeyValues {
-		var key string
-		if lookup != "" {
-			key = lookup
-		} else {
-			key = reqk
-		}
-		vvalue, ok := v.KeyValues[key]
+		vvalue, ok := v.KeyValues[reqk]
 		if !ok {
 			return nil, nil
-		}
-		if output != "" {
-			if wordCompare(v.KeyValues[output], reqv, v.CaseSensitive) {
-				return v.buildResult(), nil
-			}
 		}
 		if wordCompare(vvalue, reqv, v.CaseSensitive) {
 			return v.buildResult(), nil
@@ -189,7 +174,7 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest, lookup string, output
 func (vs Valueset) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, error) {
 	var nondef *ls.ValuesetLookupResponse
 	var def *ls.ValuesetLookupResponse
-	for i, x := range vs.Values {
+	for _, x := range vs.Values {
 		if x.IsDefault() {
 			if def != nil {
 				return ls.ValuesetLookupResponse{}, fmt.Errorf("Multiple defaults in %s", vs.ID)
@@ -197,17 +182,7 @@ func (vs Valueset) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupRespon
 			def = x.buildResult()
 			continue
 		}
-		var res *ls.ValuesetLookupResponse
-		var err error
-		if i < len(vs.Options.LookupOrder) {
-			if i < len(vs.Options.Output) {
-				res, err = x.Match(req, vs.Options.LookupOrder[i], vs.Options.Output[i])
-			} else {
-				res, err = x.Match(req, vs.Options.LookupOrder[i], "")
-			}
-		} else {
-			res, err = x.Match(req, "", "")
-		}
+		res, err := x.Match(req)
 		if err != nil {
 			return ls.ValuesetLookupResponse{}, err
 		}
