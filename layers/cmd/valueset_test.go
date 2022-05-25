@@ -27,19 +27,19 @@ func TestMatch(t *testing.T) {
 		}
 	}
 	tests := []ls.ValuesetLookupRequest{
-		{TableIDs: []string{"CODE"}, KeyValues: map[string]string{"CODE": "A2", "DESCRIPTIVE_TEXT": "B2"}},
-		{TableIDs: []string{"CODE"}, KeyValues: map[string]string{"CODE": "A4", "DESCRIPTIVE_TEXT": "X"}},
-		{TableIDs: []string{"CODE"}, KeyValues: map[string]string{"CODE": "A4", "DESCRIPTIVE_TEXT": "Y"}},
-		{TableIDs: []string{"CODE"}, KeyValues: map[string]string{"CODE": "A4", "DESCRIPTIVE_TEXT": "Z"}},
-		{TableIDs: []string{"CODE"}, KeyValues: map[string]string{"CODE": "A5", "DESCRIPTIVE_TEXT": "B5"}},
-		{TableIDs: []string{"CODE"}, KeyValues: map[string]string{"CODE": "A5", "DESCRIPTIVE_TEXT": "B6"}},
-		{TableIDs: []string{"CODE"}, KeyValues: map[string]string{"CODE": "A5", "DESCRIPTIVE_TEXT": "B7"}},
-		{TableIDs: []string{"CODE"}, KeyValues: map[string]string{"CODE": "A6", "DESCRIPTIVE_TEXT": "B5"}},
-		{TableIDs: []string{"CODE"}, KeyValues: map[string]string{"CODE": "A6", "DESCRIPTIVE_TEXT": "B6"}},
-		{TableIDs: []string{"DESCRIPTIVE_TEXT"}, KeyValues: map[string]string{"CODE": "A6", "DESCRIPTIVE_TEXT": "B7"}},
-		{TableIDs: []string{"DESCRIPTIVE_TEXT"}, KeyValues: map[string]string{"CODE": "A7", "DESCRIPTIVE_TEXT": "B5"}},
-		{TableIDs: []string{"DESCRIPTIVE_TEXT"}, KeyValues: map[string]string{"CODE": "A7", "DESCRIPTIVE_TEXT": "B6"}},
-		{TableIDs: []string{"DESCRIPTIVE_TEXT"}, KeyValues: map[string]string{"CODE": "A7", "DESCRIPTIVE_TEXT": "B7"}},
+		{TableIDs: []string{"sample"}, KeyValues: map[string]string{"CODE": "A2", "DESCRIPTIVE_TEXT": "B2"}},
+		{TableIDs: []string{"sample"}, KeyValues: map[string]string{"CODE": "A4", "DESCRIPTIVE_TEXT": "X"}},
+		{TableIDs: []string{"sample"}, KeyValues: map[string]string{"CODE": "A4", "DESCRIPTIVE_TEXT": "Y"}},
+		{TableIDs: []string{"sample"}, KeyValues: map[string]string{"CODE": "A4", "DESCRIPTIVE_TEXT": "Z"}},
+		{TableIDs: []string{"sample"}, KeyValues: map[string]string{"CODE": "A5", "DESCRIPTIVE_TEXT": "B5"}},
+		{TableIDs: []string{"sample"}, KeyValues: map[string]string{"CODE": "A5", "DESCRIPTIVE_TEXT": "B6"}},
+		{TableIDs: []string{"sample"}, KeyValues: map[string]string{"CODE": "A5", "DESCRIPTIVE_TEXT": "B7"}},
+		{TableIDs: []string{"sample"}, KeyValues: map[string]string{"CODE": "A6", "DESCRIPTIVE_TEXT": "B5"}},
+		{TableIDs: []string{"sample"}, KeyValues: map[string]string{"CODE": "A6", "DESCRIPTIVE_TEXT": "B6"}},
+		{TableIDs: []string{"sample"}, KeyValues: map[string]string{"CODE": "A6", "DESCRIPTIVE_TEXT": "B7"}},
+		{TableIDs: []string{"sample"}, KeyValues: map[string]string{"CODE": "A7", "DESCRIPTIVE_TEXT": "B5"}},
+		{TableIDs: []string{"sample"}, KeyValues: map[string]string{"CODE": "A7", "DESCRIPTIVE_TEXT": "B6"}},
+		{TableIDs: []string{"sample"}, KeyValues: map[string]string{"CODE": "A7", "DESCRIPTIVE_TEXT": "B7"}},
 		//{KeyValues: map[string]string{"x": "some_value", "y": "another_value"}},
 	}
 
@@ -48,16 +48,16 @@ func TestMatch(t *testing.T) {
 		// 		Result:       "some_value",
 		// 		ResultValues: tt.KeyValues,
 		// 	}
-		vslResp, err := vs.Values[ix].Match(tt)
+		vslResp, err := vs.Values[ix].Match(tt, vs.Options.LookupOrder)
 		if err != nil || vslResp == nil {
 			t.Errorf("Match failed %v", err)
 		}
-		for k, v := range vslResp.KeyValues {
-			t.Log(k, v)
-		}
+		// for k, v := range vslResp.KeyValues {
+		// 	t.Log(k, v)
+		// }
 		// t.Log(vslResp.KeyValues)
 	}
-	t.Fail()
+	// t.Fail()
 }
 
 func TestValuesetSpreadSheet(t *testing.T) {
@@ -156,7 +156,7 @@ func TestParseSpreadsheet(t *testing.T) {
 
 func TestSplitCell(t *testing.T) {
 	optRows := [][]string{
-		{"CODE", "ABC"},
+		{"options.separator", "CODE", ";"},
 	}
 	opts := parseOptions(optRows)
 	testdata := []struct {
@@ -170,7 +170,7 @@ func TestSplitCell(t *testing.T) {
 		{Options{Separator: map[string]string{"DESCRIPTIVE_TEXT": "|"}}, "DESCRIPTIVE_TEXT", "a | b | c | d", []string{"a", "b", "c", "d"}},
 		{Options{Separator: map[string]string{"DESCRIPTIVE_TEXT": ""}}, "DESCRIPTIVE_TEXT", "a b c d", []string{"a", "b", "c", "d"}},
 		{Options{Separator: map[string]string{"DESCRIPTIVE_TEXT": " "}}, "DESCRIPTIVE_TEXT", "a b c d", []string{"a", "b", "c", "d"}},
-		{opts, "CODE", "ABC", []string{"ABC"}},
+		{opts, "CODE", "A;B;C", []string{"A", "B", "C"}},
 	}
 	for _, tt := range testdata {
 		got := tt.opt.splitCell(tt.header, tt.cell)

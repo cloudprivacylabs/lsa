@@ -104,14 +104,13 @@ func wordCompare(s1, s2 string, caseSensitive bool) bool {
 	return toWords(s1) == toWords(s2)
 }
 
-func (v ValuesetValue) Match(req ls.ValuesetLookupRequest) (*ls.ValuesetLookupResponse, error) {
+func (v ValuesetValue) Match(req ls.ValuesetLookupRequest, lookupOrder []string) (*ls.ValuesetLookupResponse, error) {
 	if v.IsDefault() {
 		return v.buildResult(), nil
 	}
 	if len(req.KeyValues) == 0 {
 		return nil, nil
 	}
-
 	// If request has a single value:
 	if len(req.KeyValues) == 1 {
 		var key, value string
@@ -150,6 +149,7 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest) (*ls.ValuesetLookupRe
 				return v.buildResult(), nil
 			}
 		}
+
 		return nil, nil
 	}
 
@@ -160,24 +160,28 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest) (*ls.ValuesetLookupRe
 	}
 
 	for reqk, reqv := range req.KeyValues {
-		vvalue, ok := v.KeyValues[reqk]
-		if !ok {
-			return nil, nil
-		}
-		if wordCompare(vvalue, reqv, v.CaseSensitive) {
-			return v.buildResult(), nil
+		var key string
+		for _, lookup := range lookupOrder {
+			if lookup != "" {
+				key = lookup
+			} else {
+				key = reqk
+			}
+			vvalue, ok := v.KeyValues[key]
+			if !ok {
+				return nil, nil
+			}
+			if wordCompare(vvalue, reqv, v.CaseSensitive) {
+				return v.buildResult(), nil
+			}
 		}
 	}
 	return nil, nil
 }
 
-// lookuporder
 func (vs Valueset) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, error) {
 	var nondef *ls.ValuesetLookupResponse
 	var def *ls.ValuesetLookupResponse
-	if len(vs.Options.LookupOrder) > 0 {
-		req.TableIDs = vs.Options.LookupOrder
-	}
 	for _, x := range vs.Values {
 		if x.IsDefault() {
 			if def != nil {
@@ -186,7 +190,7 @@ func (vs Valueset) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupRespon
 			def = x.buildResult()
 			continue
 		}
-		res, err := x.Match(req)
+		res, err := x.Match(req, vs.Options.LookupOrder)
 		if err != nil {
 			return ls.ValuesetLookupResponse{}, err
 		}
@@ -424,7 +428,7 @@ func cartesianProduct(arr [][]string) [][]string {
 }
 
 func parseData(sheetName string, headers []string, data [][]string, options Options) (Valueset, error) {
-	vs := Valueset{Values: make([]ValuesetValue, 0)}
+	vs := Valueset{Values: make([]ValuesetValue, 0), Options: options}
 
 	for rowIdx := range data {
 		splits := make([][]string, len(headers))
