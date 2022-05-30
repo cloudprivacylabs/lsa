@@ -17,6 +17,7 @@ package ls
 import (
 	"fmt"
 
+	"github.com/cloudprivacylabs/opencypher"
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
@@ -65,6 +66,11 @@ var (
 	// ValuesetRequestKeysTerm. It specifies the schema node IDs of the
 	// nodes containing values to lookup
 	ValuesetRequestValuesTerm = NewTerm(LS, "vs/requestValues", false, false, OverrideComposition, nil)
+
+	// ValuesetRequestTerm specifies one or more openCypher expressions
+	// that builds up a valuest lookup request. The named results of
+	// those expressions are added to the request key/value pairs
+	ValuesetRequestTerm = NewTerm(LS, "vs/request", false, false, OverrideComposition, CompileOCSemantics{})
 
 	// ValuesetResultKeys term contains the keys that will be returned
 	// from the valueset lookup. Values of these keys will be inserted under the context
@@ -116,6 +122,9 @@ type ValuesetInfo struct {
 	// values. The elements of this match the keys array
 	RequestValues []string
 
+	// Request expressions
+	RequestExprs []opencypher.Evaluatable
+
 	// The keys of the valueset result
 	ResultKeys []string
 
@@ -160,6 +169,7 @@ func ValuesetInfoFromNode(node graph.Node) *ValuesetInfo {
 		ResultValues:  AsPropertyValue(node.GetProperty(ValuesetResultValuesTerm)).MustStringSlice(),
 		SchemaNode:    node,
 	}
+	ret.RequestExprs = CompileOCSemantics{}.Compiled(node, ValuesetRequestTerm)
 	if len(ret.ContextID) == 0 {
 		ret.ContextID = GetNodeID(node)
 	}
@@ -179,7 +189,44 @@ func ValuesetInfoFromNode(node graph.Node) *ValuesetInfo {
 //
 // If ValuesetInfo contains RequestValues, the request values
 func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.Node) (map[string]string, error) {
-	if len(vsi.RequestValues) == 0 {
+	ret := make(map[string]string)
+	if len(vsi.RequestExprs) > 0 {
+		evalctx := opencypher.NewEvalContext(vsiDocumentNode.GetGraph())
+		evalctx.SetVar("this", opencypher.ValueOf(vsiDocumentNode))
+		for index, expr := range vsi.RequestExprs {
+			result, err := expr.Evaluate(evalctx)
+			if err != nil {
+				return nil, err
+			}
+			if result.Get() == nil {
+				continue
+			}
+			rs, ok := result.Get().(opencypher.ResultSet)
+			if !ok {
+				continue
+			}
+			if len(rs.Rows) == 0 {
+				continue
+			}
+			if len(rs.Rows) > 1 {
+				return nil, ErrInvalidValuesetSpec{Msg: fmt.Sprintf("Multiple results for expression %d", index)}
+			}
+			for k, v := range rs.Rows[0] {
+				if opencypher.IsNamedVar(k) {
+					value := v.Get()
+					if value == nil {
+						continue
+					}
+					if node, ok := value.(graph.Node); ok {
+						ret[k], _ = GetRawNodeValue(node)
+					} else {
+						ret[k] = fmt.Sprint(value)
+					}
+				}
+			}
+		}
+	}
+	if len(vsi.RequestExprs) == 0 && len(vsi.RequestValues) == 0 {
 		if vsiDocumentNode == nil {
 			return nil, ErrInvalidValuesetSpec{Msg: fmt.Sprintf("Document node is nil for the value set in context node %v", contextDocumentNode)}
 		}
@@ -201,15 +248,14 @@ func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.N
 	}
 	// Here, either there is one value and no key, or there are keys
 	// and values of same length
-	req := make(map[string]string)
 	// There are some request value fields under this node. Collect them.
 	for index, reqv := range vsi.RequestValues {
 		if reqv == AsPropertyValue(contextDocumentNode.GetProperty(SchemaNodeIDTerm)).AsString() {
 			value, _ := GetRawNodeValue(contextDocumentNode)
 			if len(vsi.RequestKeys) == 0 {
-				req[""] = value
+				ret[""] = value
 			} else {
-				req[vsi.RequestKeys[index]] = value
+				ret[vsi.RequestKeys[index]] = value
 			}
 		} else {
 			// Locate a child node
@@ -237,14 +283,14 @@ func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.N
 			}
 			if len(nodes) == 1 {
 				if len(vsi.RequestKeys) == 0 {
-					req[""], _ = GetRawNodeValue(nodes[0])
+					ret[""], _ = GetRawNodeValue(nodes[0])
 				} else {
-					req[vsi.RequestKeys[index]], _ = GetRawNodeValue(nodes[0])
+					ret[vsi.RequestKeys[index]], _ = GetRawNodeValue(nodes[0])
 				}
 			}
 		}
 	}
-	return req, nil
+	return ret, nil
 }
 
 // GetContextNodes returns the contexts node for the given document
