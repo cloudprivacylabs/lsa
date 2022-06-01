@@ -15,133 +15,202 @@
 package types
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/opencypher"
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
-func TestMeasureValueUnitInNode(t *testing.T) {
-	g := graph.NewOCGraph()
-	n1 := g.NewNode([]string{ls.DocumentNodeTerm}, map[string]interface{}{
-		ls.EntitySchemaTerm: ls.StringPropertyValue("sch"),
-	})
-	n2 := g.NewNode([]string{ls.DocumentNodeTerm}, map[string]interface{}{
-		ls.ValueTypeTerm: ls.StringPropertyValue(MeasureTerm),
-		ls.NodeValueTerm: ls.StringPropertyValue("123 cm"),
-	})
-	n3 := g.NewNode([]string{ls.DocumentNodeTerm}, map[string]interface{}{
-		ls.ValueTypeTerm: ls.StringPropertyValue(MeasureTerm),
-		ls.NodeValueTerm: ls.StringPropertyValue("123"),
-		MeasureUnitTerm:  ls.StringPropertyValue("cm"),
-	})
+func TestMeasureValueNodesExpr(t *testing.T) {
+	schema := `{
+"@context": "../../schemas/ls.json",
+"@type": "Schema",
+"@id":"1",
+"layer": {
+  "@type": "Object",
+  "@id":"root",
+  "attributes": {
+     "m1": {
+       "@type": "Value",
+       "attributeName": "m1"
+     },
+     "u1": {
+       "@type": "Value",
+       "attributeName": "u1"
+     },
+     "m": {
+       "@type": "Value",
+       "valueType": "Measure",
+       "attributeName": "m",
+       "https://lschema.org/measure/valueNodeExpr": "` +
+		"match (v {`https://lschema.org/attributeName`:'m1'}) return v" + `",
+       "https://lschema.org/measure/unitExpr": "` +
+		"match (valueNode)<-[]-()-[]->(v {`https://lschema.org/attributeName`:'u1'}) return v" + `"
+     }
+  }
+}
+}`
 
-	g.NewEdge(n1, n2, ls.HasTerm, nil)
-	g.NewEdge(n1, n3, ls.HasTerm, nil)
+	var layer *ls.Layer
+	ctx := ls.DefaultContext()
+	{
+		var v interface{}
+		err := json.Unmarshal([]byte(schema), &v)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		layer, err = ls.UnmarshalLayer(v, nil)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		compiler := ls.Compiler{}
+		layer, err = compiler.CompileSchema(ctx, layer)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+	}
 
-	m, err := GetNodeMeasureValue(n2)
+	root := layer.GetAttributeByID("root")
+	m1 := layer.GetAttributeByID("m1")
+	u1 := layer.GetAttributeByID("u1")
+	m := layer.GetAttributeByID("m")
+	bldr := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{EmbedSchemaNodes: true})
+	_, rootNode, _ := bldr.ObjectAsNode(root, nil)
+	bldr.ValueAsNode(m1, rootNode, "123")
+	bldr.ValueAsNode(u1, rootNode, "unit")
+	nodes, err := getMeasureValueNodes(ctx, bldr.GetGraph(), m)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	if m.Value != "123 cm" || m.Unit != "" {
-		t.Errorf("Wrong measure: %+v", m)
+	if len(nodes) != 1 {
+		t.Errorf("Expecting 1 nodes, got %d", len(nodes))
 	}
-	m, err = GetNodeMeasureValue(n3)
+	u, err := findUnit(nodes[0], m)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	if m.Value != "123" || m.Unit != "cm" {
-		t.Errorf("Wrong measure: %+v", m)
+	if u != "unit" {
+		t.Errorf("Wrong unit: %s", u)
+	}
+	if err = BuildMeasureNodesForLayer(ctx, bldr, layer); err != nil {
+		t.Error(err)
+	}
+	// There must be a measure node
+	v, err := opencypher.ParseAndEvaluate("match (n:`https://lschema.org/Measure`) return n", opencypher.NewEvalContext(bldr.GetGraph()))
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	measureNode, _ := v.Get().(opencypher.ResultSet).Rows[0]["1"].Get().(graph.Node)
+	if measureNode == nil {
+		t.Error(err)
+		return
+	}
+	x, _ := ls.GetNodeValue(measureNode)
+	measure := x.(Measure)
+	if measure.Value != "123" || measure.Unit != "unit" {
+		t.Errorf("Wrong measure: %v", measure)
 	}
 }
 
-func TestMeasureValueInNodeUnitInSchemaNode(t *testing.T) {
-	g := graph.NewOCGraph()
-	n1 := g.NewNode([]string{ls.DocumentNodeTerm}, map[string]interface{}{
-		ls.EntitySchemaTerm: ls.StringPropertyValue("sch"),
-	})
-	n2 := g.NewNode([]string{ls.DocumentNodeTerm}, map[string]interface{}{
-		ls.ValueTypeTerm:    ls.StringPropertyValue(MeasureTerm),
-		ls.NodeValueTerm:    ls.StringPropertyValue("123"),
-		MeasureUnitNodeTerm: ls.StringPropertyValue("schUnitNode"),
-	})
-	n3 := g.NewNode([]string{ls.DocumentNodeTerm}, map[string]interface{}{
-		ls.NodeValueTerm:    ls.StringPropertyValue("cm"),
-		ls.SchemaNodeIDTerm: ls.StringPropertyValue("schUnitNode"),
-	})
-
-	g.NewEdge(n1, n2, ls.HasTerm, nil)
-	g.NewEdge(n1, n3, ls.HasTerm, nil)
-
-	m, err := GetNodeMeasureValue(n2)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	if m.Value != "123" || m.Unit != "cm" {
-		t.Errorf("Wrong measure: %+v", m)
-	}
+func TestMeasureValueNodes(t *testing.T) {
+	schema := `{
+"@context": "../../schemas/ls.json",
+"@type": "Schema",
+"@id":"1",
+"layer": {
+  "@type": "Object",
+  "@id":"root",
+  "attributes": {
+     "m1": {
+       "@type": "Value",
+       "attributeName": "m1"
+     },
+     "u1": {
+       "@type": "Value",
+       "attributeName": "u1"
+     },
+     "m": {
+       "@type": "Value",
+       "valueType": "Measure",
+       "attributeName": "m",
+       "https://lschema.org/measure/valueNode": "m1",
+       "https://lschema.org/measure/unitNode": "u1"
+     }
+  }
 }
+}`
 
-func TestMeasureValueInSchemaNodeUnitInSchemaNode(t *testing.T) {
-	g := graph.NewOCGraph()
-	n1 := g.NewNode([]string{ls.DocumentNodeTerm}, map[string]interface{}{
-		ls.EntitySchemaTerm: ls.StringPropertyValue("sch"),
-	})
-	n2 := g.NewNode([]string{ls.DocumentNodeTerm}, map[string]interface{}{
-		ls.ValueTypeTerm:     ls.StringPropertyValue(MeasureTerm),
-		MeasureValueNodeTerm: ls.StringPropertyValue("schMeasureNode"),
-		MeasureUnitNodeTerm:  ls.StringPropertyValue("schUnitNode"),
-	})
-	n3 := g.NewNode([]string{ls.DocumentNodeTerm}, map[string]interface{}{
-		ls.NodeValueTerm:    ls.StringPropertyValue("cm"),
-		ls.SchemaNodeIDTerm: ls.StringPropertyValue("schUnitNode"),
-	})
-	n4 := g.NewNode([]string{ls.DocumentNodeTerm}, map[string]interface{}{
-		ls.NodeValueTerm:    ls.StringPropertyValue("123"),
-		ls.SchemaNodeIDTerm: ls.StringPropertyValue("schMeasureNode"),
-	})
+	var layer *ls.Layer
+	ctx := ls.DefaultContext()
+	{
+		var v interface{}
+		err := json.Unmarshal([]byte(schema), &v)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		layer, err = ls.UnmarshalLayer(v, nil)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		compiler := ls.Compiler{}
+		layer, err = compiler.CompileSchema(ctx, layer)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+	}
 
-	g.NewEdge(n1, n2, ls.HasTerm, nil)
-	g.NewEdge(n2, n3, ls.HasTerm, nil)
-	g.NewEdge(n2, n4, ls.HasTerm, nil)
-
-	m, err := GetNodeMeasureValue(n2)
+	root := layer.GetAttributeByID("root")
+	m1 := layer.GetAttributeByID("m1")
+	u1 := layer.GetAttributeByID("u1")
+	m := layer.GetAttributeByID("m")
+	bldr := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{EmbedSchemaNodes: true})
+	_, rootNode, _ := bldr.ObjectAsNode(root, nil)
+	bldr.ValueAsNode(m1, rootNode, "123")
+	bldr.ValueAsNode(u1, rootNode, "unit")
+	nodes, err := getMeasureValueNodes(ctx, bldr.GetGraph(), m)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	if m.Value != "123" || m.Unit != "cm" {
-		t.Errorf("Wrong measure: %+v", m)
+	if len(nodes) != 1 {
+		t.Errorf("Expecting 1 nodes, got %d", len(nodes))
 	}
-}
-
-func TestMeasureValueInNodeUnitInPath(t *testing.T) {
-	g := graph.NewOCGraph()
-	n1 := g.NewNode([]string{ls.DocumentNodeTerm}, map[string]interface{}{
-		ls.EntitySchemaTerm: ls.StringPropertyValue("sch"),
-	})
-	n2 := g.NewNode([]string{ls.DocumentNodeTerm}, map[string]interface{}{
-		ls.ValueTypeTerm:    ls.StringPropertyValue(MeasureTerm),
-		ls.NodeValueTerm:    ls.StringPropertyValue("123"),
-		MeasureUnitPathTerm: ls.StringPropertyValue("(this)<-[]-()-[]->(target {`" + ls.SchemaNodeIDTerm + "`:\"schUnitNode\"})"),
-	})
-	n3 := g.NewNode([]string{ls.DocumentNodeTerm}, map[string]interface{}{
-		ls.NodeValueTerm:    ls.StringPropertyValue("cm"),
-		ls.SchemaNodeIDTerm: ls.StringPropertyValue("schUnitNode"),
-	})
-
-	g.NewEdge(n1, n2, ls.HasTerm, nil)
-	g.NewEdge(n1, n3, ls.HasTerm, nil)
-
-	m, err := GetNodeMeasureValue(n2)
+	u, err := findUnit(nodes[0], m)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	if m.Value != "123" || m.Unit != "cm" {
-		t.Errorf("Wrong measure: %+v", m)
+	if u != "unit" {
+		t.Errorf("Wrong unit: %s", u)
+	}
+	if err = BuildMeasureNodesForLayer(ctx, bldr, layer); err != nil {
+		t.Error(err)
+	}
+	// There must be a measure node
+	v, err := opencypher.ParseAndEvaluate("match (n:`https://lschema.org/Measure`) return n", opencypher.NewEvalContext(bldr.GetGraph()))
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	measureNode, _ := v.Get().(opencypher.ResultSet).Rows[0]["1"].Get().(graph.Node)
+	if measureNode == nil {
+		t.Error(err)
+		return
+	}
+	x, _ := ls.GetNodeValue(measureNode)
+	measure := x.(Measure)
+	if measure.Value != "123" || measure.Unit != "unit" {
+		t.Errorf("Wrong measure: %v", measure)
 	}
 }

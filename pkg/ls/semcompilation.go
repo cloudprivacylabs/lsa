@@ -185,3 +185,26 @@ func (CompileOCSemantics) Compiled(target CompilablePropertyContainer, term stri
 	ret, _ := x.([]opencypher.Evaluatable)
 	return ret
 }
+
+// Evaluate all compiled expressions and return nonempty resultsets.
+func (c CompileOCSemantics) Evaluate(target CompilablePropertyContainer, term string, evalCtx *opencypher.EvalContext) ([]opencypher.ResultSet, error) {
+	ret := make([]opencypher.ResultSet, 0)
+	for _, expr := range c.Compiled(target, term) {
+		v, err := expr.Evaluate(evalCtx)
+		if err != nil {
+			return nil, err
+		}
+		if v.Get() == nil {
+			continue
+		}
+		rs, ok := v.Get().(opencypher.ResultSet)
+		if !ok {
+			continue
+		}
+		if len(rs.Rows) == 0 {
+			continue
+		}
+		ret = append(ret, rs)
+	}
+	return ret, nil
+}

@@ -44,8 +44,15 @@ func (e ErrInvalidValue) Error() string {
 
 // A ValueAccessor gets node values in native type, and sets node values
 type ValueAccessor interface {
+	// GetNativeValue returns the native value based on input
+	GetNativeValue(string, graph.Node) (interface{}, error)
+	FormatNativeValue(newValue, oldValue interface{}, schNode graph.Node) (string, error)
+}
+
+// NodeValueAccessor can optionally be implemented by ValueAccessors to get/set node values directly
+type NodeValueAccessor interface {
 	GetNodeValue(graph.Node) (interface{}, error)
-	SetNodeValue(graph.Node, interface{}) error
+	SetNodeValue(interface{}, graph.Node) error
 }
 
 // GetValueAccessor returns the value accessor for the term. If the term has none, returns nil

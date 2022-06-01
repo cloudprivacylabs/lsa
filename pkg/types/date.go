@@ -447,140 +447,92 @@ func (f gomentFormat) formatTime(in TimeOfDay) (string, error) {
 	return gmt.Format(string(f)), nil
 }
 
-// func (f goFormat) parseUnix(s string) (UnixTime, error) {
-// 	t, err := time.Parse(string(f), s)
-// 	if err != nil {
-// 		return UnixTime{}, err
-// 	}
-// 	return UnixTime{Seconds: int64(t.Second())}, nil
-// }
-
-// func (f gomentFormat) parseUnix(s string) (UnixTime, error) {
-// 	t, err := time.Parse(string(f), s)
-// 	if err != nil {
-// 		return UnixTime{}, err
-// 	}
-// 	return UnixTime{Seconds: int64(t.Second())}, nil
-// }
-
-// func (f goFormat) parseUnixNano(s string) (UnixTimeNano, error) {
-// 	t, err := time.Parse(string(f), s)
-// 	if err != nil {
-// 		return UnixTimeNano{}, err
-// 	}
-// 	return UnixTimeNano{Nanoseconds: int64(t.Nanosecond())}, nil
-// }
-
-// func (f gomentFormat) parseUnixNano(s string) (UnixTimeNano, error) {
-// 	t, err := time.Parse(string(f), s)
-// 	if err != nil {
-// 		return UnixTimeNano{}, err
-// 	}
-// 	return UnixTimeNano{Nanoseconds: int64(t.Nanosecond())}, nil
-// }
-
-// ParseValue parses an XSDDate value.
+// GetNativeValue parses an XSDDate value.
 //
 //  [-]CCYY-MM-DD[Z|(+|-)hh:mm]
-func (XSDDateParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (XSDDateParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
 	return genericDateParse(value, goFormat("2006-1-2"), goFormat("2006-1-2Z"), goFormat("2006-1-2Z0700"), gomentFormat("YYYY-MM-DDZ"))
 }
 
-// SetValue gets a target node and it's go native value, and sets
+// FormatNativeValue gets a target node and it's go native value, and returns
 // the value of the target node to an XSDDate
-func (XSDDateParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
+func (XSDDateParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
 		ls.RemoveRawNodeValue(node)
-		return nil
+		return "", nil
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case time.Time:
-		ls.SetRawNodeValue(node, v.Format("2006-01-02"))
+		return v.Format("2006-01-02"), nil
 	case Date:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("2006-01-02Z0700"))
+			return v.ToTime().Format("2006-01-02"), nil
 		}
+		return v.ToTime().In(v.Location).Format("2006-01-02Z0700"), nil
 	case DateTime:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("2006-01-02Z0700"))
+			return v.ToTime().Format("2006-01-02"), nil
 		}
+		return v.ToTime().In(v.Location).Format("2006-01-02Z0700"), nil
 	case GDay:
-		date, err := XSDDateParser.GetNodeValue(XSDDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Day = int(v)
-		ls.SetRawNodeValue(node, x.ToTime().Format("2006-01-02"))
+		return x.ToTime().Format("2006-01-02"), nil
 	case GMonth:
-		date, err := XSDDateParser.GetNodeValue(XSDDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Month = int(v)
-		ls.SetRawNodeValue(node, x.ToTime().Format("2006-01-02"))
+		return x.ToTime().Format("2006-01-02"), nil
 	case GYear:
-		date, err := XSDDateParser.GetNodeValue(XSDDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Year = int(v)
-		ls.SetRawNodeValue(node, x.ToTime().Format("2006-01-02"))
+		return x.ToTime().Format("2006-01-02"), nil
 	case GMonthDay:
-		date, err := XSDDateParser.GetNodeValue(XSDDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Month = int(v.Month)
 		x.Day = int(v.Day)
-		ls.SetRawNodeValue(node, x.ToTime().Format("2006-01-02"))
+		return x.ToTime().Format("2006-01-02"), nil
 	case GYearMonth:
-		date, err := XSDDateParser.GetNodeValue(XSDDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Month = int(v.Month)
 		x.Year = int(v.Year)
+		return x.ToTime().Format("2006-01-02"), nil
 	case UnixTime:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02Z0700"))
+			return v.ToTime().Format("2006-01-02"), nil
 		}
+		return v.ToTime().Format("2006-01-02Z0700"), nil
 	case UnixTimeNano:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("2006-01-02Z0700"))
+			return v.ToTime().Format("2006-01-02"), nil
 		}
+		return v.ToTime().In(v.Location).Format("2006-01-02Z0700"), nil
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type XSDDateTimeParser struct{}
 
-func (XSDDateTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (XSDDateTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -595,99 +547,84 @@ func (XSDDateTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
 	)
 }
 
-func (XSDDateTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (XSDDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case time.Time:
-		ls.SetRawNodeValue(node, v.Format("2006-01-02T15:04:05Z"))
+		return v.Format("2006-01-02T15:04:05Z"), nil
 	case Date:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02T15:04:05Z"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("2006-01-02T15:04:05Z"))
+			return v.ToTime().Format("2006-01-02T15:04:05Z"), nil
 		}
+		return v.ToTime().In(v.Location).Format("2006-01-02T15:04:05Z"), nil
 	case DateTime:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02T15:04:05Z"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("2006-01-02T15:04:05Z")) //2002-05-30T09:30:10-06:00
+			return v.ToTime().Format("2006-01-02T15:04:05Z"), nil
 		}
+		return v.ToTime().In(v.Location).Format("2006-01-02T15:04:05Z"), nil //2002-05-30T09:30:10-06:00
 	case TimeOfDay:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, "2006-01-02T"+v.ToTime().Format("15:04:05Z"))
-		} else {
-			ls.SetRawNodeValue(node, "2006-01-02T"+v.ToTime().In(v.Location).Format("15:04:05Z"))
+			return "2006-01-02T" + v.ToTime().Format("15:04:05Z"), nil
 		}
+		return "2006-01-02T" + v.ToTime().In(v.Location).Format("15:04:05Z"), nil
 	case GDay:
-		dateTime, err := XSDDateTimeParser.GetNodeValue(XSDDateTimeParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(DateTime)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a DateTime"}
 		}
-		x := dateTime.(DateTime)
 		x.Day = int(v)
-		ls.SetRawNodeValue(node, x.ToTime().Format("2006-01-02T15:04:05Z"))
+		return x.ToTime().Format("2006-01-02T15:04:05Z"), nil
 	case GMonth:
-		dateTime, err := XSDDateTimeParser.GetNodeValue(XSDDateTimeParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(DateTime)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a DateTime"}
 		}
-		x := dateTime.(DateTime)
 		x.Month = int(v)
-		ls.SetRawNodeValue(node, x.ToTime().Format("2006-01-02T15:04:05Z"))
+		return x.ToTime().Format("2006-01-02T15:04:05Z"), nil
 	case GYear:
-		dateTime, err := XSDDateTimeParser.GetNodeValue(XSDDateTimeParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(DateTime)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a DateTime"}
 		}
-		x := dateTime.(DateTime)
 		x.Year = int(v)
-		ls.SetRawNodeValue(node, x.ToTime().Format("2006-01-02T15:04:05Z"))
+		return x.ToTime().Format("2006-01-02T15:04:05Z"), nil
 	case GMonthDay:
-		dateTime, err := XSDDateTimeParser.GetNodeValue(XSDDateTimeParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(DateTime)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a DateTime"}
 		}
-		x := dateTime.(DateTime)
 		x.Month = int(v.Month)
 		x.Day = int(v.Day)
-		ls.SetRawNodeValue(node, x.ToTime().Format("2006-01-02T15:04:05Z"))
+		return x.ToTime().Format("2006-01-02T15:04:05Z"), nil
 	case GYearMonth:
-		dateTime, err := XSDDateTimeParser.GetNodeValue(XSDDateTimeParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(DateTime)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a DateTime"}
 		}
-		x := dateTime.(DateTime)
 		x.Year = int(v.Year)
 		x.Month = int(v.Month)
-		ls.SetRawNodeValue(node, x.ToTime().Format("2006-01-02T15:04:05Z"))
+		return x.ToTime().Format("2006-01-02T15:04:05Z"), nil
 	case UnixTime:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, fmt.Sprintf("%02d", v.Seconds))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2002-05-30T09:30:10.5-06:00"))
+			return fmt.Sprintf("%02d", v.Seconds), nil
 		}
+		return v.ToTime().Format("2002-05-30T09:30:10.5-06:00"), nil
 	case UnixTimeNano:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2002-05-30T09:30:10.5"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("2002-05-30T09:30:10.5-06:00"))
+			return v.ToTime().Format("2002-05-30T09:30:10.5"), nil
 		}
+		return v.ToTime().In(v.Location).Format("2002-05-30T09:30:10.5-06:00"), nil
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTimeTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTimeTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type XSDTimeParser struct{}
 
-func (XSDTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (XSDTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -700,38 +637,34 @@ func (XSDTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
 		gomentFormat("hh:mm:ss"))
 }
 
-func (XSDTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (XSDTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case time.Time:
-		ls.SetRawNodeValue(node, v.Format("15:04:05"))
+		return v.Format("15:04:05"), nil
 	case Date:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case DateTime:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("09:00:00Z"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("09:00:00Z"))
+			return v.ToTime().Format("09:00:00Z"), nil
 		}
+		return v.ToTime().In(v.Location).Format("09:00:00Z"), nil
 	case UnixTime:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, strconv.FormatInt(v.ToTime().Unix(), 10))
-		} else {
-			ls.SetRawNodeValue(node, strconv.FormatInt((v.ToTime().In(v.Location).Unix()), 10))
+			return strconv.FormatInt(v.ToTime().Unix(), 10), nil
 		}
+		return strconv.FormatInt((v.ToTime().In(v.Location).Unix()), 10), nil
 	case UnixTimeNano:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, strconv.FormatInt(v.ToTime().UnixNano(), 10))
-		} else {
-			ls.SetRawNodeValue(node, strconv.FormatInt((v.ToTime().In(v.Location).UnixNano()), 10))
+			return strconv.FormatInt(v.ToTime().UnixNano(), 10), nil
 		}
+		return strconv.FormatInt((v.ToTime().In(v.Location).UnixNano()), 10), nil
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDTimeTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDTimeTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type JSONDateParser struct{}
@@ -739,104 +672,88 @@ type JSONDateParser struct{}
 // ParseValue parses a JSON date
 //
 //   YYYY-MM-DD
-func (JSONDateParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (JSONDateParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
 	return genericDateParse(value, goFormat("2006-01-02"))
 }
 
-// SetValue gets a target node and it's go native value, and sets
+// FormatNativeValue gets a target node and it's go native value, and returns
 // the value of the target node to an JSONDate
-func (JSONDateParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (JSONDateParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case time.Time:
-		ls.SetRawNodeValue(node, v.Format("2006-01-02"))
+		return v.Format("2006-01-02"), nil
 	case Date:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("2006-01-02Z0700"))
+			return v.ToTime().Format("2006-01-02"), nil
 		}
+		return v.ToTime().In(v.Location).Format("2006-01-02Z0700"), nil
 	case DateTime:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02"))
-			// target.SetValue(fmt.Sprintf("%04d-%02d-%02d"+"T"+"%02d:%02d:%02d", value.Year, value.Month, value.Day, value.Hour, value.Minute, (value.Nanoseconds / 1000000000)))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("2006-01-02Z0700"))
+			return v.ToTime().Format("2006-01-02"), nil
 		}
+		return v.ToTime().In(v.Location).Format("2006-01-02Z0700"), nil
 	case TimeOfDay:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("2006-01-02Z0700"))
+			return v.ToTime().Format("2006-01-02"), nil
 		}
+		return v.ToTime().In(v.Location).Format("2006-01-02Z0700"), nil
 	case GDay:
-		date, err := JSONDateParser.GetNodeValue(JSONDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Day = int(v)
-		ls.SetRawNodeValue(node, x.ToTime().Format("2006-01-02"))
+		return x.ToTime().Format("2006-01-02"), nil
 	case GMonth:
-		date, err := JSONDateParser.GetNodeValue(JSONDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Month = int(v)
-		ls.SetRawNodeValue(node, x.ToTime().Format("2006-01-02"))
+		return x.ToTime().Format("2006-01-02"), nil
 	case GYear:
-		date, err := JSONDateParser.GetNodeValue(JSONDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Year = int(v)
-		ls.SetRawNodeValue(node, x.ToTime().Format("2006-01-02"))
+		return x.ToTime().Format("2006-01-02"), nil
 	case GMonthDay:
-		date, err := JSONDateParser.GetNodeValue(JSONDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Month = int(v.Month)
 		x.Day = int(v.Day)
-		ls.SetRawNodeValue(node, x.ToTime().Format("2006-01-02"))
+		return x.ToTime().Format("2006-01-02"), nil
 	case GYearMonth:
-		date, err := JSONDateParser.GetNodeValue(JSONDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Year = int(v.Year)
 		x.Month = int(v.Month)
-		ls.SetRawNodeValue(node, x.ToTime().Format("2006-01-02"))
+		return x.ToTime().Format("2006-01-02"), nil
 	case UnixTime:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("2006-01-02Z0700"))
+			return v.ToTime().Format("2006-01-02"), nil
 		}
+		return v.ToTime().In(v.Location).Format("2006-01-02Z0700"), nil
 	case UnixTimeNano:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("2006-01-02Z0700"))
+			return v.ToTime().Format("2006-01-02"), nil
 		}
+		return v.ToTime().In(v.Location).Format("2006-01-02Z0700"), nil
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type JSONDateTimeParser struct{}
@@ -844,11 +761,7 @@ type JSONDateTimeParser struct{}
 // ParseValue parses a JSON date-time
 //
 //   YYYY-MM-DD
-func (JSONDateTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (JSONDateTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -856,51 +769,45 @@ func (JSONDateTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
 }
 
 // "2006-01-02T11:11:11Z07:00" -> Note: uses a 24Hour based clock   "2006-01-02T11:11:11.999999999Z07:00"
-func (JSONDateTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (JSONDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case time.Time:
-		ls.SetRawNodeValue(node, v.Format(time.RFC3339))
+		return v.Format(time.RFC3339), nil
 	case Date:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02T15:04:05Z"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("2006-01-02T15:04:05Z"))
+			return v.ToTime().Format("2006-01-02T15:04:05Z"), nil
 		}
+		return v.ToTime().In(v.Location).Format("2006-01-02T15:04:05Z"), nil
 	case DateTime:
 		if v.Location == nil && v.Nanoseconds == 0 {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02T15:04:05Z"))
-		} else if v.Location != nil && v.Nanoseconds != 0 {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(time.RFC3339Nano))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(time.RFC3339))
+			return v.ToTime().Format("2006-01-02T15:04:05Z"), nil
 		}
+		if v.Location != nil && v.Nanoseconds != 0 {
+			return v.ToTime().In(v.Location).Format(time.RFC3339Nano), nil
+		}
+		return v.ToTime().In(v.Location).Format(time.RFC3339), nil
 	case TimeOfDay:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, "2006-01-02T"+v.ToTime().Format("15:04:05Z"))
-		} else {
-			ls.SetRawNodeValue(node, "2006-01-02T"+v.ToTime().In(v.Location).Format("15:04:05Z"))
+			return "2006-01-02T" + v.ToTime().Format("15:04:05Z"), nil
 		}
+		return "2006-01-02T" + v.ToTime().In(v.Location).Format("15:04:05Z"), nil
 	case UnixTime:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02T15:04:05Z"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(time.RFC3339))
+			return v.ToTime().Format("2006-01-02T15:04:05Z"), nil
 		}
+		return v.ToTime().In(v.Location).Format(time.RFC3339), nil
 	case UnixTimeNano:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("2006-01-02T15:04:05Z"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format(time.RFC3339Nano))
+			return v.ToTime().Format("2006-01-02T15:04:05Z"), nil
 		}
-
+		return v.ToTime().In(v.Location).Format(time.RFC3339Nano), nil
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTimeTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTimeTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type JSONTimeParser struct{}
@@ -910,11 +817,7 @@ type JSONTimeParser struct{}
 //   HH:mm
 //   HH:mm:ss
 //   HH:mm:ssZ
-func (JSONTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (JSONTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -923,63 +826,50 @@ func (JSONTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
 		gomentFormat("HH:mm"))
 }
 
-func (JSONTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (JSONTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case time.Time:
-		ls.SetRawNodeValue(node, v.Format("HH:mm:ssZ")) // 11:11:11Z
+		return v.Format("HH:mm:ssZ"), nil // 11:11:11Z
 	case Date:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("09:00:00"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("09:00:00Z"))
+			return v.ToTime().Format("09:00:00"), nil
 		}
+		return v.ToTime().In(v.Location).Format("09:00:00Z"), nil
 	case DateTime:
 		if v.Location == nil {
-			//ls.SetRawNodeValue(node,v.ToTime().Format(fmt.Sprintf("%02d:%02d:%02d", v.Hour, v.Minute, v.Seconds)))
-			ls.SetRawNodeValue(node, v.ToTime().Format("09:00:00Z"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("09:00:00Z"))
+			return v.ToTime().Format("09:00:00Z"), nil
 		}
+		return v.ToTime().In(v.Location).Format("09:00:00Z"), nil
 	case TimeOfDay:
-		if v.Location == nil && v.Nanoseconds == 0 {
-			ls.SetRawNodeValue(node, v.ToTime().Format("HH:mm"))
-		} else if v.Location == nil && v.Nanoseconds != 0 {
-			ls.SetRawNodeValue(node, v.ToTime().Format("HH:mm:ss"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().In(v.Location).Format("HH:mm:ssZ"))
+		if v.Location == nil {
+			return v.ToTime().Format("HH:mm:ss"), nil
 		}
+		return v.ToTime().In(v.Location).Format("HH:mm:ssZ"), nil
 	case UnixTime:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("ss"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().Format("HH:mm:ssZ"))
+			return v.ToTime().Format("ss"), nil
 		}
+		return v.ToTime().Format("HH:mm:ssZ"), nil
 	case UnixTimeNano:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, v.ToTime().Format("HH:mm:ss"))
-		} else {
-			ls.SetRawNodeValue(node, v.ToTime().Format("HH:mm:ssZ"))
+			return v.ToTime().Format("HH:mm:ss"), nil
 		}
+		return v.ToTime().Format("HH:mm:ssZ"), nil
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONTimeTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONTimeTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type PatternDateTimeParser struct{}
 
-// ParseValue looks at the goTimeFormat, momentTimeFormat properties
+// GetNativeValue looks at the goTimeFormat, momentTimeFormat properties
 // in the node, and parses the datetime using that. The format
 // property can be an array, giving all possible formats
-func (PatternDateTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (PatternDateTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -995,10 +885,9 @@ func (PatternDateTimeParser) GetNodeValue(node graph.Node) (interface{}, error) 
 	return genericDateTimeParse(value, garr...)
 }
 
-func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (PatternDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
 	var formatter interface{}
 	if s, ok := node.GetProperty(GoTimeFormatTerm); ok {
@@ -1008,99 +897,58 @@ func (PatternDateTimeParser) SetNodeValue(node graph.Node, value interface{}) er
 		formatter = gomentFormat(ls.AsPropertyValue(s, true).AsString())
 	}
 	if formatter == nil {
-		return ls.ErrInvalidInput{Msg: "Missing formatting annotations"}
+		return "", ls.ErrInvalidInput{Msg: "Missing formatting annotations"}
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case time.Time:
-		gfmt, err := formatter.(goTimeFormatter).formatGoTime(v)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(goTimeFormatter).formatGoTime(v)
 	case Date:
-		gfmt, err := formatter.(dateFormatter).formatDate(v)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateFormatter).formatDate(v)
 	case DateTime:
-		gfmt, err := formatter.(dateTimeFormatter).formatDateTime(v)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateTimeFormatter).formatDateTime(v)
 	case TimeOfDay:
-		gfmt, err := formatter.(timeFormatter).formatTime(v)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(timeFormatter).formatTime(v)
 	case GDay:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Day = int(v)
-		gfmt, err := formatter.(dateFormatter).formatDate(x)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateFormatter).formatDate(x)
 	case GMonth:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Month = int(v)
-		gfmt, err := formatter.(dateFormatter).formatDate(x)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateFormatter).formatDate(x)
 	case GYear:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Year = int(v)
-		gfmt, err := formatter.(dateFormatter).formatDate(x)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateFormatter).formatDate(x)
 	case GMonthDay:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Month = int(v.Month)
 		x.Day = int(v.Day)
-		gfmt, err := formatter.(dateFormatter).formatDate(x)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateFormatter).formatDate(x)
 	case GYearMonth:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Year = int(v.Year)
 		x.Month = int(v.Month)
-		gfmt, err := formatter.(dateFormatter).formatDate(x)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateFormatter).formatDate(x)
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type PatternDateParser struct{}
@@ -1108,11 +956,7 @@ type PatternDateParser struct{}
 // ParseValue looks at the goTimeFormat, momentTimeFormat properties
 // in the node, and parses the datetime using that. The format
 // property can be an array, giving all possible formats
-func (PatternDateParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (PatternDateParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -1128,10 +972,9 @@ func (PatternDateParser) GetNodeValue(node graph.Node) (interface{}, error) {
 	return genericDateParse(value, garr...)
 }
 
-func (PatternDateParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (PatternDateParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
 	var formatter interface{}
 	if s, ok := node.GetProperty(GoTimeFormatTerm); ok {
@@ -1141,91 +984,58 @@ func (PatternDateParser) SetNodeValue(node graph.Node, value interface{}) error 
 		formatter = gomentFormat(ls.AsPropertyValue(s, true).AsString())
 	}
 	if formatter == nil {
-		return ls.ErrInvalidInput{Msg: "Missing formatting annotations"}
+		return "", ls.ErrInvalidInput{Msg: "Missing formatting annotations"}
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case time.Time:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case Date:
-		gfmt, err := formatter.(dateFormatter).formatDate(v)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateFormatter).formatDate(v)
 	case DateTime:
-		gfmt, err := formatter.(dateTimeFormatter).formatDateTime(v)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateTimeFormatter).formatDateTime(v)
 	case TimeOfDay:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case GDay:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Day = int(v)
-		gfmt, err := formatter.(dateFormatter).formatDate(x)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateFormatter).formatDate(x)
 	case GMonth:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Month = int(v)
-		gfmt, err := formatter.(dateFormatter).formatDate(x)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateFormatter).formatDate(x)
 	case GYear:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Year = int(v)
-		gfmt, err := formatter.(dateFormatter).formatDate(x)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateFormatter).formatDate(x)
 	case GMonthDay:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Month = int(v.Month)
 		x.Day = int(v.Day)
-		gfmt, err := formatter.(dateFormatter).formatDate(x)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateFormatter).formatDate(x)
 	case GYearMonth:
-		date, err := PatternDateParser.GetNodeValue(PatternDateParser{}, node)
-		if err != nil {
-			return err
+		x, ok := oldValue.(Date)
+		if !ok {
+			return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
 		}
-		x := date.(Date)
 		x.Year = int(v.Year)
 		x.Month = int(v.Month)
-		gfmt, err := formatter.(dateFormatter).formatDate(x)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateFormatter).formatDate(x)
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type PatternTimeParser struct{}
@@ -1233,11 +1043,7 @@ type PatternTimeParser struct{}
 // ParseValue looks at the goTimeFormat, momentTimeFormat properties
 // in the node, and parses the datetime using that. The format
 // property can be an array, giving all possible formats
-func (PatternTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (PatternTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -1253,10 +1059,9 @@ func (PatternTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
 	return genericTimeParse(value, garr...)
 }
 
-func (PatternTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (PatternTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
 	var formatter interface{}
 	if s, ok := node.GetProperty(GoTimeFormatTerm); ok {
@@ -1266,52 +1071,36 @@ func (PatternTimeParser) SetNodeValue(node graph.Node, value interface{}) error 
 		formatter = gomentFormat(ls.AsPropertyValue(s, true).AsString())
 	}
 	if formatter == nil {
-		return ls.ErrInvalidInput{Msg: "Missing formatting annotations"}
+		return "", ls.ErrInvalidInput{Msg: "Missing formatting annotations"}
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case time.Time:
-		gfmt, err := formatter.(goTimeFormatter).formatGoTime(v)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(goTimeFormatter).formatGoTime(v)
 	case Date:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case DateTime:
-		gfmt, err := formatter.(dateTimeFormatter).formatDateTime(v)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(dateTimeFormatter).formatDateTime(v)
 	case TimeOfDay:
-		gfmt, err := formatter.(timeFormatter).formatTime(v)
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(node, gfmt)
+		return formatter.(timeFormatter).formatTime(v)
 	case GDay:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case GMonth:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case GYear:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case GMonthDay:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case GYearMonth:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternTimeTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternTimeTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type XSDGDayParser struct{}
 
-func (XSDGDayParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (XSDGDayParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -1320,196 +1109,166 @@ func (XSDGDayParser) GetNodeValue(node graph.Node) (interface{}, error) {
 		return nil, err
 	}
 	return GDay(x), nil
-	//return genericDateParse(value, goFormat("02"), goFormat("2"), gomentFormat("DD"))
 }
 
-func (XSDGDayParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (XSDGDayParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case time.Time:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case Date:
-		ls.SetRawNodeValue(node, strconv.Itoa((v.Day)))
+		return strconv.Itoa((v.Day)), nil
 	case DateTime:
-		ls.SetRawNodeValue(node, strconv.Itoa((v.Day)))
+		return strconv.Itoa((v.Day)), nil
 	case GDay:
-		ls.SetRawNodeValue(node, strconv.Itoa(int(v)))
+		return strconv.Itoa(int(v)), nil
 	case GMonthDay:
-		ls.SetRawNodeValue(node, strconv.Itoa(int(v.Day)))
+		return strconv.Itoa(int(v.Day)), nil
 	case GYearMonth:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case UnixTime:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case UnixTimeNano:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGDayTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGDayTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type XSDGMonthParser struct{}
 
-func (XSDGMonthParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (XSDGMonthParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
 	return genericDateParse(value, goFormat("01"), gomentFormat("MM"))
 }
 
-func (XSDGMonthParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (XSDGMonthParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case time.Time:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case Date:
-		ls.SetRawNodeValue(node, v.ToTime().Format("01"))
+		return v.ToTime().Format("01"), nil
 	case DateTime:
-		ls.SetRawNodeValue(node, v.ToTime().Format("01"))
+		return v.ToTime().Format("01"), nil
 	case GMonth:
-		ls.SetRawNodeValue(node, strconv.Itoa(int(v)))
+		return strconv.Itoa(int(v)), nil
 	case GMonthDay:
-		ls.SetRawNodeValue(node, strconv.Itoa(int(v.Month)))
+		return strconv.Itoa(int(v.Month)), nil
 	case GYearMonth:
-		ls.SetRawNodeValue(node, strconv.Itoa(int(v.Month)))
+		return strconv.Itoa(int(v.Month)), nil
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGMonthTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGMonthTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type XSDGMonthDayParser struct{}
 
-func (XSDGMonthDayParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (XSDGMonthDayParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
 	return genericDateParse(value, goFormat("1-2"), goFormat("01-2"), goFormat("01-02"), gomentFormat("MM-DD"))
 }
 
-func (XSDGMonthDayParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (XSDGMonthDayParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case time.Time:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case Date:
-		ls.SetRawNodeValue(node, v.ToTime().Format("01-02"))
+		return v.ToTime().Format("01-02"), nil
 	case DateTime:
-		ls.SetRawNodeValue(node, v.ToTime().Format("01-02"))
+		return v.ToTime().Format("01-02"), nil
 	case GDay:
-		ls.SetRawNodeValue(node, strconv.Itoa(int(v)))
+		return strconv.Itoa(int(v)), nil
 	case GMonth:
-		ls.SetRawNodeValue(node, strconv.Itoa(int(v)))
+		return strconv.Itoa(int(v)), nil
 	case GMonthDay:
-		ls.SetRawNodeValue(node, fmt.Sprintf("%02d-%02d", v.Month, v.Day))
+		return fmt.Sprintf("%02d-%02d", v.Month, v.Day), nil
 	case GYearMonth:
-		ls.SetRawNodeValue(node, strconv.Itoa(int(v.Month)))
+		return strconv.Itoa(int(v.Month)), nil
 	case UnixTime:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case UnixTimeNano:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGMonthDayTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGMonthDayTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type XSDGYearParser struct{}
 
-func (XSDGYearParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (XSDGYearParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
 	return genericDateParse(value, goFormat("2006"), gomentFormat("YYYY"))
 }
 
-func (XSDGYearParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (XSDGYearParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
-	switch v := value.(type) {
-	// case time.Time:
-	// 	ls.SetRawNodeValue(node,v.Format("2006"))
+	switch v := newValue.(type) {
 	case Date:
-		ls.SetRawNodeValue(node, v.ToTime().Format("2006"))
+		return v.ToTime().Format("2006"), nil
 	case DateTime:
-		ls.SetRawNodeValue(node, v.ToTime().Format("2006"))
+		return v.ToTime().Format("2006"), nil
 	case GYear:
-		ls.SetRawNodeValue(node, strconv.Itoa(int(v)))
+		return strconv.Itoa(int(v)), nil
 	case GYearMonth:
-		ls.SetRawNodeValue(node, strconv.Itoa(int(v.Year)))
+		return strconv.Itoa(int(v.Year)), nil
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGYearTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGYearTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type XSDGYearMonthParser struct{}
 
-func (XSDGYearMonthParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (XSDGYearMonthParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
 	return genericDateParse(value, goFormat("2006-01"), gomentFormat("YY-MM"))
 }
 
-func (XSDGYearMonthParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (XSDGYearMonthParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
-	switch v := value.(type) {
-	// case time.Time:
-	// 	ls.SetRawNodeValue(node,v.Format("01")) // MM
+	switch v := newValue.(type) {
 	case Date:
-		ls.SetRawNodeValue(node, v.ToTime().Format("2006-01"))
+		return v.ToTime().Format("2006-01"), nil
 	case DateTime:
-		ls.SetRawNodeValue(node, v.ToTime().Format("2006-01"))
+		return v.ToTime().Format("2006-01"), nil
 	case GMonth:
-		ls.SetRawNodeValue(node, strconv.Itoa(int(v)))
+		return strconv.Itoa(int(v)), nil
 	case GYear:
-		ls.SetRawNodeValue(node, strconv.Itoa(int(v)))
+		return strconv.Itoa(int(v)), nil
 	case GYearMonth:
-		ls.SetRawNodeValue(node, fmt.Sprintf("%02d-%02d", v.Year, v.Month))
+		return fmt.Sprintf("%02d-%02d", v.Year, v.Month), nil
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGYearMonthTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGYearMonthTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type UnixTimeParser struct{}
 
-func (UnixTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (UnixTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -1518,64 +1277,46 @@ func (UnixTimeParser) GetNodeValue(node graph.Node) (interface{}, error) {
 		return nil, err
 	}
 	return UnixTime{int64(x), nil}, nil
-	// return genericUnixParse(value,
-	// 	goFormat("1000000000"),
-	// 	goFormat("1000000000000000000"),
-	// 	goFormat("1970-01-01 00:00:00"),
-	// 	goFormat("1970-01-01 00:00:00 +0000 UTC"),
-	// 	goFormat(time.RFC3339),
-	// 	goFormat(time.RFC3339Nano),
-	// )
 }
 
-func (UnixTimeParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (UnixTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case time.Time:
-		ls.SetRawNodeValue(node, strconv.FormatInt(v.Unix(), 10))
+		return strconv.FormatInt(v.Unix(), 10), nil
 	case Date:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, strconv.FormatInt(v.ToTime().Unix(), 10))
-		} else {
-			ls.SetRawNodeValue(node, strconv.FormatInt(v.ToTime().In(v.Location).Unix(), 10))
+			return strconv.FormatInt(v.ToTime().Unix(), 10), nil
 		}
+		return strconv.FormatInt(v.ToTime().In(v.Location).Unix(), 10), nil
 	case DateTime:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, strconv.FormatInt(v.ToTime().Unix(), 10))
-		} else {
-			ls.SetRawNodeValue(node, strconv.FormatInt(v.ToTime().In(v.Location).Unix(), 10))
+			return strconv.FormatInt(v.ToTime().Unix(), 10), nil
 		}
+		return strconv.FormatInt(v.ToTime().In(v.Location).Unix(), 10), nil
 	case TimeOfDay:
 		if v.Location == nil {
-			//ls.SetRawNodeValue(node,strconv.FormatInt(v.ToTime().Unix(), 10))
 			t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), time.UTC)
-			ls.SetRawNodeValue(node, strconv.FormatInt(t.Unix(), 10))
-		} else {
-			t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), v.Location)
-			ls.SetRawNodeValue(node, strconv.FormatInt(t.Unix(), 10))
+			return strconv.FormatInt(t.Unix(), 10), nil
 		}
+		t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), v.Location)
+		return strconv.FormatInt(t.Unix(), 10), nil
 	case UnixTimeNano:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, fmt.Sprintf("%d", v.ToTime().UnixNano()))
-		} else {
-			ls.SetRawNodeValue(node, strconv.FormatInt(v.ToTime().In(v.Location).UnixNano(), 10))
+			return fmt.Sprintf("%d", v.ToTime().UnixNano()), nil
 		}
+		return strconv.FormatInt(v.ToTime().In(v.Location).UnixNano(), 10), nil
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: UnixTimeTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: UnixTimeTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 type UnixTimeNanoParser struct{}
 
-func (UnixTimeNanoParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (UnixTimeNanoParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -1584,53 +1325,48 @@ func (UnixTimeNanoParser) GetNodeValue(node graph.Node) (interface{}, error) {
 		return nil, err
 	}
 	return UnixTimeNano{int64(x), nil}, nil
-	//return genericUnixNanoParse(value, goFormat(time.RFC3339), goFormat(time.RFC3339Nano))
 }
 
-func (UnixTimeNanoParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (UnixTimeNanoParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case time.Time:
-		ls.SetRawNodeValue(node, strconv.FormatInt(v.UnixNano(), 10))
+		return strconv.FormatInt(v.UnixNano(), 10), nil
 	case Date:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, strconv.FormatInt(v.ToTime().UnixNano(), 10))
-		} else {
-			ls.SetRawNodeValue(node, strconv.FormatInt(v.ToTime().In(v.Location).UnixNano(), 10))
+			return strconv.FormatInt(v.ToTime().UnixNano(), 10), nil
 		}
+		return strconv.FormatInt(v.ToTime().In(v.Location).UnixNano(), 10), nil
 	case DateTime:
 		if v.Location == nil {
-			ls.SetRawNodeValue(node, strconv.FormatInt(v.ToTime().UnixNano(), 10))
-		} else {
-			ls.SetRawNodeValue(node, strconv.FormatInt(v.ToTime().In(v.Location).UnixNano(), 10))
+			return strconv.FormatInt(v.ToTime().UnixNano(), 10), nil
 		}
+		return strconv.FormatInt(v.ToTime().In(v.Location).UnixNano(), 10), nil
 	case TimeOfDay:
 		if v.Location == nil {
 			t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), time.UTC)
-			ls.SetRawNodeValue(node, strconv.FormatInt(t.UnixNano(), 10))
-		} else {
-			t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), v.Location)
-			ls.SetRawNodeValue(node, strconv.FormatInt(t.UnixNano(), 10))
+			return strconv.FormatInt(t.UnixNano(), 10), nil
 		}
+		t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), v.Location)
+		return strconv.FormatInt(t.UnixNano(), 10), nil
 	case GDay:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case GMonth:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case GYear:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case GMonthDay:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case GYearMonth:
-		return ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
 	case UnixTime:
-		ls.SetRawNodeValue(node, strconv.FormatInt(v.Seconds*1e9, 10))
+		return strconv.FormatInt(v.Seconds*1e9, 10), nil
 	default:
-		return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: UnixTimeTerm, Value: value}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: UnixTimeTerm, Value: newValue}
 	}
-	return nil
+	return "", nil
 }
 
 // genericDateParse parses a node value using the given format(s)
@@ -1663,23 +1399,3 @@ func genericTimeParse(value string, format ...timeFormatter) (TimeOfDay, error) 
 	}
 	return TimeOfDay{}, ErrCannotParseTemporalValue(value)
 }
-
-// func genericUnixParse(value string, format ...unixFormatter) (UnixTime, error) {
-// 	for _, f := range format {
-// 		t, err := f.parseUnix(value)
-// 		if err == nil {
-// 			return t, nil
-// 		}
-// 	}
-// 	return UnixTime{}, ErrCannotParseTemporalValue(value)
-// }
-
-// func genericUnixNanoParse(value string, format ...unixNanoFormatter) (UnixTimeNano, error) {
-// 	for _, f := range format {
-// 		t, err := f.parseUnixNano(value)
-// 		if err == nil {
-// 			return t, nil
-// 		}
-// 	}
-// 	return UnixTimeNano{}, ErrCannotParseTemporalValue(value)
-// }
