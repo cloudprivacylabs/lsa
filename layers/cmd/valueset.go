@@ -19,6 +19,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"regexp"
+	"strings"
 	"sync"
 	"unicode"
 
@@ -29,13 +31,15 @@ import (
 )
 
 type Valuesets struct {
-	Services map[string]string   `json:"services" yaml:"services"`
-	Sets     map[string]Valueset `json:"valuesets" yaml:"valuesets"`
+	Services     map[string]string   `json:"services" yaml:"services"`
+	Spreadsheets []string            `json:"spreadsheets" yaml:"spreadsheets"`
+	Sets         map[string]Valueset `json:"valuesets" yaml:"valuesets"`
 }
 
 type Valueset struct {
-	ID     string          `json:"id" yaml:"id"`
-	Values []ValuesetValue `json:"values" yaml:"values"`
+	ID      string          `json:"id" yaml:"id"`
+	Values  []ValuesetValue `json:"values" yaml:"values"`
+	Options Options         `json:"options" yaml:"options"`
 }
 
 type ValuesetValue struct {
@@ -48,6 +52,15 @@ type ValuesetValue struct {
 	Result string `json:"result" yaml:"result"`
 	// Result output values as key-value pairs
 	ResultValues map[string]string `json:"results" yaml:"results"`
+}
+
+type Options struct {
+	// Order in which to search valueset
+	LookupOrder []string `json:"lookupOrder" yaml:"lookupOrder"`
+	// Which value to return
+	Output []string `json:"output" yaml:"output"`
+	// Types of string separation i.e. ";", "|", ",", " "
+	Separator map[string]string `json:"separator" yaml:"separator"`
 }
 
 func (v ValuesetValue) buildResult() *ls.ValuesetLookupResponse {
@@ -98,7 +111,6 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest) (*ls.ValuesetLookupRe
 	if len(req.KeyValues) == 0 {
 		return nil, nil
 	}
-
 	// If request has a single value:
 	if len(req.KeyValues) == 1 {
 		var key, value string
@@ -137,6 +149,7 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest) (*ls.ValuesetLookupRe
 				return v.buildResult(), nil
 			}
 		}
+
 		return nil, nil
 	}
 
@@ -314,6 +327,149 @@ func LoadValuesetFiles(vs *Valuesets, files []string) error {
 				return fmt.Errorf("Service %s already defined", k)
 			}
 			vs.Services[k] = v
+		}
+	}
+	return nil
+}
+
+func (opt Options) splitCell(header, cell string) []string {
+	if sep, exists := opt.Separator[header]; !exists {
+		return []string{cell}
+	} else {
+		var ret []string
+		spl := strings.Split(cell, sep)
+		for _, str := range spl {
+			str = strings.TrimSpace(str)
+			if str != "" {
+				ret = append(ret, str)
+			}
+		}
+		return ret
+	}
+}
+
+var options_re = regexp.MustCompile(`options.`)
+
+func parseSpreadsheet(sheet [][]string) (optionsRows [][]string, headers []string, data [][]string, err error) {
+	var headerIdx int
+ROWS:
+	for rowIdx, row := range sheet {
+		if len(row) == 0 {
+			continue
+		}
+		if options_re.MatchString(row[0]) {
+			optionsRows = append(optionsRows, row)
+			continue ROWS
+		} else {
+			headers = row
+			headerIdx = rowIdx
+			break ROWS
+		}
+	}
+	data = sheet[headerIdx+1:][:]
+	if len(data) == 0 {
+		err = fmt.Errorf("Empty data")
+	}
+	return optionsRows, headers, data, err
+}
+
+func parseOptions(optionsRows [][]string) Options {
+	options := Options{
+		LookupOrder: make([]string, 0),
+		Output:      make([]string, 0),
+		Separator:   map[string]string{},
+	}
+	for _, opt := range optionsRows {
+		if len(opt) == 0 {
+			continue
+		}
+		optionType := opt[0]
+		switch optionType {
+		case "options.lookupOrder":
+			options.LookupOrder = opt[1:]
+		case "options.output":
+			options.Output = opt[1:]
+		case "options.separator":
+			// options.separator | DESCRIPTIVE_TEXT | ; | CODE | ;
+			for i := 1; i < len(opt)-1; i += 2 {
+				sep := strings.TrimSpace(opt[i+1])
+				if sep == "" {
+					sep = " "
+				}
+				options.Separator[strings.TrimSpace(opt[i])] = sep
+			}
+		}
+	}
+	return options
+}
+
+func cartesianProduct(arr [][]string) [][]string {
+	n := 1
+	for _, a := range arr {
+		n *= len(a)
+	}
+	ans := make([][]string, 0, n)
+	if len(arr) == 0 {
+		return ans
+	}
+	if len(arr) == 1 {
+		for _, val := range arr[0] {
+			ans = append(ans, []string{val})
+		}
+		return ans
+	}
+	cross := cartesianProduct(arr[1:])
+	for _, val := range arr[0] {
+		for _, perm := range cross {
+			ans = append(ans, append([]string{val}, perm...))
+		}
+	}
+	return ans
+}
+
+func parseData(sheetName string, headers []string, data [][]string, options Options) (Valueset, error) {
+	vs := Valueset{Values: make([]ValuesetValue, 0), Options: options}
+
+	for rowIdx := range data {
+		splits := make([][]string, len(headers))
+		for hdrIdx, header := range headers {
+			cellData := data[rowIdx][hdrIdx]
+			if cellData == "" {
+				continue
+			}
+			sep_split := options.splitCell(header, cellData)
+			splits[hdrIdx] = sep_split
+		}
+		for _, permute := range cartesianProduct(splits) {
+			vsv := ValuesetValue{KeyValues: map[string]string{}}
+			for headerIdx, hdr := range headers {
+				vsv.KeyValues[hdr] = permute[headerIdx]
+			}
+			vs.Values = append(vs.Values, vsv)
+		}
+	}
+	return vs, nil
+}
+
+func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
+	for _, spreadsheet := range vsets.Spreadsheets {
+		sheets, err := cmdutil.ReadSpreadsheetFile(spreadsheet)
+		if err != nil {
+			return fmt.Errorf("While reading file: %s, %w", spreadsheet, err)
+		}
+		for sheetName, sheet := range sheets {
+			if _, exists := vsets.Sets[sheetName]; exists {
+				return fmt.Errorf("Value set %s already defined -- in file: %s", sheetName, sheet)
+			}
+			optionsRows, headers, data, err := parseSpreadsheet(sheet)
+			if err != nil {
+				return fmt.Errorf("Error parsing sheet %s, %w", sheetName, err)
+			}
+			options := parseOptions(optionsRows)
+			vsets.Sets[sheetName], err = parseData(sheetName, headers, data, options)
+			if err != nil {
+				return fmt.Errorf("Error parsing sheet data %s, %w", sheetName, err)
+			}
 		}
 	}
 	return nil
