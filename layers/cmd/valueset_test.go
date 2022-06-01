@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -108,7 +109,7 @@ func TestParseSpreadsheet(t *testing.T) {
 		opt []string
 	}{
 		{[]string{"options.lookupOrder", "CODE", "DESCRIPTIVE_TEXT"}},
-		{[]string{"options.separator", "DESCRIPTIVE_TEXT", ";"}},
+		{[]string{"options.separator", "CODE", ";", "DESCRIPTIVE_TEXT", ";"}},
 	}
 	testHeaders := []struct {
 		hdr []string
@@ -118,9 +119,9 @@ func TestParseSpreadsheet(t *testing.T) {
 	testData := []struct {
 		data []string
 	}{
-		{[]string{"A2:CODE", "B2:DESCRIPTIVE_TEXT"}},
-		{[]string{"A3:CODE", "B3:DESCRIPTIVE_TEXT"}},
+		{[]string{"A2", "B2"}},
 		{[]string{"A4", "X; Y; Z"}},
+		{[]string{"A5; A6; A7", "B5; B6; B7"}},
 	}
 	for _, sheet := range sheets {
 		optionRows, headers, data, err := parseSpreadsheet(sheet)
@@ -138,8 +139,9 @@ func TestParseSpreadsheet(t *testing.T) {
 			}
 		}
 		for idx, tt := range testData {
-			if !reflect.DeepEqual(tt.data, data[idx]) {
-				t.Errorf("Got %v, expected %v", tt.data, data[idx])
+			if !reflect.DeepEqual(data[idx], tt.data) {
+				fmt.Println(tt.data, data[idx])
+				t.Errorf("Got %v, expected %v", data[idx], tt.data)
 			}
 		}
 	}
