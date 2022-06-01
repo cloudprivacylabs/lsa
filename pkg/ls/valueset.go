@@ -17,6 +17,7 @@ package ls
 import (
 	"fmt"
 
+	"github.com/cloudprivacylabs/opencypher"
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
@@ -65,6 +66,11 @@ var (
 	// ValuesetRequestKeysTerm. It specifies the schema node IDs of the
 	// nodes containing values to lookup
 	ValuesetRequestValuesTerm = NewTerm(LS, "vs/requestValues", false, false, OverrideComposition, nil)
+
+	// ValuesetRequestTerm specifies one or more openCypher expressions
+	// that builds up a valuest lookup request. The named results of
+	// those expressions are added to the request key/value pairs
+	ValuesetRequestTerm = NewTerm(LS, "vs/request", false, false, OverrideComposition, CompileOCSemantics{})
 
 	// ValuesetResultKeys term contains the keys that will be returned
 	// from the valueset lookup. Values of these keys will be inserted under the context
@@ -116,6 +122,9 @@ type ValuesetInfo struct {
 	// values. The elements of this match the keys array
 	RequestValues []string
 
+	// Request expressions
+	RequestExprs []opencypher.Evaluatable
+
 	// The keys of the valueset result
 	ResultKeys []string
 
@@ -160,6 +169,7 @@ func ValuesetInfoFromNode(node graph.Node) *ValuesetInfo {
 		ResultValues:  AsPropertyValue(node.GetProperty(ValuesetResultValuesTerm)).MustStringSlice(),
 		SchemaNode:    node,
 	}
+	ret.RequestExprs = CompileOCSemantics{}.Compiled(node, ValuesetRequestTerm)
 	if len(ret.ContextID) == 0 {
 		ret.ContextID = GetNodeID(node)
 	}
@@ -179,9 +189,46 @@ func ValuesetInfoFromNode(node graph.Node) *ValuesetInfo {
 //
 // If ValuesetInfo contains RequestValues, the request values
 func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.Node) (map[string]string, error) {
-	if len(vsi.RequestValues) == 0 {
+	ret := make(map[string]string)
+	if len(vsi.RequestExprs) > 0 {
+		evalctx := opencypher.NewEvalContext(vsiDocumentNode.GetGraph())
+		evalctx.SetVar("this", opencypher.ValueOf(vsiDocumentNode))
+		for index, expr := range vsi.RequestExprs {
+			result, err := expr.Evaluate(evalctx)
+			if err != nil {
+				return nil, err
+			}
+			if result.Get() == nil {
+				continue
+			}
+			rs, ok := result.Get().(opencypher.ResultSet)
+			if !ok {
+				continue
+			}
+			if len(rs.Rows) == 0 {
+				continue
+			}
+			if len(rs.Rows) > 1 {
+				return nil, ErrInvalidValuesetSpec{Msg: fmt.Sprintf("Multiple results for expression %d", index)}
+			}
+			for k, v := range rs.Rows[0] {
+				if opencypher.IsNamedVar(k) {
+					value := v.Get()
+					if value == nil {
+						continue
+					}
+					if node, ok := value.(graph.Node); ok {
+						ret[k], _ = GetRawNodeValue(node)
+					} else {
+						ret[k] = fmt.Sprint(value)
+					}
+				}
+			}
+		}
+	}
+	if len(vsi.RequestExprs) == 0 && len(vsi.RequestValues) == 0 {
 		if vsiDocumentNode == nil {
-			return nil, ErrInvalidValuesetSpec{Msg: fmt.Sprintf("Document node is nil for the value set")}
+			return nil, ErrInvalidValuesetSpec{Msg: fmt.Sprintf("Document node is nil for the value set in context node %v", contextDocumentNode)}
 		}
 		value, _ := GetRawNodeValue(vsiDocumentNode)
 		// Document node is the source node
@@ -201,15 +248,14 @@ func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.N
 	}
 	// Here, either there is one value and no key, or there are keys
 	// and values of same length
-	req := make(map[string]string)
 	// There are some request value fields under this node. Collect them.
 	for index, reqv := range vsi.RequestValues {
 		if reqv == AsPropertyValue(contextDocumentNode.GetProperty(SchemaNodeIDTerm)).AsString() {
 			value, _ := GetRawNodeValue(contextDocumentNode)
 			if len(vsi.RequestKeys) == 0 {
-				req[""] = value
+				ret[""] = value
 			} else {
-				req[vsi.RequestKeys[index]] = value
+				ret[vsi.RequestKeys[index]] = value
 			}
 		} else {
 			// Locate a child node
@@ -236,11 +282,15 @@ func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.N
 				return nil, ErrInvalidValuesetSpec{Msg: fmt.Sprintf("Multiple nodes instance of %s", reqv)}
 			}
 			if len(nodes) == 1 {
-				req[vsi.RequestKeys[index]], _ = GetRawNodeValue(nodes[0])
+				if len(vsi.RequestKeys) == 0 {
+					ret[""], _ = GetRawNodeValue(nodes[0])
+				} else {
+					ret[vsi.RequestKeys[index]], _ = GetRawNodeValue(nodes[0])
+				}
 			}
 		}
 	}
-	return req, nil
+	return ret, nil
 }
 
 // GetContextNodes returns the contexts node for the given document
@@ -341,10 +391,13 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilde
 		return nil
 	}
 	if len(vsi.ResultKeys) == 0 && len(vsi.ResultValues) == 0 {
-		ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.applyThisNode"})
+		ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.applyThisNode", "contextSchemaNode": contextSchemaNode})
 		// Target is this document node
 		if len(result.KeyValues) != 1 {
 			return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: "Multiple results from valueset lookup, but no ResultKeys specified in the schema"}
+		}
+		if !contextSchemaNode.HasLabel(AttributeTypeValue) {
+			return ErrValueset{SchemaNodeID: GetNodeID(contextSchemaNode), Msg: "Trying to set the value of a non-value node using valueset"}
 		}
 		for _, v := range result.KeyValues {
 			SetRawNodeValue(contextDocumentNode, v)
@@ -406,7 +459,9 @@ func (prc *ValuesetProcessor) ProcessByContextNode(ctx *Context, builder GraphBu
 		ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process", "result": result, "contextDocNode": contextDocNode})
 		// If there is nonzero result, put it back into the doc
 		if len(result.KeyValues) > 0 {
-			vsi.ApplyValuesetResponse(ctx, builder, prc.layer, contextDocNode, contextSchemaNode, result)
+			if err := vsi.ApplyValuesetResponse(ctx, builder, prc.layer, contextDocNode, contextSchemaNode, result); err != nil {
+				return err
+			}
 		}
 	}
 	return nil
@@ -457,7 +512,7 @@ func (prc *ValuesetProcessor) ProcessGraphValueset(ctx *Context, builder GraphBu
 	if contextSchemaNode == nil {
 		return nil
 	}
-	ctx.GetLogger().Debug(map[string]interface{}{"mth": "processGraphValueset", "stage": "found context node"})
+	ctx.GetLogger().Debug(map[string]interface{}{"mth": "processGraphValueset", "stage": "found context node", "vsi": vsi})
 	if len(vsiDocNodes) == 0 {
 		contextNodes, err := vsi.GetContextNodes(builder.GetGraph())
 		if err != nil {

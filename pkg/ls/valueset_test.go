@@ -90,6 +90,86 @@ func TestBasicVS(t *testing.T) {
 
 }
 
+func TestBasicVSExpr(t *testing.T) {
+	schText := `{
+"@context": "../../schemas/ls.json",
+"@id":"http://1",
+"@type": "Schema",
+"valueType": "test",
+"layer" :{
+  "@type": "Object",
+ "@id": "schroot",
+  "attributes": {
+    "src": {
+      "@type": "Value",
+      "attributeName": "src",
+      "https://lschema.org/vs/context":"schroot",
+      "https://lschema.org/vs/request": "return this as KEY",
+      "https://lschema.org/vs/resultValues": "tgt"
+    },
+    "tgt": {
+      "@type": "Value",
+      "attributeName": "tgt"
+    }
+  }
+}
+}`
+	var v interface{}
+	if err := json.Unmarshal([]byte(schText), &v); err != nil {
+		t.Error(err)
+		return
+	}
+	layer, err := UnmarshalLayer(v, nil)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	compiler := Compiler{}
+	layer, err = compiler.CompileSchema(DefaultContext(), layer)
+	if err != nil {
+		t.Error(err)
+	}
+
+	builder := NewGraphBuilder(nil, GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
+
+	vsFunc := func(_ *Context, req ValuesetLookupRequest) (ValuesetLookupResponse, error) {
+		ret := ValuesetLookupResponse{
+			KeyValues: make(map[string]string),
+		}
+		if req.KeyValues["KEY"] == "a" {
+			ret.KeyValues[""] = "X"
+		}
+		return ret, nil
+	}
+	root := builder.NewNode(layer.GetAttributeByID("schroot"))
+	builder.ValueAsNode(layer.GetAttributeByID("src"), root, "a")
+	// Graph must have 2 nodes
+	if builder.GetGraph().NumNodes() != 2 {
+		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
+	}
+
+	processor := NewValuesetProcessor(layer, vsFunc)
+	DefaultLogLevel = LogLevelDebug
+	err = processor.ProcessGraph(DefaultContext(), builder)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Graph must have 3 nodes
+	if builder.GetGraph().NumNodes() != 3 {
+		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
+	}
+
+	nodes := FindChildInstanceOf(root, "tgt")
+	if len(nodes) != 1 {
+		t.Errorf("Child nodes: %v", nodes)
+	}
+
+}
+
 func TestStructuredVS(t *testing.T) {
 	schText := `{
 "@context": "../../schemas/ls.json",

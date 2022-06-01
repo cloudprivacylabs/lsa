@@ -15,6 +15,7 @@
 package ls
 
 import (
+	"github.com/cloudprivacylabs/opencypher"
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
@@ -152,4 +153,35 @@ func (p *CompiledProperties) CopyTo(target *CompiledProperties) {
 	for k, v := range p.m {
 		target.m[k] = v
 	}
+}
+
+// CompileOCSemantics is a compilation implementation for terms
+// containing a slice of opencypher expressions. It compiles one or
+// more expressions of the term, and places them im $compiled_term
+// property.
+type CompileOCSemantics struct{}
+
+func (CompileOCSemantics) CompileTerm(target CompilablePropertyContainer, term string, value *PropertyValue) error {
+	if value == nil {
+		return nil
+	}
+	expr := make([]opencypher.Evaluatable, 0)
+	for _, str := range value.MustStringSlice() {
+		e, err := opencypher.Parse(str)
+		if err != nil {
+			return err
+		}
+		expr = append(expr, e)
+	}
+	target.SetProperty("$compiled_"+term, expr)
+	return nil
+}
+
+func (CompileOCSemantics) Compiled(target CompilablePropertyContainer, term string) []opencypher.Evaluatable {
+	x, _ := target.GetProperty("$compiled_" + term)
+	if x == nil {
+		return nil
+	}
+	ret, _ := x.([]opencypher.Evaluatable)
+	return ret
 }
