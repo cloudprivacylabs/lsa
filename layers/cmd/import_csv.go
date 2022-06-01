@@ -258,7 +258,7 @@ will result:
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := ls.DefaultContext()
-		records, err := cmdutil.ReadSpreadsheetFile(args[0])
+		records, err := cmdutil.ReadSheets(args[0])
 		if err != nil {
 			failErr(err)
 		}
