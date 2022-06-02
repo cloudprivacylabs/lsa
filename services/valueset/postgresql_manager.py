@@ -53,12 +53,16 @@ class PostgresqlManager:
                self._cursor = self._conn.cursor()
         return self._cursor
     # execute select sql command.
-    def execute_sql(self, sql):
-        self.get_cursor()
-        self._cursor.execute(sql)
-        # get the sql execution result.
-        result = self._cursor.fetchone()
-        print("Record is : ", result, "\n")
-        return result 
+    def get_results(self,query,query_params):
+        cursor = self.get_cursor(self)
+        result = cursor.execute(query, query_params)
+        row = result.fetchone()
+        if not row or row == None:
+            return None
+        out = {}
+        for idx,col in enumerate(result.description):
+            out[col.name]=str(row[idx])
+        return out
+        
 
     

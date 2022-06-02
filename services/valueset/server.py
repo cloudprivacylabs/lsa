@@ -1,25 +1,65 @@
 hostName = "localhost"
-serverPort = 8000
+serverPort = 8011
+
+from collections import defaultdict
+import yaml
+
+from postgresql_manager import PostgresqlManager
+
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib import parse
+import json
 
-from app import process
+db = PostgresqlManager
+db.get_connection_by_config(db, 'database.ini', 'postgresql_conn_data') 
+
+def parseYAML() -> defaultdict:
+    queries = defaultdict(list)
+    columns = []
+    with open("queries.yaml") as yaml_file:
+        vs_list = yaml.full_load(yaml_file)
+        for item, doc in vs_list.items():
+            for key,val in doc[0].items():
+                if key == "tableId":
+                    id = val
+                elif key == "queries":
+                    for i in range(len(val)):
+                        for k, v in val[i].items():
+                            if k == "query":
+                                queries[id].append(v)
+                            elif k == "columns":
+                                columns.append(v)
+    return queries
+
+config = parseYAML()
+
+
+def process(url):
+    # parse query params
+    url_query = parse.parse_qs(parse.urlparse(url).query)
+    url_query_params = {k:v[0] if v and len(v) == 1 else v for k,v in url_query.items()}
+    # For example, http://example.com/?foo=bar&foo=baz&bar=baz would return:
+    # {'foo': ['bar', 'baz'], 'bar': 'baz'}
+
+    # iterate through yaml dictionary and for each query, execute statement, binding url query parameters
+    for key,val in config.items():
+        for i in range(len(val)):
+            result = db.get_results(db,config[key][i],url_query_params)
+            if not result or result == None:
+                continue
+            return result
+            
+    return None
 
 class VS_Server(BaseHTTPRequestHandler):
     def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
-
         query_params = parse.urlparse(self.path).query
         full_url = "http://" + ''.join([hostName, ':', str(serverPort), '?',query_params])
-        process(full_url)
-
-        self.wfile.write(bytes("<html><head><title>https://pythonbasics.org</title></head>", "utf-8"))
-        self.wfile.write(bytes("<p>Request: %s</p>" % self.path, "utf-8"))
-        self.wfile.write(bytes("<body>", "utf-8"))
-        self.wfile.write(bytes("<p>This is an example web server.</p>", "utf-8"))
-        self.wfile.write(bytes("</body></html>", "utf-8"))
+        result=process(full_url)
+        self.send_response(200)
+        self.send_header("Content-type", "application/json; charset=UTF-8")
+        self.end_headers()
+        self.wfile.write(json.dumps(result).encode("utf-8"))
 
 if __name__ == '__main__':
     webServer = HTTPServer((hostName, serverPort), VS_Server)

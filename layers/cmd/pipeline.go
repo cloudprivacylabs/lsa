@@ -223,6 +223,7 @@ func (ctx *PipelineContext) SetGraph(g graph.Graph) *PipelineContext {
 func (ctx *PipelineContext) Next() error {
 	ctx.currentStep++
 	if ctx.currentStep >= len(ctx.steps) {
+		ctx.currentStep--
 		return nil
 	}
 	err := ctx.steps[ctx.currentStep].Run(ctx)
