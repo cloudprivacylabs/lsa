@@ -34,7 +34,6 @@ class PostgresqlManager:
                 # get connection object use above dictionary object.
                 # conn = psycopg.connect(**db_conn_dict)
                 result = " ".join(str(key + "=") + str(value) for key, value in db_conn_dict.items())
-                print(result)
                 conn = psycopg.connect(result)
                 self._conn = conn
                 print("******* get postgresql database connection with configuration file ********", "\n")

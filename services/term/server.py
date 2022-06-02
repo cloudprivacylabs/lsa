@@ -10,13 +10,11 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib import parse
 import json
 
-db = PostgresqlManager
-db.get_connection_by_config(db, 'database.ini', 'postgresql_conn_data') 
 
 def parseYAML() -> defaultdict:
     queries = defaultdict(list)
     columns = []
-    with open("queries.yaml") as yaml_file:
+    with open("cfg/queries.yaml","r") as yaml_file:
         vs_list = yaml.full_load(yaml_file)
         for item, doc in vs_list.items():
             for key,val in doc[0].items():
@@ -31,6 +29,8 @@ def parseYAML() -> defaultdict:
                                 columns.append(v)
     return queries
 
+db = PostgresqlManager
+db.get_connection_by_config(db, 'cfg/database.ini', 'postgresql_conn_data') 
 config = parseYAML()
 
 
