@@ -39,8 +39,8 @@ var unitRegexp = regexp.MustCompile(`^([+\-]?(?:(?:0|[1-9]\d*)(?:\.\d*)?|\.\d+)(
 // ParseMeasure parses a number and then a string for units
 func ParseMeasure(in string) (Measure, error) {
 	values := make([]string, 0, 2)
-	for _, v := range unitRegexp.FindAllStringSubmatch("0.1e123K", -1) {
-		for _, x := range v {
+	for _, v := range unitRegexp.FindAllStringSubmatch(in, -1) {
+		for _, x := range v[1:] {
 			x := strings.TrimSpace(x)
 			if len(x) > 0 {
 				values = append(values, x)
@@ -281,6 +281,18 @@ func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNo
 
 	// Build/update measure nodes
 	for value, unit := range valuesUnits {
+		// If unit is empty, it may be in the value node itself
+		var measure *Measure
+		if len(unit) == 0 {
+			v, _ := ls.GetRawNodeValue(value)
+			m, err := ParseMeasure(v)
+			if err == nil {
+				if len(m.Unit) > 0 {
+					measure = &m
+				}
+			}
+		}
+
 		sources := graph.SourceNodes(value.GetEdges(graph.IncomingEdge))
 		if len(sources) != 1 {
 			// Cannot find parent node
@@ -305,10 +317,16 @@ func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNo
 		} else {
 			measureNode = sources[0]
 		}
-		v, _ := ls.GetRawNodeValue(value)
-		measureNode.SetProperty(MeasureValueTerm, ls.StringPropertyValue(v))
-		measureNode.SetProperty(MeasureUnitTerm, ls.StringPropertyValue(unit))
-		ls.SetRawNodeValue(measureNode, Measure{Value: v, Unit: unit}.String())
+		if measure == nil {
+			v, _ := ls.GetRawNodeValue(value)
+			measure = &Measure{
+				Value: v,
+				Unit:  unit,
+			}
+		}
+		measureNode.SetProperty(MeasureValueTerm, ls.StringPropertyValue(measure.Value))
+		measureNode.SetProperty(MeasureUnitTerm, ls.StringPropertyValue(measure.Unit))
+		ls.SetRawNodeValue(measureNode, measure.String())
 	}
 
 	return nil
