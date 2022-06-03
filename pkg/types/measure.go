@@ -91,6 +91,13 @@ var MeasureUnitTerm = ls.NewTerm(ls.LS, "measure/unit", false, false, ls.Overrid
 // MeasureValueTerm is a node property term giving measure value.
 var MeasureValueTerm = ls.NewTerm(ls.LS, "measure/value", false, false, ls.OverrideComposition, nil)
 
+// MeasureUseUnitTerm is a node property that specifies that all
+// measures must be converted to this unit
+var MeasureUseUnitTerm = ls.NewTerm(ls.LS, "measure/useUnit", false, false, ls.OverrideComposition, nil)
+
+// MeasureUnitDomainTerm is a node property that specifies that the measure is of a certain domain
+var MeasureUnitDomainTerm = ls.NewTerm(ls.LS, "measure/unitDomain", false, false, ls.OverrideComposition, nil)
+
 // MeasureUnitExpr gives the expression that returns the unit. The
 // result can be a node or a value. The expression is evaluated with
 // (valueNode) bound to the value node of the unit expr
@@ -130,6 +137,47 @@ type ErrMeasureProcessing struct {
 
 func (e ErrMeasureProcessing) Error() string {
 	return "Measure processing error for :" + e.ID + ":" + e.Msg
+}
+
+// MeasureService parses/validates/converts measures
+type MeasureService interface {
+	// If the measure value does not include a spearate unit field,
+	// then the field may be embedded into the value. This will parse
+	// the embedded unit if possible and return it as a measure
+	Parse(string) (Measure, error)
+	// Convert a given measure into target unit if possible. Domain
+	// may or may not be present, and may qualify the measure (such as
+	// whether this is a height or weight, etc).
+	Convert(measure Measure, targetUnit string, domain string) (Measure, error)
+}
+
+type defaultMeasureService struct{}
+
+func (defaultMeasureService) Parse(value string) (Measure, error) {
+	return ParseMeasure(value)
+}
+
+func (defaultMeasureService) Convert(measure Measure, targetUnit, domain string) (Measure, error) {
+	panic("Measure service is not initialized")
+}
+
+type measureServiceKeyType struct{}
+
+var measureServiceKey measureServiceKeyType
+
+// GetMeasureService returns the measure service set in the
+// context. If there is none, returns defaultMeasureService
+func GetMeasureService(ctx *ls.Context) MeasureService {
+	m := ctx.Get(measureServiceKey)
+	if m == nil {
+		return defaultMeasureService{}
+	}
+	return m.(MeasureService)
+}
+
+// SetMeasureService sets the measure service in context
+func SetMeasureService(ctx *ls.Context, svc MeasureService) {
+	ctx.Set(measureServiceKey, svc)
 }
 
 func getMeasureValueNodes(ctx *ls.Context, g graph.Graph, measureSchemaNode graph.Node) ([]graph.Node, error) {
@@ -249,7 +297,7 @@ func findUnit(valueNode, measureSchemaNode graph.Node) (string, error) {
 
 // BuildMeasureNode uses the measureSchemaNode to locate measure node
 // instances in the graph, and creates/updates measure nodes in the
-// graph
+// graph. This function uses the measure service set in the context.
 func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNode graph.Node) error {
 	ctx.GetLogger().Debug(map[string]interface{}{
 		"mth":   "buildMeasureNodes",
@@ -279,15 +327,16 @@ func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNo
 		"units": valuesUnits,
 	})
 
+	measureService := GetMeasureService(ctx)
 	// Build/update measure nodes
 	for value, unit := range valuesUnits {
 		// If unit is empty, it may be in the value node itself
 		var measure *Measure
 		if len(unit) == 0 {
 			v, _ := ls.GetRawNodeValue(value)
-			m, err := ParseMeasure(v)
+			m, err := measureService.Parse(v)
 			if err == nil {
-				if len(m.Unit) > 0 {
+				if len(m.Unit) > 0 && len(m.Value) > 0 {
 					measure = &m
 				}
 			}
@@ -324,9 +373,9 @@ func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNo
 				Unit:  unit,
 			}
 		}
-		measureNode.SetProperty(MeasureValueTerm, ls.StringPropertyValue(measure.Value))
-		measureNode.SetProperty(MeasureUnitTerm, ls.StringPropertyValue(measure.Unit))
-		ls.SetRawNodeValue(measureNode, measure.String())
+		if err := ls.SetNodeValue(measureNode, *measure); err != nil {
+			return err
+		}
 	}
 
 	return nil
