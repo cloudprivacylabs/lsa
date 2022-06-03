@@ -356,14 +356,14 @@ func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, l
 	resultNodes := FindChildInstanceOf(contextDocumentNode, resultSchemaNodeID)
 	switch len(resultNodes) {
 	case 0: // insert it
-		ctx.GetLogger().Debug(map[string]interface{}{"valueset.createResultNodes": "inserting"})
+		ctx.GetLogger().Debug(map[string]interface{}{"valueset.createResultNodes": "inserting", "schId": resultSchemaNodeID})
 		switch GetIngestAs(resultSchemaNode) {
 		case "node":
-			_, _, err := builder.ValueAsNode(resultSchemaNode, contextDocumentNode, resultValue)
+			_, n, err := builder.ValueAsNode(resultSchemaNode, contextDocumentNode, resultValue)
 			if err != nil {
 				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
 			}
-			ctx.GetLogger().Debug(map[string]interface{}{"valueset.createResultNodes": "insert", "schma": resultSchemaNode, "parent": contextDocumentNode})
+			ctx.GetLogger().Debug(map[string]interface{}{"valueset.createResultNodes": "insert", "schId": resultSchemaNode, "newNode": n})
 		case "edge":
 			_, err := builder.ValueAsEdge(resultSchemaNode, contextDocumentNode, resultValue)
 			if err != nil {

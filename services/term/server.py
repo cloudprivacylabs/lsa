@@ -1,15 +1,20 @@
+hostName = "localhost"
+serverPort = 8011
+
 from collections import defaultdict
 import yaml
-from postgresql_manager import PostgresqlManager
-from urllib import parse
 
-psql = PostgresqlManager
-psql.get_connection_by_config(psql, 'database.ini', 'postgresql_conn_data') 
+from postgresql_manager import PostgresqlManager
+
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib import parse
+import json
+
 
 def parseYAML() -> defaultdict:
     queries = defaultdict(list)
     columns = []
-    with open("example_queries.yaml") as yaml_file:
+    with open("cfg/queries.yaml","r") as yaml_file:
         vs_list = yaml.full_load(yaml_file)
         for item, doc in vs_list.items():
             for key,val in doc[0].items():
@@ -24,6 +29,11 @@ def parseYAML() -> defaultdict:
                                 columns.append(v)
     return queries
 
+db = PostgresqlManager
+db.get_connection_by_config(db, 'cfg/database.ini', 'postgresql_conn_data') 
+config = parseYAML()
+
+
 def process(url):
     # parse query params
     url_query = parse.parse_qs(parse.urlparse(url).query)
@@ -31,29 +41,32 @@ def process(url):
     # For example, http://example.com/?foo=bar&foo=baz&bar=baz would return:
     # {'foo': ['bar', 'baz'], 'bar': 'baz'}
 
-    yaml_queries = parseYAML()
-    # defaultdict(<class 'list'>, {'gender': ["select concept_id,concept_name from concepts where vocabulary_id='gender' 
-    # and concept_id=$concept_id", "select concept_id,concept_name from concepts where vocabulary_id='gender' 
-    # and concept_name=$concept_name"]})
-    
-    # grab cursor needed to executing SQL calls           
-    cursor = psql.get_cursor(psql)
-
     # iterate through yaml dictionary and for each query, execute statement, binding url query parameters
-    for key,val in yaml_queries.items():
+    for key,val in config.items():
         for i in range(len(val)):
-            result = cursor.execute(yaml_queries[key][i], url_query_params)
-            row = result.fetchone()
-            print(row)
-            if not row or row == None:
+            result = db.get_results(db,config[key][i],url_query_params)
+            if not result or result == None:
                 continue
-            return row
+            return result
             
     return None
 
+class VS_Server(BaseHTTPRequestHandler):
+    def do_GET(self):
+        query_params = parse.urlparse(self.path).query
+        full_url = "http://" + ''.join([hostName, ':', str(serverPort), '?',query_params])
+        result=process(full_url)
+        self.send_response(200)
+        self.send_header("Content-type", "application/json; charset=UTF-8")
+        self.end_headers()
+        self.wfile.write(json.dumps(result).encode("utf-8"))
+
 if __name__ == '__main__':
-    # first create an instance of PostgresqlManager class.
-    postgresql_manager = PostgresqlManager()                        
-   
-# process("http://localhost:8000?id=gender&concept_id=8507&concept_name=rf")
-# http://localhost:8000?id=gender&concept_id=123&concept_name=blah
+    webServer = HTTPServer((hostName, serverPort), VS_Server)
+    print("Server started http://%s:%s" % (hostName, serverPort))
+    try:
+        webServer.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    webServer.server_close()
+    

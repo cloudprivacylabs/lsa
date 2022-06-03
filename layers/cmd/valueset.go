@@ -246,8 +246,13 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 				}
 				qparams := base.Query()
 				qparams["tableId"] = append(qparams["tableId"], id)
+				for k, v := range req.KeyValues {
+					qparams.Set(k, v)
+				}
 				base.RawQuery = qparams.Encode()
-				resp, err := http.Get(base.String())
+				str := base.String()
+				ctx.GetLogger().Debug(map[string]interface{}{"valueset.lookup": id, "req": str})
+				resp, err := http.Get(str)
 				if err != nil {
 					errs[i] = err
 					return
@@ -259,37 +264,37 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 					errs[i] = err
 					return
 				}
+				ctx.GetLogger().Debug(map[string]interface{}{"valueset.lookup": id, "rsp": m})
 				results[i] = ls.ValuesetLookupResponse{KeyValues: m}
 			}(idx)
-		}
-		for _, err := range errs {
-			if err != nil {
-				return ls.ValuesetLookupResponse{}, err
-			}
-		}
-		var counter int
-		var resultIdx int
-		for idx, res := range results {
-			if len(res.KeyValues) > 0 {
-				counter++
-				if counter >= 2 {
-					return ls.ValuesetLookupResponse{}, fmt.Errorf("Ambiguous lookup for %s", req)
-				}
-				resultIdx = idx
-			}
-		}
-		if counter == 1 {
-			return results[resultIdx], nil
-		}
-		if v, ok := vsets.Sets[id]; ok {
+		} else if v, ok := vsets.Sets[id]; ok {
 			if err := lookup(v); err != nil {
-				return ls.ValuesetLookupResponse{}, err
+				errs[idx] = err
 			}
 		} else {
-			return found, fmt.Errorf("Valueset not found: %s", id)
+			errs[idx] = fmt.Errorf("Valueset not found: %s", id)
 		}
 	}
 	wg.Wait()
+	for _, err := range errs {
+		if err != nil {
+			return ls.ValuesetLookupResponse{}, err
+		}
+	}
+	var counter int
+	var resultIdx int
+	for idx, res := range results {
+		if len(res.KeyValues) > 0 {
+			counter++
+			if counter >= 2 {
+				return ls.ValuesetLookupResponse{}, fmt.Errorf("Ambiguous lookup for %s", req)
+			}
+			resultIdx = idx
+		}
+	}
+	if counter == 1 {
+		return results[resultIdx], nil
+	}
 	return found, nil
 }
 

@@ -180,9 +180,11 @@ func init() {
 			BaseIngestParams: BaseIngestParams{
 				EmbedSchemaNodes: true,
 			},
-			EndRow:    -1,
-			HeaderRow: -1,
-			StartRow:  0,
+			EndRow:       -1,
+			HeaderRow:    -1,
+			StartRow:     0,
+			Delimiter:    ",",
+			IngestByRows: true,
 		}
 	}
 }
