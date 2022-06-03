@@ -373,7 +373,7 @@ func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNo
 				Unit:  unit,
 			}
 		}
-		if err := ls.SetNodeValue(measureNode, *measure); err != nil {
+		if err := SetMeasureValue(ctx, measureService, measureNode, measureSchemaNode, *measure); err != nil {
 			return err
 		}
 	}
@@ -392,6 +392,28 @@ func BuildMeasureNodesForLayer(ctx *ls.Context, bldr ls.GraphBuilder, layer *ls.
 		return true
 	})
 	return err
+}
+
+// SetMeasureValue sets the value of the measure node based on
+// value. The schemaNode is used to collect measure annotations, and
+// can be the same as the measure node, or can be nil. If nil, measure
+// node itself will be used. The measure service will be used if the
+// measure has to be converted to a different unit.
+func SetMeasureValue(ctx *ls.Context, svc MeasureService, measureNode, schemaNode graph.Node, value Measure) error {
+	if schemaNode == nil {
+		schemaNode = measureNode
+	}
+	useUnit := ls.AsPropertyValue(schemaNode.GetProperty(MeasureUseUnitTerm)).AsString()
+	if len(useUnit) > 0 && useUnit != value.Unit {
+		// We need to convert
+		domain := ls.AsPropertyValue(schemaNode.GetProperty(MeasureUnitDomainTerm)).AsString()
+		newMeasure, err := svc.Convert(value, useUnit, domain)
+		if err != nil {
+			return err
+		}
+		value = newMeasure
+	}
+	return ls.SetNodeValue(measureNode, value)
 }
 
 type measureParser struct{}
