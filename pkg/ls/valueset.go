@@ -481,12 +481,14 @@ type ValuesetProcessor struct {
 	layer      *Layer
 	lookupFunc func(*Context, ValuesetLookupRequest) (ValuesetLookupResponse, error)
 	vsis       []ValuesetInfo
+	tables     []string
 }
 
-func NewValuesetProcessor(layer *Layer, lookupFunc func(*Context, ValuesetLookupRequest) (ValuesetLookupResponse, error)) ValuesetProcessor {
+func NewValuesetProcessor(layer *Layer, lookupFunc func(*Context, ValuesetLookupRequest) (ValuesetLookupResponse, error), tables []string) ValuesetProcessor {
 	ret := ValuesetProcessor{
 		layer:      layer,
 		lookupFunc: lookupFunc,
+		tables:     tables,
 	}
 	ret.init()
 	return ret
@@ -501,6 +503,23 @@ func (prc *ValuesetProcessor) init() {
 		vsi := ValuesetInfoFromNode(node)
 		if vsi == nil {
 			continue
+		}
+		if len(prc.tables) > 0 {
+			hasTable := false
+			for _, ptable := range prc.tables {
+				for _, t := range vsi.TableIDs {
+					if t == ptable {
+						hasTable = true
+						break
+					}
+				}
+				if hasTable {
+					break
+				}
+			}
+			if !hasTable {
+				continue
+			}
 		}
 		prc.vsis = append(prc.vsis, *vsi)
 	}
