@@ -99,7 +99,7 @@ func Ingest(builder GraphBuilder, root ParsedDocNode) (graph.Node, error) {
 	return ingestWithCursor(builder, cursor)
 }
 
-// GetIngestAs returns "node", "edge", or "property" based on IngestAsTerm
+// GetIngestAs returns "node", "edge", "property", or "none" based on IngestAsTerm
 func GetIngestAs(schemaNode graph.Node) string {
 	if schemaNode == nil {
 		return "node"
@@ -109,7 +109,7 @@ func GetIngestAs(schemaNode graph.Node) string {
 		return "node"
 	}
 	s := AsPropertyValue(p, ok).AsString()
-	if s == "edge" || s == "property" {
+	if s == "edge" || s == "property" || s == "none" {
 		return s
 	}
 	return "node"
@@ -161,6 +161,8 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, er
 				return nil, err
 			}
 			return cursor.getOutput(), nil
+		case "none":
+			return cursor.getOutput(), nil
 		}
 		return nil, nil
 	}
@@ -182,19 +184,39 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, er
 		setID(edge.GetTo())
 		setProp(edge.GetTo())
 		parentNode = edge.GetTo()
+	case "none":
+		parentNode = cursor.getOutput()
 	}
 	if parentNode != nil {
 		newCursor := cursor
 		newCursor.input = append(newCursor.input, nil)
-		newCursor.output = append(newCursor.output, parentNode)
-		for index, child := range root.GetChildren() {
+		if parentNode != cursor.getOutput() { // This happens if ingestAs==none.
+			newCursor.output = append(newCursor.output, parentNode)
+		}
+		for _, child := range root.GetChildren() {
 			newCursor.input[len(newCursor.input)-1] = child
 			node, err := ingestWithCursor(builder, newCursor)
 			if err != nil {
 				return nil, err
 			}
 			if node != nil {
-				node.SetProperty(AttributeIndexTerm, IntPropertyValue(index))
+				n := child.GetAttributeIndex()
+				if parentNode != nil {
+					n = parentNode.GetEdges(graph.OutgoingEdge).MaxSize()
+				}
+				if n == -1 {
+					n = child.GetAttributeIndex()
+				}
+				node.SetProperty(AttributeIndexTerm, IntPropertyValue(n))
+			}
+		}
+		if schemaNode != nil {
+			switch AsPropertyValue(schemaNode.GetProperty(ConditionalTerm)).AsString() {
+			case "mustHaveChildren":
+				if parentNode.GetEdges(graph.OutgoingEdge).MaxSize() == 0 {
+					parentNode.DetachAndRemove()
+					parentNode = nil
+				}
 			}
 		}
 		return parentNode, nil
