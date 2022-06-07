@@ -60,6 +60,9 @@ var (
 	// AttributeValueTerm represents the value of an attribute
 	AttributeValueTerm = NewTerm(LS, "attributeValue", false, false, ErrorComposition, nil)
 
+	// ConditionalTerm specifies conditions for ingestion
+	ConditionalTerm = NewTerm(LS, "conditional", false, false, OverrideComposition, nil)
+
 	// LayerRootTerm is an edge term that connects layer node to the root node of the schema
 	LayerRootTerm = NewTerm(LS, "layer", false, false, ErrorComposition, nil)
 

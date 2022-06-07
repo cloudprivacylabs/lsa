@@ -13,6 +13,8 @@ require (
 	golang.org/x/text v0.3.7
 )
 
+require github.com/bserdar/jsonstream v0.0.0-20190428032403-9f1769267072 // indirect
+
 require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
 	github.com/richardlehane/mscfb v1.0.4 // indirect

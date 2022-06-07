@@ -2,11 +2,9 @@ package csv
 
 import (
 	"encoding/json"
-	"strconv"
 	"testing"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 	"github.com/stretchr/testify/require"
 )
 
@@ -90,7 +88,7 @@ func TestIngest(t *testing.T) {
 		ColumnNames: []string{"field1", "field2", "field3", "field4", "field5", "field6"},
 	}
 	builder := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
-		EmbedSchemaNodes:     false,
+		EmbedSchemaNodes:     true,
 		OnlySchemaAttributes: false,
 	})
 
@@ -104,28 +102,25 @@ func TestIngest(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		nodesRow := make([][]string, 0, len(inputStrColData))
-		const nodeID = "https://www.example.com/id.field"
-		for i := 0; i < len(tt); i++ {
-			nodes := make([]graph.Node, 0)
+		for _, expected := range expectedNodes_OSA_FlagFalse[idx] {
+			found := false
 			for nx := builder.GetGraph().GetNodes(); nx.Next(); {
 				node := nx.Node()
-				t.Logf("NodeID: %s", ls.GetNodeID(node))
-				if ls.GetNodeID(node) == (nodeID + strconv.Itoa(idx+1)) {
-					nodes = append(nodes, node)
+				v, _ := ls.GetRawNodeValue(node)
+				if v == expected {
+					found = true
+					break
 				}
 			}
-			if len(nodes) == 0 {
-				t.Errorf("node not found: %s", nodeID+strconv.Itoa(idx+1))
+			if !found {
+				t.Errorf("node not found: %s - %d", expected, idx)
 			}
-			nodesRow = append(nodesRow, expectedNodes_OSA_FlagFalse[ls.GetNodeIndex(nodes[idx])])
 		}
-		require.Equalf(t, expectedNodes_OSA_FlagFalse[idx], nodesRow[idx], "inequal data, expected: %s, received: %s", expectedNodes_OSA_FlagFalse[idx], nodesRow[idx])
 	}
 
 	// Test with OnlySchemaAttributes flag set
 	builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
-		EmbedSchemaNodes:     false,
+		EmbedSchemaNodes:     true,
 		OnlySchemaAttributes: true,
 	})
 	for idx, tt := range inputStrColData {
@@ -137,22 +132,20 @@ func TestIngest(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		nodesRow := make([][]string, 0, len(inputStrColData))
 		require.NoError(t, err)
-		const nodeID = "https://www.example.com/id.field"
-		for i := 0; i < len(tt); i++ {
-			nodes := make([]graph.Node, 0)
+		for _, expected := range expectedNodes_OSA_FlagTrue[idx] {
+			found := false
 			for nx := builder.GetGraph().GetNodes(); nx.Next(); {
 				node := nx.Node()
-				if ls.GetNodeID(node) == (nodeID + strconv.Itoa(idx+1)) {
-					nodes = append(nodes, node)
+				v, _ := ls.GetRawNodeValue(node)
+				if v == expected {
+					found = true
+					break
 				}
 			}
-			if len(nodes) == 0 {
-				t.Errorf("node not found: %s", nodeID+strconv.Itoa(idx+1))
+			if !found {
+				t.Errorf("node not found: %s - %d", expected, idx)
 			}
-			nodesRow = append(nodesRow, expectedNodes_OSA_FlagTrue[ls.GetNodeIndex(nodes[idx])])
 		}
-		require.Equalf(t, expectedNodes_OSA_FlagTrue[idx], nodesRow[idx], "inequal data, expected: %s, received: %s", expectedNodes_OSA_FlagTrue[idx], nodesRow[idx])
 	}
 }
