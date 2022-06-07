@@ -145,13 +145,11 @@ func (ing Parser) parseRow(ctx parserContext, row []string) (ls.ParsedDocNode, e
 				}
 			}
 			id[len(id)-1] = fmt.Sprint(columnIndex)
-			if schemaNode != nil {
-				newChild = &cellNode{
-					schemaNode: schemaNode,
-					value:      columnData,
-					id:         strings.Join(id, "."),
-					index:      columnIndex,
-				}
+			newChild = &cellNode{
+				schemaNode: schemaNode,
+				value:      columnData,
+				id:         strings.Join(id, "."),
+				index:      columnIndex,
 			}
 		}
 		if newChild != nil {
