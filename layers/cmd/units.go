@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/types"
 )
 
@@ -84,4 +85,65 @@ func (u ucumUnitService) Convert(measure types.Measure, targetUnit string, domai
 	}
 	return ret, nil
 
+}
+
+type MeasureStep struct {
+	BaseIngestParams
+	SchemaNodeIDs []string `json:"schemaNodeIds" yaml:"schemaNodeIds"`
+
+	initialized bool
+	layer       *ls.Layer
+}
+
+func (MeasureStep) Help() {
+	fmt.Println(`Process measures
+Create/validate/update measure nodes in a graph
+
+operation: measures
+params:
+  schemaNodeIds:
+  - id1
+  - id2
+
+  # Specify the schema the input graph was ingested with`)
+	fmt.Println(baseIngestParamsHelp)
+}
+
+func (ms *MeasureStep) Run(pipeline *PipelineContext) error {
+	if !ms.initialized {
+		if ms.IsEmptySchema() {
+			ms.layer, _ = pipeline.Properties["layer"].(*ls.Layer)
+		} else {
+			var err error
+			ms.layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, ms.CompiledSchema, ms.Repo, ms.Schema, ms.Type, ms.Bundle)
+			if err != nil {
+				return err
+			}
+		}
+		if ms.layer == nil {
+			return fmt.Errorf("No schema")
+		}
+		ms.initialized = true
+	}
+	builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
+
+	pipeline.Context.GetLogger().Debug(map[string]interface{}{"pipeline": "measures"})
+	if len(ms.SchemaNodeIDs) == 0 {
+		if err := types.BuildMeasureNodesForLayer(pipeline.Context, builder, ms.layer); err != nil {
+			return err
+		}
+	} else {
+		for _, id := range ms.SchemaNodeIDs {
+			attr := ms.layer.GetAttributeByID(id)
+			if attr == nil {
+				return fmt.Errorf("Cannot find attribute with id: %s", id)
+			}
+			if err := types.BuildMeasureNodes(pipeline.Context, builder, attr); err != nil {
+				return err
+			}
+		}
+	}
+	return pipeline.Next()
 }
