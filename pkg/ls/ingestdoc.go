@@ -202,7 +202,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, er
 			if node != nil {
 				n := child.GetAttributeIndex()
 				if parentNode != nil {
-					n = parentNode.GetEdges(graph.OutgoingEdge).MaxSize()
+					n = parentNode.GetEdges(graph.OutgoingEdge).MaxSize() - 1
 				}
 				if n == -1 {
 					n = child.GetAttributeIndex()
