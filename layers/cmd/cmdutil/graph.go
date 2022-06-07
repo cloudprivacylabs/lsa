@@ -16,10 +16,12 @@ package cmdutil
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 
+	"github.com/bserdar/jsonstream"
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/pkg/dot"
@@ -33,6 +35,16 @@ func ReadGraph(gfile []string, interner ls.Interner, inputFormat string) (graph.
 	}
 	if inputFormat == "jsonld" {
 		return ReadJSONLDGraph(gfile, interner)
+	}
+	return nil, fmt.Errorf("Unrecognized input format: %s", inputFormat)
+}
+
+func StreamGraph(ctx context.Context, file []string, interner ls.Interner, inputFormat string) (<-chan GraphStream, error) {
+	if inputFormat == "json" {
+		return StreamJSONGraph(ctx, file, interner)
+	}
+	if inputFormat == "jsonld" {
+		return StreamJSONLDGraph(ctx, file, interner)
 	}
 	return nil, fmt.Errorf("Unrecognized input format: %s", inputFormat)
 }
@@ -60,6 +72,84 @@ func ReadJSONGraph(gfile []string, interner ls.Interner) (graph.Graph, error) {
 	m := ls.JSONMarshaler{}
 	err = m.Unmarshal(data, target)
 	return target, err
+}
+
+type GraphStream struct {
+	G   graph.Graph
+	Err error
+}
+
+func StreamJSONGraph(ctx context.Context, file []string, interner ls.Interner) (<-chan GraphStream, error) {
+	reader, err := StreamFileOrStdin(file)
+	if err != nil {
+		return nil, err
+	}
+	rd := jsonstream.NewConcatReader(reader)
+	ret := make(chan GraphStream)
+	go func() {
+		defer close(ret)
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				data, err := rd.ReadRaw()
+				if err == io.EOF {
+					return
+				}
+				target := graph.NewOCGraph()
+				m := ls.JSONMarshaler{}
+				err = m.Unmarshal(data, target)
+				ret <- GraphStream{
+					G:   target,
+					Err: err,
+				}
+			}
+		}
+	}()
+	return ret, nil
+}
+
+func StreamJSONLDGraph(ctx context.Context, file []string, interner ls.Interner) (<-chan GraphStream, error) {
+	reader, err := StreamFileOrStdin(file)
+	if err != nil {
+		return nil, err
+	}
+	rd := jsonstream.NewConcatReader(reader)
+	ret := make(chan GraphStream)
+	go func() {
+		defer close(ret)
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				data, err := rd.ReadRaw()
+				if err == io.EOF {
+					return
+				}
+				var v interface{}
+				if err := json.Unmarshal(data, &v); err != nil {
+					ret <- GraphStream{
+						Err: err,
+					}
+					return
+				}
+				g := graph.NewOCGraph()
+				err = ls.UnmarshalJSONLDGraph(v, g, interner)
+				if err != nil {
+					ret <- GraphStream{
+						Err: err,
+					}
+					return
+				}
+				ret <- GraphStream{
+					G: g,
+				}
+			}
+		}
+	}()
+	return ret, nil
 }
 
 func WriteGraph(cmd *cobra.Command, graph graph.Graph, format string, out io.Writer) error {
