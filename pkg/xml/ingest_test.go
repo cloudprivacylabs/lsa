@@ -125,3 +125,9 @@ func TestAttrValue(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestEffectiveTime(t *testing.T) {
+	if err := xmlIngestAndCheck("effectiveTime", "effectiveTimeSchema", "effectiveTimeExpected"); err != nil {
+		t.Error(err)
+	}
+}

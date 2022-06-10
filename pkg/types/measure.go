@@ -16,6 +16,8 @@ package types
 
 import (
 	"fmt"
+	"regexp"
+	"strings"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
@@ -28,68 +30,89 @@ type Measure struct {
 	Unit  string `json:"unit" yaml:"unit"`
 }
 
-// MeasureTerm is used as a valueType.
+func (m Measure) String() string {
+	return strings.TrimSpace(m.Value + " " + m.Unit)
+}
+
+var unitRegexp = regexp.MustCompile(`^([+\-]?(?:(?:0|[1-9]\d*)(?:\.\d*)?|\.\d+)(?:\d[eE][+\-]?\d+)?)(?:(?:\s+(\S+.*))|([^\seE\d]+.*))$`)
+
+// ParseMeasure parses a number and then a string for units
+func ParseMeasure(in string) (Measure, error) {
+	values := make([]string, 0, 2)
+	for _, v := range unitRegexp.FindAllStringSubmatch(in, -1) {
+		for _, x := range v[1:] {
+			x := strings.TrimSpace(x)
+			if len(x) > 0 {
+				values = append(values, x)
+			}
+		}
+	}
+	if len(values) != 2 {
+		return Measure{}, ErrNotAMeasure{Value: in}
+	}
+	return Measure{
+		Value: values[0],
+		Unit:  values[1],
+	}, nil
+}
+
+// When data elements are ingested, measures may appear in several forms:
 //
-// A measure should have a value and a unit. There are several ways
-// the values and units are specified.
+//   * Node containing a string that has both the value and unit
+//   * Node containing value and unit in properties
+//   * One node with value, another with unit
 //
-// A node may specify value and unit in its node value.
+// When data elements are captured this way, a Measure node can be
+// contructed that has the normalized measure. This node has the
+// Measure as its value type, and contains value and unit properties.
+// A measure is a Value node, and contains the combined normalized
+// unit as its node value. The measure node is a sibling of the value
+// node.
 //
-// Node:
-//  Measure
-//  value: value and unit
+// Example:
 //
+// Input: 5'4"
+// Measure node:
+//   measure/value: 64
+//   measure/unit: [i_inch]
+//   value: 64 [i_inch]
 //
-// A node may specify value and unit separately in its properties:
-//
-// Node:
-//  Measure
-//  value: 123
-//  measureUnit: <unit>
-//
-// A node may be point to other nodes containing value or unit.
-//
-//  Node:                                  Node:
-//   Measure                              value: <unit>
-//   value: 123                            schemaNodeId: A
-//   measureUnitNode: A
-//
-//  Node:                     Node:               Node:
-//   Measure                  value: <unit>       value: <value>
-//   measureUnitNode: A       schemaNodeId: A     schemaNodeId: B
-//   measureValueNode: B
-//
-// A node may refer to other nodes using pattern expressions
-//
-//  Node:
-//    Measure
-//    value: 123
-//    measureUnitPath: (this)<-[]-()-[]->(target : schemaNodeId:B)
-//
-//              Node:
-//              value: <unit>
-//              schemaNodeId: B
-//
+
+// MeasureTerm is used as a valuetype for a measure node
 var MeasureTerm = ls.NewTerm(ls.LS, "Measure", false, false, ls.OverrideComposition, struct {
 	measureParser
 }{
 	measureParser{},
-})
+}, "Measure")
 
 // MeasureUnitTerm is a node property term giving measure unit
 var MeasureUnitTerm = ls.NewTerm(ls.LS, "measure/unit", false, false, ls.OverrideComposition, nil)
 
-// MeasureUnitNodeTerm gives the schema node ID of the unit node
-var MeasureUnitNodeTerm = ls.NewTerm(ls.LS, "measure/unitNode", false, false, ls.OverrideComposition, nil)
+// MeasureValueTerm is a node property term giving measure value.
+var MeasureValueTerm = ls.NewTerm(ls.LS, "measure/value", false, false, ls.OverrideComposition, nil)
 
-// MeasureValueNodeTerm gives the schema node ID of the value node
-var MeasureValueNodeTerm = ls.NewTerm(ls.LS, "measure/valueNode", false, false, ls.OverrideComposition, nil)
+// MeasureUseUnitTerm is a node property that specifies that all
+// measures must be converted to this unit
+var MeasureUseUnitTerm = ls.NewTerm(ls.LS, "measure/useUnit", false, false, ls.OverrideComposition, nil)
 
-// MeasureUnitPathTerm gives the path to the unit node
-var MeasureUnitPathTerm = ls.NewTerm(ls.LS, "measure/unitPath", false, false, ls.OverrideComposition, nil)
+// MeasureUnitDomainTerm is a node property that specifies that the measure is of a certain domain
+var MeasureUnitDomainTerm = ls.NewTerm(ls.LS, "measure/unitDomain", false, false, ls.OverrideComposition, nil)
 
-// MeasureValuePathTerm gives the path to the  value node
-var MeasureValuePathTerm = ls.NewTerm(ls.LS, "measure/valuePath", false, false, ls.OverrideComposition, nil)
+// MeasureUnitExpr gives the expression that returns the unit. The
+// result can be a node or a value. The expression is evaluated with
+// (valueNode) bound to the value node of the unit expr
+var MeasureUnitExpr = ls.NewTerm(ls.LS, "measure/unitExpr", false, false, ls.OverrideComposition, ls.CompileOCSemantics{})
+
+// MeasureValueExpr gives the expression that returns the measured value node. The result must be a node.
+var MeasureValueNodeExpr = ls.NewTerm(ls.LS, "measure/valueNodeExpr", false, false, ls.OverrideComposition, ls.CompileOCSemantics{})
+
+// MeasureUnitNode gives the schema node id containing the unit. This
+// node must appear under the common parent with measure node
+var MeasureUnitNode = ls.NewTerm(ls.LS, "measure/unitNode", false, false, ls.OverrideComposition, nil)
+
+// MeasureValueNode gives the schema node id containing the value. This
+// node must appear under the common parent with measure node
+var MeasureValueNode = ls.NewTerm(ls.LS, "measure/valueNode", false, false, ls.OverrideComposition, nil)
 
 type ErrMultipleNodesMatch struct {
 	Src string
@@ -107,152 +130,336 @@ func (e ErrNotAMeasure) Error() string {
 	return "Not a Measure:" + e.Value
 }
 
-// Find node by schema Id without crossing entity boundaries
-func findMeasureNodeBySchemaNode(node graph.Node, schemaNodeID string) (graph.Node, error) {
-	var found graph.Node
-	if !ls.WalkNodesInEntity(node, func(n graph.Node) bool {
-		if ls.AsPropertyValue(n.GetProperty(ls.SchemaNodeIDTerm)).AsString() == schemaNodeID {
-			if found != nil {
-				return false
+type ErrMeasureProcessing struct {
+	Msg string
+	ID  string
+}
+
+func (e ErrMeasureProcessing) Error() string {
+	return "Measure processing error for :" + e.ID + ":" + e.Msg
+}
+
+// MeasureService parses/validates/converts measures
+type MeasureService interface {
+	// If the measure value does not include a spearate unit field,
+	// then the field may be embedded into the value. This will parse
+	// the embedded unit if possible and return it as a measure
+	Parse(string) (Measure, error)
+	// Convert a given measure into target unit if possible. Domain
+	// may or may not be present, and may qualify the measure (such as
+	// whether this is a height or weight, etc).
+	Convert(measure Measure, targetUnit string, domain string) (Measure, error)
+}
+
+type defaultMeasureService struct{}
+
+func (defaultMeasureService) Parse(value string) (Measure, error) {
+	return ParseMeasure(value)
+}
+
+func (defaultMeasureService) Convert(measure Measure, targetUnit, domain string) (Measure, error) {
+	panic("Measure service is not initialized")
+}
+
+type measureServiceKeyType struct{}
+
+var measureServiceKey measureServiceKeyType
+
+// GetMeasureService returns the measure service set in the
+// context. If there is none, returns defaultMeasureService
+func GetMeasureService(ctx *ls.Context) MeasureService {
+	m := ctx.Get(measureServiceKey)
+	if m == nil {
+		return defaultMeasureService{}
+	}
+	return m.(MeasureService)
+}
+
+// SetMeasureService sets the measure service in context
+func SetMeasureService(ctx *ls.Context, svc MeasureService) {
+	ctx.Set(measureServiceKey, svc)
+}
+
+func getMeasureValueNodes(ctx *ls.Context, g graph.Graph, measureSchemaNode graph.Node) ([]graph.Node, error) {
+	valueNodes := make([]graph.Node, 0)
+	evalCtx := opencypher.NewEvalContext(g)
+	results, err := ls.CompileOCSemantics{}.Evaluate(measureSchemaNode, MeasureValueNodeExpr, evalCtx)
+	if err != nil {
+		return nil, ErrMeasureProcessing{
+			ID:  ls.GetNodeID(measureSchemaNode),
+			Msg: err.Error(),
+		}
+	}
+	for _, rs := range results {
+		for _, row := range rs.Rows {
+			if len(row) == 0 {
+				continue
 			}
-			found = n
+			if len(row) > 1 {
+				return nil, ErrMeasureProcessing{
+					ID:  ls.GetNodeID(measureSchemaNode),
+					Msg: "Expression returns multiple columns",
+				}
+			}
+			for _, v := range row {
+				if v.Get() == nil {
+					continue
+				}
+				node, ok := v.Get().(graph.Node)
+				if !ok {
+					return nil, ErrMeasureProcessing{
+						ID:  ls.GetNodeID(measureSchemaNode),
+						Msg: "Result is not a node",
+					}
+				}
+				valueNodes = append(valueNodes, node)
+			}
+		}
+	}
+	if s := ls.AsPropertyValue(measureSchemaNode.GetProperty(MeasureValueNode)).AsString(); len(s) > 0 {
+		valueNodes = append(valueNodes, ls.GetNodesInstanceOf(g, s)...)
+	}
+	return valueNodes, nil
+}
+
+// findUnit returns the unit of the value node based on the specification of the schema node
+func findUnit(valueNode, measureSchemaNode graph.Node) (string, error) {
+	if valueNode == nil {
+		return "", nil
+	}
+	evalCtx := opencypher.NewEvalContext(valueNode.GetGraph())
+	evalCtx.SetVar("valueNode", opencypher.ValueOf(valueNode))
+	results, err := ls.CompileOCSemantics{}.Evaluate(measureSchemaNode, MeasureUnitExpr, evalCtx)
+	if err != nil {
+		return "", ErrMeasureProcessing{
+			ID:  ls.GetNodeID(measureSchemaNode),
+			Msg: fmt.Sprintf("Cannot get unit node: %s", err),
+		}
+	}
+	// Select the first matching result
+	for _, result := range results {
+		if len(result.Rows) != 1 {
+			return "", ErrMeasureProcessing{
+				ID:  ls.GetNodeID(measureSchemaNode),
+				Msg: "Multiple columns in unit expression",
+			}
+		}
+		for _, v := range result.Rows[0] {
+			// Must be string or node
+			if v.Get() == nil {
+				continue
+			}
+			node, ok := v.Get().(graph.Node)
+			if ok {
+				s, _ := ls.GetRawNodeValue(node)
+				return s, nil
+			}
+			return fmt.Sprint(v.Get()), nil
+		}
+	}
+	// If we are here, expressions did not match
+	unitNodeID := ls.AsPropertyValue(measureSchemaNode.GetProperty(MeasureUnitNode)).AsString()
+	if len(unitNodeID) == 0 {
+		return "", nil
+	}
+
+	// Find the closest unit node starting from the value node
+	found := make([]graph.Node, 0)
+	addToFound := func(node graph.Node) bool {
+		if ls.AsPropertyValue(node.GetProperty(ls.SchemaNodeIDTerm)).AsString() == unitNodeID {
+			found = append(found, node)
+			return true
 		}
 		return true
-	}) {
-		return nil, ErrMultipleNodesMatch{schemaNodeID}
 	}
-	return found, nil
+	ls.IterateDescendants(valueNode, addToFound, ls.FollowEdgesInEntity, false)
+	if len(found) == 0 {
+		// Try parent
+		sources := graph.SourceNodes(valueNode.GetEdges(graph.IncomingEdge))
+		if len(sources) != 1 {
+			// Cannot find unit
+			return "", ErrMeasureProcessing{
+				ID:  ls.GetNodeID(measureSchemaNode),
+				Msg: "Cannot find unit node",
+			}
+		}
+		ls.IterateDescendants(sources[0], addToFound, ls.FollowEdgesInEntity, false)
+		if len(found) != 1 {
+			return "", ErrMeasureProcessing{
+				ID:  ls.GetNodeID(measureSchemaNode),
+				Msg: "Cannot find unit node",
+			}
+		}
+	}
+	s, _ := ls.GetRawNodeValue(found[0])
+	return s, nil
 }
 
-func findMeasureNodeByPath(node graph.Node, path string) (graph.Node, error) {
-	p, err := opencypher.ParsePatternExpr(path)
+// BuildMeasureNode uses the measureSchemaNode to locate measure node
+// instances in the graph, and creates/updates measure nodes in the
+// graph. This function uses the measure service set in the context.
+func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNode graph.Node) error {
+	ctx.GetLogger().Debug(map[string]interface{}{
+		"mth":   "buildMeasureNodes",
+		"stage": "start",
+	})
+	valueNodes, err := getMeasureValueNodes(ctx, builder.GetGraph(), measureSchemaNode)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	nodes, err := p.FindRelative(node)
-	if err != nil {
-		return nil, err
+	if len(valueNodes) == 0 {
+		return nil
 	}
-	if len(nodes) == 0 {
-		return nil, nil
-	}
-	if len(nodes) > 1 {
-		return nil, ErrMultipleNodesMatch{path}
-	}
-	return nodes[0], nil
-}
-
-// GetNodeMeasureValue tries to load the measure and unit from the given Measure node
-func GetNodeMeasureValue(node graph.Node) (*Measure, error) {
-	if ls.AsPropertyValue(node.GetProperty(ls.ValueTypeTerm)).AsString() != MeasureTerm {
-		return nil, nil
-	}
-	var err error
-	ret := &Measure{}
-
-	getNodeValue := func(found graph.Node, err error) (string, error) {
-		if err != nil {
-			return "", err
-		}
-		if found == nil {
-			return "", nil
-		}
-		raw, ok := ls.GetRawNodeValue(found)
-		if !ok {
-			return "", nil
-		}
-		return raw, nil
-	}
-
-	// find value
-	if p, ok := node.GetProperty(MeasureValueNodeTerm); ok {
-		ret.Value, err = getNodeValue(findMeasureNodeBySchemaNode(node, ls.AsPropertyValue(p, ok).AsString()))
-		if err != nil {
-			return nil, err
-		}
-	} else if p, ok := node.GetProperty(MeasureValuePathTerm); ok {
-		ret.Value, err = getNodeValue(findMeasureNodeByPath(node, ls.AsPropertyValue(p, ok).AsString()))
-		if err != nil {
-			return nil, err
-		}
-	} else if raw, ok := ls.GetRawNodeValue(node); ok {
-		ret.Value = raw
-	} else {
-		return nil, nil
-	}
-
-	// find unit
-	if u, ok := node.GetProperty(MeasureUnitTerm); ok {
-		ret.Unit = ls.AsPropertyValue(u, ok).AsString()
-	} else if u, ok := node.GetProperty(MeasureUnitNodeTerm); ok {
-		ret.Unit, err = getNodeValue(findMeasureNodeBySchemaNode(node, ls.AsPropertyValue(u, ok).AsString()))
-		if err != nil {
-			return nil, err
-		}
-	} else if u, ok := node.GetProperty(MeasureUnitPathTerm); ok {
-		ret.Unit, err = getNodeValue(findMeasureNodeByPath(node, ls.AsPropertyValue(u, ok).AsString()))
-		if err != nil {
-			return nil, err
-		}
-	}
-	return ret, nil
-}
-
-// SetNodeMeasureValue tries to set the measure and unit values based on the given Measure value
-func SetNodeMeasureValue(node graph.Node, value Measure) error {
-	if p, ok := node.GetProperty(MeasureValueNodeTerm); ok {
-		targetNode, err := findMeasureNodeBySchemaNode(node, ls.AsPropertyValue(p, ok).AsString())
+	ctx.GetLogger().Debug(map[string]interface{}{
+		"mth":        "buildMeasureNodes",
+		"valueNodes": len(valueNodes),
+	})
+	valuesUnits := make(map[graph.Node]string)
+	for _, node := range valueNodes {
+		unit, err := findUnit(node, measureSchemaNode)
 		if err != nil {
 			return err
 		}
-		ls.SetRawNodeValue(targetNode, value.Value)
-	} else if p, ok := node.GetProperty(MeasureValuePathTerm); ok {
-		targetNode, err := findMeasureNodeByPath(node, ls.AsPropertyValue(p, ok).AsString())
-		if err != nil {
+		valuesUnits[node] = unit
+	}
+	ctx.GetLogger().Debug(map[string]interface{}{
+		"mth":   "buildMeasureNodes",
+		"units": valuesUnits,
+	})
+
+	measureService := GetMeasureService(ctx)
+	// Build/update measure nodes
+	for value, unit := range valuesUnits {
+		// If unit is empty, it may be in the value node itself
+		var measure *Measure
+		if len(unit) == 0 {
+			v, _ := ls.GetRawNodeValue(value)
+			m, err := measureService.Parse(v)
+			if err == nil {
+				if len(m.Unit) > 0 && len(m.Value) > 0 {
+					measure = &m
+				}
+			}
+		}
+
+		sources := graph.SourceNodes(value.GetEdges(graph.IncomingEdge))
+		if len(sources) != 1 {
+			// Cannot find parent node
+			return ErrMeasureProcessing{
+				ID:  ls.GetNodeID(measureSchemaNode),
+				Msg: "Cannot find parent node",
+			}
+		}
+		var measureNode graph.Node
+		// Is there a measure node already?
+		measureNodes := ls.FindChildInstanceOf(sources[0], ls.GetNodeID(measureSchemaNode))
+		if len(measureNodes) == 0 {
+			// Create one
+			_, measureNode, err = builder.ValueAsNode(measureSchemaNode, sources[0], "")
+			if err != nil {
+				return ErrMeasureProcessing{
+					ID:  ls.GetNodeID(measureSchemaNode),
+					Msg: fmt.Sprintf("Cannot create measure node: %s", err.Error()),
+				}
+			}
+			measureNode.SetLabels(measureNode.GetLabels().Add(MeasureTerm))
+		} else {
+			measureNode = sources[0]
+		}
+		if measure == nil {
+			v, _ := ls.GetRawNodeValue(value)
+			measure = &Measure{
+				Value: v,
+				Unit:  unit,
+			}
+		}
+		if err := SetMeasureValue(ctx, measureService, measureNode, measureSchemaNode, *measure); err != nil {
 			return err
 		}
-		ls.SetRawNodeValue(targetNode, value.Value)
-	} else {
-		ls.SetRawNodeValue(node, value.Value)
 	}
 
-	// find unit
-	if _, ok := node.GetProperty(MeasureUnitTerm); ok {
-		node.SetProperty(MeasureUnitTerm, value.Unit)
-	} else if u, ok := node.GetProperty(MeasureUnitNodeTerm); ok {
-		targetNode, err := findMeasureNodeBySchemaNode(node, ls.AsPropertyValue(u, ok).AsString())
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(targetNode, value.Unit)
-	} else if u, ok := node.GetProperty(MeasureUnitPathTerm); ok {
-		targetNode, err := findMeasureNodeByPath(node, ls.AsPropertyValue(u, ok).AsString())
-		if err != nil {
-			return err
-		}
-		ls.SetRawNodeValue(targetNode, value.Unit)
-	}
 	return nil
+}
+
+// BuildMeasureNodesForLayer builds all the measure nodes for the layer
+func BuildMeasureNodesForLayer(ctx *ls.Context, bldr ls.GraphBuilder, layer *ls.Layer) error {
+	var err error
+	layer.ForEachAttribute(func(node graph.Node, _ []graph.Node) bool {
+		err = BuildMeasureNodes(ctx, bldr, node)
+		if err != nil {
+			return false
+		}
+		return true
+	})
+	return err
+}
+
+// SetMeasureValue sets the value of the measure node based on
+// value. The schemaNode is used to collect measure annotations, and
+// can be the same as the measure node, or can be nil. If nil, measure
+// node itself will be used. The measure service will be used if the
+// measure has to be converted to a different unit.
+func SetMeasureValue(ctx *ls.Context, svc MeasureService, measureNode, schemaNode graph.Node, value Measure) error {
+	if schemaNode == nil {
+		schemaNode = measureNode
+	}
+	useUnit := ls.AsPropertyValue(schemaNode.GetProperty(MeasureUseUnitTerm)).AsString()
+	if len(useUnit) > 0 && useUnit != value.Unit {
+		// We need to convert
+		domain := ls.AsPropertyValue(schemaNode.GetProperty(MeasureUnitDomainTerm)).AsString()
+		newMeasure, err := svc.Convert(value, useUnit, domain)
+		if err != nil {
+			return err
+		}
+		value = newMeasure
+	}
+	return ls.SetNodeValue(measureNode, value)
 }
 
 type measureParser struct{}
 
-func (measureParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	m, err := GetNodeMeasureValue(node)
-	if m == nil {
-		return nil, err
-	}
-	return *m, err
+func (measureParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+	return ParseMeasure(value)
 }
 
-func (measureParser) SetNodeValue(node graph.Node, value interface{}) error {
+func (measureParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
+	}
+	switch t := newValue.(type) {
+	case Measure:
+		return t.String(), nil
+	case string:
+		m, err := ParseMeasure(t)
+		if err != nil {
+			return "", err
+		}
+		return m.String(), nil
+	}
+	return "", ErrNotAMeasure{Value: fmt.Sprintf("%+v %T", newValue, newValue)}
+}
+
+func (measureParser) GetNodeValue(node graph.Node) (interface{}, error) {
+	ret := Measure{
+		Value: ls.AsPropertyValue(node.GetProperty(MeasureValueTerm)).AsString(),
+		Unit:  ls.AsPropertyValue(node.GetProperty(MeasureUnitTerm)).AsString(),
+	}
+	return ret, nil
+}
+
+func (measureParser) SetNodeValue(value interface{}, node graph.Node) error {
 	if value == nil {
-		return SetNodeMeasureValue(node, Measure{})
+		node.RemoveProperty(MeasureValueTerm)
+		node.RemoveProperty(MeasureUnitTerm)
+		ls.RemoveRawNodeValue(node)
+		return nil
 	}
 	switch t := value.(type) {
 	case Measure:
-		return SetNodeMeasureValue(node, t)
-	case string:
+		node.SetProperty(MeasureValueTerm, ls.StringPropertyValue(t.Value))
+		node.SetProperty(MeasureUnitTerm, ls.StringPropertyValue(t.Unit))
+		ls.SetRawNodeValue(node, t.String())
+		return nil
 	}
 	return ErrNotAMeasure{Value: fmt.Sprintf("%+v %T", value, value)}
 }

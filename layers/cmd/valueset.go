@@ -493,9 +493,11 @@ func loadValuesetsCmd(cmd *cobra.Command, valuesets *Valuesets) {
 type ValuesetStep struct {
 	BaseIngestParams
 	ValuesetFiles []string `json:"valuesetFiles" yaml:"valuesetFiles"`
-	initialized   bool
-	valuesets     Valuesets
-	layer         *ls.Layer
+	Tables        []string `json:"tables" yaml:"tables"`
+
+	initialized bool
+	valuesets   Valuesets
+	layer       *ls.Layer
 }
 
 func (ValuesetStep) Help() {
@@ -507,6 +509,9 @@ params:
   valuesetFiles:
   - f1
   - f2
+  tables:
+  - t1
+  - t2
 
   # Specify the schema the input graph was ingested with`)
 	fmt.Println(baseIngestParamsHelp)
@@ -536,7 +541,7 @@ func (vs *ValuesetStep) Run(pipeline *PipelineContext) error {
 	})
 
 	pipeline.Context.GetLogger().Debug(map[string]interface{}{"pipeline": "valueset"})
-	prc := ls.NewValuesetProcessor(vs.layer, vs.valuesets.Lookup)
+	prc := ls.NewValuesetProcessor(vs.layer, vs.valuesets.Lookup, vs.Tables)
 	err := prc.ProcessGraph(pipeline.Context, builder)
 	if err != nil {
 		return err
@@ -549,6 +554,7 @@ func init() {
 	valuesetCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	valuesetCmd.Flags().String("output", "json", "Output format, json, jsonld, or dot")
 	valuesetCmd.Flags().StringSlice("valueset", nil, "Valueset file(s)")
+	valuesetCmd.Flags().StringSlice("table", nil, "Process valuset lookups for these tables only")
 	addSchemaFlags(valuesetCmd.Flags())
 
 	operations["valueset"] = func() Step { return &ValuesetStep{} }
@@ -597,6 +603,7 @@ Individual valueset objects can be given as separate files as well:
 		step := &ValuesetStep{}
 		step.fromCmd(cmd)
 		step.ValuesetFiles, _ = cmd.Flags().GetStringSlice("valueset")
+		step.Tables, _ = cmd.Flags().GetStringSlice("table")
 		p := []Step{
 			NewReadGraphStep(cmd),
 			step,

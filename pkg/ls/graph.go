@@ -85,14 +85,17 @@ func GetNodeValue(node graph.Node) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+	if nac, ok := accessor.(NodeValueAccessor); ok {
+		return nac.GetNodeValue(node)
+	}
+	v, ok := GetRawNodeValue(node)
+	if !ok {
+		return nil, nil
+	}
 	if accessor == nil {
-		v, ok := GetRawNodeValue(node)
-		if !ok {
-			return nil, nil
-		}
 		return v, nil
 	}
-	return accessor.GetNodeValue(node)
+	return accessor.GetNativeValue(v, node)
 }
 
 // SetNodeValue sets the node value using the given native Go
@@ -112,7 +115,22 @@ func SetNodeValue(node graph.Node, value interface{}) error {
 		SetRawNodeValue(node, fmt.Sprint(value))
 		return nil
 	}
-	return accessor.SetNodeValue(node, value)
+	if nac, ok := accessor.(NodeValueAccessor); ok {
+		return nac.SetNodeValue(value, node)
+	}
+	var oldValue interface{}
+	if v, ok := GetRawNodeValue(node); ok {
+		oldValue, err = accessor.GetNativeValue(v, node)
+		if err != nil {
+			return err
+		}
+	}
+	svalue, err := accessor.FormatNativeValue(value, oldValue, node)
+	if err != nil {
+		return err
+	}
+	SetRawNodeValue(node, svalue)
+	return nil
 }
 
 // GetNodeValueAccessor returns the value accessor for the node based

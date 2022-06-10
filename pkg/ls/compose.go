@@ -15,6 +15,8 @@
 package ls
 
 import (
+	"strings"
+
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
@@ -34,7 +36,21 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 	}
 	sourceCompose := AsPropertyValue(source.GetLayerRootNode().GetProperty(ComposeTerm)).AsString()
 	nodeMap := make(map[graph.Node]graph.Node)
-	var err error
+	nsMap, err := GetNSMap(AsPropertyValue(source.GetLayerRootNode().GetProperty(NSMapTerm)).MustStringSlice())
+	if err != nil {
+		return err
+	}
+	if len(nsMap) > 0 {
+		layer.ForEachAttribute(func(node graph.Node, _ []graph.Node) bool {
+			id := GetNodeID(node)
+			for _, m := range nsMap {
+				if strings.HasPrefix(id, m[0]) {
+					SetNodeID(node, m[1]+id[len(m[0]):])
+				}
+			}
+			return true
+		})
+	}
 
 	copySubtree := func(targetNode, sourceNode graph.Node) {
 		nodeMap[sourceNode] = targetNode
@@ -220,4 +236,35 @@ func pathsMatch(targetPath, sourcePath []graph.Node) bool {
 		tn--
 		sn--
 	}
+}
+
+type ErrInvalidNSMapExpression string
+
+func (e ErrInvalidNSMapExpression) Error() string { return "Invalid nsMap: " + string(e) }
+
+// ParseNSMap parses a string pair of the form
+//
+//    string1 -> string2
+//
+// This is used in nsMap expression to specify namespace (prefix)
+// mapping for node ids.
+func ParseNSMap(in string) (string, string, error) {
+	items := strings.Split(in, "->")
+	if len(items) != 2 {
+		return "", "", ErrInvalidNSMapExpression(in)
+	}
+	return strings.TrimSpace(items[0]), strings.TrimSpace(items[1]), nil
+}
+
+// GetNSMap parses the namespace map and returns the mapping
+func GetNSMap(in []string) ([][]string, error) {
+	ret := make([][]string, 0, len(in))
+	for _, x := range in {
+		f, t, err := ParseNSMap(x)
+		if err != nil {
+			return nil, err
+		}
+		ret = append(ret, []string{f, t})
+	}
+	return ret, nil
 }

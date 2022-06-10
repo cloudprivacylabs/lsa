@@ -25,6 +25,7 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
+	"github.com/cloudprivacylabs/lsa/pkg/types"
 )
 
 var logger = ls.NewDefaultLogger()
@@ -66,6 +67,7 @@ func init() {
 	rootCmd.PersistentFlags().Bool("log.info", false, "Enable logging at info level")
 
 	rootCmd.PersistentFlags().String("rankdir", "LR", "DOT: rankdir option")
+	rootCmd.PersistentFlags().String("units", "", "Units service URL")
 }
 
 func getContext() *ls.Context {
@@ -78,7 +80,15 @@ func getContext() *ls.Context {
 	if l1 {
 		logger.Level = ls.LogLevelInfo
 	}
-	return ls.DefaultContext().SetLogger(logger)
+
+	ctx := ls.DefaultContext().SetLogger(logger)
+
+	units, _ := rootCmd.PersistentFlags().GetString("units")
+	if len(units) > 0 {
+		svc := ucumUnitService{serviceURL: units}
+		types.SetMeasureService(ctx, svc)
+	}
+	return ctx
 }
 
 func failErr(err error) {

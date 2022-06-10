@@ -36,11 +36,7 @@ var XMLBooleanTerm = ls.NewTerm(XSD, "boolean", false, false, ls.OverrideComposi
 
 type JSONBooleanParser struct{}
 
-func (JSONBooleanParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (JSONBooleanParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if value == "false" {
 		return false, nil
 	}
@@ -50,37 +46,29 @@ func (JSONBooleanParser) GetNodeValue(node graph.Node) (interface{}, error) {
 	return nil, ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm, Value: value}
 }
 
-func (JSONBooleanParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (JSONBooleanParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case bool:
-		ls.SetRawNodeValue(node, fmt.Sprint(v))
-		return nil
+		return fmt.Sprint(v), nil
 	case string:
-		if value == "true" || value == "false" {
-			ls.SetRawNodeValue(node, v)
-			return nil
+		if v == "true" || v == "false" {
+			return v, nil
 		}
 	case int:
-		if value == 0 {
-			ls.SetRawNodeValue(node, "false")
-		} else {
-			ls.SetRawNodeValue(node, "true")
+		if v == 0 {
+			return "false", nil
 		}
+		return "true", nil
 	}
-	return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm, Value: value}
+	return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm, Value: newValue}
 }
 
 type XMLBooleanParser struct{}
 
-func (XMLBooleanParser) GetNodeValue(node graph.Node) (interface{}, error) {
-	value, exists := ls.GetRawNodeValue(node)
-	if !exists {
-		return nil, nil
-	}
+func (XMLBooleanParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if strings.ToLower(value) == "false" || value == "0" {
 		return false, nil
 	}
@@ -90,30 +78,25 @@ func (XMLBooleanParser) GetNodeValue(node graph.Node) (interface{}, error) {
 	return nil, ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XMLBooleanTerm, Value: value}
 }
 
-func (XMLBooleanParser) SetNodeValue(node graph.Node, value interface{}) error {
-	if value == nil {
-		ls.RemoveRawNodeValue(node)
-		return nil
+func (XMLBooleanParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+	if newValue == nil {
+		return "", nil
 	}
-	switch v := value.(type) {
+	switch v := newValue.(type) {
 	case bool:
-		ls.SetRawNodeValue(node, fmt.Sprint(v))
-		return nil
+		return fmt.Sprint(v), nil
 	case string:
 		if strings.ToLower(v) == "true" || v == "1" {
-			ls.SetRawNodeValue(node, "true")
-			return nil
+			return "true", nil
 		}
 		if strings.ToLower(v) == "false" || v == "0" {
-			ls.SetRawNodeValue(node, "false")
-			return nil
+			return "false", nil
 		}
 	case int:
-		if value == 0 {
-			ls.SetRawNodeValue(node, "false")
-		} else {
-			ls.SetRawNodeValue(node, "true")
+		if v == 0 {
+			return "false", nil
 		}
+		return "true", nil
 	}
-	return ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm, Value: value}
+	return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm, Value: newValue}
 }

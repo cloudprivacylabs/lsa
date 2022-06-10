@@ -360,7 +360,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, layers map[string]*ls.Layer, lo
 		}
 		_, err := resultBundle.Add(ctx, variantType, sch, ovl...)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("While composing variant: %s: %w", variantType, err)
 		}
 	}
 	return resultBundle.Variants, nil
@@ -398,14 +398,18 @@ func LoadBundle(ctx *ls.Context, file []string) (ls.SchemaLoader, error) {
 	items, err := bundle.GetLayers(ctx, schemaMap, func(fname string) (*ls.Layer, error) {
 		data, err := ioutil.ReadFile(fname)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("While reading %s: %w", fname, err)
 		}
 		var input interface{}
 		err = json.Unmarshal([]byte(data), &input)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("While reading %s: %w", fname, err)
 		}
-		return ls.UnmarshalLayer(input, nil)
+		layer, err := ls.UnmarshalLayer(input, nil)
+		if err != nil {
+			return nil, fmt.Errorf("While reading %s: %w", fname, err)
+		}
+		return layer, nil
 	}, DefaultFileLoader)
 	if err != nil {
 		return nil, err
