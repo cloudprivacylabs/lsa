@@ -31,6 +31,18 @@ var (
 	// place in the layer
 	AttributeOverlaysTerm = NewTerm(LS, "attributeOverlays", false, true, OverrideComposition, nil)
 
+	// NSMapTerm specifies a namespace map for an overlay. A Namespace
+	// map includes one or more expressions of the form:
+	//
+	//    from -> to
+	//
+	// where from and to are attribute id prefixes. All the prefixes of
+	// attributes that match from are converted to to.
+	//
+	// This is necessary when a different variants of a schema is used in
+	// a complex schema. Each variant gets its own namespace.
+	NSMapTerm = NewTerm(LS, "nsMap", false, false, OverrideComposition, nil)
+
 	// CharacterEncodingTerm is used to specify a character encoding for
 	// the data processed with the layer
 	CharacterEncodingTerm = NewTerm(LS, "characterEncoding", false, false, OverrideComposition, nil)
@@ -137,7 +149,7 @@ var (
 	ObjectAttributeListTerm = NewTerm(LS, "Object/attributeList", false, true, ErrorComposition, nil)
 	// Reference to another schema. This will be resolved to another
 	// schema during compilation
-	ReferenceTerm = NewTerm(LS, "Reference/ref", false, false, ErrorComposition, nil)
+	ReferenceTerm = NewTerm(LS, "Reference/ref", false, false, OverrideComposition, nil)
 	// ArrayItems contains the definition for the items of the array
 	ArrayItemsTerm = NewTerm(LS, "Array/elements", false, false, ErrorComposition, nil)
 	// All components of a composite attribute

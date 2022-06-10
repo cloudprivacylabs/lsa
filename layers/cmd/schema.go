@@ -360,7 +360,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, layers map[string]*ls.Layer, lo
 		}
 		_, err := resultBundle.Add(ctx, variantType, sch, ovl...)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("While composing variant: %s: %w", variantType, err)
 		}
 	}
 	return resultBundle.Variants, nil

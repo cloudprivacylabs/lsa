@@ -23,7 +23,7 @@ import (
 // A CompiledGraph is a graph of compiled schemas
 type CompiledGraph interface {
 	GetCompiledSchema(string) *Layer
-	PutCompiledSchema(*Context, string, *Layer) *Layer
+	PutCompiledSchema(*Context, string, *Layer) (*Layer, error)
 	GetGraph() graph.Graph
 }
 
@@ -57,7 +57,7 @@ func (d *DefaultCompiledGraph) copyEdge(from, to graph.Node, edge graph.Edge) {
 }
 
 // PutCompiledSchema adds the copy of the schema to the common graph
-func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, layer *Layer) *Layer {
+func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, layer *Layer) (*Layer, error) {
 	if d.layers == nil {
 		d.layers = make(map[string]*Layer)
 		d.schemaNodeMap = make(map[graph.Node]graph.Node)
@@ -83,10 +83,15 @@ func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, l
 	// key belongs to layer
 	newAttributes := make(map[graph.Node]struct{})
 
+	var err error
 	// Copy the attributes in this layer
 	ForEachAttributeNode(layerRoot, func(node graph.Node, _ []graph.Node) bool {
 		attrID := GetNodeID(node)
 		existingAttr := newLayer.GetAttributeByID(attrID)
+		if existingAttr != nil && existingAttr != newRoot {
+			err = ErrInvalidSchema(fmt.Sprintf("Node %s is duplicated by %s. If same schema appears under a different name, change namespaces", attrID, ref))
+			return false
+		}
 		if existingAttr == nil {
 			existingAttr = d.copyNode(node)
 			newAttributes[node] = struct{}{}
@@ -95,6 +100,9 @@ func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, l
 		attributeMap[node] = existingAttr
 		return true
 	})
+	if err != nil {
+		return nil, err
+	}
 	// Iterate all nodes again. This time, link them
 	ForEachAttributeNode(layerRoot, func(node graph.Node, _ []graph.Node) bool {
 		compiledNode := attributeMap[node]
@@ -121,7 +129,7 @@ func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, l
 	})
 
 	d.layers[ref] = newLayer
-	return newLayer
+	return newLayer, nil
 }
 
 // SchemaLoader interface defines the LoadSchema method that loads schemas by reference
@@ -201,7 +209,10 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 	if err != nil {
 		return nil, err
 	}
-	compiled = compiler.CGraph.PutCompiledSchema(context, ref, compiled)
+	compiled, err = compiler.CGraph.PutCompiledSchema(context, ref, compiled)
+	if err != nil {
+		return nil, err
+	}
 	compiled.GetSchemaRootNode().SetProperty(EntitySchemaTerm, StringPropertyValue(compiled.GetID()))
 
 	if err := compiler.compileReferences(context, ctx); err != nil {
@@ -233,6 +244,7 @@ func (compiler *Compiler) compileReferences(context *Context, ctx *compilerConte
 		// already loaded and added to the graph?
 		compiledSchema := compiler.CGraph.GetCompiledSchema(ref)
 		if compiledSchema != nil {
+			context.GetLogger().Debug(map[string]interface{}{"mth": "compileReferences", "ref": ref, "stage": "already compiled, linking"})
 			if err := compiler.linkReference(context, refNode, compiledSchema, ref); err != nil {
 				return err
 			}
