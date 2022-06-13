@@ -162,11 +162,12 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, er
 			}
 			return cursor.getOutput(), nil
 		case "none":
-			return cursor.getOutput(), nil
+			return nil, nil
 		}
 		return nil, nil
 	}
-	var parentNode graph.Node
+	newCursor := cursor
+	hasNode := false
 	switch GetIngestAs(schemaNode) {
 	case "node":
 		_, node, err := builder.CollectionAsNode(schemaNode, cursor.getOutput(), typeTerm, root.GetValueTypes()...)
@@ -175,7 +176,8 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, er
 		}
 		setID(node)
 		setProp(node)
-		parentNode = node
+		newCursor.output = append(newCursor.output, node)
+		hasNode = true
 	case "edge":
 		edge, err := builder.CollectionAsEdge(schemaNode, cursor.getOutput(), typeTerm, root.GetValueTypes()...)
 		if err != nil {
@@ -183,43 +185,36 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, er
 		}
 		setID(edge.GetTo())
 		setProp(edge.GetTo())
-		parentNode = edge.GetTo()
+		newCursor.output = append(newCursor.output, edge.GetTo())
+		hasNode = true
 	case "none":
-		parentNode = cursor.getOutput()
 	}
-	if parentNode != nil {
-		newCursor := cursor
-		newCursor.input = append(newCursor.input, nil)
-		if parentNode != cursor.getOutput() { // This happens if ingestAs==none.
-			newCursor.output = append(newCursor.output, parentNode)
+	newCursor.input = append(newCursor.input, nil)
+	for _, child := range root.GetChildren() {
+		newCursor.input[len(newCursor.input)-1] = child
+		node, err := ingestWithCursor(builder, newCursor)
+		if err != nil {
+			return nil, err
 		}
-		for _, child := range root.GetChildren() {
-			newCursor.input[len(newCursor.input)-1] = child
-			node, err := ingestWithCursor(builder, newCursor)
-			if err != nil {
-				return nil, err
+		if node != nil {
+			n := child.GetAttributeIndex()
+			if newCursor.getOutput() != nil {
+				n = newCursor.getOutput().GetEdges(graph.OutgoingEdge).MaxSize() - 1
 			}
-			if node != nil {
-				n := child.GetAttributeIndex()
-				if parentNode != nil {
-					n = parentNode.GetEdges(graph.OutgoingEdge).MaxSize() - 1
-				}
-				if n == -1 {
-					n = child.GetAttributeIndex()
-				}
-				node.SetProperty(AttributeIndexTerm, IntPropertyValue(n))
+			if n == -1 {
+				n = child.GetAttributeIndex()
 			}
+			node.SetProperty(AttributeIndexTerm, IntPropertyValue(n))
 		}
-		if schemaNode != nil {
-			switch AsPropertyValue(schemaNode.GetProperty(ConditionalTerm)).AsString() {
-			case "mustHaveChildren":
-				if parentNode.GetEdges(graph.OutgoingEdge).MaxSize() == 0 {
-					parentNode.DetachAndRemove()
-					parentNode = nil
-				}
-			}
-		}
-		return parentNode, nil
 	}
-	return nil, ErrInvalidSchema(fmt.Sprintf("Invalid input node type: %s", typeTerm))
+	if schemaNode != nil && hasNode {
+		switch AsPropertyValue(schemaNode.GetProperty(ConditionalTerm)).AsString() {
+		case "mustHaveChildren":
+			if newCursor.getOutput().GetEdges(graph.OutgoingEdge).MaxSize() == 0 {
+				newCursor.getOutput().DetachAndRemove()
+				return nil, nil
+			}
+		}
+	}
+	return newCursor.getOutput(), nil
 }
