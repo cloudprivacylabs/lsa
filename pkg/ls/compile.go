@@ -268,7 +268,13 @@ func (compiler *Compiler) compileReferences(context *Context, ctx *compilerConte
 		// Record the schema ID in the entity root
 		context.GetLogger().Debug(map[string]interface{}{"mth": "compileReferences", "entitySchema": schema.GetID()})
 
-		compiler.CGraph.PutCompiledSchema(context, ref, schema)
+		newLayer, err := compiler.CGraph.PutCompiledSchema(context, ref, schema)
+		if err != nil {
+			return err
+		}
+		if err := compiler.linkReference(context, refNode, newLayer, ref); err != nil {
+			return err
+		}
 	}
 	return nil
 }

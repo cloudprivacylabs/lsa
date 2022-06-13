@@ -254,6 +254,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, layers map[string]*ls.Layer, lo
 				return err
 			}
 			layerID := layer.GetID()
+			ctx.GetLogger().Debug(map[string]interface{}{"getLayers": variantType, "loaded": layerID})
 			if _, exists := layers[layerID]; exists {
 				return fmt.Errorf("Duplicate id %s in %s", layerID, ref.Schema)
 			}
@@ -286,6 +287,7 @@ func (bundle *Bundle) GetLayers(ctx *ls.Context, layers map[string]*ls.Layer, lo
 
 	// Load all layers, construct entities
 	for variantType, variant := range bundle.TypeNames {
+		ctx.GetLogger().Debug(map[string]interface{}{"getLayers": variant})
 		if err := processRef(variantType, &variant.BundleSchemaRef, schemaEntities); err != nil {
 			return nil, err
 		}
@@ -383,6 +385,7 @@ func loadBundleChain(ctx *ls.Context, file string) (Bundle, error) {
 }
 
 func LoadBundle(ctx *ls.Context, file []string) (ls.SchemaLoader, error) {
+	ctx.GetLogger().Debug(map[string]interface{}{"loadBundle": file})
 	var bundle Bundle
 	for _, f := range file {
 		b, err := loadBundleChain(ctx, f)
@@ -396,6 +399,7 @@ func LoadBundle(ctx *ls.Context, file []string) (ls.SchemaLoader, error) {
 		return nil, err
 	}
 	items, err := bundle.GetLayers(ctx, schemaMap, func(fname string) (*ls.Layer, error) {
+		ctx.GetLogger().Debug(map[string]interface{}{"loadBundle": file, "reading": fname})
 		data, err := ioutil.ReadFile(fname)
 		if err != nil {
 			return nil, fmt.Errorf("While reading %s: %w", fname, err)
@@ -405,10 +409,12 @@ func LoadBundle(ctx *ls.Context, file []string) (ls.SchemaLoader, error) {
 		if err != nil {
 			return nil, fmt.Errorf("While reading %s: %w", fname, err)
 		}
+		ctx.GetLogger().Debug(map[string]interface{}{"loadBundle": file, "unmarshaling": fname})
 		layer, err := ls.UnmarshalLayer(input, nil)
 		if err != nil {
 			return nil, fmt.Errorf("While reading %s: %w", fname, err)
 		}
+		ctx.GetLogger().Debug(map[string]interface{}{"loadBundle": file, "read": fname})
 		return layer, nil
 	}, DefaultFileLoader)
 	if err != nil {
