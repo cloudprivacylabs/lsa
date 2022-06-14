@@ -96,7 +96,8 @@ func Ingest(builder GraphBuilder, root ParsedDocNode) (graph.Node, error) {
 	cursor := ingestCursor{
 		input: []ParsedDocNode{root},
 	}
-	return ingestWithCursor(builder, cursor)
+	_, n, err := ingestWithCursor(builder, cursor)
+	return n, err
 }
 
 // GetIngestAs returns "node", "edge", "property", or "none" based on IngestAsTerm
@@ -115,7 +116,7 @@ func GetIngestAs(schemaNode graph.Node) string {
 	return "node"
 }
 
-func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, error) {
+func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.Node, error) {
 	root := cursor.getInput()
 	schemaNode := root.GetSchemaNode()
 	typeTerm := root.GetTypeTerm()
@@ -135,66 +136,77 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, er
 			node.SetProperty(k, v)
 		}
 	}
+	hasData := false
 	if typeTerm == AttributeTypeValue {
 		switch GetIngestAs(schemaNode) {
 		case "node":
 			_, node, err := builder.ValueAsNode(schemaNode, cursor.getOutput(), root.GetValue(), root.GetValueTypes()...)
+			if err != nil {
+				return false, nil, err
+			}
 			if node != nil {
 				setID(node)
 				setProp(node)
+				hasData = true
 			}
-			return node, err
+			return hasData, node, err
 		case "edge":
 			edge, err := builder.ValueAsEdge(schemaNode, cursor.getOutput(), root.GetValue(), root.GetValueTypes()...)
 			if err != nil {
-				return nil, err
+				return false, nil, err
 			}
 			if edge == nil {
-				return nil, nil
+				return false, nil, nil
 			}
 			setID(edge.GetTo())
 			setProp(edge.GetTo())
-			return edge.GetTo(), nil
+			return true, edge.GetTo(), nil
 		case "property":
 			err := builder.ValueAsProperty(schemaNode, cursor.output, root.GetValue())
 			if err != nil {
-				return nil, err
+				return false, nil, err
 			}
-			return cursor.getOutput(), nil
+			return true, nil, nil
 		case "none":
-			return nil, nil
+			return false, nil, nil
 		}
-		return nil, nil
+		return false, nil, nil
 	}
 	newCursor := cursor
-	hasNode := false
 	switch GetIngestAs(schemaNode) {
 	case "node":
 		_, node, err := builder.CollectionAsNode(schemaNode, cursor.getOutput(), typeTerm, root.GetValueTypes()...)
 		if err != nil {
-			return nil, err
+			return false, nil, err
 		}
 		setID(node)
 		setProp(node)
 		newCursor.output = append(newCursor.output, node)
-		hasNode = true
+		hasData = true
 	case "edge":
 		edge, err := builder.CollectionAsEdge(schemaNode, cursor.getOutput(), typeTerm, root.GetValueTypes()...)
 		if err != nil {
-			return nil, err
+			return false, nil, err
 		}
 		setID(edge.GetTo())
 		setProp(edge.GetTo())
 		newCursor.output = append(newCursor.output, edge.GetTo())
-		hasNode = true
+		hasData = true
 	case "none":
 	}
 	newCursor.input = append(newCursor.input, nil)
+	if strings.Contains(fmt.Sprint(newCursor.getOutput()), "effectiveTime") {
+		fmt.Println()
+	}
+	hasChildren := false
 	for _, child := range root.GetChildren() {
 		newCursor.input[len(newCursor.input)-1] = child
-		node, err := ingestWithCursor(builder, newCursor)
+		ch, node, err := ingestWithCursor(builder, newCursor)
+		if ch {
+			hasChildren = true
+		}
 		if err != nil {
-			return nil, err
+			return hasData, nil, err
 		}
 		if node != nil {
 			n := child.GetAttributeIndex()
@@ -207,14 +219,14 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (graph.Node, er
 			node.SetProperty(AttributeIndexTerm, IntPropertyValue(n))
 		}
 	}
-	if schemaNode != nil && hasNode {
+	if schemaNode != nil && hasData {
 		switch AsPropertyValue(schemaNode.GetProperty(ConditionalTerm)).AsString() {
 		case "mustHaveChildren":
-			if newCursor.getOutput().GetEdges(graph.OutgoingEdge).MaxSize() == 0 {
+			if !hasChildren {
 				newCursor.getOutput().DetachAndRemove()
-				return nil, nil
+				return false, nil, nil
 			}
 		}
 	}
-	return newCursor.getOutput(), nil
+	return hasData, newCursor.getOutput(), nil
 }

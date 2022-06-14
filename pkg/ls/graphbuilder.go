@@ -256,6 +256,10 @@ func (gb GraphBuilder) ValueAsProperty(schemaNode graph.Node, graphPath []graph.
 	if schemaNode == nil {
 		return ErrInvalidInput{Msg: "Missing schema node"}
 	}
+	gb.setEntityID(value, graphPath[len(graphPath)-1], schemaNode)
+	if !schemaNode.HasLabel(AttributeTypeValue) {
+		return ErrSchemaValidation{Msg: "A value expected here"}
+	}
 	asPropertyOf := AsPropertyValue(schemaNode.GetProperty(AsPropertyOfTerm)).AsString()
 	propertyName := AsPropertyValue(schemaNode.GetProperty(PropertyNameTerm)).AsString()
 	if len(propertyName) == 0 {
