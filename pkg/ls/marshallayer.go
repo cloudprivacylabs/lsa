@@ -172,7 +172,6 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 	attribute := inode.GraphNode
 	types := attribute.GetLabels()
 	types.Add(AttributeNodeTerm)
-	attribute.SetLabels(types)
 	if len(inode.ID) == 0 {
 		return MakeErrInvalidInput("Attribute node without an ID")
 	}
@@ -183,106 +182,102 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 	SetAttributeID(attribute, inode.ID)
 
 	// Process the nested attribute nodes
-	for k, val := range inode.Node {
-		switch k {
-		case "@id":
-		case "@type":
-			if arr, ok := val.([]interface{}); ok {
-				for _, t := range arr {
-					if str, ok := t.(string); ok {
-						types.Add(interner.Intern(str))
-					}
-				}
-			}
-			attribute.SetLabels(types)
-		case ObjectAttributesTerm, ObjectAttributeListTerm:
-			types.Add(AttributeTypeObject)
-			attribute.SetLabels(types)
-			// m must be an array of attributes. It can be under a @list
-			attrArray, ok := val.([]interface{})
-			if !ok {
-				return MakeErrInvalidInput(inode.ID, "Array of attributes expected here")
-			}
-			if len(attrArray) == 1 {
-				if m, ok := attrArray[0].(map[string]interface{}); ok {
-					if l, ok := m["@list"]; ok {
-						if a, ok := l.([]interface{}); ok {
-							attrArray = a
-						}
-					}
-				}
-			}
-			for index, attr := range attrArray {
-				// This must be a link
-				follow := LDGetNodeID(attr)
-				attrNode := allNodes[follow]
-				if attrNode == nil {
-					return MakeErrInvalidInput(inode.ID, "Cannot follow link in attribute list:"+follow)
-				}
-				if err := unmarshalAttributeNode(target, attrNode, allNodes, interner); err != nil {
-					return err
-				}
-				SetNodeIndex(attrNode.GraphNode, index)
-				target.Graph.NewEdge(inode.GraphNode, attrNode.GraphNode, k, nil)
-			}
-
-		case ReferenceTerm:
-			types.Add(AttributeTypeReference)
-			attribute.SetLabels(types)
-			// There can be at most one reference
-			oid := LDGetNodeValue(val)
-			if len(oid) == 0 {
-				return MakeErrInvalidInput(inode.ID)
-			}
-			attribute.SetProperty(ReferenceTerm, StringPropertyValue(oid))
-
-		case ArrayItemsTerm:
-			types.Add(AttributeTypeArray)
-			attribute.SetLabels(types)
-			// m must be an array of 1
-			itemsArr, _ := val.([]interface{})
-			switch len(itemsArr) {
-			case 0:
-				return MakeErrInvalidInput(inode.ID, "Invalid array items")
-			case 1:
-				itemsNode := allNodes[LDGetNodeID(itemsArr[0])]
-				if itemsNode == nil {
-					return MakeErrInvalidInput(inode.ID, "Cannot follow link to array items")
-				}
-				if err := unmarshalAttributeNode(target, itemsNode, allNodes, interner); err != nil {
-					return err
-				}
-				target.Graph.NewEdge(inode.GraphNode, itemsNode.GraphNode, k, nil)
-			default:
-				return MakeErrInvalidInput(inode.ID, "Multiple array items")
-			}
-
-		case AllOfTerm, OneOfTerm:
-			if k == AllOfTerm {
-				types.Add(AttributeTypeComposite)
-			} else {
-				types.Add(AttributeTypePolymorphic)
-			}
-			attribute.SetLabels(types)
-			// m must be a list
-			elements := LDGetListElements(val)
-			if elements == nil {
-				return MakeErrInvalidInput(inode.ID, "@list expected")
-			}
-			for index, element := range elements {
-				nnode := allNodes[LDGetNodeID(element)]
-				if nnode == nil {
-					return MakeErrInvalidInput(inode.ID, "Cannot follow link")
-				}
-				if err := unmarshalAttributeNode(target, nnode, allNodes, interner); err != nil {
-					return err
-				}
-				SetNodeIndex(nnode.GraphNode, index)
-				target.Graph.NewEdge(inode.GraphNode, nnode.GraphNode, k, nil)
+	if arr, ok := inode.Node["@type"].([]interface{}); ok {
+		for _, t := range arr {
+			if str, ok := t.(string); ok {
+				types.Add(interner.Intern(str))
 			}
 		}
 	}
+	attribute.SetLabels(types)
 
+	switch {
+	case types.Has(AttributeTypeObject):
+		// m must be an array of attributes. It can be under a @list
+		k := ObjectAttributesTerm
+		val, ok := inode.Node[k]
+		if !ok {
+			k = ObjectAttributeListTerm
+			val = inode.Node[k]
+		}
+		attrArray, ok := val.([]interface{})
+		if !ok {
+			break
+		}
+		if len(attrArray) == 1 {
+			if m, ok := attrArray[0].(map[string]interface{}); ok {
+				if l, ok := m["@list"]; ok {
+					if a, ok := l.([]interface{}); ok {
+						attrArray = a
+					}
+				}
+			}
+		}
+		for index, attr := range attrArray {
+			// This must be a link
+			follow := LDGetNodeID(attr)
+			attrNode := allNodes[follow]
+			if attrNode == nil {
+				return MakeErrInvalidInput(inode.ID, "Cannot follow link in attribute list:"+follow)
+			}
+			if err := unmarshalAttributeNode(target, attrNode, allNodes, interner); err != nil {
+				return err
+			}
+			SetNodeIndex(attrNode.GraphNode, index)
+			target.Graph.NewEdge(inode.GraphNode, attrNode.GraphNode, k, nil)
+		}
+
+	case types.Has(AttributeTypeReference):
+		// There can be at most one reference
+		oid := LDGetNodeValue(inode.Node[ReferenceTerm])
+		if len(oid) == 0 {
+			return MakeErrInvalidInput(inode.ID)
+		}
+		attribute.SetProperty(ReferenceTerm, StringPropertyValue(oid))
+
+	case types.Has(AttributeTypeArray):
+		// m must be an array of 1
+		itemsArr, _ := inode.Node[ArrayItemsTerm].([]interface{})
+		switch len(itemsArr) {
+		case 0:
+			return MakeErrInvalidInput(inode.ID, "Invalid array items")
+		case 1:
+			itemsNode := allNodes[LDGetNodeID(itemsArr[0])]
+			if itemsNode == nil {
+				return MakeErrInvalidInput(inode.ID, "Cannot follow link to array items")
+			}
+			if err := unmarshalAttributeNode(target, itemsNode, allNodes, interner); err != nil {
+				return err
+			}
+			target.Graph.NewEdge(inode.GraphNode, itemsNode.GraphNode, ArrayItemsTerm, nil)
+		default:
+			return MakeErrInvalidInput(inode.ID, "Multiple array items")
+		}
+
+	case types.Has(AttributeTypeComposite) || types.Has(AttributeTypePolymorphic):
+		var t string
+		if types.Has(AttributeTypeComposite) {
+			t = AllOfTerm
+		} else {
+			t = OneOfTerm
+		}
+		// m must be a list
+		elements := LDGetListElements(inode.Node[t])
+		if elements == nil {
+			return MakeErrInvalidInput(inode.ID, "@list expected")
+		}
+		for index, element := range elements {
+			nnode := allNodes[LDGetNodeID(element)]
+			if nnode == nil {
+				return MakeErrInvalidInput(inode.ID, "Cannot follow link")
+			}
+			if err := unmarshalAttributeNode(target, nnode, allNodes, interner); err != nil {
+				return err
+			}
+			SetNodeIndex(nnode.GraphNode, index)
+			target.Graph.NewEdge(inode.GraphNode, nnode.GraphNode, t, nil)
+		}
+	}
 	types = attribute.GetLabels()
 	t := FilterAttributeTypes(types.Slice())
 	if len(t) > 1 {

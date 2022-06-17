@@ -91,7 +91,7 @@ func TestIngestFlat(t *testing.T) {
 		OnlySchemaAttributes: false,
 	})
 	parser := Parser{
-		SchemaNode: schema.GetSchemaRootNode(),
+		Layer: schema,
 	}
 	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
 	if err != nil {
@@ -130,7 +130,7 @@ func TestIngestFlat(t *testing.T) {
 		OnlySchemaAttributes: true,
 	})
 	parser = Parser{
-		SchemaNode: schema.GetSchemaRootNode(),
+		Layer: schema,
 	}
 	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
 	if err != nil {
@@ -218,7 +218,7 @@ func TestIngestPoly(t *testing.T) {
 		OnlySchemaAttributes: false,
 	})
 	parser := Parser{
-		SchemaNode: schema.GetSchemaRootNode(),
+		Layer: schema,
 	}
 	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
 	if err != nil {
@@ -280,7 +280,7 @@ func TestIngestRootAnnotation(t *testing.T) {
 		OnlySchemaAttributes: false,
 	})
 	parser := Parser{
-		SchemaNode: layers[0].Layer.GetSchemaRootNode(),
+		Layer: layers[0].Layer,
 	}
 	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
 	if err != nil {

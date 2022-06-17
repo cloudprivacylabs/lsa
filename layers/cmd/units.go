@@ -21,6 +21,8 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/spf13/cobra"
+
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/types"
 )
@@ -146,4 +148,34 @@ func (ms *MeasureStep) Run(pipeline *PipelineContext) error {
 		}
 	}
 	return pipeline.Next()
+}
+
+func init() {
+	rootCmd.AddCommand(measuresCmd)
+	measuresCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
+	measuresCmd.Flags().String("output", "json", "Output format, json, jsonld, or dot")
+	measuresCmd.Flags().StringSlice("schemaNodeId", nil, "Process measure processing for instances of these schema nodes only")
+	addSchemaFlags(measuresCmd.Flags())
+
+	operations["measures"] = func() Step { return &MeasureStep{} }
+}
+
+var measuresCmd = &cobra.Command{
+	Use:   "measures",
+	Short: "Process measurements in a graph",
+	Long: `Process the measurements in a graph.
+
+`,
+	Args: cobra.MaximumNArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		step := &MeasureStep{}
+		step.fromCmd(cmd)
+		p := []Step{
+			NewReadGraphStep(cmd),
+			step,
+			NewWriteGraphStep(cmd),
+		}
+		_, err := runPipeline(p, "", args)
+		return err
+	},
 }

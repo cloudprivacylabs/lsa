@@ -106,6 +106,9 @@ func (l *Layer) GetOverlayAttributes() []graph.Node {
 
 // GetSchemaRootNode returns the root node of the object defined by the schema
 func (l *Layer) GetSchemaRootNode() graph.Node {
+	if l == nil {
+		return nil
+	}
 	x := graph.TargetNodes(l.layerInfo.GetEdgesWithLabel(graph.OutgoingEdge, LayerRootTerm))
 	if len(x) != 1 {
 		return nil
@@ -291,7 +294,7 @@ func (l *Layer) ForEachAttributeOrdered(f func(graph.Node, []graph.Node) bool) b
 func GetParentAttribute(node graph.Node) graph.Node {
 	for edges := node.GetEdges(graph.IncomingEdge); edges.Next(); {
 		edge := edges.Edge()
-		if IsAttributeTreeEdge(edge) && IsAttributeNode(edge.GetFrom()) {
+		if IsAttributeTreeEdge(edge) && IsAttributeNode(edge.GetFrom()) && !IsCompilationArtifact(edge) {
 			return edge.GetFrom()
 		}
 	}

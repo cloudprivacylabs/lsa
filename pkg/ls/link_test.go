@@ -62,7 +62,7 @@ func TestBasicLink(t *testing.T) {
 	builder.ValueAsNode(layer2.GetAttributeByID("idField"), root2, "456")
 	builder.ValueAsNode(layer2.GetAttributeByID("https://rootid"), root2, "123")
 
-	entityInfo := GetEntityRootNodes(builder.GetGraph())
+	entityInfo := GetEntityInfo(builder.GetGraph())
 	builder.LinkNodes(layer2, entityInfo)
 	// There must be an edge from root1 to root2
 	found := false
