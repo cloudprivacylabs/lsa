@@ -158,6 +158,11 @@ type compilerContext struct {
 	blankNodeID   uint
 }
 
+// IsCompilationArtifact returns true if the edge is a compilation artifact
+func IsCompilationArtifact(edge graph.Edge) bool {
+	return AsPropertyValue(edge.GetProperty("compilationArtifact")).AsString() == "true"
+}
+
 func (c *compilerContext) blankNodeNamer(node graph.Node) {
 	SetNodeID(node, fmt.Sprintf("_b:%d", c.blankNodeID))
 	c.blankNodeID++
@@ -295,6 +300,10 @@ func (compiler *Compiler) linkReference(context *Context, refNode graph.Node, sc
 	for edges := linkTo.GetEdges(graph.OutgoingEdge); edges.Next(); {
 		edge := edges.Edge()
 		CloneEdge(refNode, edge.GetTo(), edge, compiler.CGraph.GetGraph())
+		// Mark all edges that connect the original schema node as
+		// "compilationArtifact", so we can trace back the schema nodes
+		// correctly
+		edge.SetProperty("compilationArtifact", StringPropertyValue("true"))
 	}
 	refNode.SetProperty(EntitySchemaTerm, StringPropertyValue(schema.GetID()))
 	return nil

@@ -58,10 +58,10 @@ var (
 	// ReferenceLabelTerm specifies the edge label between the referenced nodes
 	ReferenceLabelTerm = NewTerm(LS+"Reference/", "label", false, false, OverrideComposition, nil)
 
-	// ReferenceLinkTerm specifies the direction of the edge. If
-	// ->, the edge points to the target entity. If <-, the edge points
+	// ReferenceDirectionTerm specifies the direction of the edge. If
+	// "to", the edge points to the target entity. If "from", the edge points
 	// to this entity.
-	ReferenceLinkTerm = NewTerm(LS+"Reference/", "link", false, false, OverrideComposition, nil)
+	ReferenceDirectionTerm = NewTerm(LS+"Reference/", "dir", false, false, OverrideComposition, nil)
 
 	// ReferenceMultiTerm specifies if there can be more than one link targets
 	ReferenceMultiTerm = NewTerm(LS+"Reference/", "multi", false, false, OverrideComposition, nil)
@@ -137,7 +137,7 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 		}
 	}
 
-	link := AsPropertyValue(schemaNode.GetProperty(ReferenceLinkTerm))
+	link := AsPropertyValue(schemaNode.GetProperty(ReferenceDirectionTerm))
 	if link == nil {
 		return nil, nil
 	}
@@ -172,9 +172,6 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 	if fk.IsStringSlice() {
 		ret.FK = fk.AsStringSlice()
 	}
-	if len(ret.FK) == 0 {
-		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Empty foreign key"}
-	}
 	schemaNode.SetProperty("$linkSpec", &ret)
 	return &ret, nil
 }
@@ -192,7 +189,7 @@ func (spec *LinkSpec) FindReference(entityInfo map[graph.Node]EntityInfo, fk []s
 		}
 		if exists || ei.GetEntitySchema() == spec.TargetEntity {
 			id := ei.GetID()
-			if len(id) != len(fk) {
+			if len(fk) > 0 && len(id) != len(fk) {
 				continue
 			}
 			found := true

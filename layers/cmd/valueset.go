@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"sync"
@@ -74,7 +75,13 @@ func (v ValuesetValue) buildResult() *ls.ValuesetLookupResponse {
 		}
 		return &ret
 	}
-	ret.KeyValues[""] = v.Result
+	if len(v.Result) > 0 {
+		ret.KeyValues[""] = v.Result
+	} else {
+		for k, v := range v.KeyValues {
+			ret.KeyValues[k] = v
+		}
+	}
 	return &ret
 }
 
@@ -121,6 +128,17 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest) (*ls.ValuesetLookupRe
 		}
 		switch {
 		case len(v.KeyValues) > 1:
+			// If no request key, not found
+			if len(key) == 0 {
+				return nil, nil
+			}
+			val, ok := v.KeyValues[key]
+			if !ok {
+				return nil, nil
+			}
+			if wordCompare(val, value, v.CaseSensitive) {
+				return v.buildResult(), nil
+			}
 			return nil, nil
 
 		case len(v.KeyValues) == 0:
@@ -156,20 +174,17 @@ func (v ValuesetValue) Match(req ls.ValuesetLookupRequest) (*ls.ValuesetLookupRe
 
 	// Here, there are multiple key-values
 	// they must all match
-	if len(v.KeyValues) != len(req.KeyValues) {
-		return nil, nil
-	}
 
 	for reqk, reqv := range req.KeyValues {
 		vvalue, ok := v.KeyValues[reqk]
 		if !ok {
 			return nil, nil
 		}
-		if wordCompare(vvalue, reqv, v.CaseSensitive) {
-			return v.buildResult(), nil
+		if !wordCompare(vvalue, reqv, v.CaseSensitive) {
+			return nil, nil
 		}
 	}
-	return nil, nil
+	return v.buildResult(), nil
 }
 
 func (vs Valueset) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, error) {
@@ -189,7 +204,7 @@ func (vs Valueset) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupRespon
 		}
 		if res != nil {
 			if nondef != nil {
-				return ls.ValuesetLookupResponse{}, fmt.Errorf("Multiple matches for %v in %s", req, vs.ID)
+				return ls.ValuesetLookupResponse{}, fmt.Errorf("Multiple matches for %v in %s:%v %v", req, vs.ID, res, nondef)
 			}
 			nondef = res
 		}
@@ -301,11 +316,12 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 
 type valuesetMarshal struct {
 	Valueset
-	Services map[string]string `json:"services" yaml:"services"`
-	Sets     []Valueset        `json:"valuesets" yaml:"valuesets"`
+	Services     map[string]string `json:"services" yaml:"services"`
+	Spreadsheets []string          `json:"spreadsheets" yaml:"spreadsheets"`
+	Sets         []Valueset        `json:"valuesets" yaml:"valuesets"`
 }
 
-func LoadValuesetFiles(vs *Valuesets, files []string) error {
+func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 	if vs.Sets == nil {
 		vs.Sets = make(map[string]Valueset)
 		vs.Services = make(map[string]string)
@@ -314,6 +330,10 @@ func LoadValuesetFiles(vs *Valuesets, files []string) error {
 		var vm valuesetMarshal
 		err := cmdutil.ReadJSON(file, &vm)
 		if err != nil {
+			return err
+		}
+		vs.Spreadsheets = vm.Spreadsheets
+		if err := vs.LoadSpreadsheets(ctx, filepath.Dir(file)); err != nil {
 			return err
 		}
 		for _, v := range vm.Sets {
@@ -439,6 +459,9 @@ func parseData(sheetName string, headers []string, data [][]string, options Opti
 	for rowIdx := range data {
 		splits := make([][]string, len(headers))
 		for hdrIdx, header := range headers {
+			if len(data[rowIdx]) <= hdrIdx {
+				continue
+			}
 			cellData := data[rowIdx][hdrIdx]
 			if cellData == "" {
 				continue
@@ -457,15 +480,16 @@ func parseData(sheetName string, headers []string, data [][]string, options Opti
 	return vs, nil
 }
 
-func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
+func (vsets *Valuesets) LoadSpreadsheets(ctx *ls.Context, reldir string) error {
 	for _, spreadsheet := range vsets.Spreadsheets {
-		sheets, err := cmdutil.ReadSpreadsheetFile(spreadsheet)
+		fname := getRelativeFileName(reldir, spreadsheet)
+		sheets, err := cmdutil.ReadSpreadsheetFile(fname)
 		if err != nil {
-			return fmt.Errorf("While reading file: %s, %w", spreadsheet, err)
+			return fmt.Errorf("While reading file: %s, %w", fname, err)
 		}
 		for sheetName, sheet := range sheets {
 			if _, exists := vsets.Sets[sheetName]; exists {
-				return fmt.Errorf("Value set %s already defined -- in file: %s", sheetName, sheet)
+				return fmt.Errorf("Value set %s already defined -- in file: %s", sheetName, fname)
 			}
 			optionsRows, headers, data, err := parseSpreadsheet(sheet)
 			if err != nil {
@@ -481,10 +505,10 @@ func (vsets Valuesets) LoadSpreadsheets(ctx *ls.Context) error {
 	return nil
 }
 
-func loadValuesetsCmd(cmd *cobra.Command, valuesets *Valuesets) {
+func loadValuesetsCmd(ctx *ls.Context, cmd *cobra.Command, valuesets *Valuesets) {
 	vsf, _ := cmd.Flags().GetStringSlice("valueset")
 	if len(vsf) > 0 {
-		err := LoadValuesetFiles(valuesets, vsf)
+		err := LoadValuesetFiles(ctx, valuesets, vsf)
 		if err != nil {
 			failErr(err)
 		}
@@ -520,7 +544,7 @@ params:
 
 func (vs *ValuesetStep) Run(pipeline *pipeline.PipelineContext) error {
 	if !vs.initialized {
-		err := LoadValuesetFiles(&vs.valuesets, vs.ValuesetFiles)
+		err := LoadValuesetFiles(pipeline.Context, &vs.valuesets, vs.ValuesetFiles)
 		if err != nil {
 			return err
 		}
@@ -542,8 +566,11 @@ func (vs *ValuesetStep) Run(pipeline *pipeline.PipelineContext) error {
 	})
 
 	pipeline.Context.GetLogger().Debug(map[string]interface{}{"pipeline": "valueset"})
-	prc := ls.NewValuesetProcessor(vs.layer, vs.valuesets.Lookup, vs.Tables)
-	err := prc.ProcessGraph(pipeline.Context, builder)
+	prc, err := ls.NewValuesetProcessor(vs.layer, vs.valuesets.Lookup, vs.Tables)
+	if err != nil {
+		return err
+	}
+	err = prc.ProcessGraph(pipeline.Context, builder)
 	if err != nil {
 		return err
 	}
@@ -558,7 +585,7 @@ func init() {
 	valuesetCmd.Flags().StringSlice("table", nil, "Process valuset lookups for these tables only")
 	addSchemaFlags(valuesetCmd.Flags())
 
-	pipeline.Operations["valueset"] = func() pipeline.Step { return &ValuesetStep{} }
+	pipeline.RegisterPipelineStep("valueset", func() pipeline.Step { return &ValuesetStep{} })
 }
 
 var valuesetCmd = &cobra.Command{
@@ -606,9 +633,9 @@ Individual valueset objects can be given as separate files as well:
 		step.ValuesetFiles, _ = cmd.Flags().GetStringSlice("valueset")
 		step.Tables, _ = cmd.Flags().GetStringSlice("table")
 		p := []pipeline.Step{
-			NewReadGraphStep(cmd),
+			pipeline.NewReadGraphStep(cmd),
 			step,
-			NewWriteGraphStep(cmd),
+			pipeline.NewWriteGraphStep(cmd),
 		}
 		_, err := runPipeline(p, "", args)
 		return err

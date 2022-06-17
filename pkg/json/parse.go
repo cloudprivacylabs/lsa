@@ -48,7 +48,7 @@ func (i ParsedDocNode) GetAttributeName() string              { return i.name }
 type Parser struct {
 	OnlySchemaAttributes bool
 	IngestNullValues     bool
-	SchemaNode           graph.Node
+	Layer                *ls.Layer
 }
 
 type parserContext struct {
@@ -61,7 +61,7 @@ func (ing Parser) ParseDoc(context *ls.Context, baseID string, input jsonom.Node
 	ctx := parserContext{
 		context:    context,
 		path:       ls.NodePath{},
-		schemaNode: ing.SchemaNode,
+		schemaNode: ing.Layer.GetSchemaRootNode(),
 	}
 	if len(baseID) > 0 {
 		ctx.path = append(ctx.path, baseID)

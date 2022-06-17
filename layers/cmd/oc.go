@@ -24,24 +24,33 @@ import (
 )
 
 type OCStep struct {
-	Expr string
+	Expr []string
 }
 
 func (OCStep) Help() {
-	fmt.Println(`Run Opencypher expression on the graph
+	fmt.Println(`Run Opencypher expression(s) on the graph
 
 operation: oc
 params:
-  expr: opencypherExpression`)
+  expr: 
+   - opencypherExpression
+   - opencypherExpression
+
+The expressions share the same evaluation context. That means, symbols
+defined in an expression are avaliable to subsequent expressions.
+The output of the operations is the modified graph, and the final result is
+available in pipeline property "ocResult".`)
 }
 
 func (oc *OCStep) Run(pipeline *pipeline.PipelineContext) error {
 	ctx := opencypher.NewEvalContext(pipeline.GetGraphRW())
-	output, err := opencypher.ParseAndEvaluate(oc.Expr, ctx)
-	if err != nil {
-		return err
+	for _, expr := range oc.Expr {
+		output, err := opencypher.ParseAndEvaluate(expr, ctx)
+		if err != nil {
+			return err
+		}
+		pipeline.Properties["ocResult"] = output
 	}
-	pipeline.Properties["ocResult"] = output
 	if err := pipeline.Next(); err != nil {
 		return err
 	}
@@ -50,23 +59,51 @@ func (oc *OCStep) Run(pipeline *pipeline.PipelineContext) error {
 
 func init() {
 	rootCmd.AddCommand(ocCmd)
+	rootCmd.AddCommand(ocqCmd)
 	ocCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
+	ocCmd.Flags().String("output", "json", "Output format, json, jsonld, or dot")
 	ocCmd.Flags().String("expr", "", "Opencypher expression to run")
 	ocCmd.MarkFlagRequired("expr")
+	ocqCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
+	ocqCmd.Flags().String("expr", "", "Opencypher expression to run")
+	ocqCmd.MarkFlagRequired("expr")
 
-	pipeline.Operations["oc"] = func() pipeline.Step { return &OCStep{} }
+	pipeline.RegisterPipelineStep("oc", func() pipeline.Step { return &OCStep{} })
 }
 
 var ocCmd = &cobra.Command{
 	Use:   "oc",
-	Short: "Run an opencypher expression on a graph",
+	Short: "Run an opencypher expression on a graph and return the graph",
 	Args:  cobra.MaximumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		step := &OCStep{}
-		step.Expr, _ = cmd.Flags().GetString("expr")
+		e, _ := cmd.Flags().GetString("expr")
+		step.Expr = []string{e}
 
 		p := []pipeline.Step{
-			NewReadGraphStep(cmd),
+			pipeline.NewReadGraphStep(cmd),
+			step,
+			pipeline.NewWriteGraphStep(cmd),
+		}
+		_, err := runPipeline(p, "", args)
+		if err != nil {
+			return err
+		}
+		return nil
+	},
+}
+
+var ocqCmd = &cobra.Command{
+	Use:   "ocq",
+	Short: "Run an opencypher query on a graph and return the results",
+	Args:  cobra.MaximumNArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		step := &OCStep{}
+		e, _ := cmd.Flags().GetString("expr")
+		step.Expr = []string{e}
+
+		p := []pipeline.Step{
+			pipeline.NewReadGraphStep(cmd),
 			step,
 		}
 		ctx, err := runPipeline(p, "", args)

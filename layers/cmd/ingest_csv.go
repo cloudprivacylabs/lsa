@@ -20,13 +20,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 	"text/template"
 
 	"github.com/spf13/cobra"
 
-	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -78,6 +76,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 	parser := csvingest.Parser{
 		OnlySchemaAttributes: ci.OnlySchemaAttributes,
 		SchemaNode:           layer.GetSchemaRootNode(),
+		IngestNullValues:     ci.IngestNullValues,
 	}
 	idTemplate := ci.ID
 	if idTemplate == "" {
@@ -92,22 +91,11 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 	}
 
 	for {
-		rc, _ := pipeline.NextInput()
-		buf := make([]byte, 1024)
-		_, err := rc.Read(buf)
+		stream, err := pipeline.NextInput()
 		if err != nil {
-			if err == io.EOF {
-				break
-			} else {
-				return fmt.Errorf("While streaming from %v: %w", rc, err)
-			}
+			return err
 		}
-		defer rc.Close()
-		file, err := os.Open(cmdutil.StreamToString(rc))
-		if err != nil {
-			return fmt.Errorf("While streaming input %v: %w", rc, err)
-		}
-		reader := csv.NewReader(file)
+		reader := csv.NewReader(stream)
 		if !ci.IngestByRows {
 			pipeline.SetGraph(ls.NewDocumentGraph())
 		}
@@ -116,11 +104,11 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 		for row := 0; ; row++ {
 			rowData, err := reader.Read()
 			if err == io.EOF {
-				file.Close()
+
 				break
 			}
 			if err != nil {
-				file.Close()
+
 				return err
 			}
 			if ci.HeaderRow == row {
@@ -131,7 +119,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 				continue
 			}
 			if ci.EndRow != -1 && row > ci.EndRow {
-				file.Close()
+
 				break
 			}
 			if ci.IngestByRows {
@@ -148,29 +136,25 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 			}
 			buf := bytes.Buffer{}
 			if err := idTmp.Execute(&buf, templateData); err != nil {
-				file.Close()
 				return err
 			}
 			parsed, err := parser.ParseDoc(pipeline.Context, strings.TrimSpace(buf.String()), rowData)
 			if err != nil {
-				file.Close()
 				return err
 			}
 			_, err = ls.Ingest(builder, parsed)
 			if err != nil {
-				file.Close()
 				return err
 			}
 			if ci.IngestByRows {
 				if err := pipeline.Next(); err != nil {
-					file.Close()
 					return err
 				}
 			}
 		}
 		if !ci.IngestByRows {
 			if err := pipeline.Next(); err != nil {
-				return fmt.Errorf("While reading input %v: %w", rc, err)
+				return fmt.Errorf("While reading input %v: %w", stream, err)
 			}
 		}
 	}
@@ -188,7 +172,7 @@ func init() {
 	ingestCSVCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
 	ingestCSVCmd.Flags().Bool("byFile", false, "Ingest one file at a time. Default is row at a time.")
 
-	pipeline.Operations["ingest/csv"] = func() pipeline.Step {
+	pipeline.RegisterPipelineStep("ingest/csv", func() pipeline.Step {
 		return &CSVIngester{
 			BaseIngestParams: BaseIngestParams{
 				EmbedSchemaNodes: true,
@@ -199,7 +183,7 @@ func init() {
 			Delimiter:    ",",
 			IngestByRows: true,
 		}
-	}
+	})
 }
 
 var ingestCSVCmd = &cobra.Command{
@@ -241,7 +225,7 @@ var ingestCSVCmd = &cobra.Command{
 		ing.IngestByRows = !byFile
 		p := []pipeline.Step{
 			&ing,
-			NewWriteGraphStep(cmd),
+			pipeline.NewWriteGraphStep(cmd),
 		}
 		_, err = runPipeline(p, initialGraph, args)
 		return err

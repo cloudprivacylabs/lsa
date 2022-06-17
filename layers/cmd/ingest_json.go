@@ -16,7 +16,6 @@ package cmd
 
 import (
 	"fmt"
-	"io"
 
 	"github.com/spf13/cobra"
 
@@ -54,29 +53,19 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 	}
 
 	for {
-		rc, _ := pipeline.NextInput()
-		buf := make([]byte, 1024)
-		_, err := rc.Read(buf)
-		if err != nil {
-			if err == io.EOF {
-				break
-			} else {
-				return fmt.Errorf("While streaming from %v: %w", rc, err)
-			}
-		}
-		defer rc.Close()
+		stream, err := pipeline.NextInput()
 		if err != nil {
 			return err
 		}
-		if rc == nil {
+		if stream == nil {
 			break
 		}
-
 		parser := jsoningest.Parser{
 			OnlySchemaAttributes: ji.OnlySchemaAttributes,
+			IngestNullValues:     ji.IngestNullValues,
 		}
 		if layer != nil {
-			parser.SchemaNode = layer.GetSchemaRootNode()
+			parser.Layer = layer
 		}
 		pipeline.SetGraph(ls.NewDocumentGraph())
 		builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
@@ -85,7 +74,7 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 		})
 		baseID := ji.ID
 
-		_, err = jsoningest.IngestStream(pipeline.Context, baseID, rc, parser, builder)
+		_, err = jsoningest.IngestStream(pipeline.Context, baseID, stream, parser, builder)
 		if err != nil {
 			return fmt.Errorf("While reading input %s: %w", "stdin", err)
 		}
@@ -101,13 +90,13 @@ func init() {
 	ingestCmd.AddCommand(ingestJSONCmd)
 	ingestJSONCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
 
-	pipeline.Operations["ingest/json"] = func() pipeline.Step {
+	pipeline.RegisterPipelineStep("ingest/json", func() pipeline.Step {
 		return &JSONIngester{
 			BaseIngestParams: BaseIngestParams{
 				EmbedSchemaNodes: true,
 			},
 		}
-	}
+	})
 }
 
 var ingestJSONCmd = &cobra.Command{
@@ -121,7 +110,7 @@ var ingestJSONCmd = &cobra.Command{
 		ing.ID, _ = cmd.Flags().GetString("id")
 		p := []pipeline.Step{
 			&ing,
-			NewWriteGraphStep(cmd),
+			pipeline.NewWriteGraphStep(cmd),
 		}
 		_, err := runPipeline(p, initialGraph, args)
 		return err

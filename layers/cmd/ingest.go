@@ -52,6 +52,7 @@ type BaseIngestParams struct {
 	CompiledSchema       string   `json:"compiledSchema" yaml:"compiledSchema"`
 	EmbedSchemaNodes     bool     `json:"embedSchemaNodes" yaml:"embedSchemaNodes"`
 	OnlySchemaAttributes bool     `json:"onlySchemaAttributes" yaml:"onlySchemaAttributes"`
+	IngestNullValues     bool     `json:"ingestNullValues" yaml:"ingestNullValues"`
 }
 
 // IsEmptySchema returns true if none of the schema properties are set

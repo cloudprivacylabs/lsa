@@ -48,7 +48,7 @@ map:
   - source: sourceSchemaNodeId
     target: targetSchemaNodeId
   ...
-targetSchemaNodes:
+reshapeNodes:
   targetSchemaNodeId:
     term: value
     term:
@@ -139,7 +139,7 @@ func init() {
 	reshapeCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
 	reshapeCmd.Flags().String("script", "", "Transformation script file")
 
-	pipeline.Operations["reshape"] = func() pipeline.Step { return &ReshapeStep{} }
+	pipeline.RegisterPipelineStep("reshape", func() pipeline.Step { return &ReshapeStep{} })
 }
 
 var reshapeCmd = &cobra.Command{
@@ -151,9 +151,9 @@ var reshapeCmd = &cobra.Command{
 		step.fromCmd(cmd)
 		step.ScriptFile, _ = cmd.Flags().GetString("script")
 		p := []pipeline.Step{
-			NewReadGraphStep(cmd),
+			pipeline.NewReadGraphStep(cmd),
 			step,
-			NewWriteGraphStep(cmd),
+			pipeline.NewWriteGraphStep(cmd),
 		}
 		_, err := runPipeline(p, "", args)
 		return err

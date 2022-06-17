@@ -56,7 +56,7 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 
 	parser := Parser{}
 	if schema != nil {
-		parser.SchemaNode = schema.GetSchemaRootNode()
+		parser.Layer = schema
 	}
 	builder := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		EmbedSchemaNodes: true,

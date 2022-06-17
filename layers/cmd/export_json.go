@@ -51,7 +51,7 @@ func init() {
 	exportCmd.AddCommand(exportJSONCmd)
 	exportJSONCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 
-	pipeline.Operations["export/json"] = func() pipeline.Step { return &JSONExport{} }
+	pipeline.RegisterPipelineStep("export/json", func() pipeline.Step { return &JSONExport{} })
 }
 
 var exportJSONCmd = &cobra.Command{
@@ -61,7 +61,7 @@ var exportJSONCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		step := &JSONExport{}
 		p := []pipeline.Step{
-			NewReadGraphStep(cmd),
+			pipeline.NewReadGraphStep(cmd),
 			step,
 		}
 		_, err := runPipeline(p, "", args)
