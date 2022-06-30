@@ -38,8 +38,7 @@ params:
 The expressions share the same evaluation context. That means, symbols
 defined in an expression are avaliable to subsequent expressions.
 The output of the operations is the modified graph, and the final result is
-available in pipeline property "ocResult".
-`)
+available in pipeline property "ocResult".`)
 }
 
 func (oc *OCStep) Run(pipeline *PipelineContext) error {
