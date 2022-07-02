@@ -24,5 +24,8 @@ description: "Layered schema architecture documentation"
   base and overlays. Slicing a schema creates a schema base and one or
   more overlays.
 
+[Entities](entities)
+: Entities, unique ids, links
+
 [Value sets and dictionaries](valuesets)
-: Value sets and dictioaries are used to normalize and codify data
+: Value sets and dictionaries are used to normalize and codify data

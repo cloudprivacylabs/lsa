@@ -54,9 +54,6 @@ var (
 	// SchemaNodeIDTerm denotes the schema node ID for ingested nodes
 	SchemaNodeIDTerm = NewTerm(LS, "schemaNodeId", false, false, ErrorComposition, nil)
 
-	SchemaBaseTerm = NewTerm(LS, "SchemaVariant/schema", true, false, ErrorComposition, nil)
-	OverlaysTerm   = NewTerm(LS, "SchemaVariant/overlays", true, true, ErrorComposition, nil)
-
 	// SchemaVariantTerm is the schema variant type
 	SchemaVariantTerm = NewTerm(LS, "SchemaVariant", false, false, NoComposition, nil)
 
