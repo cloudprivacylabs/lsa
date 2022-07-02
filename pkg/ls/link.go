@@ -38,8 +38,6 @@ import (
   B: {
     "aField": {
       "reference": "A",  // Reference to an A entity
-         or
-      "entitySchema": "A"
       "fk": [aIdField]   // This is the attribute ID of a field in B that contains the A ID
       "link": -> <-  // Edge goes to A, or edge goes to B
       "multi": // Multiple references
@@ -131,10 +129,7 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 	// A reference to another entity is either a reference node, or a node that has Entity schema reference in it
 	ref := AsPropertyValue(schemaNode.GetProperty(ReferenceTerm)).AsString()
 	if len(ref) == 0 {
-		ref = AsPropertyValue(schemaNode.GetProperty(EntitySchemaTerm)).AsString()
-		if len(ref) == 0 {
-			return nil, nil
-		}
+		return nil, nil
 	}
 
 	link := AsPropertyValue(schemaNode.GetProperty(ReferenceDirectionTerm))
