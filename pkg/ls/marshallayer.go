@@ -196,7 +196,6 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 			}
 			attribute.SetLabels(types)
 		case ObjectAttributesTerm, ObjectAttributeListTerm:
-			types.Add(AttributeTypeObject)
 			attribute.SetLabels(types)
 			// m must be an array of attributes. It can be under a @list
 			attrArray, ok := val.([]interface{})
@@ -227,7 +226,6 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 			}
 
 		case ReferenceTerm:
-			types.Add(AttributeTypeReference)
 			attribute.SetLabels(types)
 			// There can be at most one reference
 			oid := LDGetNodeValue(val)
@@ -237,7 +235,6 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 			attribute.SetProperty(ReferenceTerm, StringPropertyValue(oid))
 
 		case ArrayItemsTerm:
-			types.Add(AttributeTypeArray)
 			attribute.SetLabels(types)
 			// m must be an array of 1
 			itemsArr, _ := val.([]interface{})

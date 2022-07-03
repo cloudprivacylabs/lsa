@@ -77,3 +77,59 @@ func TestBasicLink(t *testing.T) {
 	}
 
 }
+
+func TestValueLink(t *testing.T) {
+	schemas := make([]*Layer, 2)
+	for i, x := range []string{"testdata/link_1/root.json", "testdata/link_1/3.json"} {
+		var err error
+		schemas[i], err = ReadLayerFromFile(x)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+	}
+	compiler := Compiler{
+		Loader: SchemaLoaderFunc(func(ref string) (*Layer, error) {
+			for i := range schemas {
+				if ref == schemas[i].GetID() {
+					return schemas[i], nil
+				}
+			}
+			return nil, fmt.Errorf("Not found: %s", ref)
+		}),
+	}
+	layer0, err := compiler.Compile(DefaultContext(), schemas[0].GetID())
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	layer3, err := compiler.Compile(DefaultContext(), schemas[1].GetID())
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	builder := NewGraphBuilder(nil, GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
+	_, root1, _ := builder.ObjectAsNode(layer0.GetSchemaRootNode(), nil)
+	builder.ValueAsNode(layer0.GetAttributeByID("https://idField"), root1, "123")
+
+	_, root3, _ := builder.ObjectAsNode(layer3.GetSchemaRootNode(), nil)
+	builder.ValueAsNode(layer3.GetAttributeByID("https://rootid"), root3, "123")
+
+	entityInfo := GetEntityRootNodes(builder.GetGraph())
+	builder.LinkNodes(layer3, entityInfo)
+	// There must be an edge from root1 to root3
+	found := false
+	for edges := root1.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		edge := edges.Edge()
+		if edge.GetTo() == root3 {
+			found = true
+		}
+	}
+	if !found {
+		t.Errorf("No edges from root1 to root3")
+	}
+
+}

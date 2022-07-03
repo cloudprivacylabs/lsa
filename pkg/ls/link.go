@@ -42,10 +42,12 @@ import (
       "link": -> <-  // Edge goes to A, or edge goes to B
       "multi": // Multiple references
       "ingestAs": "edge" or "node"
+      "linkNode": "nodeId to create the link if aField is a value field",
       "label": "edgeLabel" if ingestAs=edge
     }
   }
 
+The aField field may itself be a foreign key value. Then, omit fk, or use aField ID as the fk.
 
 */
 
@@ -60,6 +62,13 @@ var (
 	// ->, the edge points to the target entity. If <-, the edge points
 	// to this entity.
 	ReferenceLinkTerm = NewTerm(LS+"Reference/", "link", false, false, OverrideComposition, nil)
+
+	// ReferenceLinkNodeTerm specifies the node in the current entity
+	// that will be linked to the other entity. If the references are
+	// defined in a Reference type node, then the node itself if the
+	// link. Otherwise, this gives the node that must be linked to the
+	// other entity.
+	ReferenceLinkNodeTerm = NewTerm(LS+"Reference/", "linkNode", false, false, OverrideComposition, nil)
 
 	// ReferenceMultiTerm specifies if there can be more than one link targets
 	ReferenceMultiTerm = NewTerm(LS+"Reference/", "multi", false, false, OverrideComposition, nil)
@@ -110,6 +119,9 @@ type LinkSpec struct {
 	// If true, the link is from this entity to the target. If false,
 	// the link is from the target to this.
 	Forward bool
+	// If the schema node is not a reference node, then this is the node
+	// that should receive the link
+	LinkNode string
 	// If true, the reference can have more than one links
 	Multi bool
 	// IngestAs node or edge
@@ -146,6 +158,13 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 	if len(ret.Label) == 0 {
 		ret.Label = AsPropertyValue(schemaNode.GetProperty(AttributeNameTerm)).AsString()
 	}
+	if !schemaNode.GetLabels().Has(AttributeTypeReference) {
+		ret.LinkNode = AsPropertyValue(schemaNode.GetProperty(ReferenceLinkNodeTerm)).AsString()
+	} else {
+		if ret.IngestAs != IngestAsNode && ret.IngestAs != IngestAsEdge {
+			return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Invalid ingestAs for link"}
+		}
+	}
 	switch link.AsString() {
 	case "to":
 		ret.Forward = true
@@ -157,9 +176,6 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Direction is not one of: `to`, `from`"}
 	}
 
-	if ret.IngestAs != IngestAsNode && ret.IngestAs != IngestAsEdge {
-		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Invalid ingestAs for link"}
-	}
 	fk := AsPropertyValue(schemaNode.GetProperty(ReferenceFKTerm))
 	if fk.IsString() {
 		ret.FK = []string{fk.AsString()}
@@ -168,7 +184,11 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 		ret.FK = fk.AsStringSlice()
 	}
 	if len(ret.FK) == 0 {
-		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Empty foreign key"}
+		// Schema node must be a value
+		if !schemaNode.GetLabels().Has(AttributeTypeValue) {
+			return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "No foreign key specified, so it is assumed that this node has the foreign key value, but but the schema node is not a value attribute."}
+		}
+		ret.FK = []string{GetNodeID(schemaNode)}
 	}
 	schemaNode.SetProperty("$linkSpec", &ret)
 	return &ret, nil

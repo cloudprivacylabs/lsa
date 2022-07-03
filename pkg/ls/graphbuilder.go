@@ -363,6 +363,24 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, 
 	if entityRoot == nil {
 		return ErrCannotResolveLink(*spec)
 	}
+
+	var linkNode graph.Node
+	specIsValueNode := spec.SchemaNode.HasLabel(AttributeTypeValue)
+	if specIsValueNode {
+		if len(spec.LinkNode) != 0 {
+			WalkNodesInEntity(entityRoot, func(n graph.Node) bool {
+				if IsInstanceOf(n, spec.LinkNode) {
+					linkNode = n
+					return false
+				}
+				return true
+			})
+		}
+		if linkNode == nil {
+			linkNode = entityRoot
+		}
+	}
+
 	foreignKeyNodes := make([][]graph.Node, len(spec.FK))
 	IterateDescendants(entityRoot, func(n graph.Node) bool {
 		attrId := AsPropertyValue(n.GetProperty(SchemaNodeIDTerm)).AsString()
@@ -417,23 +435,31 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, 
 			continue
 		}
 		for _, linkRef := range ref {
-			if spec.IngestAs == IngestAsEdge {
-				// Node is already removed. Make an edge
+			if specIsValueNode {
 				if spec.Forward {
-					g.NewEdge(parentNode, linkRef, spec.Label, nodeProperties)
+					g.NewEdge(linkNode, linkRef, spec.Label, nodeProperties)
 				} else {
-					g.NewEdge(linkRef, parentNode, spec.Label, nodeProperties)
+					g.NewEdge(linkRef, linkNode, spec.Label, nodeProperties)
 				}
 			} else {
-				if docNode == nil {
-					docNode = gb.NewNode(spec.SchemaNode)
-					gb.targetGraph.NewEdge(parentNode, docNode, HasTerm, nil)
-				}
-				// A link from this document node to target is created
-				if spec.Forward {
-					gb.targetGraph.NewEdge(docNode, linkRef, spec.Label, nil)
+				if spec.IngestAs == IngestAsEdge {
+					// Node is already removed. Make an edge
+					if spec.Forward {
+						g.NewEdge(parentNode, linkRef, spec.Label, nodeProperties)
+					} else {
+						g.NewEdge(linkRef, parentNode, spec.Label, nodeProperties)
+					}
 				} else {
-					gb.targetGraph.NewEdge(linkRef, docNode, spec.Label, nil)
+					if docNode == nil {
+						docNode = gb.NewNode(spec.SchemaNode)
+						gb.targetGraph.NewEdge(parentNode, docNode, HasTerm, nil)
+					}
+					// A link from this document node to target is created
+					if spec.Forward {
+						gb.targetGraph.NewEdge(docNode, linkRef, spec.Label, nil)
+					} else {
+						gb.targetGraph.NewEdge(linkRef, docNode, spec.Label, nil)
+					}
 				}
 			}
 		}
