@@ -1,0 +1,42 @@
+{
+    "nodes": [
+        {
+            "n": 0,
+            "labels": ["Object", "A" ],
+            "properties": {
+                "valueType": "A",
+                "entityId": "123",
+                "entitySchema": "https://example.org/A/schema"
+            }
+        },
+        {
+            "n": 1,
+            "labels": [ "Value" ],
+            "properties": {
+                "attributeName": "id",
+                "value": "123"
+            }
+        },
+        {
+            "n": 2,
+            "labels": [ "Object","B"],
+            "properties": {
+                "valueType": "B",
+                "entitySchema": "https://example.org/B/schema"
+            }
+        },
+        {
+            "n": 3,
+            "labels": [ "Value"],
+            "properties": {
+                "attributeName": "a_id",
+                "value": "123"
+            }
+        }
+    ],
+    "edges": [
+        { "from": 0, "to": 1, "label": "has" },
+        { "from": 2, "to": 3, "label": "has" },
+        { "from": 0, "to": 2, "label": "owner" }
+    ]
+}
