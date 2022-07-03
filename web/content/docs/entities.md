@@ -91,7 +91,8 @@ entities. Consider the following entity named `A`:
         "entityIdFields": "http://example.org/A/id",
         "attributes": {
             "http://example.org/A/id": {
-               "@type": "Value"
+               "@type": "Value",
+               "attributeName": "id"
             }
         }
     }
@@ -112,7 +113,8 @@ identifier for an `A` entity:
         "@id": "http://example.org/B",
         "attributes": {
             "https://example.org/B/a_id": {
-              "@type": "Value"
+              "@type": "Value",
+              "attributeName": "a_id"
             }
         }
     }
@@ -134,7 +136,8 @@ to the `B` schema does this:
         "@id": "http://example.org/B",
         "attributes": {
             "https://example.org/B/a_id": {
-              "@type": "Value"
+              "@type": "Value",
+              "attributeName": "a_id"
             },
             "http://example.org/B/owner": {
                 "@type": "Reference",
@@ -169,3 +172,49 @@ ID. The other fields define how the link is constructed, and how the
     given identifier, the `B` entity is linked to all those matching
     `A` entities. If `multi` is false and multiple `A` entities match,
     an error is returned.
+
+The resulting graph is:
+
+![Linking result](link1.lr.png)
+
+### Linking using foreign key attributes
+
+An alternative method of linking uses foreign-key attributes
+directly. This form of linking entities is useful for database
+operations where the linked entity may not yet exist. This form stores
+the linking related annotations as part of the foreign key so they can
+later be used to conntect related objects in a database.
+
+{{< highlight json >}}
+{
+    "@context": "https://layeredschemas.org/ls.json",
+    "@id": "http://example.org/B/schema",
+    "@type": "Schema",
+    "valueType": "https://example.org/B",
+    "layer": {
+        "@type": "Object",
+        "@id": "http://example.org/B",
+        "attributes": {
+            "https://example.org/B/a_id": {
+              "@type": "Value",
+              "attributeName": "a_id",
+              "reference": "https://example.org/A/schema",
+              "link": "to",
+              "linkNode": "https://example.org/B",
+              "label": "owner",
+              "multi": false
+           }
+        }
+    }
+}
+{{</highlight>}}
+
+In this form, the linking annotations are directly added to one of the
+foreign-key attributes. A missing `fk` annotation means the attribute
+itself is the foreign key. If the linked object has a composite key,
+then one of the foreign key attributes can be used and a `fk` must be
+specified to include all foreign key fields. The `linkNode` annotation
+specifies the node that will be connected to the other entity, which
+must be the schema node ID that must be one of the ancestors of the
+foreign key node. In this example, the connection will be from the
+entity root node of `A` to the entity root node of `B`.
