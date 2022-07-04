@@ -118,8 +118,8 @@ func TestValueLink(t *testing.T) {
 	_, root3, _ := builder.ObjectAsNode(layer3.GetSchemaRootNode(), nil)
 	builder.ValueAsNode(layer3.GetAttributeByID("https://rootid"), root3, "123")
 
-	entityInfo := GetEntityRootNodes(builder.GetGraph())
-	builder.LinkNodes(layer3, entityInfo)
+	entityInfo := GetEntityInfo(builder.GetGraph())
+	builder.LinkNodes(DefaultContext(), layer3, entityInfo)
 	// There must be an edge from root1 to root3
 	found := false
 	for edges := root1.GetEdges(graph.OutgoingEdge); edges.Next(); {
