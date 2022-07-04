@@ -456,6 +456,7 @@ func (gb GraphBuilder) LinkNodes(ctx *Context, schema *Layer, entityInfo map[gra
 	for nodes := schema.Graph.GetNodes(); nodes.Next(); {
 		attrNode := nodes.Node()
 		ls, err := GetLinkSpec(attrNode)
+		fmt.Printf("Node id: %s linkSpec: %v\n", GetNodeID(attrNode), ls)
 		if err != nil {
 			return err
 		}
