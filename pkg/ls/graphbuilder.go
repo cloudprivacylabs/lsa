@@ -381,36 +381,13 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, 
 		}
 	}
 
-	foreignKeyNodes := make([][]graph.Node, len(spec.FK))
-	IterateDescendants(entityRoot, func(n graph.Node) bool {
-		attrId := AsPropertyValue(n.GetProperty(SchemaNodeIDTerm)).AsString()
-		if len(attrId) == 0 {
-			return true
-		}
-		for i := range spec.FK {
-			if spec.FK[i] == attrId {
-				foreignKeyNodes[i] = append(foreignKeyNodes[i], n)
-			}
-		}
-		return true
-	}, OnlyDocumentNodes, false)
-	// All foreign key elements must have the same number of elements, and no index must be skipped
-	var numKeys int
-	for index := 0; index < len(foreignKeyNodes); index++ {
-		if index == 0 {
-			numKeys = len(foreignKeyNodes[index])
-		} else {
-			if len(foreignKeyNodes[index]) != numKeys {
-				return ErrInvalidForeignKeys{Spec: *spec, Msg: "Inconsistent foreign keys"}
-			}
-		}
+	foreignKeys, err := spec.GetForeignKeys(entityRoot)
+	if err != nil {
+		return err
 	}
-	if numKeys == 0 {
+	if len(foreignKeys) == 0 {
 		// Nothing to link
 		return nil
-	}
-	if numKeys > 1 && !spec.Multi {
-		return ErrInvalidForeignKeys{Spec: *spec, Msg: "Multiple foreign key values not allowed"}
 	}
 
 	g := parentNode.GetGraph()
@@ -422,11 +399,7 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, 
 	}
 
 	// Find remote references
-	for i := 0; i < numKeys; i++ {
-		fk := make([]string, len(foreignKeyNodes))
-		for k, v := range foreignKeyNodes {
-			fk[k], _ = GetRawNodeValue(v[i])
-		}
+	for _, fk := range foreignKeys {
 		ref, err := spec.FindReference(entityInfo, fk)
 		if err != nil {
 			return err

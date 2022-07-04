@@ -225,3 +225,46 @@ func (spec *LinkSpec) FindReference(entityInfo map[graph.Node]EntityInfo, fk []s
 
 	return ret, nil
 }
+
+// GetForeignKeys returns the foreign keys for the link spec given the entity root node
+func (spec *LinkSpec) GetForeignKeys(entityRoot graph.Node) ([][]string, error) {
+	// There can be multiple instances of a foreign key in an
+	// entity. ForeignKeyNdoes[i] keeps all the nodes for spec.FK[i]
+	foreignKeyNodes := make([][]graph.Node, len(spec.FK))
+	IterateDescendants(entityRoot, func(n graph.Node) bool {
+		attrId := AsPropertyValue(n.GetProperty(SchemaNodeIDTerm)).AsString()
+		if len(attrId) == 0 {
+			return true
+		}
+		for i := range spec.FK {
+			if spec.FK[i] == attrId {
+				foreignKeyNodes[i] = append(foreignKeyNodes[i], n)
+			}
+		}
+		return true
+	}, OnlyDocumentNodes, false)
+	// All foreign key elements must have the same number of elements, and no index must be skipped
+	var numKeys int
+	for index := 0; index < len(foreignKeyNodes); index++ {
+		if index == 0 {
+			numKeys = len(foreignKeyNodes[index])
+		} else {
+			if len(foreignKeyNodes[index]) != numKeys {
+				return nil, ErrInvalidForeignKeys{Spec: *spec, Msg: "Inconsistent foreign keys"}
+			}
+		}
+	}
+	// foreignKeyNodes is organized as:
+	//
+	//   0          1         2
+	// fk0_key0  fk0_key1  fk0_key2  --> foreign key 1
+	// fk1_key0  fk1_key1  fk1_key2  --> foreign key 2
+	fks := make([][]string, numKeys)
+	for i := 0; i < numKeys; i++ {
+		for key := 0; key < len(spec.FK); key++ {
+			v, _ := GetRawNodeValue(foreignKeyNodes[i][key])
+			fks[i] = append(fks[i], v)
+		}
+	}
+	return fks, nil
+}
