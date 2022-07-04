@@ -103,6 +103,9 @@ func TestValueLink(t *testing.T) {
 		t.Error(err)
 		return
 	}
+	for nodes := schemas[1].Graph.GetNodes(); nodes.Next(); {
+		fmt.Println(nodes.Node())
+	}
 	layer3, err := compiler.Compile(DefaultContext(), schemas[1].GetID())
 	if err != nil {
 		t.Error(err)
@@ -116,7 +119,9 @@ func TestValueLink(t *testing.T) {
 	builder.ValueAsNode(layer0.GetAttributeByID("https://idField"), root1, "123")
 
 	_, root3, _ := builder.ObjectAsNode(layer3.GetSchemaRootNode(), nil)
-	builder.ValueAsNode(layer3.GetAttributeByID("https://rootid"), root3, "123")
+	nd := layer3.GetAttributeByID("https://rootid")
+	fmt.Println(nd)
+	builder.ValueAsNode(nd, root3, "123")
 
 	entityInfo := GetEntityInfo(builder.GetGraph())
 	builder.LinkNodes(DefaultContext(), layer3, entityInfo)

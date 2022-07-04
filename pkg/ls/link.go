@@ -39,7 +39,7 @@ import (
     "aField": {
       "reference": "A",  // Reference to an A entity
       "fk": [aIdField]   // This is the attribute ID of a field in B that contains the A ID
-      "link": -> <-  // Edge goes to A, or edge goes to B
+      "referenceDir": -> <-  // Edge goes to A, or edge goes to B
       "multi": // Multiple references
       "ingestAs": "edge" or "node"
       "linkNode": "nodeId to create the link if aField is a value field",
@@ -52,6 +52,8 @@ The aField field may itself be a foreign key value. Then, omit fk, or use aField
 */
 
 var (
+	// ReferenceFKFor is used for value nodes that are foreign keys
+	ReferenceFKFor = NewTerm(LS+"Reference/", "fkFor", false, false, OverrideComposition, nil)
 	// ReferenceFKTerm specifies the foreign key attribute ID
 	ReferenceFKTerm = NewTerm(LS+"Reference/", "fk", false, false, OverrideComposition, nil)
 
@@ -138,10 +140,13 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 		return ls.(*LinkSpec), nil
 	}
 
-	// A reference to another entity is either a reference node, or a node that has Entity schema reference in it
+	// A reference to another entity is a reference node
 	ref := AsPropertyValue(schemaNode.GetProperty(ReferenceTerm)).AsString()
 	if len(ref) == 0 {
-		return nil, nil
+		ref = AsPropertyValue(schemaNode.GetProperty(ReferenceFKFor)).AsString()
+		if len(ref) == 0 {
+			return nil, nil
+		}
 	}
 
 	link := AsPropertyValue(schemaNode.GetProperty(ReferenceDirectionTerm))
