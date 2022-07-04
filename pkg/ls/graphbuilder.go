@@ -363,34 +363,31 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, 
 	if entityRoot == nil {
 		return ErrCannotResolveLink(*spec)
 	}
-	foreignKeyNodes := make([][]graph.Node, len(spec.FK))
-	if len(spec.FK) > 0 {
-		IterateDescendants(entityRoot, func(n graph.Node) bool {
-			attrId := AsPropertyValue(n.GetProperty(SchemaNodeIDTerm)).AsString()
-			if len(attrId) == 0 {
-				return true
-			}
-			for i := range spec.FK {
-				if spec.FK[i] == attrId {
-					foreignKeyNodes[i] = append(foreignKeyNodes[i], n)
+
+	var linkNode graph.Node
+	specIsValueNode := spec.SchemaNode.HasLabel(AttributeTypeValue)
+	if specIsValueNode {
+		if len(spec.LinkNode) != 0 {
+			WalkNodesInEntity(entityRoot, func(n graph.Node) bool {
+				if IsInstanceOf(n, spec.LinkNode) {
+					linkNode = n
+					return false
 				}
-			}
-			return true
-		}, OnlyDocumentNodes, false)
-	}
-	// All foreign key elements must have the same number of elements, and no index must be skipped
-	var numKeys int
-	for index := 0; index < len(foreignKeyNodes); index++ {
-		if index == 0 {
-			numKeys = len(foreignKeyNodes[index])
-		} else {
-			if len(foreignKeyNodes[index]) != numKeys {
-				return ErrInvalidForeignKeys{Spec: *spec, Msg: "Inconsistent foreign keys"}
-			}
+				return true
+			})
+		}
+		if linkNode == nil {
+			linkNode = entityRoot
 		}
 	}
-	if numKeys > 1 && !spec.Multi {
-		return ErrInvalidForeignKeys{Spec: *spec, Msg: "Multiple foreign key values not allowed"}
+
+	foreignKeys, err := spec.GetForeignKeys(entityRoot)
+	if err != nil {
+		return err
+	}
+	if len(foreignKeys) == 0 {
+		// Nothing to link
+		return nil
 	}
 
 	g := parentNode.GetGraph()
@@ -403,23 +400,31 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, 
 
 	link := func(ref []graph.Node) {
 		for _, linkRef := range ref {
-			if spec.IngestAs == IngestAsEdge {
-				// Node is already removed. Make an edge
+			if specIsValueNode {
 				if spec.Forward {
-					g.NewEdge(parentNode, linkRef, spec.Label, nodeProperties)
+					g.NewEdge(linkNode, linkRef, spec.Label, nodeProperties)
 				} else {
-					g.NewEdge(linkRef, parentNode, spec.Label, nodeProperties)
+					g.NewEdge(linkRef, linkNode, spec.Label, nodeProperties)
 				}
 			} else {
-				if docNode == nil {
-					docNode = gb.NewNode(spec.SchemaNode)
-					gb.targetGraph.NewEdge(parentNode, docNode, HasTerm, nil)
-				}
-				// A link from this document node to target is created
-				if spec.Forward {
-					gb.targetGraph.NewEdge(docNode, linkRef, spec.Label, nil)
+				if spec.IngestAs == IngestAsEdge {
+					// Node is already removed. Make an edge
+					if spec.Forward {
+						g.NewEdge(parentNode, linkRef, spec.Label, nodeProperties)
+					} else {
+						g.NewEdge(linkRef, parentNode, spec.Label, nodeProperties)
+					}
 				} else {
-					gb.targetGraph.NewEdge(linkRef, docNode, spec.Label, nil)
+					if docNode == nil {
+						docNode = gb.NewNode(spec.SchemaNode)
+						gb.targetGraph.NewEdge(parentNode, docNode, HasTerm, nil)
+					}
+					// A link from this document node to target is created
+					if spec.Forward {
+						gb.targetGraph.NewEdge(docNode, linkRef, spec.Label, nil)
+					} else {
+						gb.targetGraph.NewEdge(linkRef, docNode, spec.Label, nil)
+					}
 				}
 			}
 		}
@@ -434,11 +439,7 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, 
 		link(ref)
 		return nil
 	}
-	for i := 0; i < numKeys; i++ {
-		fk := make([]string, len(foreignKeyNodes))
-		for k, v := range foreignKeyNodes {
-			fk[k], _ = GetRawNodeValue(v[i])
-		}
+	for _, fk := range foreignKeys {
 		ref, err := spec.FindReference(entityInfo, fk)
 		if err != nil {
 			return err
@@ -456,6 +457,7 @@ func (gb GraphBuilder) LinkNodes(ctx *Context, schema *Layer, entityInfo map[gra
 	for nodes := schema.Graph.GetNodes(); nodes.Next(); {
 		attrNode := nodes.Node()
 		ls, err := GetLinkSpec(attrNode)
+		fmt.Printf("Node id: %s linkSpec: %v\n", GetNodeID(attrNode), ls)
 		if err != nil {
 			return err
 		}

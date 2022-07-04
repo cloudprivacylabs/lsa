@@ -128,3 +128,12 @@ func GetNodesInstanceOf(g graph.Graph, attrId string) []graph.Node {
 	}
 	return nodes
 }
+
+// IsInstanceOf returns true if g is an instance of the schema node
+func IsInstanceOf(n graph.Node, schemaNodeID string) bool {
+	p, ok := GetNodeOrSchemaProperty(n, SchemaNodeIDTerm)
+	if !ok {
+		return false
+	}
+	return p.AsString() == schemaNodeID
+}

@@ -21,6 +21,7 @@ all: content/docs/model_and_syntax/valueschema.png \
    content/docs/model_and_syntax/schemaroot.png \
   content/docs/basics/example-lpg1.png \
   content/docs/basics/example-lpg2.png \
+  content/docs/entities/link1.lr.png \
    content/Object/object_node_model.png \
 	 content/Object/object_as_node_schema.png \
 	 content/Object/object_as_node.png \

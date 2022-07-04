@@ -1,0 +1,29 @@
+digraph g {
+rankdir="TB";
+fontname="Courier";
+fontcolor="gray20";
+fontsize="10";
+color="gray20";
+n0 [shape=box  fontname="Courier"  fontsize="10"  fontcolor="gray20"  label=":Schema\n\nid=http://example.org/Person/schemaBase\l"];
+n1 [shape=box  fontname="Courier"  fontsize="10"  fontcolor="gray20"  label=":Attribute\n:Object\n:https://example.org/Person\n\nid=http://example.org/Person\lentitySchema=http://example.org/Person/schemaBase\lentityIdFields=https://example.org/Person/id\l"];
+n2 [shape=box  fontname="Courier"  fontsize="10"  fontcolor="gray20"  label=":Value\n\nattributeIndex=0\lattributeName=firstName\l"];
+n3 [shape=box  fontname="Courier"  fontsize="10"  fontcolor="gray20"  label=":Value\n\nid=https://example.org/Person/id\lattributeIndex=3\lattributeName=id\l"];
+n4 [shape=box  fontname="Courier"  fontsize="10"  fontcolor="gray20"  label=":Value\n\nattributeIndex=1\lattributeName=lastName\l"];
+n5 [shape=box  fontname="Courier"  fontsize="10"  fontcolor="gray20"  label=":Attribute\n:Array\n\nid=http://example.org/Person/contact\lattributeIndex=2\lattributeName=contact\l"];
+n6 [shape=box  fontname="Courier"  fontsize="10"  fontcolor="gray20"  label=":Attribute\n:Object\n:https://example.org/Contact\n\nid=http://example.org/Person/contact/items\lReference/ref=https://example.org/Contact\lentitySchema=http://example.org/Contact/schema\l"];
+n7 [shape=box  fontname="Courier"  fontsize="10"  fontcolor="gray20"  label=":Schema\n\nid=http://example.org/Contact/schema\l"];
+n8 [shape=box  fontname="Courier"  fontsize="10"  fontcolor="gray20"  label=":Attribute\n:Object\n:https://example.org/Contact\n\nid=http://example.org/Contact\l"];
+n9 [shape=box  fontname="Courier"  fontsize="10"  fontcolor="gray20"  label=":Value\n:Attribute\n\nid=http://example.org/Contact/type\lattributeName=type\lasProperty=type\lattributeIndex=0\l"];
+n10 [shape=box  fontname="Courier"  fontsize="10"  fontcolor="gray20"  label=":Attribute\n:Value\n\nid=http://example.org/Contact/value\lattributeName=value\lattributeIndex=1\l"];
+  n0 -> n1 [label="layer"  fontname="Courier"  fontsize="10"  fontcolor="gray20"  color="gray20" ];
+  n7 -> n8 [label="layer"  fontname="Courier"  fontsize="10"  fontcolor="gray20"  color="gray20" ];
+  n1 -> n2 [label="Object/attributes"  fontname="Courier"  fontsize="10"  fontcolor="gray20"  color="gray20" ];
+  n1 -> n4 [label="Object/attributes"  fontname="Courier"  fontsize="10"  fontcolor="gray20"  color="gray20" ];
+  n1 -> n5 [label="Object/attributes"  fontname="Courier"  fontsize="10"  fontcolor="gray20"  color="gray20" ];
+  n8 -> n9 [label="Object/attributes"  fontname="Courier"  fontsize="10"  fontcolor="gray20"  color="gray20" ];
+  n8 -> n10 [label="Object/attributes"  fontname="Courier"  fontsize="10"  fontcolor="gray20"  color="gray20" ];
+  n6 -> n9 [label="Object/attributes"  fontname="Courier"  fontsize="10"  fontcolor="gray20"  color="gray20" ];
+  n6 -> n10 [label="Object/attributes"  fontname="Courier"  fontsize="10"  fontcolor="gray20"  color="gray20" ];
+  n1 -> n3 [label="Object/attributes"  fontname="Courier"  fontsize="10"  fontcolor="gray20"  color="gray20" ];
+  n5 -> n6 [label="Array/elements"  fontname="Courier"  fontsize="10"  fontcolor="gray20"  color="gray20" ];
+}

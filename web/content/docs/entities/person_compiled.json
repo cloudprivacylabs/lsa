@@ -1,0 +1,178 @@
+{
+  "nodes": [
+    {
+      "n": 0,
+      "id": "http://example.org/Person/schemaBase",
+      "labels": [
+        "Schema"
+      ]
+    },
+    {
+      "n": 1,
+      "id": "http://example.org/Person",
+      "labels": [
+        "https://example.org/Person",
+        "Attribute",
+        "Object"
+      ],
+      "properties": {
+          "entitySchema": "http://example.org/Person/schemaBase",
+          "entityIdFields": "https://example.org/Person/id"
+      }
+    },
+    {
+      "n": 2,
+      "labels": [
+        "Value"
+      ],
+      "properties": {
+        "attributeIndex": "0",
+        "attributeName": "firstName"
+      }
+    },
+    {
+        "n": 10,
+        "id": "https://example.org/Person/id",
+      "labels": [
+        "Value"
+      ],
+      "properties": {
+        "attributeIndex": "3",
+        "attributeName": "id"
+      }
+    },
+    {
+      "n": 3,
+      "labels": [
+        "Value"
+      ],
+      "properties": {
+        "attributeIndex": "1",
+        "attributeName": "lastName"
+      }
+    },
+    {
+      "n": 4,
+      "id": "http://example.org/Person/contact",
+      "labels": [
+        "Attribute",
+        "Array"
+      ],
+      "properties": {
+        "attributeIndex": "2",
+        "attributeName": "contact"
+      }
+    },
+    {
+      "n": 5,
+      "id": "http://example.org/Person/contact/items",
+      "labels": [
+        "Attribute",
+        "Object",
+        "https://example.org/Contact"
+      ],
+      "properties": {
+        "Reference/ref": "https://example.org/Contact",
+        "entitySchema": "http://example.org/Contact/schema"
+      }
+    },
+    {
+      "n": 6,
+      "id": "http://example.org/Contact/schema",
+      "labels": [
+        "Schema"
+      ]
+    },
+    {
+      "n": 7,
+      "id": "http://example.org/Contact",
+      "labels": [
+        "https://example.org/Contact",
+        "Attribute",
+        "Object"
+      ]
+    },
+    {
+      "n": 8,
+      "id": "http://example.org/Contact/type",
+      "labels": [
+        "Value",
+        "Attribute"
+      ],
+      "properties": {
+        "asProperty": "type",
+        "attributeIndex": "0",
+        "attributeName": "type"
+      }
+    },
+    {
+      "n": 9,
+      "id": "http://example.org/Contact/value",
+      "labels": [
+        "Attribute",
+        "Value"
+      ],
+      "properties": {
+        "attributeIndex": "1",
+        "attributeName": "value"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": 0,
+      "to": 1,
+      "label": "layer"
+    },
+    {
+      "from": 6,
+      "to": 7,
+      "label": "layer"
+    },
+    {
+      "from": 1,
+      "to": 2,
+      "label": "Object/attributes"
+    },
+    {
+      "from": 1,
+      "to": 3,
+      "label": "Object/attributes"
+    },
+    {
+      "from": 1,
+      "to": 4,
+      "label": "Object/attributes"
+    },
+    {
+      "from": 7,
+      "to": 8,
+      "label": "Object/attributes"
+    },
+    {
+      "from": 7,
+      "to": 9,
+      "label": "Object/attributes"
+    },
+    {
+      "from": 5,
+      "to": 8,
+      "label": "Object/attributes"
+    },
+    {
+      "from": 5,
+      "to": 9,
+      "label": "Object/attributes"
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "label": "Array/elements"
+    },
+      {
+          "from": 1,
+          "to": 10,
+          "label": "Object/attributes"
+      }
+  ]
+}
