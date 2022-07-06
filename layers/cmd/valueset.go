@@ -541,8 +541,11 @@ func (vs *ValuesetStep) Run(pipeline *PipelineContext) error {
 	})
 
 	pipeline.Context.GetLogger().Debug(map[string]interface{}{"pipeline": "valueset"})
-	prc := ls.NewValuesetProcessor(vs.layer, vs.valuesets.Lookup, vs.Tables)
-	err := prc.ProcessGraph(pipeline.Context, builder)
+	prc, err := ls.NewValuesetProcessor(vs.layer, vs.valuesets.Lookup, vs.Tables)
+	if err != nil {
+		return err
+	}
+	err = prc.ProcessGraph(pipeline.Context, builder)
 	if err != nil {
 		return err
 	}

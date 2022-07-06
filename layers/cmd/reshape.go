@@ -47,7 +47,7 @@ map:
   - source: sourceSchemaNodeId
     target: targetSchemaNodeId
   ...
-targetSchemaNodes:
+reshapeNodes:
   targetSchemaNodeId:
     term: value
     term:

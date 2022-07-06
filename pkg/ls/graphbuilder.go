@@ -385,7 +385,7 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, 
 	if err != nil {
 		return err
 	}
-	if len(foreignKeys) == 0 {
+	if len(foreignKeys) == 0 && len(spec.FK) != 0 {
 		// Nothing to link
 		return nil
 	}

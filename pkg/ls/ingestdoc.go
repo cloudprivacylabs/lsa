@@ -195,9 +195,6 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 	case "none":
 	}
 	newCursor.input = append(newCursor.input, nil)
-	if strings.Contains(fmt.Sprint(newCursor.getOutput()), "effectiveTime") {
-		fmt.Println()
-	}
 	hasChildren := false
 	for _, child := range root.GetChildren() {
 		newCursor.input[len(newCursor.input)-1] = child

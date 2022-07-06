@@ -350,7 +350,7 @@ func (f gomentFormat) parseDate(s string) (Date, error) {
 	if err != nil {
 		return Date{}, err
 	}
-	return Date{Month: int(t.Month()), Day: t.Day(), Year: t.Year()}, nil
+	return Date{Month: int(t.Month()), Day: t.Date(), Year: t.Year()}, nil
 }
 
 func (f goFormat) parseDateTime(s string) (DateTime, error) {
@@ -368,7 +368,7 @@ func (f gomentFormat) parseDateTime(s string) (DateTime, error) {
 	if err != nil {
 		return DateTime{}, err
 	}
-	return DateTime{Month: int(t.Month()), Day: t.Day(), Year: t.Year(),
+	return DateTime{Month: int(t.Month()), Day: t.Date(), Year: t.Year(),
 		Nanoseconds: int64(t.Nanosecond()), Milliseconds: int64(t.Second() * 1000), Seconds: int64(t.Second()),
 		Minute: int64(t.Minute()), Hour: int64(t.Hour())}, nil
 }

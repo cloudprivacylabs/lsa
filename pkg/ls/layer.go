@@ -445,3 +445,29 @@ func CopySchemaNodeIntoGraph(target graph.Graph, schemaNode graph.Node) graph.No
 	}
 	return newNode
 }
+
+// GetLayerEntityRoot returns the layer entity root node containing the given schema node
+func GetLayerEntityRoot(node graph.Node) graph.Node {
+	var find func(graph.Node) graph.Node
+	seen := make(map[graph.Node]struct{})
+	find = func(root graph.Node) graph.Node {
+		if _, ok := root.GetProperty(EntitySchemaTerm); ok {
+			return root
+		}
+		if _, ok := seen[root]; ok {
+			return nil
+		}
+		seen[root] = struct{}{}
+		var ret graph.Node
+		for edges := root.GetEdges(graph.IncomingEdge); edges.Next(); {
+			edge := edges.Edge()
+			ancestor := edge.GetFrom()
+			if !ancestor.GetLabels().Has(AttributeNodeTerm) {
+				continue
+			}
+			ret = find(ancestor)
+		}
+		return ret
+	}
+	return find(node)
+}

@@ -49,7 +49,11 @@ var (
 	// valueset lookup, then the context should be set to root
 	//
 	// A node must contain either the ValuesetContextTerm or the ValuesetTablesTerm to be used in lookup
+	//
+	// If context is empty, entity root is assumed
 	ValuesetContextTerm = NewTerm(LS, "vs/context", false, false, OverrideComposition, nil)
+	// ValuesetContextExprTerm is an opencyper expression that gives the context node using "this" as the current node
+	ValuesetContextExprTerm = NewTerm(LS, "vs/contextExpr", false, false, OverrideComposition, nil)
 
 	// ValuesetTablesTerm specifies the list of table IDs to
 	// lookup. This is optional.  A node must contain either the
@@ -106,9 +110,11 @@ type ValuesetInfo struct {
 	// If the valueset lookup requires a single value, the attribute id
 	// of the source node. Otherwise, the root node containing all the
 	// required values. Results of the valueset lookup will also be
-	// inserted under this node. If this is empty, then the current node
-	// is the context node
+	// inserted under this node. If this is empty, then the entity root
+	// node is the context node
 	ContextID string
+
+	ContextExpr opencypher.Evaluatable
 
 	// Optional lookup table IDs. If omitted, all compatible tables are
 	// looked up
@@ -154,11 +160,12 @@ func (e ErrValueset) Error() string {
 
 // ValueSetInfoFromNode parses the valuese information from a
 // node. Returns nil if the node does not have valueset info
-func ValuesetInfoFromNode(node graph.Node) *ValuesetInfo {
+func ValuesetInfoFromNode(node graph.Node) (*ValuesetInfo, error) {
 	ctxp := AsPropertyValue(node.GetProperty(ValuesetContextTerm))
+	ctexpr := AsPropertyValue(node.GetProperty(ValuesetContextExprTerm))
 	tablep := AsPropertyValue(node.GetProperty(ValuesetTablesTerm))
-	if ctxp == nil && tablep == nil {
-		return nil
+	if ctexpr == nil && ctxp == nil && tablep == nil {
+		return nil, nil
 	}
 	ret := &ValuesetInfo{
 		ContextID:     ctxp.AsString(),
@@ -169,11 +176,21 @@ func ValuesetInfoFromNode(node graph.Node) *ValuesetInfo {
 		ResultValues:  AsPropertyValue(node.GetProperty(ValuesetResultValuesTerm)).MustStringSlice(),
 		SchemaNode:    node,
 	}
-	ret.RequestExprs = CompileOCSemantics{}.Compiled(node, ValuesetRequestTerm)
-	if len(ret.ContextID) == 0 {
-		ret.ContextID = GetNodeID(node)
+	if ctexpr != nil && ctexpr.IsString() {
+		var err error
+		ret.ContextExpr, err = opencypher.Parse(ctexpr.AsString())
+		if err != nil {
+			return nil, err
+		}
 	}
-	return ret
+	ret.RequestExprs = CompileOCSemantics{}.Compiled(node, ValuesetRequestTerm)
+	if len(ret.ContextID) == 0 && ret.ContextExpr == nil {
+		entityRoot := GetLayerEntityRoot(node)
+		if entityRoot != nil {
+			ret.ContextID = GetNodeID(entityRoot)
+		}
+	}
+	return ret, nil
 }
 
 // GetRequest builds a valueset service request in the form of
@@ -484,23 +501,28 @@ type ValuesetProcessor struct {
 	tables     []string
 }
 
-func NewValuesetProcessor(layer *Layer, lookupFunc func(*Context, ValuesetLookupRequest) (ValuesetLookupResponse, error), tables []string) ValuesetProcessor {
+func NewValuesetProcessor(layer *Layer, lookupFunc func(*Context, ValuesetLookupRequest) (ValuesetLookupResponse, error), tables []string) (ValuesetProcessor, error) {
 	ret := ValuesetProcessor{
 		layer:      layer,
 		lookupFunc: lookupFunc,
 		tables:     tables,
 	}
-	ret.init()
-	return ret
+	if err := ret.init(); err != nil {
+		return ret, err
+	}
+	return ret, nil
 }
 
-func (prc *ValuesetProcessor) init() {
+func (prc *ValuesetProcessor) init() error {
 	if prc.vsis != nil {
-		return
+		return nil
 	}
 	for nodes := prc.layer.Graph.GetNodes(); nodes.Next(); {
 		node := nodes.Node()
-		vsi := ValuesetInfoFromNode(node)
+		vsi, err := ValuesetInfoFromNode(node)
+		if err != nil {
+			return err
+		}
 		if vsi == nil {
 			continue
 		}
@@ -523,10 +545,12 @@ func (prc *ValuesetProcessor) init() {
 		}
 		prc.vsis = append(prc.vsis, *vsi)
 	}
+	return nil
 }
 
 func (prc *ValuesetProcessor) ProcessGraphValueset(ctx *Context, builder GraphBuilder, vsi *ValuesetInfo) error {
 	vsiDocNodes := vsi.GetDocNodes(builder.GetGraph())
+	ctx.GetLogger().Debug(map[string]interface{}{"mth": "processGraphValueset", "stage": "looking up context nodes", "vsi": vsi})
 	contextSchemaNode := prc.layer.GetAttributeByID(vsi.ContextID)
 	if contextSchemaNode == nil {
 		return nil
@@ -537,6 +561,7 @@ func (prc *ValuesetProcessor) ProcessGraphValueset(ctx *Context, builder GraphBu
 		if err != nil {
 			return err
 		}
+		ctx.GetLogger().Debug(map[string]interface{}{"mth": "processGraphValueset", "numContextNodes": len(contextNodes)})
 		for _, contextNode := range contextNodes {
 			if err := prc.ProcessByContextNode(ctx, builder, contextNode, contextSchemaNode, nil, vsi); err != nil {
 				return err

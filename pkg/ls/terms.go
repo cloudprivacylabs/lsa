@@ -66,9 +66,6 @@ var (
 	// AttributeIndexTerm represents the index of an array element
 	AttributeIndexTerm = NewTerm(LS, "attributeIndex", false, false, NoComposition, nil)
 
-	// AttributeValueTerm represents the value of an attribute
-	AttributeValueTerm = NewTerm(LS, "attributeValue", false, false, ErrorComposition, nil)
-
 	// ConditionalTerm specifies conditions for ingestion
 	ConditionalTerm = NewTerm(LS, "conditional", false, false, OverrideComposition, nil)
 

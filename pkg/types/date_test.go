@@ -369,6 +369,14 @@ var dateTests = []getSetTestCase{
 		expectedValue:    "01-02-2006 15:04:05",
 	},
 	{
+		name:          "source: PatternDate (goment), target: xsdDate",
+		srcTypes:      []string{PatternDateTerm},
+		srcValue:      "20150203",
+		srcProperties: map[string]interface{}{MomentTimeFormatTerm: ls.StringPropertyValue("YYYYMMDD")},
+		targetTypes:   []string{XSDDateTerm},
+		expectedValue: "2015-02-03",
+	},
+	{
 		name:             "source: XSDTime, target: PatternDateTime (goment)",
 		srcTypes:         []string{XSDTimeTerm},
 		srcValue:         "15:04:05Z",

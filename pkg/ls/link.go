@@ -189,11 +189,10 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 		ret.FK = fk.AsStringSlice()
 	}
 	if len(ret.FK) == 0 {
-		// Schema node must be a value
-		if !schemaNode.GetLabels().Has(AttributeTypeValue) {
-			return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "No foreign key specified, so it is assumed that this node has the foreign key value, but but the schema node is not a value attribute."}
+		// If schema node is a value node, then the node is the FK
+		if schemaNode.GetLabels().Has(AttributeTypeValue) {
+			ret.FK = []string{GetNodeID(schemaNode)}
 		}
-		ret.FK = []string{GetNodeID(schemaNode)}
 	}
 	schemaNode.SetProperty("$linkSpec", &ret)
 	return &ret, nil

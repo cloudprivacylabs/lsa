@@ -71,7 +71,11 @@ func TestBasicVS(t *testing.T) {
 		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
 	}
 
-	processor := NewValuesetProcessor(layer, vsFunc, nil)
+	processor, err := NewValuesetProcessor(layer, vsFunc, nil)
+	if err != nil {
+		t.Error(err)
+		return
+	}
 	DefaultLogLevel = LogLevelDebug
 	err = processor.ProcessGraph(DefaultContext(), builder)
 	if err != nil {
@@ -151,7 +155,11 @@ func TestBasicVSExpr(t *testing.T) {
 		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
 	}
 
-	processor := NewValuesetProcessor(layer, vsFunc, nil)
+	processor, err := NewValuesetProcessor(layer, vsFunc, nil)
+	if err != nil {
+		t.Error(err)
+		return
+	}
 	DefaultLogLevel = LogLevelDebug
 	err = processor.ProcessGraph(DefaultContext(), builder)
 	if err != nil {
@@ -245,7 +253,11 @@ func TestStructuredVS(t *testing.T) {
 	if builder.GetGraph().NumNodes() != 4 {
 		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
 	}
-	processor := NewValuesetProcessor(layer, vsFunc, nil)
+	processor, err := NewValuesetProcessor(layer, vsFunc, nil)
+	if err != nil {
+		t.Error(err)
+		return
+	}
 	DefaultLogLevel = LogLevelDebug
 	ctx := DefaultContext()
 	err = processor.ProcessGraph(ctx, builder)
