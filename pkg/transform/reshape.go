@@ -546,7 +546,7 @@ func (reshaper Reshaper) handleRow(ctx *reshapeContext, row map[string]opencyphe
 		}
 		if parent != nil {
 			if len(siblings) > 0 && !multi && !parent.HasLabel(ls.AttributeTypeArray) {
-				return false, fmt.Errorf("Multiple values in resultset for %s with types", ls.GetNodeID(schemaNode), schemaNode.GetLabels())
+				return false, fmt.Errorf("Multiple values in resultset for %s with types %s", ls.GetNodeID(schemaNode), schemaNode.GetLabels())
 			}
 		}
 		return reshaper.handleNonValueNode(ctx)
