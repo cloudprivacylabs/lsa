@@ -152,7 +152,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 	// last element of schemaPath is the schema node to reshape
 	schemaNode := ctx.getSchemaNode()
 	schemaNodeID := ls.GetNodeID(schemaNode)
-	ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID})
+	ctx.GetLogger().Debug(map[string]interface{}{"reshapeNode": schemaNodeID, "stage": "start"})
 
 	// Evaluate expressions and export values
 	for _, expr := range EvaluateTermSemantics.GetEvaluatables(reshaper.Script.GetProperties(schemaNode)) {
@@ -200,6 +200,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) (bool, error) {
 	}
 	// Script may contain a direct mapping
 	if nodeMapping := reshaper.Script.GetMappingByTarget(schemaNodeID); nodeMapping != nil {
+		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "Running map by target", "nodeMapping": nodeMapping})
 		nodes, err := reshaper.getNodeMappingNodes(ctx, nodeMapping)
 		if err != nil {
 			return false, wrapReshapeError(err, schemaNodeID)
@@ -349,6 +350,7 @@ func (reshaper Reshaper) getNodeMappingNodes(ctx *reshapeContext, mapping *NodeM
 			checkNodeProperty(node)
 		}
 	}
+	ctx.GetLogger().Debug(map[string]interface{}{"reshaper.getNodeMappingNodes.context.nnodes": len(found)})
 	return found, nil
 }
 
@@ -433,8 +435,8 @@ func (reshaper Reshaper) handle(ctx *reshapeContext, value opencypher.Value) (bo
 
 // Returns true if operation produces output
 func (reshaper Reshaper) handleValue(ctx *reshapeContext, value interface{}) (bool, error) {
-	ctx.GetLogger().Debug(map[string]interface{}{"reshape.handleValue": value})
 	schemaNode := ctx.getSchemaNode()
+	ctx.GetLogger().Debug(map[string]interface{}{"reshape.handleValue": value, "schemaNode": ls.GetNodeID(schemaNode)})
 	// We have a value. The schema node must be a value
 	if !schemaNode.HasLabel(ls.AttributeTypeValue) {
 		return false, fmt.Errorf("Schema node is not a value, but a value is given")
@@ -465,7 +467,7 @@ func (reshaper Reshaper) handleValue(ctx *reshapeContext, value interface{}) (bo
 			}
 			// Multiple siblings, no join. Is multiple allowed?
 			if ls.AsPropertyValue(reshaper.Script.GetProperties(schemaNode).GetProperty(MultipleTerm)).AsString() != "true" {
-				return false, fmt.Errorf("Multiple values in a single value context")
+				return false, fmt.Errorf("Multiple values in a single value context. Existing nodes: %v New value: %v", siblings, value)
 			}
 		}
 	}
@@ -476,16 +478,29 @@ func (reshaper Reshaper) handleValue(ctx *reshapeContext, value interface{}) (bo
 		if err != nil {
 			return false, err
 		}
-		return true, ls.SetNodeValue(newNode, value)
+		if err := ls.SetNodeValue(newNode, value); err != nil {
+			return true, err
+		}
+		ctx.builder.ValueSetAsNode(newNode, schemaNode, parent)
+		return true, nil
 
 	case "edge":
 		edge, err := ctx.builder.ValueAsEdge(schemaNode, parent, "")
 		if err != nil {
 			return false, err
 		}
-		return true, ls.SetNodeValue(edge.GetTo(), value)
+		if err := ls.SetNodeValue(edge.GetTo(), value); err != nil {
+			return true, err
+		}
+		ctx.builder.ValueSetAsEdge(edge.GetTo(), schemaNode, parent)
+		return true, nil
 	case "property":
-		return true, ctx.builder.ValueAsProperty(schemaNode, ctx.generatedPath, fmt.Sprint(value))
+		val := fmt.Sprint(value)
+		if err := ctx.builder.ValueAsProperty(schemaNode, ctx.generatedPath, val); err != nil {
+			return true, err
+		}
+		ctx.builder.ValueSetAsProperty(schemaNode, ctx.generatedPath, val)
+		return true, nil
 	}
 	return false, nil
 }
@@ -529,8 +544,10 @@ func (reshaper Reshaper) handleRow(ctx *reshapeContext, row map[string]opencyphe
 		if parent != nil {
 			siblings = ls.FindChildInstanceOf(parent, ls.GetNodeID(schemaNode))
 		}
-		if len(siblings) > 0 && !multi {
-			return false, fmt.Errorf("Multiple values in resultset for %s", ls.GetNodeID(schemaNode))
+		if parent != nil {
+			if len(siblings) > 0 && !multi && !parent.HasLabel(ls.AttributeTypeArray) {
+				return false, fmt.Errorf("Multiple values in resultset for %s with types", ls.GetNodeID(schemaNode), schemaNode.GetLabels())
+			}
 		}
 		return reshaper.handleNonValueNode(ctx)
 	}
@@ -545,6 +562,15 @@ func (reshaper Reshaper) handleNonValueNode(ctx *reshapeContext) (bool, error) {
 	parentNode := ctx.getParentGraphNode()
 	ctx.pushGeneratedNode(newNode)
 	defer ctx.popGeneratedNode()
+
+	mc, err := reshaper.evaluateMapContext(ctx)
+	if err != nil {
+		return false, nil
+	}
+	if mc {
+		defer ctx.popMapContext()
+	}
+
 	hasOutput := false
 	switch {
 	case schemaNode.HasLabel(ls.AttributeTypeObject):
@@ -607,6 +633,9 @@ func (reshaper Reshaper) handleResultSet(ctx *reshapeContext, rs opencypher.Resu
 		})
 		// Export values
 		ctx.exportVars(row)
+		ctx.GetLogger().Debug(map[string]interface{}{
+			"reshape": ls.GetNodeID(schemaNode),
+			"context": ctx.symbols})
 		mc, err := reshaper.evaluateMapContext(ctx)
 		if err != nil {
 			return false, nil

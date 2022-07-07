@@ -193,6 +193,14 @@ func (gb GraphBuilder) setEntityID(value string, parentDocumentNode, schemaNode 
 	return nil
 }
 
+// ValueSetAsEdge can be called to notify the graph builder that a value is set that was ingested as edge
+func (gb GraphBuilder) ValueSetAsEdge(node, schemaNode, parentDocumentNode graph.Node) {
+	if schemaNode != nil {
+		value, _ := GetRawNodeValue(node)
+		gb.setEntityID(value, parentDocumentNode, schemaNode)
+	}
+}
+
 //  ValueAsEdge ingests a value using the following scheme:
 //
 //  input: (name: value)
@@ -224,6 +232,14 @@ func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode graph.Node, va
 	return edge, nil
 }
 
+// ValueSetAsNode can be called to notif the graph builder that a node value is set
+func (gb GraphBuilder) ValueSetAsNode(node, schemaNode, parentDocumentNode graph.Node) {
+	if schemaNode != nil {
+		value, _ := GetRawNodeValue(node)
+		gb.setEntityID(value, parentDocumentNode, schemaNode)
+	}
+}
+
 // ValueAsNode creates a new value node. The new node has the given value
 // and the types
 func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode graph.Node, value string, types ...string) (graph.Edge, graph.Node, error) {
@@ -248,6 +264,13 @@ func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode graph.Node, va
 		edge = gb.targetGraph.NewEdge(parentDocumentNode, newNode, HasTerm, nil)
 	}
 	return edge, newNode, nil
+}
+
+// ValueSetAsProperty can be called to notify the graph builder that a node value is set
+func (gb GraphBuilder) ValueSetAsProperty(schemaNode graph.Node, graphPath []graph.Node, value string) {
+	if schemaNode != nil {
+		gb.setEntityID(value, graphPath[len(graphPath)-1], schemaNode)
+	}
 }
 
 // ValueAsProperty ingests a value as a property of an ancestor node. The ancestor

@@ -384,6 +384,13 @@ var dateTests = []getSetTestCase{
 		targetTypes:      []string{PatternDateTimeTerm},
 		expectedValue:    "15:04:05",
 	},
+	{
+		name:          "source: PatternDateTime (no format), target: xsdDate",
+		srcTypes:      []string{PatternDateTimeTerm},
+		srcValue:      "20200728000000",
+		targetTypes:   []string{XSDDateTerm},
+		expectedValue: "2020-07-28Z",
+	},
 	// {
 	// 	srcTypes:      []string{XSDDateTerm},
 	// 	srcValue:      "2006-01-2",
