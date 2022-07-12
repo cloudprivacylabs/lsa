@@ -208,10 +208,22 @@ func (gb GraphBuilder) ValueSetAsEdge(node, schemaNode, parentDocumentNode graph
 //
 // where label=attributeName (in this case "name") if edgeLabel is not
 // specified in schema.
-func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode graph.Node, value string, types ...string) (graph.Edge, error) {
+func (gb GraphBuilder) RawValueAsEdge(schemaNode, parentDocumentNode graph.Node, value string, types ...string) (graph.Edge, error) {
+	return gb.ValueAsEdge(schemaNode, parentDocumentNode, func(node graph.Node) error {
+		SetRawNodeValue(node, value)
+		return nil
+	}, types...)
+}
+
+func (gb GraphBuilder) NativeValueAsEdge(schemaNode, parentDocumentNode graph.Node, value interface{}, types ...string) (graph.Edge, error) {
+	return gb.ValueAsEdge(schemaNode, parentDocumentNode, func(node graph.Node) error {
+		return SetNodeValue(node, value)
+	}, types...)
+}
+
+func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode graph.Node, setValue func(graph.Node) error, types ...string) (graph.Edge, error) {
 	var edgeLabel string
 	if schemaNode != nil {
-		gb.setEntityID(value, parentDocumentNode, schemaNode)
 		if !schemaNode.HasLabel(AttributeTypeValue) {
 			return nil, ErrSchemaValidation{Msg: "A value is expected here"}
 		}
@@ -223,7 +235,13 @@ func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode graph.Node, va
 		return nil, nil
 	}
 	node := gb.NewNode(schemaNode)
-	SetRawNodeValue(node, value)
+	if err := setValue(node); err != nil {
+		return nil, err
+	}
+	if schemaNode != nil {
+		rawValue, _ := GetRawNodeValue(node)
+		gb.setEntityID(rawValue, parentDocumentNode, schemaNode)
+	}
 	t := node.GetLabels()
 	t.Add(types...)
 	t.Add(AttributeTypeValue)
@@ -242,9 +260,21 @@ func (gb GraphBuilder) ValueSetAsNode(node, schemaNode, parentDocumentNode graph
 
 // ValueAsNode creates a new value node. The new node has the given value
 // and the types
-func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode graph.Node, value string, types ...string) (graph.Edge, graph.Node, error) {
+func (gb GraphBuilder) RawValueAsNode(schemaNode, parentDocumentNode graph.Node, value string, types ...string) (graph.Edge, graph.Node, error) {
+	return gb.ValueAsNode(schemaNode, parentDocumentNode, func(node graph.Node) error {
+		SetRawNodeValue(node, value)
+		return nil
+	}, types...)
+}
+
+func (gb GraphBuilder) NativeValueAsNode(schemaNode, parentDocumentNode graph.Node, value interface{}, types ...string) (graph.Edge, graph.Node, error) {
+	return gb.ValueAsNode(schemaNode, parentDocumentNode, func(node graph.Node) error {
+		return SetNodeValue(node, value)
+	}, types...)
+}
+
+func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode graph.Node, setValue func(graph.Node) error, types ...string) (graph.Edge, graph.Node, error) {
 	if schemaNode != nil {
-		gb.setEntityID(value, parentDocumentNode, schemaNode)
 		if !schemaNode.HasLabel(AttributeTypeValue) {
 			return nil, nil, ErrSchemaValidation{Msg: "A value expected here"}
 		}
@@ -254,7 +284,13 @@ func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode graph.Node, va
 		}
 	}
 	newNode := gb.NewNode(schemaNode)
-	SetRawNodeValue(newNode, value)
+	if err := setValue(newNode); err != nil {
+		return nil, nil, err
+	}
+	if schemaNode != nil {
+		rawValue, _ := GetRawNodeValue(newNode)
+		gb.setEntityID(rawValue, parentDocumentNode, schemaNode)
+	}
 	t := newNode.GetLabels()
 	t.Add(types...)
 	t.Add(AttributeTypeValue)
@@ -273,13 +309,24 @@ func (gb GraphBuilder) ValueSetAsProperty(schemaNode graph.Node, graphPath []gra
 	}
 }
 
+func (gb GraphBuilder) RawValueAsProperty(schemaNode graph.Node, graphPath []graph.Node, value string) error {
+	return gb.ValueAsProperty(schemaNode, graphPath, func(node graph.Node, key string) {
+		node.SetProperty(key, StringPropertyValue(value))
+	})
+}
+
+func (gb GraphBuilder) NativeValueAsProperty(schemaNode graph.Node, graphPath []graph.Node, value interface{}) error {
+	return gb.ValueAsProperty(schemaNode, graphPath, func(node graph.Node, key string) {
+		node.SetProperty(key, StringPropertyValue(fmt.Sprint(value)))
+	})
+}
+
 // ValueAsProperty ingests a value as a property of an ancestor node. The ancestor
-func (gb GraphBuilder) ValueAsProperty(schemaNode graph.Node, graphPath []graph.Node, value string) error {
+func (gb GraphBuilder) ValueAsProperty(schemaNode graph.Node, graphPath []graph.Node, setValue func(graph.Node, string)) error {
 	// Schema node cannot be nil here
 	if schemaNode == nil {
 		return ErrInvalidInput{Msg: "Missing schema node"}
 	}
-	gb.setEntityID(value, graphPath[len(graphPath)-1], schemaNode)
 	if !schemaNode.HasLabel(AttributeTypeValue) {
 		return ErrSchemaValidation{Msg: "A value expected here"}
 	}
@@ -306,7 +353,10 @@ func (gb GraphBuilder) ValueAsProperty(schemaNode graph.Node, graphPath []graph.
 	if targetNode == nil {
 		return ErrCannotFindAncestor{SchemaNodeID: GetNodeID(schemaNode)}
 	}
-	targetNode.SetProperty(propertyName, StringPropertyValue(value))
+	setValue(targetNode, propertyName)
+	if v, ok := targetNode.GetProperty(propertyName); ok {
+		gb.setEntityID(AsPropertyValue(v, ok).AsString(), graphPath[len(graphPath)-1], schemaNode)
+	}
 	return nil
 }
 

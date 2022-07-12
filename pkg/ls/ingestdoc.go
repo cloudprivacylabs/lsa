@@ -76,6 +76,11 @@ type ParsedDocNode interface {
 	GetProperties() map[string]interface{}
 }
 
+// HasNativeValue is implemented by parsed doc nodes if the node knows its native value
+type HasNativeValue interface {
+	GetNativeValue() (interface{}, bool)
+}
+
 type ingestCursor struct {
 	input  []ParsedDocNode
 	output []graph.Node
@@ -138,9 +143,24 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 	}
 	hasData := false
 	if typeTerm == AttributeTypeValue {
+		setValue := func(node graph.Node) error {
+			SetRawNodeValue(node, root.GetValue())
+			return nil
+		}
+		hasNativeValue := false
+		var nativeValue interface{}
+		nvi, hn := root.(HasNativeValue)
+		if hn {
+			nativeValue, hasNativeValue = nvi.GetNativeValue()
+			if hasNativeValue {
+				setValue = func(node graph.Node) error {
+					return SetNodeValue(node, nativeValue)
+				}
+			}
+		}
 		switch GetIngestAs(schemaNode) {
 		case "node":
-			_, node, err := builder.ValueAsNode(schemaNode, cursor.getOutput(), root.GetValue(), root.GetValueTypes()...)
+			_, node, err := builder.ValueAsNode(schemaNode, cursor.getOutput(), setValue, root.GetValueTypes()...)
 			if err != nil {
 				return false, nil, err
 			}
@@ -151,7 +171,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 			}
 			return hasData, node, err
 		case "edge":
-			edge, err := builder.ValueAsEdge(schemaNode, cursor.getOutput(), root.GetValue(), root.GetValueTypes()...)
+			edge, err := builder.ValueAsEdge(schemaNode, cursor.getOutput(), setValue, root.GetValueTypes()...)
 			if err != nil {
 				return false, nil, err
 			}
@@ -162,7 +182,12 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 			setProp(edge.GetTo())
 			return true, edge.GetTo(), nil
 		case "property":
-			err := builder.ValueAsProperty(schemaNode, cursor.output, root.GetValue())
+			var err error
+			if hasNativeValue {
+				err = builder.NativeValueAsProperty(schemaNode, cursor.output, nativeValue)
+			} else {
+				err = builder.RawValueAsProperty(schemaNode, cursor.output, root.GetValue())
+			}
 			if err != nil {
 				return false, nil, err
 			}

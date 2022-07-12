@@ -376,18 +376,18 @@ func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, l
 		ctx.GetLogger().Debug(map[string]interface{}{"valueset.createResultNodes": "inserting", "schId": resultSchemaNodeID})
 		switch GetIngestAs(resultSchemaNode) {
 		case "node":
-			_, n, err := builder.ValueAsNode(resultSchemaNode, contextDocumentNode, resultValue)
+			_, n, err := builder.RawValueAsNode(resultSchemaNode, contextDocumentNode, resultValue)
 			if err != nil {
 				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
 			}
 			ctx.GetLogger().Debug(map[string]interface{}{"valueset.createResultNodes": "insert", "schId": resultSchemaNode, "newNode": n})
 		case "edge":
-			_, err := builder.ValueAsEdge(resultSchemaNode, contextDocumentNode, resultValue)
+			_, err := builder.RawValueAsEdge(resultSchemaNode, contextDocumentNode, resultValue)
 			if err != nil {
 				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
 			}
 		case "property":
-			err := builder.ValueAsProperty(resultSchemaNode, []graph.Node{contextDocumentNode}, resultValue)
+			err := builder.RawValueAsProperty(resultSchemaNode, []graph.Node{contextDocumentNode}, resultValue)
 			if err != nil {
 				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
 			}

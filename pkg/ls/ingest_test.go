@@ -64,7 +64,7 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 		t.Errorf("Cannot find attr3 node")
 		return
 	}
-	edge, err := builder.ValueAsEdge(attr3Node, rootNode, "VAUs")
+	edge, err := builder.RawValueAsEdge(attr3Node, rootNode, "VAUs")
 	if err != nil {
 		t.Errorf("ingest err: %v", err)
 		return
@@ -83,7 +83,7 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 		t.Errorf("Cannot find attr4 node")
 		return
 	}
-	edge, err = builder.ValueAsEdge(attr4Node, rootNode, "b")
+	edge, err = builder.RawValueAsEdge(attr4Node, rootNode, "b")
 	if err != nil {
 		t.Errorf("ingest err: %v", err)
 		return
@@ -145,7 +145,7 @@ func (tc ingestTest) testObjectAsEdge(t *testing.T) {
 		t.Errorf("Cannot find attr3 node")
 		return
 	}
-	edge2, err := builder.ValueAsEdge(attr3Node, edge.GetTo(), "3")
+	edge2, err := builder.RawValueAsEdge(attr3Node, edge.GetTo(), "3")
 	if err != nil {
 		t.Error(err)
 	}
@@ -209,7 +209,7 @@ func (tc ingestTest) TestArrayAsEdge(t *testing.T) {
 		t.Errorf("Cannot find elem node")
 		return
 	}
-	edge2, err := builder.ValueAsEdge(elemNode, edge.GetTo(), "3")
+	edge2, err := builder.RawValueAsEdge(elemNode, edge.GetTo(), "3")
 	if err != nil {
 		t.Error(err)
 	}

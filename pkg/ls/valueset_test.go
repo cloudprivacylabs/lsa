@@ -65,7 +65,7 @@ func TestBasicVS(t *testing.T) {
 		return ret, nil
 	}
 	root := builder.NewNode(layer.GetAttributeByID("schroot"))
-	builder.ValueAsNode(layer.GetAttributeByID("src"), root, "a")
+	builder.RawValueAsNode(layer.GetAttributeByID("src"), root, "a")
 	// Graph must have 2 nodes
 	if builder.GetGraph().NumNodes() != 2 {
 		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
@@ -149,7 +149,7 @@ func TestBasicVSExpr(t *testing.T) {
 		return ret, nil
 	}
 	root := builder.NewNode(layer.GetAttributeByID("schroot"))
-	builder.ValueAsNode(layer.GetAttributeByID("src"), root, "a")
+	builder.RawValueAsNode(layer.GetAttributeByID("src"), root, "a")
 	// Graph must have 2 nodes
 	if builder.GetGraph().NumNodes() != 2 {
 		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
@@ -246,8 +246,8 @@ func TestStructuredVS(t *testing.T) {
 	systemNode := layer.GetAttributeByID("system")
 
 	_, src, _ := builder.ObjectAsNode(srcNode, rootNode)
-	builder.ValueAsNode(codeNode, src, "a")
-	builder.ValueAsNode(systemNode, src, "b")
+	builder.RawValueAsNode(codeNode, src, "a")
+	builder.RawValueAsNode(systemNode, src, "b")
 
 	// Graph must have 4 nodes
 	if builder.GetGraph().NumNodes() != 4 {

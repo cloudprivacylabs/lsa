@@ -72,7 +72,7 @@ func reingestNode(ctx *ls.Context, sourceNode graph.Node, target ls.GraphBuilder
 	case sourceNode.HasLabel(ls.AttributeTypeValue):
 		switch ls.GetIngestAs(schemaNode) {
 		case "node":
-			_, node, err := target.ValueAsNode(schemaNode, parentNode, "")
+			_, node, err := target.RawValueAsNode(schemaNode, parentNode, "")
 			if err != nil {
 				return err
 			}
@@ -82,14 +82,14 @@ func reingestNode(ctx *ls.Context, sourceNode graph.Node, target ls.GraphBuilder
 			nodeMap[sourceNode] = node
 
 		case "edge":
-			edge, err := target.ValueAsEdge(schemaNode, parentNode, rawValue)
+			edge, err := target.RawValueAsEdge(schemaNode, parentNode, rawValue)
 			if err != nil {
 				return err
 			}
 			nodeMap[sourceNode] = edge.GetTo()
 
 		case "property":
-			err := target.ValueAsProperty(schemaNode, graphPath, rawValue)
+			err := target.RawValueAsProperty(schemaNode, graphPath, rawValue)
 			if err != nil {
 				return err
 			}

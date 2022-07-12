@@ -56,11 +56,11 @@ func TestBasicLink(t *testing.T) {
 		EmbedSchemaNodes: true,
 	})
 	_, root1, _ := builder.ObjectAsNode(layer0.GetSchemaRootNode(), nil)
-	builder.ValueAsNode(layer0.GetAttributeByID("https://idField"), root1, "123")
+	builder.RawValueAsNode(layer0.GetAttributeByID("https://idField"), root1, "123")
 
 	_, root2, _ := builder.ObjectAsNode(layer2.GetSchemaRootNode(), nil)
-	builder.ValueAsNode(layer2.GetAttributeByID("idField"), root2, "456")
-	builder.ValueAsNode(layer2.GetAttributeByID("https://rootid"), root2, "123")
+	builder.RawValueAsNode(layer2.GetAttributeByID("idField"), root2, "456")
+	builder.RawValueAsNode(layer2.GetAttributeByID("https://rootid"), root2, "123")
 
 	entityInfo := GetEntityInfo(builder.GetGraph())
 	builder.LinkNodes(DefaultContext(), layer2, entityInfo)
@@ -116,12 +116,12 @@ func TestValueLink(t *testing.T) {
 		EmbedSchemaNodes: true,
 	})
 	_, root1, _ := builder.ObjectAsNode(layer0.GetSchemaRootNode(), nil)
-	builder.ValueAsNode(layer0.GetAttributeByID("https://idField"), root1, "123")
+	builder.RawValueAsNode(layer0.GetAttributeByID("https://idField"), root1, "123")
 
 	_, root3, _ := builder.ObjectAsNode(layer3.GetSchemaRootNode(), nil)
 	nd := layer3.GetAttributeByID("https://rootid")
 	fmt.Println(nd)
-	builder.ValueAsNode(nd, root3, "123")
+	builder.RawValueAsNode(nd, root3, "123")
 
 	entityInfo := GetEntityInfo(builder.GetGraph())
 	builder.LinkNodes(DefaultContext(), layer3, entityInfo)
