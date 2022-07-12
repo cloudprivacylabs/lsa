@@ -1260,7 +1260,11 @@ func (XSDGMonthParser) GetNativeValue(value string, node graph.Node) (interface{
 	if len(value) == 0 {
 		return nil, nil
 	}
-	return genericDateParse(value, goFormat("01"), gomentFormat("MM"))
+	x, err := strconv.Atoi(value)
+	if err != nil {
+		return nil, err
+	}
+	return GMonth(x), nil
 }
 
 func (XSDGMonthParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
@@ -1292,7 +1296,11 @@ func (XSDGMonthDayParser) GetNativeValue(value string, node graph.Node) (interfa
 	if len(value) == 0 {
 		return nil, nil
 	}
-	return genericDateParse(value, goFormat("1-2"), goFormat("01-2"), goFormat("01-02"), gomentFormat("MM-DD"))
+	d, err := genericDateParse(value, goFormat("1-2"), goFormat("01-2"), goFormat("01-02"), gomentFormat("MM-DD"))
+	if err != nil {
+		return nil, err
+	}
+	return GMonthDay{Month: d.Month, Day: d.Day}, nil
 }
 
 func (XSDGMonthDayParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
@@ -1330,7 +1338,11 @@ func (XSDGYearParser) GetNativeValue(value string, node graph.Node) (interface{}
 	if len(value) == 0 {
 		return nil, nil
 	}
-	return genericDateParse(value, goFormat("2006"), gomentFormat("YYYY"))
+	x, err := strconv.Atoi(value)
+	if err != nil {
+		return nil, err
+	}
+	return GYear(x), nil
 }
 
 func (XSDGYearParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
@@ -1358,7 +1370,11 @@ func (XSDGYearMonthParser) GetNativeValue(value string, node graph.Node) (interf
 	if len(value) == 0 {
 		return nil, nil
 	}
-	return genericDateParse(value, goFormat("2006-01"), gomentFormat("YY-MM"))
+	d, err := genericDateParse(value, goFormat("2006-01"), gomentFormat("YY-MM"))
+	if err != nil {
+		return nil, err
+	}
+	return GYearMonth{Month: d.Month, Year: d.Year}, nil
 }
 
 func (XSDGYearMonthParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {

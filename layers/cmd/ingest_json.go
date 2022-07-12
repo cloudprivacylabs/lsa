@@ -97,6 +97,7 @@ func (ji *JSONIngester) Run(pipeline *PipelineContext) error {
 
 		parser := jsoningest.Parser{
 			OnlySchemaAttributes: ji.OnlySchemaAttributes,
+			IngestNullValues:     ji.IngestNullValues,
 		}
 		if layer != nil {
 			parser.Layer = layer

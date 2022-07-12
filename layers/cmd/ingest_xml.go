@@ -99,6 +99,7 @@ func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
 		pipeline.SetGraph(ls.NewDocumentGraph())
 		parser := xmlingest.Parser{
 			OnlySchemaAttributes: xml.OnlySchemaAttributes,
+			IngestEmptyValues:    xml.IngestNullValues,
 		}
 		if layer != nil {
 			parser.Layer = layer

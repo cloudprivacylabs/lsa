@@ -146,13 +146,50 @@ func NewReadGraphStep(cmd *cobra.Command) ReadGraphStep {
 	return rd
 }
 
+func (ReadGraphStep) Help() {
+	fmt.Println(`Read graph
+Read graph file(s)
+
+operation: readGraph
+params:`)
+}
+
 func (rd ReadGraphStep) Run(pipeline *PipelineContext) error {
-	g, err := cmdutil.ReadGraph(pipeline.InputFiles, pipeline.Context.GetInterner(), rd.Format)
-	if err != nil {
-		return err
+	if len(pipeline.InputFiles) == 0 {
+		gs, err := cmdutil.StreamGraph(pipeline, nil, pipeline.Context.GetInterner(), rd.Format)
+		if err != nil {
+			return err
+		}
+		for g := range gs {
+			if g.Err != nil {
+				return err
+			}
+			pipeline.SetGraph(g.G)
+			pipeline.Set("input", "stdin")
+			if err := pipeline.Next(); err != nil {
+				return err
+			}
+		}
 	}
-	pipeline.SetGraph(g)
-	return pipeline.Next()
+
+	for _, file := range pipeline.InputFiles {
+		pipeline.GetLogger().Debug(map[string]interface{}{"readGraph": file})
+		gs, err := cmdutil.StreamGraph(pipeline, []string{file}, pipeline.Context.GetInterner(), rd.Format)
+		if err != nil {
+			return fmt.Errorf("While reading %s: %w", file, err)
+		}
+		for g := range gs {
+			if g.Err != nil {
+				return fmt.Errorf("While reading %s: %w", file, err)
+			}
+			pipeline.SetGraph(g.G)
+			pipeline.Set("input", file)
+			if err := pipeline.Next(); err != nil {
+				return fmt.Errorf("While processing %s: %w", file, err)
+			}
+		}
+	}
+	return nil
 }
 
 type WriteGraphStep struct {
@@ -241,6 +278,11 @@ func init() {
 	pipelineCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
 
 	operations["writeGraph"] = func() Step { return &WriteGraphStep{} }
+	operations["readGraph"] = func() Step {
+		return &ReadGraphStep{
+			Format: "json",
+		}
+	}
 	operations["fork"] = func() Step { return &ForkStep{} }
 
 	oldHelp := pipelineCmd.HelpFunc()

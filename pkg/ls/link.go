@@ -61,7 +61,8 @@ var (
 	ReferenceLabelTerm = NewTerm(LS+"Reference/", "label", false, false, OverrideComposition, nil)
 
 	// ReferenceDirectionTerm specifies the direction of the edge. If
-	// "to", the edge points to the target entity. If "from", the edge points
+	// "to" or "toTarget", the edge points to the target entity.
+	// If "from" or "fromTarget", the edge points
 	// to this entity.
 	ReferenceDirectionTerm = NewTerm(LS+"Reference/", "dir", false, false, OverrideComposition, nil)
 
@@ -171,14 +172,14 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 		}
 	}
 	switch link.AsString() {
-	case "to":
+	case "to", "toTarget":
 		ret.Forward = true
-	case "from":
+	case "from", "fromTarget":
 		ret.Forward = false
 	case "":
 		return nil, nil
 	default:
-		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Direction is not one of: `to`, `from`"}
+		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Direction is not one of: `to`, `from`, `toTarget`, `fromTarget`"}
 	}
 
 	fk := AsPropertyValue(schemaNode.GetProperty(ReferenceFKTerm))
