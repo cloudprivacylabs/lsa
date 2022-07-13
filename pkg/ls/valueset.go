@@ -81,7 +81,10 @@ var (
 	ValuesetResultKeysTerm = NewTerm(LS, "vs/resultKeys", false, false, OverrideComposition, nil)
 
 	// ValuesetResultValuesTerm specifies the schema node IDs for the
-	// nodes that will receive the matching key values. If there is only one, resultKeys is optional
+	// nodes that will receive the matching key values. If there is only
+	// one, resultKeys is optional The result value nodes must be a
+	// direct descendant of one of the nodes from the document node up
+	// to the context node.
 	ValuesetResultValuesTerm = NewTerm(LS, "vs/resultValues", false, false, OverrideComposition, nil)
 )
 
@@ -364,30 +367,56 @@ func (vsi *ValuesetInfo) GetDocNodes(g graph.Graph) []graph.Node {
 	return nodes
 }
 
+// contextDocumentNode is the document node that is the context
+// root. resultSchemaNodeID is the node id of the result node. This
+// will search children of contextDocumentNode to find the parent node
+// of resultSchemaNodeID instance and if exists, resultSchemaNodeID
+// itself
+func (vsi *ValuesetInfo) findResultNodes(contextDocumentNode graph.Node, resultSchemaNodeID string) (resultParent graph.Node, resultNodes []graph.Node) {
+	IterateDescendantsp(contextDocumentNode, func(node graph.Node, path []graph.Node) bool {
+		if AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString() == resultSchemaNodeID {
+			resultNodes = []graph.Node{node}
+			return false
+		}
+		resultChildren := FindChildInstanceOf(node, resultSchemaNodeID)
+		if len(resultChildren) > 0 {
+			resultParent = node
+			resultNodes = resultChildren
+			return false
+		}
+		return true
+	}, FollowEdgesInEntity, false)
+	return
+}
+
 func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, layer *Layer, contextDocumentNode graph.Node, resultSchemaNodeID string, resultValue string) error {
 	// There is value. If there is a node, update it. Otherwise, insert it
 	resultSchemaNode := layer.GetAttributeByID(resultSchemaNodeID)
 	if resultSchemaNode == nil {
 		return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Target schema node %s does not exist in layer", resultSchemaNodeID)}
 	}
-	resultNodes := FindChildInstanceOf(contextDocumentNode, resultSchemaNodeID)
+	resultParent, resultNodes := vsi.findResultNodes(contextDocumentNode, resultSchemaNodeID)
 	switch len(resultNodes) {
 	case 0: // insert it
 		ctx.GetLogger().Debug(map[string]interface{}{"valueset.createResultNodes": "inserting", "schId": resultSchemaNodeID})
+		parent := resultParent
+		if parent == nil {
+			parent = contextDocumentNode
+		}
 		switch GetIngestAs(resultSchemaNode) {
 		case "node":
-			_, n, err := builder.RawValueAsNode(resultSchemaNode, contextDocumentNode, resultValue)
+			_, n, err := builder.RawValueAsNode(resultSchemaNode, parent, resultValue)
 			if err != nil {
 				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
 			}
 			ctx.GetLogger().Debug(map[string]interface{}{"valueset.createResultNodes": "insert", "schId": resultSchemaNode, "newNode": n})
 		case "edge":
-			_, err := builder.RawValueAsEdge(resultSchemaNode, contextDocumentNode, resultValue)
+			_, err := builder.RawValueAsEdge(resultSchemaNode, parent, resultValue)
 			if err != nil {
 				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
 			}
 		case "property":
-			err := builder.RawValueAsProperty(resultSchemaNode, []graph.Node{contextDocumentNode}, resultValue)
+			err := builder.RawValueAsProperty(resultSchemaNode, []graph.Node{parent}, resultValue)
 			if err != nil {
 				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
 			}
