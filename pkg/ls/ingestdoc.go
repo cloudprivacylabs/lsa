@@ -160,7 +160,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 		}
 		switch GetIngestAs(schemaNode) {
 		case "node":
-			_, node, err := builder.ValueAsNode(schemaNode, cursor.getOutput(), setValue, root.GetValueTypes()...)
+			_, node, err := builder.ValueAsNode(schemaNode, cursor.getOutput(), setValue)
 			if err != nil {
 				return false, nil, err
 			}
@@ -171,7 +171,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 			}
 			return hasData, node, err
 		case "edge":
-			edge, err := builder.ValueAsEdge(schemaNode, cursor.getOutput(), setValue, root.GetValueTypes()...)
+			edge, err := builder.ValueAsEdge(schemaNode, cursor.getOutput(), setValue)
 			if err != nil {
 				return false, nil, err
 			}
@@ -200,7 +200,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 	newCursor := cursor
 	switch GetIngestAs(schemaNode) {
 	case "node":
-		_, node, err := builder.CollectionAsNode(schemaNode, cursor.getOutput(), typeTerm, root.GetValueTypes()...)
+		_, node, err := builder.CollectionAsNode(schemaNode, cursor.getOutput(), typeTerm)
 		if err != nil {
 			return false, nil, err
 		}
@@ -209,7 +209,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 		newCursor.output = append(newCursor.output, node)
 		hasData = true
 	case "edge":
-		edge, err := builder.CollectionAsEdge(schemaNode, cursor.getOutput(), typeTerm, root.GetValueTypes()...)
+		edge, err := builder.CollectionAsEdge(schemaNode, cursor.getOutput(), typeTerm)
 		if err != nil {
 			return false, nil, err
 		}
