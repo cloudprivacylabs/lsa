@@ -32,5 +32,7 @@ func TestPersonPipeline(t *testing.T) {
 	json.Unmarshal(buf.Bytes(), &v)
 	if !reflect.DeepEqual(v, expected) {
 		t.Errorf("Got %v expected %v", v, expected)
+		t.Logf("Expected: %s", string(d))
+		t.Logf("Got: %s", buf.String())
 	}
 }
