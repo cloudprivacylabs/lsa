@@ -23,7 +23,16 @@ func NewDocumentGraph() graph.Graph {
 	g := graph.NewOCGraph()
 	g.AddNodePropertyIndex(EntitySchemaTerm)
 	g.AddNodePropertyIndex(SchemaNodeIDTerm)
+	for _, f := range newDocGraphHooks {
+		f(g)
+	}
 	return g
+}
+
+var newDocGraphHooks = []func(*graph.OCGraph){}
+
+func RegisterNewDocGraphHook(f func(*graph.OCGraph)) {
+	newDocGraphHooks = append(newDocGraphHooks, f)
 }
 
 // EntityInfo contains the entity information in the doc graph

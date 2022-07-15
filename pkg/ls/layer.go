@@ -34,7 +34,16 @@ type Layer struct {
 func NewLayerGraph() graph.Graph {
 	g := graph.NewOCGraph()
 	g.AddNodePropertyIndex(NodeIDTerm)
+	for _, f := range newLayerGraphHooks {
+		f(g)
+	}
 	return g
+}
+
+var newLayerGraphHooks = []func(*graph.OCGraph){}
+
+func RegisterNewLayerGraphHook(f func(*graph.OCGraph)) {
+	newLayerGraphHooks = append(newLayerGraphHooks, f)
 }
 
 // NewLayer returns a new empty layer
@@ -307,6 +316,8 @@ func (l *Layer) GetAttributePath(node graph.Node) []graph.Node {
 	return GetAttributePath(root, node)
 }
 
+// GetAttributePath returns the path from root to node. There must
+// exist exactly one path. If not, returns nil
 func GetAttributePath(root, node graph.Node) []graph.Node {
 	ret := make([]graph.Node, 0)
 	ret = append(ret, node)
@@ -321,7 +332,7 @@ func GetAttributePath(root, node graph.Node) []graph.Node {
 			}
 		}
 		if !hasEdges {
-			break
+			return nil
 		}
 	}
 	for i := 0; i < len(ret)/2; i++ {

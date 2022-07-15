@@ -46,6 +46,9 @@ func SetNodeIndex(node graph.Node, index int) {
 
 // GetNodeID returns the nodeid
 func GetNodeID(node graph.Node) string {
+	if node == nil {
+		return ""
+	}
 	v, _ := node.GetProperty(NodeIDTerm)
 	s, _ := v.(string)
 	return s

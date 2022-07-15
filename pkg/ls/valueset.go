@@ -161,7 +161,20 @@ func (e ErrValueset) Error() string {
 	return fmt.Sprintf("Value set processing error %s: %s", e.SchemaNodeID, e.Msg)
 }
 
-// ValueSetInfoFromNode parses the valuese information from a
+func init() {
+	RegisterNewDocGraphHook(func(g *graph.OCGraph) {
+		g.AddNodePropertyIndex(ValuesetContextTerm)
+		g.AddNodePropertyIndex(ValuesetContextExprTerm)
+		g.AddNodePropertyIndex(ValuesetTablesTerm)
+	})
+	RegisterNewLayerGraphHook(func(g *graph.OCGraph) {
+		g.AddNodePropertyIndex(ValuesetContextTerm)
+		g.AddNodePropertyIndex(ValuesetContextExprTerm)
+		g.AddNodePropertyIndex(ValuesetTablesTerm)
+	})
+}
+
+// ValueSetInfoFromNode parses the valueset information from a
 // node. Returns nil if the node does not have valueset info
 func ValuesetInfoFromNode(node graph.Node) (*ValuesetInfo, error) {
 	ctxp := AsPropertyValue(node.GetProperty(ValuesetContextTerm))
@@ -372,30 +385,53 @@ func (vsi *ValuesetInfo) GetDocNodes(g graph.Graph) []graph.Node {
 // will search children of contextDocumentNode to find the parent node
 // of resultSchemaNodeID instance and if exists, resultSchemaNodeID
 // itself
-func (vsi *ValuesetInfo) findResultNodes(contextDocumentNode graph.Node, resultSchemaNodeID string) (resultParent graph.Node, resultNodes []graph.Node) {
-	IterateDescendantsp(contextDocumentNode, func(node graph.Node, path []graph.Node) bool {
-		if AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString() == resultSchemaNodeID {
-			resultNodes = []graph.Node{node}
-			return false
+func (vsi *ValuesetInfo) findResultNodes(contextDocumentNode, contextSchemaNode, resultSchemaNode graph.Node) (resultParent graph.Node, resultNodes []graph.Node, err error) {
+	path := GetAttributePath(contextSchemaNode, resultSchemaNode)
+	if path == nil {
+		return nil, nil, nil
+	}
+
+	idPath := make([]string, 0, len(path))
+	for _, x := range path {
+		idPath = append(idPath, GetNodeID(x))
+	}
+
+	resultParent = contextDocumentNode
+	depth := 0
+	IterateDescendants(contextDocumentNode, func(node graph.Node) bool {
+		schemaNodeID := AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString()
+		if len(schemaNodeID) == 0 {
+			return true
 		}
-		resultChildren := FindChildInstanceOf(node, resultSchemaNodeID)
-		if len(resultChildren) > 0 {
-			resultParent = node
-			resultNodes = resultChildren
-			return false
+		for i := depth; i < len(idPath); i++ {
+			if idPath[i] == schemaNodeID {
+				depth = i + 1
+				if i == len(idPath)-1 {
+					// Found the node
+					resultNodes = []graph.Node{path[i]}
+					return false
+				}
+				// Found an ancestor
+				resultParent = node
+				break
+			}
 		}
 		return true
 	}, FollowEdgesInEntity, false)
+
 	return
 }
 
-func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, layer *Layer, contextDocumentNode graph.Node, resultSchemaNodeID string, resultValue string) error {
+func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, layer *Layer, contextDocumentNode, contextSchemaNode graph.Node, resultSchemaNodeID string, resultValue string) error {
 	// There is value. If there is a node, update it. Otherwise, insert it
 	resultSchemaNode := layer.GetAttributeByID(resultSchemaNodeID)
 	if resultSchemaNode == nil {
 		return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Target schema node %s does not exist in layer", resultSchemaNodeID)}
 	}
-	resultParent, resultNodes := vsi.findResultNodes(contextDocumentNode, resultSchemaNodeID)
+	resultParent, resultNodes, err := vsi.findResultNodes(contextDocumentNode, contextSchemaNode, resultSchemaNode)
+	if err != nil {
+		return err
+	}
 	switch len(resultNodes) {
 	case 0: // insert it
 		ctx.GetLogger().Debug(map[string]interface{}{"valueset.createResultNodes": "inserting", "schId": resultSchemaNodeID})
@@ -458,7 +494,7 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilde
 		for _, v := range result.KeyValues {
 			resultValue = v
 		}
-		if err := vsi.createResultNodes(ctx, builder, layer, contextDocumentNode, resultNodeID, resultValue); err != nil {
+		if err := vsi.createResultNodes(ctx, builder, layer, contextDocumentNode, contextSchemaNode, resultNodeID, resultValue); err != nil {
 			return err
 		}
 		return nil
@@ -479,7 +515,7 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilde
 			}
 			return nil
 		}
-		if err := vsi.createResultNodes(ctx, builder, layer, contextDocumentNode, resultNodeID, resultValue); err != nil {
+		if err := vsi.createResultNodes(ctx, builder, layer, contextDocumentNode, contextSchemaNode, resultNodeID, resultValue); err != nil {
 			return err
 		}
 	}
@@ -546,33 +582,48 @@ func (prc *ValuesetProcessor) init() error {
 	if prc.vsis != nil {
 		return nil
 	}
-	for nodes := prc.layer.Graph.GetNodes(); nodes.Next(); {
-		node := nodes.Node()
-		vsi, err := ValuesetInfoFromNode(node)
-		if err != nil {
-			return err
-		}
-		if vsi == nil {
-			continue
-		}
-		if len(prc.tables) > 0 {
-			hasTable := false
-			for _, ptable := range prc.tables {
-				for _, t := range vsi.TableIDs {
-					if t == ptable {
-						hasTable = true
+	var err error
+	seen := make(map[graph.Node]struct{})
+	scan := func(nodes graph.NodeIterator) {
+		for nodes.Next() {
+			node := nodes.Node()
+			if _, exists := seen[node]; exists {
+				continue
+			}
+			seen[node] = struct{}{}
+			vsi, e := ValuesetInfoFromNode(node)
+			if e != nil {
+				err = e
+				return
+			}
+			if vsi == nil {
+				continue
+			}
+			if len(prc.tables) > 0 {
+				hasTable := false
+				for _, ptable := range prc.tables {
+					for _, t := range vsi.TableIDs {
+						if t == ptable {
+							hasTable = true
+							break
+						}
+					}
+					if hasTable {
 						break
 					}
 				}
-				if hasTable {
-					break
+				if !hasTable {
+					continue
 				}
 			}
-			if !hasTable {
-				continue
-			}
+			prc.vsis = append(prc.vsis, *vsi)
 		}
-		prc.vsis = append(prc.vsis, *vsi)
+	}
+	scan(prc.layer.Graph.GetNodesWithProperty(ValuesetContextTerm))
+	scan(prc.layer.Graph.GetNodesWithProperty(ValuesetContextExprTerm))
+	scan(prc.layer.Graph.GetNodesWithProperty(ValuesetTablesTerm))
+	if err != nil {
+		return err
 	}
 	return nil
 }
