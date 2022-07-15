@@ -63,12 +63,12 @@ var XSDLong = ls.NewTerm(XSD, "long", false, false, ls.OverrideComposition, stru
 	SignedIntParser[int64]
 }{
 	SignedIntParser[int64]{},
-}, "xsd:long", "xs:long")
+}, "xsd:long", "xs:long", "int", "integer", ls.LS+"int", ls.LS+"integer", "ls:int", "ls:integer")
 var XSDDecimal = ls.NewTerm(XSD, "decimal", false, false, ls.OverrideComposition, struct {
 	DecimalParser
 }{
 	DecimalParser{},
-}, "xsd:decimal", "xs:decimal", "ls:float", ls.LS+"float", "ls:double", ls.LS+"double")
+}, "xsd:decimal", "xs:decimal", "ls:float", ls.LS+"float", "ls:double", ls.LS+"double", "double", "float")
 
 var XSDNegativeInteger = ls.NewTerm(XSD, "negativeInteger", false, false, ls.OverrideComposition, struct {
 	SignedIntParser[int64]
