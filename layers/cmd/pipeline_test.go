@@ -9,7 +9,7 @@ import (
 )
 
 func TestPersonPipeline(t *testing.T) {
-	steps, err := readPipeline("testdata/ingest_person_pipeline.json")
+	steps, err := ReadPipeline("testdata/ingest_person_pipeline.json")
 	if err != nil {
 		t.Error(err)
 		return
