@@ -299,7 +299,7 @@ func init() {
 	})
 }
 
-func readPipeline(file string) ([]Step, error) {
+func ReadPipeline(file string) ([]Step, error) {
 	var stepMarshals []stepMarshal
 	err := cmdutil.ReadJSONOrYAML(file, &stepMarshals)
 	if err != nil {
@@ -340,7 +340,7 @@ var pipelineCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		steps, err := readPipeline(file)
+		steps, err := ReadPipeline(file)
 		if err != nil {
 			failErr(err)
 		}
