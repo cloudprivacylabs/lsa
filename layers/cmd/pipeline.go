@@ -126,16 +126,16 @@ func (rd ReadGraphStep) Run(pipeline *pipeline.PipelineContext) error {
 		pipeline.GetLogger().Debug(map[string]interface{}{"readGraph": file})
 		gs, err = cmdutil.StreamGraph(pipeline, []string{file.Name()}, pipeline.Context.GetInterner(), rd.Format)
 		if err != nil {
-			return fmt.Errorf("While reading %s: %w", file, err)
+			return fmt.Errorf("While reading %s: %w", file.Name(), err)
 		}
 		for g := range gs {
 			if g.Err != nil {
-				return fmt.Errorf("While reading %s: %w", file, err)
+				return fmt.Errorf("While reading %s: %w", file.Name(), err)
 			}
 			pipeline.SetGraph(g.G)
 			pipeline.Set("input", file)
 			if err := pipeline.Next(); err != nil {
-				return fmt.Errorf("While processing %s: %w", file, err)
+				return fmt.Errorf("While processing %s: %w", file.Name(), err)
 			}
 		}
 	}
