@@ -71,7 +71,9 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 		if rc == nil {
 			break
 		}
-
+		if rc == nil {
+			break
+		}
 		parser := jsoningest.Parser{
 			OnlySchemaAttributes: ji.OnlySchemaAttributes,
 			IngestNullValues:     ji.IngestNullValues,

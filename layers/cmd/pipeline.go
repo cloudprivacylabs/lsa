@@ -12,6 +12,7 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher/graph"
 	"github.com/spf13/cobra"
+	"golang.org/x/text/encoding"
 )
 
 type ForkStep struct {
@@ -218,6 +219,11 @@ func runPipeline(steps []pipeline.Step, initialGraph string, inputs []string) (*
 		Graph:   g,
 		Context: getContext(),
 		NextInput: func() (io.ReadCloser, error) {
+			enc := encoding.Nop
+			if len(inputs) == 0 {
+				inp, err := cmdutil.StreamFileOrStdin(nil, enc)
+				return io.NopCloser(inp), err
+			}
 			return io.NopCloser(strings.NewReader(inputs[0])), nil
 		},
 		Steps:       steps,
