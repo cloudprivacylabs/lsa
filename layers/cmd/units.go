@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/types"
 )
@@ -109,7 +110,7 @@ params:
 	fmt.Println(baseIngestParamsHelp)
 }
 
-func (ms *MeasureStep) Run(pipeline *PipelineContext) error {
+func (ms *MeasureStep) Run(pipeline *pipeline.PipelineContext) error {
 	if !ms.initialized {
 		if ms.IsEmptySchema() {
 			ms.layer, _ = pipeline.Properties["layer"].(*ls.Layer)

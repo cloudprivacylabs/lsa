@@ -26,6 +26,8 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
@@ -61,7 +63,7 @@ params:`)
   ingestByRows: false  # If true, ingest row by row. Otherwise, ingest one file at a time.`)
 }
 
-func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
+func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 	var layer *ls.Layer
 	var err error
 	if !ci.initialized {
@@ -89,10 +91,21 @@ func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
 		return errors.New("Header row is ahead of start row")
 	}
 
-	for _, inputFile := range pipeline.InputFiles {
-		file, err := os.Open(inputFile)
+	for {
+		rc, _ := pipeline.NextInput()
+		buf := make([]byte, 1024)
+		_, err := rc.Read(buf)
 		if err != nil {
-			return fmt.Errorf("While reading input %s: %w", inputFile, err)
+			if err == io.EOF {
+				break
+			} else {
+				return fmt.Errorf("While streaming from %v: %w", rc, err)
+			}
+		}
+		defer rc.Close()
+		file, err := os.Open(cmdutil.StreamToString(rc))
+		if err != nil {
+			return fmt.Errorf("While streaming input %v: %w", rc, err)
 		}
 		reader := csv.NewReader(file)
 		if !ci.IngestByRows {
@@ -157,7 +170,7 @@ func (ci *CSVIngester) Run(pipeline *PipelineContext) error {
 		}
 		if !ci.IngestByRows {
 			if err := pipeline.Next(); err != nil {
-				return fmt.Errorf("While reading input %s: %w", inputFile, err)
+				return fmt.Errorf("While reading input %v: %w", rc, err)
 			}
 		}
 	}
@@ -175,7 +188,7 @@ func init() {
 	ingestCSVCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
 	ingestCSVCmd.Flags().Bool("byFile", false, "Ingest one file at a time. Default is row at a time.")
 
-	operations["ingest/csv"] = func() Step {
+	pipeline.Operations["ingest/csv"] = func() pipeline.Step {
 		return &CSVIngester{
 			BaseIngestParams: BaseIngestParams{
 				EmbedSchemaNodes: true,
@@ -226,7 +239,7 @@ var ingestCSVCmd = &cobra.Command{
 			return err
 		}
 		ing.IngestByRows = !byFile
-		p := []Step{
+		p := []pipeline.Step{
 			&ing,
 			NewWriteGraphStep(cmd),
 		}
