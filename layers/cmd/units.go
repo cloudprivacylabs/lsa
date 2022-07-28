@@ -21,12 +21,9 @@ import (
 	"net/http"
 	"net/url"
 
-<<<<<<< HEAD
-	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
-=======
 	"github.com/spf13/cobra"
 
->>>>>>> 9a51e2df79a16418afb61883a3db73dd22374dd2
+	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/types"
 )
@@ -161,7 +158,7 @@ func init() {
 	measuresCmd.Flags().StringSlice("schemaNodeId", nil, "Process measure processing for instances of these schema nodes only")
 	addSchemaFlags(measuresCmd.Flags())
 
-	operations["measures"] = func() Step { return &MeasureStep{} }
+	pipeline.Operations["measures"] = func() pipeline.Step { return &MeasureStep{} }
 }
 
 var measuresCmd = &cobra.Command{
@@ -174,7 +171,7 @@ var measuresCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		step := &MeasureStep{}
 		step.fromCmd(cmd)
-		p := []Step{
+		p := []pipeline.Step{
 			NewReadGraphStep(cmd),
 			step,
 			NewWriteGraphStep(cmd),

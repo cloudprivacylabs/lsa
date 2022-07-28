@@ -3,7 +3,9 @@ module github.com/cloudprivacylabs/lsa
 go 1.18
 
 require (
+	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/bserdar/jsonom v0.0.0-20211005020717-9af6d87a0e9f
+	github.com/bserdar/jsonstream v0.0.0-20190428032403-9f1769267072
 	github.com/nleeper/goment v1.4.2
 	github.com/piprate/json-gold v0.4.0
 	github.com/santhosh-tekuri/jsonschema/v3 v3.0.1
@@ -12,15 +14,6 @@ require (
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/text v0.3.7
 )
-
-<<<<<<< HEAD
-require github.com/bserdar/jsonstream v0.0.0-20190428032403-9f1769267072
-=======
-require (
-	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de // indirect
-	github.com/bserdar/jsonstream v0.0.0-20190428032403-9f1769267072 // indirect
-)
->>>>>>> 9a51e2df79a16418afb61883a3db73dd22374dd2
 
 require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
