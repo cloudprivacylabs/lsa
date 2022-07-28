@@ -74,9 +74,10 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 
 		parser := jsoningest.Parser{
 			OnlySchemaAttributes: ji.OnlySchemaAttributes,
+			IngestNullValues:     ji.IngestNullValues,
 		}
 		if layer != nil {
-			parser.SchemaNode = layer.GetSchemaRootNode()
+			parser.Layer = layer
 		}
 		pipeline.SetGraph(ls.NewDocumentGraph())
 		builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{

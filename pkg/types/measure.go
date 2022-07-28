@@ -355,7 +355,7 @@ func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNo
 		measureNodes := ls.FindChildInstanceOf(sources[0], ls.GetNodeID(measureSchemaNode))
 		if len(measureNodes) == 0 {
 			// Create one
-			_, measureNode, err = builder.ValueAsNode(measureSchemaNode, sources[0], "")
+			_, measureNode, err = builder.RawValueAsNode(measureSchemaNode, sources[0], "")
 			if err != nil {
 				return ErrMeasureProcessing{
 					ID:  ls.GetNodeID(measureSchemaNode),

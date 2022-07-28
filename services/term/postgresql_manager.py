@@ -54,13 +54,18 @@ class PostgresqlManager:
     # execute select sql command.
     def get_results(self,query,query_params):
         cursor = self.get_cursor(self)
-        result = cursor.execute(query, query_params)
-        row = result.fetchone()
-        if not row or row == None:
-            return None
         out = {}
-        for idx,col in enumerate(result.description):
-            out[col.name]=str(row[idx])
+        try:
+            result = cursor.execute(query, query_params)
+            row = result.fetchone()
+            if not row or row == None:
+                return None
+            for idx,col in enumerate(result.description):
+                out[col.name]=str(row[idx])
+        except Exception as e:
+            logging.error(traceback.format_exc())
+        finally:
+            return out
         return out
         
 

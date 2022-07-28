@@ -109,6 +109,10 @@ func (ing Parser) parseRow(ctx parserContext, row []string) (ls.ParsedDocNode, e
 		id = []string{""}
 	}
 	for columnIndex, columnData := range row {
+		columnData = strings.TrimSpace(columnData)
+		if len(columnData) == 0 && !ing.IngestNullValues {
+			continue
+		}
 		var newChild *cellNode
 		var columnName string
 		if columnIndex < len(ing.ColumnNames) {

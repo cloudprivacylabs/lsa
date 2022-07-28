@@ -38,30 +38,40 @@ import (
   B: {
     "aField": {
       "reference": "A",  // Reference to an A entity
-         or
-      "entitySchema": "A"
       "fk": [aIdField]   // This is the attribute ID of a field in B that contains the A ID
-      "link": -> <-  // Edge goes to A, or edge goes to B
+      "referenceDir": -> <-  // Edge goes to A, or edge goes to B
       "multi": // Multiple references
       "ingestAs": "edge" or "node"
+      "linkNode": "nodeId to create the link if aField is a value field",
       "label": "edgeLabel" if ingestAs=edge
     }
   }
 
+The aField field may itself be a foreign key value. Then, omit fk, or use aField ID as the fk.
 
 */
 
 var (
+	// ReferenceFKFor is used for value nodes that are foreign keys
+	ReferenceFKFor = NewTerm(LS+"Reference/", "fkFor", false, false, OverrideComposition, nil)
 	// ReferenceFKTerm specifies the foreign key attribute ID
 	ReferenceFKTerm = NewTerm(LS+"Reference/", "fk", false, false, OverrideComposition, nil)
 
 	// ReferenceLabelTerm specifies the edge label between the referenced nodes
 	ReferenceLabelTerm = NewTerm(LS+"Reference/", "label", false, false, OverrideComposition, nil)
 
-	// ReferenceLinkTerm specifies the direction of the edge. If
-	// ->, the edge points to the target entity. If <-, the edge points
+	// ReferenceDirectionTerm specifies the direction of the edge. If
+	// "to" or "toTarget", the edge points to the target entity.
+	// If "from" or "fromTarget", the edge points
 	// to this entity.
-	ReferenceLinkTerm = NewTerm(LS+"Reference/", "link", false, false, OverrideComposition, nil)
+	ReferenceDirectionTerm = NewTerm(LS+"Reference/", "dir", false, false, OverrideComposition, nil)
+
+	// ReferenceLinkNodeTerm specifies the node in the current entity
+	// that will be linked to the other entity. If the references are
+	// defined in a Reference type node, then the node itself if the
+	// link. Otherwise, this gives the node that must be linked to the
+	// other entity.
+	ReferenceLinkNodeTerm = NewTerm(LS+"Reference/", "linkNode", false, false, OverrideComposition, nil)
 
 	// ReferenceMultiTerm specifies if there can be more than one link targets
 	ReferenceMultiTerm = NewTerm(LS+"Reference/", "multi", false, false, OverrideComposition, nil)
@@ -112,6 +122,9 @@ type LinkSpec struct {
 	// If true, the link is from this entity to the target. If false,
 	// the link is from the target to this.
 	Forward bool
+	// If the schema node is not a reference node, then this is the node
+	// that should receive the link
+	LinkNode string
 	// If true, the reference can have more than one links
 	Multi bool
 	// IngestAs node or edge
@@ -128,16 +141,16 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 		return ls.(*LinkSpec), nil
 	}
 
-	// A reference to another entity is either a reference node, or a node that has Entity schema reference in it
+	// A reference to another entity is a reference node
 	ref := AsPropertyValue(schemaNode.GetProperty(ReferenceTerm)).AsString()
 	if len(ref) == 0 {
-		ref = AsPropertyValue(schemaNode.GetProperty(EntitySchemaTerm)).AsString()
+		ref = AsPropertyValue(schemaNode.GetProperty(ReferenceFKFor)).AsString()
 		if len(ref) == 0 {
 			return nil, nil
 		}
 	}
 
-	link := AsPropertyValue(schemaNode.GetProperty(ReferenceLinkTerm))
+	link := AsPropertyValue(schemaNode.GetProperty(ReferenceDirectionTerm))
 	if link == nil {
 		return nil, nil
 	}
@@ -151,20 +164,24 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 	if len(ret.Label) == 0 {
 		ret.Label = AsPropertyValue(schemaNode.GetProperty(AttributeNameTerm)).AsString()
 	}
+	if !schemaNode.GetLabels().Has(AttributeTypeReference) {
+		ret.LinkNode = AsPropertyValue(schemaNode.GetProperty(ReferenceLinkNodeTerm)).AsString()
+	} else {
+		if ret.IngestAs != IngestAsNode && ret.IngestAs != IngestAsEdge {
+			return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Invalid ingestAs for link"}
+		}
+	}
 	switch link.AsString() {
-	case "to":
+	case "to", "toTarget":
 		ret.Forward = true
-	case "from":
+	case "from", "fromTarget":
 		ret.Forward = false
 	case "":
 		return nil, nil
 	default:
-		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Direction is not one of: `to`, `from`"}
+		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Direction is not one of: `to`, `from`, `toTarget`, `fromTarget`"}
 	}
 
-	if ret.IngestAs != IngestAsNode && ret.IngestAs != IngestAsEdge {
-		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Invalid ingestAs for link"}
-	}
 	fk := AsPropertyValue(schemaNode.GetProperty(ReferenceFKTerm))
 	if fk.IsString() {
 		ret.FK = []string{fk.AsString()}
@@ -173,7 +190,10 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 		ret.FK = fk.AsStringSlice()
 	}
 	if len(ret.FK) == 0 {
-		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Empty foreign key"}
+		// If schema node is a value node, then the node is the FK
+		if schemaNode.GetLabels().Has(AttributeTypeValue) {
+			ret.FK = []string{GetNodeID(schemaNode)}
+		}
 	}
 	schemaNode.SetProperty("$linkSpec", &ret)
 	return &ret, nil
@@ -192,7 +212,7 @@ func (spec *LinkSpec) FindReference(entityInfo map[graph.Node]EntityInfo, fk []s
 		}
 		if exists || ei.GetEntitySchema() == spec.TargetEntity {
 			id := ei.GetID()
-			if len(id) != len(fk) {
+			if len(fk) > 0 && len(id) != len(fk) {
 				continue
 			}
 			found := true
@@ -209,4 +229,47 @@ func (spec *LinkSpec) FindReference(entityInfo map[graph.Node]EntityInfo, fk []s
 	}
 
 	return ret, nil
+}
+
+// GetForeignKeys returns the foreign keys for the link spec given the entity root node
+func (spec *LinkSpec) GetForeignKeys(entityRoot graph.Node) ([][]string, error) {
+	// There can be multiple instances of a foreign key in an
+	// entity. ForeignKeyNdoes[i] keeps all the nodes for spec.FK[i]
+	foreignKeyNodes := make([][]graph.Node, len(spec.FK))
+	IterateDescendants(entityRoot, func(n graph.Node) bool {
+		attrId := AsPropertyValue(n.GetProperty(SchemaNodeIDTerm)).AsString()
+		if len(attrId) == 0 {
+			return true
+		}
+		for i := range spec.FK {
+			if spec.FK[i] == attrId {
+				foreignKeyNodes[i] = append(foreignKeyNodes[i], n)
+			}
+		}
+		return true
+	}, OnlyDocumentNodes, false)
+	// All foreign key elements must have the same number of elements, and no index must be skipped
+	var numKeys int
+	for index := 0; index < len(foreignKeyNodes); index++ {
+		if index == 0 {
+			numKeys = len(foreignKeyNodes[index])
+		} else {
+			if len(foreignKeyNodes[index]) != numKeys {
+				return nil, ErrInvalidForeignKeys{Spec: *spec, Msg: "Inconsistent foreign keys"}
+			}
+		}
+	}
+	// foreignKeyNodes is organized as:
+	//
+	//   0          1         2
+	// fk0_key0  fk0_key1  fk0_key2  --> foreign key 1
+	// fk1_key0  fk1_key1  fk1_key2  --> foreign key 2
+	fks := make([][]string, numKeys)
+	for i := 0; i < numKeys; i++ {
+		for key := 0; key < len(spec.FK); key++ {
+			v, _ := GetRawNodeValue(foreignKeyNodes[i][key])
+			fks[i] = append(fks[i], v)
+		}
+	}
+	return fks, nil
 }

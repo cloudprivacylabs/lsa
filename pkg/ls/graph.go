@@ -46,6 +46,9 @@ func SetNodeIndex(node graph.Node, index int) {
 
 // GetNodeID returns the nodeid
 func GetNodeID(node graph.Node) string {
+	if node == nil {
+		return ""
+	}
 	v, _ := node.GetProperty(NodeIDTerm)
 	s, _ := v.(string)
 	return s
@@ -256,16 +259,23 @@ var OnlyDocumentNodes = FollowEdgesToNodeWithType(DocumentNodeTerm)
 // DontFollowEdgeResult, edge is skipped. If edgeFunc returns
 // StopEdgeResult, iteration stops.
 func IterateDescendants(from graph.Node, nodeFunc func(graph.Node) bool, edgeFunc func(graph.Edge) EdgeFuncResult, ordered bool) bool {
-	return iterateDescendants(from, nodeFunc, edgeFunc, ordered, map[graph.Node]struct{}{})
+	return iterateDescendants(from, func(node graph.Node, _ []graph.Node) bool {
+		return nodeFunc(node)
+	}, edgeFunc, ordered, make([]graph.Node, 0, 16), map[graph.Node]struct{}{})
 }
 
-func iterateDescendants(root graph.Node, nodeFunc func(graph.Node) bool, edgeFunc func(graph.Edge) EdgeFuncResult, ordered bool, seen map[graph.Node]struct{}) bool {
+func IterateDescendantsp(from graph.Node, nodeFunc func(graph.Node, []graph.Node) bool, edgeFunc func(graph.Edge) EdgeFuncResult, ordered bool) bool {
+	return iterateDescendants(from, nodeFunc, edgeFunc, ordered, make([]graph.Node, 0, 16), map[graph.Node]struct{}{})
+}
+
+func iterateDescendants(root graph.Node, nodeFunc func(graph.Node, []graph.Node) bool, edgeFunc func(graph.Edge) EdgeFuncResult, ordered bool, path []graph.Node, seen map[graph.Node]struct{}) bool {
 	if _, exists := seen[root]; exists {
 		return true
 	}
 	seen[root] = struct{}{}
 
-	if nodeFunc != nil && !nodeFunc(root) {
+	path = append(path, root)
+	if nodeFunc != nil && !nodeFunc(root, path) {
 		return false
 	}
 
@@ -286,7 +296,7 @@ func iterateDescendants(root graph.Node, nodeFunc func(graph.Node) bool, edgeFun
 		case SkipEdgeResult:
 		case FollowEdgeResult:
 			next := edge.GetTo()
-			if !iterateDescendants(next, nodeFunc, edgeFunc, ordered, seen) {
+			if !iterateDescendants(next, nodeFunc, edgeFunc, ordered, path, seen) {
 				return false
 			}
 		}

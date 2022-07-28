@@ -37,5 +37,12 @@ func IngestStream(ctx *ls.Context, baseID string, input io.Reader, parser Parser
 	if err != nil {
 		return nil, err
 	}
-	return ls.Ingest(builder, pd)
+	root, err := ls.Ingest(builder, pd)
+	if err != nil {
+		return nil, err
+	}
+	if err := builder.LinkNodes(ctx, parser.Layer, ls.GetEntityInfo(builder.GetGraph())); err != nil {
+		return nil, err
+	}
+	return root, nil
 }

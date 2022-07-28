@@ -23,7 +23,16 @@ func NewDocumentGraph() graph.Graph {
 	g := graph.NewOCGraph()
 	g.AddNodePropertyIndex(EntitySchemaTerm)
 	g.AddNodePropertyIndex(SchemaNodeIDTerm)
+	for _, f := range newDocGraphHooks {
+		f(g)
+	}
 	return g
+}
+
+var newDocGraphHooks = []func(*graph.OCGraph){}
+
+func RegisterNewDocGraphHook(f func(*graph.OCGraph)) {
+	newDocGraphHooks = append(newDocGraphHooks, f)
 }
 
 // EntityInfo contains the entity information in the doc graph
@@ -41,9 +50,9 @@ func (e EntityInfo) GetValueType() []string {
 	return FilterNonLayerTypes(e.root.GetLabels().Slice())
 }
 
-// GetEntityRootNodes returns all the nodes that are entity roots,
+// GetEntityInfo returns all the nodes that are entity roots,
 // i.e. nodes containing EntitySchemaTerm
-func GetEntityRootNodes(g graph.Graph) map[graph.Node]EntityInfo {
+func GetEntityInfo(g graph.Graph) map[graph.Node]EntityInfo {
 	ret := make(map[graph.Node]EntityInfo)
 	for nodes := g.GetNodesWithProperty(EntitySchemaTerm); nodes.Next(); {
 		node := nodes.Node()
@@ -127,4 +136,13 @@ func GetNodesInstanceOf(g graph.Graph, attrId string) []graph.Node {
 		panic(err)
 	}
 	return nodes
+}
+
+// IsInstanceOf returns true if g is an instance of the schema node
+func IsInstanceOf(n graph.Node, schemaNodeID string) bool {
+	p, ok := GetNodeOrSchemaProperty(n, SchemaNodeIDTerm)
+	if !ok {
+		return false
+	}
+	return p.AsString() == schemaNodeID
 }

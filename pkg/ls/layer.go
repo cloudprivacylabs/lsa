@@ -34,7 +34,16 @@ type Layer struct {
 func NewLayerGraph() graph.Graph {
 	g := graph.NewOCGraph()
 	g.AddNodePropertyIndex(NodeIDTerm)
+	for _, f := range newLayerGraphHooks {
+		f(g)
+	}
 	return g
+}
+
+var newLayerGraphHooks = []func(*graph.OCGraph){}
+
+func RegisterNewLayerGraphHook(f func(*graph.OCGraph)) {
+	newLayerGraphHooks = append(newLayerGraphHooks, f)
 }
 
 // NewLayer returns a new empty layer
@@ -106,6 +115,9 @@ func (l *Layer) GetOverlayAttributes() []graph.Node {
 
 // GetSchemaRootNode returns the root node of the object defined by the schema
 func (l *Layer) GetSchemaRootNode() graph.Node {
+	if l == nil {
+		return nil
+	}
 	x := graph.TargetNodes(l.layerInfo.GetEdgesWithLabel(graph.OutgoingEdge, LayerRootTerm))
 	if len(x) != 1 {
 		return nil
@@ -291,7 +303,7 @@ func (l *Layer) ForEachAttributeOrdered(f func(graph.Node, []graph.Node) bool) b
 func GetParentAttribute(node graph.Node) graph.Node {
 	for edges := node.GetEdges(graph.IncomingEdge); edges.Next(); {
 		edge := edges.Edge()
-		if IsAttributeTreeEdge(edge) && IsAttributeNode(edge.GetFrom()) {
+		if IsAttributeTreeEdge(edge) && IsAttributeNode(edge.GetFrom()) && !IsCompilationArtifact(edge) {
 			return edge.GetFrom()
 		}
 	}
@@ -304,6 +316,8 @@ func (l *Layer) GetAttributePath(node graph.Node) []graph.Node {
 	return GetAttributePath(root, node)
 }
 
+// GetAttributePath returns the path from root to node. There must
+// exist exactly one path. If not, returns nil
 func GetAttributePath(root, node graph.Node) []graph.Node {
 	ret := make([]graph.Node, 0)
 	ret = append(ret, node)
@@ -318,7 +332,7 @@ func GetAttributePath(root, node graph.Node) []graph.Node {
 			}
 		}
 		if !hasEdges {
-			break
+			return nil
 		}
 	}
 	for i := 0; i < len(ret)/2; i++ {
@@ -441,4 +455,30 @@ func CopySchemaNodeIntoGraph(target graph.Graph, schemaNode graph.Node) graph.No
 		graph.CopyEdge(edge, target, ClonePropertyValueFunc, nodeMap)
 	}
 	return newNode
+}
+
+// GetLayerEntityRoot returns the layer entity root node containing the given schema node
+func GetLayerEntityRoot(node graph.Node) graph.Node {
+	var find func(graph.Node) graph.Node
+	seen := make(map[graph.Node]struct{})
+	find = func(root graph.Node) graph.Node {
+		if _, ok := root.GetProperty(EntitySchemaTerm); ok {
+			return root
+		}
+		if _, ok := seen[root]; ok {
+			return nil
+		}
+		seen[root] = struct{}{}
+		var ret graph.Node
+		for edges := root.GetEdges(graph.IncomingEdge); edges.Next(); {
+			edge := edges.Edge()
+			ancestor := edge.GetFrom()
+			if !ancestor.GetLabels().Has(AttributeNodeTerm) {
+				continue
+			}
+			ret = find(ancestor)
+		}
+		return ret
+	}
+	return find(node)
 }

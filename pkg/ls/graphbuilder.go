@@ -193,6 +193,14 @@ func (gb GraphBuilder) setEntityID(value string, parentDocumentNode, schemaNode 
 	return nil
 }
 
+// ValueSetAsEdge can be called to notify the graph builder that a value is set that was ingested as edge
+func (gb GraphBuilder) ValueSetAsEdge(node, schemaNode, parentDocumentNode graph.Node) {
+	if schemaNode != nil {
+		value, _ := GetRawNodeValue(node)
+		gb.setEntityID(value, parentDocumentNode, schemaNode)
+	}
+}
+
 //  ValueAsEdge ingests a value using the following scheme:
 //
 //  input: (name: value)
@@ -200,10 +208,22 @@ func (gb GraphBuilder) setEntityID(value string, parentDocumentNode, schemaNode 
 //
 // where label=attributeName (in this case "name") if edgeLabel is not
 // specified in schema.
-func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode graph.Node, value string, types ...string) (graph.Edge, error) {
+func (gb GraphBuilder) RawValueAsEdge(schemaNode, parentDocumentNode graph.Node, value string, types ...string) (graph.Edge, error) {
+	return gb.ValueAsEdge(schemaNode, parentDocumentNode, func(node graph.Node) error {
+		SetRawNodeValue(node, value)
+		return nil
+	}, types...)
+}
+
+func (gb GraphBuilder) NativeValueAsEdge(schemaNode, parentDocumentNode graph.Node, value interface{}, types ...string) (graph.Edge, error) {
+	return gb.ValueAsEdge(schemaNode, parentDocumentNode, func(node graph.Node) error {
+		return SetNodeValue(node, value)
+	}, types...)
+}
+
+func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode graph.Node, setValue func(graph.Node) error, types ...string) (graph.Edge, error) {
 	var edgeLabel string
 	if schemaNode != nil {
-		gb.setEntityID(value, parentDocumentNode, schemaNode)
 		if !schemaNode.HasLabel(AttributeTypeValue) {
 			return nil, ErrSchemaValidation{Msg: "A value is expected here"}
 		}
@@ -215,7 +235,13 @@ func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode graph.Node, va
 		return nil, nil
 	}
 	node := gb.NewNode(schemaNode)
-	SetRawNodeValue(node, value)
+	if err := setValue(node); err != nil {
+		return nil, err
+	}
+	if schemaNode != nil {
+		rawValue, _ := GetRawNodeValue(node)
+		gb.setEntityID(rawValue, parentDocumentNode, schemaNode)
+	}
 	t := node.GetLabels()
 	t.Add(types...)
 	t.Add(AttributeTypeValue)
@@ -224,11 +250,31 @@ func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode graph.Node, va
 	return edge, nil
 }
 
+// ValueSetAsNode can be called to notif the graph builder that a node value is set
+func (gb GraphBuilder) ValueSetAsNode(node, schemaNode, parentDocumentNode graph.Node) {
+	if schemaNode != nil {
+		value, _ := GetRawNodeValue(node)
+		gb.setEntityID(value, parentDocumentNode, schemaNode)
+	}
+}
+
 // ValueAsNode creates a new value node. The new node has the given value
 // and the types
-func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode graph.Node, value string, types ...string) (graph.Edge, graph.Node, error) {
+func (gb GraphBuilder) RawValueAsNode(schemaNode, parentDocumentNode graph.Node, value string, types ...string) (graph.Edge, graph.Node, error) {
+	return gb.ValueAsNode(schemaNode, parentDocumentNode, func(node graph.Node) error {
+		SetRawNodeValue(node, value)
+		return nil
+	}, types...)
+}
+
+func (gb GraphBuilder) NativeValueAsNode(schemaNode, parentDocumentNode graph.Node, value interface{}, types ...string) (graph.Edge, graph.Node, error) {
+	return gb.ValueAsNode(schemaNode, parentDocumentNode, func(node graph.Node) error {
+		return SetNodeValue(node, value)
+	}, types...)
+}
+
+func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode graph.Node, setValue func(graph.Node) error, types ...string) (graph.Edge, graph.Node, error) {
 	if schemaNode != nil {
-		gb.setEntityID(value, parentDocumentNode, schemaNode)
 		if !schemaNode.HasLabel(AttributeTypeValue) {
 			return nil, nil, ErrSchemaValidation{Msg: "A value expected here"}
 		}
@@ -238,7 +284,13 @@ func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode graph.Node, va
 		}
 	}
 	newNode := gb.NewNode(schemaNode)
-	SetRawNodeValue(newNode, value)
+	if err := setValue(newNode); err != nil {
+		return nil, nil, err
+	}
+	if schemaNode != nil {
+		rawValue, _ := GetRawNodeValue(newNode)
+		gb.setEntityID(rawValue, parentDocumentNode, schemaNode)
+	}
 	t := newNode.GetLabels()
 	t.Add(types...)
 	t.Add(AttributeTypeValue)
@@ -250,13 +302,31 @@ func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode graph.Node, va
 	return edge, newNode, nil
 }
 
+// ValueSetAsProperty can be called to notify the graph builder that a node value is set
+func (gb GraphBuilder) ValueSetAsProperty(schemaNode graph.Node, graphPath []graph.Node, value string) {
+	if schemaNode != nil {
+		gb.setEntityID(value, graphPath[len(graphPath)-1], schemaNode)
+	}
+}
+
+func (gb GraphBuilder) RawValueAsProperty(schemaNode graph.Node, graphPath []graph.Node, value string) error {
+	return gb.ValueAsProperty(schemaNode, graphPath, func(node graph.Node, key string) {
+		node.SetProperty(key, StringPropertyValue(value))
+	})
+}
+
+func (gb GraphBuilder) NativeValueAsProperty(schemaNode graph.Node, graphPath []graph.Node, value interface{}) error {
+	return gb.ValueAsProperty(schemaNode, graphPath, func(node graph.Node, key string) {
+		node.SetProperty(key, StringPropertyValue(fmt.Sprint(value)))
+	})
+}
+
 // ValueAsProperty ingests a value as a property of an ancestor node. The ancestor
-func (gb GraphBuilder) ValueAsProperty(schemaNode graph.Node, graphPath []graph.Node, value string) error {
+func (gb GraphBuilder) ValueAsProperty(schemaNode graph.Node, graphPath []graph.Node, setValue func(graph.Node, string)) error {
 	// Schema node cannot be nil here
 	if schemaNode == nil {
 		return ErrInvalidInput{Msg: "Missing schema node"}
 	}
-	gb.setEntityID(value, graphPath[len(graphPath)-1], schemaNode)
 	if !schemaNode.HasLabel(AttributeTypeValue) {
 		return ErrSchemaValidation{Msg: "A value expected here"}
 	}
@@ -283,7 +353,10 @@ func (gb GraphBuilder) ValueAsProperty(schemaNode graph.Node, graphPath []graph.
 	if targetNode == nil {
 		return ErrCannotFindAncestor{SchemaNodeID: GetNodeID(schemaNode)}
 	}
-	targetNode.SetProperty(propertyName, StringPropertyValue(value))
+	setValue(targetNode, propertyName)
+	if v, ok := targetNode.GetProperty(propertyName); ok {
+		gb.setEntityID(AsPropertyValue(v, ok).AsString(), graphPath[len(graphPath)-1], schemaNode)
+	}
 	return nil
 }
 
@@ -363,36 +436,31 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, 
 	if entityRoot == nil {
 		return ErrCannotResolveLink(*spec)
 	}
-	foreignKeyNodes := make([][]graph.Node, len(spec.FK))
-	IterateDescendants(entityRoot, func(n graph.Node) bool {
-		attrId := AsPropertyValue(n.GetProperty(SchemaNodeIDTerm)).AsString()
-		if len(attrId) == 0 {
-			return true
+
+	var linkNode graph.Node
+	specIsValueNode := spec.SchemaNode.HasLabel(AttributeTypeValue)
+	if specIsValueNode {
+		if len(spec.LinkNode) != 0 {
+			WalkNodesInEntity(entityRoot, func(n graph.Node) bool {
+				if IsInstanceOf(n, spec.LinkNode) {
+					linkNode = n
+					return false
+				}
+				return true
+			})
 		}
-		for i := range spec.FK {
-			if spec.FK[i] == attrId {
-				foreignKeyNodes[i] = append(foreignKeyNodes[i], n)
-			}
-		}
-		return true
-	}, OnlyDocumentNodes, false)
-	// All foreign key elements must have the same number of elements, and no index must be skipped
-	var numKeys int
-	for index := 0; index < len(foreignKeyNodes); index++ {
-		if index == 0 {
-			numKeys = len(foreignKeyNodes[index])
-		} else {
-			if len(foreignKeyNodes[index]) != numKeys {
-				return ErrInvalidForeignKeys{Spec: *spec, Msg: "Inconsistent foreign keys"}
-			}
+		if linkNode == nil {
+			linkNode = entityRoot
 		}
 	}
-	if numKeys == 0 {
+
+	foreignKeys, err := spec.GetForeignKeys(entityRoot)
+	if err != nil {
+		return err
+	}
+	if len(foreignKeys) == 0 && len(spec.FK) != 0 {
 		// Nothing to link
 		return nil
-	}
-	if numKeys > 1 && !spec.Multi {
-		return ErrInvalidForeignKeys{Spec: *spec, Msg: "Multiple foreign key values not allowed"}
 	}
 
 	g := parentNode.GetGraph()
@@ -403,12 +471,48 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, 
 		docNode.DetachAndRemove()
 	}
 
-	// Find remote references
-	for i := 0; i < numKeys; i++ {
-		fk := make([]string, len(foreignKeyNodes))
-		for k, v := range foreignKeyNodes {
-			fk[k], _ = GetRawNodeValue(v[i])
+	link := func(ref []graph.Node) {
+		for _, linkRef := range ref {
+			if specIsValueNode {
+				if spec.Forward {
+					g.NewEdge(linkNode, linkRef, spec.Label, nodeProperties)
+				} else {
+					g.NewEdge(linkRef, linkNode, spec.Label, nodeProperties)
+				}
+			} else {
+				if spec.IngestAs == IngestAsEdge {
+					// Node is already removed. Make an edge
+					if spec.Forward {
+						g.NewEdge(parentNode, linkRef, spec.Label, nodeProperties)
+					} else {
+						g.NewEdge(linkRef, parentNode, spec.Label, nodeProperties)
+					}
+				} else {
+					if docNode == nil {
+						docNode = gb.NewNode(spec.SchemaNode)
+						gb.targetGraph.NewEdge(parentNode, docNode, HasTerm, nil)
+					}
+					// A link from this document node to target is created
+					if spec.Forward {
+						gb.targetGraph.NewEdge(docNode, linkRef, spec.Label, nil)
+					} else {
+						gb.targetGraph.NewEdge(linkRef, docNode, spec.Label, nil)
+					}
+				}
+			}
 		}
+	}
+
+	// Find remote references
+	if len(spec.FK) == 0 {
+		ref, err := spec.FindReference(entityInfo, spec.FK)
+		if err != nil {
+			return err
+		}
+		link(ref)
+		return nil
+	}
+	for _, fk := range foreignKeys {
 		ref, err := spec.FindReference(entityInfo, fk)
 		if err != nil {
 			return err
@@ -416,33 +520,13 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, 
 		if len(ref) == 0 {
 			continue
 		}
-		for _, linkRef := range ref {
-			if spec.IngestAs == IngestAsEdge {
-				// Node is already removed. Make an edge
-				if spec.Forward {
-					g.NewEdge(parentNode, linkRef, spec.Label, nodeProperties)
-				} else {
-					g.NewEdge(linkRef, parentNode, spec.Label, nodeProperties)
-				}
-			} else {
-				if docNode == nil {
-					docNode = gb.NewNode(spec.SchemaNode)
-					gb.targetGraph.NewEdge(parentNode, docNode, HasTerm, nil)
-				}
-				// A link from this document node to target is created
-				if spec.Forward {
-					gb.targetGraph.NewEdge(docNode, linkRef, spec.Label, nil)
-				} else {
-					gb.targetGraph.NewEdge(linkRef, docNode, spec.Label, nil)
-				}
-			}
-		}
+		link(ref)
 	}
 
 	return nil
 }
 
-func (gb GraphBuilder) LinkNodes(schema *Layer, entityInfo map[graph.Node]EntityInfo) error {
+func (gb GraphBuilder) LinkNodes(ctx *Context, schema *Layer, entityInfo map[graph.Node]EntityInfo) error {
 	for nodes := schema.Graph.GetNodes(); nodes.Next(); {
 		attrNode := nodes.Node()
 		ls, err := GetLinkSpec(attrNode)
@@ -453,10 +537,13 @@ func (gb GraphBuilder) LinkNodes(schema *Layer, entityInfo map[graph.Node]Entity
 			continue
 		}
 		attrId := GetNodeID(attrNode)
+		ctx.GetLogger().Debug(map[string]interface{}{"graphBuilder": "linkNodes", "linking": attrId})
 		// Found a link spec. Find corresponding parent nodes in the document
 		parentSchemaNode := GetParentAttribute(attrNode)
 		// Find nodes that are instance of this node
-		parentDocNodes := GetNodesInstanceOf(gb.targetGraph, GetNodeID(parentSchemaNode))
+		parentSchemaNodeID := GetNodeID(parentSchemaNode)
+		parentDocNodes := GetNodesInstanceOf(gb.targetGraph, parentSchemaNodeID)
+		ctx.GetLogger().Debug(map[string]interface{}{"graphBuilder": "linkNodes", "parentSchemaNodeID": parentSchemaNodeID})
 		for _, parent := range parentDocNodes {
 			// Each parent node has at least one reference node child
 			childFound := false

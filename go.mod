@@ -13,7 +13,14 @@ require (
 	golang.org/x/text v0.3.7
 )
 
+<<<<<<< HEAD
 require github.com/bserdar/jsonstream v0.0.0-20190428032403-9f1769267072
+=======
+require (
+	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de // indirect
+	github.com/bserdar/jsonstream v0.0.0-20190428032403-9f1769267072 // indirect
+)
+>>>>>>> 9a51e2df79a16418afb61883a3db73dd22374dd2
 
 require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
@@ -28,7 +35,7 @@ require (
 
 require (
 	github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210803070921-b358b509191a // indirect
-	github.com/cloudprivacylabs/opencypher v1.0.0-beta-3
+	github.com/cloudprivacylabs/opencypher v1.0.0-beta-3.0.20220708033305-81bc98f9c293
 )
 
 require (

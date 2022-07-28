@@ -82,13 +82,64 @@ func NewReadGraphStep(cmd *cobra.Command) ReadGraphStep {
 	return rd
 }
 
+func (ReadGraphStep) Help() {
+	fmt.Println(`Read graph
+Read graph file(s)
+
+operation: readGraph
+params:`)
+}
+
 func (rd ReadGraphStep) Run(pipeline *pipeline.PipelineContext) error {
-	g, err := cmdutil.ReadGraph([]string{}, pipeline.Context.GetInterner(), rd.Format)
+
+	gs, err := cmdutil.StreamGraph(pipeline, nil, pipeline.Context.GetInterner(), rd.Format)
 	if err != nil {
 		return err
 	}
-	pipeline.SetGraph(g)
-	return pipeline.Next()
+	for g := range gs {
+		if g.Err != nil {
+			return err
+		}
+		pipeline.SetGraph(g.G)
+		pipeline.Set("input", "stdin")
+		if err := pipeline.Next(); err != nil {
+			return err
+		}
+
+	}
+	for {
+		rc, _ := pipeline.NextInput()
+		buf := make([]byte, 1024)
+		_, err = rc.Read(buf)
+		if err != nil {
+			if err == io.EOF {
+				break
+			} else {
+				return fmt.Errorf("While streaming from %v: %w", rc, err)
+			}
+		}
+		defer rc.Close()
+		file, err := os.Open(cmdutil.StreamToString(rc))
+		if err != nil {
+			return fmt.Errorf("While streaming input %v: %w", rc, err)
+		}
+		pipeline.GetLogger().Debug(map[string]interface{}{"readGraph": file})
+		gs, err = cmdutil.StreamGraph(pipeline, []string{file.Name()}, pipeline.Context.GetInterner(), rd.Format)
+		if err != nil {
+			return fmt.Errorf("While reading %s: %w", file, err)
+		}
+		for g := range gs {
+			if g.Err != nil {
+				return fmt.Errorf("While reading %s: %w", file, err)
+			}
+			pipeline.SetGraph(g.G)
+			pipeline.Set("input", file)
+			if err := pipeline.Next(); err != nil {
+				return fmt.Errorf("While processing %s: %w", file, err)
+			}
+		}
+	}
+	return nil
 }
 
 type WriteGraphStep struct {
@@ -143,7 +194,7 @@ func init() {
 	})
 }
 
-func readPipeline(file string) ([]pipeline.Step, error) {
+func ReadPipeline(file string) ([]pipeline.Step, error) {
 	var stepMarshals []pipeline.StepMarshal
 	err := cmdutil.ReadJSONOrYAML(file, &stepMarshals)
 	if err != nil {
@@ -186,7 +237,7 @@ var pipelineCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		steps, err := readPipeline(file)
+		steps, err := ReadPipeline(file)
 		if err != nil {
 			failErr(err)
 		}

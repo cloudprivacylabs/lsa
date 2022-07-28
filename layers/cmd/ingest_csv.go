@@ -78,6 +78,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 	parser := csvingest.Parser{
 		OnlySchemaAttributes: ci.OnlySchemaAttributes,
 		SchemaNode:           layer.GetSchemaRootNode(),
+		IngestNullValues:     ci.IngestNullValues,
 	}
 	idTemplate := ci.ID
 	if idTemplate == "" {

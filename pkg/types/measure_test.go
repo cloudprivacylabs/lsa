@@ -81,8 +81,8 @@ func TestMeasureValueNodesExpr(t *testing.T) {
 	m := layer.GetAttributeByID("m")
 	bldr := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{EmbedSchemaNodes: true})
 	_, rootNode, _ := bldr.ObjectAsNode(root, nil)
-	bldr.ValueAsNode(m1, rootNode, "123")
-	bldr.ValueAsNode(u1, rootNode, "unit")
+	bldr.RawValueAsNode(m1, rootNode, "123")
+	bldr.RawValueAsNode(u1, rootNode, "unit")
 	nodes, err := getMeasureValueNodes(ctx, bldr.GetGraph(), m)
 	if err != nil {
 		t.Error(err)
@@ -176,8 +176,8 @@ func TestMeasureValueNodes(t *testing.T) {
 	m := layer.GetAttributeByID("m")
 	bldr := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{EmbedSchemaNodes: true})
 	_, rootNode, _ := bldr.ObjectAsNode(root, nil)
-	bldr.ValueAsNode(m1, rootNode, "123")
-	bldr.ValueAsNode(u1, rootNode, "unit")
+	bldr.RawValueAsNode(m1, rootNode, "123")
+	bldr.RawValueAsNode(u1, rootNode, "unit")
 	nodes, err := getMeasureValueNodes(ctx, bldr.GetGraph(), m)
 	if err != nil {
 		t.Error(err)
@@ -265,7 +265,7 @@ func TestMeasureValueNodeHasValueAndUnit(t *testing.T) {
 	m := layer.GetAttributeByID("m")
 	bldr := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{EmbedSchemaNodes: true})
 	_, rootNode, _ := bldr.ObjectAsNode(root, nil)
-	bldr.ValueAsNode(m1, rootNode, "123 unit")
+	bldr.RawValueAsNode(m1, rootNode, "123 unit")
 	nodes, err := getMeasureValueNodes(ctx, bldr.GetGraph(), m)
 	if err != nil {
 		t.Error(err)
@@ -364,7 +364,7 @@ func TestSetMeasureValue(t *testing.T) {
 	m := layer.GetAttributeByID("m")
 	bldr := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{EmbedSchemaNodes: true})
 	_, rootNode, _ := bldr.ObjectAsNode(root, nil)
-	bldr.ValueAsNode(m1, rootNode, "123 unit")
+	bldr.RawValueAsNode(m1, rootNode, "123 unit")
 	nodes, err := getMeasureValueNodes(ctx, bldr.GetGraph(), m)
 	if err != nil {
 		t.Error(err)

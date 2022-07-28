@@ -45,6 +45,7 @@ params:`)
 	fmt.Println(`  specFile: File containing export spec, or
   rowQuery: openCypher query that returns nodes, the roots of CSV rows
             if omitted, all source nodes of the graph are used
+  file: output file
   columns:
   - name: column name. This name is written to the output as the column header
     query: column query. If empty, the query is

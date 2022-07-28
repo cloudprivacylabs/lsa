@@ -102,9 +102,10 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 		pipeline.SetGraph(ls.NewDocumentGraph())
 		parser := xmlingest.Parser{
 			OnlySchemaAttributes: xml.OnlySchemaAttributes,
+			IngestEmptyValues:    xml.IngestNullValues,
 		}
 		if layer != nil {
-			parser.SchemaNode = layer.GetSchemaRootNode()
+			parser.Layer = layer
 		}
 		builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
 			EmbedSchemaNodes:     xml.EmbedSchemaNodes,
@@ -121,6 +122,10 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 		if err != nil {
 			return fmt.Errorf("While reading input %s: %w", "stdin", err)
 		}
+		if err := builder.LinkNodes(pipeline.Context, parser.Layer, ls.GetEntityInfo(builder.GetGraph())); err != nil {
+			return fmt.Errorf("While reading input %s: %w", "stdin", err)
+		}
+
 		if err := pipeline.Next(); err != nil {
 			return fmt.Errorf("Input was %s: %w", "stdin", err)
 		}

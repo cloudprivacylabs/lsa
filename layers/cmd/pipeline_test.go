@@ -9,7 +9,7 @@ import (
 )
 
 func TestPersonPipeline(t *testing.T) {
-	steps, err := readPipeline("testdata/ingest_person_pipeline.json")
+	steps, err := ReadPipeline("testdata/ingest_person_pipeline.json")
 	if err != nil {
 		t.Error(err)
 		return
@@ -32,5 +32,7 @@ func TestPersonPipeline(t *testing.T) {
 	json.Unmarshal(buf.Bytes(), &v)
 	if !reflect.DeepEqual(v, expected) {
 		t.Errorf("Got %v expected %v", v, expected)
+		t.Logf("Expected: %s", string(d))
+		t.Logf("Got: %s", buf.String())
 	}
 }

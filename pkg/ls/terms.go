@@ -54,9 +54,6 @@ var (
 	// SchemaNodeIDTerm denotes the schema node ID for ingested nodes
 	SchemaNodeIDTerm = NewTerm(LS, "schemaNodeId", false, false, ErrorComposition, nil)
 
-	SchemaBaseTerm = NewTerm(LS, "SchemaVariant/schema", true, false, ErrorComposition, nil)
-	OverlaysTerm   = NewTerm(LS, "SchemaVariant/overlays", true, true, ErrorComposition, nil)
-
 	// SchemaVariantTerm is the schema variant type
 	SchemaVariantTerm = NewTerm(LS, "SchemaVariant", false, false, NoComposition, nil)
 
@@ -68,9 +65,6 @@ var (
 
 	// AttributeIndexTerm represents the index of an array element
 	AttributeIndexTerm = NewTerm(LS, "attributeIndex", false, false, NoComposition, nil)
-
-	// AttributeValueTerm represents the value of an attribute
-	AttributeValueTerm = NewTerm(LS, "attributeValue", false, false, ErrorComposition, nil)
 
 	// ConditionalTerm specifies conditions for ingestion
 	ConditionalTerm = NewTerm(LS, "conditional", false, false, OverrideComposition, nil)
