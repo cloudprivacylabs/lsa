@@ -83,7 +83,7 @@ var (
 	EntitySchemaTerm = NewTerm(LS, "entitySchema", false, false, ErrorComposition, nil)
 
 	// NodeIDTerm keeps the node ID or the attribute ID
-	NodeIDTerm = NewTerm(LS, "nodeID", false, false, ErrorComposition, nil)
+	NodeIDTerm = NewTerm(LS, "nodeId", false, false, ErrorComposition, nil)
 
 	// IngestAsTerm ingests value as an edge, node, or property
 	IngestAsTerm = NewTerm(LS, "ingestAs", false, false, OverrideComposition, nil)
