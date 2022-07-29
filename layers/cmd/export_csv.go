@@ -23,6 +23,7 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
+
 	lscsv "github.com/cloudprivacylabs/lsa/pkg/csv"
 )
 
@@ -93,7 +94,7 @@ func init() {
 	exportCSVCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	exportCSVCmd.Flags().String("spec", "", "Export spec")
 
-	pipeline.Operations["export/csv"] = func() pipeline.Step { return &CSVExport{} }
+	pipeline.RegisterPipelineStep("export/csv", func() pipeline.Step { return &CSVExport{} })
 }
 
 var exportCSVCmd = &cobra.Command{
@@ -123,7 +124,7 @@ row root node. If a column query is not specified, it is assumed to be:
 		step := &CSVExport{}
 		step.SpecFile, _ = cmd.Flags().GetString("spec")
 		p := []pipeline.Step{
-			NewReadGraphStep(cmd),
+			pipeline.NewReadGraphStep(cmd),
 			step,
 		}
 		_, err := runPipeline(p, "", args)

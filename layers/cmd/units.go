@@ -158,7 +158,7 @@ func init() {
 	measuresCmd.Flags().StringSlice("schemaNodeId", nil, "Process measure processing for instances of these schema nodes only")
 	addSchemaFlags(measuresCmd.Flags())
 
-	pipeline.Operations["measures"] = func() pipeline.Step { return &MeasureStep{} }
+	pipeline.RegisterPipelineStep("measures", func() pipeline.Step { return &MeasureStep{} })
 }
 
 var measuresCmd = &cobra.Command{
@@ -172,9 +172,9 @@ var measuresCmd = &cobra.Command{
 		step := &MeasureStep{}
 		step.fromCmd(cmd)
 		p := []pipeline.Step{
-			NewReadGraphStep(cmd),
+			pipeline.NewReadGraphStep(cmd),
 			step,
-			NewWriteGraphStep(cmd),
+			pipeline.NewWriteGraphStep(cmd),
 		}
 		_, err := runPipeline(p, "", args)
 		return err

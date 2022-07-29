@@ -585,7 +585,7 @@ func init() {
 	valuesetCmd.Flags().StringSlice("table", nil, "Process valuset lookups for these tables only")
 	addSchemaFlags(valuesetCmd.Flags())
 
-	pipeline.Operations["valueset"] = func() pipeline.Step { return &ValuesetStep{} }
+	pipeline.RegisterPipelineStep("valueset", func() pipeline.Step { return &ValuesetStep{} })
 }
 
 var valuesetCmd = &cobra.Command{
@@ -633,9 +633,9 @@ Individual valueset objects can be given as separate files as well:
 		step.ValuesetFiles, _ = cmd.Flags().GetStringSlice("valueset")
 		step.Tables, _ = cmd.Flags().GetStringSlice("table")
 		p := []pipeline.Step{
-			NewReadGraphStep(cmd),
+			pipeline.NewReadGraphStep(cmd),
 			step,
-			NewWriteGraphStep(cmd),
+			pipeline.NewWriteGraphStep(cmd),
 		}
 		_, err := runPipeline(p, "", args)
 		return err

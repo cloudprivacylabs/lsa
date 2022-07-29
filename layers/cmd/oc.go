@@ -68,7 +68,7 @@ func init() {
 	ocqCmd.Flags().String("expr", "", "Opencypher expression to run")
 	ocqCmd.MarkFlagRequired("expr")
 
-	pipeline.Operations["oc"] = func() pipeline.Step { return &OCStep{} }
+	pipeline.RegisterPipelineStep("oc", func() pipeline.Step { return &OCStep{} })
 }
 
 var ocCmd = &cobra.Command{
@@ -81,9 +81,9 @@ var ocCmd = &cobra.Command{
 		step.Expr = []string{e}
 
 		p := []pipeline.Step{
-			NewReadGraphStep(cmd),
+			pipeline.NewReadGraphStep(cmd),
 			step,
-			NewWriteGraphStep(cmd),
+			pipeline.NewWriteGraphStep(cmd),
 		}
 		_, err := runPipeline(p, "", args)
 		if err != nil {
@@ -103,7 +103,7 @@ var ocqCmd = &cobra.Command{
 		step.Expr = []string{e}
 
 		p := []pipeline.Step{
-			NewReadGraphStep(cmd),
+			pipeline.NewReadGraphStep(cmd),
 			step,
 		}
 		ctx, err := runPipeline(p, "", args)

@@ -16,7 +16,6 @@ package cmd
 
 import (
 	"fmt"
-	"io"
 
 	"github.com/spf13/cobra"
 
@@ -53,50 +52,9 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 		xml.initialized = true
 	}
 
-	// enc := encoding.Nop
-	// if layer != nil {
-	// 	enc, err = layer.GetEncoding()
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// }
-
-	// inputIndex := 0
-	// var inputName string
-	// nextInput := func() (io.Reader, error) {
-	// 	if len(pipeline.InputFiles) == 0 {
-	// 		if inputIndex > 0 {
-	// 			return nil, nil
-	// 		}
-	// 		inputIndex++
-	// 		inp, err := cmdutil.StreamFileOrStdin(nil, enc)
-	// 		inputName = "stdin"
-	// 		return inp, err
-	// 	}
-	// 	if inputIndex >= len(pipeline.InputFiles) {
-	// 		return nil, nil
-	// 	}
-	// 	inputName = pipeline.InputFiles[inputIndex]
-	// 	data, err := cmdutil.ReadURL(inputName, enc)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	inputIndex++
-	// 	return bytes.NewReader(data), nil
-	// }
 	for {
-		rc, _ := pipeline.NextInput()
-		buf := make([]byte, 1024)
-		_, err := rc.Read(buf)
-		if err != nil {
-			if err == io.EOF {
-				break
-			} else {
-				return fmt.Errorf("While streaming from %v: %w", rc, err)
-			}
-		}
-		defer rc.Close()
-		if rc == nil {
+		stream, err := pipeline.NextInput()
+		if stream == nil {
 			break
 		}
 		pipeline.SetGraph(ls.NewDocumentGraph())
@@ -114,7 +72,7 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 
 		baseID := xml.ID
 
-		parsed, err := parser.ParseStream(pipeline.Context, baseID, rc)
+		parsed, err := parser.ParseStream(pipeline.Context, baseID, stream)
 		if err != nil {
 			return fmt.Errorf("While reading input %s: %w", "stdin", err)
 		}
@@ -137,13 +95,13 @@ func init() {
 	ingestCmd.AddCommand(ingestXMLCmd)
 	ingestXMLCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
 
-	pipeline.Operations["ingest/xml"] = func() pipeline.Step {
+	pipeline.RegisterPipelineStep("ingest/xml", func() pipeline.Step {
 		return &XMLIngester{
 			BaseIngestParams: BaseIngestParams{
 				EmbedSchemaNodes: true,
 			},
 		}
-	}
+	})
 }
 
 var ingestXMLCmd = &cobra.Command{
@@ -157,7 +115,7 @@ var ingestXMLCmd = &cobra.Command{
 		ing.ID, _ = cmd.Flags().GetString("id")
 		p := []pipeline.Step{
 			&ing,
-			NewWriteGraphStep(cmd),
+			pipeline.NewWriteGraphStep(cmd),
 		}
 		_, err := runPipeline(p, initialGraph, args)
 		return err
