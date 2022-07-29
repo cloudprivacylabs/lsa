@@ -84,7 +84,7 @@ func (rd *LDMarshaler) Marshal(input graph.Graph) interface{} {
 		}
 		if IsDocumentNode(gnode) {
 			if v, ok := GetRawNodeValue(gnode); ok {
-				onode.ldNode[AttributeValueTerm] = v
+				onode.ldNode[NodeValueTerm] = v
 			}
 		}
 		if prop, ok := gnode.(propertiesSupport); ok {
@@ -227,7 +227,7 @@ func UnmarshalJSONLDGraph(input interface{}, target graph.Graph, interner Intern
 				}
 				switch k {
 				case "@id", "@type":
-				case AttributeValueTerm:
+				case NodeValueTerm:
 					val, vals, _, err := getValuesOrIDs(v)
 					if err != nil {
 						return err

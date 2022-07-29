@@ -42,6 +42,7 @@ func init() {
 	ingestCmd.PersistentFlags().Bool("includeSchema", false, "Include schema in the output")
 	ingestCmd.PersistentFlags().Bool("embedSchemaNodes", true, "Embed schema nodes into document nodes")
 	ingestCmd.PersistentFlags().Bool("onlySchemaAttributes", false, "Only ingest nodes that have an associated schema attribute")
+	ingestCmd.PersistentFlags().Bool("ingestNullValues", false, "Ingest values even if they are empty")
 }
 
 type BaseIngestParams struct {
@@ -68,6 +69,7 @@ func (b *BaseIngestParams) fromCmd(cmd *cobra.Command) {
 	b.Type, _ = cmd.Flags().GetString("type")
 	b.EmbedSchemaNodes, _ = cmd.Flags().GetBool("embedSchemaNodes")
 	b.OnlySchemaAttributes, _ = cmd.Flags().GetBool("onlySchemaAttributes")
+	b.IngestNullValues, _ = cmd.Flags().GetBool("ingestNullValues")
 }
 
 const baseIngestParamsHelp = `  
@@ -83,6 +85,7 @@ const baseIngestParamsHelp = `
   repo: schema repository directory
   schema: if repo is given, the ID of the schema. Otherwise, the schema file
   compiledSchema: compiled schema graph file
+  ingestNullValues: false # Whether to ingest empty/null values
 
   # Ingestion control
 

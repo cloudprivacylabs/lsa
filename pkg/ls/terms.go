@@ -66,9 +66,6 @@ var (
 	// AttributeIndexTerm represents the index of an array element
 	AttributeIndexTerm = NewTerm(LS, "attributeIndex", false, false, NoComposition, nil)
 
-	// AttributeValueTerm represents the value of an attribute
-	AttributeValueTerm = NewTerm(LS, "attributeValue", false, false, ErrorComposition, nil)
-
 	// ConditionalTerm specifies conditions for ingestion
 	ConditionalTerm = NewTerm(LS, "conditional", false, false, OverrideComposition, nil)
 
@@ -86,7 +83,7 @@ var (
 	EntitySchemaTerm = NewTerm(LS, "entitySchema", false, false, ErrorComposition, nil)
 
 	// NodeIDTerm keeps the node ID or the attribute ID
-	NodeIDTerm = NewTerm(LS, "nodeID", false, false, ErrorComposition, nil)
+	NodeIDTerm = NewTerm(LS, "nodeId", false, false, ErrorComposition, nil)
 
 	// IngestAsTerm ingests value as an edge, node, or property
 	IngestAsTerm = NewTerm(LS, "ingestAs", false, false, OverrideComposition, nil)

@@ -48,6 +48,44 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 					SetNodeID(node, m[1]+id[len(m[0]):])
 				}
 			}
+			node.ForEachProperty(func(key string, value interface{}) bool {
+				if key == NodeValueTerm {
+					return true
+				}
+				pv, ok := value.(*PropertyValue)
+				if !ok {
+					return true
+				}
+
+				if pv.IsString() {
+					s := pv.AsString()
+					for _, m := range nsMap {
+						if strings.HasPrefix(s, m[0]) {
+							node.SetProperty(key, StringPropertyValue(m[1]+s[len(m[0]):]))
+						}
+					}
+				}
+				if pv.IsStringSlice() {
+					slice := pv.AsStringSlice()
+					newSlice := make([]string, len(slice))
+					changed := false
+					for i := range slice {
+						s := slice[i]
+						for _, m := range nsMap {
+							if strings.HasPrefix(s, m[0]) {
+								newSlice[i] = m[1] + s[len(m[0]):]
+								changed = true
+							} else {
+								newSlice[i] = s
+							}
+						}
+					}
+					if changed {
+						node.SetProperty(key, StringSlicePropertyValue(newSlice))
+					}
+				}
+				return true
+			})
 			return true
 		})
 	}

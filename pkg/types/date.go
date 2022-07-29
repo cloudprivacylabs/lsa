@@ -19,6 +19,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/araddon/dateparse"
 	"github.com/nleeper/goment"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -48,6 +49,15 @@ type Date struct {
 	Day      int
 	Year     int
 	Location *time.Location
+}
+
+func NewDate(t time.Time) Date {
+	return Date{
+		Month:    int(t.Month()),
+		Day:      t.Day(),
+		Year:     t.Year(),
+		Location: t.Location(),
+	}
 }
 
 func (d Date) ToTime() time.Time {
@@ -128,6 +138,20 @@ func (dt DateTime) String() string {
 	return dt.ToTime().Format(time.RFC3339)
 }
 
+func NewDateTime(t time.Time) DateTime {
+	return DateTime{
+		Month:        int(t.Month()),
+		Day:          t.Day(),
+		Year:         t.Year(),
+		Nanoseconds:  int64(t.Nanosecond()),
+		Milliseconds: int64(t.Second() * 1000),
+		Seconds:      int64(t.Second()),
+		Minute:       int64(t.Minute()),
+		Hour:         int64(t.Hour()),
+		Location:     t.Location(),
+	}
+}
+
 type TimeOfDay struct {
 	Nanoseconds  int64
 	Milliseconds int64
@@ -135,6 +159,17 @@ type TimeOfDay struct {
 	Minute       int64
 	Hour         int64
 	Location     *time.Location
+}
+
+func NewTimeOfDay(t time.Time) TimeOfDay {
+	return TimeOfDay{
+		Nanoseconds:  int64(t.Nanosecond()),
+		Milliseconds: int64(t.Second() * 1000),
+		Seconds:      int64(t.Second()),
+		Minute:       int64(t.Minute()),
+		Hour:         int64(t.Hour()),
+		Location:     t.Location(),
+	}
 }
 
 func (t TimeOfDay) ToTime() time.Time {
@@ -350,7 +385,7 @@ func (f gomentFormat) parseDate(s string) (Date, error) {
 	if err != nil {
 		return Date{}, err
 	}
-	return Date{Month: int(t.Month()), Day: t.Day(), Year: t.Year()}, nil
+	return Date{Month: int(t.Month()), Day: t.Date(), Year: t.Year()}, nil
 }
 
 func (f goFormat) parseDateTime(s string) (DateTime, error) {
@@ -368,7 +403,7 @@ func (f gomentFormat) parseDateTime(s string) (DateTime, error) {
 	if err != nil {
 		return DateTime{}, err
 	}
-	return DateTime{Month: int(t.Month()), Day: t.Day(), Year: t.Year(),
+	return DateTime{Month: int(t.Month()), Day: t.Date(), Year: t.Year(),
 		Nanoseconds: int64(t.Nanosecond()), Milliseconds: int64(t.Second() * 1000), Seconds: int64(t.Second()),
 		Minute: int64(t.Minute()), Hour: int64(t.Hour())}, nil
 }
@@ -904,7 +939,7 @@ type PatternDateTimeParser struct{}
 
 // GetNativeValue looks at the goTimeFormat, momentTimeFormat properties
 // in the node, and parses the datetime using that. The format
-// property can be an array, giving all possible formats
+// property can be an array, giving all possible formats. If none existsm guesses format
 func (PatternDateTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
@@ -918,7 +953,14 @@ func (PatternDateTimeParser) GetNativeValue(value string, node graph.Node) (inte
 	for _, x := range mf {
 		garr = append(garr, gomentFormat(x))
 	}
-	return genericDateTimeParse(value, garr...)
+	if len(garr) > 0 {
+		return genericDateTimeParse(value, garr...)
+	}
+	t, err := dateparse.ParseStrict(value)
+	if err != nil {
+		return nil, err
+	}
+	return NewDateTime(t), nil
 }
 
 func (PatternDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
@@ -933,7 +975,7 @@ func (PatternDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, n
 		formatter = gomentFormat(ls.AsPropertyValue(s, true).AsString())
 	}
 	if formatter == nil {
-		return "", ls.ErrInvalidInput{Msg: "Missing formatting annotations"}
+		formatter = goFormat(time.RFC3339)
 	}
 	var old Date
 	var ok bool
@@ -1017,7 +1059,14 @@ func (PatternDateParser) GetNativeValue(value string, node graph.Node) (interfac
 	for _, x := range mf {
 		garr = append(garr, gomentFormat(x))
 	}
-	return genericDateParse(value, garr...)
+	if len(garr) > 0 {
+		return genericDateParse(value, garr...)
+	}
+	t, err := dateparse.ParseStrict(value)
+	if err != nil {
+		return nil, err
+	}
+	return NewDate(t), nil
 }
 
 func (PatternDateParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
@@ -1032,7 +1081,7 @@ func (PatternDateParser) FormatNativeValue(newValue, oldValue interface{}, node 
 		formatter = gomentFormat(ls.AsPropertyValue(s, true).AsString())
 	}
 	if formatter == nil {
-		return "", ls.ErrInvalidInput{Msg: "Missing formatting annotations"}
+		formatter = goFormat("2006-01-02")
 	}
 	var old Date
 	var ok bool
@@ -1116,7 +1165,14 @@ func (PatternTimeParser) GetNativeValue(value string, node graph.Node) (interfac
 	for _, x := range mf {
 		garr = append(garr, gomentFormat(x))
 	}
-	return genericTimeParse(value, garr...)
+	if len(garr) > 0 {
+		return genericTimeParse(value, garr...)
+	}
+	t, err := dateparse.ParseStrict(value)
+	if err != nil {
+		return nil, err
+	}
+	return NewTimeOfDay(t), nil
 }
 
 func (PatternTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
@@ -1131,7 +1187,7 @@ func (PatternTimeParser) FormatNativeValue(newValue, oldValue interface{}, node 
 		formatter = gomentFormat(ls.AsPropertyValue(s, true).AsString())
 	}
 	if formatter == nil {
-		return "", ls.ErrInvalidInput{Msg: "Missing formatting annotations"}
+		formatter = goFormat("15:04:05.999999999Z07:00")
 	}
 	switch v := newValue.(type) {
 	case time.Time:
@@ -1204,7 +1260,11 @@ func (XSDGMonthParser) GetNativeValue(value string, node graph.Node) (interface{
 	if len(value) == 0 {
 		return nil, nil
 	}
-	return genericDateParse(value, goFormat("01"), gomentFormat("MM"))
+	x, err := strconv.Atoi(value)
+	if err != nil {
+		return nil, err
+	}
+	return GMonth(x), nil
 }
 
 func (XSDGMonthParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
@@ -1236,7 +1296,11 @@ func (XSDGMonthDayParser) GetNativeValue(value string, node graph.Node) (interfa
 	if len(value) == 0 {
 		return nil, nil
 	}
-	return genericDateParse(value, goFormat("1-2"), goFormat("01-2"), goFormat("01-02"), gomentFormat("MM-DD"))
+	d, err := genericDateParse(value, goFormat("1-2"), goFormat("01-2"), goFormat("01-02"), gomentFormat("MM-DD"))
+	if err != nil {
+		return nil, err
+	}
+	return GMonthDay{Month: d.Month, Day: d.Day}, nil
 }
 
 func (XSDGMonthDayParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
@@ -1274,7 +1338,11 @@ func (XSDGYearParser) GetNativeValue(value string, node graph.Node) (interface{}
 	if len(value) == 0 {
 		return nil, nil
 	}
-	return genericDateParse(value, goFormat("2006"), gomentFormat("YYYY"))
+	x, err := strconv.Atoi(value)
+	if err != nil {
+		return nil, err
+	}
+	return GYear(x), nil
 }
 
 func (XSDGYearParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
@@ -1302,7 +1370,11 @@ func (XSDGYearMonthParser) GetNativeValue(value string, node graph.Node) (interf
 	if len(value) == 0 {
 		return nil, nil
 	}
-	return genericDateParse(value, goFormat("2006-01"), gomentFormat("YY-MM"))
+	d, err := genericDateParse(value, goFormat("2006-01"), gomentFormat("YY-MM"))
+	if err != nil {
+		return nil, err
+	}
+	return GYearMonth{Month: d.Month, Year: d.Year}, nil
 }
 
 func (XSDGYearMonthParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
