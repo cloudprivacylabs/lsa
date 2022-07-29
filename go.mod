@@ -31,7 +31,7 @@ require (
 
 require (
 	github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210803070921-b358b509191a // indirect
-	github.com/cloudprivacylabs/opencypher v1.0.0-beta-3.0.20220708033305-81bc98f9c293
+	github.com/cloudprivacylabs/opencypher v1.0.0-beta-3.0.20220729022712-cd4d85fe7e32
 )
 
 require (
