@@ -171,9 +171,3 @@ func YAMLToMap(in interface{}) interface{} {
 	return in
 
 }
-
-func StreamToString(stream io.Reader) string {
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(stream)
-	return buf.String()
-}
