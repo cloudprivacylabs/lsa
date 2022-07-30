@@ -81,6 +81,9 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 		return fmt.Errorf("%s: %s", graphname, err)
 	}
 	if !graph.CheckIsomorphism(builder.GetGraph(), expected, func(n1, n2 graph.Node) bool {
+		if !n1.GetLabels().IsEqual(n2.GetLabels()) {
+			return false
+		}
 		s1, _ := ls.GetRawNodeValue(n1)
 		s2, _ := ls.GetRawNodeValue(n2)
 		if s1 != s2 {
@@ -91,7 +94,7 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 		}
 		return true
 	}, func(e1, e2 graph.Edge) bool {
-		return ls.IsPropertiesEqual(ls.PropertiesAsMap(e1), ls.PropertiesAsMap(e2))
+		return e1.GetLabel() == e2.GetLabel() && ls.IsPropertiesEqual(ls.PropertiesAsMap(e1), ls.PropertiesAsMap(e2))
 	}) {
 		d, _ := m.Marshal(builder.GetGraph())
 		fmt.Println("got:" + string(d))

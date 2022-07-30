@@ -63,6 +63,9 @@ func (tc reingestTestCase) Run(t *testing.T) {
 	}
 
 	eq := graph.CheckIsomorphism(target.GetGraph(), expectedGraph, func(n1, n2 graph.Node) bool {
+		if !n1.GetLabels().IsEqual(n2.GetLabels()) {
+			return false
+		}
 		t.Logf("Cmp: %+v %+v\n", n1, n2)
 		s1, _ := ls.GetRawNodeValue(n1)
 		s2, _ := ls.GetRawNodeValue(n2)
@@ -98,7 +101,7 @@ func (tc reingestTestCase) Run(t *testing.T) {
 		t.Logf("True\n")
 		return true
 	}, func(e1, e2 graph.Edge) bool {
-		return ls.IsPropertiesEqual(ls.PropertiesAsMap(e1), ls.PropertiesAsMap(e2))
+		return e1.GetLabel() == e2.GetLabel() && ls.IsPropertiesEqual(ls.PropertiesAsMap(e1), ls.PropertiesAsMap(e2))
 	})
 
 	if !eq {
