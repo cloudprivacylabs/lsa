@@ -9,7 +9,7 @@ import (
 
 func init() {
 	RegisterPipelineStep("fork", func() Step {
-		return ForkStep{Steps: make(map[string]Pipeline)}
+		return &ForkStep{Steps: make(map[string]Pipeline)}
 	})
 }
 

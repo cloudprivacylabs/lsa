@@ -16,7 +16,7 @@ type WriteGraphStep struct {
 
 func init() {
 	pipeline.RegisterPipelineStep("writeGraph", func() pipeline.Step {
-		return WriteGraphStep{
+		return &WriteGraphStep{
 			Format: "json",
 		}
 	})

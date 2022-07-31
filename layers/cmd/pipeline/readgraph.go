@@ -8,7 +8,7 @@ import (
 
 func init() {
 	RegisterPipelineStep("readGraph", func() Step {
-		return ReadGraphStep{}
+		return &ReadGraphStep{}
 	})
 }
 
