@@ -22,6 +22,8 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
+
 	lscsv "github.com/cloudprivacylabs/lsa/pkg/csv"
 )
 
@@ -52,7 +54,7 @@ params:`)
         The query is evauated with 'root' pointing to the current row root node`)
 }
 
-func (ecsv *CSVExport) Run(pipeline *PipelineContext) error {
+func (ecsv *CSVExport) Run(pipeline *pipeline.PipelineContext) error {
 	if !ecsv.initialized {
 		if ecsv.SpecFile != "" {
 			if err := cmdutil.ReadJSONOrYAML(ecsv.SpecFile, &ecsv.Writer); err != nil {
@@ -92,7 +94,7 @@ func init() {
 	exportCSVCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	exportCSVCmd.Flags().String("spec", "", "Export spec")
 
-	operations["export/csv"] = func() Step { return &CSVExport{} }
+	pipeline.RegisterPipelineStep("export/csv", func() pipeline.Step { return &CSVExport{} })
 }
 
 var exportCSVCmd = &cobra.Command{
@@ -121,7 +123,7 @@ row root node. If a column query is not specified, it is assumed to be:
 	RunE: func(cmd *cobra.Command, args []string) error {
 		step := &CSVExport{}
 		step.SpecFile, _ = cmd.Flags().GetString("spec")
-		p := []Step{
+		p := []pipeline.Step{
 			NewReadGraphStep(cmd),
 			step,
 		}

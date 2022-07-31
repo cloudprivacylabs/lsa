@@ -15,15 +15,11 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
-	"io"
-
-	"golang.org/x/text/encoding"
 
 	"github.com/spf13/cobra"
 
-	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	xmlingest "github.com/cloudprivacylabs/lsa/pkg/xml"
 )
@@ -44,7 +40,7 @@ params:`)
 	fmt.Println(`  id:""   # Base ID for the root node`)
 }
 
-func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
+func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 	var layer *ls.Layer
 	var err error
 	if !xml.initialized {
@@ -56,46 +52,11 @@ func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
 		xml.initialized = true
 	}
 
-	enc := encoding.Nop
-	if layer != nil {
-		enc, err = layer.GetEncoding()
-		if err != nil {
-			return err
-		}
-	}
-
-	inputIndex := 0
-	var inputName string
-	nextInput := func() (io.Reader, error) {
-		if len(pipeline.InputFiles) == 0 {
-			if inputIndex > 0 {
-				return nil, nil
-			}
-			inputIndex++
-			inp, err := cmdutil.StreamFileOrStdin(nil, enc)
-			inputName = "stdin"
-			return inp, err
-		}
-		if inputIndex >= len(pipeline.InputFiles) {
-			return nil, nil
-		}
-		inputName = pipeline.InputFiles[inputIndex]
-		data, err := cmdutil.ReadURL(inputName, enc)
-		if err != nil {
-			return nil, err
-		}
-		inputIndex++
-		return bytes.NewReader(data), nil
-	}
 	for {
-		input, err := nextInput()
-		if err != nil {
-			return err
-		}
-		if input == nil {
+		stream, err := pipeline.NextInput()
+		if stream == nil {
 			break
 		}
-
 		pipeline.SetGraph(ls.NewDocumentGraph())
 		parser := xmlingest.Parser{
 			OnlySchemaAttributes: xml.OnlySchemaAttributes,
@@ -111,20 +72,20 @@ func (xml *XMLIngester) Run(pipeline *PipelineContext) error {
 
 		baseID := xml.ID
 
-		parsed, err := parser.ParseStream(pipeline.Context, baseID, input)
+		parsed, err := parser.ParseStream(pipeline.Context, baseID, stream)
 		if err != nil {
-			return fmt.Errorf("While reading input %s: %w", inputName, err)
+			return fmt.Errorf("While reading input %s: %w", "stdin", err)
 		}
 		_, err = ls.Ingest(builder, parsed)
 		if err != nil {
-			return fmt.Errorf("While reading input %s: %w", inputName, err)
+			return fmt.Errorf("While reading input %s: %w", "stdin", err)
 		}
 		if err := builder.LinkNodes(pipeline.Context, parser.Layer, ls.GetEntityInfo(builder.GetGraph())); err != nil {
-			return fmt.Errorf("While reading input %s: %w", inputName, err)
+			return fmt.Errorf("While reading input %s: %w", "stdin", err)
 		}
 
 		if err := pipeline.Next(); err != nil {
-			return fmt.Errorf("Input was %s: %w", inputName, err)
+			return fmt.Errorf("Input was %s: %w", "stdin", err)
 		}
 	}
 	return nil
@@ -134,13 +95,13 @@ func init() {
 	ingestCmd.AddCommand(ingestXMLCmd)
 	ingestXMLCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
 
-	operations["ingest/xml"] = func() Step {
+	pipeline.RegisterPipelineStep("ingest/xml", func() pipeline.Step {
 		return &XMLIngester{
 			BaseIngestParams: BaseIngestParams{
 				EmbedSchemaNodes: true,
 			},
 		}
-	}
+	})
 }
 
 var ingestXMLCmd = &cobra.Command{
@@ -152,7 +113,7 @@ var ingestXMLCmd = &cobra.Command{
 		ing := XMLIngester{}
 		ing.fromCmd(cmd)
 		ing.ID, _ = cmd.Flags().GetString("id")
-		p := []Step{
+		p := []pipeline.Step{
 			&ing,
 			NewWriteGraphStep(cmd),
 		}

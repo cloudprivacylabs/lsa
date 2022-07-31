@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/transform"
 	"github.com/spf13/cobra"
@@ -90,7 +91,7 @@ https://lschema.org/transform namespace:
 	fmt.Println(baseIngestParamsHelp)
 }
 
-func (rs *ReshapeStep) Run(pipeline *PipelineContext) error {
+func (rs *ReshapeStep) Run(pipeline *pipeline.PipelineContext) error {
 	var err error
 	if !rs.initialized {
 		if rs.IsEmptySchema() {
@@ -138,7 +139,7 @@ func init() {
 	reshapeCmd.PersistentFlags().String("output", "json", "Output format, json, jsonld, or dot")
 	reshapeCmd.Flags().String("script", "", "Transformation script file")
 
-	operations["reshape"] = func() Step { return &ReshapeStep{} }
+	pipeline.RegisterPipelineStep("reshape", func() pipeline.Step { return &ReshapeStep{} })
 }
 
 var reshapeCmd = &cobra.Command{
@@ -149,7 +150,7 @@ var reshapeCmd = &cobra.Command{
 		step := &ReshapeStep{}
 		step.fromCmd(cmd)
 		step.ScriptFile, _ = cmd.Flags().GetString("script")
-		p := []Step{
+		p := []pipeline.Step{
 			NewReadGraphStep(cmd),
 			step,
 			NewWriteGraphStep(cmd),

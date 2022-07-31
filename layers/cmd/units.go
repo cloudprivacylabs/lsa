@@ -23,6 +23,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/types"
 )
@@ -111,7 +112,7 @@ params:
 	fmt.Println(baseIngestParamsHelp)
 }
 
-func (ms *MeasureStep) Run(pipeline *PipelineContext) error {
+func (ms *MeasureStep) Run(pipeline *pipeline.PipelineContext) error {
 	if !ms.initialized {
 		if ms.IsEmptySchema() {
 			ms.layer, _ = pipeline.Properties["layer"].(*ls.Layer)
@@ -157,7 +158,7 @@ func init() {
 	measuresCmd.Flags().StringSlice("schemaNodeId", nil, "Process measure processing for instances of these schema nodes only")
 	addSchemaFlags(measuresCmd.Flags())
 
-	operations["measures"] = func() Step { return &MeasureStep{} }
+	pipeline.RegisterPipelineStep("measures", func() pipeline.Step { return &MeasureStep{} })
 }
 
 var measuresCmd = &cobra.Command{
@@ -170,7 +171,7 @@ var measuresCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		step := &MeasureStep{}
 		step.fromCmd(cmd)
-		p := []Step{
+		p := []pipeline.Step{
 			NewReadGraphStep(cmd),
 			step,
 			NewWriteGraphStep(cmd),

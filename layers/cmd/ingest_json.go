@@ -15,14 +15,11 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
-	"io"
 
 	"github.com/spf13/cobra"
-	"golang.org/x/text/encoding"
 
-	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
@@ -43,7 +40,7 @@ params:`)
 	fmt.Println(`  id:""   # Base ID for the root node`)
 }
 
-func (ji *JSONIngester) Run(pipeline *PipelineContext) error {
+func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 	var layer *ls.Layer
 	var err error
 	if !ji.initialized {
@@ -55,46 +52,14 @@ func (ji *JSONIngester) Run(pipeline *PipelineContext) error {
 		ji.initialized = true
 	}
 
-	enc := encoding.Nop
-	if layer != nil {
-		enc, err = layer.GetEncoding()
-		if err != nil {
-			return err
-		}
-	}
-
-	inputIndex := 0
-	var inputName string
-	nextInput := func() (io.Reader, error) {
-		if len(pipeline.InputFiles) == 0 {
-			if inputIndex > 0 {
-				return nil, nil
-			}
-			inputIndex++
-			inp, err := cmdutil.StreamFileOrStdin(nil, enc)
-			inputName = "stdin"
-			return inp, err
-		}
-		if inputIndex >= len(pipeline.InputFiles) {
-			return nil, nil
-		}
-		inputName = pipeline.InputFiles[inputIndex]
-		data, err := cmdutil.ReadURL(inputName, enc)
-		if err != nil {
-			return nil, err
-		}
-		inputIndex++
-		return bytes.NewReader(data), nil
-	}
 	for {
-		input, err := nextInput()
+		stream, err := pipeline.NextInput()
 		if err != nil {
 			return err
 		}
-		if input == nil {
+		if stream == nil {
 			break
 		}
-
 		parser := jsoningest.Parser{
 			OnlySchemaAttributes: ji.OnlySchemaAttributes,
 			IngestNullValues:     ji.IngestNullValues,
@@ -109,13 +74,13 @@ func (ji *JSONIngester) Run(pipeline *PipelineContext) error {
 		})
 		baseID := ji.ID
 
-		_, err = jsoningest.IngestStream(pipeline.Context, baseID, input, parser, builder)
+		_, err = jsoningest.IngestStream(pipeline.Context, baseID, stream, parser, builder)
 		if err != nil {
-			return fmt.Errorf("While reading input %s: %w", inputName, err)
+			return fmt.Errorf("While reading input %s: %w", "stdin", err)
 		}
 
 		if err := pipeline.Next(); err != nil {
-			return fmt.Errorf("Input was %s: %w", inputName, err)
+			return fmt.Errorf("Input was %s: %w", "stdin", err)
 		}
 	}
 	return nil
@@ -125,13 +90,13 @@ func init() {
 	ingestCmd.AddCommand(ingestJSONCmd)
 	ingestJSONCmd.Flags().String("id", "http://example.org/root", "Base ID to use for ingested nodes")
 
-	operations["ingest/json"] = func() Step {
+	pipeline.RegisterPipelineStep("ingest/json", func() pipeline.Step {
 		return &JSONIngester{
 			BaseIngestParams: BaseIngestParams{
 				EmbedSchemaNodes: true,
 			},
 		}
-	}
+	})
 }
 
 var ingestJSONCmd = &cobra.Command{
@@ -143,7 +108,7 @@ var ingestJSONCmd = &cobra.Command{
 		ing := JSONIngester{}
 		ing.fromCmd(cmd)
 		ing.ID, _ = cmd.Flags().GetString("id")
-		p := []Step{
+		p := []pipeline.Step{
 			&ing,
 			NewWriteGraphStep(cmd),
 		}

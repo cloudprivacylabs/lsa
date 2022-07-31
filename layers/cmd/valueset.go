@@ -28,6 +28,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -541,7 +542,7 @@ params:
 	fmt.Println(baseIngestParamsHelp)
 }
 
-func (vs *ValuesetStep) Run(pipeline *PipelineContext) error {
+func (vs *ValuesetStep) Run(pipeline *pipeline.PipelineContext) error {
 	if !vs.initialized {
 		err := LoadValuesetFiles(pipeline.Context, &vs.valuesets, vs.ValuesetFiles)
 		if err != nil {
@@ -584,7 +585,7 @@ func init() {
 	valuesetCmd.Flags().StringSlice("table", nil, "Process valuset lookups for these tables only")
 	addSchemaFlags(valuesetCmd.Flags())
 
-	operations["valueset"] = func() Step { return &ValuesetStep{} }
+	pipeline.RegisterPipelineStep("valueset", func() pipeline.Step { return &ValuesetStep{} })
 }
 
 var valuesetCmd = &cobra.Command{
@@ -631,7 +632,7 @@ Individual valueset objects can be given as separate files as well:
 		step.fromCmd(cmd)
 		step.ValuesetFiles, _ = cmd.Flags().GetStringSlice("valueset")
 		step.Tables, _ = cmd.Flags().GetStringSlice("table")
-		p := []Step{
+		p := []pipeline.Step{
 			NewReadGraphStep(cmd),
 			step,
 			NewWriteGraphStep(cmd),

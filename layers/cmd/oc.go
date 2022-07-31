@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	"github.com/cloudprivacylabs/opencypher"
 
 	"github.com/spf13/cobra"
@@ -41,7 +42,7 @@ The output of the operations is the modified graph, and the final result is
 available in pipeline property "ocResult".`)
 }
 
-func (oc *OCStep) Run(pipeline *PipelineContext) error {
+func (oc *OCStep) Run(pipeline *pipeline.PipelineContext) error {
 	ctx := opencypher.NewEvalContext(pipeline.GetGraphRW())
 	for _, expr := range oc.Expr {
 		output, err := opencypher.ParseAndEvaluate(expr, ctx)
@@ -67,7 +68,7 @@ func init() {
 	ocqCmd.Flags().String("expr", "", "Opencypher expression to run")
 	ocqCmd.MarkFlagRequired("expr")
 
-	operations["oc"] = func() Step { return &OCStep{} }
+	pipeline.RegisterPipelineStep("oc", func() pipeline.Step { return &OCStep{} })
 }
 
 var ocCmd = &cobra.Command{
@@ -79,7 +80,7 @@ var ocCmd = &cobra.Command{
 		e, _ := cmd.Flags().GetString("expr")
 		step.Expr = []string{e}
 
-		p := []Step{
+		p := []pipeline.Step{
 			NewReadGraphStep(cmd),
 			step,
 			NewWriteGraphStep(cmd),
@@ -101,7 +102,7 @@ var ocqCmd = &cobra.Command{
 		e, _ := cmd.Flags().GetString("expr")
 		step.Expr = []string{e}
 
-		p := []Step{
+		p := []pipeline.Step{
 			NewReadGraphStep(cmd),
 			step,
 		}

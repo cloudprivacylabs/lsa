@@ -19,6 +19,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/opencypher/graph"
 )
@@ -34,7 +35,7 @@ operation: export/json
 params:`)
 }
 
-func (*JSONExport) Run(pipeline *PipelineContext) error {
+func (*JSONExport) Run(pipeline *pipeline.PipelineContext) error {
 	for _, node := range graph.Sources(pipeline.GetGraphRO()) {
 		exportOptions := jsoningest.ExportOptions{}
 		data, err := jsoningest.Export(node, exportOptions)
@@ -50,7 +51,7 @@ func init() {
 	exportCmd.AddCommand(exportJSONCmd)
 	exportJSONCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 
-	operations["export/json"] = func() Step { return &JSONExport{} }
+	pipeline.RegisterPipelineStep("export/json", func() pipeline.Step { return &JSONExport{} })
 }
 
 var exportJSONCmd = &cobra.Command{
@@ -59,7 +60,7 @@ var exportJSONCmd = &cobra.Command{
 	Args:  cobra.MaximumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		step := &JSONExport{}
-		p := []Step{
+		p := []pipeline.Step{
 			NewReadGraphStep(cmd),
 			step,
 		}

@@ -6,10 +6,12 @@ import (
 	"io/ioutil"
 	"reflect"
 	"testing"
+
+	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 )
 
 func TestPersonPipeline(t *testing.T) {
-	steps, err := ReadPipeline("testdata/ingest_person_pipeline.json")
+	steps, err := pipeline.ReadPipeline("testdata/ingest_person_pipeline.json")
 	if err != nil {
 		t.Error(err)
 		return
