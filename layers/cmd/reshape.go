@@ -151,9 +151,9 @@ var reshapeCmd = &cobra.Command{
 		step.fromCmd(cmd)
 		step.ScriptFile, _ = cmd.Flags().GetString("script")
 		p := []pipeline.Step{
-			pipeline.NewReadGraphStep(cmd),
+			NewReadGraphStep(cmd),
 			step,
-			pipeline.NewWriteGraphStep(cmd),
+			NewWriteGraphStep(cmd),
 		}
 		_, err := runPipeline(p, "", args)
 		return err

@@ -61,7 +61,7 @@ var exportJSONCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		step := &JSONExport{}
 		p := []pipeline.Step{
-			pipeline.NewReadGraphStep(cmd),
+			NewReadGraphStep(cmd),
 			step,
 		}
 		_, err := runPipeline(p, "", args)

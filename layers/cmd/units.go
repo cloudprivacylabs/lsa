@@ -172,9 +172,9 @@ var measuresCmd = &cobra.Command{
 		step := &MeasureStep{}
 		step.fromCmd(cmd)
 		p := []pipeline.Step{
-			pipeline.NewReadGraphStep(cmd),
+			NewReadGraphStep(cmd),
 			step,
-			pipeline.NewWriteGraphStep(cmd),
+			NewWriteGraphStep(cmd),
 		}
 		_, err := runPipeline(p, "", args)
 		return err

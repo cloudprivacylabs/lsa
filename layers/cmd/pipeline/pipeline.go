@@ -5,14 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
-
-	_ "unsafe"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher/graph"
-	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 )
 
@@ -32,6 +28,53 @@ type Step interface {
 }
 
 type Pipeline []Step
+
+// InputsFromFiles returns a function that will read input files sequentially for pipeline Run inputs func
+func InputsFromFiles(files []string) func() (io.ReadCloser, error) {
+	i := 0
+	return func() (io.ReadCloser, error) {
+		if len(files) == 0 {
+			if i > 0 {
+				return nil, nil
+			}
+			i++
+			inp, err := cmdutil.StreamFileOrStdin(nil)
+			if err != nil {
+				return nil, err
+			}
+			return io.NopCloser(inp), nil
+		}
+		if i >= len(files) {
+			return nil, nil
+		}
+		stream, err := cmdutil.StreamFileOrStdin([]string{files[i]})
+		i++
+		if err != nil {
+			return nil, err
+		}
+		return io.NopCloser(stream), nil
+	}
+}
+
+// Run pipeline with an optional initial graph and inputs func
+func Run(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, inputs func() (io.ReadCloser, error)) (*PipelineContext, error) {
+	var g graph.Graph
+	if initialGraph != nil {
+		g = initialGraph
+	} else {
+		g = ls.NewDocumentGraph()
+	}
+	ctx := &PipelineContext{
+		Graph:       g,
+		Context:     lsctx,
+		NextInput:   inputs,
+		Steps:       pipeline,
+		CurrentStep: -1,
+		Properties:  make(map[string]interface{}),
+	}
+	ctx.GraphOwner = ctx
+	return ctx, ctx.Next()
+}
 
 func (ctx *PipelineContext) GetGraphRO() graph.Graph {
 	return ctx.Graph
@@ -68,60 +111,6 @@ func (ctx *PipelineContext) Next() error {
 	}
 	ctx.CurrentStep--
 	return err
-}
-
-type ForkStep struct {
-	Steps map[string]Pipeline `json:"pipelines" yaml:"pipelines"`
-}
-
-func (ForkStep) Help() {
-	fmt.Println(`Create multiple parallel pipelines.
-
-operation: fork
-params: 
-  pipelines:
-    pipelineName:
-      -
-      -
-    pipelineName:
-      -
-      -`)
-}
-
-func (fork ForkStep) Run(ctx *PipelineContext) error {
-	for idx, pipe := range fork.Steps {
-		if err := forkPipeline(pipe, ctx, idx); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func forkPipeline(pipe Pipeline, ctx *PipelineContext, name string) error {
-	pctx := &PipelineContext{
-		Context:     ls.DefaultContext().SetLogger(ls.NewDefaultLogger()),
-		Graph:       ctx.Graph,
-		Roots:       ctx.Roots,
-		NextInput:   ctx.NextInput,
-		Steps:       pipe,
-		CurrentStep: -1,
-		GraphOwner:  ctx.GraphOwner,
-	}
-	cpMap := make(map[string]interface{})
-	for k, prop := range ctx.Properties {
-		cpMap[k] = prop
-	}
-	pctx.Properties = cpMap
-	pctx.Context.GetLogger().Debug(map[string]interface{}{"Starting new fork": name})
-	err := pctx.Next()
-	var perr PipelineError
-	if err != nil {
-		if !errors.As(err, &perr) {
-			err = PipelineError{Wrapped: fmt.Errorf("fork: %s, %w", name, err), Step: pctx.CurrentStep}
-		}
-		return err
-	}
-	return nil
 }
 
 var registeredSteps = make(map[string]func() Step)
@@ -220,121 +209,3 @@ func ReadPipeline(file string) ([]Step, error) {
 type StepFunc func(*PipelineContext) error
 
 func (f StepFunc) Run(ctx *PipelineContext) error { return f(ctx) }
-
-type ReadGraphStep struct {
-	Format string
-}
-
-func NewReadGraphStep(cmd *cobra.Command) ReadGraphStep {
-	rd := ReadGraphStep{}
-	rd.Format, _ = cmd.Flags().GetString("input")
-	return rd
-}
-
-func (ReadGraphStep) Help() {
-	fmt.Println(`Read graph
-Read graph file(s)
-
-operation: readGraph
-params:`)
-}
-
-func (rd ReadGraphStep) Run(pipeline *PipelineContext) error {
-
-	gs, err := cmdutil.StreamGraph(pipeline, nil, pipeline.Context.GetInterner(), rd.Format)
-	if err != nil {
-		return err
-	}
-	for g := range gs {
-		if g.Err != nil {
-			return err
-		}
-		pipeline.SetGraph(g.G)
-		pipeline.Set("input", "stdin")
-		if err := pipeline.Next(); err != nil {
-			return err
-		}
-
-	}
-	for {
-		stream, err := pipeline.NextInput()
-		if err != nil {
-			return fmt.Errorf("While streaming input %v: %w", stream, err)
-		}
-		pipeline.GetLogger().Debug(map[string]interface{}{"readGraph": stream})
-		gs, err = cmdutil.StreamGraph(pipeline, []string{}, pipeline.Context.GetInterner(), rd.Format)
-		if err != nil {
-			return fmt.Errorf("While reading %s: %w", stream, err)
-		}
-		for g := range gs {
-			if g.Err != nil {
-				return fmt.Errorf("While reading %v: %w", stream, err)
-			}
-			pipeline.SetGraph(g.G)
-			pipeline.Set("input", stream)
-			if err := pipeline.Next(); err != nil {
-				return fmt.Errorf("While processing %v: %w", stream, err)
-			}
-		}
-	}
-	return nil
-}
-
-type WriteGraphStep struct {
-	Format        string
-	IncludeSchema bool
-	Cmd           *cobra.Command
-}
-
-func (WriteGraphStep) Help() {
-	fmt.Println(`Write graph as a JSON file
-
-operation: writeGraph
-params:
-  format: json, jsonld, dot, web. Json is the default
-  includeSchema: If false, filter out schema nodes`)
-}
-
-func NewWriteGraphStep(cmd *cobra.Command) WriteGraphStep {
-	wr := WriteGraphStep{Cmd: cmd}
-	wr.Format, _ = cmd.Flags().GetString("output")
-	wr.IncludeSchema, _ = cmd.Flags().GetBool("includeSchema")
-	return wr
-}
-
-func (wr WriteGraphStep) Run(pipeline *PipelineContext) error {
-	if len(wr.Format) == 0 {
-		wr.Format = "json"
-	}
-	grph := pipeline.GetGraphRO()
-	return OutputIngestedGraph(wr.Cmd, wr.Format, grph, os.Stdout, wr.IncludeSchema)
-}
-
-func OutputIngestedGraph(cmd *cobra.Command, outFormat string, target graph.Graph, wr io.Writer, includeSchema bool) error {
-	if !includeSchema {
-		schemaNodes := make(map[graph.Node]struct{})
-		for nodes := target.GetNodes(); nodes.Next(); {
-			node := nodes.Node()
-			if ls.IsDocumentNode(node) {
-				for _, edge := range graph.EdgeSlice(node.GetEdgesWithLabel(graph.OutgoingEdge, ls.InstanceOfTerm)) {
-					schemaNodes[edge.GetTo()] = struct{}{}
-				}
-			}
-		}
-		newTarget := graph.NewOCGraph()
-		ls.CopyGraph(newTarget, target, func(n graph.Node) bool {
-			if !ls.IsAttributeNode(n) {
-				return true
-			}
-			if _, ok := schemaNodes[n]; ok {
-				return true
-			}
-			return false
-		},
-			func(edge graph.Edge) bool {
-				return !ls.IsAttributeTreeEdge(edge)
-			})
-		target = newTarget
-	}
-	return cmdutil.WriteGraph(cmd, target, outFormat, wr)
-}

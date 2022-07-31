@@ -225,7 +225,7 @@ var ingestCSVCmd = &cobra.Command{
 		ing.IngestByRows = !byFile
 		p := []pipeline.Step{
 			&ing,
-			pipeline.NewWriteGraphStep(cmd),
+			NewWriteGraphStep(cmd),
 		}
 		_, err = runPipeline(p, initialGraph, args)
 		return err

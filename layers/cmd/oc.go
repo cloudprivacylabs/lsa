@@ -81,9 +81,9 @@ var ocCmd = &cobra.Command{
 		step.Expr = []string{e}
 
 		p := []pipeline.Step{
-			pipeline.NewReadGraphStep(cmd),
+			NewReadGraphStep(cmd),
 			step,
-			pipeline.NewWriteGraphStep(cmd),
+			NewWriteGraphStep(cmd),
 		}
 		_, err := runPipeline(p, "", args)
 		if err != nil {
@@ -103,7 +103,7 @@ var ocqCmd = &cobra.Command{
 		step.Expr = []string{e}
 
 		p := []pipeline.Step{
-			pipeline.NewReadGraphStep(cmd),
+			NewReadGraphStep(cmd),
 			step,
 		}
 		ctx, err := runPipeline(p, "", args)

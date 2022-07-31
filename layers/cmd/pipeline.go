@@ -2,24 +2,17 @@ package cmd
 
 import (
 	"fmt"
-	"io"
-	"strings"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher/graph"
 	"github.com/spf13/cobra"
-	"golang.org/x/text/encoding"
 )
 
 func init() {
 	rootCmd.AddCommand(pipelineCmd)
 	pipelineCmd.Flags().String("file", "", "Pipeline build file")
 	pipelineCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
-
-	pipeline.RegisterPipelineStep("writeGraph", func() pipeline.Step { return &pipeline.WriteGraphStep{} })
-	pipeline.RegisterPipelineStep("fork", func() pipeline.Step { return &pipeline.ForkStep{} })
 
 	oldHelp := pipelineCmd.HelpFunc()
 	pipelineCmd.SetHelpFunc(func(cmd *cobra.Command, _ []string) {
@@ -35,6 +28,12 @@ func init() {
 	})
 }
 
+func NewReadGraphStep(cmd *cobra.Command) pipeline.ReadGraphStep {
+	rd := pipeline.ReadGraphStep{}
+	rd.Format, _ = cmd.Flags().GetString("input")
+	return rd
+}
+
 func runPipeline(steps []pipeline.Step, initialGraph string, inputs []string) (*pipeline.PipelineContext, error) {
 	var g graph.Graph
 	var err error
@@ -43,26 +42,8 @@ func runPipeline(steps []pipeline.Step, initialGraph string, inputs []string) (*
 		if err != nil {
 			return nil, err
 		}
-	} else {
-		g = ls.NewDocumentGraph()
 	}
-	pipeline := &pipeline.PipelineContext{
-		Graph:   g,
-		Context: getContext(),
-		NextInput: func() (io.ReadCloser, error) {
-			enc := encoding.Nop
-			if len(inputs) == 0 {
-				inp, err := cmdutil.StreamFileOrStdin(nil, enc)
-				return io.NopCloser(inp), err
-			}
-			return io.NopCloser(strings.NewReader(inputs[0])), nil
-		},
-		Steps:       steps,
-		CurrentStep: -1,
-		Properties:  make(map[string]interface{}),
-	}
-	pipeline.GraphOwner = pipeline
-	return pipeline, pipeline.Next()
+	return pipeline.Run(getContext(), steps, g, pipeline.InputsFromFiles(inputs))
 }
 
 var pipelineCmd = &cobra.Command{

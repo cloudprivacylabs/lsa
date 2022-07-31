@@ -633,9 +633,9 @@ Individual valueset objects can be given as separate files as well:
 		step.ValuesetFiles, _ = cmd.Flags().GetStringSlice("valueset")
 		step.Tables, _ = cmd.Flags().GetStringSlice("table")
 		p := []pipeline.Step{
-			pipeline.NewReadGraphStep(cmd),
+			NewReadGraphStep(cmd),
 			step,
-			pipeline.NewWriteGraphStep(cmd),
+			NewWriteGraphStep(cmd),
 		}
 		_, err := runPipeline(p, "", args)
 		return err

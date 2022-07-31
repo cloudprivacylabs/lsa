@@ -124,7 +124,7 @@ row root node. If a column query is not specified, it is assumed to be:
 		step := &CSVExport{}
 		step.SpecFile, _ = cmd.Flags().GetString("spec")
 		p := []pipeline.Step{
-			pipeline.NewReadGraphStep(cmd),
+			NewReadGraphStep(cmd),
 			step,
 		}
 		_, err := runPipeline(p, "", args)

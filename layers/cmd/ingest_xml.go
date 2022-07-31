@@ -115,7 +115,7 @@ var ingestXMLCmd = &cobra.Command{
 		ing.ID, _ = cmd.Flags().GetString("id")
 		p := []pipeline.Step{
 			&ing,
-			pipeline.NewWriteGraphStep(cmd),
+			NewWriteGraphStep(cmd),
 		}
 		_, err := runPipeline(p, initialGraph, args)
 		return err
