@@ -1,4 +1,4 @@
-package cmd
+package itests
 
 import (
 	"encoding/json"
