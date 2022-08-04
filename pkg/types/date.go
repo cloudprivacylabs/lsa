@@ -494,7 +494,7 @@ func (XSDDateParser) GetNativeValue(value string, node graph.Node) (interface{},
 
 // FormatNativeValue gets a target node and it's go native value, and returns
 // the value of the target node to an XSDDate
-func (XSDDateParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser XSDDateParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
 	if newValue == nil {
 		ls.RemoveRawNodeValue(node)
 		return "", nil
@@ -502,6 +502,12 @@ func (XSDDateParser) FormatNativeValue(newValue, oldValue interface{}, node grap
 	var oldDate Date
 	var ok bool
 	switch v := newValue.(type) {
+	case string:
+		t, err := dateparse.ParseStrict(v)
+		if err != nil {
+			return "", err
+		}
+		return parser.FormatNativeValue(t, oldValue, node)
 	case time.Time:
 		return v.Format("2006-01-02"), nil
 	case Date:
@@ -594,13 +600,19 @@ func (XSDDateTimeParser) GetNativeValue(value string, node graph.Node) (interfac
 	)
 }
 
-func (XSDDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser XSDDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
 	var old DateTime
 	var ok bool
 	switch v := newValue.(type) {
+	case string:
+		t, err := dateparse.ParseStrict(v)
+		if err != nil {
+			return "", err
+		}
+		return parser.FormatNativeValue(t, oldValue, node)
 	case time.Time:
 		return v.Format("2006-01-02T15:04:05Z"), nil
 	case Date:
@@ -696,11 +708,17 @@ func (XSDTimeParser) GetNativeValue(value string, node graph.Node) (interface{},
 		gomentFormat("hh:mm:ss"))
 }
 
-func (XSDTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser XSDTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
 	switch v := newValue.(type) {
+	case string:
+		t, err := dateparse.ParseStrict(v)
+		if err != nil {
+			return "", err
+		}
+		return parser.FormatNativeValue(t, oldValue, node)
 	case time.Time:
 		return v.Format("15:04:05"), nil
 	case Date:
@@ -740,13 +758,19 @@ func (JSONDateParser) GetNativeValue(value string, node graph.Node) (interface{}
 
 // FormatNativeValue gets a target node and it's go native value, and returns
 // the value of the target node to an JSONDate
-func (JSONDateParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser JSONDateParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
 	var old Date
 	var ok bool
 	switch v := newValue.(type) {
+	case string:
+		t, err := dateparse.ParseStrict(v)
+		if err != nil {
+			return "", err
+		}
+		return parser.FormatNativeValue(t, oldValue, node)
 	case time.Time:
 		return v.Format("2006-01-02"), nil
 	case Date:
@@ -840,11 +864,17 @@ func (JSONDateTimeParser) GetNativeValue(value string, node graph.Node) (interfa
 }
 
 // "2006-01-02T11:11:11Z07:00" -> Note: uses a 24Hour based clock   "2006-01-02T11:11:11.999999999Z07:00"
-func (JSONDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser JSONDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
 	switch v := newValue.(type) {
+	case string:
+		t, err := dateparse.ParseStrict(v)
+		if err != nil {
+			return "", err
+		}
+		return parser.FormatNativeValue(t, oldValue, node)
 	case time.Time:
 		return v.Format(time.RFC3339), nil
 	case Date:
@@ -897,11 +927,17 @@ func (JSONTimeParser) GetNativeValue(value string, node graph.Node) (interface{}
 		gomentFormat("HH:mm"))
 }
 
-func (JSONTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser JSONTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
 	switch v := newValue.(type) {
+	case string:
+		t, err := dateparse.ParseStrict(v)
+		if err != nil {
+			return "", err
+		}
+		return parser.FormatNativeValue(t, oldValue, node)
 	case time.Time:
 		return v.Format("HH:mm:ssZ"), nil // 11:11:11Z
 	case Date:
@@ -1411,11 +1447,17 @@ func (UnixTimeParser) GetNativeValue(value string, node graph.Node) (interface{}
 	return UnixTime{int64(x), nil}, nil
 }
 
-func (UnixTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser UnixTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
 	switch v := newValue.(type) {
+	case string:
+		t, err := dateparse.ParseStrict(v)
+		if err != nil {
+			return "", err
+		}
+		return parser.FormatNativeValue(t, oldValue, node)
 	case time.Time:
 		return strconv.FormatInt(v.Unix(), 10), nil
 	case Date:
@@ -1459,11 +1501,17 @@ func (UnixTimeNanoParser) GetNativeValue(value string, node graph.Node) (interfa
 	return UnixTimeNano{int64(x), nil}, nil
 }
 
-func (UnixTimeNanoParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser UnixTimeNanoParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
 	switch v := newValue.(type) {
+	case string:
+		t, err := dateparse.ParseStrict(v)
+		if err != nil {
+			return "", err
+		}
+		return parser.FormatNativeValue(t, oldValue, node)
 	case time.Time:
 		return strconv.FormatInt(v.UnixNano(), 10), nil
 	case Date:
