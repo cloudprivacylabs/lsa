@@ -60,57 +60,48 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 		if stream == nil {
 			break
 		}
+		var doneErr error
 		func() {
-			isPanic := false
-			var e error
 			defer func() {
-				pipeline.SetGraph(ls.NewDocumentGraph())
-				parser := xmlingest.Parser{
-					OnlySchemaAttributes: xml.OnlySchemaAttributes,
-					IngestEmptyValues:    xml.IngestNullValues,
-				}
-				if layer != nil {
-					parser.Layer = layer
-				}
-				builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
-					EmbedSchemaNodes:     xml.EmbedSchemaNodes,
-					OnlySchemaAttributes: xml.OnlySchemaAttributes,
-				})
-
-				baseID := xml.ID
-
-				parsed, err := parser.ParseStream(pipeline.Context, baseID, stream)
-				if err != nil {
-					isPanic = true
-					pipeline.Context.GetLogger().Error(map[string]interface{}{fmt.Sprintf("While reading input %s", "stdin"): err})
-					e = err
-					return
-				}
-				_, err = ls.Ingest(builder, parsed)
-				if err != nil {
-					isPanic = true
-					pipeline.Context.GetLogger().Error(map[string]interface{}{fmt.Sprintf("While reading input %s", "stdin"): err})
-					e = err
-					return
-				}
-				if err := builder.LinkNodes(pipeline.Context, parser.Layer, ls.GetEntityInfo(builder.GetGraph())); err != nil {
-					isPanic = true
-					pipeline.Context.GetLogger().Error(map[string]interface{}{fmt.Sprintf("While reading input %s", "stdin"): err})
-					e = err
-					return
-				}
-
-				if err := pipeline.Next(); err != nil {
-					isPanic = true
-					pipeline.Context.GetLogger().Error(map[string]interface{}{fmt.Sprintf("Input was %s", "stdin"): err})
-					e = err
-					return
+				if err := recover(); err != nil {
+					if !pipeline.ErrorLogger(*pipeline, fmt.Errorf("%v", err)) {
+						doneErr = fmt.Errorf("%v", err)
+					}
 				}
 			}()
-			if isPanic {
-				fmt.Println(e)
+			pipeline.SetGraph(ls.NewDocumentGraph())
+			parser := xmlingest.Parser{
+				OnlySchemaAttributes: xml.OnlySchemaAttributes,
+				IngestEmptyValues:    xml.IngestNullValues,
+			}
+			if layer != nil {
+				parser.Layer = layer
+			}
+			builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
+				EmbedSchemaNodes:     xml.EmbedSchemaNodes,
+				OnlySchemaAttributes: xml.OnlySchemaAttributes,
+			})
+
+			baseID := xml.ID
+
+			parsed, err := parser.ParseStream(pipeline.Context, baseID, stream)
+			if err != nil {
+				panic(err)
+			}
+			_, err = ls.Ingest(builder, parsed)
+			if err != nil {
+				panic(err)
+			}
+			if err := builder.LinkNodes(pipeline.Context, parser.Layer, ls.GetEntityInfo(builder.GetGraph())); err != nil {
+				panic(err)
+			}
+			if err := pipeline.Next(); err != nil {
+				panic(err)
 			}
 		}()
+		if doneErr != nil {
+			return doneErr
+		}
 	}
 	return nil
 }

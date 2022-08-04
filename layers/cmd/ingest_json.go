@@ -60,42 +60,40 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 		if stream == nil {
 			break
 		}
+		var doneErr error
 		func() {
-			isPanic := false
-			var e error
 			defer func() {
-				parser := jsoningest.Parser{
-					OnlySchemaAttributes: ji.OnlySchemaAttributes,
-					IngestNullValues:     ji.IngestNullValues,
-				}
-				if layer != nil {
-					parser.Layer = layer
-				}
-				pipeline.SetGraph(ls.NewDocumentGraph())
-				builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
-					EmbedSchemaNodes:     ji.EmbedSchemaNodes,
-					OnlySchemaAttributes: ji.OnlySchemaAttributes,
-				})
-				baseID := ji.ID
-
-				_, err = jsoningest.IngestStream(pipeline.Context, baseID, stream, parser, builder)
-				if err != nil {
-					isPanic = true
-					pipeline.Context.GetLogger().Error(map[string]interface{}{fmt.Sprintf("While reading input %s", "stdin"): err})
-					e = err
-					return
-				}
-				if err := pipeline.Next(); err != nil {
-					isPanic = true
-					pipeline.Context.GetLogger().Error(map[string]interface{}{fmt.Sprintf("Input was %s", "stdin"): err})
-					e = err
-					return
+				if err := recover(); err != nil {
+					if !pipeline.ErrorLogger(*pipeline, fmt.Errorf("%v", err)) {
+						doneErr = fmt.Errorf("%v", err)
+					}
 				}
 			}()
-			if isPanic {
-				fmt.Println(e)
+			parser := jsoningest.Parser{
+				OnlySchemaAttributes: ji.OnlySchemaAttributes,
+				IngestNullValues:     ji.IngestNullValues,
+			}
+			if layer != nil {
+				parser.Layer = layer
+			}
+			pipeline.SetGraph(ls.NewDocumentGraph())
+			builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
+				EmbedSchemaNodes:     ji.EmbedSchemaNodes,
+				OnlySchemaAttributes: ji.OnlySchemaAttributes,
+			})
+			baseID := ji.ID
+
+			_, err = jsoningest.IngestStream(pipeline.Context, baseID, stream, parser, builder)
+			if err != nil {
+				panic(err)
+			}
+			if err := pipeline.Next(); err != nil {
+				panic(err)
 			}
 		}()
+		if doneErr != nil {
+			return doneErr
+		}
 	}
 	return nil
 }

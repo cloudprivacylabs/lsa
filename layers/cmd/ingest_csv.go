@@ -100,89 +100,73 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 			pipeline.SetGraph(ls.NewDocumentGraph())
 		}
 		reader.Comma = rune(ci.Delimiter[0])
-
-		// panic recovery here
+		var doneErr error
 		func() {
-			isPanic := false
-			var e error
 			defer func() {
-				for row := 0; ; row++ {
-					rowData, err := reader.Read()
-					if err == io.EOF {
-						break
+				if err := recover(); err != nil {
+					if !pipeline.ErrorLogger(*pipeline, fmt.Errorf("%v", err)) {
+						doneErr = fmt.Errorf("%v", err)
 					}
-					if err != nil {
-						isPanic = true
-						pipeline.Context.GetLogger().Error(map[string]interface{}{"reader": err})
-						e = err
-						return
-					}
-					if ci.HeaderRow == row {
-						parser.ColumnNames = rowData
-						continue
-					}
-					if row < ci.StartRow {
-						continue
-					}
-					if ci.EndRow != -1 && row > ci.EndRow {
 
-						break
-					}
-					if ci.IngestByRows {
-						pipeline.SetGraph(ls.NewDocumentGraph())
-					}
-					builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
-						EmbedSchemaNodes:     ci.EmbedSchemaNodes,
-						OnlySchemaAttributes: ci.OnlySchemaAttributes,
-					})
-					templateData := map[string]interface{}{
-						"rowIndex":  row,
-						"dataIndex": row - ci.StartRow,
-						"columns":   rowData,
-					}
-					buf := bytes.Buffer{}
-					if err := idTmp.Execute(&buf, templateData); err != nil {
-						isPanic = true
-						pipeline.Context.GetLogger().Error(map[string]interface{}{"template.Execute": err})
-						e = err
-						return
-					}
-					parsed, err := parser.ParseDoc(pipeline.Context, strings.TrimSpace(buf.String()), rowData)
-					if err != nil {
-						isPanic = true
-						pipeline.Context.GetLogger().Error(map[string]interface{}{"parser.ParseDoc": err})
-						e = err
-						return
-					}
-					_, err = ls.Ingest(builder, parsed)
-					if err != nil {
-						isPanic = true
-						pipeline.Context.GetLogger().Error(map[string]interface{}{"Ingest": err})
-						e = err
-						return
-					}
-					if ci.IngestByRows {
-						if err := pipeline.Next(); err != nil {
-							isPanic = true
-							pipeline.Context.GetLogger().Error(map[string]interface{}{"pipeline.Next()": err})
-							e = err
-							return
-						}
-					}
-				}
-				if !ci.IngestByRows {
-					if err := pipeline.Next(); err != nil {
-						isPanic = true
-						pipeline.Context.GetLogger().Error(map[string]interface{}{fmt.Sprintf("While reading input %v", stream): err})
-						e = err
-						return
-					}
 				}
 			}()
-			if isPanic {
-				fmt.Println(e)
+			for row := 0; ; row++ {
+				rowData, err := reader.Read()
+				if err == io.EOF {
+					break
+				}
+				if err != nil {
+					panic(err)
+				}
+				if ci.HeaderRow == row {
+					parser.ColumnNames = rowData
+					continue
+				}
+				if row < ci.StartRow {
+					continue
+				}
+				if ci.EndRow != -1 && row > ci.EndRow {
+					break
+				}
+				if ci.IngestByRows {
+					pipeline.SetGraph(ls.NewDocumentGraph())
+				}
+				builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
+					EmbedSchemaNodes:     ci.EmbedSchemaNodes,
+					OnlySchemaAttributes: ci.OnlySchemaAttributes,
+				})
+				templateData := map[string]interface{}{
+					"rowIndex":  row,
+					"dataIndex": row - ci.StartRow,
+					"columns":   rowData,
+				}
+				buf := bytes.Buffer{}
+				if err := idTmp.Execute(&buf, templateData); err != nil {
+					panic(err)
+				}
+				parsed, err := parser.ParseDoc(pipeline.Context, strings.TrimSpace(buf.String()), rowData)
+				if err != nil {
+					panic(err)
+				}
+				_, err = ls.Ingest(builder, parsed)
+				if err != nil {
+					panic(err)
+				}
+				if ci.IngestByRows {
+					if err := pipeline.Next(); err != nil {
+						panic(err)
+					}
+				}
 			}
 		}()
+		if doneErr != nil {
+			return doneErr
+		}
+		if !ci.IngestByRows {
+			if err := pipeline.Next(); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
