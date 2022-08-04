@@ -101,32 +101,33 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 		}
 		reader.Comma = rune(ci.Delimiter[0])
 		var doneErr error
-		func() {
-			defer func() {
-				if err := recover(); err != nil {
-					if !pipeline.ErrorLogger(*pipeline, fmt.Errorf("%v", err)) {
-						doneErr = fmt.Errorf("%v", err)
+		for row := 0; ; row++ {
+			func() {
+				defer func() {
+					if err := recover(); err != nil {
+						if !pipeline.ErrorLogger(*pipeline, fmt.Errorf("Error in file: %s, row: %d %v", ci.Schema, row, err)) {
+							doneErr = fmt.Errorf("%v", err)
+						}
 					}
-
-				}
-			}()
-			for row := 0; ; row++ {
+				}()
 				rowData, err := reader.Read()
 				if err == io.EOF {
-					break
+					doneErr = err
+					return
 				}
 				if err != nil {
 					panic(err)
 				}
 				if ci.HeaderRow == row {
 					parser.ColumnNames = rowData
-					continue
+					return
 				}
 				if row < ci.StartRow {
-					continue
+					return
 				}
 				if ci.EndRow != -1 && row > ci.EndRow {
-					break
+					doneErr = err
+					return
 				}
 				if ci.IngestByRows {
 					pipeline.SetGraph(ls.NewDocumentGraph())
@@ -157,18 +158,18 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 						panic(err)
 					}
 				}
+			}()
+			if doneErr != nil {
+				return doneErr
 			}
-		}()
-		if doneErr != nil {
-			return doneErr
-		}
-		if !ci.IngestByRows {
-			if err := pipeline.Next(); err != nil {
-				return err
+			if !ci.IngestByRows {
+				if err := pipeline.Next(); err != nil {
+					return err
+				}
 			}
+			return nil
 		}
 	}
-	return nil
 }
 
 func init() {

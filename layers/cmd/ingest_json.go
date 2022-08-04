@@ -64,7 +64,7 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 		func() {
 			defer func() {
 				if err := recover(); err != nil {
-					if !pipeline.ErrorLogger(*pipeline, fmt.Errorf("%v", err)) {
+					if !pipeline.ErrorLogger(*pipeline, fmt.Errorf("Error in file: %s, %v", ji.Schema, err)) {
 						doneErr = fmt.Errorf("%v", err)
 					}
 				}
