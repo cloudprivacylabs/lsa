@@ -100,65 +100,76 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 			pipeline.SetGraph(ls.NewDocumentGraph())
 		}
 		reader.Comma = rune(ci.Delimiter[0])
-
+		var doneErr error
 		for row := 0; ; row++ {
-			rowData, err := reader.Read()
-			if err == io.EOF {
-
-				break
+			func() {
+				defer func() {
+					if err := recover(); err != nil {
+						if !pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, row: %d %v", ci.Schema, row, err)) {
+							doneErr = fmt.Errorf("%v", err)
+						}
+					}
+				}()
+				rowData, err := reader.Read()
+				if err == io.EOF {
+					doneErr = err
+					return
+				}
+				if err != nil {
+					panic(err)
+				}
+				if ci.HeaderRow == row {
+					parser.ColumnNames = rowData
+					return
+				}
+				if row < ci.StartRow {
+					return
+				}
+				if ci.EndRow != -1 && row > ci.EndRow {
+					doneErr = err
+					return
+				}
+				if ci.IngestByRows {
+					pipeline.SetGraph(ls.NewDocumentGraph())
+				}
+				builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
+					EmbedSchemaNodes:     ci.EmbedSchemaNodes,
+					OnlySchemaAttributes: ci.OnlySchemaAttributes,
+				})
+				templateData := map[string]interface{}{
+					"rowIndex":  row,
+					"dataIndex": row - ci.StartRow,
+					"columns":   rowData,
+				}
+				buf := bytes.Buffer{}
+				if err := idTmp.Execute(&buf, templateData); err != nil {
+					panic(err)
+				}
+				parsed, err := parser.ParseDoc(pipeline.Context, strings.TrimSpace(buf.String()), rowData)
+				if err != nil {
+					panic(err)
+				}
+				_, err = ls.Ingest(builder, parsed)
+				if err != nil {
+					panic(err)
+				}
+				if ci.IngestByRows {
+					if err := pipeline.Next(); err != nil {
+						panic(err)
+					}
+				}
+			}()
+			if doneErr != nil {
+				return doneErr
 			}
-			if err != nil {
-
-				return err
-			}
-			if ci.HeaderRow == row {
-				parser.ColumnNames = rowData
-				continue
-			}
-			if row < ci.StartRow {
-				continue
-			}
-			if ci.EndRow != -1 && row > ci.EndRow {
-
-				break
-			}
-			if ci.IngestByRows {
-				pipeline.SetGraph(ls.NewDocumentGraph())
-			}
-			builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
-				EmbedSchemaNodes:     ci.EmbedSchemaNodes,
-				OnlySchemaAttributes: ci.OnlySchemaAttributes,
-			})
-			templateData := map[string]interface{}{
-				"rowIndex":  row,
-				"dataIndex": row - ci.StartRow,
-				"columns":   rowData,
-			}
-			buf := bytes.Buffer{}
-			if err := idTmp.Execute(&buf, templateData); err != nil {
-				return err
-			}
-			parsed, err := parser.ParseDoc(pipeline.Context, strings.TrimSpace(buf.String()), rowData)
-			if err != nil {
-				return err
-			}
-			_, err = ls.Ingest(builder, parsed)
-			if err != nil {
-				return err
-			}
-			if ci.IngestByRows {
+			if !ci.IngestByRows {
 				if err := pipeline.Next(); err != nil {
 					return err
 				}
 			}
-		}
-		if !ci.IngestByRows {
-			if err := pipeline.Next(); err != nil {
-				return fmt.Errorf("While reading input %v: %w", stream, err)
-			}
+			return nil
 		}
 	}
-	return nil
 }
 
 func init() {

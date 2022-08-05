@@ -54,38 +54,53 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 
 	for {
 		stream, err := pipeline.NextInput()
+		if err != nil {
+			return err
+		}
 		if stream == nil {
 			break
 		}
-		pipeline.SetGraph(ls.NewDocumentGraph())
-		parser := xmlingest.Parser{
-			OnlySchemaAttributes: xml.OnlySchemaAttributes,
-			IngestEmptyValues:    xml.IngestNullValues,
-		}
-		if layer != nil {
-			parser.Layer = layer
-		}
-		builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
-			EmbedSchemaNodes:     xml.EmbedSchemaNodes,
-			OnlySchemaAttributes: xml.OnlySchemaAttributes,
-		})
+		var doneErr error
+		func() {
+			defer func() {
+				if err := recover(); err != nil {
+					if !pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, %v", xml.Schema, err)) {
+						doneErr = fmt.Errorf("%v", err)
+					}
+				}
+			}()
+			pipeline.SetGraph(ls.NewDocumentGraph())
+			parser := xmlingest.Parser{
+				OnlySchemaAttributes: xml.OnlySchemaAttributes,
+				IngestEmptyValues:    xml.IngestNullValues,
+			}
+			if layer != nil {
+				parser.Layer = layer
+			}
+			builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
+				EmbedSchemaNodes:     xml.EmbedSchemaNodes,
+				OnlySchemaAttributes: xml.OnlySchemaAttributes,
+			})
 
-		baseID := xml.ID
+			baseID := xml.ID
 
-		parsed, err := parser.ParseStream(pipeline.Context, baseID, stream)
-		if err != nil {
-			return fmt.Errorf("While reading input %s: %w", "stdin", err)
-		}
-		_, err = ls.Ingest(builder, parsed)
-		if err != nil {
-			return fmt.Errorf("While reading input %s: %w", "stdin", err)
-		}
-		if err := builder.LinkNodes(pipeline.Context, parser.Layer, ls.GetEntityInfo(builder.GetGraph())); err != nil {
-			return fmt.Errorf("While reading input %s: %w", "stdin", err)
-		}
-
-		if err := pipeline.Next(); err != nil {
-			return fmt.Errorf("Input was %s: %w", "stdin", err)
+			parsed, err := parser.ParseStream(pipeline.Context, baseID, stream)
+			if err != nil {
+				panic(err)
+			}
+			_, err = ls.Ingest(builder, parsed)
+			if err != nil {
+				panic(err)
+			}
+			if err := builder.LinkNodes(pipeline.Context, parser.Layer, ls.GetEntityInfo(builder.GetGraph())); err != nil {
+				panic(err)
+			}
+			if err := pipeline.Next(); err != nil {
+				panic(err)
+			}
+		}()
+		if doneErr != nil {
+			return doneErr
 		}
 	}
 	return nil

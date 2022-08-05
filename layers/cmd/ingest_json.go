@@ -60,27 +60,39 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 		if stream == nil {
 			break
 		}
-		parser := jsoningest.Parser{
-			OnlySchemaAttributes: ji.OnlySchemaAttributes,
-			IngestNullValues:     ji.IngestNullValues,
-		}
-		if layer != nil {
-			parser.Layer = layer
-		}
-		pipeline.SetGraph(ls.NewDocumentGraph())
-		builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
-			EmbedSchemaNodes:     ji.EmbedSchemaNodes,
-			OnlySchemaAttributes: ji.OnlySchemaAttributes,
-		})
-		baseID := ji.ID
+		var doneErr error
+		func() {
+			defer func() {
+				if err := recover(); err != nil {
+					if !pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, %v", ji.Schema, err)) {
+						doneErr = fmt.Errorf("%v", err)
+					}
+				}
+			}()
+			parser := jsoningest.Parser{
+				OnlySchemaAttributes: ji.OnlySchemaAttributes,
+				IngestNullValues:     ji.IngestNullValues,
+			}
+			if layer != nil {
+				parser.Layer = layer
+			}
+			pipeline.SetGraph(ls.NewDocumentGraph())
+			builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
+				EmbedSchemaNodes:     ji.EmbedSchemaNodes,
+				OnlySchemaAttributes: ji.OnlySchemaAttributes,
+			})
+			baseID := ji.ID
 
-		_, err = jsoningest.IngestStream(pipeline.Context, baseID, stream, parser, builder)
-		if err != nil {
-			return fmt.Errorf("While reading input %s: %w", "stdin", err)
-		}
-
-		if err := pipeline.Next(); err != nil {
-			return fmt.Errorf("Input was %s: %w", "stdin", err)
+			_, err = jsoningest.IngestStream(pipeline.Context, baseID, stream, parser, builder)
+			if err != nil {
+				panic(err)
+			}
+			if err := pipeline.Next(); err != nil {
+				panic(err)
+			}
+		}()
+		if doneErr != nil {
+			return doneErr
 		}
 	}
 	return nil
