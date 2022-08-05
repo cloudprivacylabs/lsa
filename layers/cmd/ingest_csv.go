@@ -105,7 +105,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 			func() {
 				defer func() {
 					if err := recover(); err != nil {
-						if !pipeline.ErrorLogger(*pipeline, fmt.Errorf("Error in file: %s, row: %d %v", ci.Schema, row, err)) {
+						if !pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, row: %d %v", ci.Schema, row, err)) {
 							doneErr = fmt.Errorf("%v", err)
 						}
 					}
