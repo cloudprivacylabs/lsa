@@ -86,17 +86,21 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 
 			parsed, err := parser.ParseStream(pipeline.Context, baseID, stream)
 			if err != nil {
-				panic(err)
+				doneErr = err
+				return
 			}
 			_, err = ls.Ingest(builder, parsed)
 			if err != nil {
-				panic(err)
+				doneErr = err
+				return
 			}
 			if err := builder.LinkNodes(pipeline.Context, parser.Layer, ls.GetEntityInfo(builder.GetGraph())); err != nil {
-				panic(err)
+				doneErr = err
+				return
 			}
 			if err := pipeline.Next(); err != nil {
-				panic(err)
+				doneErr = err
+				return
 			}
 		}()
 		if doneErr != nil {

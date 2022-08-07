@@ -173,10 +173,10 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 	types := attribute.GetLabels()
 	types.Add(AttributeNodeTerm)
 	if len(inode.ID) == 0 {
-		return MakeErrInvalidInput("Attribute node without an ID")
+		return MakeErrInvalidInput("", fmt.Sprintf("Attribute node without an ID: %v", inode.Node))
 	}
 	if strings.HasPrefix(inode.ID, "_") {
-		return MakeErrInvalidInput("Attribute node does not have an ID")
+		return MakeErrInvalidInput("", fmt.Sprintf("Attribute node does not have an ID: %v", inode.Node))
 	}
 
 	SetAttributeID(attribute, inode.ID)

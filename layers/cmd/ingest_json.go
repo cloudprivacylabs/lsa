@@ -85,10 +85,12 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 
 			_, err = jsoningest.IngestStream(pipeline.Context, baseID, stream, parser, builder)
 			if err != nil {
-				panic(err)
+				doneErr = err
+				return
 			}
 			if err := pipeline.Next(); err != nil {
-				panic(err)
+				doneErr = err
+				return
 			}
 		}()
 		if doneErr != nil {

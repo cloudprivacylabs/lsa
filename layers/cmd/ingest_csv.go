@@ -112,11 +112,11 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 				}()
 				rowData, err := reader.Read()
 				if err == io.EOF {
-					doneErr = err
 					return
 				}
 				if err != nil {
-					panic(err)
+					doneErr = err
+					return
 				}
 				if ci.HeaderRow == row {
 					parser.ColumnNames = rowData
@@ -143,19 +143,23 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 				}
 				buf := bytes.Buffer{}
 				if err := idTmp.Execute(&buf, templateData); err != nil {
-					panic(err)
+					doneErr = err
+					return
 				}
 				parsed, err := parser.ParseDoc(pipeline.Context, strings.TrimSpace(buf.String()), rowData)
 				if err != nil {
-					panic(err)
+					doneErr = err
+					return
 				}
 				_, err = ls.Ingest(builder, parsed)
 				if err != nil {
-					panic(err)
+					doneErr = err
+					return
 				}
 				if ci.IngestByRows {
 					if err := pipeline.Next(); err != nil {
-						panic(err)
+						doneErr = err
+						return
 					}
 				}
 			}()

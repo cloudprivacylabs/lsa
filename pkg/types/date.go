@@ -722,7 +722,7 @@ func (parser XSDTimeParser) FormatNativeValue(newValue, oldValue interface{}, no
 	case time.Time:
 		return v.Format("15:04:05"), nil
 	case Date:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{XSDTimeTerm, v}
 	case DateTime:
 		if v.Location == nil {
 			return v.ToTime().Format("09:00:00Z"), nil
@@ -999,7 +999,7 @@ func (PatternDateTimeParser) GetNativeValue(value string, node graph.Node) (inte
 	return NewDateTime(t), nil
 }
 
-func (PatternDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser PatternDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -1016,8 +1016,14 @@ func (PatternDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, n
 	var old Date
 	var ok bool
 	switch v := newValue.(type) {
+	case string:
+		t, err := dateparse.ParseStrict(v)
+		if err != nil {
+			return "", err
+		}
+		return parser.FormatNativeValue(NewDateTime(t), oldValue, node)
 	case time.Time:
-		return formatter.(goTimeFormatter).formatGoTime(v)
+		return parser.FormatNativeValue(NewDateTime(v), oldValue, node)
 	case Date:
 		return formatter.(dateFormatter).formatDate(v)
 	case DateTime:
@@ -1105,7 +1111,7 @@ func (PatternDateParser) GetNativeValue(value string, node graph.Node) (interfac
 	return NewDate(t), nil
 }
 
-func (PatternDateParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser PatternDateParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -1122,14 +1128,20 @@ func (PatternDateParser) FormatNativeValue(newValue, oldValue interface{}, node 
 	var old Date
 	var ok bool
 	switch v := newValue.(type) {
+	case string:
+		t, err := dateparse.ParseStrict(v)
+		if err != nil {
+			return "", err
+		}
+		return parser.FormatNativeValue(NewDateTime(t), oldValue, node)
 	case time.Time:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return parser.FormatNativeValue(NewDateTime(v), oldValue, node)
 	case Date:
 		return formatter.(dateFormatter).formatDate(v)
 	case DateTime:
 		return formatter.(dateTimeFormatter).formatDateTime(v)
 	case TimeOfDay:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{PatternDateTerm, v}
 	case GDay:
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
@@ -1211,7 +1223,7 @@ func (PatternTimeParser) GetNativeValue(value string, node graph.Node) (interfac
 	return NewTimeOfDay(t), nil
 }
 
-func (PatternTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser PatternTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -1226,24 +1238,30 @@ func (PatternTimeParser) FormatNativeValue(newValue, oldValue interface{}, node 
 		formatter = goFormat("15:04:05.999999999Z07:00")
 	}
 	switch v := newValue.(type) {
+	case string:
+		t, err := dateparse.ParseStrict(v)
+		if err != nil {
+			return "", err
+		}
+		return parser.FormatNativeValue(NewDateTime(t), oldValue, node)
 	case time.Time:
-		return formatter.(goTimeFormatter).formatGoTime(v)
+		return parser.FormatNativeValue(NewDateTime(v), oldValue, node)
 	case Date:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{PatternTimeTerm, v}
 	case DateTime:
 		return formatter.(dateTimeFormatter).formatDateTime(v)
 	case TimeOfDay:
 		return formatter.(timeFormatter).formatTime(v)
 	case GDay:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{PatternTimeTerm, v}
 	case GMonth:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{PatternTimeTerm, v}
 	case GYear:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{PatternTimeTerm, v}
 	case GMonthDay:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{PatternTimeTerm, v}
 	case GYearMonth:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{PatternTimeTerm, v}
 	default:
 		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternTimeTerm, Value: newValue}
 	}
@@ -1269,7 +1287,7 @@ func (XSDGDayParser) FormatNativeValue(newValue, oldValue interface{}, node grap
 	}
 	switch v := newValue.(type) {
 	case time.Time:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{XSDGDayTerm, v}
 	case Date:
 		return strconv.Itoa((v.Day)), nil
 	case DateTime:
@@ -1279,11 +1297,11 @@ func (XSDGDayParser) FormatNativeValue(newValue, oldValue interface{}, node grap
 	case GMonthDay:
 		return strconv.Itoa(int(v.Day)), nil
 	case GYearMonth:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{XSDGDayTerm, v}
 	case UnixTime:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{XSDGDayTerm, v}
 	case UnixTimeNano:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{XSDGDayTerm, v}
 	default:
 		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGDayTerm, Value: newValue}
 	}
@@ -1309,7 +1327,7 @@ func (XSDGMonthParser) FormatNativeValue(newValue, oldValue interface{}, node gr
 	}
 	switch v := newValue.(type) {
 	case time.Time:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{XSDGMonthTerm, v}
 	case Date:
 		return v.ToTime().Format("01"), nil
 	case DateTime:
@@ -1345,7 +1363,7 @@ func (XSDGMonthDayParser) FormatNativeValue(newValue, oldValue interface{}, node
 	}
 	switch v := newValue.(type) {
 	case time.Time:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{XSDGMonthDayTerm, v}
 	case Date:
 		return v.ToTime().Format("01-02"), nil
 	case DateTime:
@@ -1359,9 +1377,9 @@ func (XSDGMonthDayParser) FormatNativeValue(newValue, oldValue interface{}, node
 	case GYearMonth:
 		return strconv.Itoa(int(v.Month)), nil
 	case UnixTime:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{XSDGMonthDayTerm, v}
 	case UnixTimeNano:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{XSDGMonthDayTerm, v}
 	default:
 		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGMonthDayTerm, Value: newValue}
 	}
@@ -1532,15 +1550,15 @@ func (parser UnixTimeNanoParser) FormatNativeValue(newValue, oldValue interface{
 		t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), v.Location)
 		return strconv.FormatInt(t.UnixNano(), 10), nil
 	case GDay:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{UnixTimeNanoTerm, v}
 	case GMonth:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{UnixTimeNanoTerm, v}
 	case GYear:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{UnixTimeNanoTerm, v}
 	case GMonthDay:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{UnixTimeNanoTerm, v}
 	case GYearMonth:
-		return "", ErrIncompatibleTypes{node.GetLabels().String(), v}
+		return "", ErrIncompatibleTypes{UnixTimeNanoTerm, v}
 	case UnixTime:
 		return strconv.FormatInt(v.Seconds*1e9, 10), nil
 	default:
