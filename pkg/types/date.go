@@ -41,7 +41,7 @@ func (e ErrIncompatibleTypes) Error() string {
 }
 
 const XSD = "http://www.w3.org/2001/XMLSchema/"
-const JSON = "https:/json-schema.org/"
+const JSON = "https://json-schema.org/"
 const Unix = "https://unixtime.org/"
 
 type Date struct {
