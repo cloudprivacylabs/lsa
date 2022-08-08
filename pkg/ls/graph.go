@@ -432,30 +432,21 @@ func SortEdgesItr(edges graph.EdgeIterator) graph.EdgeIterator {
 
 // CloneNode clones the sourcenode in targetgraph
 func CloneNode(sourceNode graph.Node, targetGraph graph.Graph) graph.Node {
-	properties := make(map[string]interface{})
-	sourceNode.ForEachProperty(func(key string, value interface{}) bool {
+	return graph.CopyNode(sourceNode, targetGraph, func(key string, value interface{}) interface{} {
 		if p, ok := value.(*PropertyValue); ok {
-			properties[key] = p.Clone()
-		} else {
-			properties[key] = value
+			return p.Clone()
 		}
-		return true
+		return value
 	})
-	newNode := targetGraph.NewNode(sourceNode.GetLabels().Slice(), properties)
-	return newNode
 }
 
 func CloneEdge(fromInTarget, toInTarget graph.Node, sourceEdge graph.Edge, targetGraph graph.Graph) graph.Edge {
-	properties := make(map[string]interface{})
-	sourceEdge.ForEachProperty(func(key string, value interface{}) bool {
+	return graph.CloneEdge(fromInTarget, toInTarget, sourceEdge, targetGraph, func(key string, value interface{}) interface{} {
 		if p, ok := value.(*PropertyValue); ok {
-			properties[key] = p.Clone()
-		} else {
-			properties[key] = value
+			return p.Clone()
 		}
-		return true
+		return value
 	})
-	return targetGraph.NewEdge(fromInTarget, toInTarget, sourceEdge.GetLabel(), properties)
 }
 
 func FindNodeByID(g graph.Graph, ID string) []graph.Node {
