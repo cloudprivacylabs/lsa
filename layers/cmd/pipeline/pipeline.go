@@ -7,6 +7,7 @@ import (
 	"io"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	"github.com/cloudprivacylabs/lsa/layers/cmd/config"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher/graph"
 	"gopkg.in/yaml.v2"
@@ -63,7 +64,7 @@ func Run(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, inputs 
 	if initialGraph != nil {
 		g = initialGraph
 	} else {
-		g = ls.NewDocumentGraph()
+		g = config.NewDocumentGraph()
 	}
 	ctx := &PipelineContext{
 		Graph:       g,

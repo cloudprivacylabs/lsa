@@ -19,6 +19,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/config"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -76,7 +77,7 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 			if layer != nil {
 				parser.Layer = layer
 			}
-			pipeline.SetGraph(ls.NewDocumentGraph())
+			pipeline.SetGraph(config.NewDocumentGraph())
 			builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
 				EmbedSchemaNodes:     ji.EmbedSchemaNodes,
 				OnlySchemaAttributes: ji.OnlySchemaAttributes,
