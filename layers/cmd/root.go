@@ -23,6 +23,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 	"github.com/cloudprivacylabs/lsa/pkg/types"
@@ -52,6 +53,13 @@ var (
 				pprof.StopCPUProfile()
 			}
 		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			_, err := cmdutil.LoadConfig(cmd)
+			if err != nil {
+				return err
+			}
+			return nil
+		},
 	}
 )
 
@@ -66,6 +74,7 @@ func init() {
 	rootCmd.PersistentFlags().Bool("log.debug", false, "Enable logging at debug level")
 	rootCmd.PersistentFlags().Bool("log.info", false, "Enable logging at info level")
 
+	rootCmd.PersistentFlags().String("cfg", "", "configuration spec for node properties and labels (default: layers.config.yaml)")
 	rootCmd.PersistentFlags().String("rankdir", "LR", "DOT: rankdir option")
 	rootCmd.PersistentFlags().String("units", "", "Units service URL")
 }

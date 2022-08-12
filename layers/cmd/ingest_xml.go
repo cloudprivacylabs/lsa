@@ -19,7 +19,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/cloudprivacylabs/lsa/layers/cmd/config"
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	xmlingest "github.com/cloudprivacylabs/lsa/pkg/xml"
@@ -70,7 +70,7 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 					}
 				}
 			}()
-			pipeline.SetGraph(config.NewDocumentGraph())
+			pipeline.SetGraph(cmdutil.NewDocumentGraph())
 			parser := xmlingest.Parser{
 				OnlySchemaAttributes: xml.OnlySchemaAttributes,
 				IngestEmptyValues:    xml.IngestNullValues,

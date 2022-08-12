@@ -25,7 +25,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/cloudprivacylabs/lsa/layers/cmd/config"
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -98,7 +98,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 		}
 		reader := csv.NewReader(stream)
 		if !ci.IngestByRows {
-			pipeline.SetGraph(config.NewDocumentGraph())
+			pipeline.SetGraph(cmdutil.NewDocumentGraph())
 		}
 		reader.Comma = rune(ci.Delimiter[0])
 		var doneErr error
@@ -131,7 +131,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 					return
 				}
 				if ci.IngestByRows {
-					pipeline.SetGraph(config.NewDocumentGraph())
+					pipeline.SetGraph(cmdutil.NewDocumentGraph())
 				}
 				builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
 					EmbedSchemaNodes:     ci.EmbedSchemaNodes,
