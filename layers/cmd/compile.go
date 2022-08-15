@@ -80,7 +80,7 @@ var compileCmd = &cobra.Command{
 				if len(layers) > 1 {
 					fail("There are more than one layers in input")
 				}
-				layer = layers[1]
+				layer = layers[0]
 				compiler := ls.Compiler{
 					Loader: ls.SchemaLoaderFunc(func(x string) (*ls.Layer, error) {
 						if x == schemaName || x == layer.GetID() {

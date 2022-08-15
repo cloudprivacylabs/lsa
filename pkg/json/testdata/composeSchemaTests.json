@@ -1,0 +1,84 @@
+[
+    {
+        "name": "basic",
+        "schemas": [
+            {
+                "prop1": "value1",
+                "prop2": "value2",
+                "type": "object",
+                "properties": {
+                    "p1": {
+                        "type": "string"
+                    },
+                    "p2": {
+                        "type": "int"
+                    }
+                }
+            },
+            {
+                "prop1": "overridden",
+                "properties": {
+                    "p2": {
+                        "type":"string"
+                    }
+                }
+            }
+        ],
+        "expected": {
+            "prop1": "overridden",
+            "prop2": "value2",
+                "type": "object",
+                "properties": {
+                    "p1": {
+                        "type": "string"
+                    },
+                    "p2": {
+                        "type": "string"
+                    }
+                }
+        }
+    },
+    {
+        "name": "add obj",
+        "schemas": [
+            {
+                "prop1": "value1",
+                "prop2": "value2",
+                "type": "object",
+                "properties": {
+                    "p1": {
+                        "type": "string"
+                    },
+                    "p2": {
+                        "type": "int"
+                    }
+                }
+            },
+            {
+                "properties": {
+                    "p1": {
+                        "x-ls": {
+                            "prop1": "value1"
+                        }
+                    }
+                }
+            }
+        ],
+        "expected": {
+            "prop1": "value1",
+            "prop2": "value2",
+                "type": "object",
+                "properties": {
+                    "p1": {
+                        "type": "string",
+                        "x-ls": {
+                            "prop1": "value1"
+                        }
+                    },
+                    "p2": {
+                        "type": "int"
+                    }
+                }
+        }
+    }
+]

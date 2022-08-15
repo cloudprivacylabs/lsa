@@ -15,11 +15,9 @@
 package cmd
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"text/template"
 
 	dec "github.com/cloudprivacylabs/lsa/pkg/csv"
 	"github.com/spf13/cobra"
@@ -27,76 +25,6 @@ import (
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
-
-type CSVImportSpec struct {
-	AttributeID  string         `json:"attributeId"`
-	LayerType    string         `json:"layerType"`
-	LayerID      string         `json:"layerId"`
-	RootID       string         `json:"rootId"`
-	ValueType    string         `json:"valueType"`
-	EntityIDRows []int          `json:"entityIdRows"`
-	EntityID     string         `json:"entityId"`
-	Required     string         `json:"required"`
-	StartRow     int            `json:"startRow"`
-	NRows        int            `json:"nrows"`
-	Terms        []dec.TermSpec `json:"terms"`
-}
-
-func (spec CSVImportSpec) Import(records [][]string) (*ls.Layer, error) {
-	exec := func(tmpl string, data interface{}) (string, error) {
-		t, err := template.New("").Parse(tmpl)
-		if err != nil {
-			return "", err
-		}
-		var buf bytes.Buffer
-		if err := t.Execute(&buf, data); err != nil {
-			return "", err
-		}
-		return buf.String(), nil
-	}
-	rows := records[spec.StartRow:]
-	if spec.NRows > 0 && spec.NRows > len(rows) {
-		rows = rows[:spec.NRows]
-	}
-	layerType, err := exec(spec.LayerType, map[string]interface{}{"rows": rows})
-	if err != nil {
-		return nil, err
-	}
-	if layerType == "Overlay" {
-		layerType = ls.OverlayTerm
-	} else if layerType == "Schema" {
-		layerType = ls.SchemaTerm
-	}
-	layer, err := dec.Import(spec.AttributeID, spec.Terms, spec.StartRow, spec.NRows, spec.EntityIDRows, spec.EntityID, spec.Required, records)
-	if err != nil {
-		return nil, err
-	}
-	if len(layerType) > 0 {
-		layer.SetLayerType(layerType)
-	}
-	layerID, err := exec(spec.LayerID, map[string]interface{}{"rows": rows})
-	if err != nil {
-		return nil, err
-	}
-	if len(layerID) > 0 {
-		layer.SetID(layerID)
-	}
-	rootID, err := exec(spec.RootID, map[string]interface{}{"rows": rows})
-	if err != nil {
-		return nil, err
-	}
-	if len(rootID) > 0 {
-		ls.SetNodeID(layer.GetSchemaRootNode(), rootID)
-	}
-	valueType, err := exec(spec.ValueType, map[string]interface{}{"rows": rows})
-	if err != nil {
-		return nil, err
-	}
-	if len(valueType) > 0 {
-		layer.SetValueType(valueType)
-	}
-	return layer, nil
-}
 
 func init() {
 	importCmd.AddCommand(importCSVCmd)
@@ -268,7 +196,7 @@ will result:
 			context = map[string]interface{}{"@context": c}
 		}
 
-		var spec CSVImportSpec
+		var spec dec.CSVImportSpec
 		s, _ := cmd.Flags().GetString("spec")
 		if len(s) > 0 {
 			data, err := ioutil.ReadFile(s)

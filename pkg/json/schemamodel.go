@@ -48,8 +48,26 @@ type schemaProperty struct {
 	recurse        bool
 }
 
+func (p *schemaProperty) size() int {
+	n := p.object.size() + p.array.size()
+	for _, x := range p.oneOf {
+		n += x.size()
+	}
+	for _, x := range p.allOf {
+		n += x.size()
+	}
+	return n
+}
+
 type arraySchema struct {
 	items *schemaProperty
+}
+
+func (a *arraySchema) size() int {
+	if a == nil {
+		return 0
+	}
+	return a.items.size() + 1
 }
 
 func (a *arraySchema) resetNodes() {
@@ -61,6 +79,17 @@ func (a *arraySchema) resetNodes() {
 type objectSchema struct {
 	properties map[string]*schemaProperty
 	required   []string
+}
+
+func (o *objectSchema) size() int {
+	if o == nil {
+		return 0
+	}
+	n := 0
+	for _, c := range o.properties {
+		n += c.size() + 1
+	}
+	return n
 }
 
 func (o *objectSchema) resetNodes() {
