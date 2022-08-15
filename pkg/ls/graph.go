@@ -441,12 +441,12 @@ func CloneNode(sourceNode graph.Node, targetGraph graph.Graph) graph.Node {
 }
 
 func CloneEdge(fromInTarget, toInTarget graph.Node, sourceEdge graph.Edge, targetGraph graph.Graph) graph.Edge {
-	return graph.CopyEdge(sourceEdge, targetGraph, func(key string, value interface{}) interface{} {
+	return graph.CloneEdge(fromInTarget, toInTarget, sourceEdge, targetGraph, func(key string, value interface{}) interface{} {
 		if p, ok := value.(*PropertyValue); ok {
 			return p.Clone()
 		}
 		return value
-	}, nil)
+	})
 }
 
 func FindNodeByID(g graph.Graph, ID string) []graph.Node {
