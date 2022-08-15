@@ -63,7 +63,7 @@ func Run(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, inputs 
 	if initialGraph != nil {
 		g = initialGraph
 	} else {
-		g = ls.NewDocumentGraph()
+		g = cmdutil.NewDocumentGraph()
 	}
 	ctx := &PipelineContext{
 		Graph:       g,
