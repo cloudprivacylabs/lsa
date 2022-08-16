@@ -49,34 +49,36 @@ type Parser struct {
 	OnlySchemaAttributes bool
 	IngestNullValues     bool
 	Layer                *ls.Layer
+	objectCache          map[graph.Node]map[string][]graph.Node
 }
 
 type parserContext struct {
-	context     *ls.Context
-	path        ls.NodePath
-	objectCache map[graph.Node]map[string][]graph.Node
-	schemaNode  graph.Node
+	context    *ls.Context
+	path       ls.NodePath
+	schemaNode graph.Node
 }
 
-func (ctx *parserContext) getObjectNodes() (map[string][]graph.Node, error) {
-	nodes, exists := ctx.objectCache[ctx.schemaNode]
+func (ing *Parser) getObjectNodes(schemaNode graph.Node) (map[string][]graph.Node, error) {
+	if ing.objectCache == nil {
+		ing.objectCache = make(map[graph.Node]map[string][]graph.Node)
+	}
+	nodes, exists := ing.objectCache[schemaNode]
 	if exists {
 		return nodes, nil
 	}
-	nodes, err := ls.GetObjectAttributeNodesBy(ctx.schemaNode, ls.AttributeNameTerm)
+	nodes, err := ls.GetObjectAttributeNodesBy(schemaNode, ls.AttributeNameTerm)
 	if err != nil {
 		return nil, err
 	}
-	ctx.objectCache[ctx.schemaNode] = nodes
+	ing.objectCache[schemaNode] = nodes
 	return nodes, nil
 }
 
-func (ing Parser) ParseDoc(context *ls.Context, baseID string, input jsonom.Node) (*ParsedDocNode, error) {
+func (ing *Parser) ParseDoc(context *ls.Context, baseID string, input jsonom.Node) (*ParsedDocNode, error) {
 	ctx := parserContext{
-		context:     context,
-		path:        ls.NodePath{},
-		objectCache: make(map[graph.Node]map[string][]graph.Node),
-		schemaNode:  ing.Layer.GetSchemaRootNode(),
+		context:    context,
+		path:       ls.NodePath{},
+		schemaNode: ing.Layer.GetSchemaRootNode(),
 	}
 	if len(baseID) > 0 {
 		ctx.path = append(ctx.path, baseID)
@@ -84,7 +86,7 @@ func (ing Parser) ParseDoc(context *ls.Context, baseID string, input jsonom.Node
 	return ing.parseDoc(ctx, input)
 }
 
-func (ing Parser) parseDoc(ctx parserContext, input jsonom.Node) (*ParsedDocNode, error) {
+func (ing *Parser) parseDoc(ctx parserContext, input jsonom.Node) (*ParsedDocNode, error) {
 	if ctx.schemaNode == nil && ing.OnlySchemaAttributes {
 		return nil, nil
 	}
@@ -100,7 +102,7 @@ func (ing Parser) parseDoc(ctx parserContext, input jsonom.Node) (*ParsedDocNode
 	return ing.parseValue(ctx, input.(*jsonom.Value))
 }
 
-func (ing Parser) parseObject(ctx parserContext, input *jsonom.Object) (*ParsedDocNode, error) {
+func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*ParsedDocNode, error) {
 	// An object node
 	if ctx.schemaNode != nil {
 		if !ctx.schemaNode.HasLabel(ls.AttributeTypeObject) {
@@ -108,7 +110,7 @@ func (ing Parser) parseObject(ctx parserContext, input *jsonom.Object) (*ParsedD
 		}
 	}
 	// There is a schema node for this node. It must be an object
-	nextNodes, err := ctx.getObjectNodes()
+	nextNodes, err := ing.getObjectNodes(ctx.schemaNode)
 	if err != nil {
 		return nil, err
 	}
@@ -168,7 +170,7 @@ func (ing Parser) parseObject(ctx parserContext, input *jsonom.Object) (*ParsedD
 	return &ret, nil
 }
 
-func (ing Parser) parseArray(ctx parserContext, input *jsonom.Array) (*ParsedDocNode, error) {
+func (ing *Parser) parseArray(ctx parserContext, input *jsonom.Array) (*ParsedDocNode, error) {
 	// An array node
 	if ctx.schemaNode != nil {
 		if !ctx.schemaNode.HasLabel(ls.AttributeTypeArray) {
@@ -201,13 +203,13 @@ func (ing Parser) parseArray(ctx parserContext, input *jsonom.Array) (*ParsedDoc
 	return &ret, nil
 }
 
-func (ing Parser) testOption(option graph.Node, ctx parserContext, input jsonom.Node) bool {
+func (ing *Parser) testOption(option graph.Node, ctx parserContext, input jsonom.Node) bool {
 	ctx.schemaNode = option
 	out, err := ing.parseDoc(ctx, input)
 	return out != nil && err == nil
 }
 
-func (ing Parser) parsePolymorphic(ctx parserContext, input jsonom.Node) (*ParsedDocNode, error) {
+func (ing *Parser) parsePolymorphic(ctx parserContext, input jsonom.Node) (*ParsedDocNode, error) {
 	options := ls.GetPolymorphicOptions(ctx.schemaNode)
 	var found graph.Node
 	for _, option := range options {
@@ -227,7 +229,7 @@ func (ing Parser) parsePolymorphic(ctx parserContext, input jsonom.Node) (*Parse
 	return ing.parseDoc(ctx, input)
 }
 
-func (ing Parser) parseValue(ctx parserContext, input *jsonom.Value) (*ParsedDocNode, error) {
+func (ing *Parser) parseValue(ctx parserContext, input *jsonom.Value) (*ParsedDocNode, error) {
 	if input.Value() == nil {
 		if !ing.IngestNullValues {
 			return nil, nil

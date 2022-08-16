@@ -29,6 +29,7 @@ type JSONIngester struct {
 	BaseIngestParams
 	ID          string
 	initialized bool
+	parser      jsoningest.Parser
 }
 
 func (JSONIngester) Help() {
@@ -50,6 +51,11 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 			return err
 		}
 		pipeline.Properties["layer"] = layer
+		ji.parser = jsoningest.Parser{
+			OnlySchemaAttributes: ji.OnlySchemaAttributes,
+			IngestNullValues:     ji.IngestNullValues,
+			Layer:                layer,
+		}
 		ji.initialized = true
 	}
 
@@ -70,13 +76,6 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 					}
 				}
 			}()
-			parser := jsoningest.Parser{
-				OnlySchemaAttributes: ji.OnlySchemaAttributes,
-				IngestNullValues:     ji.IngestNullValues,
-			}
-			if layer != nil {
-				parser.Layer = layer
-			}
 			pipeline.SetGraph(cmdutil.NewDocumentGraph())
 			builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
 				EmbedSchemaNodes:     ji.EmbedSchemaNodes,
@@ -84,7 +83,7 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 			})
 			baseID := ji.ID
 
-			_, err = jsoningest.IngestStream(pipeline.Context, baseID, stream, parser, builder)
+			_, err = jsoningest.IngestStream(pipeline.Context, baseID, stream, ji.parser, builder)
 			if err != nil {
 				doneErr = err
 				return
