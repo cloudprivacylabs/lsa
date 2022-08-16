@@ -52,9 +52,20 @@ type Parser struct {
 }
 
 type parserContext struct {
-	context    *ls.Context
-	path       ls.NodePath
-	schemaNode graph.Node
+	context     *ls.Context
+	path        ls.NodePath
+	objectCache map[graph.Node][]graph.Node
+	schemaNode  graph.Node
+}
+
+func (ctx *parserContext) getObjectNodes() []graph.Node {
+	nodes, exists := ctx.objectCache[ctx.schemaNode]
+	if exists {
+		return nodes
+	}
+	nodes = ls.GetObjectAttributeNodes(ctx.schemaNode)
+	ctx.objectCache[ctx.schemaNode] = nodes
+	return nodes
 }
 
 func (ing Parser) ParseStream(context *ls.Context, baseID string, input io.Reader) (*ParsedDocNode, error) {
@@ -72,9 +83,10 @@ func (ing Parser) DecodeAndParse(context *ls.Context, baseID string, decoder *xm
 
 func (ing Parser) ParseDoc(context *ls.Context, baseID string, input *xmlElement) (*ParsedDocNode, error) {
 	ctx := parserContext{
-		context:    context,
-		path:       ls.NodePath{},
-		schemaNode: ing.Layer.GetSchemaRootNode(),
+		context:     context,
+		path:        ls.NodePath{},
+		schemaNode:  ing.Layer.GetSchemaRootNode(),
+		objectCache: make(map[graph.Node][]graph.Node),
 	}
 	if len(baseID) > 0 {
 		ctx.path = append(ctx.path, baseID)
@@ -216,7 +228,7 @@ func (ing Parser) attributes(ctx parserContext, element *xmlElement, childSchema
 func (ing Parser) parseObject(ctx parserContext, element *xmlElement) (*ParsedDocNode, error) {
 	// Get all the possible child nodes from the schema. If the
 	// schemaNode is nil, the returned schemaNodes will be empty
-	childSchemaNodes := ls.GetObjectAttributeNodes(ctx.schemaNode)
+	childSchemaNodes := ctx.getObjectNodes()
 	ctx.path = ctx.path.Append(element.name.Local)
 	ret := &ParsedDocNode{
 		name:       element.name,

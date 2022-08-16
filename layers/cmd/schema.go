@@ -89,7 +89,7 @@ func LoadBundle(ctx *ls.Context, file []string) (ls.SchemaLoader, error) {
 	for _, f := range file {
 		b, err := bundle.LoadBundle(f, func(parentBundle, loadBundle string) (bundle.Bundle, error) {
 			var bnd bundle.Bundle
-			if err := cmdutil.ReadJSONOrYAML(f, &bnd); err != nil {
+			if err := cmdutil.ReadJSONOrYAML(loadBundle, &bnd); err != nil {
 				return bnd, err
 			}
 			recalculatePaths(&bnd, filepath.Dir(loadBundle))

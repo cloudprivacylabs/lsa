@@ -52,16 +52,31 @@ type Parser struct {
 }
 
 type parserContext struct {
-	context    *ls.Context
-	path       ls.NodePath
-	schemaNode graph.Node
+	context     *ls.Context
+	path        ls.NodePath
+	objectCache map[graph.Node]map[string][]graph.Node
+	schemaNode  graph.Node
+}
+
+func (ctx *parserContext) getObjectNodes() (map[string][]graph.Node, error) {
+	nodes, exists := ctx.objectCache[ctx.schemaNode]
+	if exists {
+		return nodes, nil
+	}
+	nodes, err := ls.GetObjectAttributeNodesBy(ctx.schemaNode, ls.AttributeNameTerm)
+	if err != nil {
+		return nil, err
+	}
+	ctx.objectCache[ctx.schemaNode] = nodes
+	return nodes, nil
 }
 
 func (ing Parser) ParseDoc(context *ls.Context, baseID string, input jsonom.Node) (*ParsedDocNode, error) {
 	ctx := parserContext{
-		context:    context,
-		path:       ls.NodePath{},
-		schemaNode: ing.Layer.GetSchemaRootNode(),
+		context:     context,
+		path:        ls.NodePath{},
+		objectCache: make(map[graph.Node]map[string][]graph.Node),
+		schemaNode:  ing.Layer.GetSchemaRootNode(),
 	}
 	if len(baseID) > 0 {
 		ctx.path = append(ctx.path, baseID)
@@ -93,7 +108,7 @@ func (ing Parser) parseObject(ctx parserContext, input *jsonom.Object) (*ParsedD
 		}
 	}
 	// There is a schema node for this node. It must be an object
-	nextNodes, err := ls.GetObjectAttributeNodesBy(ctx.schemaNode, ls.AttributeNameTerm)
+	nextNodes, err := ctx.getObjectNodes()
 	if err != nil {
 		return nil, err
 	}
