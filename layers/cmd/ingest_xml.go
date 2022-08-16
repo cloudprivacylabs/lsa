@@ -29,6 +29,7 @@ type XMLIngester struct {
 	BaseIngestParams
 	ID          string
 	initialized bool
+	parser      xmlingest.Parser
 }
 
 func (XMLIngester) Help() {
@@ -50,6 +51,11 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 			return err
 		}
 		pipeline.Properties["layer"] = layer
+		xml.parser = xmlingest.Parser{
+			OnlySchemaAttributes: xml.OnlySchemaAttributes,
+			IngestEmptyValues:    xml.IngestNullValues,
+			Layer:                layer,
+		}
 		xml.initialized = true
 	}
 
@@ -71,13 +77,6 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 				}
 			}()
 			pipeline.SetGraph(cmdutil.NewDocumentGraph())
-			parser := xmlingest.Parser{
-				OnlySchemaAttributes: xml.OnlySchemaAttributes,
-				IngestEmptyValues:    xml.IngestNullValues,
-			}
-			if layer != nil {
-				parser.Layer = layer
-			}
 			builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
 				EmbedSchemaNodes:     xml.EmbedSchemaNodes,
 				OnlySchemaAttributes: xml.OnlySchemaAttributes,
@@ -85,7 +84,7 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 
 			baseID := xml.ID
 
-			parsed, err := parser.ParseStream(pipeline.Context, baseID, stream)
+			parsed, err := xml.parser.ParseStream(pipeline.Context, baseID, stream)
 			if err != nil {
 				doneErr = err
 				return
@@ -95,7 +94,7 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 				doneErr = err
 				return
 			}
-			if err := builder.LinkNodes(pipeline.Context, parser.Layer, ls.GetEntityInfo(builder.GetGraph())); err != nil {
+			if err := builder.LinkNodes(pipeline.Context, xml.parser.Layer, ls.GetEntityInfo(builder.GetGraph())); err != nil {
 				doneErr = err
 				return
 			}
