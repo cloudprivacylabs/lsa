@@ -260,6 +260,28 @@ func GetPolymorphicOptions(polymorphicSchemaNode graph.Node) []graph.Node {
 	return graph.TargetNodes(polymorphicSchemaNode.GetEdgesWithLabel(graph.OutgoingEdge, OneOfTerm))
 }
 
+// GetNodesWithValidators returns all nodes under root that has validators
+func GetNodesWithValidators(root graph.Node) map[graph.Node]struct{} {
+	ret := make(map[graph.Node]struct{})
+	ForEachAttributeNode(root, func(node graph.Node, _ []graph.Node) bool {
+		node.ForEachProperty(func(k string, _ interface{}) bool {
+			md := GetTermMetadata(k)
+			if md == nil {
+				return true
+			}
+			if _, ok := md.(NodeValidator); ok {
+				ret[node] = struct{}{}
+			}
+			if _, ok := md.(ValueValidator); ok {
+				ret[node] = struct{}{}
+			}
+			return true
+		})
+		return true
+	})
+	return ret
+}
+
 // GetEntityIDNodes returns the entity id attribute IDs from the layer
 // root node
 func (l *Layer) GetEntityIDNodes() []string {

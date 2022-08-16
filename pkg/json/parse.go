@@ -50,12 +50,21 @@ type Parser struct {
 	IngestNullValues     bool
 	Layer                *ls.Layer
 	objectCache          map[graph.Node]map[string][]graph.Node
+	nodesWithValidators  map[graph.Node]struct{}
 }
 
 type parserContext struct {
 	context    *ls.Context
 	path       ls.NodePath
 	schemaNode graph.Node
+}
+
+func (ing *Parser) nodeHasValidator(schemaNode graph.Node) bool {
+	if ing.nodesWithValidators == nil {
+		ing.nodesWithValidators = ls.GetNodesWithValidators(ing.Layer.GetSchemaRootNode())
+	}
+	_, ok := ing.nodesWithValidators[schemaNode]
+	return ok
 }
 
 func (ing *Parser) getObjectNodes(schemaNode graph.Node) (map[string][]graph.Node, error) {
@@ -122,13 +131,9 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 		id:         ctx.path.String(),
 	}
 
-	processChildren := func(f func(jsonom.Node) bool) error {
+	processChildren := func(f func(graph.Node, jsonom.Node) bool) error {
 		for i := 0; i < input.Len(); i++ {
 			keyValue := input.N(i)
-			if !f(keyValue.Value()) {
-				continue
-			}
-
 			schNodes := nextNodes[keyValue.Key()]
 			if len(schNodes) > 1 {
 				return ls.ErrInvalidSchema(fmt.Sprintf("Multiple elements with key '%s'", keyValue.Key()))
@@ -136,6 +141,9 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 			var schNode graph.Node
 			if len(schNodes) == 1 {
 				schNode = schNodes[0]
+			}
+			if !f(schNode, keyValue.Value()) {
+				continue
 			}
 
 			newCtx := ctx
@@ -153,14 +161,26 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 		}
 		return nil
 	}
-	// Process value attributes first, so if there are any validation errors, we terminate quickly
-	if err := processChildren(func(v jsonom.Node) bool {
+	// Process value attributes with validators first, so if there are any validation errors, we terminate quickly
+	if err := processChildren(func(schNode graph.Node, v jsonom.Node) bool {
 		_, ok := v.(*jsonom.Value)
-		return ok
+		if !ok {
+			return false
+		}
+		return ing.nodeHasValidator(schNode)
 	}); err != nil {
 		return nil, err
 	}
-	if err := processChildren(func(v jsonom.Node) bool {
+	if err := processChildren(func(schNode graph.Node, v jsonom.Node) bool {
+		_, ok := v.(*jsonom.Value)
+		if !ok {
+			return false
+		}
+		return !ing.nodeHasValidator(schNode)
+	}); err != nil {
+		return nil, err
+	}
+	if err := processChildren(func(_ graph.Node, v jsonom.Node) bool {
 		_, ok := v.(*jsonom.Value)
 		return !ok
 	}); err != nil {
