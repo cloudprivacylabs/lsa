@@ -59,7 +59,7 @@ func InputsFromFiles(files []string) func() (io.ReadCloser, error) {
 }
 
 // create new pipeline context with an optional initial graph and inputs func
-func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, inputs func() (io.ReadCloser, error)) (*PipelineContext, error) {
+func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, inputs func() (io.ReadCloser, error)) *PipelineContext {
 	var g graph.Graph
 	if initialGraph != nil {
 		g = initialGraph
@@ -80,7 +80,7 @@ func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, 
 		},
 	}
 	ctx.GraphOwner = ctx
-	return ctx, ctx.Next()
+	return ctx
 }
 
 // Run pipeline
