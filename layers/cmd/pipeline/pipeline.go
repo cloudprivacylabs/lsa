@@ -83,26 +83,9 @@ func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, 
 	return ctx, ctx.Next()
 }
 
-// Run pipeline with an optional initial graph and inputs func
+// Run pipeline
 func Run(ctx *PipelineContext) error {
 	return ctx.Next()
-}
-
-func (ctx *PipelineContext) GetGraphRO() graph.Graph {
-	return ctx.Graph
-}
-
-func (ctx *PipelineContext) GetGraphRW() graph.Graph {
-	if ctx != ctx.GraphOwner {
-		newTarget := graph.NewOCGraph()
-		nodeMap := ls.CopyGraph(newTarget, ctx.Graph, nil, nil)
-		ctx.Graph = newTarget
-		for _, root := range ctx.GraphOwner.Roots {
-			ctx.Roots = append(ctx.Roots, nodeMap[root])
-		}
-		ctx.GraphOwner = ctx
-	}
-	return ctx.Graph
 }
 
 func (ctx *PipelineContext) SetGraph(g graph.Graph) *PipelineContext {
