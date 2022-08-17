@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -57,8 +58,8 @@ func InputsFromFiles(files []string) func() (io.ReadCloser, error) {
 	}
 }
 
-// Run pipeline with an optional initial graph and inputs func
-func Run(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, inputs func() (io.ReadCloser, error)) (*PipelineContext, error) {
+// create new pipeline context with an optional initial graph and inputs func
+func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, inputs func() (io.ReadCloser, error)) (*PipelineContext, error) {
 	var g graph.Graph
 	if initialGraph != nil {
 		g = initialGraph
@@ -73,12 +74,18 @@ func Run(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, inputs 
 		CurrentStep: -1,
 		Properties:  make(map[string]interface{}),
 		ErrorLogger: func(pctx *PipelineContext, err error) bool {
-			pctx.Context.GetLogger().Error(map[string]interface{}{"pipeline error": err})
+			stdlogger := log.Logger{}
+			stdlogger.Println(fmt.Errorf("pipeline error: %w", err))
 			return err != nil
 		},
 	}
 	ctx.GraphOwner = ctx
 	return ctx, ctx.Next()
+}
+
+// Run pipeline with an optional initial graph and inputs func
+func Run(ctx *PipelineContext) error {
+	return ctx.Next()
 }
 
 func (ctx *PipelineContext) GetGraphRO() graph.Graph {
