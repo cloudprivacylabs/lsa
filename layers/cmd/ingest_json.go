@@ -77,7 +77,7 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 				}
 			}()
 			pipeline.SetGraph(cmdutil.NewDocumentGraph())
-			builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
+			builder := ls.NewGraphBuilder(pipeline.Graph, ls.GraphBuilderOptions{
 				EmbedSchemaNodes:     ji.EmbedSchemaNodes,
 				OnlySchemaAttributes: ji.OnlySchemaAttributes,
 			})

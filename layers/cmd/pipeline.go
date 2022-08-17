@@ -43,7 +43,7 @@ func runPipeline(steps []pipeline.Step, initialGraph string, inputs []string) (*
 			return nil, err
 		}
 	}
-	return pipeline.Run(getContext(), steps, g, pipeline.InputsFromFiles(inputs))
+	return pipeline.NewContext(getContext(), steps, g, pipeline.InputsFromFiles(inputs))
 }
 
 var pipelineCmd = &cobra.Command{

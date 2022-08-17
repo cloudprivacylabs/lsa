@@ -36,7 +36,7 @@ params:`)
 }
 
 func (*JSONExport) Run(pipeline *pipeline.PipelineContext) error {
-	for _, node := range graph.Sources(pipeline.GetGraphRO()) {
+	for _, node := range graph.Sources(pipeline.Graph) {
 		exportOptions := jsoningest.ExportOptions{}
 		data, err := jsoningest.Export(node, exportOptions)
 		if err != nil {
