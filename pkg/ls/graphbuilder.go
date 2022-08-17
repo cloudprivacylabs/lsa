@@ -90,7 +90,7 @@ func determineEdgeLabel(schemaNode graph.Node) string {
 func (gb GraphBuilder) NewNode(schemaNode graph.Node) graph.Node {
 	types := []string{DocumentNodeTerm}
 	if schemaNode != nil {
-		for l := range schemaNode.GetLabels() {
+		for l := range schemaNode.GetLabels().M {
 			if l != AttributeNodeTerm {
 				types = append(types, l)
 			}

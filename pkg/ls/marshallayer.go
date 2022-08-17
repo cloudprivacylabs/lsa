@@ -370,7 +370,7 @@ func marshalNode(layer *Layer, node graph.Node, nodeMap map[graph.Node]string) (
 		m["@id"] = s
 	}
 	t := node.GetLabels()
-	if len(t) > 0 {
+	if t.Len() > 0 {
 		m["@type"] = t.SortedSlice()
 	}
 

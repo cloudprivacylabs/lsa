@@ -213,7 +213,7 @@ func escapeForDot(str string) string {
 
 func (r Renderer) NodeBoxRenderer(ID string, node graph.Node, wr io.Writer) (bool, error) {
 	label := strings.Builder{}
-	for l := range node.GetLabels() {
+	for l := range node.GetLabels().M {
 		label.WriteRune(':')
 		label.WriteString(l)
 		label.WriteString(`\n`)
@@ -243,7 +243,7 @@ func (r Renderer) NodeTableRenderer(ID string, node graph.Node, wr io.Writer) (b
 	io.WriteString(wr, "<TR>")
 	io.WriteString(wr, r.Options.Labels.String())
 	lbl := bytes.Buffer{}
-	for l := range node.GetLabels() {
+	for l := range node.GetLabels().M {
 		io.WriteString(&lbl, ":")
 		io.WriteString(&lbl, l)
 	}

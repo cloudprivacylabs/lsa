@@ -59,7 +59,7 @@ type parserContext struct {
 }
 
 func (ing *Parser) getObjectNodes(schemaNode graph.Node) []graph.Node {
-	if ing.objectCache != nil {
+	if ing.objectCache == nil {
 		ing.objectCache = make(map[graph.Node][]graph.Node)
 	}
 	nodes, exists := ing.objectCache[schemaNode]

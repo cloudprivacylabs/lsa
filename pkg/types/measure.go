@@ -362,7 +362,9 @@ func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNo
 					Msg: fmt.Sprintf("Cannot create measure node: %s", err.Error()),
 				}
 			}
-			measureNode.SetLabels(measureNode.GetLabels().Add(MeasureTerm))
+			labels := measureNode.GetLabels()
+			labels.Add(MeasureTerm)
+			measureNode.SetLabels(labels)
 		} else {
 			measureNode = sources[0]
 		}

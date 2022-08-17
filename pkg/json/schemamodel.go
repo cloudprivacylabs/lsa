@@ -200,6 +200,7 @@ func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode graph.
 	//		ls.SetNodeID(newNode, attr.ID)
 	//		fmt.Println(attr.ID)
 	//	}
+	labels := newNode.GetLabels()
 	ls.SetNodeID(newNode, path.String())
 	if len(attr.format) > 0 {
 		newNode.SetProperty(validators.JsonFormatTerm, ls.StringPropertyValue(attr.format))
@@ -233,7 +234,8 @@ func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode graph.
 	}
 
 	if attr.reference != nil {
-		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeReference))
+		labels.Add(ls.AttributeTypeReference)
+		newNode.SetLabels(labels)
 		switch imp.linkRefs {
 		case LinkRefsBySchemaRef:
 			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(attr.reference.Ref))
@@ -245,28 +247,35 @@ func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode graph.
 		return nil
 	}
 	if attr.object != nil {
-		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeObject))
+		labels.Add(ls.AttributeTypeObject)
+		newNode.SetLabels(labels)
 		return nil
 	}
 	if attr.array != nil {
-		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeArray))
+		labels.Add(ls.AttributeTypeArray)
+		newNode.SetLabels(labels)
 		return nil
 	}
 	if len(attr.oneOf) > 0 {
-		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypePolymorphic))
+		labels.Add(ls.AttributeTypePolymorphic)
+		newNode.SetLabels(labels)
 		return nil
 	}
 	if len(attr.allOf) > 0 {
-		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeComposite))
+		labels.Add(ls.AttributeTypeComposite)
+		newNode.SetLabels(labels)
 		return nil
 	}
-	newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeValue))
+	labels.Add(ls.AttributeTypeValue)
+	newNode.SetLabels(labels)
 	return nil
 }
 
 func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.Node, path schemaPath) error {
+	labels := newNode.GetLabels()
 	if attr.object != nil {
-		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeObject))
+		labels.Add(ls.AttributeTypeObject)
+		newNode.SetLabels(labels)
 		attrIds := make(map[string]string)
 		for _, v := range attr.object.properties {
 			node, err := imp.schemaAttrs(v, path, v.key)
@@ -291,7 +300,8 @@ func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.No
 		return nil
 	}
 	if attr.array != nil {
-		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeArray))
+		labels.Add(ls.AttributeTypeArray)
+		newNode.SetLabels(labels)
 		n, err := imp.schemaAttrs(attr.array.items, path, "*")
 		if err != nil {
 			return err
@@ -312,7 +322,8 @@ func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.No
 		return elements, nil
 	}
 	if len(attr.oneOf) > 0 {
-		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypePolymorphic))
+		labels.Add(ls.AttributeTypePolymorphic)
+		newNode.SetLabels(labels)
 		choices, err := buildChoices(attr.oneOf)
 		if err != nil {
 			return err
@@ -323,7 +334,8 @@ func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.No
 		return nil
 	}
 	if len(attr.allOf) > 0 {
-		newNode.SetLabels(newNode.GetLabels().Add(ls.AttributeTypeComposite))
+		labels.Add(ls.AttributeTypeComposite)
+		newNode.SetLabels(labels)
 		choices, err := buildChoices(attr.allOf)
 		if err != nil {
 			return err

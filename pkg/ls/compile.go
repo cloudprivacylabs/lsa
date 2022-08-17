@@ -289,7 +289,7 @@ func (compiler *Compiler) linkReference(context *Context, refNode graph.Node, sc
 	linkTo := schema.GetSchemaRootNode()
 	types := refNode.GetLabels()
 	types.Remove(AttributeTypeReference)
-	types.Add(linkTo.GetLabels().Slice()...)
+	types.AddSet(linkTo.GetLabels())
 	refNode.SetLabels(types)
 	// Compose the properties of the compiled root node with the referenced node
 	if err := ComposeProperties(context, refNode, linkTo); err != nil {

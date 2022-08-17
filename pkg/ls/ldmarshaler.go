@@ -71,11 +71,11 @@ func (rd *LDMarshaler) Marshal(input graph.Graph) interface{} {
 	// Process the properties
 	for gnode, onode := range nodeIdMap {
 		t := gnode.GetLabels()
-		if len(t) > 0 {
-			if len(t) == 1 {
+		if t.Len() > 0 {
+			if t.Len() == 1 {
 				onode.ldNode["@type"] = t.Slice()[0]
 			} else {
-				arr := make([]interface{}, 0, len(t))
+				arr := make([]interface{}, 0, t.Len())
 				for _, x := range t.Slice() {
 					arr = append(arr, x)
 				}

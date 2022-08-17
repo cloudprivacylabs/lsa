@@ -168,7 +168,7 @@ func GetNodeValueAccessor(node graph.Node) (ValueAccessor, error) {
 	if !typeFound {
 		iedges := graph.EdgeSlice(node.GetEdgesWithLabel(graph.OutgoingEdge, InstanceOfTerm))
 		if len(iedges) == 1 {
-			for _, t := range iedges[0].GetTo().GetLabels().Slice() {
+			for t := range iedges[0].GetTo().GetLabels().M {
 				if err := setAccessor(t); err != nil {
 					return nil, err
 				}
@@ -352,7 +352,7 @@ func InstanceOf(node graph.Node) []graph.Node {
 func CombineNodeTypes(nodes []graph.Node) graph.StringSet {
 	ret := graph.NewStringSet()
 	for _, n := range nodes {
-		for x := range n.GetLabels() {
+		for x := range n.GetLabels().M {
 			ret.Add(x)
 		}
 	}

@@ -230,9 +230,10 @@ func (ing *Parser) testOption(option graph.Node, ctx parserContext, input jsonom
 }
 
 func (ing *Parser) parsePolymorphic(ctx parserContext, input jsonom.Node) (*ParsedDocNode, error) {
-	options := ls.GetPolymorphicOptions(ctx.schemaNode)
 	var found graph.Node
-	for _, option := range options {
+	for edges := ctx.schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.OneOfTerm); edges.Next(); {
+		edge := edges.Edge()
+		option := edge.GetTo()
 		if ing.testOption(option, ctx, input) {
 			if found != nil {
 				return nil, ls.ErrSchemaValidation{Msg: "Multiple options of the polymorphic node matched:" + ls.GetNodeID(ctx.schemaNode), Path: ctx.path.Copy()}
