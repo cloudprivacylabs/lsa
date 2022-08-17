@@ -43,7 +43,7 @@ available in pipeline property "ocResult".`)
 }
 
 func (oc *OCStep) Run(pipeline *pipeline.PipelineContext) error {
-	ctx := opencypher.NewEvalContext(pipeline.GetGraphRW())
+	ctx := opencypher.NewEvalContext(pipeline.Graph)
 	for _, expr := range oc.Expr {
 		output, err := opencypher.ParseAndEvaluate(expr, ctx)
 		if err != nil {

@@ -84,7 +84,7 @@ func (ecsv *CSVExport) Run(pipeline *pipeline.PipelineContext) error {
 		ecsv.Writer.WriteHeader(ecsv.csvWriter)
 		ecsv.writtenHeader = true
 	}
-	ecsv.Writer.WriteRows(ecsv.csvWriter, pipeline.GetGraphRO())
+	ecsv.Writer.WriteRows(ecsv.csvWriter, pipeline.Graph)
 	ecsv.csvWriter.Flush()
 	return nil
 }
