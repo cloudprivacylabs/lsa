@@ -42,6 +42,6 @@ func (wr WriteGraphStep) Run(pipeline *pipeline.PipelineContext) error {
 	if len(wr.Format) == 0 {
 		wr.Format = "json"
 	}
-	grph := pipeline.GetGraphRO()
+	grph := pipeline.Graph
 	return OutputIngestedGraph(wr.Cmd, wr.Format, grph, os.Stdout, wr.IncludeSchema)
 }

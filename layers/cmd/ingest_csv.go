@@ -133,7 +133,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 				if ci.IngestByRows {
 					pipeline.SetGraph(cmdutil.NewDocumentGraph())
 				}
-				builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
+				builder := ls.NewGraphBuilder(pipeline.Graph, ls.GraphBuilderOptions{
 					EmbedSchemaNodes:     ci.EmbedSchemaNodes,
 					OnlySchemaAttributes: ci.OnlySchemaAttributes,
 				})
