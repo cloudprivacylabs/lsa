@@ -2,7 +2,6 @@ package ls
 
 import (
 	"context"
-	"log"
 )
 
 type Context struct {
@@ -22,17 +21,6 @@ func (ctx *Context) GetLogger() Logger {
 func (ctx *Context) SetLogger(log Logger) *Context {
 	ctx.logger = log
 	return ctx
-}
-
-func (ctx *Context) AdaptToStandardLog(lg Logger) log.Logger {
-	stdlog := log.Logger{}
-	stdlog.SetOutput(ctx)
-	return stdlog
-}
-
-func (ctx *Context) Write(p []byte) (n int, err error) {
-	ctx.logger.Info(map[string]interface{}{"": string(p)})
-	return len(p), nil
 }
 
 func (ctx *Context) GetInterner() Interner {
