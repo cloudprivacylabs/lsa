@@ -60,7 +60,7 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 	}
 
 	for {
-		_, stream, err := pipeline.NextInput()
+		entryInfo, stream, err := pipeline.NextInput()
 		if err != nil {
 			return err
 		}
@@ -71,9 +71,8 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 		func() {
 			defer func() {
 				if err := recover(); err != nil {
-					if !pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, %v", xml.Schema, err)) {
-						doneErr = fmt.Errorf("%v", err)
-					}
+					pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, %v", xml.Schema, err))
+					doneErr = fmt.Errorf("%v", err)
 				}
 			}()
 			pipeline.SetGraph(cmdutil.NewDocumentGraph())
@@ -89,11 +88,12 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 				doneErr = err
 				return
 			}
-			_, err = ls.Ingest(builder, parsed)
+			r, err := ls.Ingest(builder, parsed)
 			if err != nil {
 				doneErr = err
 				return
 			}
+			r.SetProperty("Filename", entryInfo.GetName())
 			if err := builder.LinkNodes(pipeline.Context, xml.parser.Layer, ls.GetEntityInfo(builder.GetGraph())); err != nil {
 				doneErr = err
 				return

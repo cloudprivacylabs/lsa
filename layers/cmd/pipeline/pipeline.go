@@ -22,7 +22,7 @@ type PipelineContext struct {
 	Steps       []Step
 	Properties  map[string]interface{}
 	GraphOwner  *PipelineContext
-	ErrorLogger func(*PipelineContext, error) bool
+	ErrorLogger func(*PipelineContext, error)
 }
 
 type PipelineEntryInfo interface {
@@ -77,10 +77,9 @@ func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, 
 		Steps:       pipeline,
 		CurrentStep: -1,
 		Properties:  make(map[string]interface{}),
-		ErrorLogger: func(pctx *PipelineContext, err error) bool {
+		ErrorLogger: func(pctx *PipelineContext, err error) {
 			stdlogger := log.Logger{}
 			stdlogger.Println(fmt.Errorf("pipeline error: %w", err))
-			return err != nil
 		},
 	}
 	ctx.GraphOwner = ctx
