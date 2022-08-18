@@ -42,7 +42,7 @@ func (rd ReadGraphStep) Run(pipeline *PipelineContext) error {
 
 	}
 	for {
-		stream, err := pipeline.NextInput()
+		_, stream, err := pipeline.NextInput()
 		if err != nil {
 			return fmt.Errorf("While streaming input %v: %w", stream, err)
 		}

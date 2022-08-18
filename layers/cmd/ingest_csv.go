@@ -92,7 +92,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 	}
 
 	for {
-		stream, err := pipeline.NextInput()
+		_, stream, err := pipeline.NextInput()
 		if err != nil {
 			return err
 		}
