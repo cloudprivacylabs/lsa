@@ -16,12 +16,24 @@ type PipelineContext struct {
 	*ls.Context
 	Graph       graph.Graph
 	Roots       []graph.Node
-	NextInput   func() (io.ReadCloser, error)
+	NextInput   func() (PipelineEntryInfo, io.ReadCloser, error)
 	CurrentStep int
 	Steps       []Step
 	Properties  map[string]interface{}
 	GraphOwner  *PipelineContext
-	ErrorLogger func(*PipelineContext, error) bool
+	ErrorLogger func(*PipelineContext, error)
+}
+
+type PipelineEntryInfo interface {
+	GetName() string
+}
+
+type DefaultPipelineEntryInfo struct {
+	Name string
+}
+
+func (pinfo DefaultPipelineEntryInfo) GetName() string {
+	return pinfo.Name
 }
 
 type Step interface {
@@ -31,34 +43,34 @@ type Step interface {
 type Pipeline []Step
 
 // InputsFromFiles returns a function that will read input files sequentially for pipeline Run inputs func
-func InputsFromFiles(files []string) func() (io.ReadCloser, error) {
+func InputsFromFiles(files []string) func() (PipelineEntryInfo, io.ReadCloser, error) {
 	i := 0
-	return func() (io.ReadCloser, error) {
+	return func() (PipelineEntryInfo, io.ReadCloser, error) {
 		if len(files) == 0 {
 			if i > 0 {
-				return nil, nil
+				return nil, nil, nil
 			}
 			i++
 			inp, err := cmdutil.StreamFileOrStdin(nil)
 			if err != nil {
-				return nil, err
+				return DefaultPipelineEntryInfo{}, nil, err
 			}
-			return io.NopCloser(inp), nil
+			return nil, io.NopCloser(inp), nil
 		}
 		if i >= len(files) {
-			return nil, nil
+			return nil, nil, nil
 		}
 		stream, err := cmdutil.StreamFileOrStdin([]string{files[i]})
 		i++
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
-		return io.NopCloser(stream), nil
+		return DefaultPipelineEntryInfo{Name: files[i-1]}, io.NopCloser(stream), nil
 	}
 }
 
 // create new pipeline context with an optional initial graph and inputs func
-func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, inputs func() (io.ReadCloser, error)) *PipelineContext {
+func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, inputs func() (PipelineEntryInfo, io.ReadCloser, error)) *PipelineContext {
 	var g graph.Graph
 	if initialGraph != nil {
 		g = initialGraph
@@ -72,9 +84,8 @@ func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, 
 		Steps:       pipeline,
 		CurrentStep: -1,
 		Properties:  make(map[string]interface{}),
-		ErrorLogger: func(pctx *PipelineContext, err error) bool {
+		ErrorLogger: func(pctx *PipelineContext, err error) {
 			fmt.Println(fmt.Errorf("pipeline error: %w", err))
-			return err != nil
 		},
 	}
 	ctx.GraphOwner = ctx

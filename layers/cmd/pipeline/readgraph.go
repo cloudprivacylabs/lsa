@@ -42,13 +42,15 @@ func (rd ReadGraphStep) Run(pipeline *PipelineContext) error {
 
 	}
 	for {
-		stream, err := pipeline.NextInput()
+		entryInfo, stream, err := pipeline.NextInput()
 		if err != nil {
+			pipeline.ErrorLogger(pipeline, fmt.Errorf("Filename %s: %w", entryInfo.GetName(), err))
 			return fmt.Errorf("While streaming input %v: %w", stream, err)
 		}
 		pipeline.GetLogger().Debug(map[string]interface{}{"readGraph": stream})
 		gs, err = cmdutil.StreamGraph(pipeline, []string{}, pipeline.Context.GetInterner(), rd.Format)
 		if err != nil {
+			pipeline.ErrorLogger(pipeline, fmt.Errorf("Filename %s: %w", entryInfo.GetName(), err))
 			return fmt.Errorf("While reading %s: %w", stream, err)
 		}
 		for g := range gs {
@@ -58,6 +60,7 @@ func (rd ReadGraphStep) Run(pipeline *PipelineContext) error {
 			pipeline.SetGraph(g.G)
 			pipeline.Set("input", stream)
 			if err := pipeline.Next(); err != nil {
+				pipeline.ErrorLogger(pipeline, fmt.Errorf("Filename %s: %w", entryInfo.GetName(), err))
 				return fmt.Errorf("While processing %v: %w", stream, err)
 			}
 		}
