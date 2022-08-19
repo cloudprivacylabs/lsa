@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -74,8 +73,7 @@ func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, 
 		CurrentStep: -1,
 		Properties:  make(map[string]interface{}),
 		ErrorLogger: func(pctx *PipelineContext, err error) bool {
-			stdlogger := log.Logger{}
-			stdlogger.Println(fmt.Errorf("pipeline error: %w", err))
+			fmt.Println(fmt.Errorf("pipeline error: %w", err))
 			return err != nil
 		},
 	}
