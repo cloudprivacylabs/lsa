@@ -71,7 +71,7 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 		func() {
 			defer func() {
 				if err := recover(); err != nil {
-					pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, %v", ji.Schema, err))
+					pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, %v", entryInfo.GetName(), err))
 					doneErr = fmt.Errorf("%v", err)
 				}
 			}()
@@ -82,12 +82,19 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 			})
 			baseID := ji.ID
 
-			r, err := jsoningest.IngestStream(pipeline.Context, baseID, stream, ji.parser, builder)
+			_, err := jsoningest.IngestStream(pipeline.Context, baseID, stream, ji.parser, builder)
 			if err != nil {
 				doneErr = err
 				return
 			}
-			r.SetProperty("Filename", entryInfo.GetName())
+			entities := ls.GetEntityInfo(pipeline.Graph)
+			for e := range entities {
+				if cmdutil.GetConfig().SourceProperty == "" {
+					e.SetProperty("source", entryInfo.GetName())
+				} else {
+					e.SetProperty(cmdutil.GetConfig().SourceProperty, entryInfo.GetName())
+				}
+			}
 			if err := pipeline.Next(); err != nil {
 				doneErr = err
 				return

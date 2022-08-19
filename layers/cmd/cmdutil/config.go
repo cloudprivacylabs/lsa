@@ -12,7 +12,7 @@ import (
 type Config struct {
 	IndexedProperties []string `json:"indexedProperties" yaml:"indexedProperties"`
 	SourceProperty    string   `json:"sourceProperty" yaml:"sourceProperty"`
-	SourceRowProperty string   `json:"sourceRowProperty" yaml:"sourceProperty"`
+	SourceRowProperty string   `json:"sourceRowProperty" yaml:"sourceRowProperty"`
 }
 
 var config Config

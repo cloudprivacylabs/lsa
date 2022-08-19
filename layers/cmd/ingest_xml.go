@@ -88,12 +88,19 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 				doneErr = err
 				return
 			}
-			r, err := ls.Ingest(builder, parsed)
+			_, err = ls.Ingest(builder, parsed)
 			if err != nil {
 				doneErr = err
 				return
 			}
-			r.SetProperty("Filename", entryInfo.GetName())
+			entities := ls.GetEntityInfo(pipeline.Graph)
+			for e := range entities {
+				if cmdutil.GetConfig().SourceProperty == "" {
+					e.SetProperty("source", entryInfo.GetName())
+				} else {
+					e.SetProperty(cmdutil.GetConfig().SourceProperty, entryInfo.GetName())
+				}
+			}
 			if err := builder.LinkNodes(pipeline.Context, xml.parser.Layer, ls.GetEntityInfo(builder.GetGraph())); err != nil {
 				doneErr = err
 				return

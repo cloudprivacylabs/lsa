@@ -29,6 +29,12 @@ type PipelineEntryInfo interface {
 	GetName() string
 }
 
+type PipelineEntryInfoFunc func() string
+
+func (pinfo PipelineEntryInfoFunc) GetName() string {
+	return pinfo()
+}
+
 type Step interface {
 	Run(*PipelineContext) error
 }
@@ -58,7 +64,7 @@ func InputsFromFiles(files []string) func() (PipelineEntryInfo, io.ReadCloser, e
 		if err != nil {
 			return nil, nil, err
 		}
-		return nil, io.NopCloser(stream), nil
+		return PipelineEntryInfoFunc(func() string { return files[i-1] }), io.NopCloser(stream), nil
 	}
 }
 

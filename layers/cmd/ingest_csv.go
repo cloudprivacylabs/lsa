@@ -106,7 +106,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 			func() {
 				defer func() {
 					if err := recover(); err != nil {
-						pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, row: %d %v", ci.Schema, row, err))
+						pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, row: %d %v", entryInfo.GetName(), row, err))
 						doneErr = fmt.Errorf("%v", err)
 					}
 				}()
@@ -156,7 +156,11 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 					doneErr = err
 					return
 				}
-				r.SetProperty("Filename", entryInfo.GetName())
+				if cmdutil.GetConfig().SourceProperty == "" {
+					r.SetProperty("source", entryInfo.GetName())
+				} else {
+					r.SetProperty(cmdutil.GetConfig().SourceProperty, entryInfo.GetName())
+				}
 				if ci.IngestByRows {
 					if err := pipeline.Next(); err != nil {
 						doneErr = err
