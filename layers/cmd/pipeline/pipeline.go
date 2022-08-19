@@ -29,12 +29,6 @@ type PipelineEntryInfo struct {
 	GetName func() string
 }
 
-type PipelineEntryInfoFunc func() string
-
-func (pinfo PipelineEntryInfoFunc) GetName() string {
-	return pinfo()
-}
-
 type Step interface {
 	Run(*PipelineContext) error
 }
