@@ -30,11 +30,11 @@ type PipelineEntryInfo interface {
 }
 
 type DefaultPipelineEntryInfo struct {
-	name string
+	Name string
 }
 
 func (pinfo DefaultPipelineEntryInfo) GetName() string {
-	return pinfo.name
+	return pinfo.Name
 }
 
 type Step interface {
@@ -66,7 +66,7 @@ func InputsFromFiles(files []string) func() (PipelineEntryInfo, io.ReadCloser, e
 		if err != nil {
 			return nil, nil, err
 		}
-		return DefaultPipelineEntryInfo{name: files[i-1]}, io.NopCloser(stream), nil
+		return DefaultPipelineEntryInfo{Name: files[i-1]}, io.NopCloser(stream), nil
 	}
 }
 
