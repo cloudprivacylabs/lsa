@@ -92,7 +92,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 	}
 
 	for {
-		stream, err := pipeline.NextInput()
+		entryInfo, stream, err := pipeline.NextInput()
 		if err != nil {
 			return err
 		}
@@ -106,9 +106,8 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 			func() {
 				defer func() {
 					if err := recover(); err != nil {
-						if !pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, row: %d %v", ci.Schema, row, err)) {
-							doneErr = fmt.Errorf("%v", err)
-						}
+						pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, row: %d %v", entryInfo.GetName(), row, err))
+						doneErr = fmt.Errorf("%v", err)
 					}
 				}()
 				rowData, err := reader.Read()
@@ -152,10 +151,15 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 					doneErr = err
 					return
 				}
-				_, err = ls.Ingest(builder, parsed)
+				r, err := ls.Ingest(builder, parsed)
 				if err != nil {
 					doneErr = err
 					return
+				}
+				if cmdutil.GetConfig().SourceProperty == "" {
+					r.SetProperty("source", entryInfo.GetName())
+				} else {
+					r.SetProperty(cmdutil.GetConfig().SourceProperty, entryInfo.GetName())
 				}
 				if ci.IngestByRows {
 					if err := pipeline.Next(); err != nil {
