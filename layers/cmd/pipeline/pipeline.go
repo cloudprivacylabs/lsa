@@ -25,8 +25,16 @@ type PipelineContext struct {
 	ErrorLogger func(*PipelineContext, error)
 }
 
-type PipelineEntryInfo struct {
-	GetName func() string
+type PipelineEntryInfo interface {
+	GetName() string
+}
+
+type DefaultPipelineEntryInfo struct {
+	name string
+}
+
+func (pinfo DefaultPipelineEntryInfo) GetName() string {
+	return pinfo.name
 }
 
 type Step interface {
@@ -41,24 +49,24 @@ func InputsFromFiles(files []string) func() (PipelineEntryInfo, io.ReadCloser, e
 	return func() (PipelineEntryInfo, io.ReadCloser, error) {
 		if len(files) == 0 {
 			if i > 0 {
-				return PipelineEntryInfo{}, nil, nil
+				return nil, nil, nil
 			}
 			i++
 			inp, err := cmdutil.StreamFileOrStdin(nil)
 			if err != nil {
-				return PipelineEntryInfo{}, nil, err
+				return DefaultPipelineEntryInfo{}, nil, err
 			}
-			return PipelineEntryInfo{}, io.NopCloser(inp), nil
+			return nil, io.NopCloser(inp), nil
 		}
 		if i >= len(files) {
-			return PipelineEntryInfo{}, nil, nil
+			return nil, nil, nil
 		}
 		stream, err := cmdutil.StreamFileOrStdin([]string{files[i]})
 		i++
 		if err != nil {
-			return PipelineEntryInfo{}, nil, err
+			return nil, nil, err
 		}
-		return PipelineEntryInfo{func() string { return files[i-1] }}, io.NopCloser(stream), nil
+		return DefaultPipelineEntryInfo{name: files[i-1]}, io.NopCloser(stream), nil
 	}
 }
 
