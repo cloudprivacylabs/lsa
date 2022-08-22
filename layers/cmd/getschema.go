@@ -26,14 +26,16 @@ type Attribute struct {
 }
 
 type Layer struct {
+	Type          string      `json:"@type"`
 	AttributeList []Attribute `json:"attributeList"`
 }
 
 type LS struct {
-	Context string `json:"@context"`
-	ID      string `json:"@id"`
-	Type    string `json:"@type"`
-	Layer   Layer  `json:"layer"`
+	Context   string `json:"@context"`
+	ID        string `json:"@id"`
+	Type      string `json:"@type"`
+	ValueType string `json:"valueType"`
+	Layer     Layer  `json:"layer"`
 }
 
 func init() {

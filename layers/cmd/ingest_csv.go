@@ -50,9 +50,9 @@ operation: ingest/csv
 params:`)
 	fmt.Println(baseIngestParamsHelp)
 	fmt.Println(`  # CSV Specifics
-  startRow: 0   # Data starts at this row. 0-based
+  startRow: 1   # Data starts at this row. 0-based
   endRow: -1    # Data ends at this row. 0-based
-  headerRow: -1 # The row containing CSV header. 0-based
+  headerRow: 0 # The row containing CSV header. 0-based
   delimiter: ,  # separator character
   id:"row_{{.rowIndex}}"   # Go template for node ID generation 
   # The template is evaluated with these variables:
@@ -96,13 +96,19 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 		if err != nil {
 			return err
 		}
+		if stream == nil {
+			break
+		}
+		pipeline.Context.GetLogger().Debug(map[string]interface{}{"csvingest": "start new stream"})
 		reader := csv.NewReader(stream)
 		if !ci.IngestByRows {
 			pipeline.SetGraph(cmdutil.NewDocumentGraph())
 		}
 		reader.Comma = rune(ci.Delimiter[0])
 		var doneErr error
-		for row := 0; ; row++ {
+		done := false
+		for row := 0; !done; row++ {
+			pipeline.Context.GetLogger().Debug(map[string]interface{}{"csvingest.row": row})
 			func() {
 				defer func() {
 					if err := recover(); err != nil {
@@ -112,6 +118,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 				}()
 				rowData, err := reader.Read()
 				if err == io.EOF {
+					done = true
 					return
 				}
 				if err != nil {
@@ -126,7 +133,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 					return
 				}
 				if ci.EndRow != -1 && row > ci.EndRow {
-					doneErr = err
+					done = true
 					return
 				}
 				if ci.IngestByRows {
@@ -146,9 +153,13 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 					doneErr = err
 					return
 				}
+				pipeline.Context.GetLogger().Debug(map[string]interface{}{"csvingest.row": row, "stage": "Parsing"})
 				parsed, err := parser.ParseDoc(pipeline.Context, strings.TrimSpace(buf.String()), rowData)
 				if err != nil {
 					doneErr = err
+					return
+				}
+				if parsed == nil {
 					return
 				}
 				r, err := ls.Ingest(builder, parsed)
@@ -176,16 +187,16 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 					return err
 				}
 			}
-			return nil
 		}
 	}
+	return nil
 }
 
 func init() {
 	ingestCmd.AddCommand(ingestCSVCmd)
-	ingestCSVCmd.Flags().Int("startRow", 1, "Start row 0-based (default 1)")
+	ingestCSVCmd.Flags().Int("startRow", 1, "Start row 0-based")
 	ingestCSVCmd.Flags().Int("endRow", -1, "End row 0-based")
-	ingestCSVCmd.Flags().Int("headerRow", -1, "Header row 0-based (default: no header)")
+	ingestCSVCmd.Flags().Int("headerRow", 0, "Header row 0-based (default: 0) ")
 	ingestCSVCmd.Flags().String("id", "row_{{.rowIndex}}", "Object ID Go template for ingested data if no ID is declared in the schema")
 	ingestCSVCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 	ingestCSVCmd.Flags().String("delimiter", ",", "Delimiter char")
@@ -198,8 +209,8 @@ func init() {
 				EmbedSchemaNodes: true,
 			},
 			EndRow:       -1,
-			HeaderRow:    -1,
-			StartRow:     0,
+			HeaderRow:    0,
+			StartRow:     1,
 			Delimiter:    ",",
 			IngestByRows: true,
 		}

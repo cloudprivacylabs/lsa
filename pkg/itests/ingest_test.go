@@ -1,10 +1,16 @@
 package itests
 
 import (
+	"bytes"
+	"encoding/csv"
 	"encoding/json"
-	"io/ioutil"
+	"io"
+	"os"
+	"strings"
 	"testing"
+	"text/template"
 
+	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
@@ -21,19 +27,23 @@ func TestIngest(t *testing.T) {
 	defaultsCase.testDefaultValues(t)
 }
 
-func (tc ingestTest) testDefaultValues(t *testing.T) {
-	var schMap interface{}
-	schStr, err := ioutil.ReadFile("testdata/defaultcases.json")
+func loadJSONLDSchema(fname string) (*ls.Layer, error) {
+	data, err := os.ReadFile(fname)
 	if err != nil {
-		t.Fatal(err)
+		return nil, err
 	}
-	if err := json.Unmarshal([]byte(schStr), &schMap); err != nil {
-		t.Fatal(err)
+	var v interface{}
+	if err := json.Unmarshal([]byte(data), &v); err != nil {
+		return nil, err
 	}
 
-	schema, err := ls.UnmarshalLayer(schMap, nil)
+	return ls.UnmarshalLayer(v, nil)
+}
+
+func (tc ingestTest) testDefaultValues(t *testing.T) {
+	schema, err := loadJSONLDSchema("testdata/defaultcases.json")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	builder := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
@@ -47,8 +57,12 @@ func (tc ingestTest) testDefaultValues(t *testing.T) {
 		IngestNullValues:     true,
 	}
 
+	data, err := os.ReadFile("testdata/defaults.json")
+	if err != nil {
+		t.Fatal(err)
+	}
 	// Ingest
-	_, err = jsoningest.IngestBytes(ls.DefaultContext(), "http://example.org/id", schStr, parser, builder)
+	_, err = jsoningest.IngestBytes(ls.DefaultContext(), "http://example.org/id", data, parser, builder)
 
 	for nodeItr := builder.GetGraph().GetNodes(); nodeItr.Next(); {
 		node := nodeItr.Node()
@@ -61,5 +75,67 @@ func (tc ingestTest) testDefaultValues(t *testing.T) {
 				continue
 			}
 		}
+	}
+}
+
+func TestParseEmptyCSV(t *testing.T) {
+	schema, err := loadJSONLDSchema("testdata/csv/dmhmreport.schema.json")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	parser := csvingest.Parser{
+		OnlySchemaAttributes: true,
+		SchemaNode:           schema.GetSchemaRootNode(),
+		IngestNullValues:     false,
+	}
+	idTemplate := "row_{{.rowIndex}}"
+	idTmp, err := template.New("id").Parse(idTemplate)
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	input, err := os.Open("testdata/csv/dmhm.csv")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	reader := csv.NewReader(input)
+	done := false
+	ctx := ls.DefaultContext()
+	for row := 0; !done; row++ {
+		rowData, err := reader.Read()
+		if err == io.EOF {
+			done = true
+		} else if err != nil {
+			t.Error(err)
+			return
+		}
+		if row == 0 {
+			parser.ColumnNames = rowData
+			continue
+		}
+
+		templateData := map[string]interface{}{
+			"rowIndex":  row,
+			"dataIndex": row - 1,
+			"columns":   rowData,
+		}
+		buf := bytes.Buffer{}
+		if err := idTmp.Execute(&buf, templateData); err != nil {
+			t.Error(err)
+			return
+		}
+		parsed, err := parser.ParseDoc(ctx, strings.TrimSpace(buf.String()), rowData)
+		if err != nil {
+			t.Error(err)
+		}
+		if row == 1 && parsed == nil {
+			t.Errorf("Nil parsed")
+		}
+		if row > 1 && parsed != nil {
+			t.Errorf("Nil expected")
+		}
+
 	}
 }
