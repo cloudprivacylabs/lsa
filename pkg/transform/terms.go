@@ -19,9 +19,6 @@ import (
 	"github.com/cloudprivacylabs/opencypher"
 )
 
-// MultipleTerm is used to specify if multiple values are allowed. If so, one node will be constructed for each value
-var MultipleTerm = ls.NewTerm(TRANSFORM, "multi", false, false, ls.OverrideComposition, nil)
-
 // MapPropertyTerm defines the name of the property in the source
 // graph nodes that contain the mapped schema node id. The contents of
 // the nodes under the mapContext that have prop:schemaNodeId will be

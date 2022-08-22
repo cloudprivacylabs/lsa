@@ -16,6 +16,7 @@ package transform
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/url"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -31,11 +32,30 @@ type TransformScript struct {
 
 	// Map specifies source schema nodes that map to one or more target schema nodes
 	Map []NodeMapping `json:"map,omitempty" yaml:"map,omitempty"`
+
+	nodeMappingsByTarget map[string][]*NodeMapping
 }
 
 type NodeMapping struct {
-	SourceNodeID string `json:"source" yaml:"source"`
-	TargetNodeID string `json:"target" yaml:"target"`
+	SourceNodeID  string   `json:"source" yaml:"source"`
+	SourceNodeIDs []string `json:"sources" yaml:"sources"`
+	TargetNodeID  string   `json:"target" yaml:"target"`
+	TargetNodeIDs []string `json:"targets" yaml:"targets"`
+}
+
+func (m NodeMapping) GetSources() []string {
+	if len(m.SourceNodeID) > 0 {
+		return []string{m.SourceNodeID}
+	}
+	return m.SourceNodeIDs
+}
+
+func getMappingSources(s []*NodeMapping) []string {
+	ret := make([]string, 0)
+	for _, x := range s {
+		ret = append(ret, x.GetSources()...)
+	}
+	return ret
 }
 
 func (t *TransformScript) Compile(ctx *ls.Context) error {
@@ -56,20 +76,30 @@ func (t *TransformScript) Compile(ctx *ls.Context) error {
 			}
 		}
 	}
-	return nil
-}
 
-func (t *TransformScript) GetMappingByTarget(target string) *NodeMapping {
-	if t == nil {
-		return nil
-	}
-	for _, m := range t.Map {
-		if m.TargetNodeID == target {
-			m := m
-			return &m
+	t.nodeMappingsByTarget = make(map[string][]*NodeMapping)
+	for i, m := range t.Map {
+		if len(m.SourceNodeID) > 0 && len(m.SourceNodeIDs) > 0 {
+			return fmt.Errorf("Both source and sources in mapping")
+		}
+		if len(m.TargetNodeID) > 0 && len(m.TargetNodeIDs) > 0 {
+			return fmt.Errorf("Both target and targets in mapping")
+		}
+		if len(m.TargetNodeID) > 0 {
+			t.nodeMappingsByTarget[m.TargetNodeID] = append(t.nodeMappingsByTarget[m.TargetNodeID], &t.Map[i])
+		}
+		for _, x := range m.TargetNodeIDs {
+			t.nodeMappingsByTarget[x] = append(t.nodeMappingsByTarget[x], &t.Map[i])
 		}
 	}
 	return nil
+}
+
+func (t *TransformScript) GetMappingsByTarget(target string) []*NodeMapping {
+	if t == nil || t.nodeMappingsByTarget == nil {
+		return nil
+	}
+	return t.nodeMappingsByTarget[target]
 }
 
 func (t *TransformScript) GetProperties(schemaNode graph.Node) ls.CompilablePropertyContainer {
