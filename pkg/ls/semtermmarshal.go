@@ -139,7 +139,7 @@ func (defaultTermMarshaler) UnmarshalJSON(target *Layer, key string, value inter
 				return fmt.Errorf("Invalid value: %s=%v", key, value)
 			}
 		}
-		node.SetProperty(key, StringSlicePropertyValue(GetTermInfo(DefaultValueTerm).Term, arr))
+		node.SetProperty(key, StringSlicePropertyValue(GetTermInfo(key).Term, arr))
 	default:
 		return fmt.Errorf("Invalid  value: %s=%v", key, value)
 	}
