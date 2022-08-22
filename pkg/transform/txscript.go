@@ -104,11 +104,15 @@ func (nd *NodeTransformAnnotations) setProperties(mv map[string]interface{}) {
 	for k, v := range mv {
 		u, err := url.Parse(k)
 		if err != nil || u.IsAbs() {
-			switch v.(type) {
+			switch value := v.(type) {
 			case string:
-				(*nd)[k] = ls.StringPropertyValue(k, v.(string))
+				(*nd)[k] = ls.StringPropertyValue(k, value)
 			case []interface{}:
-				(*nd)[k] = ls.StringSlicePropertyValue(k, v.([]string))
+				sl := make([]string, 0, len(value))
+				for _, s := range value {
+					sl = append(sl, s.(string))
+				}
+				(*nd)[k] = ls.StringSlicePropertyValue(k, sl)
 			}
 			continue
 		}
