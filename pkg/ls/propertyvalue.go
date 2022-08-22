@@ -57,10 +57,10 @@ func StringPropertyValue(term, s string) *PropertyValue {
 
 // StringSlicePropertyValue creates a []string value. If s is nil, it creates an empty slice
 func StringSlicePropertyValue(term string, s []string) *PropertyValue {
-	if s == nil {
-		return &PropertyValue{sem: &TermSemantics{}, value: []string{}}
-	}
 	termInfo := GetTermInfo(term)
+	if s == nil {
+		return &PropertyValue{sem: &termInfo, value: []string{}}
+	}
 	return &PropertyValue{sem: &termInfo, value: s}
 }
 
