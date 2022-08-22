@@ -156,7 +156,7 @@ func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []
 					return nil, err
 				}
 				if s == "true" {
-					attr.SetProperty(validators.RequiredTerm, ls.StringPropertyValue("true"))
+					attr.SetProperty(validators.RequiredTerm, ls.StringPropertyValue(ls.GetTermInfo(validators.RequiredTerm).Term, "true"))
 				}
 			}
 
@@ -170,9 +170,9 @@ func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []
 				if len(data) > 0 {
 					if term.Array {
 						elems := strings.Split(data, term.ArraySeparator)
-						attr.SetProperty(term.Term, ls.StringSlicePropertyValue(elems))
+						attr.SetProperty(term.Term, ls.StringSlicePropertyValue(ls.GetTermInfo(term.Term).Term, elems))
 					} else {
-						attr.SetProperty(term.Term, ls.StringPropertyValue(data))
+						attr.SetProperty(term.Term, ls.StringPropertyValue(ls.GetTermInfo(term.Term).Term, data))
 					}
 				}
 			}
@@ -181,9 +181,9 @@ func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []
 	if len(entityIDFields) > 0 {
 		var v *ls.PropertyValue
 		if len(entityIDFields) == 1 {
-			v = ls.StringPropertyValue(entityIDFields[0])
+			v = ls.StringPropertyValue(ls.GetTermInfo(ls.EntityIDFieldsTerm).Term, entityIDFields[0])
 		} else {
-			v = ls.StringSlicePropertyValue(entityIDFields)
+			v = ls.StringSlicePropertyValue(ls.GetTermInfo(ls.EntityIDFieldsTerm).Term, entityIDFields)
 		}
 		root.SetProperty(ls.EntityIDFieldsTerm, v)
 	}

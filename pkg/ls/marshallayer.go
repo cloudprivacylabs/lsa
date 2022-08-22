@@ -233,7 +233,7 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 		if len(oid) == 0 {
 			return MakeErrInvalidInput(inode.ID)
 		}
-		attribute.SetProperty(ReferenceTerm, StringPropertyValue(oid))
+		attribute.SetProperty(ReferenceTerm, StringPropertyValue(GetTermInfo(AttributeNameTerm).Term, oid))
 
 	case types.Has(AttributeTypeArray):
 		// m must be an array of 1

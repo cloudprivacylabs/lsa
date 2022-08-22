@@ -458,8 +458,8 @@ func (measureParser) SetNodeValue(value interface{}, node graph.Node) error {
 	}
 	switch t := value.(type) {
 	case Measure:
-		node.SetProperty(MeasureValueTerm, ls.StringPropertyValue(t.Value))
-		node.SetProperty(MeasureUnitTerm, ls.StringPropertyValue(t.Unit))
+		node.SetProperty(MeasureValueTerm, ls.StringPropertyValue(ls.GetTermInfo(MeasureValueTerm).Term, t.Value))
+		node.SetProperty(MeasureUnitTerm, ls.StringPropertyValue(ls.GetTermInfo(MeasureUnitTerm).Term, t.Unit))
 		ls.SetRawNodeValue(node, t.String())
 		return nil
 	}

@@ -38,7 +38,7 @@ func ApplyLayer(ctx *ls.Context, g graph.Graph, layer *ls.Layer, reinterpretValu
 			{
 				Labels: graph.NewStringSet(ls.DocumentNodeTerm),
 				Properties: map[string]interface{}{
-					ls.SchemaNodeIDTerm: ls.StringPropertyValue(layerNodeID),
+					ls.SchemaNodeIDTerm: ls.StringPropertyValue(ls.GetTermInfo(ls.SchemaNodeIDTerm).Term, layerNodeID),
 				},
 			}}
 		nodes, err := pattern.FindNodes(g, nil)

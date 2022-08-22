@@ -41,7 +41,7 @@ func GetNodeIndex(node graph.Node) int {
 }
 
 func SetNodeIndex(node graph.Node, index int) {
-	node.SetProperty(AttributeIndexTerm, IntPropertyValue(index))
+	node.SetProperty(AttributeIndexTerm, IntPropertyValue(GetTermInfo(AttributeIndexTerm).Term, index))
 }
 
 // GetNodeID returns the nodeid
@@ -77,7 +77,7 @@ func RemoveRawNodeValue(node graph.Node) {
 
 // SetRawNodeValue sets the unprocessed node value
 func SetRawNodeValue(node graph.Node, value string) {
-	node.SetProperty(NodeValueTerm, StringPropertyValue(value))
+	node.SetProperty(NodeValueTerm, StringPropertyValue(GetTermInfo(DefaultValueTerm).Term, value))
 }
 
 // GetNodeValue returns the field value processed by the schema type

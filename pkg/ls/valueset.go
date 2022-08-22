@@ -302,7 +302,7 @@ func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.N
 					Max: -1,
 				},
 				{
-					Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(reqv)},
+					Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(GetTermInfo(SchemaNodeIDTerm).Term, reqv)},
 				}}
 			p := graph.PatternSymbol{}
 			p.Add(contextDocumentNode)
@@ -330,7 +330,7 @@ func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.N
 func (vsi *ValuesetInfo) GetContextNodes(g graph.Graph) ([]graph.Node, error) {
 	pattern := graph.Pattern{
 		{
-			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(vsi.ContextID)},
+			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(GetTermInfo(SchemaNodeIDTerm).Term, vsi.ContextID)},
 		},
 	}
 	return pattern.FindNodes(g, nil)
@@ -342,7 +342,7 @@ func (vsi *ValuesetInfo) GetContextNodes(g graph.Graph) ([]graph.Node, error) {
 func (vsi *ValuesetInfo) GetContextNode(docNode graph.Node) (graph.Node, error) {
 	pattern := graph.Pattern{
 		{
-			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(vsi.ContextID)},
+			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(GetTermInfo(SchemaNodeIDTerm).Term, vsi.ContextID)},
 		},
 		{
 			Min: 0,
@@ -371,7 +371,7 @@ func (vsi *ValuesetInfo) GetContextNode(docNode graph.Node) (graph.Node, error) 
 func (vsi *ValuesetInfo) GetDocNodes(g graph.Graph) []graph.Node {
 	pattern := graph.Pattern{
 		{
-			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(GetNodeID(vsi.SchemaNode))},
+			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(GetTermInfo(SchemaNodeIDTerm).Term, GetNodeID(vsi.SchemaNode))},
 		}}
 	nodes, err := pattern.FindNodes(g, nil)
 	if err != nil {

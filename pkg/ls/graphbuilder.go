@@ -100,7 +100,7 @@ func (gb GraphBuilder) NewNode(schemaNode graph.Node) graph.Node {
 	if schemaNode == nil {
 		return newNode
 	}
-	newNode.SetProperty(SchemaNodeIDTerm, StringPropertyValue(GetNodeID(schemaNode)))
+	newNode.SetProperty(SchemaNodeIDTerm, StringPropertyValue(GetTermInfo(SchemaNodeIDTerm).Term, GetNodeID(schemaNode)))
 	// If this is an entity boundary, mark it
 	if pv, rootNode := schemaNode.GetProperty(EntitySchemaTerm); rootNode {
 		newNode.SetProperty(EntitySchemaTerm, pv)
@@ -186,10 +186,10 @@ func (gb GraphBuilder) setEntityID(value string, parentDocumentNode, schemaNode 
 	existingEntityIDSlice[idIndex] = value
 
 	if idFieldsProp.IsString() {
-		entityRootNode.SetProperty(EntityIDTerm, StringPropertyValue(value))
+		entityRootNode.SetProperty(EntityIDTerm, StringPropertyValue(GetTermInfo(EntityIDTerm).Term, value))
 		return nil
 	}
-	entityRootNode.SetProperty(EntityIDTerm, StringSlicePropertyValue(existingEntityIDSlice))
+	entityRootNode.SetProperty(EntityIDTerm, StringSlicePropertyValue(GetTermInfo(EntityIDTerm).Term, existingEntityIDSlice))
 	return nil
 }
 
@@ -311,13 +311,13 @@ func (gb GraphBuilder) ValueSetAsProperty(schemaNode graph.Node, graphPath []gra
 
 func (gb GraphBuilder) RawValueAsProperty(schemaNode graph.Node, graphPath []graph.Node, value string) error {
 	return gb.ValueAsProperty(schemaNode, graphPath, func(node graph.Node, key string) {
-		node.SetProperty(key, StringPropertyValue(value))
+		node.SetProperty(key, StringPropertyValue(GetTermInfo(key).Term, value))
 	})
 }
 
 func (gb GraphBuilder) NativeValueAsProperty(schemaNode graph.Node, graphPath []graph.Node, value interface{}) error {
 	return gb.ValueAsProperty(schemaNode, graphPath, func(node graph.Node, key string) {
-		node.SetProperty(key, StringPropertyValue(fmt.Sprint(value)))
+		node.SetProperty(key, StringPropertyValue(GetTermInfo(key).Term, fmt.Sprint(value)))
 	})
 }
 

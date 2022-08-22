@@ -24,13 +24,13 @@ func TestWalkNodesInEntity(t *testing.T) {
 	g := graph.NewOCGraph()
 	n1 := g.NewNode([]string{"root", DocumentNodeTerm}, nil)
 	n2 := g.NewNode([]string{"eroot", DocumentNodeTerm}, map[string]interface{}{
-		EntitySchemaTerm: StringPropertyValue("schA"),
+		EntitySchemaTerm: StringPropertyValue(GetTermInfo(EntitySchemaTerm).Term, "schA"),
 	})
 	n3 := g.NewNode([]string{"3", DocumentNodeTerm}, nil)
 	n4 := g.NewNode([]string{"4", DocumentNodeTerm}, nil)
 	n5 := g.NewNode([]string{"5", DocumentNodeTerm}, nil)
 	n6 := g.NewNode([]string{"root2", DocumentNodeTerm}, map[string]interface{}{
-		EntitySchemaTerm: StringPropertyValue("schB"),
+		EntitySchemaTerm: StringPropertyValue(GetTermInfo(EntitySchemaTerm).Term, "schB"),
 	})
 	n7 := g.NewNode([]string{"7"}, nil)
 

@@ -203,29 +203,29 @@ func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode graph.
 	labels := newNode.GetLabels()
 	ls.SetNodeID(newNode, path.String())
 	if len(attr.format) > 0 {
-		newNode.SetProperty(validators.JsonFormatTerm, ls.StringPropertyValue(attr.format))
+		newNode.SetProperty(validators.JsonFormatTerm, ls.StringPropertyValue(ls.GetTermInfo(validators.JsonFormatTerm).Term, attr.format))
 	}
 	if len(attr.pattern) > 0 {
-		newNode.SetProperty(validators.PatternTerm, ls.StringPropertyValue(attr.pattern))
+		newNode.SetProperty(validators.PatternTerm, ls.StringPropertyValue(ls.GetTermInfo(validators.PatternTerm).Term, attr.pattern))
 	}
 	//if len(attr.description) > 0 {
 	//	newNode.SetProperty(ls.DescriptionTerm, ls.StringPropertyValue(attr.description))
 	//}
 	if len(attr.typ) > 0 {
-		newNode.SetProperty(ls.ValueTypeTerm, ls.StringSlicePropertyValue(attr.typ))
+		newNode.SetProperty(ls.ValueTypeTerm, ls.StringSlicePropertyValue(ls.GetTermInfo(ls.ValueTypeTerm).Term, attr.typ))
 	}
 	if len(attr.key) > 0 {
-		newNode.SetProperty(ls.AttributeNameTerm, ls.StringPropertyValue(attr.key))
+		newNode.SetProperty(ls.AttributeNameTerm, ls.StringPropertyValue(ls.GetTermInfo(ls.AttributeNameTerm).Term, attr.key))
 	}
 	if len(attr.enum) > 0 {
 		elements := make([]string, 0, len(attr.enum))
 		for _, v := range attr.enum {
 			elements = append(elements, imp.interner.Intern(fmt.Sprint(v)))
 		}
-		newNode.SetProperty(validators.EnumTerm, ls.StringSlicePropertyValue(elements))
+		newNode.SetProperty(validators.EnumTerm, ls.StringSlicePropertyValue(ls.GetTermInfo(validators.EnumTerm).Term, elements))
 	}
 	if attr.defaultValue != nil {
-		newNode.SetProperty(ls.DefaultValueTerm, ls.StringPropertyValue(*attr.defaultValue))
+		newNode.SetProperty(ls.DefaultValueTerm, ls.StringPropertyValue(ls.GetTermInfo(ls.DefaultValueTerm).Term, *attr.defaultValue))
 	}
 	for k, v := range attr.annotations {
 		if err := ls.GetTermMarshaler(k).UnmarshalJSON(imp.layer, k, v, newNode, imp.interner); err != nil {
@@ -238,11 +238,11 @@ func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode graph.
 		newNode.SetLabels(labels)
 		switch imp.linkRefs {
 		case LinkRefsBySchemaRef:
-			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(attr.reference.Ref))
+			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(ls.GetTermInfo(ls.ReferenceTerm).Term, attr.reference.Ref))
 		case LinkRefsByLayerID:
-			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(attr.reference.LayerID))
+			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(ls.GetTermInfo(ls.ReferenceTerm).Term, attr.reference.LayerID))
 		case LinkRefsByValueType:
-			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(attr.reference.ValueType))
+			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(ls.GetTermInfo(ls.ReferenceTerm).Term, attr.reference.ValueType))
 		}
 		return nil
 	}
@@ -295,7 +295,7 @@ func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.No
 					req = append(req, id)
 				}
 			}
-			newNode.SetProperty(validators.RequiredTerm, ls.StringSlicePropertyValue(req))
+			newNode.SetProperty(validators.RequiredTerm, ls.StringSlicePropertyValue(ls.GetTermInfo(validators.RequiredTerm).Term, req))
 		}
 		return nil
 	}
