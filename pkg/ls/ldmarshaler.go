@@ -242,11 +242,10 @@ func UnmarshalJSONLDGraph(input interface{}, target graph.Graph, interner Intern
 					if err != nil {
 						return err
 					}
-					docTerm := GetTermInfo(DocumentNodeTerm).Term
 					if values == nil && ids == nil {
-						inode.GraphNode.SetProperty(k, StringPropertyValue(docTerm, value))
+						inode.GraphNode.SetProperty(k, StringPropertyValue(DocumentNodeTerm, value))
 					} else if values != nil {
-						inode.GraphNode.SetProperty(k, StringSlicePropertyValue(docTerm, values))
+						inode.GraphNode.SetProperty(k, StringSlicePropertyValue(DocumentNodeTerm, values))
 					} else if ids != nil {
 						for _, id := range ids {
 							tgt := inputNodes[id]
@@ -264,11 +263,10 @@ func UnmarshalJSONLDGraph(input interface{}, target graph.Graph, interner Intern
 				if err != nil {
 					return err
 				}
-				defaultTerm := GetTermInfo(DefaultValueTerm).Term
 				if values == nil && ids == nil {
-					inode.GraphNode.SetProperty(k, StringPropertyValue(defaultTerm, value))
+					inode.GraphNode.SetProperty(k, StringPropertyValue(DefaultValueTerm, value))
 				} else if values != nil {
-					inode.GraphNode.SetProperty(k, StringSlicePropertyValue(defaultTerm, values))
+					inode.GraphNode.SetProperty(k, StringSlicePropertyValue(DefaultValueTerm, values))
 				} else if ids != nil {
 					for _, id := range ids {
 						tgt := inputNodes[id]
