@@ -61,7 +61,7 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 					s := pv.AsString()
 					for _, m := range nsMap {
 						if strings.HasPrefix(s, m[0]) {
-							node.SetProperty(key, StringPropertyValue(GetTermInfo(key).Term, m[1]+s[len(m[0]):]))
+							node.SetProperty(key, StringPropertyValue(key, m[1]+s[len(m[0]):]))
 						}
 					}
 				}
@@ -81,7 +81,7 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 						}
 					}
 					if changed {
-						node.SetProperty(key, StringSlicePropertyValue(GetTermInfo(key).Term, newSlice))
+						node.SetProperty(key, StringSlicePropertyValue(key, newSlice))
 					}
 				}
 				return true

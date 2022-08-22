@@ -15,6 +15,7 @@
 package ls
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -44,12 +45,14 @@ func AsPropertyValue(in interface{}, exists bool) *PropertyValue {
 
 // IntPropertyValue converts the int value to string, and returns a string value
 func IntPropertyValue(term string, i int) *PropertyValue {
-	return &PropertyValue{sem: &TermSemantics{Term: term}, value: fmt.Sprint(i)}
+	termInfo := GetTermInfo(term)
+	return &PropertyValue{sem: &termInfo, value: fmt.Sprint(i)}
 }
 
 // StringPropertyValue creates a string value
 func StringPropertyValue(term, s string) *PropertyValue {
-	return &PropertyValue{sem: &TermSemantics{Term: term}, value: s}
+	termInfo := GetTermInfo(term)
+	return &PropertyValue{sem: &termInfo, value: s}
 }
 
 // StringSlicePropertyValue creates a []string value. If s is nil, it creates an empty slice
@@ -57,10 +60,13 @@ func StringSlicePropertyValue(term string, s []string) *PropertyValue {
 	if s == nil {
 		return &PropertyValue{sem: &TermSemantics{}, value: []string{}}
 	}
-	return &PropertyValue{sem: &TermSemantics{Term: term}, value: s}
+	termInfo := GetTermInfo(term)
+	return &PropertyValue{sem: &termInfo, value: s}
 }
 
 func (pv *PropertyValue) GetSem() *TermSemantics { return pv.sem }
+
+func (pv *PropertyValue) GetTerm() string { return pv.sem.Term }
 
 // GetNativeValue is used bythe expression evaluators to access the
 // native value of the property
@@ -212,6 +218,14 @@ func (p PropertyValue) String() string {
 		return strings.Join(p.AsStringSlice(), ",")
 	}
 	return fmt.Sprint(p.value)
+}
+
+func (p PropertyValue) MarshalYAML() (interface{}, error) {
+	return p.value, nil
+}
+
+func (p PropertyValue) MarshalJSON() ([]byte, error) {
+	return json.Marshal(p.value)
 }
 
 // CopyPropertyMap returns a copy of the property map

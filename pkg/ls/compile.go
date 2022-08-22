@@ -218,7 +218,7 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 	if err != nil {
 		return nil, err
 	}
-	compiled.GetSchemaRootNode().SetProperty(EntitySchemaTerm, StringPropertyValue(GetTermInfo(EntitySchemaTerm).Term, compiled.GetID()))
+	compiled.GetSchemaRootNode().SetProperty(EntitySchemaTerm, StringPropertyValue(EntitySchemaTerm, compiled.GetID()))
 
 	if err := compiler.compileReferences(context, ctx); err != nil {
 		return nil, err
@@ -295,7 +295,7 @@ func (compiler *Compiler) linkReference(context *Context, refNode graph.Node, sc
 	if err := ComposeProperties(context, refNode, linkTo); err != nil {
 		return err
 	}
-	refNode.SetProperty(ReferenceTerm, StringPropertyValue(GetTermInfo(ReferenceTerm).Term, ref))
+	refNode.SetProperty(ReferenceTerm, StringPropertyValue(ReferenceTerm, ref))
 	// Attach the node to all the children of the compiled node
 	for edges := linkTo.GetEdges(graph.OutgoingEdge); edges.Next(); {
 		edge := edges.Edge()
@@ -303,9 +303,9 @@ func (compiler *Compiler) linkReference(context *Context, refNode graph.Node, sc
 		// Mark all edges that connect the original schema node as
 		// "compilationArtifact", so we can trace back the schema nodes
 		// correctly
-		edge.SetProperty("compilationArtifact", StringPropertyValue(GetTermInfo("compilationArtifact").Term, "true"))
+		edge.SetProperty("compilationArtifact", StringPropertyValue("compilationArtifact", "true"))
 	}
-	refNode.SetProperty(EntitySchemaTerm, StringPropertyValue(GetTermInfo(EntitySchemaTerm).Term, schema.GetID()))
+	refNode.SetProperty(EntitySchemaTerm, StringPropertyValue(EntitySchemaTerm, schema.GetID()))
 	return nil
 }
 

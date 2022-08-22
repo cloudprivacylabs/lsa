@@ -158,9 +158,9 @@ func (ing Parser) parseRow(ctx parserContext, row []string) (ls.ParsedDocNode, e
 		}
 		if newChild != nil {
 			newChild.properties = make(map[string]interface{})
-			newChild.properties[ls.AttributeIndexTerm] = ls.IntPropertyValue(ls.GetTermInfo(ls.AttributeIndexTerm).Term, columnIndex)
+			newChild.properties[ls.AttributeIndexTerm] = ls.IntPropertyValue(ls.AttributeIndexTerm, columnIndex)
 			if len(columnName) > 0 {
-				newChild.properties[ls.AttributeNameTerm] = ls.StringPropertyValue(ls.GetTermInfo(ls.AttributeNameTerm).Term, columnName)
+				newChild.properties[ls.AttributeNameTerm] = ls.StringPropertyValue(ls.AttributeNameTerm, columnName)
 			}
 			children = append(children, newChild)
 		}

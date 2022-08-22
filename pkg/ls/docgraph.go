@@ -128,7 +128,7 @@ func GetNodesInstanceOf(g graph.Graph, attrId string) []graph.Node {
 	pattern := graph.Pattern{{
 		Labels: graph.NewStringSet(DocumentNodeTerm),
 		Properties: map[string]interface{}{
-			SchemaNodeIDTerm: StringPropertyValue(GetTermInfo(SchemaNodeIDTerm).Term, attrId),
+			SchemaNodeIDTerm: StringPropertyValue(SchemaNodeIDTerm, attrId),
 		},
 	}}
 	nodes, err := pattern.FindNodes(g, nil)

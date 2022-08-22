@@ -133,9 +133,9 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 		}
 	}
 	setProp := func(node graph.Node) {
-		node.SetProperty(AttributeIndexTerm, StringPropertyValue(GetTermInfo(AttributeIndexTerm).Term, strconv.Itoa(root.GetAttributeIndex())))
+		node.SetProperty(AttributeIndexTerm, StringPropertyValue(AttributeIndexTerm, strconv.Itoa(root.GetAttributeIndex())))
 		if s := root.GetAttributeName(); len(s) > 0 {
-			node.SetProperty(AttributeNameTerm, StringPropertyValue(GetTermInfo(AttributeNameTerm).Term, s))
+			node.SetProperty(AttributeNameTerm, StringPropertyValue(AttributeNameTerm, s))
 		}
 		for k, v := range root.GetProperties() {
 			node.SetProperty(k, v)
@@ -238,7 +238,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 			if n == -1 {
 				n = child.GetAttributeIndex()
 			}
-			node.SetProperty(AttributeIndexTerm, IntPropertyValue(GetTermInfo(AttributeIndexTerm).Term, n))
+			node.SetProperty(AttributeIndexTerm, IntPropertyValue(AttributeIndexTerm, n))
 		}
 	}
 	if schemaNode != nil && hasData {

@@ -192,7 +192,7 @@ func (l *Layer) SetValueType(t string) {
 		}
 	}
 	if len(t) > 0 {
-		l.layerInfo.SetProperty(ValueTypeTerm, StringPropertyValue(GetTermInfo(ValueTypeTerm).Term, t))
+		l.layerInfo.SetProperty(ValueTypeTerm, StringPropertyValue(ValueTypeTerm, t))
 		if oin := l.GetSchemaRootNode(); oin != nil {
 			labels := oin.GetLabels()
 			labels.Add(t)
@@ -266,20 +266,20 @@ func GetNodesWithValidators(root graph.Node) map[graph.Node]struct{} {
 	ForEachAttributeNode(root, func(node graph.Node, _ []graph.Node) bool {
 		node.ForEachProperty(func(k string, in interface{}) bool {
 			pv, ok := in.(*PropertyValue)
-			if ok {
-				md := pv.GetSem()
-				if md == nil {
-					return true
-				}
-				if _, ok := md.Metadata.(NodeValidator); ok {
-					ret[node] = struct{}{}
-				}
-				if _, ok := md.Metadata.(ValueValidator); ok {
-					ret[node] = struct{}{}
-				}
+			if !ok {
 				return true
 			}
-			return false
+			md := pv.GetSem()
+			if md == nil {
+				return true
+			}
+			if _, ok := md.Metadata.(NodeValidator); ok {
+				ret[node] = struct{}{}
+			}
+			if _, ok := md.Metadata.(ValueValidator); ok {
+				ret[node] = struct{}{}
+			}
+			return true
 		})
 		return true
 	})

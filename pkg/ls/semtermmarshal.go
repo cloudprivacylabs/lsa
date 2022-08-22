@@ -54,19 +54,19 @@ func (defaultTermMarshaler) UnmarshalLd(target *Layer, key string, value interfa
 	}
 	setValue := func(v string) {
 		if key == AttributeIndexTerm {
-			node.GraphNode.SetProperty(key, StringPropertyValue(GetTermInfo(AttributeIndexTerm).Term, v))
+			node.GraphNode.SetProperty(key, StringPropertyValue(key, v))
 		} else {
 			value, _ := node.GraphNode.GetProperty(key)
 			if value == nil {
-				node.GraphNode.SetProperty(key, StringPropertyValue(GetTermInfo(DefaultValueTerm).Term, v))
+				node.GraphNode.SetProperty(key, StringPropertyValue(key, v))
 			} else {
 				pvalue, _ := value.(*PropertyValue)
 				if pvalue == nil {
 					node.GraphNode.SetProperty(key, value)
 				} else if pvalue.IsStringSlice() {
-					node.GraphNode.SetProperty(key, StringSlicePropertyValue(pvalue.sem.Term, append(pvalue.AsStringSlice(), v)))
+					node.GraphNode.SetProperty(key, StringSlicePropertyValue(key, append(pvalue.AsStringSlice(), v)))
 				} else {
-					node.GraphNode.SetProperty(key, StringSlicePropertyValue(pvalue.sem.Term, []string{pvalue.AsString(), v}))
+					node.GraphNode.SetProperty(key, StringSlicePropertyValue(key, []string{pvalue.AsString(), v}))
 				}
 			}
 		}
@@ -128,7 +128,7 @@ func (defaultTermMarshaler) UnmarshalJSON(target *Layer, key string, value inter
 	key = interner.Intern(key)
 	switch val := value.(type) {
 	case string, json.Number, float64, bool:
-		node.SetProperty(key, StringPropertyValue(GetTermInfo(key).Term, fmt.Sprint(val)))
+		node.SetProperty(key, StringPropertyValue(key, fmt.Sprint(val)))
 	case []interface{}:
 		arr := make([]string, 0, len(val))
 		for _, v := range val {
@@ -139,7 +139,7 @@ func (defaultTermMarshaler) UnmarshalJSON(target *Layer, key string, value inter
 				return fmt.Errorf("Invalid value: %s=%v", key, value)
 			}
 		}
-		node.SetProperty(key, StringSlicePropertyValue(GetTermInfo(key).Term, arr))
+		node.SetProperty(key, StringSlicePropertyValue(key, arr))
 	default:
 		return fmt.Errorf("Invalid  value: %s=%v", key, value)
 	}
