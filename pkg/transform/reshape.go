@@ -16,6 +16,7 @@ package transform
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
@@ -30,53 +31,81 @@ type Reshaper struct {
 	Script       *TransformScript
 }
 
+type path[X any] struct {
+	items []X
+}
+
+func (p *path[X]) push(x X) *path[X] {
+	p.items = append(p.items, x)
+	return p
+}
+
+func (p *path[X]) pop() {
+	p.items = p.items[:len(p.items)-1]
+}
+
+func (p *path[X]) last() X {
+	return p.items[len(p.items)-1]
+}
+
+func (p *path[X]) empty() bool { return len(p.items) == 0 }
+
 type reshapeContext struct {
 	*ls.Context
-	parent        *reshapeContext
-	schemaPath    []graph.Node
-	generatedPath []*txDocNode
-	mapContext    []graph.Node
-	symbols       map[string]opencypher.Value
-	sourceGraph   graph.Graph
+	parent      *reshapeContext
+	symbols     map[string]opencypher.Value
+	sourceGraph graph.Graph
+
+	schemaPath    path[graph.Node]
+	generatedPath path[*txDocNode]
+	mapContext    path[graph.Node]
 }
 
-func (ctx *reshapeContext) getSchemaNode() graph.Node { return ctx.schemaPath[len(ctx.schemaPath)-1] }
-func (ctx *reshapeContext) getParentGraphNode() *txDocNode {
-	if len(ctx.generatedPath) == 0 {
+func (ctx *reshapeContext) sub() *reshapeContext {
+	ret := *ctx
+	ret.parent = ctx
+	ret.symbols = make(map[string]opencypher.Value)
+	return &ret
+}
+
+// Export the named variables in the resultset
+func (ctx *reshapeContext) exportVars(row map[string]opencypher.Value) {
+	for varName, val := range row {
+		if opencypher.IsNamedResult(varName) {
+			ctx.setSymbolValue(varName, val)
+		}
+	}
+}
+
+// Export the named result columns
+func (ctx *reshapeContext) exportResults(rs opencypher.ResultSet) error {
+	if len(rs.Rows) == 0 {
 		return nil
 	}
-	return ctx.generatedPath[len(ctx.generatedPath)-1]
-}
-
-func (ctx *reshapeContext) pushGeneratedNode(node *txDocNode) {
-	ctx.generatedPath = append(ctx.generatedPath, node)
-}
-
-func (ctx *reshapeContext) popGeneratedNode() {
-	ctx.generatedPath = ctx.generatedPath[:len(ctx.generatedPath)-1]
-}
-
-func (ctx *reshapeContext) pushSchemaNode(node graph.Node) {
-	ctx.schemaPath = append(ctx.schemaPath, node)
-}
-
-func (ctx *reshapeContext) popSchemaNode() {
-	ctx.schemaPath = ctx.schemaPath[:len(ctx.schemaPath)-1]
-}
-
-func (ctx *reshapeContext) pushMapContext(node graph.Node) {
-	ctx.mapContext = append(ctx.mapContext, node)
-}
-
-func (ctx *reshapeContext) popMapContext() {
-	ctx.mapContext = ctx.mapContext[:len(ctx.mapContext)-1]
-}
-
-func (ctx *reshapeContext) getMapContext() graph.Node {
-	if len(ctx.mapContext) == 0 {
-		return nil
+	if len(rs.Rows) > 1 {
+		return fmt.Errorf("Multiple results in the resultset")
 	}
-	return ctx.mapContext[len(ctx.mapContext)-1]
+	for _, row := range rs.Rows {
+		for varName, val := range row {
+			if opencypher.IsNamedResult(varName) {
+				ctx.setSymbolValue(varName, val)
+			}
+		}
+	}
+	return nil
+}
+
+func (ctx *reshapeContext) setSymbolValue(name string, value opencypher.Value) {
+	// If the symbol is already defined, set that. Otherwise, define the symbol at this level
+	trc := ctx.parent
+	for trc != nil {
+		if _, ok := trc.symbols[name]; ok {
+			trc.symbols[name] = value
+			return
+		}
+		trc = trc.parent
+	}
+	ctx.symbols[name] = value
 }
 
 func (ctx *reshapeContext) fillEvalContext(ectx *opencypher.EvalContext) {
@@ -94,42 +123,62 @@ func (ctx *reshapeContext) getEvalContext() *opencypher.EvalContext {
 	return ectx
 }
 
-func (ctx *reshapeContext) nestedContext() *reshapeContext {
-	ret := *ctx
-	ret.parent = ctx
-	ret.symbols = make(map[string]opencypher.Value)
-	return &ret
-}
-
-// Export the variables in the resultset
-func (ctx *reshapeContext) exportVars(row map[string]opencypher.Value) {
-	for varName, val := range row {
-		ctx.setSymbolValue(varName, val)
-	}
-}
-
-func (ctx *reshapeContext) setSymbolValue(name string, value opencypher.Value) {
-	// If the symbol is already defined, set that. Otherwise, define the symbol at this level
-	trc := ctx.parent
-	for trc != nil {
-		if _, ok := trc.symbols[name]; ok {
-			trc.symbols[name] = value
-			return
+func (reshaper Reshaper) fillNodes(roots []*txDocNode) error {
+	for i := range roots {
+		if err := reshaper.fillNode(roots[i]); err != nil {
+			return err
 		}
-		trc = trc.parent
 	}
-	ctx.symbols[name] = value
+	return nil
+}
+
+func (reshaper Reshaper) fillNode(node *txDocNode) error {
+	if node.schemaNode != nil {
+		if node.schemaNode.GetLabels().Has(ls.AttributeTypeArray) {
+			node.typeTerm = ls.AttributeTypeArray
+		} else if node.schemaNode.GetLabels().Has(ls.AttributeTypeObject) {
+			node.typeTerm = ls.AttributeTypeObject
+		} else {
+			node.typeTerm = ls.AttributeTypeValue
+		}
+	}
+	if node.sourceNode != nil {
+		val, err := ls.GetNodeValue(node.sourceNode)
+		if err != nil {
+			return err
+		}
+		node.value = val
+		node.sourceNode.ForEachProperty(func(key string, value interface{}) bool {
+			if strings.HasPrefix(key, ls.LS) {
+				return true
+			}
+			p, ok := value.(*ls.PropertyValue)
+			if !ok {
+				return true
+			}
+			node.properties[key] = p
+			return true
+		})
+	}
+	nodes := make([]*txDocNode, 0, len(node.children))
+	for i := range node.children {
+		nodes = append(nodes, node.children[i].(*txDocNode))
+	}
+	return reshaper.fillNodes(nodes)
 }
 
 func (reshaper Reshaper) Reshape(ctx *ls.Context, sourceGraph graph.Graph) error {
 	c := reshapeContext{
 		Context:     ctx,
 		symbols:     make(map[string]opencypher.Value),
-		schemaPath:  []graph.Node{reshaper.TargetSchema.GetSchemaRootNode()},
 		sourceGraph: sourceGraph,
 	}
+	c.schemaPath.push(reshaper.TargetSchema.GetSchemaRootNode())
 	roots, err := reshaper.reshapeNode(&c)
 	if err != nil {
+		return err
+	}
+	if err := reshaper.fillNodes(roots); err != nil {
 		return err
 	}
 	for _, root := range roots {
@@ -141,23 +190,11 @@ func (reshaper Reshaper) Reshape(ctx *ls.Context, sourceGraph graph.Graph) error
 	return nil
 }
 
-func getResultSetColumn(rs opencypher.ResultSet, key string) ([]opencypher.Value, bool) {
-	ret := make([]opencypher.Value, 0)
-	foundKey := false
-	for _, row := range rs.Rows {
-		val, ok := row[key]
-		if ok {
-			foundKey = true
-			ret = append(ret, val)
-		}
-	}
-	return ret, foundKey
-}
-
 // Returns true if operation produced any output
 func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) {
 	// last element of schemaPath is the schema node to reshape
-	schemaNode := ctx.getSchemaNode()
+	ctx = ctx.sub()
+	schemaNode := ctx.schemaPath.last()
 	schemaNodeID := ls.GetNodeID(schemaNode)
 	ctx.GetLogger().Debug(map[string]interface{}{"mth": "reshapeNode", "building": schemaNodeID})
 
@@ -172,89 +209,282 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 			"evaluateTermExpr": EvaluateTermSemantics.Get(reshaper.Script.GetProperties(schemaNode)),
 			"result":           v})
 		if rs, ok := v.Get().(opencypher.ResultSet); ok {
-			if len(rs.Rows) > 1 {
-				return nil, wrapReshapeError(fmt.Errorf("Multiple values for resultset"), schemaNodeID)
+			if len(rs.Rows) > 0 {
+				if err := ctx.exportResults(rs); err != nil {
+					return nil, wrapReshapeError(err, schemaNodeID)
+				}
 			}
-			if len(rs.Rows) == 1 {
-				ctx.exportVars(rs.Rows[0])
-			}
-		} else {
-			return nil, wrapReshapeError(fmt.Errorf("evaluate result is not a resultset"), schemaNodeID)
 		}
 	}
-
-	// The node can get its value in one of the following ways:
-	//
-	//    mapProperty: If set, get the mapped value, which is []Node, and process each
-	//    valueExpr: If has values, get the results of the expression, process each
-	//
-	// otherwise, if this is a non-value node, process children and
-	// create the node if there are nonempty children
-	// Is it a map node?
-	if mapProperty := ls.AsPropertyValue(reshaper.Script.GetProperties(schemaNode).GetProperty(MapPropertyTerm)).AsString(); len(mapProperty) > 0 {
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "state": "Running map", "mapProperty": mapProperty})
-		// Find the nodes under the map context whose mapProperty property points to this
-		nodes, err := reshaper.getMapNodes(ctx, mapProperty, schemaNodeID)
-		if err != nil {
-			return nil, wrapReshapeError(err, schemaNodeID)
-		}
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "nMapNodes": len(nodes)})
-		v, err := reshaper.handle(ctx, opencypher.RValue{Value: nodes})
-		if err != nil {
-			return nil, wrapReshapeError(err, schemaNodeID)
-		}
-		return v, nil
-	}
-	// Script may contain a direct mapping
-	if nodeMapping := reshaper.Script.GetMappingByTarget(schemaNodeID); nodeMapping != nil {
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "Running map by target", "nodeMapping": nodeMapping})
-		nodes, err := reshaper.getNodeMappingNodes(ctx, nodeMapping)
-		if err != nil {
-			return nil, wrapReshapeError(err, schemaNodeID)
-		}
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "nMapNodes": len(nodes)})
-		v, err := reshaper.handle(ctx, opencypher.RValue{Value: nodes})
-		if err != nil {
-			return nil, wrapReshapeError(err, schemaNodeID)
-		}
-		return v, nil
-	}
-
-	if evaluatables := ValueExprTermSemantics.GetEvaluatables(reshaper.Script.GetProperties(schemaNode)); len(evaluatables) != 0 {
-		// Determine the source nodes for ingestion
+	// If the node is marked as a map context, evaluate that expr
+	if ev := MapContextSemantics.GetEvaluatable(reshaper.Script.GetProperties(schemaNode)); ev != nil {
 		evalContext := ctx.getEvalContext()
+		mapContext, err := ev.Evaluate(evalContext)
+		if err != nil {
+			return nil, wrapReshapeError(err, schemaNodeID)
+		}
+		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "mapContext": mapContext})
+		node, err := getAtMostOneNode(mapContext)
+		if err != nil {
+			return nil, wrapReshapeError(err, schemaNodeID)
+		}
+		if node != nil {
+			ctx.mapContext.push(node)
+			defer ctx.mapContext.pop()
+		}
+	}
+
+	// This is the case where the schema node has `mapProperty:
+	// propName`. In this case, nodes under the map context that has the
+	// property `propName: schemaNodeId` will be selected as the source
+	// nodes.
+	if mapProperty := ls.AsPropertyValue(reshaper.Script.GetProperties(schemaNode).GetProperty(MapPropertyTerm)).AsString(); len(mapProperty) > 0 {
+		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "valueFrom": MapPropertyTerm})
+		// Find the nodes under the map context whose mapProperty property points to schemaNodeID
+		nodeValues := reshaper.findNodesUnderMapContext(ctx, mapProperty, []string{schemaNodeID})
+		return reshaper.generateOutput(ctx, nodeValues)
+	}
+
+	// This is the case where the script contains a direct mapping for
+	// the node. There is a mapping with source and target in the
+	// script, and the source nodes are the nodes whose schemaNodeId are
+	// the source values.
+	if nodeMappings := reshaper.Script.GetMappingsByTarget(schemaNodeID); len(nodeMappings) != 0 {
+		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "valueFrom": "map by target"})
+		// Find the nodes under the map context whose source node ID is given in
+		nodeValues := reshaper.findNodesUnderMapContext(ctx, ls.SchemaNodeIDTerm, getMappingSources(nodeMappings))
+		return reshaper.generateOutput(ctx, nodeValues)
+	}
+
+	processValueExpr := func(evalContext *opencypher.EvalContext, term string) ([]opencypher.Value, error) {
+		evaluatables := ValueExprTermSemantics.GetEvaluatables(term, reshaper.Script.GetProperties(schemaNode))
+		if len(evaluatables) == 0 {
+			return nil, nil
+		}
+		ret := make([]opencypher.Value, 0, len(evaluatables))
 		for _, evaluatable := range evaluatables {
 			sv, err := evaluatable.Evaluate(evalContext)
 			if err != nil {
-				return nil, wrapReshapeError(err, schemaNodeID)
+				return nil, err
 			}
-			ctx.GetLogger().Info(map[string]interface{}{"reshape": schemaNodeID,
-				"valueExpr": ValueExprTermSemantics.Get(reshaper.Script.GetProperties(schemaNode)),
-				"result":    sv})
 			if isEmptyValue(sv) {
 				continue
 			}
-			v, err := reshaper.handle(ctx, sv)
-			if err != nil {
-				return nil, wrapReshapeError(err, schemaNodeID)
+			ret = append(ret, sv)
+			if term == ValueExprTerm || term == ValueExprFirstTerm {
+				break
 			}
-			return v, nil
 		}
-		return nil, nil
+		return ret, nil
+	}
+
+	// Evaluate value expressions
+	{
+		evalContext := ctx.getEvalContext()
+		v1, err := processValueExpr(evalContext, ValueExprFirstTerm)
+		if err != nil {
+			return nil, wrapReshapeError(err, schemaNodeID)
+		}
+		v2, err := processValueExpr(evalContext, ValueExprAllTerm)
+		if err != nil {
+			return nil, wrapReshapeError(err, schemaNodeID)
+		}
+		v3, err := processValueExpr(evalContext, ValueExprTerm)
+		if err != nil {
+			return nil, wrapReshapeError(err, schemaNodeID)
+		}
+		results := make([]opencypher.Value, 0, len(v1)+len(v2)+len(v3))
+		results = append(results, v1...)
+		results = append(results, v2...)
+		results = append(results, v3...)
+		if len(results) > 0 {
+			return reshaper.generateOutput(ctx, results)
+		}
 	}
 
 	// If not a value node, try reshaping subtree
 	if !schemaNode.HasLabel(ls.AttributeTypeValue) {
-		v, err := reshaper.handleNonValueNode(ctx)
+		v, err := reshaper.handleNode(ctx, nil)
 		if err != nil {
-			return nil, wrapReshapeError(err, schemaNodeID)
-		}
-		if v == nil {
-			return nil, nil
+			return nil, err
 		}
 		return []*txDocNode{v}, nil
 	}
 	return nil, nil
+}
+
+func (reshaper Reshaper) handlePrimitiveValue(ctx *reshapeContext, input interface{}) (*txDocNode, error) {
+	if input == nil {
+		return nil, nil
+	}
+	ret := newTxDocNode(ctx.schemaPath.last())
+	ret.value = input
+
+	return ret, nil
+}
+
+func (reshaper Reshaper) handleNode(ctx *reshapeContext, input graph.Node) (*txDocNode, error) {
+	ret := newTxDocNode(ctx.schemaPath.last())
+	ret.sourceNode = input
+	ctx.generatedPath.push(ret)
+	defer ctx.generatedPath.pop()
+	// Descend into the schema
+	switch {
+	case ret.schemaNode.GetLabels().Has(ls.AttributeTypeObject):
+		children := ls.GetObjectAttributeNodes(ret.schemaNode)
+		ls.SortNodes(children)
+		for _, child := range children {
+			ctx.schemaPath.push(child)
+			r, err := reshaper.reshapeNode(ctx)
+			ctx.schemaPath.pop()
+			if err != nil {
+				return nil, err
+			}
+			for _, x := range r {
+				ret.children = append(ret.children, x)
+			}
+		}
+		if len(ret.children) > 0 {
+			return ret, nil
+		}
+
+	case ret.schemaNode.GetLabels().Has(ls.AttributeTypeArray):
+		elemNode := ls.GetArrayElementNode(ret.schemaNode)
+		ctx.schemaPath.push(elemNode)
+		defer ctx.schemaPath.pop()
+		r, err := reshaper.reshapeNode(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, x := range r {
+			ret.children = append(ret.children, x)
+		}
+		if len(ret.children) > 0 {
+			return ret, nil
+		}
+
+	case ret.schemaNode.GetLabels().Has(ls.AttributeTypeValue):
+		if input == nil {
+			return nil, nil
+		}
+	}
+	return ret, nil
+}
+
+func (reshaper Reshaper) generateOutput(ctx *reshapeContext, input interface{}) ([]*txDocNode, error) {
+	if input == nil {
+		return nil, nil
+	}
+	// Handle primitives separately
+	if val, ok := input.(opencypher.Value); ok {
+		if opencypher.IsValuePrimitive(val) {
+			// We have a single value. Nothing to export
+			v, err := reshaper.handlePrimitiveValue(ctx, val.Get())
+			if err != nil {
+				return nil, err
+			}
+			if v == nil {
+				return nil, nil
+			}
+			return []*txDocNode{v}, nil
+		}
+	}
+	switch values := input.(type) {
+	case graph.Node:
+		v, err := reshaper.handleNode(ctx, values)
+		if err != nil {
+			return nil, err
+		}
+		return []*txDocNode{v}, nil
+	case []graph.Node:
+		ret := make([]*txDocNode, 0, len(values))
+		for _, x := range values {
+			v, err := reshaper.generateOutput(ctx, x)
+			if err != nil {
+				return nil, err
+			}
+			ret = append(ret, v...)
+		}
+		if len(ret) == 0 {
+			return nil, nil
+		}
+		return ret, nil
+	case opencypher.Value:
+		return reshaper.generateOutput(ctx, values.Get())
+	case []opencypher.Value:
+		ret := make([]*txDocNode, 0, len(values))
+		for _, x := range values {
+			v, err := reshaper.generateOutput(ctx, x)
+			if err != nil {
+				return nil, err
+			}
+			ret = append(ret, v...)
+		}
+		if len(ret) == 0 {
+			return nil, nil
+		}
+		return ret, nil
+	case opencypher.ResultSet:
+		ret := make([]*txDocNode, 0, len(values.Rows))
+		for _, row := range values.Rows {
+			if len(row) == 0 {
+				continue
+			}
+			if len(row) > 1 {
+				return nil, fmt.Errorf("Resultset has multiple columns where one expected")
+			}
+			for k, v := range row {
+				if opencypher.IsNamedResult(k) {
+					ctx.setSymbolValue(k, v)
+				}
+				result, err := reshaper.generateOutput(ctx, v)
+				if err != nil {
+					return nil, err
+				}
+				ret = append(ret, result...)
+			}
+		}
+		if len(ret) == 0 {
+			return nil, nil
+		}
+		return ret, nil
+	}
+	panic(fmt.Sprintf("Unhandled input type: %T", input))
+}
+
+func (reshaper Reshaper) findNodesUnderMapContext(ctx *reshapeContext, propertyKey string, values []string) []graph.Node {
+	ret := make([]graph.Node, 0)
+	has := func(s string) bool {
+		if len(s) == 0 {
+			return false
+		}
+		for _, x := range values {
+			if x == s {
+				return true
+			}
+		}
+		return false
+	}
+	if ctx.mapContext.empty() {
+		for nodes := ctx.sourceGraph.GetNodesWithProperty(propertyKey); nodes.Next(); {
+			node := nodes.Node()
+			s := ls.AsPropertyValue(node.GetProperty(propertyKey)).AsString()
+			if has(s) {
+				ret = append(ret, node)
+			}
+		}
+		return ret
+	}
+
+	mc := ctx.mapContext.last()
+	ls.IterateDescendants(mc, func(node graph.Node) bool {
+		s := ls.AsPropertyValue(node.GetProperty(propertyKey)).AsString()
+		if has(s) {
+			ret = append(ret, node)
+		}
+		return true
+	}, ls.OnlyDocumentNodes, false)
+	return ret
 }
 
 func isEmptyValue(v opencypher.Value) bool {
@@ -280,437 +510,47 @@ func isEmptyValue(v opencypher.Value) bool {
 	return false
 }
 
-func (reshaper Reshaper) evaluateMapContext(ctx *reshapeContext) (bool, error) {
-	schemaNode := ctx.getSchemaNode()
-	ev := MapContextSemantics.GetEvaluatable(reshaper.Script.GetProperties(schemaNode))
-	if ev == nil {
-		return false, nil
-	}
-	evalContext := ctx.getEvalContext()
-	mapContext, err := ev.Evaluate(evalContext)
-	if err != nil {
-		return false, nil
-	}
-	ctx.GetLogger().Debug(map[string]interface{}{"reshape": ls.GetNodeID(schemaNode), "mapContext": mapContext})
-	// Map context can be a node, or a node slice with one element, or an rs with a node
-	switch c := mapContext.Get().(type) {
-	case graph.Node:
-		ctx.pushMapContext(c)
-		return true, nil
-
-	case []graph.Node:
-		switch len(c) {
-		case 1:
-			ctx.pushMapContext(c[0])
-			return true, nil
-		case 0:
-			ctx.pushMapContext(nil)
-			return true, nil
-		default:
-			return false, fmt.Errorf("Map context has multiple nodes")
-		}
-	case opencypher.ResultSet:
-		switch len(c.Rows) {
-		case 0:
-			ctx.pushMapContext(nil)
-			return true, nil
-		case 1:
-			if len(c.Rows[0]) != 1 {
-				return false, fmt.Errorf("Map context resultset has to have one column")
-			}
-			for _, v := range c.Rows[0] {
-				n, ok := v.Get().(graph.Node)
-				if !ok {
-					return false, fmt.Errorf("Map context expression must return a single node")
-				}
-				ctx.pushMapContext(n)
-				return true, nil
-			}
-		default:
-			return false, fmt.Errorf("Map context has multiple items")
-		}
-	}
-	return false, nil
-}
-
-func (reshaper Reshaper) getNodeMappingNodes(ctx *reshapeContext, mapping *NodeMapping) ([]graph.Node, error) {
-	mapContext := ctx.getMapContext()
-	ctx.GetLogger().Debug(map[string]interface{}{"reshaper.getNodeMappingNodes.context": mapContext})
-	var found []graph.Node
-	checkNodeProperty := func(node graph.Node) bool {
-		schNode := ls.AsPropertyValue(node.GetProperty(ls.SchemaNodeIDTerm)).AsString()
-		if schNode == mapping.SourceNodeID {
-			found = append(found, node)
-			return true
-		}
-		return false
-	}
-	if mapContext != nil {
-		ls.IterateDescendants(mapContext, func(node graph.Node) bool {
-			checkNodeProperty(node)
-			return true
-		}, ls.OnlyDocumentNodes, true)
-	} else {
-		for nodes := ctx.sourceGraph.GetNodes(); nodes.Next(); {
-			node := nodes.Node()
-			if !node.HasLabel(ls.DocumentNodeTerm) {
-				continue
-			}
-			checkNodeProperty(node)
-		}
-	}
-	ctx.GetLogger().Debug(map[string]interface{}{"reshaper.getNodeMappingNodes.context.nnodes": len(found)})
-	return found, nil
-}
-
-func (reshaper Reshaper) getMapNodes(ctx *reshapeContext, mapProperty, schemaNodeID string) ([]graph.Node, error) {
-	mapContext := ctx.getMapContext()
-	ctx.GetLogger().Debug(map[string]interface{}{"reshaper.getMapNodes.context": mapContext})
-	var found []graph.Node
-	checkNodeProperty := func(node graph.Node) bool {
-		pv := ls.AsPropertyValue(node.GetProperty(mapProperty))
-		if pv == nil {
-			return false
-		}
-		if pv.IsString() {
-			if pv.AsString() == schemaNodeID {
-				found = append(found, node)
-				return true
-			}
-		}
-		if pv.IsStringSlice() {
-			for _, x := range pv.AsStringSlice() {
-				if x == schemaNodeID {
-					found = append(found, node)
-					return true
-				}
-			}
-		}
-		return false
-	}
-	if mapContext != nil {
-		ls.IterateDescendants(mapContext, func(node graph.Node) bool {
-			checkNodeProperty(node)
-			return true
-		}, ls.OnlyDocumentNodes, true)
-	} else {
-		for nodes := ctx.sourceGraph.GetNodes(); nodes.Next(); {
-			node := nodes.Node()
-			if !node.HasLabel(ls.DocumentNodeTerm) {
-				continue
-			}
-			checkNodeProperty(node)
-		}
-	}
-	return found, nil
-}
-
-// Returns true if operation produced any output
-func (reshaper Reshaper) handle(ctx *reshapeContext, value opencypher.Value) ([]*txDocNode, error) {
-	schemaNodeID := ls.GetNodeID(ctx.getSchemaNode())
-	val := value.Get()
-	if val == nil {
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "source is nil"})
+func getAtMostOneNode(value opencypher.Value) (graph.Node, error) {
+	if value == nil {
 		return nil, nil
 	}
-	if opencypher.IsValuePrimitive(value) {
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "source is primitive"})
-		// We have a single value. Nothing to export
-		v, err := reshaper.handleValue(ctx, nil, val, fmt.Sprint(val))
-		if err != nil {
-			return nil, err
-		}
-		return []*txDocNode{v}, nil
+	val := value.Get()
+	if val == nil {
+		return nil, nil
 	}
-	if node, ok := val.(graph.Node); ok {
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "source is a node"})
-		v, err := reshaper.handleNode(ctx, node)
-		if err != nil {
-			return nil, err
-		}
-		return []*txDocNode{v}, nil
+	node, ok := val.(graph.Node)
+	if ok {
+		return node, nil
 	}
-	if nodes, ok := val.([]graph.Node); ok {
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "source is a []node"})
-		return reshaper.handleNodeSlice(ctx, nodes)
-	}
-	if rs, ok := val.(opencypher.ResultSet); ok {
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "source is a result set"})
-		if len(rs.Rows) == 0 {
-			ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "stage": "no results"})
-			// No results
+	nodes, ok := val.([]graph.Node)
+	if ok {
+		if len(nodes) == 0 {
 			return nil, nil
 		}
-		return reshaper.handleResultSet(ctx, rs)
-
-	}
-	return nil, ErrReshape{
-		Wrapped:      fmt.Errorf("Unhandled result type: %T", val),
-		SchemaNodeID: schemaNodeID,
-	}
-}
-
-// Returns true if operation produces output
-func (reshaper Reshaper) handleValue(ctx *reshapeContext, sourceNode graph.Node, value interface{}, rawValue string) (*txDocNode, error) {
-	schemaNode := ctx.getSchemaNode()
-	ctx.GetLogger().Debug(map[string]interface{}{"reshape.handleValue": value, "schemaNode": ls.GetNodeID(schemaNode)})
-	// We have a value. The schema node must be a value
-	if !schemaNode.HasLabel(ls.AttributeTypeValue) {
-		return nil, fmt.Errorf("Schema node is not a value, but a value is given")
-	}
-	parent := ctx.getParentGraphNode()
-	if parent != nil && parent.typeTerm != ls.AttributeTypeArray {
-		// If the parent is not an array, it might already have content
-		// for this schema node. In that case, do we append to the
-		// previous one, or combine them
-		siblings := parent.findChildInstanceOf(schemaNode)
-		if len(siblings) > 0 {
-			lastSibling := siblings[len(siblings)-1]
-			ctx.GetLogger().Debug(map[string]interface{}{"reshape.handleValue": value, "siblings": len(siblings)})
-			// There are already instances of this node
-			// Can there be multiple?
-			joinWithp, ok := reshaper.Script.GetProperties(schemaNode).GetProperty(JoinWithTerm)
-			if ok {
-				// join them
-				newValue := JoinValues([]string{lastSibling.rawValue, rawValue}, joinWithp.(*ls.PropertyValue).AsString())
-				lastSibling.rawValue = newValue
-				lastSibling.value = nil
-				lastSibling.sourceNode = nil
-				return lastSibling, nil
-			}
-			lastSibling.rawValue = rawValue
-			lastSibling.value = value
-			lastSibling.sourceNode = sourceNode
-			return lastSibling, nil
-			// // Multiple siblings, no join. Is multiple allowed?
-			// if ls.AsPropertyValue(reshaper.Script.GetProperties(schemaNode).GetProperty(MultipleTerm)).AsString() != "true" {
-			// 	return false, fmt.Errorf("Multiple values in a single value context. Existing nodes: %v New value: %v", siblings, value)
-			// }
+		if len(nodes) > 1 {
+			return nil, fmt.Errorf("Multiple nodes in result where one required")
 		}
+		return nodes[0], nil
 	}
-	// If we are here, we'll create a node for this value
-	newNode := newTxDocNode(schemaNode)
-	newNode.typeTerm = ls.AttributeTypeValue
-	newNode.value = value
-	newNode.rawValue = rawValue
-	if parent != nil {
-		parent.children = append(parent.children, newNode)
+	rs, ok := val.(opencypher.ResultSet)
+	if !ok {
+		return nil, fmt.Errorf("Unhandled result type: %T", rs)
 	}
-	return newNode, nil
-}
-
-func (reshaper Reshaper) handleNode(ctx *reshapeContext, node graph.Node) (*txDocNode, error) {
-	ctx.GetLogger().Debug(map[string]interface{}{"reshape.handleNode": node})
-	val, err := ls.GetNodeValue(node)
-	if err != nil {
-		return nil, err
+	if len(rs.Rows) == 0 {
+		return nil, nil
 	}
-	rawVal, _ := ls.GetRawNodeValue(node)
-	ctx.GetLogger().Debug(map[string]interface{}{"reshape.handleNode": node, "value": val})
-	return reshaper.handleValue(ctx, node, val, rawVal)
-}
-
-func (reshaper Reshaper) handleRow(ctx *reshapeContext, row map[string]opencypher.Value) (*txDocNode, error) {
-	ctx.GetLogger().Debug(map[string]interface{}{"reshape.handleRow": row})
+	if len(rs.Rows) > 1 {
+		return nil, fmt.Errorf("Result set has multiple rows where one node required")
+	}
+	row := rs.Rows[0]
 	if len(row) == 0 {
 		return nil, nil
 	}
-	mc, err := reshaper.evaluateMapContext(ctx)
-	if err != nil {
-		return nil, nil
+	if len(row) > 1 {
+		return nil, fmt.Errorf("Resultset has multiple columns, only one result is required")
 	}
-	if mc {
-		defer ctx.popMapContext()
-	}
-	schemaNode := ctx.getSchemaNode()
-	parent := ctx.getParentGraphNode()
-	multi := ls.AsPropertyValue(reshaper.Script.GetProperties(schemaNode).GetProperty(MultipleTerm)).AsString() == "true"
-	switch {
-	case schemaNode.HasLabel(ls.AttributeTypeValue):
-		// If there is a single column, use that
-		if len(row) == 1 {
-			for _, v := range row {
-				r, err := reshaper.handle(ctx, v)
-				if err != nil {
-					return nil, err
-				}
-				if len(r) == 0 {
-					return nil, nil
-				}
-				return r[0], nil
-			}
-		}
-		return nil, fmt.Errorf("Multi-column result set assigned to value")
-
-	case schemaNode.HasLabel(ls.AttributeTypeObject) || schemaNode.HasLabel(ls.AttributeTypeArray):
-		var siblings []*txDocNode
-		if parent != nil {
-			siblings = parent.findChildInstanceOf(schemaNode)
-		}
-		if parent != nil {
-			if len(siblings) > 0 && !multi && parent.typeTerm != ls.AttributeTypeArray {
-				return nil, fmt.Errorf("Multiple values in resultset for %s with types %s", ls.GetNodeID(schemaNode), schemaNode.GetLabels())
-			}
-		}
-		return reshaper.handleNonValueNode(ctx)
+	for _, v := range row {
+		return getAtMostOneNode(v)
 	}
 	return nil, nil
-}
-
-func (reshaper Reshaper) handleNonValueNode(ctx *reshapeContext) (*txDocNode, error) {
-	// Dealing with a non-value node. If the operation generates output,
-	// keep it. Otherwise, remove it
-	schemaNode := ctx.getSchemaNode()
-	newNode := newTxDocNode(schemaNode)
-	parentNode := ctx.getParentGraphNode()
-	ctx.pushGeneratedNode(newNode)
-	defer ctx.popGeneratedNode()
-
-	mc, err := reshaper.evaluateMapContext(ctx)
-	if err != nil {
-		return nil, nil
-	}
-	if mc {
-		defer ctx.popMapContext()
-	}
-	hasOutput := false
-	switch {
-	case schemaNode.HasLabel(ls.AttributeTypeObject):
-		newNode.typeTerm = ls.AttributeTypeObject
-		nodes := ls.GetObjectAttributeNodes(schemaNode)
-		ls.SortNodes(nodes)
-		for _, node := range nodes {
-			ctx.GetLogger().Debug(map[string]interface{}{"reshaper.handleNonValueNode": node})
-			ctx.pushSchemaNode(node)
-			mc, err := reshaper.evaluateMapContext(ctx)
-			if err != nil {
-				return nil, nil
-			}
-			r, err := reshaper.reshapeNode(ctx)
-			if mc {
-				ctx.popMapContext()
-			}
-			ctx.popSchemaNode()
-			if err != nil {
-				return nil, err
-			}
-			if len(r) > 0 {
-				hasOutput = true
-			}
-		}
-
-	case schemaNode.HasLabel(ls.AttributeTypeArray):
-		newNode.typeTerm = ls.AttributeTypeArray
-		elemNode := ls.GetArrayElementNode(schemaNode)
-		ctx.pushSchemaNode(elemNode)
-		mc, err := reshaper.evaluateMapContext(ctx)
-		if err != nil {
-			return nil, nil
-		}
-		r, err := reshaper.reshapeNode(ctx)
-		if mc {
-			ctx.popMapContext()
-		}
-		ctx.popSchemaNode()
-		if err != nil {
-			return nil, err
-		}
-		if len(r) > 0 {
-			hasOutput = true
-		}
-	}
-	if hasOutput && parentNode != nil && newNode != nil {
-		parentNode.children = append(parentNode.children, newNode)
-	}
-	return newNode, nil
-}
-
-func (reshaper Reshaper) handleResultSet(ctx *reshapeContext, rs opencypher.ResultSet) ([]*txDocNode, error) {
-	ctx.GetLogger().Debug(map[string]interface{}{"reshape.handleResultSet": len(rs.Rows)})
-	schemaNode := ctx.getSchemaNode()
-	results := make([]*txDocNode, 0)
-	for index, row := range rs.Rows {
-		ctx.GetLogger().Debug(map[string]interface{}{
-			"reshape": ls.GetNodeID(schemaNode),
-			"stage":   "processing resultset for each value",
-			"row":     index,
-		})
-		// Export values
-		ctx.exportVars(row)
-		ctx.GetLogger().Debug(map[string]interface{}{
-			"reshape": ls.GetNodeID(schemaNode),
-			"context": ctx.symbols})
-		mc, err := reshaper.evaluateMapContext(ctx)
-		if err != nil {
-			return nil, nil
-		}
-		r, err := reshaper.handleRow(ctx, row)
-		if mc {
-			ctx.popMapContext()
-		}
-		if err != nil {
-			return nil, err
-		}
-		if r != nil {
-			results = append(results, r)
-		}
-	}
-	return results, nil
-}
-
-func (reshaper Reshaper) handleNodeSlice(ctx *reshapeContext, nodes []graph.Node) ([]*txDocNode, error) {
-	ctx.GetLogger().Debug(map[string]interface{}{"reshape.handleNodeSlice": len(nodes)})
-	schemaNode := ctx.getSchemaNode()
-	results := make([]*txDocNode, 0)
-	for index, node := range nodes {
-		ctx.GetLogger().Debug(map[string]interface{}{
-			"reshape": ls.GetNodeID(schemaNode),
-			"stage":   "processing nodes for each value",
-			"row":     index,
-		})
-		mc, err := reshaper.evaluateMapContext(ctx)
-		if err != nil {
-			return nil, err
-		}
-		if !mc {
-			ctx.pushMapContext(node)
-		}
-		parent := ctx.getParentGraphNode()
-		multi := ls.AsPropertyValue(reshaper.Script.GetProperties(schemaNode).GetProperty(MultipleTerm)).AsString() == "true"
-		switch {
-		case schemaNode.HasLabel(ls.AttributeTypeValue):
-			r, err := reshaper.handle(ctx, opencypher.RValue{Value: node})
-			if err != nil {
-				ctx.popMapContext()
-				return nil, err
-			}
-			if len(r) > 0 {
-				results = append(results, r...)
-			}
-
-		case schemaNode.HasLabel(ls.AttributeTypeObject) || schemaNode.HasLabel(ls.AttributeTypeArray):
-			var siblings []*txDocNode
-			if parent != nil {
-				siblings = parent.findChildInstanceOf(schemaNode)
-			}
-			ctx.GetLogger().Debug(map[string]interface{}{"reshape": ls.GetNodeID(schemaNode),
-				"type":     schemaNode.GetLabels(),
-				"parent":   parent,
-				"siblings": siblings})
-			if len(siblings) > 0 && !multi {
-				ctx.popMapContext()
-				return nil, fmt.Errorf("Multiple values in mapping")
-			}
-			r, err := reshaper.handleNonValueNode(ctx)
-			if err != nil {
-				ctx.popMapContext()
-				return nil, err
-			}
-			if r != nil {
-				results = append(results, r)
-			}
-		}
-		ctx.popMapContext()
-	}
-	return results, nil
 }
