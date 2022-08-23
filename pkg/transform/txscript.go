@@ -129,12 +129,21 @@ type SourceAnnotations struct {
 // NodeTransformAnnotations contains a term, and one or more annotations
 type NodeTransformAnnotations map[string]interface{}
 
-func (nd *NodeTransformAnnotations) setProperties(mv map[string]*ls.PropertyValue) {
+func (nd *NodeTransformAnnotations) setProperties(mv map[string]interface{}) {
 	*nd = make(map[string]interface{})
 	for k, v := range mv {
 		u, err := url.Parse(k)
 		if err != nil || u.IsAbs() {
-			(*nd)[k] = v
+			switch value := v.(type) {
+			case string:
+				(*nd)[k] = ls.StringPropertyValue(k, value)
+			case []interface{}:
+				sl := make([]string, 0, len(value))
+				for _, s := range value {
+					sl = append(sl, s.(string))
+				}
+				(*nd)[k] = ls.StringSlicePropertyValue(k, sl)
+			}
 			continue
 		}
 		u.Scheme = "https"
@@ -144,7 +153,7 @@ func (nd *NodeTransformAnnotations) setProperties(mv map[string]*ls.PropertyValu
 }
 
 func (nd *NodeTransformAnnotations) UnmarshalJSON(in []byte) error {
-	var mv map[string]*ls.PropertyValue
+	var mv map[string]interface{}
 	if err := json.Unmarshal(in, &mv); err != nil {
 		return err
 	}
@@ -153,7 +162,7 @@ func (nd *NodeTransformAnnotations) UnmarshalJSON(in []byte) error {
 }
 
 func (nd *NodeTransformAnnotations) UnmarshalYAML(parse func(interface{}) error) error {
-	var mv map[string]*ls.PropertyValue
+	var mv map[string]interface{}
 	if err := parse(&mv); err != nil {
 		return err
 	}
