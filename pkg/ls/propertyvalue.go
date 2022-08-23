@@ -28,6 +28,7 @@ type PropertyContainer interface {
 
 // PropertyValue can be a string or []string. It is an immutable value object
 type PropertyValue struct {
+	sem   *TermSemantics
 	value interface{}
 }
 
@@ -43,18 +44,29 @@ func AsPropertyValue(in interface{}, exists bool) *PropertyValue {
 }
 
 // IntPropertyValue converts the int value to string, and returns a string value
-func IntPropertyValue(i int) *PropertyValue { return &PropertyValue{value: fmt.Sprint(i)} }
+func IntPropertyValue(term string, i int) *PropertyValue {
+	termInfo := GetTermInfo(term)
+	return &PropertyValue{sem: &termInfo, value: fmt.Sprint(i)}
+}
 
 // StringPropertyValue creates a string value
-func StringPropertyValue(s string) *PropertyValue { return &PropertyValue{value: s} }
+func StringPropertyValue(term, s string) *PropertyValue {
+	termInfo := GetTermInfo(term)
+	return &PropertyValue{sem: &termInfo, value: s}
+}
 
 // StringSlicePropertyValue creates a []string value. If s is nil, it creates an empty slice
-func StringSlicePropertyValue(s []string) *PropertyValue {
+func StringSlicePropertyValue(term string, s []string) *PropertyValue {
+	termInfo := GetTermInfo(term)
 	if s == nil {
-		return &PropertyValue{value: []string{}}
+		return &PropertyValue{sem: &termInfo, value: []string{}}
 	}
-	return &PropertyValue{value: s}
+	return &PropertyValue{sem: &termInfo, value: s}
 }
+
+func (pv *PropertyValue) GetSem() *TermSemantics { return pv.sem }
+
+func (pv *PropertyValue) GetTerm() string { return pv.sem.Term }
 
 // GetNativeValue is used bythe expression evaluators to access the
 // native value of the property
@@ -208,6 +220,14 @@ func (p PropertyValue) String() string {
 	return fmt.Sprint(p.value)
 }
 
+func (p PropertyValue) MarshalYAML() (interface{}, error) {
+	return p.value, nil
+}
+
+func (p PropertyValue) MarshalJSON() ([]byte, error) {
+	return json.Marshal(p.value)
+}
+
 // CopyPropertyMap returns a copy of the property map
 func CopyPropertyMap(m map[string]*PropertyValue) map[string]*PropertyValue {
 	ret := make(map[string]*PropertyValue, len(m))
@@ -245,48 +265,6 @@ func (p *PropertyValue) IsEqual(q *PropertyValue) bool {
 		return true
 	}
 	return false
-}
-
-func (p PropertyValue) MarshalYAML() (interface{}, error) {
-	return p.value, nil
-}
-
-func (p PropertyValue) MarshalJSON() ([]byte, error) {
-	return json.Marshal(p.value)
-}
-
-func (p *PropertyValue) UnmarshalYAML(u func(interface{}) error) error {
-	var slice []string
-	var str string
-	if err := u(&str); err != nil {
-		if err = u(&slice); err != nil {
-			return err
-		}
-		p.value = slice
-		return nil
-	}
-	p.value = str
-	return nil
-}
-
-func (p *PropertyValue) UnmarshalJSON(in []byte) error {
-	if len(in) == 0 {
-		return fmt.Errorf("Invalid property value")
-	}
-	if in[0] == '[' {
-		var v []string
-		if err := json.Unmarshal(in, &v); err != nil {
-			return err
-		}
-		p.value = v
-		return nil
-	}
-	var v string
-	if err := json.Unmarshal(in, &v); err != nil {
-		return err
-	}
-	p.value = v
-	return nil
 }
 
 // IsPropertiesEqual compares two property maps and returns true if they are equal

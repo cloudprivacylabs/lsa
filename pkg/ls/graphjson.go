@@ -28,9 +28,9 @@ func (JSONMarshaler) propertyUnmarshaler(key string, value json.RawMessage) (str
 		if err := json.Unmarshal(value, &slice); err != nil {
 			return "", nil, fmt.Errorf("Value is not a string or []string")
 		}
-		return key, StringSlicePropertyValue(slice), nil
+		return key, StringSlicePropertyValue(key, slice), nil
 	}
-	return key, StringPropertyValue(str), nil
+	return key, StringPropertyValue(key, str), nil
 }
 
 func (JSONMarshaler) propertyMarshaler(key string, value interface{}) (string, json.RawMessage, error) {

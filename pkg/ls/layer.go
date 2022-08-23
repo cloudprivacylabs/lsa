@@ -192,7 +192,7 @@ func (l *Layer) SetValueType(t string) {
 		}
 	}
 	if len(t) > 0 {
-		l.layerInfo.SetProperty(ValueTypeTerm, StringPropertyValue(t))
+		l.layerInfo.SetProperty(ValueTypeTerm, StringPropertyValue(ValueTypeTerm, t))
 		if oin := l.GetSchemaRootNode(); oin != nil {
 			labels := oin.GetLabels()
 			labels.Add(t)
@@ -264,15 +264,19 @@ func GetPolymorphicOptions(polymorphicSchemaNode graph.Node) []graph.Node {
 func GetNodesWithValidators(root graph.Node) map[graph.Node]struct{} {
 	ret := make(map[graph.Node]struct{})
 	ForEachAttributeNode(root, func(node graph.Node, _ []graph.Node) bool {
-		node.ForEachProperty(func(k string, _ interface{}) bool {
-			md := GetTermMetadata(k)
+		node.ForEachProperty(func(k string, in interface{}) bool {
+			pv, ok := in.(*PropertyValue)
+			if !ok {
+				return true
+			}
+			md := pv.GetSem()
 			if md == nil {
 				return true
 			}
-			if _, ok := md.(NodeValidator); ok {
+			if _, ok := md.Metadata.(NodeValidator); ok {
 				ret[node] = struct{}{}
 			}
-			if _, ok := md.(ValueValidator); ok {
+			if _, ok := md.Metadata.(ValueValidator); ok {
 				ret[node] = struct{}{}
 			}
 			return true
