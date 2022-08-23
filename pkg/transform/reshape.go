@@ -389,6 +389,7 @@ func (reshaper Reshaper) generateOutput(ctx *reshapeContext, input interface{}) 
 			return []*txDocNode{v}, nil
 		}
 	}
+	schemaNode := ctx.schemaPath.last()
 	switch values := input.(type) {
 	case graph.Node:
 		v, err := reshaper.handleNode(ctx, values)
@@ -430,18 +431,31 @@ func (reshaper Reshaper) generateOutput(ctx *reshapeContext, input interface{}) 
 			if len(row) == 0 {
 				continue
 			}
-			if len(row) > 1 {
-				return nil, fmt.Errorf("Resultset has multiple columns where one expected")
-			}
-			for k, v := range row {
-				if opencypher.IsNamedResult(k) {
-					ctx.setSymbolValue(k, v)
+			if !schemaNode.HasLabel(ls.AttributeTypeValue) {
+				for k, v := range row {
+					if opencypher.IsNamedResult(k) {
+						ctx.setSymbolValue(k, v)
+					}
 				}
-				result, err := reshaper.generateOutput(ctx, v)
+				result, err := reshaper.handleNode(ctx, nil)
 				if err != nil {
 					return nil, err
 				}
-				ret = append(ret, result...)
+				ret = append(ret, result)
+			} else {
+				if len(row) > 1 {
+					return nil, fmt.Errorf("Resultset has multiple columns where one expected")
+				}
+				for k, v := range row {
+					if opencypher.IsNamedResult(k) {
+						ctx.setSymbolValue(k, v)
+					}
+					result, err := reshaper.generateOutput(ctx, v)
+					if err != nil {
+						return nil, err
+					}
+					ret = append(ret, result...)
+				}
 			}
 		}
 		if len(ret) == 0 {

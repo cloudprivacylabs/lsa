@@ -130,25 +130,28 @@ type SourceAnnotations struct {
 type NodeTransformAnnotations map[string]interface{}
 
 func (nd *NodeTransformAnnotations) setProperties(mv map[string]interface{}) {
+	set := func(k string, v interface{}) {
+		switch value := v.(type) {
+		case string:
+			(*nd)[k] = ls.StringPropertyValue(k, value)
+		case []interface{}:
+			sl := make([]string, 0, len(value))
+			for _, s := range value {
+				sl = append(sl, s.(string))
+			}
+			(*nd)[k] = ls.StringSlicePropertyValue(k, sl)
+		}
+	}
 	*nd = make(map[string]interface{})
 	for k, v := range mv {
 		u, err := url.Parse(k)
 		if err != nil || u.IsAbs() {
-			switch value := v.(type) {
-			case string:
-				(*nd)[k] = ls.StringPropertyValue(k, value)
-			case []interface{}:
-				sl := make([]string, 0, len(value))
-				for _, s := range value {
-					sl = append(sl, s.(string))
-				}
-				(*nd)[k] = ls.StringSlicePropertyValue(k, sl)
-			}
+			set(k, v)
 			continue
 		}
 		u.Scheme = "https"
 		u.Path = "lschema.org/transform/" + u.Path
-		(*nd)[u.String()] = v
+		set(u.String(), v)
 	}
 }
 
