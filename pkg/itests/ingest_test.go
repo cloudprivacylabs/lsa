@@ -143,57 +143,48 @@ func TestParseEmptyCSV(t *testing.T) {
 }
 
 func TestIngestPolyHint(t *testing.T) {
-	f, err := os.Open("fhir.schema.json")
+	f, err := os.Open("testdata/fhir/schemas/fhir.schema.json")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer f.Close()
 
-	var b bundle.Bundle
-	err = cmdutil.ReadJSONOrYAML("testdata/fhir/schemas/fhir.bundle.yaml", &b)
+	b, err := bundle.LoadBundle("testdata/fhir/schemas/fhir.bundle.yaml", func(parentBundle string, loadBundle string) (bundle.Bundle, error) {
+		var bnd bundle.Bundle
+		if err := cmdutil.ReadJSONOrYAML(loadBundle, &bnd); err != nil {
+			return bnd, err
+		}
+		return bnd, nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	var schema *ls.Layer
-	// if err := b.Build(ls.DefaultContext(), func(ctx *ls.Context, fname string) ([][][]string, error) {
-	// 	return cmdutil.ReadSheets(fname)
-	// }, func(ctx *ls.Context, fname string) (io.ReadCloser, error) {
-	// 	return os.Open(fname)
-	// }, func(ctx *ls.Context, fname string) (*ls.Layer, error) {
-	data, err := os.ReadFile("fhir.schema.json")
-	if err != nil {
+	if err := b.Build(ls.DefaultContext(), func(ctx *ls.Context, fname string) ([][][]string, error) {
+		return cmdutil.ReadSheets(fname)
+	}, func(ctx *ls.Context, fname string) (io.ReadCloser, error) {
+		return os.Open(fname)
+	}, func(ctx *ls.Context, fname string) (*ls.Layer, error) {
+		data, err := os.ReadFile(fname)
+		if err != nil {
+			return nil, err
+		}
+		var v interface{}
+		err = json.Unmarshal(data, &v)
+		if err != nil {
+			return nil, err
+		}
+		return ls.UnmarshalLayer(v, ctx.GetInterner())
+	}); err != nil {
 		t.Fatal(err)
 	}
-	var v interface{}
-	err = json.Unmarshal(data, &v)
-	if err != nil {
-		t.Fatal(err)
-	}
-	layer, err := ls.UnmarshalLayer(v, nil)
-	// }); err != nil {
-	// 	t.Fatal(err)
-	// }
 
-	var ol interface{}
-	err = cmdutil.ReadJSONOrYAML("testdata/fhir/schemas/fhir.ovl.json", &ol)
-	ovl, err := ls.UnmarshalLayer(ol, nil)
+	layer, err := b.GetLayer(ls.DefaultContext(), "https://hl7.org/fhir/Patient")
 	if err != nil {
 		t.Fatal(err)
 	}
-	c := ls.Compiler{}
-	err = layer.Compose(ls.DefaultContext(), ovl)
-	if err != nil {
-		t.Fatal(err)
-	}
-	layer, err = c.CompileSchema(ls.DefaultContext(), layer)
-	if err != nil {
-		t.Fatal(err)
-	}
-	// layer, err := b.GetLayer(ls.DefaultContext(), "https://hl7.org/fhir/Patient")
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-	schema = layer
 
-	parser := jsoningest.Parser{Layer: schema}
+	parser := jsoningest.Parser{Layer: layer}
 
 	builder := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		EmbedSchemaNodes: true,
