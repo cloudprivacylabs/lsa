@@ -146,6 +146,12 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 			if !f(schNode, keyValue.Value()) {
 				continue
 			}
+			if len(ctx.discriminator) > 0 {
+				kv := input.Get(ctx.discriminator[i][0])
+				if !f(schNode, kv.Value()) {
+					continue
+				}
+			}
 
 			newCtx := ctx
 			newCtx.path = newCtx.path.AppendString(keyValue.Key())
@@ -236,7 +242,7 @@ func (ing *Parser) parsePolymorphic(ctx parserContext, input jsonom.Node) (*Pars
 	for edges := ctx.schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.OneOfTerm); edges.Next(); {
 		edge := edges.Edge()
 		option := edge.GetTo()
-		// ctx.discriminator = append(ctx.discriminator, []string{})
+		ctx.discriminator = append(ctx.discriminator, []string{"resourceType"})
 		pdn, ok := ing.testOption(option, ctx, input)
 		if ok {
 			if found != nil {
@@ -245,12 +251,13 @@ func (ing *Parser) parsePolymorphic(ctx parserContext, input jsonom.Node) (*Pars
 			found = option
 			ret = pdn
 		}
+		ctx.discriminator = ctx.discriminator[1:]
 	}
 	if found == nil {
 		return nil, ls.ErrSchemaValidation{Msg: "None of the options of the polymorphic node matched:" + ls.GetNodeID(ctx.schemaNode), Path: ctx.path.Copy()}
 	}
 	ctx.schemaNode = found
-	return ret, nil // remove
+	return ret, nil
 }
 
 func (ing *Parser) parseValue(ctx parserContext, input *jsonom.Value) (*ParsedDocNode, error) {

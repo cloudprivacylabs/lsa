@@ -15,7 +15,6 @@ import (
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type ingestTest struct {
@@ -153,31 +152,48 @@ func TestIngestPolyHint(t *testing.T) {
 	var b bundle.Bundle
 	err = cmdutil.ReadJSONOrYAML("testdata/fhir/schemas/fhir.bundle.yaml", &b)
 
-	if err := b.Build(ls.DefaultContext(), func(ctx *ls.Context, fname string) ([][][]string, error) {
-		return cmdutil.ReadSheets(fname)
-	}, func(ctx *ls.Context, fname string) (io.ReadCloser, error) {
-		return os.Open(fname)
-	}, func(ctx *ls.Context, fname string) (*ls.Layer, error) {
-		data, err := os.ReadFile(fname)
-		if err != nil {
-			return nil, err
-		}
-		var v interface{}
-		err = json.Unmarshal(data, &v)
-		if err != nil {
-			return nil, err
-		}
-		return ls.UnmarshalLayer(v, ctx.GetInterner())
-	}); err != nil {
-		t.Fatal(err)
-	}
-
-	layer, err := b.GetLayer(ls.DefaultContext(), "https://hl7.org/fhir/Patient")
+	var schema *ls.Layer
+	// if err := b.Build(ls.DefaultContext(), func(ctx *ls.Context, fname string) ([][][]string, error) {
+	// 	return cmdutil.ReadSheets(fname)
+	// }, func(ctx *ls.Context, fname string) (io.ReadCloser, error) {
+	// 	return os.Open(fname)
+	// }, func(ctx *ls.Context, fname string) (*ls.Layer, error) {
+	data, err := os.ReadFile("fhir.schema.json")
 	if err != nil {
 		t.Fatal(err)
 	}
+	var v interface{}
+	err = json.Unmarshal(data, &v)
+	if err != nil {
+		t.Fatal(err)
+	}
+	layer, err := ls.UnmarshalLayer(v, nil)
+	// }); err != nil {
+	// 	t.Fatal(err)
+	// }
 
-	parser := jsoningest.Parser{Layer: layer}
+	var ol interface{}
+	err = cmdutil.ReadJSONOrYAML("testdata/fhir/schemas/fhir.ovl.json", &ol)
+	ovl, err := ls.UnmarshalLayer(ol, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := ls.Compiler{}
+	err = layer.Compose(ls.DefaultContext(), ovl)
+	if err != nil {
+		t.Fatal(err)
+	}
+	layer, err = c.CompileSchema(ls.DefaultContext(), layer)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// layer, err := b.GetLayer(ls.DefaultContext(), "https://hl7.org/fhir/Patient")
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	schema = layer
+
+	parser := jsoningest.Parser{Layer: schema}
 
 	builder := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		EmbedSchemaNodes: true,
@@ -198,20 +214,18 @@ func TestIngestPolyHint(t *testing.T) {
 	// defer f.Close()
 	// f.Write(by)
 
-	findNodes := func(nodeId string) []graph.Node {
-		nodes := []graph.Node{}
+	findPoly := func() bool {
 		for nx := builder.GetGraph().GetNodes(); nx.Next(); {
 			node := nx.Node()
-			if ls.GetNodeID(node) == nodeId {
-				nodes = append(nodes, node)
+			if node.HasLabel(ls.TypeDiscriminatorTerm) {
+				return true
 			}
 		}
-		return nodes
+		return false
 	}
 
-	nodes := findNodes("objType1")
-	t.Logf("%+v", nodes)
-	if len(nodes) != 1 {
-		t.Errorf("Expecting 1 type node")
+	if !findPoly() {
+		t.Fatalf("Expecting type hint")
 	}
+
 }
