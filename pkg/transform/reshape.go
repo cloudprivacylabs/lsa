@@ -256,19 +256,26 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 		return reshaper.generateOutput(ctx, nodeValues)
 	}
 
-	processValueExpr := func(evalContext *opencypher.EvalContext, term string) ([]opencypher.Value, error) {
+	processValueExpr := func(term string) ([]opencypher.Value, error) {
 		evaluatables := ValueExprTermSemantics.GetEvaluatables(term, reshaper.Script.GetProperties(schemaNode))
 		if len(evaluatables) == 0 {
 			return nil, nil
 		}
 		ret := make([]opencypher.Value, 0, len(evaluatables))
 		for _, evaluatable := range evaluatables {
+			evalContext := ctx.getEvalContext()
 			sv, err := evaluatable.Evaluate(evalContext)
 			if err != nil {
 				return nil, err
 			}
 			if isEmptyValue(sv) {
 				continue
+			}
+			rs, ok := sv.Get().(opencypher.ResultSet)
+			if ok {
+				if err := ctx.exportResults(rs); err != nil {
+					return nil, err
+				}
 			}
 			ret = append(ret, sv)
 			if term == ValueExprTerm || term == ValueExprFirstTerm {
@@ -280,16 +287,15 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 
 	// Evaluate value expressions
 	{
-		evalContext := ctx.getEvalContext()
-		v1, err := processValueExpr(evalContext, ValueExprFirstTerm)
+		v1, err := processValueExpr(ValueExprFirstTerm)
 		if err != nil {
 			return nil, wrapReshapeError(err, schemaNodeID)
 		}
-		v2, err := processValueExpr(evalContext, ValueExprAllTerm)
+		v2, err := processValueExpr(ValueExprAllTerm)
 		if err != nil {
 			return nil, wrapReshapeError(err, schemaNodeID)
 		}
-		v3, err := processValueExpr(evalContext, ValueExprTerm)
+		v3, err := processValueExpr(ValueExprTerm)
 		if err != nil {
 			return nil, wrapReshapeError(err, schemaNodeID)
 		}

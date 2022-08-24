@@ -54,7 +54,7 @@ func (valueExprTermSemantics) CompileTerm(target ls.CompilablePropertyContainer,
 		}
 		expr = append(expr, e)
 	}
-	target.SetProperty("$compiled_"+ValueExprTerm, expr)
+	target.SetProperty("$compiled_"+term, expr)
 	return nil
 }
 
