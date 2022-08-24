@@ -174,7 +174,7 @@ func TestIngestPoly(t *testing.T) {
          "@id": "option1",
          "@type": "Object",
          "attributes": {
-           "objType1": {
+           "objType1ss": {
              "@type": "Value",
              "@id": "objType1",
              "attributeName": "t",

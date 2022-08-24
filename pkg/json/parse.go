@@ -54,9 +54,10 @@ type Parser struct {
 }
 
 type parserContext struct {
-	context    *ls.Context
-	path       ls.NodePath
-	schemaNode graph.Node
+	context       *ls.Context
+	path          ls.NodePath
+	schemaNode    graph.Node
+	discriminator [][]string
 }
 
 func (ing *Parser) nodeHasValidator(schemaNode graph.Node) bool {
@@ -223,31 +224,33 @@ func (ing *Parser) parseArray(ctx parserContext, input *jsonom.Array) (*ParsedDo
 	return &ret, nil
 }
 
-func (ing *Parser) testOption(option graph.Node, ctx parserContext, input jsonom.Node) bool {
+func (ing *Parser) testOption(option graph.Node, ctx parserContext, input jsonom.Node) (*ParsedDocNode, bool) {
 	ctx.schemaNode = option
 	out, err := ing.parseDoc(ctx, input)
-	return out != nil && err == nil
+	return out, out != nil && err == nil
 }
 
 func (ing *Parser) parsePolymorphic(ctx parserContext, input jsonom.Node) (*ParsedDocNode, error) {
 	var found graph.Node
+	var ret *ParsedDocNode
 	for edges := ctx.schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.OneOfTerm); edges.Next(); {
 		edge := edges.Edge()
 		option := edge.GetTo()
-		if ing.testOption(option, ctx, input) {
+		// ctx.discriminator = append(ctx.discriminator, []string{})
+		pdn, ok := ing.testOption(option, ctx, input)
+		if ok {
 			if found != nil {
 				return nil, ls.ErrSchemaValidation{Msg: "Multiple options of the polymorphic node matched:" + ls.GetNodeID(ctx.schemaNode), Path: ctx.path.Copy()}
-
 			}
 			found = option
+			ret = pdn
 		}
 	}
 	if found == nil {
 		return nil, ls.ErrSchemaValidation{Msg: "None of the options of the polymorphic node matched:" + ls.GetNodeID(ctx.schemaNode), Path: ctx.path.Copy()}
 	}
-
 	ctx.schemaNode = found
-	return ing.parseDoc(ctx, input)
+	return ret, nil // remove
 }
 
 func (ing *Parser) parseValue(ctx parserContext, input *jsonom.Value) (*ParsedDocNode, error) {

@@ -119,6 +119,9 @@ var (
 	// EntityIDTerm is a string or []string that gives the unique ID of
 	// an entity. This is a node property at the root node of an entity
 	EntityIDTerm = NewTerm(LS, "entityId", false, false, OverrideComposition, nil)
+
+	// TypeDiscriminatorTerm represents a set of schema field hints for defining polymorphic objects
+	TypeDiscriminatorTerm = NewTerm(LS, "typeDiscriminator", false, false, NoComposition, nil)
 )
 
 // Attribute types defines the terms describing attribute types. Each

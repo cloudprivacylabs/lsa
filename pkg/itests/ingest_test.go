@@ -10,9 +10,12 @@ import (
 	"testing"
 	"text/template"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	"github.com/cloudprivacylabs/lsa/pkg/bundle"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type ingestTest struct {
@@ -137,5 +140,78 @@ func TestParseEmptyCSV(t *testing.T) {
 			t.Errorf("Nil expected")
 		}
 
+	}
+}
+
+func TestIngestPolyHint(t *testing.T) {
+	f, err := os.Open("fhir.schema.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+
+	var b bundle.Bundle
+	err = cmdutil.ReadJSONOrYAML("testdata/fhir/schemas/fhir.bundle.yaml", &b)
+
+	if err := b.Build(ls.DefaultContext(), func(ctx *ls.Context, fname string) ([][][]string, error) {
+		return cmdutil.ReadSheets(fname)
+	}, func(ctx *ls.Context, fname string) (io.ReadCloser, error) {
+		return os.Open(fname)
+	}, func(ctx *ls.Context, fname string) (*ls.Layer, error) {
+		data, err := os.ReadFile(fname)
+		if err != nil {
+			return nil, err
+		}
+		var v interface{}
+		err = json.Unmarshal(data, &v)
+		if err != nil {
+			return nil, err
+		}
+		return ls.UnmarshalLayer(v, ctx.GetInterner())
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	layer, err := b.GetLayer(ls.DefaultContext(), "https://hl7.org/fhir/Patient")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	parser := jsoningest.Parser{Layer: layer}
+
+	builder := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
+
+	_, err = jsoningest.IngestStream(ls.DefaultContext(), b.Base, f, parser, builder)
+
+	// // testing - delete
+	// x := ls.JSONMarshaler{}
+	// by, err := x.Marshal(n.GetGraph())
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	// f, err = os.Create("test.txt")
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	// defer f.Close()
+	// f.Write(by)
+
+	findNodes := func(nodeId string) []graph.Node {
+		nodes := []graph.Node{}
+		for nx := builder.GetGraph().GetNodes(); nx.Next(); {
+			node := nx.Node()
+			if ls.GetNodeID(node) == nodeId {
+				nodes = append(nodes, node)
+			}
+		}
+		return nodes
+	}
+
+	nodes := findNodes("objType1")
+	t.Logf("%+v", nodes)
+	if len(nodes) != 1 {
+		t.Errorf("Expecting 1 type node")
 	}
 }
