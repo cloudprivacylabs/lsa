@@ -105,12 +105,12 @@ func SetUnion(v1, v2 *PropertyValue) *PropertyValue {
 					ret = append(ret, item)
 				}
 			}
-			return StringSlicePropertyValue(ret)
+			return StringSlicePropertyValue(v1.GetTerm(), ret)
 		}
 		if _, exists := values[v2.AsString()]; !exists {
 			ret = append(ret, v2.AsString())
 		}
-		return StringSlicePropertyValue(ret)
+		return StringSlicePropertyValue(v1.GetTerm(), ret)
 	}
 	ret := []string{v1.AsString()}
 	if v2.IsStringSlice() {
@@ -120,17 +120,17 @@ func SetUnion(v1, v2 *PropertyValue) *PropertyValue {
 			}
 		}
 		if len(ret) == 1 {
-			return StringPropertyValue(ret[0])
+			return StringPropertyValue(v2.GetTerm(), ret[0])
 		}
-		return StringSlicePropertyValue(ret)
+		return StringSlicePropertyValue(v2.GetTerm(), ret)
 	}
 	if ret[0] != v2.AsString() {
 		ret = append(ret, v2.AsString())
 	}
 	if len(ret) == 1 {
-		return StringPropertyValue(ret[0])
+		return StringPropertyValue(v1.GetTerm(), ret[0])
 	}
-	return StringSlicePropertyValue(ret)
+	return StringSlicePropertyValue(v1.GetTerm(), ret)
 }
 
 // ListAppend appends v2 and v1
@@ -144,13 +144,13 @@ func ListAppend(v1, v2 *PropertyValue) *PropertyValue {
 	if v1.IsStringSlice() {
 		ret := v1.AsStringSlice()
 		if v2.IsStringSlice() {
-			return StringSlicePropertyValue(append(ret, v2.AsStringSlice()...))
+			return StringSlicePropertyValue(v1.GetTerm(), append(ret, v2.AsStringSlice()...))
 		}
-		return StringSlicePropertyValue(append(ret, v2.AsString()))
+		return StringSlicePropertyValue(v1.GetTerm(), append(ret, v2.AsString()))
 	}
 	ret := []string{v1.AsString()}
 	if v2.IsStringSlice() {
-		return StringSlicePropertyValue(append(ret, v2.AsStringSlice()...))
+		return StringSlicePropertyValue(v1.GetTerm(), append(ret, v2.AsStringSlice()...))
 	}
-	return StringSlicePropertyValue(append(ret, v2.AsString()))
+	return StringSlicePropertyValue(v1.GetTerm(), append(ret, v2.AsString()))
 }

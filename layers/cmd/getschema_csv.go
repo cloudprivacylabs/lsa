@@ -29,7 +29,7 @@ func init() {
 	getschemaCmd.AddCommand(getschemaCSVCmd)
 	getschemaCSVCmd.Flags().Int("headerRow", 0, "Header row 0-based (default: 1st row)")
 	getschemaCSVCmd.Flags().String("schemaId", "", "Schema ID")
-	getschemaCSVCmd.MarkFlagRequired("schemaId")
+	getschemaCSVCmd.Flags().String("valueType", "", "Value type")
 }
 
 var getschemaCSVCmd = &cobra.Command{
@@ -38,6 +38,10 @@ var getschemaCSVCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		schemaId, _ := cmd.Flags().GetString("schemaId")
+		valueType, _ := cmd.Flags().GetString("valueType")
+		if len(schemaId) == 0 && len(valueType) != 0 {
+			schemaId = valueType + "/schema"
+		}
 		f, err := os.Open(args[0])
 		if err != nil {
 			failErr(err)
@@ -71,10 +75,12 @@ var getschemaCSVCmd = &cobra.Command{
 				}
 
 				test := LS{
-					Context: "https://lschema.org",
-					ID:      schemaId,
-					Type:    "Schema",
+					Context:   "https://lschema.org",
+					ID:        schemaId,
+					Type:      "Schema",
+					ValueType: valueType,
 					Layer: Layer{
+						Type:          "Object",
 						AttributeList: attHeaders,
 					},
 				}

@@ -561,7 +561,7 @@ func (vs *ValuesetStep) Run(pipeline *pipeline.PipelineContext) error {
 		}
 		vs.initialized = true
 	}
-	builder := ls.NewGraphBuilder(pipeline.GetGraphRW(), ls.GraphBuilderOptions{
+	builder := ls.NewGraphBuilder(pipeline.Graph, ls.GraphBuilderOptions{
 		EmbedSchemaNodes: true,
 	})
 

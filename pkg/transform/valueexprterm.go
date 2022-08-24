@@ -23,12 +23,22 @@ import (
 // defines the value of the node. The first one that returns nonempty
 // resultset will be evaluated
 var ValueExprTerm = ls.NewTerm(TRANSFORM, "valueExpr", false, false, ls.OverrideComposition, ValueExprTermSemantics)
+var ValueExprFirstTerm = ls.NewTerm(TRANSFORM, "valueExpr.first", false, false, ls.OverrideComposition, ValueExprTermSemantics)
+var ValueExprAllTerm = ls.NewTerm(TRANSFORM, "valueExpr.all", false, false, ls.OverrideComposition, ValueExprTermSemantics)
 
 type valueExprTermSemantics struct{}
 
 var ValueExprTermSemantics = valueExprTermSemantics{}
 
 func (valueExprTermSemantics) Get(node ls.CompilablePropertyContainer) []string {
+	p, ok := node.GetProperty(ValueExprAllTerm)
+	if ok {
+		return ls.AsPropertyValue(p, ok).MustStringSlice()
+	}
+	p, ok = node.GetProperty(ValueExprFirstTerm)
+	if ok {
+		return ls.AsPropertyValue(p, ok).MustStringSlice()
+	}
 	return ls.AsPropertyValue(node.GetProperty(ValueExprTerm)).MustStringSlice()
 }
 
@@ -49,8 +59,8 @@ func (valueExprTermSemantics) CompileTerm(target ls.CompilablePropertyContainer,
 }
 
 // GetEvaluatables returns the contents of the compiled valueExpr terms
-func (valueExprTermSemantics) GetEvaluatables(node ls.CompilablePropertyContainer) []opencypher.Evaluatable {
-	v, _ := node.GetProperty("$compiled_" + ValueExprTerm)
+func (valueExprTermSemantics) GetEvaluatables(term string, node ls.CompilablePropertyContainer) []opencypher.Evaluatable {
+	v, _ := node.GetProperty("$compiled_" + term)
 	x, _ := v.([]opencypher.Evaluatable)
 	return x
 }

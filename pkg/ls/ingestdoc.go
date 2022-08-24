@@ -81,6 +81,10 @@ type HasNativeValue interface {
 	GetNativeValue() (interface{}, bool)
 }
 
+type HasLabels interface {
+	GetLabels() []string
+}
+
 type ingestCursor struct {
 	input  []ParsedDocNode
 	output []graph.Node
@@ -132,10 +136,19 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 			}
 		}
 	}
+	setLabels := func(node graph.Node) {
+		lbl, ok := root.(HasLabels)
+		if !ok {
+			return
+		}
+		labels := node.GetLabels()
+		labels.Add(lbl.GetLabels()...)
+		node.SetLabels(labels)
+	}
 	setProp := func(node graph.Node) {
-		node.SetProperty(AttributeIndexTerm, StringPropertyValue(strconv.Itoa(root.GetAttributeIndex())))
+		node.SetProperty(AttributeIndexTerm, StringPropertyValue(AttributeIndexTerm, strconv.Itoa(root.GetAttributeIndex())))
 		if s := root.GetAttributeName(); len(s) > 0 {
-			node.SetProperty(AttributeNameTerm, StringPropertyValue(s))
+			node.SetProperty(AttributeNameTerm, StringPropertyValue(AttributeNameTerm, s))
 		}
 		for k, v := range root.GetProperties() {
 			node.SetProperty(k, v)
@@ -167,6 +180,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 			if node != nil {
 				setID(node)
 				setProp(node)
+				setLabels(node)
 				hasData = true
 			}
 			return hasData, node, err
@@ -206,6 +220,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 		}
 		setID(node)
 		setProp(node)
+		setLabels(node)
 		newCursor.output = append(newCursor.output, node)
 		hasData = true
 	case "edge":
@@ -238,7 +253,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 			if n == -1 {
 				n = child.GetAttributeIndex()
 			}
-			node.SetProperty(AttributeIndexTerm, IntPropertyValue(n))
+			node.SetProperty(AttributeIndexTerm, IntPropertyValue(AttributeIndexTerm, n))
 		}
 	}
 	if schemaNode != nil && hasData {
