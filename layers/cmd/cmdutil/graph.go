@@ -49,6 +49,55 @@ func StreamGraph(ctx context.Context, file []string, interner ls.Interner, input
 	return nil, fmt.Errorf("Unrecognized input format: %s", inputFormat)
 }
 
+func ReadGraphFromReader(ctx context.Context, reader io.Reader, interner ls.Interner, inputFormat string) (<-chan GraphStream, error) {
+	rd := jsonstream.NewConcatReader(reader)
+	ret := make(chan GraphStream)
+	go func() {
+		defer close(ret)
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				data, err := rd.ReadRaw()
+				if err == io.EOF {
+					return
+				}
+				target := graph.NewOCGraph()
+				switch inputFormat {
+				case "jsonld":
+					var v interface{}
+					if err := json.Unmarshal(data, &v); err != nil {
+						ret <- GraphStream{
+							Err: err,
+						}
+						break
+					}
+					g := graph.NewOCGraph()
+					err := ls.UnmarshalJSONLDGraph(v, g, interner)
+					ret <- GraphStream{
+						G:   g,
+						Err: err,
+					}
+
+				case "json":
+					m := ls.JSONMarshaler{}
+					err := m.Unmarshal(data, target)
+					ret <- GraphStream{
+						G:   target,
+						Err: err,
+					}
+				default:
+					ret <- GraphStream{
+						Err: fmt.Errorf("Unrecognized input format: %s", inputFormat),
+					}
+				}
+			}
+		}
+	}()
+	return ret, nil
+}
+
 func ReadJSONLDGraph(gfile []string, interner ls.Interner) (graph.Graph, error) {
 	data, err := ReadFileOrStdin(gfile)
 	if err != nil {
