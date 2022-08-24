@@ -143,12 +143,6 @@ func TestParseEmptyCSV(t *testing.T) {
 }
 
 func TestIngestPolyHint(t *testing.T) {
-	f, err := os.Open("testdata/fhir/schemas/fhir.schema.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer f.Close()
-
 	b, err := bundle.LoadBundle("testdata/fhir/schemas/fhir.bundle.yaml", func(parentBundle string, loadBundle string) (bundle.Bundle, error) {
 		var bnd bundle.Bundle
 		if err := cmdutil.ReadJSONOrYAML(loadBundle, &bnd); err != nil {
@@ -189,6 +183,12 @@ func TestIngestPolyHint(t *testing.T) {
 	builder := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		EmbedSchemaNodes: true,
 	})
+
+	f, err := os.Open("Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
 
 	_, err = jsoningest.IngestStream(ls.DefaultContext(), b.Base, f, parser, builder)
 
