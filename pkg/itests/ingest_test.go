@@ -142,6 +142,8 @@ func TestParseEmptyCSV(t *testing.T) {
 	}
 }
 
+// layers ingest json --bundle testdata/fhir/schemas/fhir.discriminator.bundle.yaml --type https://hl7.org/fhir/Patient testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json --output web > abc.json
+// layers ingest json --bundle testdata/fhir/schemas/fhir.bundle.yaml --type https://hl7.org/fhir/Patient testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json --output web > abc.json
 func TestIngestPolyHint(t *testing.T) {
 	b, err := bundle.LoadBundle("testdata/fhir/schemas/fhir.bundle.yaml", func(parentBundle string, loadBundle string) (bundle.Bundle, error) {
 		var bnd bundle.Bundle
