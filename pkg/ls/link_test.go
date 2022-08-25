@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 func TestBasicLink(t *testing.T) {
@@ -66,7 +66,7 @@ func TestBasicLink(t *testing.T) {
 	builder.LinkNodes(DefaultContext(), layer2, entityInfo)
 	// There must be an edge from root1 to root2
 	found := false
-	for edges := root1.GetEdges(graph.OutgoingEdge); edges.Next(); {
+	for edges := root1.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 		edge := edges.Edge()
 		if edge.GetTo() == root2 {
 			found = true
@@ -127,7 +127,7 @@ func TestValueLink(t *testing.T) {
 	builder.LinkNodes(DefaultContext(), layer3, entityInfo)
 	// There must be an edge from root1 to root3
 	found := false
-	for edges := root1.GetEdges(graph.OutgoingEdge); edges.Next(); {
+	for edges := root1.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 		edge := edges.Edge()
 		if edge.GetTo() == root3 {
 			found = true

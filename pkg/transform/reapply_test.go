@@ -18,8 +18,8 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 
 	_ "github.com/cloudprivacylabs/lsa/pkg/types"
 )
@@ -40,13 +40,13 @@ func (tc reapplyTestCase) Run(t *testing.T) {
 		t.Errorf("Test case: %s Cannot unmarshal layer: %v", tc.Name, err)
 		return
 	}
-	g := graph.NewOCGraph()
+	g := lpg.NewGraph()
 	m := ls.JSONMarshaler{}
 	if err := m.Unmarshal(tc.Graph, g); err != nil {
 		t.Errorf("Test case: %s Cannot unmarshal  graph: %v", tc.Name, err)
 		return
 	}
-	expectedGraph := graph.NewOCGraph()
+	expectedGraph := lpg.NewGraph()
 	if err := m.Unmarshal(tc.Expected, expectedGraph); err != nil {
 		t.Errorf("Test case: %s Cannot unmarshal expected graph: %v", tc.Name, err)
 		return
@@ -58,7 +58,7 @@ func (tc reapplyTestCase) Run(t *testing.T) {
 		return
 	}
 
-	eq := graph.CheckIsomorphism(g, expectedGraph, func(n1, n2 graph.Node) bool {
+	eq := lpg.CheckIsomorphism(g, expectedGraph, func(n1, n2 *lpg.Node) bool {
 		t.Logf("Cmp: %+v %+v\n", n1, n2)
 		if !n1.GetLabels().IsEqual(n2.GetLabels()) {
 			return false
@@ -96,7 +96,7 @@ func (tc reapplyTestCase) Run(t *testing.T) {
 		}
 		t.Logf("True\n")
 		return true
-	}, func(e1, e2 graph.Edge) bool {
+	}, func(e1, e2 *lpg.Edge) bool {
 		return e1.GetLabel() == e2.GetLabel() && ls.IsPropertiesEqual(ls.PropertiesAsMap(e1), ls.PropertiesAsMap(e2))
 	})
 

@@ -17,7 +17,7 @@ package ls
 import (
 	"encoding/json"
 	"testing"
-	//	"github.com/cloudprivacylabs/opencypher/graph"
+	//	"github.com/cloudprivacylabs/lpg"
 )
 
 func TestBasicVS(t *testing.T) {

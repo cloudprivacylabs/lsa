@@ -22,8 +22,8 @@ import (
 	"github.com/piprate/json-gold/ld"
 	"github.com/santhosh-tekuri/jsonschema/v5"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func expand(t *testing.T, in string) []interface{} {
@@ -98,8 +98,8 @@ func TestIngestFlat(t *testing.T) {
 		t.Error(err)
 	}
 
-	findNodes := func(nodeId string) []graph.Node {
-		nodes := []graph.Node{}
+	findNodes := func(nodeId string) []*lpg.Node {
+		nodes := []*lpg.Node{}
 		for nx := bldr.GetGraph().GetNodes(); nx.Next(); {
 			node := nx.Node()
 			if ls.GetNodeID(node) == nodeId {
@@ -225,8 +225,8 @@ func TestIngestPoly(t *testing.T) {
 		t.Error(err)
 	}
 
-	findNodes := func(nodeId string) []graph.Node {
-		nodes := []graph.Node{}
+	findNodes := func(nodeId string) []*lpg.Node {
+		nodes := []*lpg.Node{}
 		for nx := bldr.GetGraph().GetNodes(); nx.Next(); {
 			node := nx.Node()
 			if ls.GetNodeID(node) == nodeId {
@@ -270,7 +270,7 @@ func TestIngestRootAnnotation(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	layers, err := BuildEntityGraph(graph.NewOCGraph(), ls.SchemaTerm, LinkRefsBySchemaRef, compiled...)
+	layers, err := BuildEntityGraph(lpg.NewGraph(), ls.SchemaTerm, LinkRefsBySchemaRef, compiled...)
 	if err != nil {
 		t.Error(err)
 		return
@@ -287,8 +287,8 @@ func TestIngestRootAnnotation(t *testing.T) {
 		t.Error(err)
 	}
 
-	findNodes := func(nodeId string) []graph.Node {
-		nodes := []graph.Node{}
+	findNodes := func(nodeId string) []*lpg.Node {
+		nodes := []*lpg.Node{}
 		for nx := bldr.GetGraph().GetNodes(); nx.Next(); {
 			node := nx.Node()
 			t.Logf("%s", ls.GetNodeID(node))

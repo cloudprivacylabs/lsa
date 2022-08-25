@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // TransformScript combines transformation related annotations into a
@@ -102,7 +102,7 @@ func (t *TransformScript) GetMappingsByTarget(target string) []*NodeMapping {
 	return t.nodeMappingsByTarget[target]
 }
 
-func (t *TransformScript) GetProperties(schemaNode graph.Node) ls.CompilablePropertyContainer {
+func (t *TransformScript) GetProperties(schemaNode *lpg.Node) ls.CompilablePropertyContainer {
 	if t == nil {
 		return schemaNode
 	}

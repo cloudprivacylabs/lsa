@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type ErrOverflow struct {
@@ -150,7 +150,7 @@ func (s SignedIntParser[T]) inBounds(val int64) bool {
 type UnsignedIntParser[T unsignedInt] struct{}
 type DecimalParser struct{}
 
-func (SignedIntParser[T]) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (SignedIntParser[T]) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	var ret T
 	v, err := strconv.ParseInt(value, 10, 64)
 	ret = T(v)
@@ -160,7 +160,7 @@ func (SignedIntParser[T]) GetNativeValue(value string, node graph.Node) (interfa
 	return ret, err
 }
 
-func (parser SignedIntParser[T]) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser SignedIntParser[T]) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -242,7 +242,7 @@ func (parser SignedIntParser[T]) FormatNativeValue(newValue, oldValue interface{
 	return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: "Numeric term", Value: newValue}
 }
 
-func (UnsignedIntParser[T]) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (UnsignedIntParser[T]) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	var ret T
 	v, err := strconv.ParseUint(value, 10, 64)
 	ret = T(v)
@@ -252,7 +252,7 @@ func (UnsignedIntParser[T]) GetNativeValue(value string, node graph.Node) (inter
 	return ret, err
 }
 
-func (parser UnsignedIntParser[T]) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser UnsignedIntParser[T]) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -321,12 +321,12 @@ func (parser UnsignedIntParser[T]) FormatNativeValue(newValue, oldValue interfac
 	return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: "Unsigned numeric value", Value: newValue}
 }
 
-func (DecimalParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (DecimalParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	v, err := strconv.ParseFloat(value, 64)
 	return v, err
 }
 
-func (parser DecimalParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser DecimalParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -367,11 +367,11 @@ func (parser DecimalParser) FormatNativeValue(newValue, oldValue interface{}, no
 
 type JSONNumberParser struct{}
 
-func (JSONNumberParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (JSONNumberParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	return json.Number(value), nil
 }
 
-func (parser JSONNumberParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser JSONNumberParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}

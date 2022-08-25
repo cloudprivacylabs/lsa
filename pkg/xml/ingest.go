@@ -19,7 +19,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 var ErrExtraCharacters = errors.New("Extra characters before document")
@@ -69,8 +69,8 @@ func (e ErrCannotHaveAttributes) Error() string {
 // This finds the best matching schema attribute. If a schema
 // attribute is an XML attribute, requireAttr must be
 // true.
-func findBestMatchingSchemaAttribute(name xml.Name, schemaAttrs []graph.Node, requireAttr bool) (graph.Node, error) {
-	var matched graph.Node
+func findBestMatchingSchemaAttribute(name xml.Name, schemaAttrs []*lpg.Node, requireAttr bool) (*lpg.Node, error) {
+	var matched *lpg.Node
 	for _, attr := range schemaAttrs {
 		_, attrTerm := attr.GetProperty(AttributeTerm)
 		if requireAttr != attrTerm {

@@ -15,18 +15,18 @@
 package ls
 
 import (
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 // CopyGraph source to target using the optional node/edge selectors. Return a node map from the in to target nodes
-func CopyGraph(target, source graph.Graph, nodeSelector func(graph.Node) bool, edgeSelector func(graph.Edge) bool) map[graph.Node]graph.Node {
+func CopyGraph(target, source *lpg.Graph, nodeSelector func(*lpg.Node) bool, edgeSelector func(*lpg.Edge) bool) map[*lpg.Node]*lpg.Node {
 	if nodeSelector == nil {
-		nodeSelector = func(graph.Node) bool { return true }
+		nodeSelector = func(*lpg.Node) bool { return true }
 	}
 	if edgeSelector == nil {
-		edgeSelector = func(graph.Edge) bool { return true }
+		edgeSelector = func(*lpg.Edge) bool { return true }
 	}
-	nodeMap := make(map[graph.Node]graph.Node)
+	nodeMap := make(map[*lpg.Node]*lpg.Node)
 	for n := source.GetNodes(); n.Next(); {
 		node := n.Node()
 		if nodeSelector(node) {

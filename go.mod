@@ -2,6 +2,10 @@ module github.com/cloudprivacylabs/lsa
 
 go 1.18
 
+replace github.com/cloudprivacylabs/opencypher => ../opencypher
+
+replace github.com/cloudprivacylabs/lpg => ../lpg
+
 require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/bserdar/jsonom v0.0.0-20211005020717-9af6d87a0e9f
@@ -15,7 +19,10 @@ require (
 	golang.org/x/text v0.3.7
 )
 
-require github.com/mitchellh/go-homedir v1.1.0
+require (
+	github.com/cloudprivacylabs/lpg v0.0.0-20220824045629-1f46e17298ef
+	github.com/mitchellh/go-homedir v1.1.0
+)
 
 require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
@@ -35,7 +42,7 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/emirpasic/gods v1.18.0 // indirect
+	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/neo4j/neo4j-go-driver v1.8.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

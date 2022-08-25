@@ -21,9 +21,9 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lpg"
 	jsonsch "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func init() {
@@ -38,12 +38,12 @@ type ImportJSONSchemaRequest struct {
 	Layers   []SliceByTermsSpec `json:"layers"`
 }
 
-func (req *ImportJSONSchemaRequest) CompileAndImport() (graph.Graph, []jsonsch.EntityLayer, error) {
+func (req *ImportJSONSchemaRequest) CompileAndImport() (*lpg.Graph, []jsonsch.EntityLayer, error) {
 	c, err := jsonsch.CompileEntities(req.Entities...)
 	if err != nil {
 		return nil, nil, err
 	}
-	g := graph.NewOCGraph()
+	g := lpg.NewGraph()
 	layers, err := jsonsch.BuildEntityGraph(g, ls.SchemaTerm, jsonsch.LinkRefsByLayerID, c...)
 	return g, layers, err
 }

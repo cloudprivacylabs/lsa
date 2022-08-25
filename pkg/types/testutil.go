@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type getSetTestCase struct {
@@ -21,7 +21,7 @@ type getSetTestCase struct {
 }
 
 func (tc getSetTestCase) run(t *testing.T) {
-	g := graph.NewOCGraph()
+	g := lpg.NewGraph()
 	srcProperties := make(map[string]interface{})
 	for k, v := range tc.srcProperties {
 		srcProperties[k] = v

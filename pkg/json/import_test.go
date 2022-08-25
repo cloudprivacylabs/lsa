@@ -22,8 +22,8 @@ import (
 
 	"github.com/santhosh-tekuri/jsonschema/v5"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func TestAnnotations(t *testing.T) {
@@ -46,13 +46,13 @@ func TestAnnotations(t *testing.T) {
 	if compiled[0].Schema.Properties["p1"].Extensions[X_LS].(annotationExtSchema)["field"].(string) != "value" {
 		t.Errorf("No extension")
 	}
-	targetGraph := graph.NewOCGraph()
+	targetGraph := lpg.NewGraph()
 	layers, err := BuildEntityGraph(targetGraph, ls.SchemaTerm, LinkRefsBySchemaRef, compiled[0])
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	node := graph.NextNodesWith(layers[0].Layer.GetSchemaRootNode(), ls.ObjectAttributeListTerm)[0]
+	node := lpg.NextNodesWith(layers[0].Layer.GetSchemaRootNode(), ls.ObjectAttributeListTerm)[0]
 	if ls.AsPropertyValue(node.GetProperty("field")).AsString() != "value" {
 		t.Errorf("Wrong value: %+v", node)
 	}
@@ -73,7 +73,7 @@ func TestRefs(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	targetGraph := graph.NewOCGraph()
+	targetGraph := lpg.NewGraph()
 	graphs, err := BuildEntityGraph(targetGraph, ls.SchemaTerm, LinkRefsByLayerID, compiled...)
 	if err != nil {
 		t.Error(err)
@@ -84,7 +84,7 @@ func TestRefs(t *testing.T) {
 	if !root.GetLabels().Has(ls.AttributeTypeArray) {
 		t.Errorf("%s: Not an array", ls.GetNodeID(root))
 	}
-	items := graph.NextNodesWith(root, ls.ArrayItemsTerm)
+	items := lpg.NextNodesWith(root, ls.ArrayItemsTerm)
 	if len(items) != 1 {
 		t.Errorf("Wrong items")
 	}
@@ -111,7 +111,7 @@ func TestLoop(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	targetGraph := graph.NewOCGraph()
+	targetGraph := lpg.NewGraph()
 	_, err = BuildEntityGraph(targetGraph, ls.SchemaTerm, LinkRefsBySchemaRef, compiled...)
 	if err != nil {
 		t.Error(err)

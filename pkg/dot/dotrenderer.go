@@ -21,8 +21,8 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type HorizontalAlignment string
@@ -200,8 +200,8 @@ func DefaultOptions() Options {
 
 type Renderer struct {
 	Options          Options
-	NodeSelectorFunc func(graph.Node) bool
-	EdgeSelectorFunc func(graph.Edge) bool
+	NodeSelectorFunc func(*lpg.Node) bool
+	EdgeSelectorFunc func(*lpg.Edge) bool
 }
 
 // escapeForDot escapes double quotes and backslashes, and replaces Graphviz's
@@ -211,7 +211,7 @@ func escapeForDot(str string) string {
 	return strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(str, `\`, `\\`), `"`, `\"`), "\n", `\l`)
 }
 
-func (r Renderer) NodeBoxRenderer(ID string, node graph.Node, wr io.Writer) (bool, error) {
+func (r Renderer) NodeBoxRenderer(ID string, node *lpg.Node, wr io.Writer) (bool, error) {
 	label := strings.Builder{}
 	for l := range node.GetLabels().M {
 		label.WriteRune(':')
@@ -234,7 +234,7 @@ func (r Renderer) NodeBoxRenderer(ID string, node graph.Node, wr io.Writer) (boo
 	return true, nil
 }
 
-func (r Renderer) NodeTableRenderer(ID string, node graph.Node, wr io.Writer) (bool, error) {
+func (r Renderer) NodeTableRenderer(ID string, node *lpg.Node, wr io.Writer) (bool, error) {
 	to := r.Options.Table
 	to.ID = ID
 	io.WriteString(wr, fmt.Sprintf("%s [shape=plaintext label=<", ID))
@@ -266,7 +266,7 @@ func (r Renderer) NodeTableRenderer(ID string, node graph.Node, wr io.Writer) (b
 	return true, nil
 }
 
-func (r Renderer) renderEdge(fromNode, toNode string, edge graph.Edge, w io.Writer) error {
+func (r Renderer) renderEdge(fromNode, toNode string, edge *lpg.Edge, w io.Writer) error {
 	lbl := edge.GetLabel()
 	if len(lbl) != 0 {
 		if _, err := fmt.Fprintf(w, "  %s -> %s [label=\"%s\" %s];\n", fromNode, toNode, escapeForDot(lbl), r.Options.Edges); err != nil {
@@ -280,15 +280,15 @@ func (r Renderer) renderEdge(fromNode, toNode string, edge graph.Edge, w io.Writ
 	return nil
 }
 
-func (r Renderer) EdgeRenderer(fromID, toID string, edge graph.Edge, w io.Writer) (bool, error) {
+func (r Renderer) EdgeRenderer(fromID, toID string, edge *lpg.Edge, w io.Writer) (bool, error) {
 	if r.EdgeSelectorFunc == nil || r.EdgeSelectorFunc(edge) {
 		return true, r.renderEdge(fromID, toID, edge, w)
 	}
 	return false, nil
 }
 
-func (r Renderer) Render(g graph.Graph, graphName string, out io.Writer) error {
-	dr := graph.DOTRenderer{NodeRenderer: r.NodeBoxRenderer, EdgeRenderer: r.EdgeRenderer}
+func (r Renderer) Render(g *lpg.Graph, graphName string, out io.Writer) error {
+	dr := lpg.DOTRenderer{NodeRenderer: r.NodeBoxRenderer, EdgeRenderer: r.EdgeRenderer}
 	if _, err := fmt.Fprintf(out, "digraph %s {\n", graphName); err != nil {
 		return err
 	}

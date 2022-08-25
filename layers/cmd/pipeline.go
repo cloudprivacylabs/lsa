@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
-	"github.com/cloudprivacylabs/opencypher/graph"
 	"github.com/spf13/cobra"
 )
 
@@ -35,7 +35,7 @@ func NewReadGraphStep(cmd *cobra.Command) pipeline.ReadGraphStep {
 }
 
 func runPipeline(steps []pipeline.Step, initialGraph string, inputs []string) (*pipeline.PipelineContext, error) {
-	var g graph.Graph
+	var g *lpg.Graph
 	var err error
 	if initialGraph != "" {
 		g, err = cmdutil.ReadJSONGraph([]string{initialGraph}, nil)

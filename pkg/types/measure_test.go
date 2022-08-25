@@ -18,9 +18,9 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func TestMeasureValueNodesExpr(t *testing.T) {
@@ -108,7 +108,7 @@ func TestMeasureValueNodesExpr(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	measureNode, _ := v.Get().(opencypher.ResultSet).Rows[0]["1"].Get().(graph.Node)
+	measureNode, _ := v.Get().(opencypher.ResultSet).Rows[0]["1"].Get().(*lpg.Node)
 	if measureNode == nil {
 		t.Error(err)
 		return
@@ -203,7 +203,7 @@ func TestMeasureValueNodes(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	measureNode, _ := v.Get().(opencypher.ResultSet).Rows[0]["1"].Get().(graph.Node)
+	measureNode, _ := v.Get().(opencypher.ResultSet).Rows[0]["1"].Get().(*lpg.Node)
 	if measureNode == nil {
 		t.Error(err)
 		return
@@ -291,7 +291,7 @@ func TestMeasureValueNodeHasValueAndUnit(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	measureNode, _ := v.Get().(opencypher.ResultSet).Rows[0]["1"].Get().(graph.Node)
+	measureNode, _ := v.Get().(opencypher.ResultSet).Rows[0]["1"].Get().(*lpg.Node)
 	if measureNode == nil {
 		t.Error(err)
 		return
@@ -401,7 +401,7 @@ func TestSetMeasureValue(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	measureNode, _ := v.Get().(opencypher.ResultSet).Rows[0]["1"].Get().(graph.Node)
+	measureNode, _ := v.Get().(opencypher.ResultSet).Rows[0]["1"].Get().(*lpg.Node)
 	if measureNode == nil {
 		t.Error(err)
 		return

@@ -21,10 +21,10 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func addSchemaFlags(flags *pflag.FlagSet) {
@@ -254,19 +254,19 @@ func LoadSchemaFromFileOrRepo(ctx *ls.Context, compiledSchema, repoDir, schemaNa
 	return compiler.Compile(ctx, schemaName)
 }
 
-func OutputIngestedGraph(cmd *cobra.Command, outFormat string, target graph.Graph, wr io.Writer, includeSchema bool) error {
+func OutputIngestedGraph(cmd *cobra.Command, outFormat string, target *lpg.Graph, wr io.Writer, includeSchema bool) error {
 	if !includeSchema {
-		schemaNodes := make(map[graph.Node]struct{})
+		schemaNodes := make(map[*lpg.Node]struct{})
 		for nodes := target.GetNodes(); nodes.Next(); {
 			node := nodes.Node()
 			if ls.IsDocumentNode(node) {
-				for _, edge := range graph.EdgeSlice(node.GetEdgesWithLabel(graph.OutgoingEdge, ls.InstanceOfTerm)) {
+				for _, edge := range lpg.EdgeSlice(node.GetEdgesWithLabel(lpg.OutgoingEdge, ls.InstanceOfTerm)) {
 					schemaNodes[edge.GetTo()] = struct{}{}
 				}
 			}
 		}
-		newTarget := graph.NewOCGraph()
-		ls.CopyGraph(newTarget, target, func(n graph.Node) bool {
+		newTarget := lpg.NewGraph()
+		ls.CopyGraph(newTarget, target, func(n *lpg.Node) bool {
 			if !ls.IsAttributeNode(n) {
 				return true
 			}
@@ -275,7 +275,7 @@ func OutputIngestedGraph(cmd *cobra.Command, outFormat string, target graph.Grap
 			}
 			return false
 		},
-			func(edge graph.Edge) bool {
+			func(edge *lpg.Edge) bool {
 				return !ls.IsAttributeTreeEdge(edge)
 			})
 		target = newTarget

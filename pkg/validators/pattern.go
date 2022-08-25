@@ -3,8 +3,8 @@ package validators
 import (
 	"regexp"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // PatternTerm validates against a regex
@@ -20,7 +20,7 @@ type PatternValidator struct{}
 const compiledPatternTerm = "$compiledPattern"
 
 // ValidateValue validates the  value
-func (validator PatternValidator) ValidateValue(value *string, schemaNode graph.Node) error {
+func (validator PatternValidator) ValidateValue(value *string, schemaNode *lpg.Node) error {
 	if value == nil {
 		return nil
 	}
@@ -33,7 +33,7 @@ func (validator PatternValidator) ValidateValue(value *string, schemaNode graph.
 }
 
 // Validate validates the node value if it is non-nil
-func (validator PatternValidator) ValidateNode(docNode, schemaNode graph.Node) error {
+func (validator PatternValidator) ValidateNode(docNode, schemaNode *lpg.Node) error {
 	if docNode == nil {
 		return nil
 	}

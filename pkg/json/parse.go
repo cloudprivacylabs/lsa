@@ -20,12 +20,12 @@ import (
 
 	"github.com/bserdar/jsonom"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type ParsedDocNode struct {
-	schemaNode graph.Node
+	schemaNode *lpg.Node
 	typeTerm   string
 	value      string
 	valueTypes []string
@@ -35,7 +35,7 @@ type ParsedDocNode struct {
 	id         string
 }
 
-func (i ParsedDocNode) GetSchemaNode() graph.Node             { return i.schemaNode }
+func (i ParsedDocNode) GetSchemaNode() *lpg.Node              { return i.schemaNode }
 func (i ParsedDocNode) GetTypeTerm() string                   { return i.typeTerm }
 func (i ParsedDocNode) GetValue() string                      { return i.value }
 func (i ParsedDocNode) GetValueTypes() []string               { return i.valueTypes }
@@ -49,17 +49,17 @@ type Parser struct {
 	OnlySchemaAttributes bool
 	IngestNullValues     bool
 	Layer                *ls.Layer
-	objectCache          map[graph.Node]map[string][]graph.Node
-	nodesWithValidators  map[graph.Node]struct{}
+	objectCache          map[*lpg.Node]map[string][]*lpg.Node
+	nodesWithValidators  map[*lpg.Node]struct{}
 }
 
 type parserContext struct {
 	context    *ls.Context
 	path       ls.NodePath
-	schemaNode graph.Node
+	schemaNode *lpg.Node
 }
 
-func (ing *Parser) nodeHasValidator(schemaNode graph.Node) bool {
+func (ing *Parser) nodeHasValidator(schemaNode *lpg.Node) bool {
 	if ing.nodesWithValidators == nil {
 		ing.nodesWithValidators = ls.GetNodesWithValidators(ing.Layer.GetSchemaRootNode())
 	}
@@ -67,9 +67,9 @@ func (ing *Parser) nodeHasValidator(schemaNode graph.Node) bool {
 	return ok
 }
 
-func (ing *Parser) getObjectNodes(schemaNode graph.Node) (map[string][]graph.Node, error) {
+func (ing *Parser) getObjectNodes(schemaNode *lpg.Node) (map[string][]*lpg.Node, error) {
 	if ing.objectCache == nil {
-		ing.objectCache = make(map[graph.Node]map[string][]graph.Node)
+		ing.objectCache = make(map[*lpg.Node]map[string][]*lpg.Node)
 	}
 	nodes, exists := ing.objectCache[schemaNode]
 	if exists {
@@ -131,14 +131,14 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 		id:         ctx.path.String(),
 	}
 
-	processChildren := func(f func(graph.Node, jsonom.Node) bool) error {
+	processChildren := func(f func(*lpg.Node, jsonom.Node) bool) error {
 		for i := 0; i < input.Len(); i++ {
 			keyValue := input.N(i)
 			schNodes := nextNodes[keyValue.Key()]
 			if len(schNodes) > 1 {
 				return ls.ErrInvalidSchema(fmt.Sprintf("Multiple elements with key '%s'", keyValue.Key()))
 			}
-			var schNode graph.Node
+			var schNode *lpg.Node
 			if len(schNodes) == 1 {
 				schNode = schNodes[0]
 			}
@@ -162,7 +162,7 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 		return nil
 	}
 	// Process value attributes with validators first, so if there are any validation errors, we terminate quickly
-	if err := processChildren(func(schNode graph.Node, v jsonom.Node) bool {
+	if err := processChildren(func(schNode *lpg.Node, v jsonom.Node) bool {
 		_, ok := v.(*jsonom.Value)
 		if !ok {
 			return false
@@ -171,7 +171,7 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 	}); err != nil {
 		return nil, err
 	}
-	if err := processChildren(func(schNode graph.Node, v jsonom.Node) bool {
+	if err := processChildren(func(schNode *lpg.Node, v jsonom.Node) bool {
 		_, ok := v.(*jsonom.Value)
 		if !ok {
 			return false
@@ -180,7 +180,7 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 	}); err != nil {
 		return nil, err
 	}
-	if err := processChildren(func(_ graph.Node, v jsonom.Node) bool {
+	if err := processChildren(func(_ *lpg.Node, v jsonom.Node) bool {
 		_, ok := v.(*jsonom.Value)
 		return !ok
 	}); err != nil {
@@ -223,16 +223,16 @@ func (ing *Parser) parseArray(ctx parserContext, input *jsonom.Array) (*ParsedDo
 	return &ret, nil
 }
 
-func (ing *Parser) testOption(option graph.Node, ctx parserContext, input jsonom.Node) (*ParsedDocNode, bool) {
+func (ing *Parser) testOption(option *lpg.Node, ctx parserContext, input jsonom.Node) (*ParsedDocNode, bool) {
 	ctx.schemaNode = option
 	out, err := ing.parseDoc(ctx, input)
 	return out, out != nil && err == nil
 }
 
 func (ing *Parser) parsePolymorphic(ctx parserContext, input jsonom.Node) (*ParsedDocNode, error) {
-	var found graph.Node
+	var found *lpg.Node
 	var ret *ParsedDocNode
-	for edges := ctx.schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.OneOfTerm); edges.Next(); {
+	for edges := ctx.schemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ls.OneOfTerm); edges.Next(); {
 		edge := edges.Edge()
 		option := edge.GetTo()
 		pnd, ok := ing.testOption(option, ctx, input)

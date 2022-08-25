@@ -21,9 +21,9 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/validators"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type TermSpec struct {
@@ -145,7 +145,7 @@ func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []
 				}
 			}
 
-			var attr graph.Node
+			var attr *lpg.Node
 			attr = layer.Graph.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeValue}, nil)
 			ls.SetNodeID(attr, id)
 			layer.Graph.NewEdge(root, attr, ls.ObjectAttributeListTerm, nil)
