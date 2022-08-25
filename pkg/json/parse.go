@@ -54,10 +54,9 @@ type Parser struct {
 }
 
 type parserContext struct {
-	context       *ls.Context
-	path          ls.NodePath
-	schemaNode    graph.Node
-	discriminator [][]string
+	context    *ls.Context
+	path       ls.NodePath
+	schemaNode graph.Node
 }
 
 func (ing *Parser) nodeHasValidator(schemaNode graph.Node) bool {
@@ -125,6 +124,23 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 		return nil, err
 	}
 
+	// check if discrimator term exists within the schema nodes, terminate early if found
+	for _, sln := range nextNodes {
+		for _, snode := range sln {
+			if snode.HasLabel(ls.TypeDiscriminatorTerm) {
+				kv := input.Get(ls.AsPropertyValue(snode.GetProperty(ls.AttributeNameTerm)).AsString())
+				newCtx := ctx
+				newCtx.path = newCtx.path.AppendString(kv.Key())
+				newCtx.schemaNode = snode
+				childNode, err := ing.parseDoc(newCtx, kv.Value())
+				if err != nil {
+					return nil, err
+				}
+				return childNode, nil
+			}
+		}
+	}
+
 	ret := ParsedDocNode{
 		schemaNode: ctx.schemaNode,
 		typeTerm:   ls.AttributeTypeObject,
@@ -145,12 +161,6 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 			}
 			if !f(schNode, keyValue.Value()) {
 				continue
-			}
-			if len(ctx.discriminator) > 0 {
-				kv := input.Get(ctx.discriminator[i][0])
-				if !f(schNode, kv.Value()) {
-					continue
-				}
 			}
 
 			newCtx := ctx
@@ -242,7 +252,6 @@ func (ing *Parser) parsePolymorphic(ctx parserContext, input jsonom.Node) (*Pars
 	for edges := ctx.schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.OneOfTerm); edges.Next(); {
 		edge := edges.Edge()
 		option := edge.GetTo()
-		ctx.discriminator = append(ctx.discriminator, []string{"resourceType"})
 		pdn, ok := ing.testOption(option, ctx, input)
 		if ok {
 			if found != nil {
@@ -251,7 +260,6 @@ func (ing *Parser) parsePolymorphic(ctx parserContext, input jsonom.Node) (*Pars
 			found = option
 			ret = pdn
 		}
-		ctx.discriminator = ctx.discriminator[1:]
 	}
 	if found == nil {
 		return nil, ls.ErrSchemaValidation{Msg: "None of the options of the polymorphic node matched:" + ls.GetNodeID(ctx.schemaNode), Path: ctx.path.Copy()}

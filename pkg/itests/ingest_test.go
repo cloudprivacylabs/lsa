@@ -178,35 +178,34 @@ func TestIngestPolyHint(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	// in, err := ls.MarshalLayer(layer)
+	// fx, err := os.Create("test.json")
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	// defer fx.Close()
+	// by, _ := json.Marshal(in)
+	// fx.Write(by)
+
 	parser := jsoningest.Parser{Layer: layer}
 
 	builder := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		EmbedSchemaNodes: true,
 	})
 
-	f, err := os.Open("Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json")
+	f, err := os.Open("testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer f.Close()
 
 	_, err = jsoningest.IngestStream(ls.DefaultContext(), b.Base, f, parser, builder)
-
-	// // testing - delete
-	// x := ls.JSONMarshaler{}
-	// by, err := x.Marshal(n.GetGraph())
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-	// f, err = os.Create("test.txt")
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-	// defer f.Close()
-	// f.Write(by)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	findPoly := func() bool {
-		for nx := builder.GetGraph().GetNodes(); nx.Next(); {
+		for nx := layer.Graph.GetNodes(); nx.Next(); {
 			node := nx.Node()
 			if node.HasLabel(ls.TypeDiscriminatorTerm) {
 				return true
@@ -218,5 +217,4 @@ func TestIngestPolyHint(t *testing.T) {
 	if !findPoly() {
 		t.Fatalf("Expecting type hint")
 	}
-
 }
