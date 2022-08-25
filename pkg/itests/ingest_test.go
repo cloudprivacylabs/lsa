@@ -175,7 +175,7 @@ func TestIngestPolyHint(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	layer, err := b.GetLayer(ls.DefaultContext(), "https://hl7.org/fhir/Patient")
+	layer, err := b.GetLayer(ls.DefaultContext(), "https://hl7.org/fhir/Bundle")
 	if err != nil {
 		t.Fatal(err)
 	}
