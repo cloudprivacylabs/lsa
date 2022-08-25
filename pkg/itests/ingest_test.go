@@ -142,10 +142,10 @@ func TestParseEmptyCSV(t *testing.T) {
 	}
 }
 
-// layers ingest json --bundle testdata/fhir/schemas/fhir.discriminator.bundle.yaml --type https://hl7.org/fhir/Patient testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json --output web > abc.json
-// layers ingest json --bundle testdata/fhir/schemas/fhir.bundle.yaml --type https://hl7.org/fhir/Patient testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json --output web > abc.json
+// layers ingest json --bundle testdata/fhir/schemas/fhir.discriminator.bundle.yaml --type https://hl7.org/fhir/Bundle testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json --output web > discrim.json
+// layers ingest json --bundle testdata/fhir/schemas/fhir.bundle.yaml --type https://hl7.org/fhir/Bundle testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json --output web > wodiscrim.json
 func TestIngestPolyHint(t *testing.T) {
-	b, err := bundle.LoadBundle("testdata/fhir/schemas/fhir.bundle.yaml", func(parentBundle string, loadBundle string) (bundle.Bundle, error) {
+	b, err := bundle.LoadBundle("testdata/fhir/schemas/fhir.discriminator.bundle.yaml", func(parentBundle string, loadBundle string) (bundle.Bundle, error) {
 		var bnd bundle.Bundle
 		if err := cmdutil.ReadJSONOrYAML(loadBundle, &bnd); err != nil {
 			return bnd, err
@@ -181,7 +181,7 @@ func TestIngestPolyHint(t *testing.T) {
 	}
 
 	// in, err := ls.MarshalLayer(layer)
-	// fx, err := os.Create("test.json")
+	// fx, err := os.Create("polybundle.json")
 	// if err != nil {
 	// 	t.Fatal(err)
 	// }
@@ -200,6 +200,19 @@ func TestIngestPolyHint(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer f.Close()
+
+	// node, err := jsonom.UnmarshalReader(f, nil)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	// pd, err := parser.ParseDoc(ls.DefaultContext(), b.Base, node)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+
+	// if !pd.GetSchemaNode().HasLabel(ls.TypeDiscriminatorTerm) {
+	// 	t.Fatalf("No type discriminator label found")
+	// }
 
 	_, err = jsoningest.IngestStream(ls.DefaultContext(), b.Base, f, parser, builder)
 	if err != nil {
