@@ -111,6 +111,8 @@ func (ing *Parser) parseDoc(ctx parserContext, input jsonom.Node) (*ParsedDocNod
 	return ing.parseValue(ctx, input.(*jsonom.Value))
 }
 
+var PolyHintBlock = func() *jsonom.KeyValue { return &jsonom.KeyValue{} }
+
 func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*ParsedDocNode, error) {
 	// An object node
 	if ctx.schemaNode != nil {
@@ -136,6 +138,7 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 				if err != nil {
 					return nil, err
 				}
+				PolyHintBlock = func() *jsonom.KeyValue { return kv }
 				return childNode, nil
 			}
 		}

@@ -4,12 +4,15 @@ import (
 	"bytes"
 	"encoding/csv"
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"text/template"
 
+	"github.com/cloudprivacylabs/lsa/layers/cmd"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/bundle"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
@@ -142,7 +145,6 @@ func TestParseEmptyCSV(t *testing.T) {
 	}
 }
 
-// layers ingest json --bundle testdata/fhir/schemas/fhir.discriminator.bundle.yaml --type https://hl7.org/fhir/Bundle testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json --output web > discrim.json
 // layers ingest json --bundle testdata/fhir/schemas/fhir.bundle.yaml --type https://hl7.org/fhir/Bundle testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json --output web > wodiscrim.json
 func TestIngestPolyHint(t *testing.T) {
 	b, err := bundle.LoadBundle("testdata/fhir/schemas/fhir.discriminator.bundle.yaml", func(parentBundle string, loadBundle string) (bundle.Bundle, error) {
@@ -150,6 +152,7 @@ func TestIngestPolyHint(t *testing.T) {
 		if err := cmdutil.ReadJSONOrYAML(loadBundle, &bnd); err != nil {
 			return bnd, err
 		}
+		cmd.RecalculatePaths(&bnd, filepath.Dir(loadBundle))
 		return bnd, nil
 	})
 	if err != nil {
@@ -216,8 +219,13 @@ func TestIngestPolyHint(t *testing.T) {
 
 	_, err = jsoningest.IngestStream(ls.DefaultContext(), b.Base, f, parser, builder)
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
+	kv := jsoningest.PolyHintBlock()
+	// resourceType
+	fmt.Println(kv.Key())
+	// Bundle
+	fmt.Println(kv.Value())
 
 	findPoly := func() bool {
 		for nx := layer.Graph.GetNodes(); nx.Next(); {
