@@ -7,14 +7,14 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"path/filepath"
+	//	"path/filepath"
 	"strings"
 	"testing"
 	"text/template"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd"
-	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
-	"github.com/cloudprivacylabs/lsa/pkg/bundle"
+	//	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	//	"github.com/cloudprivacylabs/lsa/pkg/bundle"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -147,41 +147,48 @@ func TestParseEmptyCSV(t *testing.T) {
 
 // layers ingest json --bundle testdata/fhir/schemas/fhir.bundle.yaml --type https://hl7.org/fhir/Bundle testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json --output web > wodiscrim.json
 func TestIngestPolyHint(t *testing.T) {
-	b, err := bundle.LoadBundle("testdata/fhir/schemas/fhir.discriminator.bundle.yaml", func(parentBundle string, loadBundle string) (bundle.Bundle, error) {
-		var bnd bundle.Bundle
-		if err := cmdutil.ReadJSONOrYAML(loadBundle, &bnd); err != nil {
-			return bnd, err
-		}
-		cmd.RecalculatePaths(&bnd, filepath.Dir(loadBundle))
-		return bnd, nil
-	})
+	ls.DefaultLogLevel = ls.LogLevelDebug
+	ctx := ls.DefaultContext()
+	layer, err := cmd.LoadSchemaFromFileOrRepo(ctx, "", "", "", "https://hl7.org/fhir/Bundle", []string{"testdata/fhir/schemas/fhir.bundle.yaml"})
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if err := b.Build(ls.DefaultContext(), func(ctx *ls.Context, fname string) ([][][]string, error) {
-		return cmdutil.ReadSheets(fname)
-	}, func(ctx *ls.Context, fname string) (io.ReadCloser, error) {
-		return os.Open(fname)
-	}, func(ctx *ls.Context, fname string) (*ls.Layer, error) {
-		data, err := os.ReadFile(fname)
-		if err != nil {
-			return nil, err
-		}
-		var v interface{}
-		err = json.Unmarshal(data, &v)
-		if err != nil {
-			return nil, err
-		}
-		return ls.UnmarshalLayer(v, ctx.GetInterner())
-	}); err != nil {
-		t.Fatal(err)
-	}
+	// b, err := bundle.LoadBundle("testdata/fhir/schemas/fhir.bundle.yaml", func(parentBundle string, loadBundle string) (bundle.Bundle, error) {
+	// 	var bnd bundle.Bundle
+	// 	if err := cmdutil.ReadJSONOrYAML(loadBundle, &bnd); err != nil {
+	// 		return bnd, err
+	// 	}
+	// 	cmd.RecalculatePaths(&bnd, filepath.Dir(loadBundle))
+	// 	return bnd, nil
+	// })
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
 
-	layer, err := b.GetLayer(ls.DefaultContext(), "https://hl7.org/fhir/Bundle")
-	if err != nil {
-		t.Fatal(err)
-	}
+	// if err := b.Build(ls.DefaultContext(), func(ctx *ls.Context, fname string) ([][][]string, error) {
+	// 	return cmdutil.ReadSheets(fname)
+	// }, func(ctx *ls.Context, fname string) (io.ReadCloser, error) {
+	// 	return os.Open(fname)
+	// }, func(ctx *ls.Context, fname string) (*ls.Layer, error) {
+	// 	data, err := os.ReadFile(fname)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	var v interface{}
+	// 	err = json.Unmarshal(data, &v)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	return ls.UnmarshalLayer(v, ctx.GetInterner())
+	// }); err != nil {
+	// 	t.Fatal(err)
+	// }
+
+	// layer, err := b.GetLayer(ls.DefaultContext(), "https://hl7.org/fhir/Bundle")
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
 
 	// in, err := ls.MarshalLayer(layer)
 	// fx, err := os.Create("polybundle.json")
@@ -217,7 +224,7 @@ func TestIngestPolyHint(t *testing.T) {
 	// 	t.Fatalf("No type discriminator label found")
 	// }
 
-	_, err = jsoningest.IngestStream(ls.DefaultContext(), b.Base, f, parser, builder)
+	_, err = jsoningest.IngestStream(ls.DefaultContext(), "", f, parser, builder)
 	if err != nil {
 		t.Error(err)
 	}
