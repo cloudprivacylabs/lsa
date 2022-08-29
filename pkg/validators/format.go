@@ -3,8 +3,8 @@ package validators
 import (
 	"github.com/santhosh-tekuri/jsonschema/v3"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // JsonFormatTerm validates if the value matches one of the json format implementations
@@ -32,7 +32,7 @@ func (validator JsonFormatValidator) validateValue(value, format string) error {
 }
 
 // ValidateValue checks if the value matches the format
-func (validator JsonFormatValidator) ValidateValue(value *string, schemaNode graph.Node) error {
+func (validator JsonFormatValidator) ValidateValue(value *string, schemaNode *lpg.Node) error {
 	if value == nil {
 		return nil
 	}
@@ -41,7 +41,7 @@ func (validator JsonFormatValidator) ValidateValue(value *string, schemaNode gra
 }
 
 // ValidateNode validates the node value if it is non-nil
-func (validator JsonFormatValidator) ValidateNode(docNode, schemaNode graph.Node) error {
+func (validator JsonFormatValidator) ValidateNode(docNode, schemaNode *lpg.Node) error {
 	if docNode == nil {
 		return nil
 	}

@@ -19,9 +19,9 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // Measure is the data type that contains a value and a unit
@@ -180,8 +180,8 @@ func SetMeasureService(ctx *ls.Context, svc MeasureService) {
 	ctx.Set(measureServiceKey, svc)
 }
 
-func getMeasureValueNodes(ctx *ls.Context, g graph.Graph, measureSchemaNode graph.Node) ([]graph.Node, error) {
-	valueNodes := make([]graph.Node, 0)
+func getMeasureValueNodes(ctx *ls.Context, g *lpg.Graph, measureSchemaNode *lpg.Node) ([]*lpg.Node, error) {
+	valueNodes := make([]*lpg.Node, 0)
 	evalCtx := opencypher.NewEvalContext(g)
 	results, err := ls.CompileOCSemantics{}.Evaluate(measureSchemaNode, MeasureValueNodeExpr, evalCtx)
 	if err != nil {
@@ -205,7 +205,7 @@ func getMeasureValueNodes(ctx *ls.Context, g graph.Graph, measureSchemaNode grap
 				if v.Get() == nil {
 					continue
 				}
-				node, ok := v.Get().(graph.Node)
+				node, ok := v.Get().(*lpg.Node)
 				if !ok {
 					return nil, ErrMeasureProcessing{
 						ID:  ls.GetNodeID(measureSchemaNode),
@@ -223,7 +223,7 @@ func getMeasureValueNodes(ctx *ls.Context, g graph.Graph, measureSchemaNode grap
 }
 
 // findUnit returns the unit of the value node based on the specification of the schema node
-func findUnit(valueNode, measureSchemaNode graph.Node) (string, error) {
+func findUnit(valueNode, measureSchemaNode *lpg.Node) (string, error) {
 	if valueNode == nil {
 		return "", nil
 	}
@@ -249,7 +249,7 @@ func findUnit(valueNode, measureSchemaNode graph.Node) (string, error) {
 			if v.Get() == nil {
 				continue
 			}
-			node, ok := v.Get().(graph.Node)
+			node, ok := v.Get().(*lpg.Node)
 			if ok {
 				s, _ := ls.GetRawNodeValue(node)
 				return s, nil
@@ -264,8 +264,8 @@ func findUnit(valueNode, measureSchemaNode graph.Node) (string, error) {
 	}
 
 	// Find the closest unit node starting from the value node
-	found := make([]graph.Node, 0)
-	addToFound := func(node graph.Node) bool {
+	found := make([]*lpg.Node, 0)
+	addToFound := func(node *lpg.Node) bool {
 		if ls.AsPropertyValue(node.GetProperty(ls.SchemaNodeIDTerm)).AsString() == unitNodeID {
 			found = append(found, node)
 			return true
@@ -275,7 +275,7 @@ func findUnit(valueNode, measureSchemaNode graph.Node) (string, error) {
 	ls.IterateDescendants(valueNode, addToFound, ls.FollowEdgesInEntity, false)
 	if len(found) == 0 {
 		// Try parent
-		sources := graph.SourceNodes(valueNode.GetEdges(graph.IncomingEdge))
+		sources := lpg.SourceNodes(valueNode.GetEdges(lpg.IncomingEdge))
 		if len(sources) != 1 {
 			// Cannot find unit
 			return "", ErrMeasureProcessing{
@@ -298,7 +298,7 @@ func findUnit(valueNode, measureSchemaNode graph.Node) (string, error) {
 // BuildMeasureNode uses the measureSchemaNode to locate measure node
 // instances in the graph, and creates/updates measure nodes in the
 // graph. This function uses the measure service set in the context.
-func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNode graph.Node) error {
+func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNode *lpg.Node) error {
 	ctx.GetLogger().Debug(map[string]interface{}{
 		"mth":   "buildMeasureNodes",
 		"stage": "start",
@@ -314,7 +314,7 @@ func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNo
 		"mth":        "buildMeasureNodes",
 		"valueNodes": len(valueNodes),
 	})
-	valuesUnits := make(map[graph.Node]string)
+	valuesUnits := make(map[*lpg.Node]string)
 	for _, node := range valueNodes {
 		unit, err := findUnit(node, measureSchemaNode)
 		if err != nil {
@@ -342,7 +342,7 @@ func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNo
 			}
 		}
 
-		sources := graph.SourceNodes(value.GetEdges(graph.IncomingEdge))
+		sources := lpg.SourceNodes(value.GetEdges(lpg.IncomingEdge))
 		if len(sources) != 1 {
 			// Cannot find parent node
 			return ErrMeasureProcessing{
@@ -350,7 +350,7 @@ func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNo
 				Msg: "Cannot find parent node",
 			}
 		}
-		var measureNode graph.Node
+		var measureNode *lpg.Node
 		// Is there a measure node already?
 		measureNodes := ls.FindChildInstanceOf(sources[0], ls.GetNodeID(measureSchemaNode))
 		if len(measureNodes) == 0 {
@@ -386,7 +386,7 @@ func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNo
 // BuildMeasureNodesForLayer builds all the measure nodes for the layer
 func BuildMeasureNodesForLayer(ctx *ls.Context, bldr ls.GraphBuilder, layer *ls.Layer) error {
 	var err error
-	layer.ForEachAttribute(func(node graph.Node, _ []graph.Node) bool {
+	layer.ForEachAttribute(func(node *lpg.Node, _ []*lpg.Node) bool {
 		err = BuildMeasureNodes(ctx, bldr, node)
 		if err != nil {
 			return false
@@ -401,7 +401,7 @@ func BuildMeasureNodesForLayer(ctx *ls.Context, bldr ls.GraphBuilder, layer *ls.
 // can be the same as the measure node, or can be nil. If nil, measure
 // node itself will be used. The measure service will be used if the
 // measure has to be converted to a different unit.
-func SetMeasureValue(ctx *ls.Context, svc MeasureService, measureNode, schemaNode graph.Node, value Measure) error {
+func SetMeasureValue(ctx *ls.Context, svc MeasureService, measureNode, schemaNode *lpg.Node, value Measure) error {
 	if schemaNode == nil {
 		schemaNode = measureNode
 	}
@@ -420,11 +420,11 @@ func SetMeasureValue(ctx *ls.Context, svc MeasureService, measureNode, schemaNod
 
 type measureParser struct{}
 
-func (measureParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (measureParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	return ParseMeasure(value)
 }
 
-func (measureParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (measureParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -441,7 +441,7 @@ func (measureParser) FormatNativeValue(newValue, oldValue interface{}, node grap
 	return "", ErrNotAMeasure{Value: fmt.Sprintf("%+v %T", newValue, newValue)}
 }
 
-func (measureParser) GetNodeValue(node graph.Node) (interface{}, error) {
+func (measureParser) GetNodeValue(node *lpg.Node) (interface{}, error) {
 	ret := Measure{
 		Value: ls.AsPropertyValue(node.GetProperty(MeasureValueTerm)).AsString(),
 		Unit:  ls.AsPropertyValue(node.GetProperty(MeasureUnitTerm)).AsString(),
@@ -449,7 +449,7 @@ func (measureParser) GetNodeValue(node graph.Node) (interface{}, error) {
 	return ret, nil
 }
 
-func (measureParser) SetNodeValue(value interface{}, node graph.Node) error {
+func (measureParser) SetNodeValue(value interface{}, node *lpg.Node) error {
 	if value == nil {
 		node.RemoveProperty(MeasureValueTerm)
 		node.RemoveProperty(MeasureUnitTerm)

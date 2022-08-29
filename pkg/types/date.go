@@ -22,8 +22,8 @@ import (
 	"github.com/araddon/dateparse"
 	"github.com/nleeper/goment"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type ErrCannotParseTemporalValue string
@@ -485,7 +485,7 @@ func (f gomentFormat) formatTime(in TimeOfDay) (string, error) {
 // GetNativeValue parses an XSDDate value.
 //
 //  [-]CCYY-MM-DD[Z|(+|-)hh:mm]
-func (XSDDateParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (XSDDateParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -494,7 +494,7 @@ func (XSDDateParser) GetNativeValue(value string, node graph.Node) (interface{},
 
 // FormatNativeValue gets a target node and it's go native value, and returns
 // the value of the target node to an XSDDate
-func (parser XSDDateParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser XSDDateParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		ls.RemoveRawNodeValue(node)
 		return "", nil
@@ -585,7 +585,7 @@ func (parser XSDDateParser) FormatNativeValue(newValue, oldValue interface{}, no
 
 type XSDDateTimeParser struct{}
 
-func (XSDDateTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (XSDDateTimeParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -600,7 +600,7 @@ func (XSDDateTimeParser) GetNativeValue(value string, node graph.Node) (interfac
 	)
 }
 
-func (parser XSDDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser XSDDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -695,7 +695,7 @@ func (parser XSDDateTimeParser) FormatNativeValue(newValue, oldValue interface{}
 
 type XSDTimeParser struct{}
 
-func (XSDTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (XSDTimeParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -708,7 +708,7 @@ func (XSDTimeParser) GetNativeValue(value string, node graph.Node) (interface{},
 		gomentFormat("hh:mm:ss"))
 }
 
-func (parser XSDTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser XSDTimeParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -749,7 +749,7 @@ type JSONDateParser struct{}
 // ParseValue parses a JSON date
 //
 //   YYYY-MM-DD
-func (JSONDateParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (JSONDateParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -758,7 +758,7 @@ func (JSONDateParser) GetNativeValue(value string, node graph.Node) (interface{}
 
 // FormatNativeValue gets a target node and it's go native value, and returns
 // the value of the target node to an JSONDate
-func (parser JSONDateParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser JSONDateParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -856,7 +856,7 @@ type JSONDateTimeParser struct{}
 // ParseValue parses a JSON date-time
 //
 //   YYYY-MM-DD
-func (JSONDateTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (JSONDateTimeParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -864,7 +864,7 @@ func (JSONDateTimeParser) GetNativeValue(value string, node graph.Node) (interfa
 }
 
 // "2006-01-02T11:11:11Z07:00" -> Note: uses a 24Hour based clock   "2006-01-02T11:11:11.999999999Z07:00"
-func (parser JSONDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser JSONDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -918,7 +918,7 @@ type JSONTimeParser struct{}
 //   HH:mm
 //   HH:mm:ss
 //   HH:mm:ssZ
-func (JSONTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (JSONTimeParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -927,7 +927,7 @@ func (JSONTimeParser) GetNativeValue(value string, node graph.Node) (interface{}
 		gomentFormat("HH:mm"))
 }
 
-func (parser JSONTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser JSONTimeParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -976,7 +976,7 @@ type PatternDateTimeParser struct{}
 // GetNativeValue looks at the goTimeFormat, momentTimeFormat properties
 // in the node, and parses the datetime using that. The format
 // property can be an array, giving all possible formats. If none existsm guesses format
-func (PatternDateTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (PatternDateTimeParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -999,7 +999,7 @@ func (PatternDateTimeParser) GetNativeValue(value string, node graph.Node) (inte
 	return NewDateTime(t), nil
 }
 
-func (parser PatternDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser PatternDateTimeParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -1088,7 +1088,7 @@ type PatternDateParser struct{}
 // ParseValue looks at the goTimeFormat, momentTimeFormat properties
 // in the node, and parses the datetime using that. The format
 // property can be an array, giving all possible formats
-func (PatternDateParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (PatternDateParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -1111,7 +1111,7 @@ func (PatternDateParser) GetNativeValue(value string, node graph.Node) (interfac
 	return NewDate(t), nil
 }
 
-func (parser PatternDateParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser PatternDateParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -1200,7 +1200,7 @@ type PatternTimeParser struct{}
 // ParseValue looks at the goTimeFormat, momentTimeFormat properties
 // in the node, and parses the datetime using that. The format
 // property can be an array, giving all possible formats
-func (PatternTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (PatternTimeParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -1223,7 +1223,7 @@ func (PatternTimeParser) GetNativeValue(value string, node graph.Node) (interfac
 	return NewTimeOfDay(t), nil
 }
 
-func (parser PatternTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser PatternTimeParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -1270,7 +1270,7 @@ func (parser PatternTimeParser) FormatNativeValue(newValue, oldValue interface{}
 
 type XSDGDayParser struct{}
 
-func (XSDGDayParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (XSDGDayParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -1281,7 +1281,7 @@ func (XSDGDayParser) GetNativeValue(value string, node graph.Node) (interface{},
 	return GDay(x), nil
 }
 
-func (XSDGDayParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (XSDGDayParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -1310,7 +1310,7 @@ func (XSDGDayParser) FormatNativeValue(newValue, oldValue interface{}, node grap
 
 type XSDGMonthParser struct{}
 
-func (XSDGMonthParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (XSDGMonthParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -1321,7 +1321,7 @@ func (XSDGMonthParser) GetNativeValue(value string, node graph.Node) (interface{
 	return GMonth(x), nil
 }
 
-func (XSDGMonthParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (XSDGMonthParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -1346,7 +1346,7 @@ func (XSDGMonthParser) FormatNativeValue(newValue, oldValue interface{}, node gr
 
 type XSDGMonthDayParser struct{}
 
-func (XSDGMonthDayParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (XSDGMonthDayParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -1357,7 +1357,7 @@ func (XSDGMonthDayParser) GetNativeValue(value string, node graph.Node) (interfa
 	return GMonthDay{Month: d.Month, Day: d.Day}, nil
 }
 
-func (XSDGMonthDayParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (XSDGMonthDayParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -1388,7 +1388,7 @@ func (XSDGMonthDayParser) FormatNativeValue(newValue, oldValue interface{}, node
 
 type XSDGYearParser struct{}
 
-func (XSDGYearParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (XSDGYearParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -1399,7 +1399,7 @@ func (XSDGYearParser) GetNativeValue(value string, node graph.Node) (interface{}
 	return GYear(x), nil
 }
 
-func (XSDGYearParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (XSDGYearParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -1420,7 +1420,7 @@ func (XSDGYearParser) FormatNativeValue(newValue, oldValue interface{}, node gra
 
 type XSDGYearMonthParser struct{}
 
-func (XSDGYearMonthParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (XSDGYearMonthParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -1431,7 +1431,7 @@ func (XSDGYearMonthParser) GetNativeValue(value string, node graph.Node) (interf
 	return GYearMonth{Month: d.Month, Year: d.Year}, nil
 }
 
-func (XSDGYearMonthParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (XSDGYearMonthParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -1454,7 +1454,7 @@ func (XSDGYearMonthParser) FormatNativeValue(newValue, oldValue interface{}, nod
 
 type UnixTimeParser struct{}
 
-func (UnixTimeParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (UnixTimeParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -1465,7 +1465,7 @@ func (UnixTimeParser) GetNativeValue(value string, node graph.Node) (interface{}
 	return UnixTime{int64(x), nil}, nil
 }
 
-func (parser UnixTimeParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser UnixTimeParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -1508,7 +1508,7 @@ func (parser UnixTimeParser) FormatNativeValue(newValue, oldValue interface{}, n
 
 type UnixTimeNanoParser struct{}
 
-func (UnixTimeNanoParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (UnixTimeNanoParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
 	}
@@ -1519,7 +1519,7 @@ func (UnixTimeNanoParser) GetNativeValue(value string, node graph.Node) (interfa
 	return UnixTimeNano{int64(x), nil}, nil
 }
 
-func (parser UnixTimeNanoParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (parser UnixTimeNanoParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}

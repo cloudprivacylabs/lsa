@@ -17,17 +17,17 @@ package transform
 import (
 	"fmt"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // txDocNode is used as an intermediate model for transformation procedures
 type txDocNode struct {
-	schemaNode graph.Node
+	schemaNode *lpg.Node
 	typeTerm   string
 	id         string
 	rawValue   string
-	sourceNode graph.Node
+	sourceNode *lpg.Node
 	value      interface{}
 	valueTypes []string
 
@@ -38,7 +38,7 @@ type txDocNode struct {
 	properties map[string]interface{}
 }
 
-func newTxDocNode(schemaNode graph.Node) *txDocNode {
+func newTxDocNode(schemaNode *lpg.Node) *txDocNode {
 	ret := &txDocNode{
 		schemaNode: schemaNode,
 		properties: make(map[string]interface{}),
@@ -49,7 +49,7 @@ func newTxDocNode(schemaNode graph.Node) *txDocNode {
 	return ret
 }
 
-func (node *txDocNode) findChildInstanceOf(schemaNode graph.Node) []*txDocNode {
+func (node *txDocNode) findChildInstanceOf(schemaNode *lpg.Node) []*txDocNode {
 	ret := make([]*txDocNode, 0)
 	for _, x := range node.children {
 		if x.(*txDocNode).schemaNode == schemaNode {
@@ -68,7 +68,7 @@ func (node *txDocNode) String() string {
 	return fmt.Sprintf("[%s %s]\n%s", ls.GetNodeID(node.schemaNode), node.rawValue, out)
 }
 
-func (node *txDocNode) GetSchemaNode() graph.Node             { return node.schemaNode }
+func (node *txDocNode) GetSchemaNode() *lpg.Node              { return node.schemaNode }
 func (node *txDocNode) GetID() string                         { return node.id }
 func (node *txDocNode) GetAttributeIndex() int                { return node.attributeIndex }
 func (node *txDocNode) GetAttributeName() string              { return node.attributeName }

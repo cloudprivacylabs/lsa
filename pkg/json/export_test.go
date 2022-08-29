@@ -20,8 +20,8 @@ import (
 	"io/ioutil"
 	"testing"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func TestExport(t *testing.T) {
@@ -37,13 +37,13 @@ func TestExport(t *testing.T) {
 		return
 	}
 
-	target := graph.NewOCGraph()
+	target := lpg.NewGraph()
 	err = ls.UnmarshalJSONLDGraph(v, target, nil)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	source := graph.Sources(target)[0]
+	source := lpg.Sources(target)[0]
 	node, err := Export(source, ExportOptions{})
 	if err != nil {
 		t.Error(err)

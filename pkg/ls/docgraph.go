@@ -15,12 +15,12 @@
 package ls
 
 import (
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 // NewDocumentGraph creates a new graph with the correct indexes for document ingestion
-func NewDocumentGraph() graph.Graph {
-	g := graph.NewOCGraph()
+func NewDocumentGraph() *lpg.Graph {
+	g := lpg.NewGraph()
 	g.AddNodePropertyIndex(EntitySchemaTerm)
 	g.AddNodePropertyIndex(SchemaNodeIDTerm)
 	for _, f := range newDocGraphHooks {
@@ -29,19 +29,19 @@ func NewDocumentGraph() graph.Graph {
 	return g
 }
 
-var newDocGraphHooks = []func(*graph.OCGraph){}
+var newDocGraphHooks = []func(*lpg.Graph){}
 
-func RegisterNewDocGraphHook(f func(*graph.OCGraph)) {
+func RegisterNewDocGraphHook(f func(*lpg.Graph)) {
 	newDocGraphHooks = append(newDocGraphHooks, f)
 }
 
 // EntityInfo contains the entity information in the doc graph
 type EntityInfo struct {
-	root graph.Node
+	root *lpg.Node
 	sch  string
 }
 
-func (e EntityInfo) GetRoot() graph.Node     { return e.root }
+func (e EntityInfo) GetRoot() *lpg.Node      { return e.root }
 func (e EntityInfo) GetEntitySchema() string { return e.sch }
 func (e EntityInfo) GetID() []string {
 	return AsPropertyValue(e.root.GetProperty(EntityIDTerm)).MustStringSlice()
@@ -52,8 +52,8 @@ func (e EntityInfo) GetValueType() []string {
 
 // GetEntityInfo returns all the nodes that are entity roots,
 // i.e. nodes containing EntitySchemaTerm
-func GetEntityInfo(g graph.Graph) map[graph.Node]EntityInfo {
-	ret := make(map[graph.Node]EntityInfo)
+func GetEntityInfo(g *lpg.Graph) map[*lpg.Node]EntityInfo {
+	ret := make(map[*lpg.Node]EntityInfo)
 	for nodes := g.GetNodesWithProperty(EntitySchemaTerm); nodes.Next(); {
 		node := nodes.Node()
 		sch := AsPropertyValue(node.GetProperty(EntitySchemaTerm)).AsString()
@@ -65,9 +65,9 @@ func GetEntityInfo(g graph.Graph) map[graph.Node]EntityInfo {
 }
 
 // GetParentDocumentNodes returns the document nodes that have incoming edges to this node
-func GetParentDocumentNodes(node graph.Node) []graph.Node {
-	out := make(map[graph.Node]struct{})
-	for edges := node.GetEdges(graph.IncomingEdge); edges.Next(); {
+func GetParentDocumentNodes(node *lpg.Node) []*lpg.Node {
+	out := make(map[*lpg.Node]struct{})
+	for edges := node.GetEdges(lpg.IncomingEdge); edges.Next(); {
 		edge := edges.Edge()
 		ancestor := edge.GetFrom()
 		if !ancestor.GetLabels().Has(DocumentNodeTerm) {
@@ -75,7 +75,7 @@ func GetParentDocumentNodes(node graph.Node) []graph.Node {
 		}
 		out[ancestor] = struct{}{}
 	}
-	ret := make([]graph.Node, 0, len(out))
+	ret := make([]*lpg.Node, 0, len(out))
 	for x := range out {
 		ret = append(ret, x)
 	}
@@ -84,10 +84,10 @@ func GetParentDocumentNodes(node graph.Node) []graph.Node {
 
 // GetEntityRoot tries to find the entity containing this node by
 // going backwards until a node with EntitySchemaTerm
-func GetEntityRoot(node graph.Node) graph.Node {
-	var find func(graph.Node) graph.Node
-	seen := make(map[graph.Node]struct{})
-	find = func(root graph.Node) graph.Node {
+func GetEntityRoot(node *lpg.Node) *lpg.Node {
+	var find func(*lpg.Node) *lpg.Node
+	seen := make(map[*lpg.Node]struct{})
+	find = func(root *lpg.Node) *lpg.Node {
 		if _, ok := root.GetProperty(EntitySchemaTerm); ok {
 			return root
 		}
@@ -96,8 +96,8 @@ func GetEntityRoot(node graph.Node) graph.Node {
 		}
 		seen[root] = struct{}{}
 		seenAncestor := false
-		var ret graph.Node
-		for edges := root.GetEdges(graph.IncomingEdge); edges.Next(); {
+		var ret *lpg.Node
+		for edges := root.GetEdges(lpg.IncomingEdge); edges.Next(); {
 			edge := edges.Edge()
 			ancestor := edge.GetFrom()
 			if !ancestor.GetLabels().Has(DocumentNodeTerm) {
@@ -115,7 +115,7 @@ func GetEntityRoot(node graph.Node) graph.Node {
 }
 
 // GetEntityIDFields returns the value of the entity ID fields from a document node.
-func GetEntityIDFields(node graph.Node) *PropertyValue {
+func GetEntityIDFields(node *lpg.Node) *PropertyValue {
 	if node == nil {
 		return nil
 	}
@@ -124,9 +124,9 @@ func GetEntityIDFields(node graph.Node) *PropertyValue {
 }
 
 // GetNodesInstanceOf returns document nodes that are instance of the given attribute id
-func GetNodesInstanceOf(g graph.Graph, attrId string) []graph.Node {
-	pattern := graph.Pattern{{
-		Labels: graph.NewStringSet(DocumentNodeTerm),
+func GetNodesInstanceOf(g *lpg.Graph, attrId string) []*lpg.Node {
+	pattern := lpg.Pattern{{
+		Labels: lpg.NewStringSet(DocumentNodeTerm),
 		Properties: map[string]interface{}{
 			SchemaNodeIDTerm: StringPropertyValue(SchemaNodeIDTerm, attrId),
 		},
@@ -139,7 +139,7 @@ func GetNodesInstanceOf(g graph.Graph, attrId string) []graph.Node {
 }
 
 // IsInstanceOf returns true if g is an instance of the schema node
-func IsInstanceOf(n graph.Node, schemaNodeID string) bool {
+func IsInstanceOf(n *lpg.Node, schemaNodeID string) bool {
 	p, ok := GetNodeOrSchemaProperty(n, SchemaNodeIDTerm)
 	if !ok {
 		return false

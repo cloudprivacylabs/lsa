@@ -6,16 +6,16 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 	"gopkg.in/yaml.v2"
 )
 
 type PipelineContext struct {
 	*ls.Context
-	Graph       graph.Graph
-	Roots       []graph.Node
+	Graph       *lpg.Graph
+	Roots       []*lpg.Node
 	NextInput   func() (PipelineEntryInfo, io.ReadCloser, error)
 	CurrentStep int
 	Steps       []Step
@@ -70,8 +70,8 @@ func InputsFromFiles(files []string) func() (PipelineEntryInfo, io.ReadCloser, e
 }
 
 // create new pipeline context with an optional initial graph and inputs func
-func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph graph.Graph, inputs func() (PipelineEntryInfo, io.ReadCloser, error)) *PipelineContext {
-	var g graph.Graph
+func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph *lpg.Graph, inputs func() (PipelineEntryInfo, io.ReadCloser, error)) *PipelineContext {
+	var g *lpg.Graph
 	if initialGraph != nil {
 		g = initialGraph
 	} else {
@@ -97,7 +97,7 @@ func Run(ctx *PipelineContext) error {
 	return ctx.Next()
 }
 
-func (ctx *PipelineContext) SetGraph(g graph.Graph) *PipelineContext {
+func (ctx *PipelineContext) SetGraph(g *lpg.Graph) *PipelineContext {
 	ctx.Graph = g
 	return ctx
 }

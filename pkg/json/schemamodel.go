@@ -19,9 +19,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/validators"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type schemaProperty struct {
@@ -42,7 +42,7 @@ type schemaProperty struct {
 	defaultValue *string
 	annotations  map[string]interface{}
 
-	node graph.Node
+	node *lpg.Node
 
 	localReference *schemaProperty
 	recurse        bool
@@ -153,7 +153,7 @@ func (s schemaPath) String() string {
 	return strings.Join(s.name, "/")
 }
 
-func (imp schemaImporter) schemaAttrs(attr *schemaProperty, path schemaPath, key string) (graph.Node, error) {
+func (imp schemaImporter) schemaAttrs(attr *schemaProperty, path schemaPath, key string) (*lpg.Node, error) {
 	//if attr.node != nil {
 	//	return attr.node, nil
 	//}
@@ -189,13 +189,13 @@ func (imp schemaImporter) schemaAttrs(attr *schemaProperty, path schemaPath, key
 	return newNode, imp.buildChildAttrs(attr, newNode, path)
 }
 
-func (imp schemaImporter) newAttrNode(attr *schemaProperty, path schemaPath) (graph.Node, error) {
+func (imp schemaImporter) newAttrNode(attr *schemaProperty, path schemaPath) (*lpg.Node, error) {
 	newNode := imp.layer.Graph.NewNode([]string{ls.AttributeNodeTerm}, nil)
 	attr.node = newNode
 	return newNode, imp.setNodeProperties(attr, newNode, path)
 }
 
-func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode graph.Node, path schemaPath) error {
+func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode *lpg.Node, path schemaPath) error {
 	//	if len(attr.ID) > 0 {
 	//		ls.SetNodeID(newNode, attr.ID)
 	//		fmt.Println(attr.ID)
@@ -271,7 +271,7 @@ func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode graph.
 	return nil
 }
 
-func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.Node, path schemaPath) error {
+func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode *lpg.Node, path schemaPath) error {
 	labels := newNode.GetLabels()
 	if attr.object != nil {
 		labels.Add(ls.AttributeTypeObject)
@@ -310,8 +310,8 @@ func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.No
 		return nil
 	}
 
-	buildChoices := func(arr []*schemaProperty) ([]graph.Node, error) {
-		elements := make([]graph.Node, 0, len(arr))
+	buildChoices := func(arr []*schemaProperty) ([]*lpg.Node, error) {
+		elements := make([]*lpg.Node, 0, len(arr))
 		for i, x := range arr {
 			node, err := imp.schemaAttrs(x, path, strconv.Itoa(i))
 			if err != nil {
@@ -348,8 +348,8 @@ func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode graph.No
 	return nil
 }
 
-func (imp schemaImporter) linkChildAttrs(attr *schemaProperty, newNode, targetNode graph.Node) {
-	for edges := targetNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+func (imp schemaImporter) linkChildAttrs(attr *schemaProperty, newNode, targetNode *lpg.Node) {
+	for edges := targetNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 		edge := edges.Edge()
 		imp.layer.Graph.NewEdge(newNode, edge.GetTo(), edge.GetLabel(), nil)
 	}

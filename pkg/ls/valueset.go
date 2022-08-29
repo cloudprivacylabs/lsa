@@ -17,8 +17,8 @@ package ls
 import (
 	"fmt"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/opencypher"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // ValuesetLookupRequest specifies an optional list of lookup tables
@@ -141,7 +141,7 @@ type ValuesetInfo struct {
 	ResultValues []string
 
 	// The schemanode containing the valueset info
-	SchemaNode graph.Node
+	SchemaNode *lpg.Node
 }
 
 type ErrInvalidValuesetSpec struct {
@@ -162,12 +162,12 @@ func (e ErrValueset) Error() string {
 }
 
 func init() {
-	RegisterNewDocGraphHook(func(g *graph.OCGraph) {
+	RegisterNewDocGraphHook(func(g *lpg.Graph) {
 		g.AddNodePropertyIndex(ValuesetContextTerm)
 		g.AddNodePropertyIndex(ValuesetContextExprTerm)
 		g.AddNodePropertyIndex(ValuesetTablesTerm)
 	})
-	RegisterNewLayerGraphHook(func(g *graph.OCGraph) {
+	RegisterNewLayerGraphHook(func(g *lpg.Graph) {
 		g.AddNodePropertyIndex(ValuesetContextTerm)
 		g.AddNodePropertyIndex(ValuesetContextExprTerm)
 		g.AddNodePropertyIndex(ValuesetTablesTerm)
@@ -176,7 +176,7 @@ func init() {
 
 // ValueSetInfoFromNode parses the valueset information from a
 // node. Returns nil if the node does not have valueset info
-func ValuesetInfoFromNode(node graph.Node) (*ValuesetInfo, error) {
+func ValuesetInfoFromNode(node *lpg.Node) (*ValuesetInfo, error) {
 	ctxp := AsPropertyValue(node.GetProperty(ValuesetContextTerm))
 	ctexpr := AsPropertyValue(node.GetProperty(ValuesetContextExprTerm))
 	tablep := AsPropertyValue(node.GetProperty(ValuesetTablesTerm))
@@ -221,7 +221,7 @@ func ValuesetInfoFromNode(node graph.Node) (*ValuesetInfo, error) {
 // vsiDocumentNode can be nil
 //
 // If ValuesetInfo contains RequestValues, the request values
-func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.Node) (map[string]string, error) {
+func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode *lpg.Node) (map[string]string, error) {
 	ret := make(map[string]string)
 	if len(vsi.RequestExprs) > 0 {
 		evalctx := opencypher.NewEvalContext(vsiDocumentNode.GetGraph())
@@ -250,7 +250,7 @@ func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.N
 					if value == nil {
 						continue
 					}
-					if node, ok := value.(graph.Node); ok {
+					if node, ok := value.(*lpg.Node); ok {
 						ret[k], _ = GetRawNodeValue(node)
 					} else {
 						ret[k] = fmt.Sprint(value)
@@ -293,7 +293,7 @@ func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.N
 		} else {
 			// Locate a child node
 			// match (n)-[]->({SchemaNodeIDTerm:reqv})
-			pattern := graph.Pattern{
+			pattern := lpg.Pattern{
 				{
 					Name: "n",
 				},
@@ -304,9 +304,9 @@ func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.N
 				{
 					Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(SchemaNodeIDTerm, reqv)},
 				}}
-			p := graph.PatternSymbol{}
+			p := lpg.PatternSymbol{}
 			p.Add(contextDocumentNode)
-			acc, err := pattern.FindPaths(contextDocumentNode.GetGraph(), map[string]*graph.PatternSymbol{"n": &p})
+			acc, err := pattern.FindPaths(contextDocumentNode.GetGraph(), map[string]*lpg.PatternSymbol{"n": &p})
 			if err != nil {
 				return nil, err
 			}
@@ -327,8 +327,8 @@ func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode graph.N
 }
 
 // GetContextNodes returns the contexts node for the given document
-func (vsi *ValuesetInfo) GetContextNodes(g graph.Graph) ([]graph.Node, error) {
-	pattern := graph.Pattern{
+func (vsi *ValuesetInfo) GetContextNodes(g *lpg.Graph) ([]*lpg.Node, error) {
+	pattern := lpg.Pattern{
 		{
 			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(SchemaNodeIDTerm, vsi.ContextID)},
 		},
@@ -339,8 +339,8 @@ func (vsi *ValuesetInfo) GetContextNodes(g graph.Graph) ([]graph.Node, error) {
 // GetContextNode returns the context node for the given document
 // node. The context node must be the node itself, or an ancestor of
 // the node
-func (vsi *ValuesetInfo) GetContextNode(docNode graph.Node) (graph.Node, error) {
-	pattern := graph.Pattern{
+func (vsi *ValuesetInfo) GetContextNode(docNode *lpg.Node) (*lpg.Node, error) {
+	pattern := lpg.Pattern{
 		{
 			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(SchemaNodeIDTerm, vsi.ContextID)},
 		},
@@ -352,9 +352,9 @@ func (vsi *ValuesetInfo) GetContextNode(docNode graph.Node) (graph.Node, error) 
 			Name: "start",
 		},
 	}
-	ps := graph.PatternSymbol{}
+	ps := lpg.PatternSymbol{}
 	ps.AddNode(docNode)
-	nodes, err := pattern.FindNodes(docNode.GetGraph(), map[string]*graph.PatternSymbol{"start": &ps})
+	nodes, err := pattern.FindNodes(docNode.GetGraph(), map[string]*lpg.PatternSymbol{"start": &ps})
 	if err != nil {
 		return nil, err
 	}
@@ -368,8 +368,8 @@ func (vsi *ValuesetInfo) GetContextNode(docNode graph.Node) (graph.Node, error) 
 }
 
 // GetDocNodes returns the document nodes that are instance of the vsi schema node
-func (vsi *ValuesetInfo) GetDocNodes(g graph.Graph) []graph.Node {
-	pattern := graph.Pattern{
+func (vsi *ValuesetInfo) GetDocNodes(g *lpg.Graph) []*lpg.Node {
+	pattern := lpg.Pattern{
 		{
 			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(SchemaNodeIDTerm, GetNodeID(vsi.SchemaNode))},
 		}}
@@ -385,7 +385,7 @@ func (vsi *ValuesetInfo) GetDocNodes(g graph.Graph) []graph.Node {
 // will search children of contextDocumentNode to find the parent node
 // of resultSchemaNodeID instance and if exists, resultSchemaNodeID
 // itself
-func (vsi *ValuesetInfo) findResultNodes(contextDocumentNode, contextSchemaNode, resultSchemaNode graph.Node) (resultParent graph.Node, resultNodes []graph.Node, err error) {
+func (vsi *ValuesetInfo) findResultNodes(contextDocumentNode, contextSchemaNode, resultSchemaNode *lpg.Node) (resultParent *lpg.Node, resultNodes []*lpg.Node, err error) {
 	path := GetAttributePath(contextSchemaNode, resultSchemaNode)
 	if path == nil {
 		return nil, nil, nil
@@ -398,7 +398,7 @@ func (vsi *ValuesetInfo) findResultNodes(contextDocumentNode, contextSchemaNode,
 
 	resultParent = contextDocumentNode
 	depth := 0
-	IterateDescendants(contextDocumentNode, func(node graph.Node) bool {
+	IterateDescendants(contextDocumentNode, func(node *lpg.Node) bool {
 		schemaNodeID := AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString()
 		if len(schemaNodeID) == 0 {
 			return true
@@ -408,7 +408,7 @@ func (vsi *ValuesetInfo) findResultNodes(contextDocumentNode, contextSchemaNode,
 				depth = i + 1
 				if i == len(idPath)-1 {
 					// Found the node
-					resultNodes = []graph.Node{path[i]}
+					resultNodes = []*lpg.Node{path[i]}
 					return false
 				}
 				// Found an ancestor
@@ -422,7 +422,7 @@ func (vsi *ValuesetInfo) findResultNodes(contextDocumentNode, contextSchemaNode,
 	return
 }
 
-func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, layer *Layer, contextDocumentNode, contextSchemaNode graph.Node, resultSchemaNodeID string, resultValue string) error {
+func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, layer *Layer, contextDocumentNode, contextSchemaNode *lpg.Node, resultSchemaNodeID string, resultValue string) error {
 	// There is value. If there is a node, update it. Otherwise, insert it
 	resultSchemaNode := layer.GetAttributeByID(resultSchemaNodeID)
 	if resultSchemaNode == nil {
@@ -452,7 +452,7 @@ func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, l
 				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
 			}
 		case "property":
-			err := builder.RawValueAsProperty(resultSchemaNode, []graph.Node{parent}, resultValue)
+			err := builder.RawValueAsProperty(resultSchemaNode, []*lpg.Node{parent}, resultValue)
 			if err != nil {
 				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
 			}
@@ -468,7 +468,7 @@ func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, l
 	return nil
 }
 
-func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilder, layer *Layer, contextDocumentNode, contextSchemaNode graph.Node, result ValuesetLookupResponse) error {
+func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilder, layer *Layer, contextDocumentNode, contextSchemaNode *lpg.Node, result ValuesetLookupResponse) error {
 	if len(result.KeyValues) == 0 {
 		return nil
 	}
@@ -523,7 +523,7 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilde
 }
 
 // ProcessByContextNode processes the value set of the given context  node and the schema node containing the vsi
-func (prc *ValuesetProcessor) ProcessByContextNode(ctx *Context, builder GraphBuilder, contextDocNode, contextSchemaNode, vsiDocNode graph.Node, vsi *ValuesetInfo) error {
+func (prc *ValuesetProcessor) ProcessByContextNode(ctx *Context, builder GraphBuilder, contextDocNode, contextSchemaNode, vsiDocNode *lpg.Node, vsi *ValuesetInfo) error {
 	kv, err := vsi.GetRequest(contextDocNode, vsiDocNode)
 	if err != nil {
 		return err
@@ -550,7 +550,7 @@ func (prc *ValuesetProcessor) ProcessByContextNode(ctx *Context, builder GraphBu
 }
 
 // Process processes the value set of the given context document node and the schema node containing the vsi
-func (prc *ValuesetProcessor) Process(ctx *Context, builder GraphBuilder, vsiDocNode, contextSchemaNode graph.Node, vsi *ValuesetInfo) error {
+func (prc *ValuesetProcessor) Process(ctx *Context, builder GraphBuilder, vsiDocNode, contextSchemaNode *lpg.Node, vsi *ValuesetInfo) error {
 	contextDocNode, err := vsi.GetContextNode(vsiDocNode)
 	if err != nil {
 		return err
@@ -583,8 +583,8 @@ func (prc *ValuesetProcessor) init() error {
 		return nil
 	}
 	var err error
-	seen := make(map[graph.Node]struct{})
-	scan := func(nodes graph.NodeIterator) {
+	seen := make(map[*lpg.Node]struct{})
+	scan := func(nodes lpg.NodeIterator) {
 		for nodes.Next() {
 			node := nodes.Node()
 			if _, exists := seen[node]; exists {

@@ -20,14 +20,14 @@ import (
 	"strings"
 
 	"github.com/bserdar/jsonom"
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // ExportOptions are used to produce the output from the document
 type ExportOptions struct {
 	// BuildNodeKeyFunc builds a node key from the node
-	BuildNodeKeyFunc func(graph.Node) (string, bool, error)
+	BuildNodeKeyFunc func(*lpg.Node) (string, bool, error)
 
 	// If ExportTypeProperty is set, exports "@type" properties that
 	// have non-LS related types
@@ -38,17 +38,17 @@ type ExportOptions struct {
 // schema node and the doc node. If the doc node does not have a
 // schema node, it is not exported. The function `f` should decide
 // what key to use
-func GetBuildNodeKeyBySchemaNodeFunc(f func(schemaNode, docNode graph.Node) (string, bool, error)) func(graph.Node) (string, bool, error) {
-	return func(node graph.Node) (string, bool, error) {
-		schemaNodes := graph.TargetNodes(node.GetEdgesWithLabel(graph.OutgoingEdge, ls.InstanceOfTerm))
+func GetBuildNodeKeyBySchemaNodeFunc(f func(schemaNode, docNode *lpg.Node) (string, bool, error)) func(*lpg.Node) (string, bool, error) {
+	return func(node *lpg.Node) (string, bool, error) {
+		schemaNodes := lpg.TargetNodes(node.GetEdgesWithLabel(lpg.OutgoingEdge, ls.InstanceOfTerm))
 		if len(schemaNodes) != 1 {
 			return "", false, nil
 		}
-		return f(schemaNodes[0].(graph.Node), node)
+		return f(schemaNodes[0], node)
 	}
 }
 
-func (options ExportOptions) BuildNodeKey(node graph.Node) (string, bool, error) {
+func (options ExportOptions) BuildNodeKey(node *lpg.Node) (string, bool, error) {
 	if options.BuildNodeKeyFunc != nil {
 		return options.BuildNodeKeyFunc(node)
 	}
@@ -58,7 +58,7 @@ func (options ExportOptions) BuildNodeKey(node graph.Node) (string, bool, error)
 // DefaultBuildNodeKeyFunc returns the attribute name term property
 // from the node if it exists. If not, it looks at the attributeName
 // of the node reached by instanceOf edge. If none found it return false
-func DefaultBuildNodeKeyFunc(node graph.Node) (string, bool, error) {
+func DefaultBuildNodeKeyFunc(node *lpg.Node) (string, bool, error) {
 	v := ls.AsPropertyValue(node.GetProperty(ls.AttributeNameTerm))
 	if v != nil {
 		if v.IsString() {
@@ -101,8 +101,8 @@ func (e ErrInvalidBooleanValue) Error() string {
 
 // Export the document subtree to the target. The returned result is
 // OM, which respects element ordering
-func Export(node graph.Node, options ExportOptions) (jsonom.Node, error) {
-	return exportJSON(node, options, map[graph.Node]struct{}{})
+func Export(node *lpg.Node, options ExportOptions) (jsonom.Node, error) {
+	return exportJSON(node, options, map[*lpg.Node]struct{}{})
 }
 
 type ErrValueExpected struct {
@@ -123,7 +123,7 @@ func filterTypes(types []string) []string {
 	return ret
 }
 
-func exportJSON(node graph.Node, options ExportOptions, seen map[graph.Node]struct{}) (jsonom.Node, error) {
+func exportJSON(node *lpg.Node, options ExportOptions, seen map[*lpg.Node]struct{}) (jsonom.Node, error) {
 	// Loop protection
 	if _, exists := seen[node]; exists {
 		return nil, nil
@@ -158,10 +158,10 @@ func exportJSON(node graph.Node, options ExportOptions, seen map[graph.Node]stru
 		if t := getTypes(); t != nil {
 			ret.Set("@type", t)
 		}
-		gnodes := graph.TargetNodes(node.GetEdgesWithLabel(graph.OutgoingEdge, ls.HasTerm))
-		nodes := make([]graph.Node, 0, len(gnodes))
+		gnodes := lpg.TargetNodes(node.GetEdgesWithLabel(lpg.OutgoingEdge, ls.HasTerm))
+		nodes := make([]*lpg.Node, 0, len(gnodes))
 		for _, node := range gnodes {
-			nodes = append(nodes, node.(graph.Node))
+			nodes = append(nodes, node)
 		}
 		ls.SortNodes(nodes)
 		for _, nextNode := range nodes {
@@ -181,10 +181,10 @@ func exportJSON(node graph.Node, options ExportOptions, seen map[graph.Node]stru
 
 	case types.Has(ls.AttributeTypeArray):
 		ret := jsonom.NewArray()
-		gnodes := graph.TargetNodes(node.GetEdgesWithLabel(graph.OutgoingEdge, ls.HasTerm))
-		nodes := make([]graph.Node, 0, len(gnodes))
+		gnodes := lpg.TargetNodes(node.GetEdgesWithLabel(lpg.OutgoingEdge, ls.HasTerm))
+		nodes := make([]*lpg.Node, 0, len(gnodes))
 		for _, node := range gnodes {
-			nodes = append(nodes, node.(graph.Node))
+			nodes = append(nodes, node)
 		}
 		ls.SortNodes(nodes)
 		for _, nextNode := range nodes {

@@ -3,8 +3,8 @@ package validators
 import (
 	"fmt"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // RequiredTerm validates if a required properties exist.
@@ -23,7 +23,7 @@ var RequiredTerm = ls.NewTerm(ls.LS, "validation/required", false, false, ls.Ove
 type RequiredValidator struct{}
 
 // ValidateValue checks if value is nil. If value is nil and it is required, returns an error
-func (validator RequiredValidator) ValidateValue(value *string, schemaNode graph.Node) error {
+func (validator RequiredValidator) ValidateValue(value *string, schemaNode *lpg.Node) error {
 	if ls.AsPropertyValue(schemaNode.GetProperty(RequiredTerm)).AsString() == "true" && value == nil {
 		return ls.ErrValidation{Validator: RequiredTerm, Msg: "Missing required attribute: " + ls.GetNodeID(schemaNode)}
 	}
@@ -31,7 +31,7 @@ func (validator RequiredValidator) ValidateValue(value *string, schemaNode graph
 }
 
 // ValidateNode checks if value is nil. If value is nil and it is required, returns an error
-func (validator RequiredValidator) ValidateNode(docNode, schemaNode graph.Node) error {
+func (validator RequiredValidator) ValidateNode(docNode, schemaNode *lpg.Node) error {
 	if ls.AsPropertyValue(schemaNode.GetProperty(RequiredTerm)).AsString() == "true" {
 		if docNode == nil {
 			return ls.ErrValidation{Validator: RequiredTerm, Msg: "Missing required attribute: " + ls.GetNodeID(schemaNode)}
@@ -45,7 +45,7 @@ func (validator RequiredValidator) ValidateNode(docNode, schemaNode graph.Node) 
 }
 
 // Validate checks if value is nil. If value is nil and it is required, returns an error
-func (validator RequiredValidator) Validate(docNode, schemaNode graph.Node) error {
+func (validator RequiredValidator) Validate(docNode, schemaNode *lpg.Node) error {
 	if docNode == nil {
 		return nil
 	}
@@ -55,7 +55,7 @@ func (validator RequiredValidator) Validate(docNode, schemaNode graph.Node) erro
 		for _, x := range required {
 			req[x] = struct{}{}
 		}
-		for edges := docNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		for edges := docNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			to := edges.Edge().GetTo()
 			if !to.GetLabels().Has(ls.DocumentNodeTerm) {
 				continue

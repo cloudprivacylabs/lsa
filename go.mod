@@ -15,7 +15,10 @@ require (
 	golang.org/x/text v0.3.7
 )
 
-require github.com/mitchellh/go-homedir v1.1.0
+require (
+	github.com/cloudprivacylabs/lpg v0.0.0-20220827171343-7333d1da9859
+	github.com/mitchellh/go-homedir v1.1.0
+)
 
 require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
@@ -30,12 +33,12 @@ require (
 
 require (
 	github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210803070921-b358b509191a // indirect
-	github.com/cloudprivacylabs/opencypher v1.0.0-beta-5.0.20220820162159-9f4f09c17793
+	github.com/cloudprivacylabs/opencypher v1.0.0-beta-6
 )
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/emirpasic/gods v1.18.0 // indirect
+	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/neo4j/neo4j-go-driver v1.8.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

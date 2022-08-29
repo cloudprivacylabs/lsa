@@ -19,9 +19,9 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type JSONExport struct{}
@@ -36,7 +36,7 @@ params:`)
 }
 
 func (*JSONExport) Run(pipeline *pipeline.PipelineContext) error {
-	for _, node := range graph.Sources(pipeline.Graph) {
+	for _, node := range lpg.Sources(pipeline.Graph) {
 		exportOptions := jsoningest.ExportOptions{}
 		data, err := jsoningest.Export(node, exportOptions)
 		if err != nil {

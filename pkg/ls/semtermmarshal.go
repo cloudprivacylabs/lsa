@@ -18,7 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 // TermMarshaler interface defines JSON and JSONLD unmarshalers for a
@@ -27,8 +27,8 @@ type TermMarshaler interface {
 	// Unmarshal a flattened json-ld object.
 	UnmarshalLd(target *Layer, key string, value interface{}, node *LDNode, allNodes map[string]*LDNode, interner Interner) error
 	// Marshal a property of a node as expanded json-ld
-	MarshalLd(source *Layer, sourceNode graph.Node, key string) (interface{}, error)
-	UnmarshalJSON(target *Layer, key string, value interface{}, node graph.Node, interner Interner) error
+	MarshalLd(source *Layer, sourceNode *lpg.Node, key string) (interface{}, error)
+	UnmarshalJSON(target *Layer, key string, value interface{}, node *lpg.Node, interner Interner) error
 }
 
 // GetTermMarshaler returns the custom marshaler for the term. If
@@ -101,7 +101,7 @@ func (defaultTermMarshaler) UnmarshalLd(target *Layer, key string, value interfa
 }
 
 // MarshalLd marshals an annotation term of a node as expanded json-ld
-func (defaultTermMarshaler) MarshalLd(source *Layer, sourceNode graph.Node, key string) (interface{}, error) {
+func (defaultTermMarshaler) MarshalLd(source *Layer, sourceNode *lpg.Node, key string) (interface{}, error) {
 	var k string
 	if GetTermInfo(key).IsID {
 		k = "@id"
@@ -124,7 +124,7 @@ func (defaultTermMarshaler) MarshalLd(source *Layer, sourceNode graph.Node, key 
 }
 
 // UnmarshalJSON for the default marshaler tries to unmarshal terms as property values
-func (defaultTermMarshaler) UnmarshalJSON(target *Layer, key string, value interface{}, node graph.Node, interner Interner) error {
+func (defaultTermMarshaler) UnmarshalJSON(target *Layer, key string, value interface{}, node *lpg.Node, interner Interner) error {
 	key = interner.Intern(key)
 	switch val := value.(type) {
 	case string, json.Number, float64, bool:

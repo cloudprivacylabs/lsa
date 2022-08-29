@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 // JSONMarshaler marshals/unmarshals a graph
 type JSONMarshaler struct {
-	graph.JSON
+	lpg.JSON
 }
 
 func (JSONMarshaler) propertyUnmarshaler(key string, value json.RawMessage) (string, interface{}, error) {
@@ -40,7 +40,7 @@ func (JSONMarshaler) propertyMarshaler(key string, value interface{}) (string, j
 
 func NewJSONMarshaler(interner Interner) JSONMarshaler {
 	ret := JSONMarshaler{
-		JSON: graph.JSON{
+		JSON: lpg.JSON{
 			Interner: interner,
 		},
 	}
@@ -50,7 +50,7 @@ func NewJSONMarshaler(interner Interner) JSONMarshaler {
 }
 
 // Marshal marshals the graph as a JSON document
-func (m JSONMarshaler) Marshal(g graph.Graph) ([]byte, error) {
+func (m JSONMarshaler) Marshal(g *lpg.Graph) ([]byte, error) {
 	if m.PropertyMarshaler == nil {
 		m.PropertyMarshaler = m.propertyMarshaler
 	}
@@ -62,7 +62,7 @@ func (m JSONMarshaler) Marshal(g graph.Graph) ([]byte, error) {
 }
 
 // Unmarshal unmarshals a graph from JSON input
-func (m JSONMarshaler) Unmarshal(in []byte, targetGraph graph.Graph) error {
+func (m JSONMarshaler) Unmarshal(in []byte, targetGraph *lpg.Graph) error {
 	if m.PropertyUnmarshaler == nil {
 		m.PropertyUnmarshaler = m.propertyUnmarshaler
 	}

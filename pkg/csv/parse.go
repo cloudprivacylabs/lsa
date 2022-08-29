@@ -18,17 +18,17 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type rootNode struct {
-	schemaNode graph.Node
+	schemaNode *lpg.Node
 	id         string
 	children   []ls.ParsedDocNode
 }
 
-func (i rootNode) GetSchemaNode() graph.Node             { return i.schemaNode }
+func (i rootNode) GetSchemaNode() *lpg.Node              { return i.schemaNode }
 func (i rootNode) GetTypeTerm() string                   { return ls.AttributeTypeObject }
 func (i rootNode) GetValue() string                      { return "" }
 func (i rootNode) GetValueTypes() []string               { return nil }
@@ -39,7 +39,7 @@ func (i rootNode) GetAttributeIndex() int                { return 0 }
 func (i rootNode) GetAttributeName() string              { return "" }
 
 type cellNode struct {
-	schemaNode graph.Node
+	schemaNode *lpg.Node
 	value      string
 	name       string
 	index      int
@@ -47,7 +47,7 @@ type cellNode struct {
 	properties map[string]interface{}
 }
 
-func (i cellNode) GetSchemaNode() graph.Node             { return i.schemaNode }
+func (i cellNode) GetSchemaNode() *lpg.Node              { return i.schemaNode }
 func (i cellNode) GetTypeTerm() string                   { return ls.AttributeTypeValue }
 func (i cellNode) GetValue() string                      { return i.value }
 func (i cellNode) GetValueTypes() []string               { return nil }
@@ -60,13 +60,13 @@ func (i cellNode) GetAttributeName() string              { return i.name }
 type Parser struct {
 	OnlySchemaAttributes bool
 	IngestNullValues     bool
-	SchemaNode           graph.Node
+	SchemaNode           *lpg.Node
 	ColumnNames          []string
 }
 
 type parserContext struct {
 	context    *ls.Context
-	schemaNode graph.Node
+	schemaNode *lpg.Node
 	baseID     string
 }
 
@@ -84,10 +84,10 @@ func (ing Parser) parseRow(ctx parserContext, row []string) (ls.ParsedDocNode, e
 		return nil, nil
 	}
 	// Get all attributes
-	var allAttributes []graph.Node
-	attributes := make(map[string][]graph.Node)
+	var allAttributes []*lpg.Node
+	attributes := make(map[string][]*lpg.Node)
 	if ctx.schemaNode != nil {
-		for edges := ctx.schemaNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		for edges := ctx.schemaNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
 			node := edge.GetTo()
 			if !ls.IsAttributeNode(node) {
@@ -118,7 +118,7 @@ func (ing Parser) parseRow(ctx parserContext, row []string) (ls.ParsedDocNode, e
 		if columnIndex < len(ing.ColumnNames) {
 			columnName = ing.ColumnNames[columnIndex]
 		}
-		var schemaNode graph.Node
+		var schemaNode *lpg.Node
 		// if column header exists, assign schemaNode to corresponding value in attributes map
 		if len(columnName) > 0 {
 			schemaNodes := attributes[columnName]
@@ -137,7 +137,7 @@ func (ing Parser) parseRow(ctx parserContext, row []string) (ls.ParsedDocNode, e
 				index:      columnIndex,
 			}
 		} else if ctx.schemaNode != nil || !ing.OnlySchemaAttributes {
-			var schemaNode graph.Node
+			var schemaNode *lpg.Node
 			for _, attr := range allAttributes {
 				p := ls.AsPropertyValue(attr.GetProperty(ls.AttributeIndexTerm))
 				if p == nil {

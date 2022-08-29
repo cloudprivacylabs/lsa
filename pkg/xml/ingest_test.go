@@ -21,8 +21,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
@@ -75,12 +75,12 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 	if err != nil {
 		return fmt.Errorf("%s: %w", graphname, err)
 	}
-	expected := graph.NewOCGraph()
+	expected := lpg.NewGraph()
 	m := ls.JSONMarshaler{}
 	if err := m.Unmarshal(d, expected); err != nil {
 		return fmt.Errorf("%s: %s", graphname, err)
 	}
-	if !graph.CheckIsomorphism(builder.GetGraph(), expected, func(n1, n2 graph.Node) bool {
+	if !lpg.CheckIsomorphism(builder.GetGraph(), expected, func(n1, n2 *lpg.Node) bool {
 		if !n1.GetLabels().IsEqual(n2.GetLabels()) {
 			return false
 		}
@@ -93,7 +93,7 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 			return false
 		}
 		return true
-	}, func(e1, e2 graph.Edge) bool {
+	}, func(e1, e2 *lpg.Edge) bool {
 		return e1.GetLabel() == e2.GetLabel() && ls.IsPropertiesEqual(ls.PropertiesAsMap(e1), ls.PropertiesAsMap(e2))
 	}) {
 		d, _ := m.Marshal(builder.GetGraph())

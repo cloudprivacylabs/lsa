@@ -17,26 +17,26 @@ package ls
 import (
 	"fmt"
 
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 // A CompiledGraph is a graph of compiled schemas
 type CompiledGraph interface {
 	GetCompiledSchema(string) *Layer
 	PutCompiledSchema(*Context, string, *Layer) (*Layer, error)
-	GetGraph() graph.Graph
+	GetGraph() *lpg.Graph
 }
 
 // DefaultCompiledGraph keeps compiled graphs in a map. Zero value of
 // DefaultCompiledGraph is ready to use
 type DefaultCompiledGraph struct {
 	layers map[string]*Layer
-	g      graph.Graph
+	g      *lpg.Graph
 	// schemaNodeMap contains the map of the source layers -> compiled graph nodes
-	schemaNodeMap map[graph.Node]graph.Node
+	schemaNodeMap map[*lpg.Node]*lpg.Node
 }
 
-func (d DefaultCompiledGraph) GetGraph() graph.Graph { return d.g }
+func (d DefaultCompiledGraph) GetGraph() *lpg.Graph { return d.g }
 
 // GetCompiledSchema returns a compiled schema for the reference if known
 func (d DefaultCompiledGraph) GetCompiledSchema(ref string) *Layer {
@@ -46,13 +46,13 @@ func (d DefaultCompiledGraph) GetCompiledSchema(ref string) *Layer {
 	return d.layers[ref]
 }
 
-func (d *DefaultCompiledGraph) copyNode(source graph.Node) graph.Node {
-	newNode := graph.CopyNode(source, d.g, ClonePropertyValueFunc)
+func (d *DefaultCompiledGraph) copyNode(source *lpg.Node) *lpg.Node {
+	newNode := lpg.CopyNode(source, d.g, ClonePropertyValueFunc)
 	SetNodeID(newNode, GetNodeID(source))
 	return newNode
 }
 
-func (d *DefaultCompiledGraph) copyEdge(from, to graph.Node, edge graph.Edge) {
+func (d *DefaultCompiledGraph) copyEdge(from, to *lpg.Node, edge *lpg.Edge) {
 	d.g.NewEdge(from, to, edge.GetLabel(), CloneProperties(edge))
 }
 
@@ -60,7 +60,7 @@ func (d *DefaultCompiledGraph) copyEdge(from, to graph.Node, edge graph.Edge) {
 func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, layer *Layer) (*Layer, error) {
 	if d.layers == nil {
 		d.layers = make(map[string]*Layer)
-		d.schemaNodeMap = make(map[graph.Node]graph.Node)
+		d.schemaNodeMap = make(map[*lpg.Node]*lpg.Node)
 	}
 	if d.g == nil {
 		d.g = NewLayerGraph()
@@ -72,7 +72,7 @@ func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, l
 	newLayer.SetLayerType(SchemaTerm)
 	// attributeMap keeps track of copied attribute nodes. Key belongs
 	// to layer, value belongs to d.g
-	attributeMap := make(map[graph.Node]graph.Node)
+	attributeMap := make(map[*lpg.Node]*lpg.Node)
 	// Copy the root node of the layer into the compiled graph.
 	layerRoot := layer.GetSchemaRootNode()
 
@@ -81,11 +81,11 @@ func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, l
 	attributeMap[layerRoot] = newRoot
 	// newAttributes contains only those attributes that are copied. The
 	// key belongs to layer
-	newAttributes := make(map[graph.Node]struct{})
+	newAttributes := make(map[*lpg.Node]struct{})
 
 	var err error
 	// Copy the attributes in this layer
-	ForEachAttributeNode(layerRoot, func(node graph.Node, _ []graph.Node) bool {
+	ForEachAttributeNode(layerRoot, func(node *lpg.Node, _ []*lpg.Node) bool {
 		attrID := GetNodeID(node)
 		existingAttr := newLayer.GetAttributeByID(attrID)
 		if existingAttr != nil && existingAttr != newRoot {
@@ -104,11 +104,11 @@ func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, l
 		return nil, err
 	}
 	// Iterate all nodes again. This time, link them
-	ForEachAttributeNode(layerRoot, func(node graph.Node, _ []graph.Node) bool {
+	ForEachAttributeNode(layerRoot, func(node *lpg.Node, _ []*lpg.Node) bool {
 		compiledNode := attributeMap[node]
 		_, isNewNode := newAttributes[node]
 
-		for edges := node.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		for edges := node.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			layerEdge := edges.Edge()
 			if IsAttributeNode(layerEdge.GetTo()) {
 				// If either the from or to is in newAttributes, then we need to add this edge
@@ -120,7 +120,7 @@ func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, l
 				// Link to a non-attribute node
 				// If this is a new node, we have to copy this subtree
 				if isNewNode {
-					graph.CopySubgraph(layerEdge.GetTo(), d.g, ClonePropertyValueFunc, d.schemaNodeMap)
+					lpg.CopySubgraph(layerEdge.GetTo(), d.g, ClonePropertyValueFunc, d.schemaNodeMap)
 					d.g.NewEdge(compiledNode, d.schemaNodeMap[layerEdge.GetTo()], layerEdge.GetLabel(), nil)
 				}
 			}
@@ -159,11 +159,11 @@ type compilerContext struct {
 }
 
 // IsCompilationArtifact returns true if the edge is a compilation artifact
-func IsCompilationArtifact(edge graph.Edge) bool {
+func IsCompilationArtifact(edge *lpg.Edge) bool {
 	return AsPropertyValue(edge.GetProperty("compilationArtifact")).AsString() == "true"
 }
 
-func (c *compilerContext) blankNodeNamer(node graph.Node) {
+func (c *compilerContext) blankNodeNamer(node *lpg.Node) {
 	SetNodeID(node, fmt.Sprintf("_b:%d", c.blankNodeID))
 	c.blankNodeID++
 }
@@ -235,7 +235,7 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 func (compiler *Compiler) compileReferences(context *Context, ctx *compilerContext) error {
 	context.GetLogger().Debug(map[string]interface{}{"mth": "compileReferences"})
 	// Process until there are reference nodes left
-	refset := graph.NewStringSet(AttributeTypeReference)
+	refset := lpg.NewStringSet(AttributeTypeReference)
 	for {
 		refNodes := compiler.CGraph.GetGraph().GetNodesWithAllLabels(refset)
 		if !refNodes.Next() {
@@ -284,7 +284,7 @@ func (compiler *Compiler) compileReferences(context *Context, ctx *compilerConte
 	return nil
 }
 
-func (compiler *Compiler) linkReference(context *Context, refNode graph.Node, schema *Layer, ref string) error {
+func (compiler *Compiler) linkReference(context *Context, refNode *lpg.Node, schema *Layer, ref string) error {
 	// This is no longer a reference node
 	linkTo := schema.GetSchemaRootNode()
 	types := refNode.GetLabels()
@@ -297,7 +297,7 @@ func (compiler *Compiler) linkReference(context *Context, refNode graph.Node, sc
 	}
 	refNode.SetProperty(ReferenceTerm, StringPropertyValue(ReferenceTerm, ref))
 	// Attach the node to all the children of the compiled node
-	for edges := linkTo.GetEdges(graph.OutgoingEdge); edges.Next(); {
+	for edges := linkTo.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 		edge := edges.Edge()
 		CloneEdge(refNode, edge.GetTo(), edge, compiler.CGraph.GetGraph())
 		// Mark all edges that connect the original schema node as
@@ -309,11 +309,11 @@ func (compiler *Compiler) linkReference(context *Context, refNode graph.Node, sc
 	return nil
 }
 
-func (compiler Compiler) resolveCompositions(context *Context, root graph.Node) error {
+func (compiler Compiler) resolveCompositions(context *Context, root *lpg.Node) error {
 	// Process all composition nodes
-	completed := map[graph.Node]struct{}{}
+	completed := map[*lpg.Node]struct{}{}
 	var err error
-	ForEachAttributeNode(root, func(n graph.Node, _ []graph.Node) bool {
+	ForEachAttributeNode(root, func(n *lpg.Node, _ []*lpg.Node) bool {
 		if n.GetLabels().Has(AttributeTypeComposite) {
 			if _, processed := completed[n]; !processed {
 				if x := compiler.resolveComposition(context, n, completed); x != nil {
@@ -327,10 +327,10 @@ func (compiler Compiler) resolveCompositions(context *Context, root graph.Node) 
 	return err
 }
 
-func (compiler Compiler) resolveComposition(context *Context, compositeNode graph.Node, completed map[graph.Node]struct{}) error {
+func (compiler Compiler) resolveComposition(context *Context, compositeNode *lpg.Node, completed map[*lpg.Node]struct{}) error {
 	completed[compositeNode] = struct{}{}
 	// At the end of this process, composite node will be converted into an object node
-	for edges := compositeNode.GetEdgesWithLabel(graph.OutgoingEdge, AllOfTerm); edges.Next(); {
+	for edges := compositeNode.GetEdgesWithLabel(lpg.OutgoingEdge, AllOfTerm); edges.Next(); {
 		allOfEdge := edges.Edge()
 	top:
 		component := allOfEdge.GetTo()
@@ -340,8 +340,8 @@ func (compiler Compiler) resolveComposition(context *Context, compositeNode grap
 			//    compositeNode ---> component --> attributes
 			//  Output:
 			//    compositeNode --> attributes
-			rmv := make([]graph.Edge, 0)
-			for edges := component.GetEdges(graph.OutgoingEdge); edges.Next(); {
+			rmv := make([]*lpg.Edge, 0)
+			for edges := component.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 				edge := edges.Edge()
 				CloneEdge(compositeNode, edge.GetTo(), edge, compiler.CGraph.GetGraph())
 				rmv = append(rmv, edge)
@@ -392,7 +392,7 @@ func (compiler Compiler) resolveComposition(context *Context, compositeNode grap
 // CompileTerms compiles all node and edge terms of the layer
 func CompileTerms(layer *Layer) error {
 	var err error
-	IterateDescendants(layer.GetSchemaRootNode(), func(node graph.Node) bool {
+	IterateDescendants(layer.GetSchemaRootNode(), func(node *lpg.Node) bool {
 		// Compile all non-attribute nodes
 		if !IsAttributeNode(node) {
 			if err = GetNodeCompiler(GetNodeID(node)).CompileNode(layer, node); err != nil {
@@ -411,7 +411,7 @@ func CompileTerms(layer *Layer) error {
 		if err != nil {
 			return false
 		}
-		for edges := node.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		for edges := node.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
 			if err = GetEdgeCompiler(edge.GetLabel()).CompileEdge(layer, edge); err != nil {
 				return false
@@ -430,7 +430,7 @@ func CompileTerms(layer *Layer) error {
 			return false
 		}
 		return true
-	}, func(edge graph.Edge) EdgeFuncResult {
+	}, func(edge *lpg.Edge) EdgeFuncResult {
 		return FollowEdgeResult
 	}, false)
 	return err

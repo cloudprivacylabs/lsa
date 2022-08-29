@@ -17,11 +17,11 @@ package ls
 import (
 	"testing"
 
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 func TestWalkNodesInEntity(t *testing.T) {
-	g := graph.NewOCGraph()
+	g := lpg.NewGraph()
 	n1 := g.NewNode([]string{"root", DocumentNodeTerm}, nil)
 	n2 := g.NewNode([]string{"eroot", DocumentNodeTerm}, map[string]interface{}{
 		EntitySchemaTerm: StringPropertyValue(EntitySchemaTerm, "schA"),
@@ -46,13 +46,13 @@ func TestWalkNodesInEntity(t *testing.T) {
 	g.NewEdge(n2, n7, "", nil)
 	g.NewEdge(n7, n6, "", nil)
 
-	result := make([]graph.Node, 0)
-	accumulate := func(n graph.Node) bool {
+	result := make([]*lpg.Node, 0)
+	accumulate := func(n *lpg.Node) bool {
 		result = append(result, n)
 		return true
 	}
 	WalkNodesInEntity(n3, accumulate)
-	for _, n := range []graph.Node{n3, n4, n5, n7, n2} {
+	for _, n := range []*lpg.Node{n3, n4, n5, n7, n2} {
 		found := 0
 		for _, x := range result {
 			if x == n {
