@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 var JSONBooleanTerm = ls.NewTerm(JSON, "boolean", false, false, ls.OverrideComposition, struct {
@@ -36,7 +36,7 @@ var XMLBooleanTerm = ls.NewTerm(XSD, "boolean", false, false, ls.OverrideComposi
 
 type JSONBooleanParser struct{}
 
-func (JSONBooleanParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (JSONBooleanParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if value == "false" {
 		return false, nil
 	}
@@ -46,7 +46,7 @@ func (JSONBooleanParser) GetNativeValue(value string, node graph.Node) (interfac
 	return nil, ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm, Value: value}
 }
 
-func (JSONBooleanParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (JSONBooleanParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}
@@ -68,7 +68,7 @@ func (JSONBooleanParser) FormatNativeValue(newValue, oldValue interface{}, node 
 
 type XMLBooleanParser struct{}
 
-func (XMLBooleanParser) GetNativeValue(value string, node graph.Node) (interface{}, error) {
+func (XMLBooleanParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if strings.ToLower(value) == "false" || value == "0" {
 		return false, nil
 	}
@@ -78,7 +78,7 @@ func (XMLBooleanParser) GetNativeValue(value string, node graph.Node) (interface
 	return nil, ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XMLBooleanTerm, Value: value}
 }
 
-func (XMLBooleanParser) FormatNativeValue(newValue, oldValue interface{}, node graph.Node) (string, error) {
+func (XMLBooleanParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
 	if newValue == nil {
 		return "", nil
 	}

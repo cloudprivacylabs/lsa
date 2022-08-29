@@ -15,19 +15,19 @@
 package ls
 
 import (
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 // GetSliceByTermsFunc is used in the Slice function to select nodes
 // by the properties it contains. If includeAttributeNodes is true,
 // attributes nodes are included unconditionally even though the node
 // does not contain any of the terms.
-func GetSliceByTermsFunc(includeTerms []string, includeAttributeNodes bool) func(*Layer, graph.Node) graph.Node {
+func GetSliceByTermsFunc(includeTerms []string, includeAttributeNodes bool) func(*Layer, *lpg.Node) *lpg.Node {
 	incl := make(map[string]struct{})
 	for _, x := range includeTerms {
 		incl[x] = struct{}{}
 	}
-	return func(layer *Layer, nd graph.Node) graph.Node {
+	return func(layer *Layer, nd *lpg.Node) *lpg.Node {
 		includeNode := false
 		if includeAttributeNodes && IsAttributeNode(nd) {
 			includeNode = true
@@ -54,11 +54,11 @@ func GetSliceByTermsFunc(includeTerms []string, includeAttributeNodes bool) func
 }
 
 // IncludeAllNodesInSliceFunc includes all the nodes in the slice
-var IncludeAllNodesInSliceFunc = func(layer *Layer, nd graph.Node) graph.Node {
+var IncludeAllNodesInSliceFunc = func(layer *Layer, nd *lpg.Node) *lpg.Node {
 	return CloneNode(nd, layer.Graph)
 }
 
-func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, graph.Node) graph.Node) *Layer {
+func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, *lpg.Node) *lpg.Node) *Layer {
 	ret := NewLayer()
 	ret.SetLayerType(layerType)
 
@@ -70,8 +70,8 @@ func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, graph.Node) 
 	if rootNode == nil {
 		rootNode = CloneNode(sourceRoot, ret.Graph)
 	}
-	nodeMap := make(map[graph.Node]graph.Node)
-	for targets := sourceRoot.GetEdges(graph.OutgoingEdge); targets.Next(); {
+	nodeMap := make(map[*lpg.Node]*lpg.Node)
+	for targets := sourceRoot.GetEdges(lpg.OutgoingEdge); targets.Next(); {
 		edge := targets.Edge()
 		if IsAttributeTreeEdge(edge) {
 			newNode := slice(ret, edge.GetTo(), nodeFilter, nodeMap)
@@ -84,7 +84,7 @@ func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, graph.Node) 
 	return ret
 }
 
-func slice(targetLayer *Layer, sourceNode graph.Node, nodeFilter func(*Layer, graph.Node) graph.Node, nodeMap map[graph.Node]graph.Node) graph.Node {
+func slice(targetLayer *Layer, sourceNode *lpg.Node, nodeFilter func(*Layer, *lpg.Node) *lpg.Node, nodeMap map[*lpg.Node]*lpg.Node) *lpg.Node {
 	// If the sourceNode was seen before, link to it
 	if tgt, ok := nodeMap[sourceNode]; ok {
 		return tgt
@@ -95,7 +95,7 @@ func slice(targetLayer *Layer, sourceNode graph.Node, nodeFilter func(*Layer, gr
 		nodeMap[sourceNode] = targetNode
 	}
 
-	for edges := sourceNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+	for edges := sourceNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 		edge := edges.Edge()
 		newTo := slice(targetLayer, edge.GetTo(), nodeFilter, nodeMap)
 		if newTo != nil {

@@ -19,7 +19,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 // IngestAs constants
@@ -58,7 +58,7 @@ func (n NodePath) Append(i interface{}) NodePath {
 }
 
 type ParsedDocNode interface {
-	GetSchemaNode() graph.Node
+	GetSchemaNode() *lpg.Node
 
 	// Returns value, object, array
 	GetTypeTerm() string
@@ -87,21 +87,21 @@ type HasLabels interface {
 
 type ingestCursor struct {
 	input  []ParsedDocNode
-	output []graph.Node
+	output []*lpg.Node
 }
 
 func (i ingestCursor) getInput() ParsedDocNode {
 	return i.input[len(i.input)-1]
 }
 
-func (i ingestCursor) getOutput() graph.Node {
+func (i ingestCursor) getOutput() *lpg.Node {
 	if len(i.output) == 0 {
 		return nil
 	}
 	return i.output[len(i.output)-1]
 }
 
-func Ingest(builder GraphBuilder, root ParsedDocNode) (graph.Node, error) {
+func Ingest(builder GraphBuilder, root ParsedDocNode) (*lpg.Node, error) {
 	cursor := ingestCursor{
 		input: []ParsedDocNode{root},
 	}
@@ -110,7 +110,7 @@ func Ingest(builder GraphBuilder, root ParsedDocNode) (graph.Node, error) {
 }
 
 // GetIngestAs returns "node", "edge", "property", or "none" based on IngestAsTerm
-func GetIngestAs(schemaNode graph.Node) string {
+func GetIngestAs(schemaNode *lpg.Node) string {
 	if schemaNode == nil {
 		return "node"
 	}
@@ -125,18 +125,18 @@ func GetIngestAs(schemaNode graph.Node) string {
 	return "node"
 }
 
-func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.Node, error) {
+func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, *lpg.Node, error) {
 	root := cursor.getInput()
 	schemaNode := root.GetSchemaNode()
 	typeTerm := root.GetTypeTerm()
-	setID := func(node graph.Node) {
+	setID := func(node *lpg.Node) {
 		if node != nil {
 			if id := root.GetID(); len(id) > 0 {
 				SetNodeID(node, id)
 			}
 		}
 	}
-	setLabels := func(node graph.Node) {
+	setLabels := func(node *lpg.Node) {
 		lbl, ok := root.(HasLabels)
 		if !ok {
 			return
@@ -145,7 +145,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 		labels.Add(lbl.GetLabels()...)
 		node.SetLabels(labels)
 	}
-	setProp := func(node graph.Node) {
+	setProp := func(node *lpg.Node) {
 		node.SetProperty(AttributeIndexTerm, StringPropertyValue(AttributeIndexTerm, strconv.Itoa(root.GetAttributeIndex())))
 		if s := root.GetAttributeName(); len(s) > 0 {
 			node.SetProperty(AttributeNameTerm, StringPropertyValue(AttributeNameTerm, s))
@@ -156,7 +156,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 	}
 	hasData := false
 	if typeTerm == AttributeTypeValue {
-		setValue := func(node graph.Node) error {
+		setValue := func(node *lpg.Node) error {
 			SetRawNodeValue(node, root.GetValue())
 			return nil
 		}
@@ -166,7 +166,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 		if hn {
 			nativeValue, hasNativeValue = nvi.GetNativeValue()
 			if hasNativeValue {
-				setValue = func(node graph.Node) error {
+				setValue = func(node *lpg.Node) error {
 					return SetNodeValue(node, nativeValue)
 				}
 			}
@@ -248,7 +248,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, graph.No
 		if node != nil {
 			n := child.GetAttributeIndex()
 			if newCursor.getOutput() != nil {
-				n = newCursor.getOutput().GetEdges(graph.OutgoingEdge).MaxSize() - 1
+				n = newCursor.getOutput().GetEdges(lpg.OutgoingEdge).MaxSize() - 1
 			}
 			if n == -1 {
 				n = child.GetAttributeIndex()

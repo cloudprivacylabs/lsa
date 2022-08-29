@@ -17,8 +17,8 @@ package transform
 import (
 	"fmt"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type ErrReingest struct {
@@ -34,21 +34,21 @@ func (e ErrReingest) Error() string {
 
 func (e ErrReingest) Unwrap() error { return e.Wrapped }
 
-func Reingest(ctx *ls.Context, sourceNode graph.Node, target ls.GraphBuilder, variant *ls.Layer) error {
-	nodeMap := make(map[graph.Node]graph.Node)
-	graphPath := make([]graph.Node, 0, 16)
+func Reingest(ctx *ls.Context, sourceNode *lpg.Node, target ls.GraphBuilder, variant *ls.Layer) error {
+	nodeMap := make(map[*lpg.Node]*lpg.Node)
+	graphPath := make([]*lpg.Node, 0, 16)
 	err := reingestNode(ctx, sourceNode, target, variant, graphPath, nodeMap)
 	return err
 }
 
-func reingestNode(ctx *ls.Context, sourceNode graph.Node, target ls.GraphBuilder, variant *ls.Layer, graphPath []graph.Node, nodeMap map[graph.Node]graph.Node) error {
+func reingestNode(ctx *ls.Context, sourceNode *lpg.Node, target ls.GraphBuilder, variant *ls.Layer, graphPath []*lpg.Node, nodeMap map[*lpg.Node]*lpg.Node) error {
 	// Node processed already?
 	if _, exists := nodeMap[sourceNode]; exists {
 		return nil
 	}
 
 	schemaNodeID := ls.AsPropertyValue(sourceNode.GetProperty(ls.SchemaNodeIDTerm)).AsString()
-	var schemaNode graph.Node
+	var schemaNode *lpg.Node
 	if len(schemaNodeID) > 0 {
 		schemaNode = variant.GetAttributeByID(schemaNodeID)
 	}
@@ -63,7 +63,7 @@ func reingestNode(ctx *ls.Context, sourceNode graph.Node, target ls.GraphBuilder
 			return ErrReingest{Wrapped: err, NodeID: nodeID, SchemaNodeID: schemaNodeID, Msg: "Cannot get node value"}
 		}
 	}
-	var parentNode graph.Node
+	var parentNode *lpg.Node
 	if len(graphPath) > 0 {
 		parentNode = graphPath[len(graphPath)-1]
 	}
@@ -103,7 +103,7 @@ func reingestNode(ctx *ls.Context, sourceNode graph.Node, target ls.GraphBuilder
 		} else {
 			typeTerm = ls.AttributeTypeArray
 		}
-		var newNode graph.Node
+		var newNode *lpg.Node
 		switch ls.GetIngestAs(schemaNode) {
 		case "node":
 			_, node, err := target.CollectionAsNode(schemaNode, parentNode, typeTerm)
@@ -121,7 +121,7 @@ func reingestNode(ctx *ls.Context, sourceNode graph.Node, target ls.GraphBuilder
 			nodeMap[sourceNode] = edge.GetTo()
 			newNode = edge.GetTo()
 		}
-		for edges := sourceNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		for edges := sourceNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
 			node := edge.GetTo()
 			if !node.HasLabel(ls.DocumentNodeTerm) {

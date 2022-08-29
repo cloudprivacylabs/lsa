@@ -19,9 +19,9 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 var ErrMultipleNodesMatched = errors.New("Multiple nodes match query")
@@ -66,14 +66,14 @@ func (wr *Writer) WriteHeader(writer *csv.Writer) error {
 	return writer.Write(c)
 }
 
-func (wr *Writer) BuildRow(root graph.Node) ([]string, error) {
+func (wr *Writer) BuildRow(root *lpg.Node) ([]string, error) {
 	if err := wr.parseColumnQueries(); err != nil {
 		return nil, err
 	}
 
 	row := make([]string, len(wr.Columns))
 
-	for edges := root.GetEdges(graph.OutgoingEdge); edges.Next(); {
+	for edges := root.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 		node := edges.Edge().GetTo()
 		if !node.HasLabel(ls.DocumentNodeTerm) {
 			continue
@@ -113,7 +113,7 @@ func (wr *Writer) BuildRow(root graph.Node) ([]string, error) {
 			return nil, ErrMultipleNodesMatched
 		}
 		for _, v := range rs.Rows[0] {
-			node, ok := v.Get().(graph.Node)
+			node, ok := v.Get().(*lpg.Node)
 			if !ok {
 				return nil, fmt.Errorf("Expecting a node in resultset")
 			}
@@ -124,7 +124,7 @@ func (wr *Writer) BuildRow(root graph.Node) ([]string, error) {
 	return row, nil
 }
 
-func (wr *Writer) WriteRow(writer *csv.Writer, root graph.Node) error {
+func (wr *Writer) WriteRow(writer *csv.Writer, root *lpg.Node) error {
 	row, err := wr.BuildRow(root)
 	if err != nil {
 		return nil
@@ -147,10 +147,10 @@ func (wr *Writer) parseColumnQueries() error {
 	return nil
 }
 
-func (wr *Writer) WriteRows(writer *csv.Writer, g graph.Graph) error {
-	var roots []graph.Node
+func (wr *Writer) WriteRows(writer *csv.Writer, g *lpg.Graph) error {
+	var roots []*lpg.Node
 	if len(wr.RowRootQuery) == 0 {
-		roots = graph.Sources(g)
+		roots = lpg.Sources(g)
 	} else {
 		evalctx := opencypher.NewEvalContext(g)
 		v, err := opencypher.ParseAndEvaluate(wr.RowRootQuery, evalctx)
@@ -164,7 +164,7 @@ func (wr *Writer) WriteRows(writer *csv.Writer, g graph.Graph) error {
 		for _, row := range rs.Rows {
 			if len(row) == 1 {
 				for _, v := range row {
-					if node, ok := v.Get().(graph.Node); ok {
+					if node, ok := v.Get().(*lpg.Node); ok {
 						roots = append(roots, node)
 					} else {
 						return fmt.Errorf("Expecting a node in resultset")

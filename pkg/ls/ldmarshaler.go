@@ -17,7 +17,7 @@ package ls
 import (
 	"fmt"
 
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 // LDMarshaler renders a graph in JSON-LD flattened format
@@ -29,22 +29,22 @@ type LDMarshaler struct {
 	//
 	// If not set, the default generator function uses the string node
 	// id, or _b:<n> if the node does not have an id.
-	NodeIDGeneratorFunc func(graph.Node) string
+	NodeIDGeneratorFunc func(*lpg.Node) string
 
 	// If set, generates edge labels for the given edge. If it is not set,
 	// the default is to use the edge label. If edge does not have a
 	// label,
-	EdgeLabelGeneratorFunc func(graph.Edge) string
+	EdgeLabelGeneratorFunc func(*lpg.Edge) string
 }
 
-func (rd *LDMarshaler) Marshal(input graph.Graph) interface{} {
+func (rd *LDMarshaler) Marshal(input *lpg.Graph) interface{} {
 	type outputNode struct {
 		id     string
 		ldNode map[string]interface{}
 	}
 	blankNodeId := 0
 	// Assign IDs to all nodes
-	nodeIdMap := make(map[graph.Node]outputNode)
+	nodeIdMap := make(map[*lpg.Node]outputNode)
 	for nodes := input.GetNodes(); nodes.Next(); {
 		node := nodes.Node()
 		var idstr string
@@ -87,20 +87,11 @@ func (rd *LDMarshaler) Marshal(input graph.Graph) interface{} {
 				onode.ldNode[NodeValueTerm] = v
 			}
 		}
-		if prop, ok := gnode.(propertiesSupport); ok {
-			for key, pvalue := range prop.GetProperties() {
-				if pvalue.IsString() {
-					onode.ldNode[key] = pvalue.AsString()
-				} else if pvalue.IsStringSlice() {
-					onode.ldNode[key] = pvalue.AsInterfaceSlice()
-				}
-			}
-		}
 	}
 
 	// Process outgoing edges
 	for gnode, onode := range nodeIdMap {
-		for edges := gnode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		for edges := gnode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
 			var labelStr string
 			if rd.EdgeLabelGeneratorFunc != nil {
@@ -188,7 +179,7 @@ func getValuesOrIDs(in interface{}) (value string, values, ids []string, err err
 }
 
 // UnmarshalJSONLDGraph Unmarshals a graph in JSON-LD format
-func UnmarshalJSONLDGraph(input interface{}, target graph.Graph, interner Interner) error {
+func UnmarshalJSONLDGraph(input interface{}, target *lpg.Graph, interner Interner) error {
 	if interner == nil {
 		interner = NewInterner()
 	}

@@ -20,15 +20,15 @@ import (
 
 	"github.com/bserdar/jsonom"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
-func IngestBytes(ctx *ls.Context, baseID string, input []byte, parser Parser, builder ls.GraphBuilder) (graph.Node, error) {
+func IngestBytes(ctx *ls.Context, baseID string, input []byte, parser Parser, builder ls.GraphBuilder) (*lpg.Node, error) {
 	return IngestStream(ctx, baseID, bytes.NewReader(input), parser, builder)
 }
 
-func IngestStream(ctx *ls.Context, baseID string, input io.Reader, parser Parser, builder ls.GraphBuilder) (graph.Node, error) {
+func IngestStream(ctx *ls.Context, baseID string, input io.Reader, parser Parser, builder ls.GraphBuilder) (*lpg.Node, error) {
 	node, err := jsonom.UnmarshalReader(input, ctx.GetInterner())
 	if err != nil {
 		return nil, err

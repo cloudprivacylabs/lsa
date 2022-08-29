@@ -3,8 +3,8 @@ package validators
 import (
 	"fmt"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // EnumTerm is used for enumeration validator
@@ -57,7 +57,7 @@ func (validator EnumValidator) validateValue(value *string, options []string) er
 	return ls.ErrValidation{Validator: "EnumTerm", Msg: "None of the options match", Value: fmt.Sprint(value)}
 }
 
-func (validator EnumValidator) ValidateValue(value *string, schemaNode graph.Node) error {
+func (validator EnumValidator) ValidateValue(value *string, schemaNode *lpg.Node) error {
 	options := ls.AsPropertyValue(schemaNode.GetProperty(EnumTerm))
 	if options == nil {
 		return ls.ErrInvalidValidator{Validator: EnumTerm, Msg: "Invalid enum options"}
@@ -69,7 +69,7 @@ func (validator EnumValidator) ValidateValue(value *string, schemaNode graph.Nod
 }
 
 // ValidateNode validates the node value if it is non-nil
-func (validator EnumValidator) ValidateNode(docNode, schemaNode graph.Node) error {
+func (validator EnumValidator) ValidateNode(docNode, schemaNode *lpg.Node) error {
 	if docNode == nil {
 		return nil
 	}

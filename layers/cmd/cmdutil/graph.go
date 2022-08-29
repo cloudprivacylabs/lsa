@@ -24,12 +24,12 @@ import (
 	"github.com/bserdar/jsonstream"
 	"github.com/spf13/cobra"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/dot"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
-func ReadGraph(gfile []string, interner ls.Interner, inputFormat string) (graph.Graph, error) {
+func ReadGraph(gfile []string, interner ls.Interner, inputFormat string) (*lpg.Graph, error) {
 	if inputFormat == "json" {
 		return ReadJSONGraph(gfile, interner)
 	}
@@ -63,7 +63,7 @@ func ReadGraphFromReader(ctx context.Context, reader io.Reader, interner ls.Inte
 				if err == io.EOF {
 					return
 				}
-				target := graph.NewOCGraph()
+				target := lpg.NewGraph()
 				switch inputFormat {
 				case "jsonld":
 					var v interface{}
@@ -73,7 +73,7 @@ func ReadGraphFromReader(ctx context.Context, reader io.Reader, interner ls.Inte
 						}
 						break
 					}
-					g := graph.NewOCGraph()
+					g := lpg.NewGraph()
 					err := ls.UnmarshalJSONLDGraph(v, g, interner)
 					ret <- GraphStream{
 						G:   g,
@@ -98,7 +98,7 @@ func ReadGraphFromReader(ctx context.Context, reader io.Reader, interner ls.Inte
 	return ret, nil
 }
 
-func ReadJSONLDGraph(gfile []string, interner ls.Interner) (graph.Graph, error) {
+func ReadJSONLDGraph(gfile []string, interner ls.Interner) (*lpg.Graph, error) {
 	data, err := ReadFileOrStdin(gfile)
 	if err != nil {
 		return nil, err
@@ -107,24 +107,24 @@ func ReadJSONLDGraph(gfile []string, interner ls.Interner) (graph.Graph, error) 
 	if err := json.Unmarshal(data, &v); err != nil {
 		return nil, err
 	}
-	g := graph.NewOCGraph()
+	g := lpg.NewGraph()
 	err = ls.UnmarshalJSONLDGraph(v, g, interner)
 	return g, err
 }
 
-func ReadJSONGraph(gfile []string, interner ls.Interner) (graph.Graph, error) {
+func ReadJSONGraph(gfile []string, interner ls.Interner) (*lpg.Graph, error) {
 	data, err := ReadFileOrStdin(gfile)
 	if err != nil {
 		return nil, err
 	}
-	target := graph.NewOCGraph()
+	target := lpg.NewGraph()
 	m := ls.JSONMarshaler{}
 	err = m.Unmarshal(data, target)
 	return target, err
 }
 
 type GraphStream struct {
-	G   graph.Graph
+	G   *lpg.Graph
 	Err error
 }
 
@@ -146,7 +146,7 @@ func StreamJSONGraph(ctx context.Context, file []string, interner ls.Interner) (
 				if err == io.EOF {
 					return
 				}
-				target := graph.NewOCGraph()
+				target := lpg.NewGraph()
 				m := ls.JSONMarshaler{}
 				err = m.Unmarshal(data, target)
 				ret <- GraphStream{
@@ -184,7 +184,7 @@ func StreamJSONLDGraph(ctx context.Context, file []string, interner ls.Interner)
 					}
 					return
 				}
-				g := graph.NewOCGraph()
+				g := lpg.NewGraph()
 				err = ls.UnmarshalJSONLDGraph(v, g, interner)
 				if err != nil {
 					ret <- GraphStream{
@@ -201,7 +201,7 @@ func StreamJSONLDGraph(ctx context.Context, file []string, interner ls.Interner)
 	return ret, nil
 }
 
-func WriteGraph(cmd *cobra.Command, graph graph.Graph, format string, out io.Writer) error {
+func WriteGraph(cmd *cobra.Command, graph *lpg.Graph, format string, out io.Writer) error {
 	switch format {
 	case "json":
 		m := ls.JSONMarshaler{}

@@ -17,7 +17,7 @@ package ls
 import (
 	"fmt"
 
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 /*
@@ -111,7 +111,7 @@ func (err ErrInvalidForeignKeys) Error() string {
 
 // LinkSpec contains the link field information
 type LinkSpec struct {
-	SchemaNode graph.Node
+	SchemaNode *lpg.Node
 	// The target schema/entity reference, populated from the
 	// `reference` property of the node
 	TargetEntity string
@@ -132,7 +132,7 @@ type LinkSpec struct {
 }
 
 // GetLinkSpec returns a link spec from the node if there is one. The node is a schema node
-func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
+func GetLinkSpec(schemaNode *lpg.Node) (*LinkSpec, error) {
 	if schemaNode == nil {
 		return nil, nil
 	}
@@ -200,8 +200,8 @@ func GetLinkSpec(schemaNode graph.Node) (*LinkSpec, error) {
 }
 
 // FindReference finds the root nodes with entitySchema=spec.Schema, with entityId=fk
-func (spec *LinkSpec) FindReference(entityInfo map[graph.Node]EntityInfo, fk []string) ([]graph.Node, error) {
-	ret := make([]graph.Node, 0)
+func (spec *LinkSpec) FindReference(entityInfo map[*lpg.Node]EntityInfo, fk []string) ([]*lpg.Node, error) {
+	ret := make([]*lpg.Node, 0)
 	for _, ei := range entityInfo {
 		var exists bool
 		for _, typeName := range ei.GetValueType() {
@@ -232,11 +232,11 @@ func (spec *LinkSpec) FindReference(entityInfo map[graph.Node]EntityInfo, fk []s
 }
 
 // GetForeignKeys returns the foreign keys for the link spec given the entity root node
-func (spec *LinkSpec) GetForeignKeys(entityRoot graph.Node) ([][]string, error) {
+func (spec *LinkSpec) GetForeignKeys(entityRoot *lpg.Node) ([][]string, error) {
 	// There can be multiple instances of a foreign key in an
 	// entity. ForeignKeyNdoes[i] keeps all the nodes for spec.FK[i]
-	foreignKeyNodes := make([][]graph.Node, len(spec.FK))
-	IterateDescendants(entityRoot, func(n graph.Node) bool {
+	foreignKeyNodes := make([][]*lpg.Node, len(spec.FK))
+	IterateDescendants(entityRoot, func(n *lpg.Node) bool {
 		attrId := AsPropertyValue(n.GetProperty(SchemaNodeIDTerm)).AsString()
 		if len(attrId) == 0 {
 			return true

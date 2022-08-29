@@ -17,14 +17,14 @@ package ls
 import (
 	"fmt"
 
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 // A NodeValidator is used to validate document nodes based on their
 // schema. The ValidateNode function is called with the document node that
 // needs to be validated, and the associated schema node.
 type NodeValidator interface {
-	ValidateNode(docNode, layerNode graph.Node) error
+	ValidateNode(docNode, layerNode *lpg.Node) error
 }
 
 // A ValueValidator is used to validate a value based on a schema. The
@@ -32,13 +32,13 @@ type NodeValidator interface {
 // validated, and the associated schema node. If the node does not
 // exist, the value is nil
 type ValueValidator interface {
-	ValidateValue(value *string, layerNode graph.Node) error
+	ValidateValue(value *string, layerNode *lpg.Node) error
 }
 
 type nopValidator struct{}
 
-func (nopValidator) ValidateNode(_, _ graph.Node) error      { return nil }
-func (nopValidator) ValidateValue(*string, graph.Node) error { return nil }
+func (nopValidator) ValidateNode(_, _ *lpg.Node) error      { return nil }
+func (nopValidator) ValidateValue(*string, *lpg.Node) error { return nil }
 
 // GetAttributeValidator returns a validator implementation for the given validation term
 func GetAttributeValidator(term string) (NodeValidator, ValueValidator) {
@@ -58,10 +58,10 @@ func GetAttributeValidator(term string) (NodeValidator, ValueValidator) {
 }
 
 // ValidateDocumentNode runs the validators for the document node
-func ValidateDocumentNode(node graph.Node) error {
+func ValidateDocumentNode(node *lpg.Node) error {
 	// Get the schema
-	var schemaNode graph.Node
-	schemaNodes := graph.NextNodesWith(node, InstanceOfTerm)
+	var schemaNode *lpg.Node
+	schemaNodes := lpg.NextNodesWith(node, InstanceOfTerm)
 	if len(schemaNodes) == 1 {
 		schemaNode = schemaNodes[0]
 	}
@@ -69,7 +69,7 @@ func ValidateDocumentNode(node graph.Node) error {
 }
 
 // ValidateDocumentNodeBySchema runs the validators for the document node
-func ValidateDocumentNodeBySchema(node, schemaNode graph.Node) error {
+func ValidateDocumentNodeBySchema(node, schemaNode *lpg.Node) error {
 	if schemaNode == nil {
 		return nil
 	}
@@ -93,7 +93,7 @@ func ValidateDocumentNodeBySchema(node, schemaNode graph.Node) error {
 }
 
 // ValidateValueBySchema runs the validators for the value
-func ValidateValueBySchema(v *string, schemaNode graph.Node) error {
+func ValidateValueBySchema(v *string, schemaNode *lpg.Node) error {
 	if schemaNode == nil {
 		return nil
 	}

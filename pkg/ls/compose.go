@@ -17,7 +17,7 @@ package ls
 import (
 	"strings"
 
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 // Compose schema layers. Directly modifies the source and the
@@ -35,13 +35,13 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 		}
 	}
 	sourceCompose := AsPropertyValue(source.GetLayerRootNode().GetProperty(ComposeTerm)).AsString()
-	nodeMap := make(map[graph.Node]graph.Node)
+	nodeMap := make(map[*lpg.Node]*lpg.Node)
 	nsMap, err := GetNSMap(AsPropertyValue(source.GetLayerRootNode().GetProperty(NSMapTerm)).MustStringSlice())
 	if err != nil {
 		return err
 	}
 	if len(nsMap) > 0 {
-		layer.ForEachAttribute(func(node graph.Node, _ []graph.Node) bool {
+		layer.ForEachAttribute(func(node *lpg.Node, _ []*lpg.Node) bool {
 			id := GetNodeID(node)
 			for _, m := range nsMap {
 				if strings.HasPrefix(id, m[0]) {
@@ -90,22 +90,22 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 		})
 	}
 
-	copySubtree := func(targetNode, sourceNode graph.Node) {
+	copySubtree := func(targetNode, sourceNode *lpg.Node) {
 		nodeMap[sourceNode] = targetNode
-		for edges := sourceNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+		for edges := sourceNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
 			if IsAttributeTreeEdge(edge) {
 				continue
 			}
-			graph.CopySubgraph(edge.GetTo(), layer.Graph, ClonePropertyValueFunc, nodeMap)
-			graph.CopyEdge(edge, layer.Graph, ClonePropertyValueFunc, nodeMap)
+			lpg.CopySubgraph(edge.GetTo(), layer.Graph, ClonePropertyValueFunc, nodeMap)
+			lpg.CopyEdge(edge, layer.Graph, ClonePropertyValueFunc, nodeMap)
 		}
 	}
 
-	processedSourceNodes := make(map[graph.Node]struct{})
+	processedSourceNodes := make(map[*lpg.Node]struct{})
 	// Process overlay attributes first
-	targetOverlayAttrs := make(map[string]graph.Node)
-	sourceOverlayAttrs := make(map[string]graph.Node)
+	targetOverlayAttrs := make(map[string]*lpg.Node)
+	sourceOverlayAttrs := make(map[string]*lpg.Node)
 	for _, x := range layer.GetOverlayAttributes() {
 		targetOverlayAttrs[GetNodeID(x)] = x
 	}
@@ -132,7 +132,7 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 
 	// Process attributes of the source layer depth-first
 	// Compose the source attribute nodes with the target attribute nodes, ignoring any nodes attached to them
-	source.ForEachAttribute(func(sourceNode graph.Node, sourcePath []graph.Node) bool {
+	source.ForEachAttribute(func(sourceNode *lpg.Node, sourcePath []*lpg.Node) bool {
 		if _, processed := processedSourceNodes[sourceNode]; processed {
 			return true
 		}
@@ -166,7 +166,7 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 			}
 
 			newNode := CopySchemaNodeIntoGraph(layer.Graph, sourceNode)
-			for edges := sourceNode.GetEdges(graph.IncomingEdge); edges.Next(); {
+			for edges := sourceNode.GetEdges(lpg.IncomingEdge); edges.Next(); {
 				edge := edges.Edge()
 				if edge.GetFrom() == parent {
 					layer.Graph.NewEdge(parentInLayer, newNode, edge.GetLabel(), CloneProperties(edge))
@@ -183,7 +183,7 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 }
 
 // Merge source into target.
-func mergeNodes(context *Context, targetLayer *Layer, target, source graph.Node, sourceCompose string, processedSourceNodes map[graph.Node]struct{}) error {
+func mergeNodes(context *Context, targetLayer *Layer, target, source *lpg.Node, sourceCompose string, processedSourceNodes map[*lpg.Node]struct{}) error {
 	if _, processed := processedSourceNodes[source]; processed {
 		return nil
 	}
@@ -233,7 +233,7 @@ func ComposeProperty(context *Context, key string, targetValue, sourceValue *Pro
 
 // ComposeProperties will combine the properties in source to
 // target. The target properties will be modified directly
-func ComposeProperties(context *Context, target, source graph.Node) error {
+func ComposeProperties(context *Context, target, source *lpg.Node) error {
 	var retErr error
 	source.ForEachProperty(func(key string, value interface{}) bool {
 		if p, ok := value.(*PropertyValue); ok {
@@ -252,7 +252,7 @@ func ComposeProperties(context *Context, target, source graph.Node) error {
 }
 
 // pathsMatch returns true if the attribute predecessors of source matches target's
-func pathsMatch(targetPath, sourcePath []graph.Node) bool {
+func pathsMatch(targetPath, sourcePath []*lpg.Node) bool {
 	tn := len(targetPath)
 	sn := len(sourcePath)
 	for {

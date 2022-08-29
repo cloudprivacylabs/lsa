@@ -19,12 +19,12 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type ParsedDocNode struct {
-	schemaNode graph.Node
+	schemaNode *lpg.Node
 	typeTerm   string
 	value      string
 	valueTypes []string
@@ -35,7 +35,7 @@ type ParsedDocNode struct {
 	properties map[string]interface{}
 }
 
-func (i ParsedDocNode) GetSchemaNode() graph.Node             { return i.schemaNode }
+func (i ParsedDocNode) GetSchemaNode() *lpg.Node              { return i.schemaNode }
 func (i ParsedDocNode) GetTypeTerm() string                   { return i.typeTerm }
 func (i ParsedDocNode) GetValue() string                      { return i.value }
 func (i ParsedDocNode) GetValueTypes() []string               { return i.valueTypes }
@@ -49,18 +49,18 @@ type Parser struct {
 	OnlySchemaAttributes bool
 	IngestEmptyValues    bool
 	Layer                *ls.Layer
-	objectCache          map[graph.Node][]graph.Node
+	objectCache          map[*lpg.Node][]*lpg.Node
 }
 
 type parserContext struct {
 	context    *ls.Context
 	path       ls.NodePath
-	schemaNode graph.Node
+	schemaNode *lpg.Node
 }
 
-func (ing *Parser) getObjectNodes(schemaNode graph.Node) []graph.Node {
+func (ing *Parser) getObjectNodes(schemaNode *lpg.Node) []*lpg.Node {
 	if ing.objectCache == nil {
-		ing.objectCache = make(map[graph.Node][]graph.Node)
+		ing.objectCache = make(map[*lpg.Node][]*lpg.Node)
 	}
 	nodes, exists := ing.objectCache[schemaNode]
 	if exists {
@@ -196,13 +196,13 @@ func (ing *Parser) parseValue(ctx parserContext, element *xmlElement) (*ParsedDo
 	return ret, nil
 }
 
-func (ing *Parser) attributes(ctx parserContext, element *xmlElement, childSchemaNodes []graph.Node) ([]ls.ParsedDocNode, error) {
+func (ing *Parser) attributes(ctx parserContext, element *xmlElement, childSchemaNodes []*lpg.Node) ([]ls.ParsedDocNode, error) {
 	children := make([]ls.ParsedDocNode, 0)
 	for _, attribute := range element.attributes {
 		if !ing.IngestEmptyValues && len(attribute.value) == 0 {
 			continue
 		}
-		var attrSchema graph.Node
+		var attrSchema *lpg.Node
 		var err error
 		if ctx.schemaNode != nil {
 			attrSchema, err = findBestMatchingSchemaAttribute(attribute.name, childSchemaNodes, true)
@@ -341,7 +341,7 @@ func (ing *Parser) parseArray(ctx parserContext, element *xmlElement) (*ParsedDo
 	return ret, nil
 }
 
-func (ing *Parser) testOption(option graph.Node, ctx parserContext, element *xmlElement) bool {
+func (ing *Parser) testOption(option *lpg.Node, ctx parserContext, element *xmlElement) bool {
 	ctx.schemaNode = option
 	out, err := ing.element(ctx, element)
 	return out != nil && err == nil
@@ -350,7 +350,7 @@ func (ing *Parser) testOption(option graph.Node, ctx parserContext, element *xml
 func (ing *Parser) parsePolymorphic(ctx parserContext, element *xmlElement) (*ParsedDocNode, error) {
 	ctx.context.GetLogger().Debug(map[string]interface{}{"xml.parse.polymorphic": ctx.schemaNode})
 	options := ls.GetPolymorphicOptions(ctx.schemaNode)
-	var found graph.Node
+	var found *lpg.Node
 	for _, option := range options {
 		if ing.testOption(option, ctx, element) {
 			ctx.context.GetLogger().Debug(map[string]interface{}{"xml.parse.polymorphic.testOption": option, "sch": ctx.schemaNode, "el": element})

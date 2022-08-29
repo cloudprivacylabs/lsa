@@ -19,7 +19,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/piprate/json-gold/ld"
 )
 
@@ -27,7 +27,7 @@ type LDNode struct {
 	Node      map[string]interface{}
 	ID        string
 	Types     []string
-	GraphNode graph.Node
+	GraphNode *lpg.Node
 	processed bool
 }
 
@@ -87,7 +87,7 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 	targetType := LDGetNodeValue(rootNode.Node[ValueTypeTerm])
 	target := NewLayer()
 	rootNode.GraphNode = target.GetLayerRootNode()
-	rootNode.GraphNode.SetLabels(graph.NewStringSet(rootNode.Types...))
+	rootNode.GraphNode.SetLabels(lpg.NewStringSet(rootNode.Types...))
 	target.SetID(rootNode.ID)
 	if len(target.GetID()) == 0 || target.GetID() == "./" || strings.HasPrefix(target.GetID(), "_") {
 		return nil, MakeErrInvalidInput("No layer @id")
@@ -312,7 +312,7 @@ func unmarshalAnnotations(target *Layer, node *LDNode, allNodes map[string]*LDNo
 func MarshalLayer(layer *Layer) (interface{}, error) {
 	schRoot := layer.GetSchemaRootNode()
 	var layerOut interface{}
-	nodeMap := make(map[graph.Node]string)
+	nodeMap := make(map[*lpg.Node]string)
 	if schRoot != nil {
 		var err error
 		layerOut, err = marshalNode(layer, schRoot, nodeMap)
@@ -321,7 +321,7 @@ func MarshalLayer(layer *Layer) (interface{}, error) {
 		}
 	}
 	attrOverlays := make([]interface{}, 0)
-	for edges := layer.GetLayerRootNode().GetEdgesWithLabel(graph.OutgoingEdge, AttributeOverlaysTerm); edges.Next(); {
+	for edges := layer.GetLayerRootNode().GetEdgesWithLabel(lpg.OutgoingEdge, AttributeOverlaysTerm); edges.Next(); {
 		attr := edges.Edge().GetTo()
 		attrOut, err := marshalNode(layer, attr, nodeMap)
 		if err != nil {
@@ -359,7 +359,7 @@ func MarshalLayer(layer *Layer) (interface{}, error) {
 	return []interface{}{v}, nil
 }
 
-func marshalNode(layer *Layer, node graph.Node, nodeMap map[graph.Node]string) (interface{}, error) {
+func marshalNode(layer *Layer, node *lpg.Node, nodeMap map[*lpg.Node]string) (interface{}, error) {
 	if nodeId, ok := nodeMap[node]; ok {
 		return []interface{}{map[string]interface{}{"@id": nodeId}}, nil
 	}
@@ -392,7 +392,7 @@ func marshalNode(layer *Layer, node graph.Node, nodeMap map[graph.Node]string) (
 		return nil, err
 	}
 
-	edges := graph.EdgeSlice(node.GetEdges(graph.OutgoingEdge))
+	edges := lpg.EdgeSlice(node.GetEdges(lpg.OutgoingEdge))
 	sort.Slice(edges, func(i, j int) bool {
 		return GetNodeIndex(edges[i].GetTo()) < GetNodeIndex(edges[j].GetTo())
 	})

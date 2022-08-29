@@ -18,8 +18,8 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 type testCase struct {
@@ -50,7 +50,7 @@ func (tc testCase) Run(t *testing.T) {
 		t.Errorf("Test case: %s Cannot compile: %v", tc.Name, err)
 		return
 	}
-	sourceGraph := graph.NewOCGraph()
+	sourceGraph := lpg.NewGraph()
 
 	if tc.SourceGraph != nil {
 		m := ls.JSONMarshaler{}
@@ -62,7 +62,7 @@ func (tc testCase) Run(t *testing.T) {
 		t.Errorf("Test case: %s Cannot unmarshal source graph: %v", tc.Name, err)
 		return
 	}
-	var rootNode graph.Node
+	var rootNode *lpg.Node
 	for g := sourceGraph.GetNodes(); g.Next(); {
 		node := g.Node()
 		if ls.GetNodeID(node) == tc.RootID {
@@ -92,7 +92,7 @@ func (tc testCase) Run(t *testing.T) {
 		return
 	}
 
-	expectedGraph := graph.NewOCGraph()
+	expectedGraph := lpg.NewGraph()
 	if tc.Expected != nil {
 		m := ls.JSONMarshaler{}
 		err = m.Unmarshal(tc.Expected, expectedGraph)
@@ -105,8 +105,8 @@ func (tc testCase) Run(t *testing.T) {
 	}
 
 	// If there are multiple sources, test equivalence of each root
-	gotSources := graph.Sources(reshaper.Builder.GetGraph())
-	expectedSources := graph.Sources(expectedGraph)
+	gotSources := lpg.Sources(reshaper.Builder.GetGraph())
+	expectedSources := lpg.Sources(expectedGraph)
 	if len(gotSources) != len(expectedSources) {
 		t.Errorf("Got %d sources, expecting %d", len(gotSources), len(expectedSources))
 		return
@@ -116,7 +116,7 @@ func (tc testCase) Run(t *testing.T) {
 	for g := range gotSources {
 		matched := false
 		for e := range expectedSources {
-			eq := graph.CheckIsomorphism(gotSources[g].GetGraph(), expectedSources[e].GetGraph(), func(n1, n2 graph.Node) bool {
+			eq := lpg.CheckIsomorphism(gotSources[g].GetGraph(), expectedSources[e].GetGraph(), func(n1, n2 *lpg.Node) bool {
 				if !n1.GetLabels().IsEqual(n2.GetLabels()) {
 					return false
 				}
@@ -169,7 +169,7 @@ func (tc testCase) Run(t *testing.T) {
 				}
 				t.Logf("True\n")
 				return true
-			}, func(e1, e2 graph.Edge) bool {
+			}, func(e1, e2 *lpg.Edge) bool {
 				return e1.GetLabel() == e2.GetLabel() &&
 					ls.IsPropertiesEqual(ls.PropertiesAsMap(e1), ls.PropertiesAsMap(e2))
 			})

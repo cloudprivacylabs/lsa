@@ -21,8 +21,8 @@ import (
 
 	"github.com/santhosh-tekuri/jsonschema/v5"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 const X_LS = "x-ls"
@@ -194,7 +194,7 @@ func (ctx *importContext) findEntity(sch *jsonschema.Schema) *CompiledEntity {
 // algorithm creates a layer for each entity in the given target graph.
 //
 // typeTerm should be either ls.SchemaTerm or ls.OverlayTerm
-func BuildEntityGraph(targetGraph graph.Graph, typeTerm string, linkRefsBy LinkRefsBy, entities ...CompiledEntity) ([]EntityLayer, error) {
+func BuildEntityGraph(targetGraph *lpg.Graph, typeTerm string, linkRefsBy LinkRefsBy, entities ...CompiledEntity) ([]EntityLayer, error) {
 	ctx := importContext{entities: entities, interner: ls.NewInterner(), schMap: make(map[string]*schemaProperty)}
 	ret := make([]EntityLayer, 0, len(ctx.entities))
 

@@ -18,9 +18,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 const TRANSFORM = ls.LS + "transform/"
@@ -54,11 +54,11 @@ type reshapeContext struct {
 	*ls.Context
 	parent      *reshapeContext
 	symbols     map[string]opencypher.Value
-	sourceGraph graph.Graph
+	sourceGraph *lpg.Graph
 
-	schemaPath    path[graph.Node]
+	schemaPath    path[*lpg.Node]
 	generatedPath path[*txDocNode]
-	mapContext    path[graph.Node]
+	mapContext    path[*lpg.Node]
 }
 
 func (ctx *reshapeContext) sub() *reshapeContext {
@@ -167,7 +167,7 @@ func (reshaper Reshaper) fillNode(node *txDocNode) error {
 	return reshaper.fillNodes(nodes)
 }
 
-func (reshaper Reshaper) Reshape(ctx *ls.Context, sourceGraph graph.Graph) error {
+func (reshaper Reshaper) Reshape(ctx *ls.Context, sourceGraph *lpg.Graph) error {
 	c := reshapeContext{
 		Context:     ctx,
 		symbols:     make(map[string]opencypher.Value),
@@ -256,19 +256,26 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 		return reshaper.generateOutput(ctx, nodeValues)
 	}
 
-	processValueExpr := func(evalContext *opencypher.EvalContext, term string) ([]opencypher.Value, error) {
+	processValueExpr := func(term string) ([]opencypher.Value, error) {
 		evaluatables := ValueExprTermSemantics.GetEvaluatables(term, reshaper.Script.GetProperties(schemaNode))
 		if len(evaluatables) == 0 {
 			return nil, nil
 		}
 		ret := make([]opencypher.Value, 0, len(evaluatables))
 		for _, evaluatable := range evaluatables {
+			evalContext := ctx.getEvalContext()
 			sv, err := evaluatable.Evaluate(evalContext)
 			if err != nil {
 				return nil, err
 			}
 			if isEmptyValue(sv) {
 				continue
+			}
+			rs, ok := sv.Get().(opencypher.ResultSet)
+			if ok {
+				if err := ctx.exportResults(rs); err != nil {
+					return nil, err
+				}
 			}
 			ret = append(ret, sv)
 			if term == ValueExprTerm || term == ValueExprFirstTerm {
@@ -280,16 +287,15 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 
 	// Evaluate value expressions
 	{
-		evalContext := ctx.getEvalContext()
-		v1, err := processValueExpr(evalContext, ValueExprFirstTerm)
+		v1, err := processValueExpr(ValueExprFirstTerm)
 		if err != nil {
 			return nil, wrapReshapeError(err, schemaNodeID)
 		}
-		v2, err := processValueExpr(evalContext, ValueExprAllTerm)
+		v2, err := processValueExpr(ValueExprAllTerm)
 		if err != nil {
 			return nil, wrapReshapeError(err, schemaNodeID)
 		}
-		v3, err := processValueExpr(evalContext, ValueExprTerm)
+		v3, err := processValueExpr(ValueExprTerm)
 		if err != nil {
 			return nil, wrapReshapeError(err, schemaNodeID)
 		}
@@ -323,7 +329,7 @@ func (reshaper Reshaper) handlePrimitiveValue(ctx *reshapeContext, input interfa
 	return ret, nil
 }
 
-func (reshaper Reshaper) handleNode(ctx *reshapeContext, input graph.Node) (*txDocNode, error) {
+func (reshaper Reshaper) handleNode(ctx *reshapeContext, input *lpg.Node) (*txDocNode, error) {
 	ret := newTxDocNode(ctx.schemaPath.last())
 	ret.sourceNode = input
 	ctx.generatedPath.push(ret)
@@ -391,13 +397,13 @@ func (reshaper Reshaper) generateOutput(ctx *reshapeContext, input interface{}) 
 	}
 	schemaNode := ctx.schemaPath.last()
 	switch values := input.(type) {
-	case graph.Node:
+	case *lpg.Node:
 		v, err := reshaper.handleNode(ctx, values)
 		if err != nil {
 			return nil, err
 		}
 		return []*txDocNode{v}, nil
-	case []graph.Node:
+	case []*lpg.Node:
 		ret := make([]*txDocNode, 0, len(values))
 		for _, x := range values {
 			v, err := reshaper.generateOutput(ctx, x)
@@ -466,8 +472,8 @@ func (reshaper Reshaper) generateOutput(ctx *reshapeContext, input interface{}) 
 	panic(fmt.Sprintf("Unhandled input type: %T", input))
 }
 
-func (reshaper Reshaper) findNodesUnderMapContext(ctx *reshapeContext, propertyKey string, values []string) []graph.Node {
-	ret := make([]graph.Node, 0)
+func (reshaper Reshaper) findNodesUnderMapContext(ctx *reshapeContext, propertyKey string, values []string) []*lpg.Node {
+	ret := make([]*lpg.Node, 0)
 	has := func(s string) bool {
 		if len(s) == 0 {
 			return false
@@ -491,7 +497,7 @@ func (reshaper Reshaper) findNodesUnderMapContext(ctx *reshapeContext, propertyK
 	}
 
 	mc := ctx.mapContext.last()
-	ls.IterateDescendants(mc, func(node graph.Node) bool {
+	ls.IterateDescendants(mc, func(node *lpg.Node) bool {
 		s := ls.AsPropertyValue(node.GetProperty(propertyKey)).AsString()
 		if has(s) {
 			ret = append(ret, node)
@@ -524,7 +530,7 @@ func isEmptyValue(v opencypher.Value) bool {
 	return false
 }
 
-func getAtMostOneNode(value opencypher.Value) (graph.Node, error) {
+func getAtMostOneNode(value opencypher.Value) (*lpg.Node, error) {
 	if value == nil {
 		return nil, nil
 	}
@@ -532,11 +538,11 @@ func getAtMostOneNode(value opencypher.Value) (graph.Node, error) {
 	if val == nil {
 		return nil, nil
 	}
-	node, ok := val.(graph.Node)
+	node, ok := val.(*lpg.Node)
 	if ok {
 		return node, nil
 	}
-	nodes, ok := val.([]graph.Node)
+	nodes, ok := val.([]*lpg.Node)
 	if ok {
 		if len(nodes) == 0 {
 			return nil, nil

@@ -17,7 +17,7 @@ package ls
 import (
 	"fmt"
 
-	"github.com/cloudprivacylabs/opencypher/graph"
+	"github.com/cloudprivacylabs/lpg"
 )
 
 type GraphBuilderOptions struct {
@@ -35,8 +35,8 @@ type GraphBuilderOptions struct {
 type GraphBuilder struct {
 	options *GraphBuilderOptions
 	// SchemaNodeMap keeps the map of schema nodes copied into the target graph
-	schemaNodeMap map[graph.Node]graph.Node
-	targetGraph   graph.Graph
+	schemaNodeMap map[*lpg.Node]*lpg.Node
+	targetGraph   *lpg.Graph
 }
 
 type ErrCannotInstantiateSchemaNode struct {
@@ -50,14 +50,14 @@ func (e ErrCannotInstantiateSchemaNode) Error() string {
 
 // NewGraphBuilder returns a new builder with an optional graph. If g
 // is nil, a new graph is initialized
-func NewGraphBuilder(g graph.Graph, options GraphBuilderOptions) GraphBuilder {
+func NewGraphBuilder(g *lpg.Graph, options GraphBuilderOptions) GraphBuilder {
 	if g == nil {
 		g = NewDocumentGraph()
 	}
 	ret := GraphBuilder{
 		options:       &options,
 		targetGraph:   g,
-		schemaNodeMap: make(map[graph.Node]graph.Node),
+		schemaNodeMap: make(map[*lpg.Node]*lpg.Node),
 	}
 	return ret
 }
@@ -66,11 +66,11 @@ func (gb GraphBuilder) GetOptions() GraphBuilderOptions {
 	return *gb.options
 }
 
-func (gb GraphBuilder) GetGraph() graph.Graph {
+func (gb GraphBuilder) GetGraph() *lpg.Graph {
 	return gb.targetGraph
 }
 
-func determineEdgeLabel(schemaNode graph.Node) string {
+func determineEdgeLabel(schemaNode *lpg.Node) string {
 	if x, ok := schemaNode.GetProperty(EdgeLabelTerm); ok {
 		if label := x.(*PropertyValue).AsString(); len(label) > 0 {
 			return label
@@ -87,7 +87,7 @@ func determineEdgeLabel(schemaNode graph.Node) string {
 // NewNode creates a new graph node as an instance of SchemaNode. Then
 // it either merges schema properties into the new node, or creates an
 // instanceOf edge to the schema node.
-func (gb GraphBuilder) NewNode(schemaNode graph.Node) graph.Node {
+func (gb GraphBuilder) NewNode(schemaNode *lpg.Node) *lpg.Node {
 	types := []string{DocumentNodeTerm}
 	if schemaNode != nil {
 		for l := range schemaNode.GetLabels().M {
@@ -106,13 +106,13 @@ func (gb GraphBuilder) NewNode(schemaNode graph.Node) graph.Node {
 		newNode.SetProperty(EntitySchemaTerm, pv)
 	}
 
-	copyNodesAttachedToSchema := func(targetNode graph.Node) {
-		for edges := schemaNode.GetEdges(graph.OutgoingEdge); edges.Next(); {
+	copyNodesAttachedToSchema := func(targetNode *lpg.Node) {
+		for edges := schemaNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
 			if IsAttributeTreeEdge(edge) {
 				continue
 			}
-			graph.CopySubgraph(edge.GetTo(), gb.targetGraph, ClonePropertyValueFunc, gb.schemaNodeMap)
+			lpg.CopySubgraph(edge.GetTo(), gb.targetGraph, ClonePropertyValueFunc, gb.schemaNodeMap)
 			gb.targetGraph.NewEdge(targetNode, gb.schemaNodeMap[edge.GetTo()], edge.GetLabel(), nil)
 		}
 	}
@@ -134,8 +134,8 @@ func (gb GraphBuilder) NewNode(schemaNode graph.Node) graph.Node {
 		copyNodesAttachedToSchema(newNode)
 		return newNode
 	}
-	pat := graph.Pattern{{
-		Labels:     graph.NewStringSet(AttributeNodeTerm),
+	pat := lpg.Pattern{{
+		Labels:     lpg.NewStringSet(AttributeNodeTerm),
 		Properties: map[string]interface{}{NodeIDTerm: GetNodeID(schemaNode)},
 	}}
 	nodes, _ := pat.FindNodes(gb.targetGraph, nil)
@@ -145,7 +145,7 @@ func (gb GraphBuilder) NewNode(schemaNode graph.Node) graph.Node {
 		gb.targetGraph.NewEdge(newNode, nodes[0], InstanceOfTerm, nil)
 	} else {
 		// Copy the node
-		newSchemaNode := graph.CopyNode(schemaNode, gb.targetGraph, ClonePropertyValueFunc)
+		newSchemaNode := lpg.CopyNode(schemaNode, gb.targetGraph, ClonePropertyValueFunc)
 		gb.schemaNodeMap[schemaNode] = newSchemaNode
 		gb.targetGraph.NewEdge(newNode, newSchemaNode, InstanceOfTerm, nil)
 		copyNodesAttachedToSchema(newSchemaNode)
@@ -153,7 +153,7 @@ func (gb GraphBuilder) NewNode(schemaNode graph.Node) graph.Node {
 	return newNode
 }
 
-func (gb GraphBuilder) setEntityID(value string, parentDocumentNode, schemaNode graph.Node) error {
+func (gb GraphBuilder) setEntityID(value string, parentDocumentNode, schemaNode *lpg.Node) error {
 	entityRootNode := GetEntityRootNode(parentDocumentNode)
 	if entityRootNode == nil {
 		return nil
@@ -194,7 +194,7 @@ func (gb GraphBuilder) setEntityID(value string, parentDocumentNode, schemaNode 
 }
 
 // ValueSetAsEdge can be called to notify the graph builder that a value is set that was ingested as edge
-func (gb GraphBuilder) ValueSetAsEdge(node, schemaNode, parentDocumentNode graph.Node) {
+func (gb GraphBuilder) ValueSetAsEdge(node, schemaNode, parentDocumentNode *lpg.Node) {
 	if schemaNode != nil {
 		value, _ := GetRawNodeValue(node)
 		gb.setEntityID(value, parentDocumentNode, schemaNode)
@@ -208,20 +208,20 @@ func (gb GraphBuilder) ValueSetAsEdge(node, schemaNode, parentDocumentNode graph
 //
 // where label=attributeName (in this case "name") if edgeLabel is not
 // specified in schema.
-func (gb GraphBuilder) RawValueAsEdge(schemaNode, parentDocumentNode graph.Node, value string, types ...string) (graph.Edge, error) {
-	return gb.ValueAsEdge(schemaNode, parentDocumentNode, func(node graph.Node) error {
+func (gb GraphBuilder) RawValueAsEdge(schemaNode, parentDocumentNode *lpg.Node, value string, types ...string) (*lpg.Edge, error) {
+	return gb.ValueAsEdge(schemaNode, parentDocumentNode, func(node *lpg.Node) error {
 		SetRawNodeValue(node, value)
 		return nil
 	}, types...)
 }
 
-func (gb GraphBuilder) NativeValueAsEdge(schemaNode, parentDocumentNode graph.Node, value interface{}, types ...string) (graph.Edge, error) {
-	return gb.ValueAsEdge(schemaNode, parentDocumentNode, func(node graph.Node) error {
+func (gb GraphBuilder) NativeValueAsEdge(schemaNode, parentDocumentNode *lpg.Node, value interface{}, types ...string) (*lpg.Edge, error) {
+	return gb.ValueAsEdge(schemaNode, parentDocumentNode, func(node *lpg.Node) error {
 		return SetNodeValue(node, value)
 	}, types...)
 }
 
-func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode graph.Node, setValue func(graph.Node) error, types ...string) (graph.Edge, error) {
+func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode *lpg.Node, setValue func(*lpg.Node) error, types ...string) (*lpg.Edge, error) {
 	var edgeLabel string
 	if schemaNode != nil {
 		if !schemaNode.HasLabel(AttributeTypeValue) {
@@ -251,7 +251,7 @@ func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode graph.Node, se
 }
 
 // ValueSetAsNode can be called to notif the graph builder that a node value is set
-func (gb GraphBuilder) ValueSetAsNode(node, schemaNode, parentDocumentNode graph.Node) {
+func (gb GraphBuilder) ValueSetAsNode(node, schemaNode, parentDocumentNode *lpg.Node) {
 	if schemaNode != nil {
 		value, _ := GetRawNodeValue(node)
 		gb.setEntityID(value, parentDocumentNode, schemaNode)
@@ -260,20 +260,20 @@ func (gb GraphBuilder) ValueSetAsNode(node, schemaNode, parentDocumentNode graph
 
 // ValueAsNode creates a new value node. The new node has the given value
 // and the types
-func (gb GraphBuilder) RawValueAsNode(schemaNode, parentDocumentNode graph.Node, value string, types ...string) (graph.Edge, graph.Node, error) {
-	return gb.ValueAsNode(schemaNode, parentDocumentNode, func(node graph.Node) error {
+func (gb GraphBuilder) RawValueAsNode(schemaNode, parentDocumentNode *lpg.Node, value string, types ...string) (*lpg.Edge, *lpg.Node, error) {
+	return gb.ValueAsNode(schemaNode, parentDocumentNode, func(node *lpg.Node) error {
 		SetRawNodeValue(node, value)
 		return nil
 	}, types...)
 }
 
-func (gb GraphBuilder) NativeValueAsNode(schemaNode, parentDocumentNode graph.Node, value interface{}, types ...string) (graph.Edge, graph.Node, error) {
-	return gb.ValueAsNode(schemaNode, parentDocumentNode, func(node graph.Node) error {
+func (gb GraphBuilder) NativeValueAsNode(schemaNode, parentDocumentNode *lpg.Node, value interface{}, types ...string) (*lpg.Edge, *lpg.Node, error) {
+	return gb.ValueAsNode(schemaNode, parentDocumentNode, func(node *lpg.Node) error {
 		return SetNodeValue(node, value)
 	}, types...)
 }
 
-func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode graph.Node, setValue func(graph.Node) error, types ...string) (graph.Edge, graph.Node, error) {
+func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode *lpg.Node, setValue func(*lpg.Node) error, types ...string) (*lpg.Edge, *lpg.Node, error) {
 	if schemaNode != nil {
 		if !schemaNode.HasLabel(AttributeTypeValue) {
 			return nil, nil, ErrSchemaValidation{Msg: "A value expected here"}
@@ -295,7 +295,7 @@ func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode graph.Node, se
 	t.Add(types...)
 	t.Add(AttributeTypeValue)
 	newNode.SetLabels(t)
-	var edge graph.Edge
+	var edge *lpg.Edge
 	if parentDocumentNode != nil {
 		edge = gb.targetGraph.NewEdge(parentDocumentNode, newNode, HasTerm, nil)
 	}
@@ -303,26 +303,26 @@ func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode graph.Node, se
 }
 
 // ValueSetAsProperty can be called to notify the graph builder that a node value is set
-func (gb GraphBuilder) ValueSetAsProperty(schemaNode graph.Node, graphPath []graph.Node, value string) {
+func (gb GraphBuilder) ValueSetAsProperty(schemaNode *lpg.Node, graphPath []*lpg.Node, value string) {
 	if schemaNode != nil {
 		gb.setEntityID(value, graphPath[len(graphPath)-1], schemaNode)
 	}
 }
 
-func (gb GraphBuilder) RawValueAsProperty(schemaNode graph.Node, graphPath []graph.Node, value string) error {
-	return gb.ValueAsProperty(schemaNode, graphPath, func(node graph.Node, key string) {
+func (gb GraphBuilder) RawValueAsProperty(schemaNode *lpg.Node, graphPath []*lpg.Node, value string) error {
+	return gb.ValueAsProperty(schemaNode, graphPath, func(node *lpg.Node, key string) {
 		node.SetProperty(key, StringPropertyValue(key, value))
 	})
 }
 
-func (gb GraphBuilder) NativeValueAsProperty(schemaNode graph.Node, graphPath []graph.Node, value interface{}) error {
-	return gb.ValueAsProperty(schemaNode, graphPath, func(node graph.Node, key string) {
+func (gb GraphBuilder) NativeValueAsProperty(schemaNode *lpg.Node, graphPath []*lpg.Node, value interface{}) error {
+	return gb.ValueAsProperty(schemaNode, graphPath, func(node *lpg.Node, key string) {
 		node.SetProperty(key, StringPropertyValue(key, fmt.Sprint(value)))
 	})
 }
 
 // ValueAsProperty ingests a value as a property of an ancestor node. The ancestor
-func (gb GraphBuilder) ValueAsProperty(schemaNode graph.Node, graphPath []graph.Node, setValue func(graph.Node, string)) error {
+func (gb GraphBuilder) ValueAsProperty(schemaNode *lpg.Node, graphPath []*lpg.Node, setValue func(*lpg.Node, string)) error {
 	// Schema node cannot be nil here
 	if schemaNode == nil {
 		return ErrInvalidInput{Msg: "Missing schema node"}
@@ -338,7 +338,7 @@ func (gb GraphBuilder) ValueAsProperty(schemaNode graph.Node, graphPath []graph.
 	if len(propertyName) == 0 {
 		return ErrCannotDeterminePropertyName{SchemaNodeID: GetNodeID(schemaNode)}
 	}
-	var targetNode graph.Node
+	var targetNode *lpg.Node
 	if len(asPropertyOf) == 0 {
 		targetNode = graphPath[len(graphPath)-1]
 	} else {
@@ -360,7 +360,7 @@ func (gb GraphBuilder) ValueAsProperty(schemaNode graph.Node, graphPath []graph.
 	return nil
 }
 
-func (gb GraphBuilder) CollectionAsNode(schemaNode, parentNode graph.Node, typeTerm string, types ...string) (graph.Edge, graph.Node, error) {
+func (gb GraphBuilder) CollectionAsNode(schemaNode, parentNode *lpg.Node, typeTerm string, types ...string) (*lpg.Edge, *lpg.Node, error) {
 	if schemaNode != nil {
 		if !schemaNode.HasLabel(typeTerm) {
 			return nil, nil, ErrSchemaValidation{Msg: fmt.Sprintf("A %s is expected here but found %s", typeTerm, schemaNode.GetLabels())}
@@ -374,14 +374,14 @@ func (gb GraphBuilder) CollectionAsNode(schemaNode, parentNode graph.Node, typeT
 	t.Add(types...)
 	t.Add(typeTerm)
 	ret.SetLabels(t)
-	var edge graph.Edge
+	var edge *lpg.Edge
 	if parentNode != nil {
 		edge = gb.targetGraph.NewEdge(parentNode, ret, HasTerm, nil)
 	}
 	return edge, ret, nil
 }
 
-func (gb GraphBuilder) CollectionAsEdge(schemaNode, parentNode graph.Node, typeTerm string, types ...string) (graph.Edge, error) {
+func (gb GraphBuilder) CollectionAsEdge(schemaNode, parentNode *lpg.Node, typeTerm string, types ...string) (*lpg.Edge, error) {
 	if schemaNode != nil {
 		if !schemaNode.HasLabel(typeTerm) {
 			return nil, ErrSchemaValidation{Msg: fmt.Sprintf("A %s is expected here but found %s", typeTerm, schemaNode.GetLabels())}
@@ -407,22 +407,22 @@ func (gb GraphBuilder) CollectionAsEdge(schemaNode, parentNode graph.Node, typeT
 }
 
 // ObjectAsNode creates a new object node
-func (gb GraphBuilder) ObjectAsNode(schemaNode, parentNode graph.Node, types ...string) (graph.Edge, graph.Node, error) {
+func (gb GraphBuilder) ObjectAsNode(schemaNode, parentNode *lpg.Node, types ...string) (*lpg.Edge, *lpg.Node, error) {
 	return gb.CollectionAsNode(schemaNode, parentNode, AttributeTypeObject, types...)
 }
 
-func (gb GraphBuilder) ArrayAsNode(schemaNode, parentNode graph.Node, types ...string) (graph.Edge, graph.Node, error) {
+func (gb GraphBuilder) ArrayAsNode(schemaNode, parentNode *lpg.Node, types ...string) (*lpg.Edge, *lpg.Node, error) {
 	return gb.CollectionAsNode(schemaNode, parentNode, AttributeTypeArray, types...)
 }
 
 // ObjectAsEdge creates an object node as an edge using the following scheme:
 //
 //  parent --object--> _blankNode --...
-func (gb GraphBuilder) ObjectAsEdge(schemaNode, parentNode graph.Node, types ...string) (graph.Edge, error) {
+func (gb GraphBuilder) ObjectAsEdge(schemaNode, parentNode *lpg.Node, types ...string) (*lpg.Edge, error) {
 	return gb.CollectionAsEdge(schemaNode, parentNode, AttributeTypeObject, types...)
 }
 
-func (gb GraphBuilder) ArrayAsEdge(schemaNode, parentNode graph.Node, types ...string) (graph.Edge, error) {
+func (gb GraphBuilder) ArrayAsEdge(schemaNode, parentNode *lpg.Node, types ...string) (*lpg.Edge, error) {
 	return gb.CollectionAsEdge(schemaNode, parentNode, AttributeTypeArray, types...)
 }
 
@@ -431,17 +431,17 @@ func (gb GraphBuilder) ArrayAsEdge(schemaNode, parentNode graph.Node, types ...s
 // `spec` is the link spec. `docNode` contains the ingested document
 // node that will be linked. It can be nil. `parentNode` is the
 // document node containing the docNode.
-func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, entityInfo map[graph.Node]EntityInfo) error {
+func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, entityInfo map[*lpg.Node]EntityInfo) error {
 	entityRoot := GetEntityRoot(parentNode)
 	if entityRoot == nil {
 		return ErrCannotResolveLink(*spec)
 	}
 
-	var linkNode graph.Node
+	var linkNode *lpg.Node
 	specIsValueNode := spec.SchemaNode.HasLabel(AttributeTypeValue)
 	if specIsValueNode {
 		if len(spec.LinkNode) != 0 {
-			WalkNodesInEntity(entityRoot, func(n graph.Node) bool {
+			WalkNodesInEntity(entityRoot, func(n *lpg.Node) bool {
 				if IsInstanceOf(n, spec.LinkNode) {
 					linkNode = n
 					return false
@@ -471,7 +471,7 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, 
 		docNode.DetachAndRemove()
 	}
 
-	link := func(ref []graph.Node) {
+	link := func(ref []*lpg.Node) {
 		for _, linkRef := range ref {
 			if specIsValueNode {
 				if spec.Forward {
@@ -526,7 +526,7 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode graph.Node, 
 	return nil
 }
 
-func (gb GraphBuilder) LinkNodes(ctx *Context, schema *Layer, entityInfo map[graph.Node]EntityInfo) error {
+func (gb GraphBuilder) LinkNodes(ctx *Context, schema *Layer, entityInfo map[*lpg.Node]EntityInfo) error {
 	for nodes := schema.Graph.GetNodes(); nodes.Next(); {
 		attrNode := nodes.Node()
 		ls, err := GetLinkSpec(attrNode)
@@ -547,7 +547,7 @@ func (gb GraphBuilder) LinkNodes(ctx *Context, schema *Layer, entityInfo map[gra
 		for _, parent := range parentDocNodes {
 			// Each parent node has at least one reference node child
 			childFound := false
-			for edges := parent.GetEdges(graph.OutgoingEdge); edges.Next(); {
+			for edges := parent.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 				childNode := edges.Edge().GetTo()
 				if !IsDocumentNode(childNode) {
 					continue

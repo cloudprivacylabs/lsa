@@ -17,8 +17,8 @@ package xml
 import (
 	"encoding/xml"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/opencypher/graph"
 )
 
 // MatchName will test if name matches requiredName.
@@ -35,7 +35,7 @@ func MatchName(name, requiredName xml.Name) bool {
 
 // GetXMLName gets the XML name from the node's namespace and
 // localname properties
-func GetXMLName(node graph.Node) xml.Name {
+func GetXMLName(node *lpg.Node) xml.Name {
 	return xml.Name{
 		Space: ls.AsPropertyValue(node.GetProperty(NamespaceTerm)).AsString(),
 		Local: ls.AsPropertyValue(node.GetProperty(ls.AttributeNameTerm)).AsString(),
