@@ -127,7 +127,7 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 		return nil, err
 	}
 
-	// check if discrimator term exists within the schema nodes, terminate early if found
+	// check if discrimator term exists within the schema nodes, terminate early if none found
 	for _, sln := range nextNodes {
 		for _, snode := range sln {
 			if snode.HasLabel(ls.TypeDiscriminatorTerm) {
@@ -135,12 +135,11 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 				newCtx := ctx
 				newCtx.path = newCtx.path.AppendString(kv.Key())
 				newCtx.schemaNode = snode
-				childNode, err := ing.parseDoc(newCtx, kv.Value())
+				_, err := ing.parseDoc(newCtx, kv.Value())
 				if err != nil {
 					return nil, err
 				}
 				PolyHintBlock = func(x *jsonom.KeyValue) { x.Set(kv.Value()) }
-				return childNode, nil
 			}
 		}
 	}
