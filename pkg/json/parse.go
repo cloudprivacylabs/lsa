@@ -51,6 +51,7 @@ type Parser struct {
 	Layer                *ls.Layer
 	objectCache          map[*lpg.Node]map[string][]*lpg.Node
 	nodesWithValidators  map[*lpg.Node]struct{}
+	discriminator        map[*lpg.Node][]*lpg.Node
 }
 
 type parserContext struct {
@@ -62,7 +63,6 @@ type parserContext struct {
 func (ing *Parser) nodeHasValidator(schemaNode *lpg.Node) bool {
 	if ing.nodesWithValidators == nil {
 		ing.nodesWithValidators = ls.GetNodesWithValidators(ing.Layer.GetSchemaRootNode())
-		fmt.Println("Nodes with valiadators", ing.nodesWithValidators)
 	}
 	_, ok := ing.nodesWithValidators[schemaNode]
 	return ok
@@ -127,23 +127,6 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 		return nil, err
 	}
 
-	// check if discrimator term exists within the schema nodes, terminate early if none found
-	for _, sln := range nextNodes {
-		for _, snode := range sln {
-			if snode.HasLabel(ls.TypeDiscriminatorTerm) {
-				kv := input.Get(ls.AsPropertyValue(snode.GetProperty(ls.AttributeNameTerm)).AsString())
-				newCtx := ctx
-				newCtx.path = newCtx.path.AppendString(kv.Key())
-				newCtx.schemaNode = snode
-				_, err := ing.parseDoc(newCtx, kv.Value())
-				if err != nil {
-					return nil, err
-				}
-				PolyHintBlock = func(x *jsonom.KeyValue) { x.Set(kv.Value()) }
-			}
-		}
-	}
-
 	ret := ParsedDocNode{
 		schemaNode: ctx.schemaNode,
 		typeTerm:   ls.AttributeTypeObject,
@@ -165,18 +148,46 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 			if !f(schNode, keyValue.Value()) {
 				continue
 			}
-
-			newCtx := ctx
-			newCtx.path = newCtx.path.AppendString(keyValue.Key())
-			newCtx.schemaNode = schNode
-
-			childNode, err := ing.parseDoc(newCtx, keyValue.Value())
-			if err != nil {
-				return ls.ErrDataIngestion{Key: keyValue.Key(), Err: err}
+			if discrims, cached := ing.discriminator[ctx.schemaNode]; cached {
+				for _, snode := range discrims {
+					kv := input.Get(ls.AsPropertyValue(snode.GetProperty(ls.AttributeNameTerm)).AsString())
+					newCtx := ctx
+					newCtx.schemaNode = snode
+					newCtx.path = newCtx.path.AppendString(kv.Key())
+					_, err := ing.parseDoc(newCtx, kv.Value())
+					if err != nil {
+						return err
+					}
+				}
 			}
-			if childNode != nil {
-				childNode.name = keyValue.Key()
-				ret.children = append(ret.children, childNode)
+
+			// check if discrimator term exists, terminate early if none found
+			if schNode.HasLabel(ls.TypeDiscriminatorTerm) || schNode.HasLabel("typeDiscriminator") {
+				if ing.discriminator == nil {
+					ing.discriminator = make(map[*lpg.Node][]*lpg.Node)
+				}
+				kv := input.Get(ls.AsPropertyValue(schNode.GetProperty(ls.AttributeNameTerm)).AsString())
+				newCtx := ctx
+				newCtx.path = newCtx.path.AppendString(kv.Key())
+				newCtx.schemaNode = schNode
+				child, err := ing.parseDoc(newCtx, kv.Value())
+				if err != nil {
+					return err
+				}
+				ing.discriminator[schNode] = append(ing.discriminator[schNode], child.schemaNode)
+			} else {
+				newCtx := ctx
+				newCtx.path = newCtx.path.AppendString(keyValue.Key())
+				newCtx.schemaNode = schNode
+
+				childNode, err := ing.parseDoc(newCtx, keyValue.Value())
+				if err != nil {
+					return ls.ErrDataIngestion{Key: keyValue.Key(), Err: err}
+				}
+				if childNode != nil {
+					childNode.name = keyValue.Key()
+					ret.children = append(ret.children, childNode)
+				}
 			}
 		}
 		return nil
@@ -184,19 +195,7 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 	// Process value attributes with validators first, so if there are any validation errors, we terminate quickly
 	if err := processChildren(func(schNode *lpg.Node, v jsonom.Node) bool {
 		_, ok := v.(*jsonom.Value)
-		if !ok {
-			return false
-		}
-		return ing.nodeHasValidator(schNode)
-	}); err != nil {
-		return nil, err
-	}
-	if err := processChildren(func(schNode *lpg.Node, v jsonom.Node) bool {
-		_, ok := v.(*jsonom.Value)
-		if !ok {
-			return false
-		}
-		return !ing.nodeHasValidator(schNode)
+		return ok
 	}); err != nil {
 		return nil, err
 	}
