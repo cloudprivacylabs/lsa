@@ -2,10 +2,6 @@ module github.com/cloudprivacylabs/lsa
 
 go 1.18
 
-replace github.com/cloudprivacylabs/opencypher => ../opencypher
-
-replace github.com/cloudprivacylabs/lpg => ../lpg
-
 require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/bserdar/jsonom v0.0.0-20211005020717-9af6d87a0e9f
@@ -20,7 +16,7 @@ require (
 )
 
 require (
-	github.com/cloudprivacylabs/lpg v0.0.0-20220824045629-1f46e17298ef
+	github.com/cloudprivacylabs/lpg v0.0.0-20220827171343-7333d1da9859
 	github.com/mitchellh/go-homedir v1.1.0
 )
 
@@ -37,7 +33,7 @@ require (
 
 require (
 	github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210803070921-b358b509191a // indirect
-	github.com/cloudprivacylabs/opencypher v1.0.0-beta-5.0.20220820162159-9f4f09c17793
+	github.com/cloudprivacylabs/opencypher v1.0.0-beta-6
 )
 
 require (
