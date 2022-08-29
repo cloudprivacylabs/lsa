@@ -46,7 +46,7 @@ type EnumValidator struct{}
 // options.
 func (validator EnumValidator) validateValue(value *string, options []string) error {
 	if value != nil {
-		fmt.Println("Validator", *value, options)
+		// fmt.Println("Validator", *value, options)
 		// Check for trivial match
 		for _, option := range options {
 			if option == *value {

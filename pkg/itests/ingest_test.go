@@ -7,12 +7,15 @@ import (
 	"fmt"
 	"io"
 	"os"
+
 	//	"path/filepath"
 	"strings"
 	"testing"
 	"text/template"
 
+	"github.com/bserdar/jsonom"
 	"github.com/cloudprivacylabs/lsa/layers/cmd"
+
 	//	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	//	"github.com/cloudprivacylabs/lsa/pkg/bundle"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
@@ -147,104 +150,44 @@ func TestParseEmptyCSV(t *testing.T) {
 
 // layers ingest json --bundle testdata/fhir/schemas/fhir.bundle.yaml --type https://hl7.org/fhir/Bundle testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json --output web > wodiscrim.json
 func TestIngestPolyHint(t *testing.T) {
-	ls.DefaultLogLevel = ls.LogLevelDebug
 	ctx := ls.DefaultContext()
-	layer, err := cmd.LoadSchemaFromFileOrRepo(ctx, "", "", "", "https://hl7.org/fhir/Bundle", []string{"testdata/fhir/schemas/fhir.bundle.yaml"})
+	layer, err := cmd.LoadSchemaFromFileOrRepo(ctx, "", "", "", "https://hl7.org/fhir/Bundle", []string{"testdata/fhir/schemas/fhir.discriminator.bundle.yaml"})
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	// b, err := bundle.LoadBundle("testdata/fhir/schemas/fhir.bundle.yaml", func(parentBundle string, loadBundle string) (bundle.Bundle, error) {
-	// 	var bnd bundle.Bundle
-	// 	if err := cmdutil.ReadJSONOrYAML(loadBundle, &bnd); err != nil {
-	// 		return bnd, err
-	// 	}
-	// 	cmd.RecalculatePaths(&bnd, filepath.Dir(loadBundle))
-	// 	return bnd, nil
-	// })
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-
-	// if err := b.Build(ls.DefaultContext(), func(ctx *ls.Context, fname string) ([][][]string, error) {
-	// 	return cmdutil.ReadSheets(fname)
-	// }, func(ctx *ls.Context, fname string) (io.ReadCloser, error) {
-	// 	return os.Open(fname)
-	// }, func(ctx *ls.Context, fname string) (*ls.Layer, error) {
-	// 	data, err := os.ReadFile(fname)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	var v interface{}
-	// 	err = json.Unmarshal(data, &v)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	return ls.UnmarshalLayer(v, ctx.GetInterner())
-	// }); err != nil {
-	// 	t.Fatal(err)
-	// }
-
-	// layer, err := b.GetLayer(ls.DefaultContext(), "https://hl7.org/fhir/Bundle")
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-
-	// in, err := ls.MarshalLayer(layer)
-	// fx, err := os.Create("polybundle.json")
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-	// defer fx.Close()
-	// by, _ := json.Marshal(in)
-	// fx.Write(by)
-
 	parser := jsoningest.Parser{Layer: layer}
-
 	builder := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		EmbedSchemaNodes: true,
 	})
-
 	f, err := os.Open("testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer f.Close()
 
-	// node, err := jsonom.UnmarshalReader(f, nil)
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-	// pd, err := parser.ParseDoc(ls.DefaultContext(), b.Base, node)
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-
-	// if !pd.GetSchemaNode().HasLabel(ls.TypeDiscriminatorTerm) {
-	// 	t.Fatalf("No type discriminator label found")
-	// }
-
 	_, err = jsoningest.IngestStream(ls.DefaultContext(), "", f, parser, builder)
 	if err != nil {
 		t.Error(err)
 	}
-	kv := jsoningest.PolyHintBlock()
-	// resourceType
-	fmt.Println(kv.Key())
-	// Bundle
-	fmt.Println(kv.Value())
 
 	findPoly := func() bool {
-		for nx := layer.Graph.GetNodes(); nx.Next(); {
+		for nx := builder.GetGraph().GetNodes(); nx.Next(); {
 			node := nx.Node()
 			if node.HasLabel(ls.TypeDiscriminatorTerm) {
 				return true
 			}
+			fmt.Println(node.GetLabels().String())
 		}
 		return false
 	}
 
+	kv := &jsonom.KeyValue{}
+	jsoningest.PolyHintBlock(kv)
+
 	if !findPoly() {
-		t.Fatalf("Expecting type hint")
+		t.Fatalf("Expecting type discriminator hint")
+	}
+	if kv.Value().Marshal() != "Patient" {
+		t.Fatalf(fmt.Sprintf("Invalid value, got %s, expecting: %s", kv.Value().Marshal(), "Patient"))
 	}
 }

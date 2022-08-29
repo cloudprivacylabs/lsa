@@ -112,7 +112,7 @@ func (ing *Parser) parseDoc(ctx parserContext, input jsonom.Node) (*ParsedDocNod
 	return ing.parseValue(ctx, input.(*jsonom.Value))
 }
 
-var PolyHintBlock = func() *jsonom.KeyValue { return &jsonom.KeyValue{} }
+var PolyHintBlock = func(*jsonom.KeyValue) {}
 
 func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*ParsedDocNode, error) {
 	// An object node
@@ -128,22 +128,22 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 	}
 
 	// check if discrimator term exists within the schema nodes, terminate early if found
-	// for _, sln := range nextNodes {
-	// 	for _, snode := range sln {
-	// 		if snode.HasLabel(ls.TypeDiscriminatorTerm) {
-	// 			kv := input.Get(ls.AsPropertyValue(snode.GetProperty(ls.AttributeNameTerm)).AsString())
-	// 			newCtx := ctx
-	// 			newCtx.path = newCtx.path.AppendString(kv.Key())
-	// 			newCtx.schemaNode = snode
-	// 			childNode, err := ing.parseDoc(newCtx, kv.Value())
-	// 			if err != nil {
-	// 				return nil, err
-	// 			}
-	// 			PolyHintBlock = func() *jsonom.KeyValue { return kv }
-	// 			return childNode, nil
-	// 		}
-	// 	}
-	// }
+	for _, sln := range nextNodes {
+		for _, snode := range sln {
+			if snode.HasLabel(ls.TypeDiscriminatorTerm) {
+				kv := input.Get(ls.AsPropertyValue(snode.GetProperty(ls.AttributeNameTerm)).AsString())
+				newCtx := ctx
+				newCtx.path = newCtx.path.AppendString(kv.Key())
+				newCtx.schemaNode = snode
+				childNode, err := ing.parseDoc(newCtx, kv.Value())
+				if err != nil {
+					return nil, err
+				}
+				PolyHintBlock = func(x *jsonom.KeyValue) { x.Set(kv.Value()) }
+				return childNode, nil
+			}
+		}
+	}
 
 	ret := ParsedDocNode{
 		schemaNode: ctx.schemaNode,
@@ -256,9 +256,9 @@ func (ing *Parser) parsePolymorphic(ctx parserContext, input jsonom.Node) (*Pars
 	for edges := ctx.schemaNode.GetEdgesWithLabel(graph.OutgoingEdge, ls.OneOfTerm); edges.Next(); {
 		edge := edges.Edge()
 		option := edge.GetTo()
-		fmt.Println("Option", option)
+		// fmt.Println("Option", option)
 		pdn, ok := ing.testOption(option, ctx, input)
-		fmt.Println("Testing option", input.(*jsonom.Object).Get("resourceType").Value(), ok, option)
+		// fmt.Println("Testing option", input.(*jsonom.Object).Get("resourceType").Value(), ok, option)
 		if ok {
 			if found != nil {
 				return nil, ls.ErrSchemaValidation{Msg: "Multiple options of the polymorphic node matched:" + ls.GetNodeID(ctx.schemaNode), Path: ctx.path.Copy()}
