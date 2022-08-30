@@ -50,7 +50,6 @@ type Parser struct {
 	IngestNullValues     bool
 	Layer                *ls.Layer
 	objectCache          map[*lpg.Node]map[string][]*lpg.Node
-	nodesWithValidators  map[*lpg.Node]struct{}
 	discriminator        map[*lpg.Node][]*lpg.Node
 }
 
@@ -58,14 +57,6 @@ type parserContext struct {
 	context    *ls.Context
 	path       ls.NodePath
 	schemaNode *lpg.Node
-}
-
-func (ing *Parser) nodeHasValidator(schemaNode *lpg.Node) bool {
-	if ing.nodesWithValidators == nil {
-		ing.nodesWithValidators = ls.GetNodesWithValidators(ing.Layer.GetSchemaRootNode())
-	}
-	_, ok := ing.nodesWithValidators[schemaNode]
-	return ok
 }
 
 func (ing *Parser) getObjectNodes(schemaNode *lpg.Node) (map[string][]*lpg.Node, error) {
@@ -125,6 +116,7 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 		ing.discriminator = make(map[*lpg.Node][]*lpg.Node)
 	}
 
+	// if a cache exists for this schema node, parse nodes with type hint first
 	if discrims, cached := ing.discriminator[ctx.schemaNode]; cached {
 		for _, snode := range discrims {
 			kv := input.Get(ls.AsPropertyValue(snode.GetProperty(ls.AttributeNameTerm)).AsString())
@@ -144,6 +136,7 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 		return nil, err
 	}
 
+	// if there is a discriminator for this schema node, cache other schema nodes with a type hint
 	if _, ok := ing.discriminator[ctx.schemaNode]; !ok {
 		ing.discriminator[ctx.schemaNode] = make([]*lpg.Node, 0)
 		for _, sln := range nextNodes {
