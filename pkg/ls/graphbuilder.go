@@ -464,6 +464,9 @@ func (gp GraphBuilder) PostNodeIngest(schemaNode, docNode *lpg.Node) error {
 
 // PostIngest calls the post ingestion functions for properties that has one
 func (gb GraphBuilder) PostIngest(schemaRootNode, docRootNode *lpg.Node) error {
+	if schemaRootNode == nil {
+		return nil
+	}
 	nodeIDMap := GetSchemaNodeIDMap(docRootNode)
 	var err error
 	ForEachAttributeNode(schemaRootNode, func(schemaNode *lpg.Node, _ []*lpg.Node) bool {
