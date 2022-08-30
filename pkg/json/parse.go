@@ -121,10 +121,51 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 			return nil, ls.ErrSchemaValidation{Msg: fmt.Sprintf("An object is expected here but found %s", ctx.schemaNode.GetLabels()), Path: ctx.path.Copy()}
 		}
 	}
+	if ing.discriminator == nil {
+		ing.discriminator = make(map[*lpg.Node][]*lpg.Node)
+	}
+
+	parseNewCtx := func(ctx parserContext, node *lpg.Node, keyvalue func(input *jsonom.Object) *jsonom.KeyValue) (*ParsedDocNode, error) {
+		newCtx := ctx
+		newCtx.schemaNode = node
+		newCtx.path = newCtx.path.AppendString(keyvalue(input).Key())
+		parsed, err := ing.parseDoc(newCtx, keyvalue(input).Value())
+		if err != nil {
+			return nil, err
+		}
+		return parsed, err
+	}
+
+	if discrims, cached := ing.discriminator[ctx.schemaNode]; cached {
+		for _, snode := range discrims {
+			_, err := parseNewCtx(ctx, snode, func(input *jsonom.Object) *jsonom.KeyValue {
+				return input.Get(ls.AsPropertyValue(snode.GetProperty(ls.AttributeNameTerm)).AsString())
+			})
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	// There is a schema node for this node. It must be an object
 	nextNodes, err := ing.getObjectNodes(ctx.schemaNode)
 	if err != nil {
 		return nil, err
+	}
+
+	for _, sln := range nextNodes {
+		for _, snode := range sln {
+			_, err := parseNewCtx(ctx, snode, func(input *jsonom.Object) *jsonom.KeyValue {
+				return input.Get(ls.AsPropertyValue(snode.GetProperty(ls.AttributeNameTerm)).AsString())
+			})
+			if err != nil {
+				return nil, err
+			}
+			if _, ok := ing.discriminator[ctx.schemaNode]; !ok {
+				ing.discriminator[ctx.schemaNode] = make([]*lpg.Node, 0)
+			}
+			ing.discriminator[ctx.schemaNode] = append(ing.discriminator[ctx.schemaNode], snode)
+		}
 	}
 
 	ret := ParsedDocNode{
@@ -148,33 +189,18 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 			if !f(schNode, keyValue.Value()) {
 				continue
 			}
-			if discrims, cached := ing.discriminator[ctx.schemaNode]; cached {
-				for _, snode := range discrims {
-					kv := input.Get(ls.AsPropertyValue(snode.GetProperty(ls.AttributeNameTerm)).AsString())
-					newCtx := ctx
-					newCtx.schemaNode = snode
-					newCtx.path = newCtx.path.AppendString(kv.Key())
-					_, err := ing.parseDoc(newCtx, kv.Value())
-					if err != nil {
-						return err
-					}
-				}
-			}
 
 			// check if discrimator term exists, terminate early if none found
-			if schNode.HasLabel(ls.TypeDiscriminatorTerm) || schNode.HasLabel("typeDiscriminator") {
-				if ing.discriminator == nil {
-					ing.discriminator = make(map[*lpg.Node][]*lpg.Node)
-				}
+			if schNode.HasLabel(ls.TypeDiscriminatorTerm) {
 				kv := input.Get(ls.AsPropertyValue(schNode.GetProperty(ls.AttributeNameTerm)).AsString())
 				newCtx := ctx
 				newCtx.path = newCtx.path.AppendString(kv.Key())
 				newCtx.schemaNode = schNode
-				child, err := ing.parseDoc(newCtx, kv.Value())
+				_, err := ing.parseDoc(newCtx, kv.Value())
 				if err != nil {
 					return err
 				}
-				ing.discriminator[schNode] = append(ing.discriminator[schNode], child.schemaNode)
+				ing.discriminator[ctx.schemaNode] = append(ing.discriminator[ctx.schemaNode], schNode)
 			} else {
 				newCtx := ctx
 				newCtx.path = newCtx.path.AppendString(keyValue.Key())
