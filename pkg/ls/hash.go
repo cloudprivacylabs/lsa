@@ -74,6 +74,8 @@ func (hashSemantics) ProcessNodePostDocIngest(term *PropertyValue, docNode *lpg.
 			h.Write([]byte(y))
 		}
 	}
-	SetRawNodeValue(docNode, fmt.Sprintf("%x", h.Sum(nil)))
+	value := fmt.Sprintf("%x", h.Sum(nil))
+	SetRawNodeValue(docNode, value)
+	SetEntityIDVectorElementFromNode(docNode, value)
 	return nil
 }

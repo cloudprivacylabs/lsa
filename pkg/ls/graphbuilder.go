@@ -169,39 +169,9 @@ func (gb GraphBuilder) setEntityID(value string, parentDocumentNode, schemaNode 
 	if entityRootNode == nil {
 		return nil
 	}
-	idFieldsProp := GetEntityIDFields(entityRootNode)
-	idFields := idFieldsProp.MustStringSlice()
-	if len(idFields) == 0 {
-		return nil
-	}
+
 	schemaNodeID := GetNodeID(schemaNode)
-	idIndex := -1
-	for i, idField := range idFields {
-		if schemaNodeID == idField {
-			idIndex = i
-			break
-		}
-	}
-	// Is this an ID field?
-	if idIndex == -1 {
-		return nil
-	}
-
-	// Get existing ID
-	entityID := AsPropertyValue(entityRootNode.GetProperty(EntityIDTerm))
-
-	existingEntityIDSlice := entityID.MustStringSlice()
-	for len(existingEntityIDSlice) <= idIndex {
-		existingEntityIDSlice = append(existingEntityIDSlice, "")
-	}
-	existingEntityIDSlice[idIndex] = value
-
-	if idFieldsProp.IsString() {
-		entityRootNode.SetProperty(EntityIDTerm, StringPropertyValue(EntityIDTerm, value))
-		return nil
-	}
-	entityRootNode.SetProperty(EntityIDTerm, StringSlicePropertyValue(EntityIDTerm, existingEntityIDSlice))
-	return nil
+	return SetEntityIDVectorElement(entityRootNode, schemaNodeID, value)
 }
 
 // ValueSetAsEdge can be called to notify the graph builder that a value is set that was ingested as edge
