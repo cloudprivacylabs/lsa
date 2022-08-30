@@ -207,7 +207,7 @@ func (p *PropertyValue) Slice() []string {
 }
 
 func (p PropertyValue) Clone() *PropertyValue {
-	return &PropertyValue{value: p.value}
+	return &PropertyValue{value: p.value, sem: p.sem}
 }
 
 func (p PropertyValue) String() string {

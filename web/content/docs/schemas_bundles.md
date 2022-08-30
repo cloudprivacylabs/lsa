@@ -99,7 +99,7 @@ ingested using the variant specified in the same bundle.
 
 {{< highlight json >}}
 {
-    "typeNames" : {
+    "variants" : {
         "https://example.org/Person": {
             "schema" : "person.schema.json"
         },
@@ -186,7 +186,7 @@ We can define a new `person-dpv.bundle.json` by adding these overlays:
 
 {{< highlight json >}}
 {
-    "typeNames" : {
+    "variants" : {
         "https://example.org/Person": {
             "schema" : "person.schema.json",
             "overlays" : [
@@ -213,7 +213,7 @@ one. This new bundle only adds new overlays to the base bundle.
 {{< highlight json >}}
 {
     "base": "person.bundle.json",
-    "typeNames" : {
+    "variants" : {
         "https://example.org/Person": {
             "overlays" : [
                 {

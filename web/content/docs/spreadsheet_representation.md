@@ -112,7 +112,7 @@ These layers can be referenced in a bundle using their layer ids.
             "context": [ "https://lschema.org/ls.json" ]
         }
     ],
-    "typeNames": {
+    "variants": {
         "https://example.org/Person": {
             "layerId": "https://example.org/Person/schema",
             "overlays": [

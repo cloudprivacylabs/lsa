@@ -114,6 +114,12 @@ func GetEntityRoot(node *lpg.Node) *lpg.Node {
 	return find(node)
 }
 
+// IsEntityRoot returns true if the node is an entity root
+func IsEntityRoot(node *lpg.Node) bool {
+	_, ok := node.GetProperty(EntitySchemaTerm)
+	return ok
+}
+
 // GetEntityIDFields returns the value of the entity ID fields from a document node.
 func GetEntityIDFields(node *lpg.Node) *PropertyValue {
 	if node == nil {
@@ -145,4 +151,18 @@ func IsInstanceOf(n *lpg.Node, schemaNodeID string) bool {
 		return false
 	}
 	return p.AsString() == schemaNodeID
+}
+
+// GetSchemaNodeIDMap returns a map of schema node IDs to slices of
+// nodes that are instances of those schema nodes
+func GetSchemaNodeIDMap(docRoot *lpg.Node) map[string][]*lpg.Node {
+	ret := make(map[string][]*lpg.Node)
+	IterateDescendants(docRoot, func(node *lpg.Node) bool {
+		nodeId := AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString()
+		if len(nodeId) > 0 {
+			ret[nodeId] = append(ret[nodeId], node)
+		}
+		return true
+	}, OnlyDocumentNodes, false)
+	return ret
 }

@@ -398,6 +398,15 @@ func GetNodeOrSchemaProperty(node *lpg.Node, key string) (*PropertyValue, bool) 
 	return nil, false
 }
 
+// GetNodeSchemaNodeID returns the schema node ID of a document node. Returns empty string if not found.
+func GetNodeSchemaNodeID(documentNode *lpg.Node) string {
+	p, ok := GetNodeOrSchemaProperty(documentNode, SchemaNodeIDTerm)
+	if !ok {
+		return ""
+	}
+	return p.AsString()
+}
+
 // IsAttributeTreeEdge returns true if the edge is an edge between two
 // attribute nodes
 func IsAttributeTreeEdge(edge *lpg.Edge) bool {
