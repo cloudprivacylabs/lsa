@@ -50,21 +50,13 @@ type Parser struct {
 	IngestNullValues     bool
 	Layer                *ls.Layer
 	objectCache          map[*lpg.Node]map[string][]*lpg.Node
-	nodesWithValidators  map[*lpg.Node]struct{}
+	discriminator        map[*lpg.Node][]*lpg.Node
 }
 
 type parserContext struct {
 	context    *ls.Context
 	path       ls.NodePath
 	schemaNode *lpg.Node
-}
-
-func (ing *Parser) nodeHasValidator(schemaNode *lpg.Node) bool {
-	if ing.nodesWithValidators == nil {
-		ing.nodesWithValidators = ls.GetNodesWithValidators(ing.Layer.GetSchemaRootNode())
-	}
-	_, ok := ing.nodesWithValidators[schemaNode]
-	return ok
 }
 
 func (ing *Parser) getObjectNodes(schemaNode *lpg.Node) (map[string][]*lpg.Node, error) {
@@ -111,6 +103,8 @@ func (ing *Parser) parseDoc(ctx parserContext, input jsonom.Node) (*ParsedDocNod
 	return ing.parseValue(ctx, input.(*jsonom.Value))
 }
 
+var PolyHintBlock = func(*jsonom.KeyValue) {}
+
 func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*ParsedDocNode, error) {
 	// An object node
 	if ctx.schemaNode != nil {
@@ -118,10 +112,40 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 			return nil, ls.ErrSchemaValidation{Msg: fmt.Sprintf("An object is expected here but found %s", ctx.schemaNode.GetLabels()), Path: ctx.path.Copy()}
 		}
 	}
+	if ing.discriminator == nil {
+		ing.discriminator = make(map[*lpg.Node][]*lpg.Node)
+	}
+
+	// if a cache exists for this schema node, parse nodes with type hint first
+	if discrims, cached := ing.discriminator[ctx.schemaNode]; cached {
+		for _, snode := range discrims {
+			kv := input.Get(ls.AsPropertyValue(snode.GetProperty(ls.AttributeNameTerm)).AsString())
+			newCtx := ctx
+			newCtx.schemaNode = snode
+			newCtx.path = newCtx.path.AppendString(kv.Key())
+			_, err := ing.parseDoc(newCtx, kv.Value())
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	// There is a schema node for this node. It must be an object
 	nextNodes, err := ing.getObjectNodes(ctx.schemaNode)
 	if err != nil {
 		return nil, err
+	}
+
+	// if there is a discriminator for this schema node, cache other schema nodes with a type hint
+	if _, ok := ing.discriminator[ctx.schemaNode]; !ok {
+		ing.discriminator[ctx.schemaNode] = make([]*lpg.Node, 0)
+		for _, sln := range nextNodes {
+			for _, snode := range sln {
+				if snode.HasLabel(ls.TypeDiscriminatorTerm) {
+					ing.discriminator[ctx.schemaNode] = append(ing.discriminator[ctx.schemaNode], snode)
+				}
+			}
+		}
 	}
 
 	ret := ParsedDocNode{
@@ -145,7 +169,6 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 			if !f(schNode, keyValue.Value()) {
 				continue
 			}
-
 			newCtx := ctx
 			newCtx.path = newCtx.path.AppendString(keyValue.Key())
 			newCtx.schemaNode = schNode
@@ -164,19 +187,7 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 	// Process value attributes with validators first, so if there are any validation errors, we terminate quickly
 	if err := processChildren(func(schNode *lpg.Node, v jsonom.Node) bool {
 		_, ok := v.(*jsonom.Value)
-		if !ok {
-			return false
-		}
-		return ing.nodeHasValidator(schNode)
-	}); err != nil {
-		return nil, err
-	}
-	if err := processChildren(func(schNode *lpg.Node, v jsonom.Node) bool {
-		_, ok := v.(*jsonom.Value)
-		if !ok {
-			return false
-		}
-		return !ing.nodeHasValidator(schNode)
+		return ok
 	}); err != nil {
 		return nil, err
 	}
@@ -235,20 +246,20 @@ func (ing *Parser) parsePolymorphic(ctx parserContext, input jsonom.Node) (*Pars
 	for edges := ctx.schemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ls.OneOfTerm); edges.Next(); {
 		edge := edges.Edge()
 		option := edge.GetTo()
-		pnd, ok := ing.testOption(option, ctx, input)
+		// fmt.Println("Option", option)
+		pdn, ok := ing.testOption(option, ctx, input)
+		// fmt.Println("Testing option", input.(*jsonom.Object).Get("resourceType").Value(), ok, option)
 		if ok {
 			if found != nil {
 				return nil, ls.ErrSchemaValidation{Msg: "Multiple options of the polymorphic node matched:" + ls.GetNodeID(ctx.schemaNode), Path: ctx.path.Copy()}
-
 			}
 			found = option
-			ret = pnd
+			ret = pdn
 		}
 	}
 	if found == nil {
 		return nil, ls.ErrSchemaValidation{Msg: "None of the options of the polymorphic node matched:" + ls.GetNodeID(ctx.schemaNode), Path: ctx.path.Copy()}
 	}
-
 	ctx.schemaNode = found
 	return ret, nil
 }

@@ -4,12 +4,20 @@ import (
 	"bytes"
 	"encoding/csv"
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
+
+	//	"path/filepath"
 	"strings"
 	"testing"
 	"text/template"
 
+	"github.com/bserdar/jsonom"
+	"github.com/cloudprivacylabs/lsa/layers/cmd"
+
+	//	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	//	"github.com/cloudprivacylabs/lsa/pkg/bundle"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -138,4 +146,48 @@ func TestParseEmptyCSV(t *testing.T) {
 		}
 
 	}
+}
+
+// layers ingest json --bundle testdata/fhir/schemas/fhir.bundle.yaml --type https://hl7.org/fhir/Bundle testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json --output web > wodiscrim.json
+func TestIngestPolyHint(t *testing.T) {
+	ctx := ls.DefaultContext()
+	layer, err := cmd.LoadSchemaFromFileOrRepo(ctx, "", "", "", "https://hl7.org/fhir/Bundle", []string{"testdata/fhir/schemas/fhir.discriminator.bundle.yaml"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	parser := jsoningest.Parser{Layer: layer}
+	builder := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
+	f, err := os.Open("testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+
+	_, err = jsoningest.IngestStream(ls.DefaultContext(), "", f, parser, builder)
+	if err != nil {
+		t.Error(err)
+	}
+
+	findPoly := func() bool {
+		for nx := builder.GetGraph().GetNodes(); nx.Next(); {
+			node := nx.Node()
+			if node.HasLabel(ls.TypeDiscriminatorTerm) {
+				return true
+			}
+			fmt.Println(node.GetLabels().String())
+		}
+		return false
+	}
+
+	kv := &jsonom.KeyValue{}
+	jsoningest.PolyHintBlock(kv)
+
+	if !findPoly() {
+		t.Fatalf("Expecting type discriminator hint")
+	}
+	// if kv.Value().Marshal() != "Patient" {
+	// 	t.Fatalf(fmt.Sprintf("Invalid value, got %s, expecting: %s", kv.Value().Marshal(), "Patient"))
+	// }
 }
