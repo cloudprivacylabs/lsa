@@ -144,13 +144,13 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 		return nil, err
 	}
 
-	for _, sln := range nextNodes {
-		for _, snode := range sln {
-			if snode.HasLabel(ls.TypeDiscriminatorTerm) {
-				if _, ok := ing.discriminator[ctx.schemaNode]; !ok {
-					ing.discriminator[ctx.schemaNode] = make([]*lpg.Node, 0)
+	if _, ok := ing.discriminator[ctx.schemaNode]; !ok {
+		ing.discriminator[ctx.schemaNode] = make([]*lpg.Node, 0)
+		for _, sln := range nextNodes {
+			for _, snode := range sln {
+				if snode.HasLabel(ls.TypeDiscriminatorTerm) {
+					ing.discriminator[ctx.schemaNode] = append(ing.discriminator[ctx.schemaNode], snode)
 				}
-				ing.discriminator[ctx.schemaNode] = append(ing.discriminator[ctx.schemaNode], snode)
 			}
 		}
 	}
