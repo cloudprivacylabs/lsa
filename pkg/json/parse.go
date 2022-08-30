@@ -125,22 +125,13 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 		ing.discriminator = make(map[*lpg.Node][]*lpg.Node)
 	}
 
-	parseNewCtx := func(ctx parserContext, node *lpg.Node, keyvalue func(input *jsonom.Object) *jsonom.KeyValue) (*ParsedDocNode, error) {
-		newCtx := ctx
-		newCtx.schemaNode = node
-		newCtx.path = newCtx.path.AppendString(keyvalue(input).Key())
-		parsed, err := ing.parseDoc(newCtx, keyvalue(input).Value())
-		if err != nil {
-			return nil, err
-		}
-		return parsed, err
-	}
-
 	if discrims, cached := ing.discriminator[ctx.schemaNode]; cached {
 		for _, snode := range discrims {
-			_, err := parseNewCtx(ctx, snode, func(input *jsonom.Object) *jsonom.KeyValue {
-				return input.Get(ls.AsPropertyValue(snode.GetProperty(ls.AttributeNameTerm)).AsString())
-			})
+			kv := input.Get(ls.AsPropertyValue(snode.GetProperty(ls.AttributeNameTerm)).AsString())
+			newCtx := ctx
+			newCtx.schemaNode = snode
+			newCtx.path = newCtx.path.AppendString(kv.Key())
+			_, err := ing.parseDoc(newCtx, kv.Value())
 			if err != nil {
 				return nil, err
 			}
@@ -155,16 +146,12 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 
 	for _, sln := range nextNodes {
 		for _, snode := range sln {
-			_, err := parseNewCtx(ctx, snode, func(input *jsonom.Object) *jsonom.KeyValue {
-				return input.Get(ls.AsPropertyValue(snode.GetProperty(ls.AttributeNameTerm)).AsString())
-			})
-			if err != nil {
-				return nil, err
+			if snode.HasLabel(ls.TypeDiscriminatorTerm) {
+				if _, ok := ing.discriminator[ctx.schemaNode]; !ok {
+					ing.discriminator[ctx.schemaNode] = make([]*lpg.Node, 0)
+				}
+				ing.discriminator[ctx.schemaNode] = append(ing.discriminator[ctx.schemaNode], snode)
 			}
-			if _, ok := ing.discriminator[ctx.schemaNode]; !ok {
-				ing.discriminator[ctx.schemaNode] = make([]*lpg.Node, 0)
-			}
-			ing.discriminator[ctx.schemaNode] = append(ing.discriminator[ctx.schemaNode], snode)
 		}
 	}
 
@@ -189,31 +176,17 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 			if !f(schNode, keyValue.Value()) {
 				continue
 			}
+			newCtx := ctx
+			newCtx.path = newCtx.path.AppendString(keyValue.Key())
+			newCtx.schemaNode = schNode
 
-			// check if discrimator term exists, terminate early if none found
-			if schNode.HasLabel(ls.TypeDiscriminatorTerm) {
-				kv := input.Get(ls.AsPropertyValue(schNode.GetProperty(ls.AttributeNameTerm)).AsString())
-				newCtx := ctx
-				newCtx.path = newCtx.path.AppendString(kv.Key())
-				newCtx.schemaNode = schNode
-				_, err := ing.parseDoc(newCtx, kv.Value())
-				if err != nil {
-					return err
-				}
-				ing.discriminator[ctx.schemaNode] = append(ing.discriminator[ctx.schemaNode], schNode)
-			} else {
-				newCtx := ctx
-				newCtx.path = newCtx.path.AppendString(keyValue.Key())
-				newCtx.schemaNode = schNode
-
-				childNode, err := ing.parseDoc(newCtx, keyValue.Value())
-				if err != nil {
-					return ls.ErrDataIngestion{Key: keyValue.Key(), Err: err}
-				}
-				if childNode != nil {
-					childNode.name = keyValue.Key()
-					ret.children = append(ret.children, childNode)
-				}
+			childNode, err := ing.parseDoc(newCtx, keyValue.Value())
+			if err != nil {
+				return ls.ErrDataIngestion{Key: keyValue.Key(), Err: err}
+			}
+			if childNode != nil {
+				childNode.name = keyValue.Key()
+				ret.children = append(ret.children, childNode)
 			}
 		}
 		return nil
