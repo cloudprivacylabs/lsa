@@ -118,11 +118,12 @@ func (l *Layer) GetSchemaRootNode() *lpg.Node {
 	if l == nil {
 		return nil
 	}
-	x := lpg.TargetNodes(l.layerInfo.GetEdgesWithLabel(lpg.OutgoingEdge, LayerRootTerm))
-	if len(x) != 1 {
+	edges := l.layerInfo.GetEdgesWithLabel(lpg.OutgoingEdge, LayerRootTerm)
+	if edges.MaxSize() != 1 {
 		return nil
 	}
-	return x[0]
+	edges.Next()
+	return edges.Edge().GetTo()
 }
 
 // GetID returns the ID of the layer

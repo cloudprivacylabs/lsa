@@ -206,8 +206,8 @@ func (p *PropertyValue) Slice() []string {
 	return []string{}
 }
 
-func (p PropertyValue) Clone() *PropertyValue {
-	return &PropertyValue{value: p.value, sem: p.sem}
+func (p *PropertyValue) Clone() *PropertyValue {
+	return p
 }
 
 func (p PropertyValue) String() string {

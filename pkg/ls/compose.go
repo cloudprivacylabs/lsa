@@ -223,8 +223,16 @@ func mergeNodes(context *Context, targetLayer *Layer, target, source *lpg.Node, 
 
 // ComposeProperty composes targetValue and sourceValue for key
 func ComposeProperty(context *Context, key string, targetValue, sourceValue *PropertyValue) (*PropertyValue, error) {
+	var composer Composer
+	if targetValue != nil {
+		composer = GetComposerForProperty(targetValue)
+	} else if sourceValue != nil {
+		composer = GetComposerForProperty(sourceValue)
+	} else {
+		composer = GetComposerForTerm(key)
+	}
 	newValue := targetValue
-	newValue, err := GetComposerForTerm(key).Compose(newValue, sourceValue)
+	newValue, err := composer.Compose(newValue, sourceValue)
 	if err != nil {
 		return nil, ErrTerm{Term: key, Err: err}
 	}

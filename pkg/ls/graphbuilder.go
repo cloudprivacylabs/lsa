@@ -432,6 +432,56 @@ func (gp GraphBuilder) PostNodeIngest(schemaNode, docNode *lpg.Node) error {
 	return nil
 }
 
+// PostIngestSchemaNode calls the post ingest functions for properties
+// of the document nodes for the given schema node.
+func (gb GraphBuilder) PostIngestSchemaNode(schemaRootNode, schemaNode, docRootNode *lpg.Node, nodeIDMap map[string][]*lpg.Node) error {
+	var err error
+	schemaNodeID := GetNodeID(schemaNode)
+	schemaNode.ForEachProperty(func(key string, value interface{}) bool {
+		pv := AsPropertyValue(value, true)
+		if pv == nil {
+			return true
+		}
+		ni, ok := pv.GetSem().Metadata.(PostIngest)
+		if !ok {
+			return true
+		}
+
+		// First process all doc nodes that already exist
+		for _, docNode := range nodeIDMap[schemaNodeID] {
+			if e := ni.ProcessNodePostDocIngest(pv, docNode); e != nil {
+				err = e
+				return false
+			}
+		}
+
+		// Now process schema nodes for which there are missing nodes To
+		// do that, find the document nodes that are instances of the
+		// parent of the schema node
+		if IsEntityRoot(schemaNode) {
+			return true
+		}
+		parentSchemaNode := GetParentAttribute(schemaNode)
+		for _, parentDocNode := range nodeIDMap[GetNodeID(parentSchemaNode)] {
+			docNode, e := EnsurePath(docRootNode, parentDocNode, schemaRootNode, schemaNode, func(parentNode, childSchemaNode *lpg.Node) (*lpg.Node, error) {
+				n := gb.NewNode(childSchemaNode)
+				gb.targetGraph.NewEdge(parentNode, n, HasTerm, nil)
+				return n, nil
+			})
+			if e != nil {
+				err = e
+				return false
+			}
+			if e := ni.ProcessNodePostDocIngest(pv, docNode); e != nil {
+				err = e
+				return false
+			}
+		}
+		return true
+	})
+	return err
+}
+
 // PostIngest calls the post ingestion functions for properties that has one
 func (gb GraphBuilder) PostIngest(schemaRootNode, docRootNode *lpg.Node) error {
 	if schemaRootNode == nil {
@@ -440,53 +490,10 @@ func (gb GraphBuilder) PostIngest(schemaRootNode, docRootNode *lpg.Node) error {
 	nodeIDMap := GetSchemaNodeIDMap(docRootNode)
 	var err error
 	ForEachAttributeNode(schemaRootNode, func(schemaNode *lpg.Node, _ []*lpg.Node) bool {
-		schemaNode.ForEachProperty(func(key string, value interface{}) bool {
-			pv := AsPropertyValue(value, true)
-			if pv == nil {
-				return true
-			}
-			ni, ok := pv.GetSem().Metadata.(PostIngest)
-			if !ok {
-				return true
-			}
-
-			// First process all doc nodes that already exist
-			for _, docNode := range nodeIDMap[GetNodeID(schemaNode)] {
-				if e := ni.ProcessNodePostDocIngest(pv, docNode); e != nil {
-					err = e
-					return false
-				}
-			}
-
-			// Now process schema nodes for which there are missing nodes To
-			// do that, find the document nodes that are instances of the
-			// parent of the schema node
-			if IsEntityRoot(schemaNode) {
-				return true
-			}
-			parentSchemaNode := GetParentAttribute(schemaNode)
-			for _, parentDocNode := range nodeIDMap[GetNodeID(parentSchemaNode)] {
-				docNode, e := EnsurePath(docRootNode, parentDocNode, schemaRootNode, schemaNode, func(parentNode, childSchemaNode *lpg.Node) (*lpg.Node, error) {
-					n := gb.NewNode(childSchemaNode)
-					gb.targetGraph.NewEdge(parentNode, n, HasTerm, nil)
-					return n, nil
-				})
-				if e != nil {
-					err = e
-					return false
-				}
-				if e := ni.ProcessNodePostDocIngest(pv, docNode); e != nil {
-					err = e
-					return false
-				}
-			}
-
-			return true
-		})
+		err = gb.PostIngestSchemaNode(schemaRootNode, schemaNode, docRootNode, nodeIDMap)
 		return err == nil
 	})
 	return err
-
 }
 
 // Link the given node, or create a link from the parent node.
