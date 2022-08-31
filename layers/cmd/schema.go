@@ -52,7 +52,7 @@ func (b bundlesSchemaLoader) LoadSchema(ref string) (*ls.Layer, error) {
 	return ret, nil
 }
 
-func recalculatePaths(bnd *bundle.Bundle, dir string) {
+func RecalculatePaths(bnd *bundle.Bundle, dir string) {
 	if len(bnd.Base) > 0 {
 		bnd.Base = getRelativeFileName(dir, bnd.Base)
 	}
@@ -92,7 +92,7 @@ func LoadBundle(ctx *ls.Context, file []string) (ls.SchemaLoader, error) {
 			if err := cmdutil.ReadJSONOrYAML(loadBundle, &bnd); err != nil {
 				return bnd, err
 			}
-			recalculatePaths(&bnd, filepath.Dir(loadBundle))
+			RecalculatePaths(&bnd, filepath.Dir(loadBundle))
 			return bnd, nil
 		})
 		if err != nil {

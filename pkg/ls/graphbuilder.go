@@ -84,22 +84,22 @@ func determineEdgeLabel(schemaNode *lpg.Node) string {
 	return ""
 }
 
-// NewNode creates a new graph node as an instance of SchemaNode. Then
-// it either merges schema properties into the new node, or creates an
-// instanceOf edge to the schema node.
-func (gb GraphBuilder) NewNode(schemaNode *lpg.Node) *lpg.Node {
+// InstantiateSchemaNode creates a new node in targetGraph that is an
+// instance of the given schemaNode. If embedSchemaNodes is true, the
+// properties of the schema node will be embedded into the new schema
+// node. If embedSchemaNodes is false, schema nodes will be kept
+// separate. The schemaNodeMap will be filled with the map of schema
+// nodes copied into the target graph. The key will be the original
+// schema node, and the value will be the copied schema node in
+// targetGraph. Returns the new node.
+func InstantiateSchemaNode(targetGraph *lpg.Graph, schemaNode *lpg.Node, embedSchemaNodes bool, schemaNodeMap map[*lpg.Node]*lpg.Node) *lpg.Node {
 	types := []string{DocumentNodeTerm}
-	if schemaNode != nil {
-		for l := range schemaNode.GetLabels().M {
-			if l != AttributeNodeTerm {
-				types = append(types, l)
-			}
+	for l := range schemaNode.GetLabels().M {
+		if l != AttributeNodeTerm {
+			types = append(types, l)
 		}
 	}
-	newNode := gb.targetGraph.NewNode(types, nil)
-	if schemaNode == nil {
-		return newNode
-	}
+	newNode := targetGraph.NewNode(types, nil)
 	newNode.SetProperty(SchemaNodeIDTerm, StringPropertyValue(SchemaNodeIDTerm, GetNodeID(schemaNode)))
 	// If this is an entity boundary, mark it
 	if pv, rootNode := schemaNode.GetProperty(EntitySchemaTerm); rootNode {
@@ -112,12 +112,12 @@ func (gb GraphBuilder) NewNode(schemaNode *lpg.Node) *lpg.Node {
 			if IsAttributeTreeEdge(edge) {
 				continue
 			}
-			lpg.CopySubgraph(edge.GetTo(), gb.targetGraph, ClonePropertyValueFunc, gb.schemaNodeMap)
-			gb.targetGraph.NewEdge(targetNode, gb.schemaNodeMap[edge.GetTo()], edge.GetLabel(), nil)
+			lpg.CopySubgraph(edge.GetTo(), targetGraph, ClonePropertyValueFunc, schemaNodeMap)
+			targetGraph.NewEdge(targetNode, schemaNodeMap[edge.GetTo()], edge.GetLabel(), nil)
 		}
 	}
 
-	if gb.options.EmbedSchemaNodes {
+	if embedSchemaNodes {
 		schemaNode.ForEachProperty(func(k string, v interface{}) bool {
 			if k == NodeIDTerm {
 				return true
@@ -138,19 +138,30 @@ func (gb GraphBuilder) NewNode(schemaNode *lpg.Node) *lpg.Node {
 		Labels:     lpg.NewStringSet(AttributeNodeTerm),
 		Properties: map[string]interface{}{NodeIDTerm: GetNodeID(schemaNode)},
 	}}
-	nodes, _ := pat.FindNodes(gb.targetGraph, nil)
+	nodes, _ := pat.FindNodes(targetGraph, nil)
 	// Copy the schema node into this
 	// If the schema node already exists in the target graph, use it
 	if len(nodes) != 0 {
-		gb.targetGraph.NewEdge(newNode, nodes[0], InstanceOfTerm, nil)
+		targetGraph.NewEdge(newNode, nodes[0], InstanceOfTerm, nil)
 	} else {
 		// Copy the node
-		newSchemaNode := lpg.CopyNode(schemaNode, gb.targetGraph, ClonePropertyValueFunc)
-		gb.schemaNodeMap[schemaNode] = newSchemaNode
-		gb.targetGraph.NewEdge(newNode, newSchemaNode, InstanceOfTerm, nil)
+		newSchemaNode := lpg.CopyNode(schemaNode, targetGraph, ClonePropertyValueFunc)
+		schemaNodeMap[schemaNode] = newSchemaNode
+		targetGraph.NewEdge(newNode, newSchemaNode, InstanceOfTerm, nil)
 		copyNodesAttachedToSchema(newSchemaNode)
 	}
 	return newNode
+}
+
+// NewNode creates a new graph node as an instance of SchemaNode. Then
+// it either merges schema properties into the new node, or creates an
+// instanceOf edge to the schema node.
+func (gb GraphBuilder) NewNode(schemaNode *lpg.Node) *lpg.Node {
+	if schemaNode == nil {
+		return gb.targetGraph.NewNode([]string{DocumentNodeTerm}, nil)
+	}
+
+	return InstantiateSchemaNode(gb.targetGraph, schemaNode, gb.options.EmbedSchemaNodes, gb.schemaNodeMap)
 }
 
 func (gb GraphBuilder) setEntityID(value string, parentDocumentNode, schemaNode *lpg.Node) error {
@@ -158,39 +169,9 @@ func (gb GraphBuilder) setEntityID(value string, parentDocumentNode, schemaNode 
 	if entityRootNode == nil {
 		return nil
 	}
-	idFieldsProp := GetEntityIDFields(entityRootNode)
-	idFields := idFieldsProp.MustStringSlice()
-	if len(idFields) == 0 {
-		return nil
-	}
+
 	schemaNodeID := GetNodeID(schemaNode)
-	idIndex := -1
-	for i, idField := range idFields {
-		if schemaNodeID == idField {
-			idIndex = i
-			break
-		}
-	}
-	// Is this an ID field?
-	if idIndex == -1 {
-		return nil
-	}
-
-	// Get existing ID
-	entityID := AsPropertyValue(entityRootNode.GetProperty(EntityIDTerm))
-
-	existingEntityIDSlice := entityID.MustStringSlice()
-	for len(existingEntityIDSlice) <= idIndex {
-		existingEntityIDSlice = append(existingEntityIDSlice, "")
-	}
-	existingEntityIDSlice[idIndex] = value
-
-	if idFieldsProp.IsString() {
-		entityRootNode.SetProperty(EntityIDTerm, StringPropertyValue(EntityIDTerm, value))
-		return nil
-	}
-	entityRootNode.SetProperty(EntityIDTerm, StringSlicePropertyValue(EntityIDTerm, existingEntityIDSlice))
-	return nil
+	return SetEntityIDVectorElement(entityRootNode, schemaNodeID, value)
 }
 
 // ValueSetAsEdge can be called to notify the graph builder that a value is set that was ingested as edge
@@ -424,6 +405,95 @@ func (gb GraphBuilder) ObjectAsEdge(schemaNode, parentNode *lpg.Node, types ...s
 
 func (gb GraphBuilder) ArrayAsEdge(schemaNode, parentNode *lpg.Node, types ...string) (*lpg.Edge, error) {
 	return gb.CollectionAsEdge(schemaNode, parentNode, AttributeTypeArray, types...)
+}
+
+// PostNodeIngest calls the post node ingestion functions for properties that has one
+func (gp GraphBuilder) PostNodeIngest(schemaNode, docNode *lpg.Node) error {
+	if schemaNode == nil {
+		return nil
+	}
+	var err error
+	schemaNode.ForEachProperty(func(key string, value interface{}) bool {
+		pv := AsPropertyValue(value, true)
+		if pv == nil {
+			return true
+		}
+		ni, ok := pv.GetSem().Metadata.(PostNodeIngest)
+		if !ok {
+			return true
+		}
+		if e := ni.ProcessNodePostIngest(pv, docNode, schemaNode); e != nil {
+			err = e
+			return false
+		}
+		return true
+	})
+	return err
+	return nil
+}
+
+// PostIngestSchemaNode calls the post ingest functions for properties
+// of the document nodes for the given schema node.
+func (gb GraphBuilder) PostIngestSchemaNode(schemaRootNode, schemaNode, docRootNode *lpg.Node, nodeIDMap map[string][]*lpg.Node) error {
+	var err error
+	schemaNodeID := GetNodeID(schemaNode)
+	schemaNode.ForEachProperty(func(key string, value interface{}) bool {
+		pv := AsPropertyValue(value, true)
+		if pv == nil {
+			return true
+		}
+		ni, ok := pv.GetSem().Metadata.(PostIngest)
+		if !ok {
+			return true
+		}
+
+		// First process all doc nodes that already exist
+		for _, docNode := range nodeIDMap[schemaNodeID] {
+			if e := ni.ProcessNodePostDocIngest(pv, docNode); e != nil {
+				err = e
+				return false
+			}
+		}
+
+		// Now process schema nodes for which there are missing nodes To
+		// do that, find the document nodes that are instances of the
+		// parent of the schema node
+		if IsEntityRoot(schemaNode) {
+			return true
+		}
+		parentSchemaNode := GetParentAttribute(schemaNode)
+		for _, parentDocNode := range nodeIDMap[GetNodeID(parentSchemaNode)] {
+			docNode, e := EnsurePath(docRootNode, parentDocNode, schemaRootNode, schemaNode, func(parentNode, childSchemaNode *lpg.Node) (*lpg.Node, error) {
+				n := gb.NewNode(childSchemaNode)
+				gb.targetGraph.NewEdge(parentNode, n, HasTerm, nil)
+				return n, nil
+			})
+			if e != nil {
+				err = e
+				return false
+			}
+			if e := ni.ProcessNodePostDocIngest(pv, docNode); e != nil {
+				err = e
+				return false
+			}
+		}
+		return true
+	})
+	return err
+}
+
+// PostIngest calls the post ingestion functions for properties that has one
+func (gb GraphBuilder) PostIngest(schemaRootNode, docRootNode *lpg.Node) error {
+	if schemaRootNode == nil {
+		return nil
+	}
+	nodeIDMap := GetSchemaNodeIDMap(docRootNode)
+	var err error
+	ForEachAttributeNode(schemaRootNode, func(schemaNode *lpg.Node, _ []*lpg.Node) bool {
+		err = gb.PostIngestSchemaNode(schemaRootNode, schemaNode, docRootNode, nodeIDMap)
+		return err == nil
+	})
+	return err
 }
 
 // Link the given node, or create a link from the parent node.

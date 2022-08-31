@@ -188,7 +188,12 @@ func (compiler *Compiler) Compile(context *Context, ref string) (*Layer, error) 
 	ctx := &compilerContext{
 		loadedSchemas: make(map[string]*Layer),
 	}
-	return compiler.compile(context, ctx, ref)
+	layer, err := compiler.compile(context, ctx, ref)
+	if err != nil {
+		return nil, err
+	}
+	ProcessLabeledAs(layer.Graph)
+	return layer, nil
 }
 
 // CompileSchema compiles the loaded schema
@@ -196,7 +201,12 @@ func (compiler *Compiler) CompileSchema(context *Context, schema *Layer) (*Layer
 	ctx := &compilerContext{
 		loadedSchemas: map[string]*Layer{schema.GetID(): schema},
 	}
-	return compiler.compile(context, ctx, schema.GetID())
+	layer, err := compiler.compile(context, ctx, schema.GetID())
+	if err != nil {
+		return nil, err
+	}
+	ProcessLabeledAs(layer.Graph)
+	return layer, nil
 }
 
 func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref string) (*Layer, error) {

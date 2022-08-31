@@ -398,6 +398,15 @@ func GetNodeOrSchemaProperty(node *lpg.Node, key string) (*PropertyValue, bool) 
 	return nil, false
 }
 
+// GetNodeSchemaNodeID returns the schema node ID of a document node. Returns empty string if not found.
+func GetNodeSchemaNodeID(documentNode *lpg.Node) string {
+	p, ok := GetNodeOrSchemaProperty(documentNode, SchemaNodeIDTerm)
+	if !ok {
+		return ""
+	}
+	return p.AsString()
+}
+
 // IsAttributeTreeEdge returns true if the edge is an edge between two
 // attribute nodes
 func IsAttributeTreeEdge(edge *lpg.Edge) bool {
@@ -420,6 +429,32 @@ func SortEdges(edges []*lpg.Edge) []*lpg.Edge {
 	return edges
 }
 
+type sortedEdgeIterator struct {
+	edges   []*lpg.Edge
+	current *lpg.Edge
+}
+
+func (n *sortedEdgeIterator) Next() bool {
+	if len(n.edges) == 0 {
+		return false
+	}
+	n.current = n.edges[0]
+	n.edges = n.edges[1:]
+	return true
+}
+
+func (n *sortedEdgeIterator) Value() interface{} {
+	return n.current
+}
+
+func (n *sortedEdgeIterator) Edge() *lpg.Edge {
+	return n.current
+}
+
+func (n *sortedEdgeIterator) MaxSize() int {
+	return len(n.edges)
+}
+
 // SortEdgesItr sorts the edges by index
 func SortEdgesItr(edges lpg.EdgeIterator) lpg.EdgeIterator {
 	e := make([]*lpg.Edge, 0)
@@ -427,24 +462,18 @@ func SortEdgesItr(edges lpg.EdgeIterator) lpg.EdgeIterator {
 		e = append(e, edges.Edge())
 	}
 	SortEdges(e)
-	return lpg.NewEdgeIterator(e...)
+	return &sortedEdgeIterator{edges: e}
 }
 
 // CloneNode clones the sourcenode in targetgraph
 func CloneNode(sourceNode *lpg.Node, targetGraph *lpg.Graph) *lpg.Node {
 	return lpg.CopyNode(sourceNode, targetGraph, func(key string, value interface{}) interface{} {
-		if p, ok := value.(*PropertyValue); ok {
-			return p.Clone()
-		}
 		return value
 	})
 }
 
 func CloneEdge(fromInTarget, toInTarget *lpg.Node, sourceEdge *lpg.Edge, targetGraph *lpg.Graph) *lpg.Edge {
 	return lpg.CloneEdge(fromInTarget, toInTarget, sourceEdge, targetGraph, func(key string, value interface{}) interface{} {
-		if p, ok := value.(*PropertyValue); ok {
-			return p.Clone()
-		}
 		return value
 	})
 }

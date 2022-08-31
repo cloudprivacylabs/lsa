@@ -114,6 +114,12 @@ func GetEntityRoot(node *lpg.Node) *lpg.Node {
 	return find(node)
 }
 
+// IsEntityRoot returns true if the node is an entity root
+func IsEntityRoot(node *lpg.Node) bool {
+	_, ok := node.GetProperty(EntitySchemaTerm)
+	return ok
+}
+
 // GetEntityIDFields returns the value of the entity ID fields from a document node.
 func GetEntityIDFields(node *lpg.Node) *PropertyValue {
 	if node == nil {
@@ -145,4 +151,76 @@ func IsInstanceOf(n *lpg.Node, schemaNodeID string) bool {
 		return false
 	}
 	return p.AsString() == schemaNodeID
+}
+
+// GetSchemaNodeIDMap returns a map of schema node IDs to slices of
+// nodes that are instances of those schema nodes
+func GetSchemaNodeIDMap(docRoot *lpg.Node) map[string][]*lpg.Node {
+	ret := make(map[string][]*lpg.Node)
+	IterateDescendants(docRoot, func(node *lpg.Node) bool {
+		nodeId := AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString()
+		if len(nodeId) > 0 {
+			ret[nodeId] = append(ret[nodeId], node)
+		}
+		return true
+	}, OnlyDocumentNodes, false)
+	return ret
+}
+
+// SetEntityIDVectorElement sets the entity Id component of the entity
+// root node if the schema node is part of an entity id
+func SetEntityIDVectorElement(entityRootNode *lpg.Node, schemaNodeID, value string) error {
+	idFieldsProp := GetEntityIDFields(entityRootNode)
+	if idFieldsProp == nil {
+		return nil
+	}
+	if idFieldsProp.IsString() {
+		if schemaNodeID != idFieldsProp.AsString() {
+			return nil
+		}
+		entityRootNode.SetProperty(EntityIDTerm, StringPropertyValue(EntityIDTerm, value))
+		return nil
+	}
+
+	idFields := idFieldsProp.MustStringSlice()
+	if len(idFields) == 0 {
+		return nil
+	}
+	idIndex := -1
+	for i, idField := range idFields {
+		if schemaNodeID == idField {
+			idIndex = i
+			break
+		}
+	}
+	// Is this an ID field?
+	if idIndex == -1 {
+		return nil
+	}
+
+	// Get existing ID
+	entityID := AsPropertyValue(entityRootNode.GetProperty(EntityIDTerm))
+	existingEntityIDSlice := entityID.MustStringSlice()
+	for len(existingEntityIDSlice) <= idIndex {
+		existingEntityIDSlice = append(existingEntityIDSlice, "")
+	}
+	existingEntityIDSlice[idIndex] = value
+	entityRootNode.SetProperty(EntityIDTerm, StringSlicePropertyValue(EntityIDTerm, existingEntityIDSlice))
+	return nil
+}
+
+// SetEntityIDVectorElementFromNode sets the entity Id component of
+// the entity root node if the schema node is part of an entity
+// id. The schema node ID and entity root node are found based on the
+// given node
+func SetEntityIDVectorElementFromNode(docNode *lpg.Node, value string) error {
+	schemaNodeID := AsPropertyValue(docNode.GetProperty(SchemaNodeIDTerm)).AsString()
+	if len(schemaNodeID) == 0 {
+		return nil
+	}
+	entityRootNode := GetEntityRootNode(docNode)
+	if entityRootNode == nil {
+		return nil
+	}
+	return SetEntityIDVectorElement(entityRootNode, schemaNodeID, value)
 }

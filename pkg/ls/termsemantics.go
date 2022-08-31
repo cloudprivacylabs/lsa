@@ -56,9 +56,9 @@ func (t TermSemantics) Compose(target, src *PropertyValue) (*PropertyValue, erro
 	return t.Composition.Compose(target, src)
 }
 
-var registeredTerms = map[string]TermSemantics{}
+var registeredTerms = map[string]*TermSemantics{}
 
-// If a term is know, using this function avoids duplicate string
+// If a term is known, using this function avoids duplicate string
 // copies
 func knownTerm(s string) string {
 	x, ok := registeredTerms[s]
@@ -74,7 +74,7 @@ func RegisterTerm(t TermSemantics) {
 		if ok {
 			panic("Duplicate term :" + t.Term)
 		}
-		registeredTerms[s] = t
+		registeredTerms[s] = &t
 	}
 	reg(t.Term)
 	for _, alias := range t.Aliases {
@@ -82,10 +82,10 @@ func RegisterTerm(t TermSemantics) {
 	}
 }
 
-func GetTermInfo(term string) TermSemantics {
+func GetTermInfo(term string) *TermSemantics {
 	t, ok := registeredTerms[term]
 	if !ok {
-		return TermSemantics{Term: term, Composition: SetComposition}
+		return &TermSemantics{Term: term, Composition: SetComposition}
 	}
 	return t
 }

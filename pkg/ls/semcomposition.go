@@ -49,6 +49,20 @@ func GetComposerForTerm(term string) Composer {
 	return info.Composition
 }
 
+// GetComposerForProperty returns the composer for the given
+// property. Never returns nil
+func GetComposerForProperty(p *PropertyValue) Composer {
+	if p == nil {
+		return nil
+	}
+	s := p.GetSem()
+	c, ok := s.Metadata.(Composer)
+	if ok {
+		return c
+	}
+	return s.Composition
+}
+
 // Compose target and src based on the composition type
 func (c CompositionType) Compose(target, src *PropertyValue) (*PropertyValue, error) {
 	switch c {

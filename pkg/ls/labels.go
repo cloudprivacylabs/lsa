@@ -8,8 +8,10 @@ func ProcessLabeledAs(graph *lpg.Graph) {
 	for nodeItr := graph.GetNodes(); nodeItr.Next(); {
 		node := nodeItr.Node()
 		labels := node.GetLabels()
-		labels.Add(AsPropertyValue(node.GetProperty(LabeledAsTerm)).AsString())
+		if AsPropertyValue(node.GetProperty(AttributeNameTerm)).AsString() == "labeledAs" {
+			labels.Add(AsPropertyValue(node.GetProperty(NodeValueTerm)).AsString())
+			node.RemoveProperty(AttributeNameTerm)
+		}
 		node.SetLabels(labels)
-		node.RemoveProperty(LabeledAsTerm)
 	}
 }

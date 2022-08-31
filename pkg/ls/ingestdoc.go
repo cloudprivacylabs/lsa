@@ -106,6 +106,10 @@ func Ingest(builder GraphBuilder, root ParsedDocNode) (*lpg.Node, error) {
 		input: []ParsedDocNode{root},
 	}
 	_, n, err := ingestWithCursor(builder, cursor)
+	if err != nil {
+		return n, err
+	}
+	err = builder.PostIngest(root.GetSchemaNode(), n)
 	return n, err
 }
 
@@ -183,7 +187,10 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, *lpg.Nod
 				setLabels(node)
 				hasData = true
 			}
-			return hasData, node, err
+			if err := builder.PostNodeIngest(schemaNode, node); err != nil {
+				return hasData, node, err
+			}
+			return hasData, node, nil
 		case "edge":
 			edge, err := builder.ValueAsEdge(schemaNode, cursor.getOutput(), setValue)
 			if err != nil {
@@ -194,6 +201,9 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, *lpg.Nod
 			}
 			setID(edge.GetTo())
 			setProp(edge.GetTo())
+			if err := builder.PostNodeIngest(schemaNode, edge.GetTo()); err != nil {
+				return true, edge.GetTo(), err
+			}
 			return true, edge.GetTo(), nil
 		case "property":
 			var err error
@@ -255,6 +265,9 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, *lpg.Nod
 			}
 			node.SetProperty(AttributeIndexTerm, IntPropertyValue(AttributeIndexTerm, n))
 		}
+	}
+	if err := builder.PostNodeIngest(schemaNode, newCursor.getOutput()); err != nil {
+		return hasData, newCursor.getOutput(), err
 	}
 	if schemaNode != nil && hasData {
 		switch AsPropertyValue(schemaNode.GetProperty(ConditionalTerm)).AsString() {
