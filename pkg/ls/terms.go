@@ -119,6 +119,9 @@ var (
 	// EntityIDTerm is a string or []string that gives the unique ID of
 	// an entity. This is a node property at the root node of an entity
 	EntityIDTerm = NewTerm(LS, "entityId", false, false, OverrideComposition, nil)
+
+	// LabeledAsTerm adds labels to JSON schemas
+	LabeledAsTerm = NewTerm(LS, "labeledAs", false, false, OverrideComposition, nil)
 )
 
 // Attribute types defines the terms describing attribute types. Each
