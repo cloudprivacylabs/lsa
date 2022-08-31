@@ -286,11 +286,7 @@ func CloneProperties(iterator interface {
 }) map[string]interface{} {
 	newProperties := make(map[string]interface{})
 	iterator.ForEachProperty(func(key string, value interface{}) bool {
-		if p, ok := value.(*PropertyValue); ok {
-			newProperties[key] = p.Clone()
-		} else {
-			newProperties[key] = value
-		}
+		newProperties[key] = value
 		return true
 	})
 	return newProperties
