@@ -9,11 +9,9 @@ func ProcessLabeledAs(graph *lpg.Graph) {
 		node := nodeItr.Node()
 		if node.HasLabel(AttributeNodeTerm) {
 			labels := node.GetLabels()
-			for _, label := range AsPropertyValue(node.GetProperty(LabeledAsTerm)).MustStringSlice() {
-				labels.Add(label)
-				node.RemoveProperty(LabeledAsTerm)
-			}
+			labels.Add(AsPropertyValue(node.GetProperty(LabeledAsTerm)).MustStringSlice()...)
 			node.SetLabels(labels)
+			node.RemoveProperty(LabeledAsTerm)
 		}
 	}
 }
