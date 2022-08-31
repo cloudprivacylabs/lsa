@@ -45,23 +45,20 @@ func AsPropertyValue(in interface{}, exists bool) *PropertyValue {
 
 // IntPropertyValue converts the int value to string, and returns a string value
 func IntPropertyValue(term string, i int) *PropertyValue {
-	termInfo := GetTermInfo(term)
-	return &PropertyValue{sem: &termInfo, value: fmt.Sprint(i)}
+	return &PropertyValue{sem: GetTermInfo(term), value: fmt.Sprint(i)}
 }
 
 // StringPropertyValue creates a string value
 func StringPropertyValue(term, s string) *PropertyValue {
-	termInfo := GetTermInfo(term)
-	return &PropertyValue{sem: &termInfo, value: s}
+	return &PropertyValue{sem: GetTermInfo(term), value: s}
 }
 
 // StringSlicePropertyValue creates a []string value. If s is nil, it creates an empty slice
 func StringSlicePropertyValue(term string, s []string) *PropertyValue {
-	termInfo := GetTermInfo(term)
 	if s == nil {
-		return &PropertyValue{sem: &termInfo, value: []string{}}
+		return &PropertyValue{sem: GetTermInfo(term), value: []string{}}
 	}
-	return &PropertyValue{sem: &termInfo, value: s}
+	return &PropertyValue{sem: GetTermInfo(term), value: s}
 }
 
 func (pv *PropertyValue) GetSem() *TermSemantics { return pv.sem }
@@ -77,10 +74,8 @@ func (p *PropertyValue) AsString() string {
 	if p == nil {
 		return ""
 	}
-	if s, ok := p.value.(string); ok {
-		return s
-	}
-	return ""
+	s, _ := p.value.(string)
+	return s
 }
 
 // AsStringSlice returns the value as string slice. If the underlying
@@ -89,10 +84,8 @@ func (p *PropertyValue) AsStringSlice() []string {
 	if p == nil {
 		return nil
 	}
-	if s, ok := p.value.([]string); ok {
-		return s
-	}
-	return nil
+	s, _ := p.value.([]string)
+	return s
 }
 
 // MustStringSlice returns the value as a string slice. If the
