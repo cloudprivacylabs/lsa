@@ -181,7 +181,6 @@ func loadCompiledSchema(ctx *ls.Context, compiledSchema, schemaName string) (*ls
 	if err != nil {
 		return nil, nil, err
 	}
-	ls.ProcessLabeledAs(layer.Graph)
 	return layer, layers, nil
 }
 
