@@ -1,11 +1,10 @@
-package itests
+package ls
 
 import (
 	"encoding/json"
 	"testing"
 
 	"github.com/cloudprivacylabs/lpg"
-	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 func TestProcessLabeledAs(t *testing.T) {
@@ -56,16 +55,19 @@ func TestProcessLabeledAs(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	schema, err := ls.UnmarshalLayer(schMap, nil)
+	schema, err := UnmarshalLayer(schMap, nil)
 	if err != nil {
 		t.Error(err)
 	}
 
-	c := ls.Compiler{}
-	layer, err := c.CompileSchema(ls.DefaultContext(), schema)
+	c := Compiler{}
+	layer, err := c.CompileSchema(DefaultContext(), schema)
 	if err != nil {
 		t.Error(err)
 	}
+
+	attr1 := layer.GetAttributeByID("attr1")
+	t.Logf("%v", attr1)
 
 	var seenL1, seenL2, seenL3 = false, false, false
 	layer.ForEachAttribute(func(n1 *lpg.Node, n2 []*lpg.Node) bool {
