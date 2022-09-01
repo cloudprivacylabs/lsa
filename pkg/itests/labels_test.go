@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -36,7 +37,10 @@ func TestProcessLabeledAs(t *testing.T) {
 				{
 					"@id":"attr3",
 					"@type": "ls:Value",
-					"ls:labeledAs": "thirdlabel",
+					"ls:labeledAs": [
+						"thirdLabel",
+						"fourthLabel"
+					],
 					"ls:privacy": [
 						{"@value": "flg2"},
 						{"@value": "flg3"}
@@ -63,25 +67,26 @@ func TestProcessLabeledAs(t *testing.T) {
 		t.Error(err)
 	}
 
-	ls.ProcessLabeledAs(layer.Graph)
-
 	var seenL1, seenL2, seenL3 = false, false, false
-	for nodeItr := layer.Graph.GetNodes(); nodeItr.Next(); {
-		node := nodeItr.Node()
-		if node.HasLabel("SOMELABEL") {
+	layer.ForEachAttribute(func(n1 *lpg.Node, n2 []*lpg.Node) bool {
+		if n1.HasLabel("SOMELABEL") {
 			seenL1 = true
 		}
-		if node.HasLabel("ANOTHERLABEL") {
+		if n1.HasLabel("ANOTHERLABEL") {
 			seenL2 = true
 		}
-		if node.HasLabel("thirdlabel") {
+		if n1.GetLabels().HasAll("thirdLabel", "fourthLabel") {
 			seenL3 = true
 		}
-		if _, ok := node.GetProperty(ls.LabeledAsTerm); ok {
-			t.Fatalf("Did not remove LabeledAsTerm")
-		}
+		return true
+	})
+	if !seenL1 {
+		t.Errorf("SOMELABEL cannot be found")
 	}
-	if !seenL1 && !seenL2 && !seenL3 {
-		t.Fatal("Labels cannot be found")
+	if !seenL2 {
+		t.Errorf("ANOTHERLABEL cannot be found")
+	}
+	if !seenL3 {
+		t.Errorf("thirdLabel, fourthLabel cannot be found")
 	}
 }
