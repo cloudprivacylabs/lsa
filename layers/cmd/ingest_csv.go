@@ -162,7 +162,8 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 				if parsed == nil {
 					return
 				}
-				r, err := ls.Ingest(builder, parsed)
+				ing := ls.Ingester{Schema: layer}
+				r, err := ing.Ingest(builder, parsed)
 				if err != nil {
 					doneErr = err
 					return

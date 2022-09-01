@@ -66,7 +66,8 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 	if err != nil {
 		return fmt.Errorf("%s: %w", xmlname, err)
 	}
-	_, err = ls.Ingest(builder, parsed)
+	ing := ls.Ingester{Schema: schema}
+	_, err = ing.Ingest(builder, parsed)
 	if err != nil {
 		return fmt.Errorf("%s: %w", graphname, err)
 	}

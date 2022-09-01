@@ -37,7 +37,8 @@ func IngestStream(ctx *ls.Context, baseID string, input io.Reader, parser Parser
 	if err != nil {
 		return nil, err
 	}
-	root, err := ls.Ingest(builder, pd)
+	ing := ls.Ingester{Schema: parser.Layer}
+	root, err := ing.Ingest(builder, pd)
 	if err != nil {
 		return nil, err
 	}

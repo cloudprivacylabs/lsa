@@ -98,7 +98,8 @@ func TestIngest(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		_, err = ls.Ingest(builder, parsed)
+		ing := ls.Ingester{Schema: schema}
+		_, err = ing.Ingest(builder, parsed)
 		if err != nil {
 			t.Error(err)
 		}
@@ -128,7 +129,8 @@ func TestIngest(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		_, err = ls.Ingest(builder, parsed)
+		ing := ls.Ingester{Schema: schema}
+		_, err = ing.Ingest(builder, parsed)
 		if err != nil {
 			t.Error(err)
 		}

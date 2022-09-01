@@ -127,11 +127,13 @@ func (ing *Ingester) Ingest(builder GraphBuilder, root ParsedDocNode) (*lpg.Node
 func (ing *Ingester) GetPostIngestSchemaNodes(schemaRootNode *lpg.Node) []*lpg.Node {
 	ing.mu.RLock()
 	defer ing.mu.RUnlock()
-	if len(ing.postIngestSchemaNodes) > 0 {
+	if ing.postIngestSchemaNodes == nil {
 		return ing.postIngestSchemaNodes
 	}
 	ing.mu.Lock()
-	ing.postIngestSchemaNodes = make([]*lpg.Node, 0)
+	if ing.postIngestSchemaNodes == nil {
+		ing.postIngestSchemaNodes = make([]*lpg.Node, 0)
+	}
 	ForEachAttributeNode(schemaRootNode, func(schemaNode *lpg.Node, _ []*lpg.Node) bool {
 		schemaNode.ForEachProperty(func(key string, value interface{}) bool {
 			pv := AsPropertyValue(value, true)

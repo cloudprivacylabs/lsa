@@ -42,7 +42,8 @@ func TestBasicWrite(t *testing.T) {
 			t.Error(err)
 			return
 		}
-		_, err = ls.Ingest(builder, doc)
+		ing := ls.Ingester{}
+		_, err = ing.Ingest(builder, doc)
 		if err != nil {
 			t.Error(err)
 			return

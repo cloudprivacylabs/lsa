@@ -88,7 +88,8 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 				doneErr = err
 				return
 			}
-			_, err = ls.Ingest(builder, parsed)
+			ing := ls.Ingester{Schema: layer}
+			_, err = ing.Ingest(builder, parsed)
 			if err != nil {
 				doneErr = err
 				return
