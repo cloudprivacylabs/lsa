@@ -103,9 +103,9 @@ func (i ingestCursor) getOutput() *lpg.Node {
 }
 
 type Ingester struct {
-	Schema *Layer
-	cached map[*lpg.Node]struct{}
-	mu     sync.RWMutex
+	Schema                *Layer
+	postIngestSchemaNodes []*lpg.Node
+	mu                    sync.RWMutex
 }
 
 func (ing *Ingester) Ingest(builder GraphBuilder, root ParsedDocNode) (*lpg.Node, error) {
@@ -117,16 +117,21 @@ func (ing *Ingester) Ingest(builder GraphBuilder, root ParsedDocNode) (*lpg.Node
 		return n, err
 	}
 	nodeIDMap := GetSchemaNodeIDMap(n)
-	ing.cached = make(map[*lpg.Node]struct{})
-	ing.GetPostIngestSchemaNodes(root.GetSchemaNode())
-	for schemaNode := range ing.cached {
+	snodes := ing.GetPostIngestSchemaNodes(root.GetSchemaNode())
+	for _, schemaNode := range snodes {
 		builder.PostIngestSchemaNode(root.GetSchemaNode(), schemaNode, n, nodeIDMap)
 	}
 	return n, err
 }
 
-func (ing *Ingester) GetPostIngestSchemaNodes(schemaRootNode *lpg.Node) {
+func (ing *Ingester) GetPostIngestSchemaNodes(schemaRootNode *lpg.Node) []*lpg.Node {
+	ing.mu.RLock()
+	defer ing.mu.RUnlock()
+	if len(ing.postIngestSchemaNodes) > 0 {
+		return ing.postIngestSchemaNodes
+	}
 	ing.mu.Lock()
+	ing.postIngestSchemaNodes = make([]*lpg.Node, 0)
 	ForEachAttributeNode(schemaRootNode, func(schemaNode *lpg.Node, _ []*lpg.Node) bool {
 		schemaNode.ForEachProperty(func(key string, value interface{}) bool {
 			pv := AsPropertyValue(value, true)
@@ -137,12 +142,13 @@ func (ing *Ingester) GetPostIngestSchemaNodes(schemaRootNode *lpg.Node) {
 			if !ok {
 				return true
 			}
-			ing.cached[schemaNode] = struct{}{}
+			ing.postIngestSchemaNodes = append(ing.postIngestSchemaNodes, schemaNode)
 			return true
 		})
 		return true
 	})
 	ing.mu.Unlock()
+	return ing.postIngestSchemaNodes
 }
 
 // GetIngestAs returns "node", "edge", "property", or "none" based on IngestAsTerm
