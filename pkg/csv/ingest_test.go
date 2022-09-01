@@ -92,13 +92,14 @@ func TestIngest(t *testing.T) {
 		OnlySchemaAttributes: false,
 	})
 
+	ing := ls.Ingester{Schema: schema}
+
 	// Test with OnlySchemaAttributes flag set to false (ingest all nodes)
 	for idx, tt := range inputStrColData {
 		parsed, err := parser.ParseDoc(ls.DefaultContext(), "https://www.example.com/id", tt)
 		if err != nil {
 			t.Error(err)
 		}
-		ing := ls.Ingester{Schema: schema}
 		_, err = ing.Ingest(builder, parsed)
 		if err != nil {
 			t.Error(err)

@@ -181,8 +181,8 @@ func (reshaper Reshaper) Reshape(ctx *ls.Context, sourceGraph *lpg.Graph) error 
 	if err := reshaper.fillNodes(roots); err != nil {
 		return err
 	}
+	ing := ls.Ingester{}
 	for _, root := range roots {
-		ing := ls.Ingester{}
 		_, err := ing.Ingest(reshaper.Builder, root)
 		if err != nil {
 			return err

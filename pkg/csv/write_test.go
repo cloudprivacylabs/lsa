@@ -36,13 +36,13 @@ func TestBasicWrite(t *testing.T) {
 	builder := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		EmbedSchemaNodes: true,
 	})
+	ing := ls.Ingester{}
 	for _, row := range input {
 		doc, err := parser.ParseDoc(ls.DefaultContext(), "row", row)
 		if err != nil {
 			t.Error(err)
 			return
 		}
-		ing := ls.Ingester{}
 		_, err = ing.Ingest(builder, doc)
 		if err != nil {
 			t.Error(err)

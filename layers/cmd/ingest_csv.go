@@ -73,6 +73,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 		pipeline.Properties["layer"] = layer
 		ci.initialized = true
 	}
+	ing := ls.Ingester{Schema: layer}
 
 	parser := csvingest.Parser{
 		OnlySchemaAttributes: ci.OnlySchemaAttributes,
@@ -162,7 +163,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 				if parsed == nil {
 					return
 				}
-				ing := ls.Ingester{Schema: layer}
+
 				r, err := ing.Ingest(builder, parsed)
 				if err != nil {
 					doneErr = err
