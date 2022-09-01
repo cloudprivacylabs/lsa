@@ -120,6 +120,9 @@ var (
 	// an entity. This is a node property at the root node of an entity
 	EntityIDTerm = NewTerm(LS, "entityId", false, false, OverrideComposition, nil)
 
+	// LabeledAsTerm adds labels to JSON schemas
+	LabeledAsTerm = NewTerm(LS, "labeledAs", false, false, OverrideComposition, nil)
+
 	// TypeDiscriminatorTerm represents a set of schema field hints for defining polymorphic objects
 	TypeDiscriminatorTerm = NewTerm(LS, "typeDiscriminator", false, false, NoComposition, nil)
 )
