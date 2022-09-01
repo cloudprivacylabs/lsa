@@ -129,10 +129,11 @@ func (ing *Ingester) Ingest(builder GraphBuilder, root ParsedDocNode) (*lpg.Node
 
 func (ing *Ingester) GetPostIngestSchemaNodes(schemaRootNode *lpg.Node) []*lpg.Node {
 	ing.mu.RLock()
-	defer ing.mu.RUnlock()
 	if ing.postIngestSchemaNodes != nil {
+		ing.mu.RUnlock()
 		return ing.postIngestSchemaNodes
 	}
+	ing.mu.RUnlock()
 	ing.mu.Lock()
 	if ing.postIngestSchemaNodes != nil {
 		return ing.postIngestSchemaNodes
