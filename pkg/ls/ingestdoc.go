@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/cloudprivacylabs/lpg"
 )
@@ -101,7 +102,13 @@ func (i ingestCursor) getOutput() *lpg.Node {
 	return i.output[len(i.output)-1]
 }
 
-func Ingest(builder GraphBuilder, root ParsedDocNode) (*lpg.Node, error) {
+type Ingester struct {
+	mu                    sync.RWMutex
+	Schema                *Layer
+	postIngestSchemaNodes []*lpg.Node
+}
+
+func (ing *Ingester) Ingest(builder GraphBuilder, root ParsedDocNode) (*lpg.Node, error) {
 	cursor := ingestCursor{
 		input: []ParsedDocNode{root},
 	}
@@ -109,8 +116,48 @@ func Ingest(builder GraphBuilder, root ParsedDocNode) (*lpg.Node, error) {
 	if err != nil {
 		return n, err
 	}
-	err = builder.PostIngest(root.GetSchemaNode(), n)
+	snodes := ing.GetPostIngestSchemaNodes(root.GetSchemaNode())
+	var nodeIDMap map[string][]*lpg.Node
+	if len(snodes) > 0 {
+		nodeIDMap = GetSchemaNodeIDMap(n)
+	}
+	for _, schemaNode := range snodes {
+		builder.PostIngestSchemaNode(root.GetSchemaNode(), schemaNode, n, nodeIDMap)
+	}
 	return n, err
+}
+
+func (ing *Ingester) GetPostIngestSchemaNodes(schemaRootNode *lpg.Node) []*lpg.Node {
+	if schemaRootNode == nil {
+		return nil
+	}
+	ing.mu.RLock()
+	if ing.postIngestSchemaNodes != nil {
+		ing.mu.RUnlock()
+		return ing.postIngestSchemaNodes
+	}
+	ing.mu.RUnlock()
+	ing.mu.Lock()
+	defer ing.mu.Unlock()
+	if ing.postIngestSchemaNodes != nil {
+		return ing.postIngestSchemaNodes
+	}
+	ForEachAttributeNode(schemaRootNode, func(schemaNode *lpg.Node, _ []*lpg.Node) bool {
+		schemaNode.ForEachProperty(func(key string, value interface{}) bool {
+			pv := AsPropertyValue(value, true)
+			if pv == nil {
+				return true
+			}
+			_, ok := pv.GetSem().Metadata.(PostNodeIngest)
+			if !ok {
+				return true
+			}
+			ing.postIngestSchemaNodes = append(ing.postIngestSchemaNodes, schemaNode)
+			return true
+		})
+		return true
+	})
+	return ing.postIngestSchemaNodes
 }
 
 // GetIngestAs returns "node", "edge", "property", or "none" based on IngestAsTerm
