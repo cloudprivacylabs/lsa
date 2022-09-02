@@ -30,6 +30,7 @@ type ReshapeStep struct {
 	layer       *ls.Layer
 	script      *transform.TransformScript
 	initialized bool
+	ingester    *ls.Ingester
 }
 
 func (ReshapeStep) Help() {
@@ -112,6 +113,7 @@ func (rs *ReshapeStep) Run(pipeline *pipeline.PipelineContext) error {
 			}
 		}
 		rs.initialized = true
+		rs.ingester = &ls.Ingester{Schema: rs.layer}
 	}
 	reshaper := transform.Reshaper{
 		Script: rs.script,
@@ -120,7 +122,7 @@ func (rs *ReshapeStep) Run(pipeline *pipeline.PipelineContext) error {
 	reshaper.Builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		EmbedSchemaNodes: true,
 	})
-	err = reshaper.Reshape(pipeline.Context, pipeline.Graph, &ls.Ingester{Schema: rs.layer})
+	err = reshaper.Reshape(pipeline.Context, pipeline.Graph, rs.ingester)
 	if err != nil {
 		return err
 	}

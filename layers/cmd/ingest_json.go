@@ -58,8 +58,8 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 			Layer:                layer,
 		}
 		ji.initialized = true
+		ji.ingester = &ls.Ingester{Schema: layer}
 	}
-	ji.ingester = &ls.Ingester{Schema: layer}
 
 	for {
 		entryInfo, stream, err := pipeline.NextInput()

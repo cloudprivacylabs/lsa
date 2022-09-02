@@ -58,8 +58,8 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 			Layer:                layer,
 		}
 		xml.initialized = true
+		xml.ingester = &ls.Ingester{Schema: layer}
 	}
-	xml.ingester = &ls.Ingester{Schema: layer}
 
 	for {
 		entryInfo, stream, err := pipeline.NextInput()
@@ -90,7 +90,6 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 				doneErr = err
 				return
 			}
-			xml.ingester = &ls.Ingester{Schema: layer}
 			_, err = xml.ingester.Ingest(builder, parsed)
 			if err != nil {
 				doneErr = err
