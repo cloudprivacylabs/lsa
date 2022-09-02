@@ -70,7 +70,7 @@ func (tc ingestTest) testDefaultValues(t *testing.T) {
 		t.Fatal(err)
 	}
 	// Ingest
-	_, err = jsoningest.IngestBytes(ls.DefaultContext(), "http://example.org/id", data, parser, builder)
+	_, err = jsoningest.IngestBytes(ls.DefaultContext(), "http://example.org/id", data, parser, builder, &ls.Ingester{Schema: schema})
 
 	for nodeItr := builder.GetGraph().GetNodes(); nodeItr.Next(); {
 		node := nodeItr.Node()
@@ -165,7 +165,7 @@ func TestIngestPolyHint(t *testing.T) {
 	}
 	defer f.Close()
 
-	_, err = jsoningest.IngestStream(ls.DefaultContext(), "", f, parser, builder)
+	_, err = jsoningest.IngestStream(ls.DefaultContext(), "", f, parser, builder, &ls.Ingester{Schema: layer})
 	if err != nil {
 		t.Error(err)
 	}

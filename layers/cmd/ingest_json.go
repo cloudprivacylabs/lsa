@@ -30,6 +30,7 @@ type JSONIngester struct {
 	ID          string
 	initialized bool
 	parser      jsoningest.Parser
+	ingester    *ls.Ingester
 }
 
 func (JSONIngester) Help() {
@@ -58,6 +59,7 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 		}
 		ji.initialized = true
 	}
+	ji.ingester = &ls.Ingester{Schema: layer}
 
 	for {
 		entryInfo, stream, err := pipeline.NextInput()
@@ -82,7 +84,7 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 			})
 			baseID := ji.ID
 
-			_, err := jsoningest.IngestStream(pipeline.Context, baseID, stream, ji.parser, builder)
+			_, err := jsoningest.IngestStream(pipeline.Context, baseID, stream, ji.parser, builder, ji.ingester)
 			if err != nil {
 				doneErr = err
 				return

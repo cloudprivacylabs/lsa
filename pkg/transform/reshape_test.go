@@ -86,7 +86,7 @@ func (tc testCase) Run(t *testing.T) {
 		EmbedSchemaNodes: true,
 	})
 	ls.DefaultLogLevel = ls.LogLevelDebug
-	err = reshaper.Reshape(ls.DefaultContext(), sourceGraph)
+	err = reshaper.Reshape(ls.DefaultContext(), sourceGraph, &ls.Ingester{Schema: targetLayer})
 	if err != nil {
 		t.Errorf("Test case: %s Reshaper error: %v", tc.Name, err)
 		return

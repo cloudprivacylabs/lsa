@@ -24,11 +24,11 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-func IngestBytes(ctx *ls.Context, baseID string, input []byte, parser Parser, builder ls.GraphBuilder) (*lpg.Node, error) {
-	return IngestStream(ctx, baseID, bytes.NewReader(input), parser, builder)
+func IngestBytes(ctx *ls.Context, baseID string, input []byte, parser Parser, builder ls.GraphBuilder, ingester *ls.Ingester) (*lpg.Node, error) {
+	return IngestStream(ctx, baseID, bytes.NewReader(input), parser, builder, ingester)
 }
 
-func IngestStream(ctx *ls.Context, baseID string, input io.Reader, parser Parser, builder ls.GraphBuilder) (*lpg.Node, error) {
+func IngestStream(ctx *ls.Context, baseID string, input io.Reader, parser Parser, builder ls.GraphBuilder, ingester *ls.Ingester) (*lpg.Node, error) {
 	node, err := jsonom.UnmarshalReader(input, ctx.GetInterner())
 	if err != nil {
 		return nil, err
@@ -37,8 +37,7 @@ func IngestStream(ctx *ls.Context, baseID string, input io.Reader, parser Parser
 	if err != nil {
 		return nil, err
 	}
-	ing := ls.Ingester{Schema: parser.Layer}
-	root, err := ing.Ingest(builder, pd)
+	root, err := ingester.Ingest(builder, pd)
 	if err != nil {
 		return nil, err
 	}

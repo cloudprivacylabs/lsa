@@ -30,6 +30,7 @@ type XMLIngester struct {
 	ID          string
 	initialized bool
 	parser      xmlingest.Parser
+	ingester    *ls.Ingester
 }
 
 func (XMLIngester) Help() {
@@ -58,7 +59,7 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 		}
 		xml.initialized = true
 	}
-	ing := ls.Ingester{Schema: layer}
+	xml.ingester = &ls.Ingester{Schema: layer}
 
 	for {
 		entryInfo, stream, err := pipeline.NextInput()
@@ -89,7 +90,8 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 				doneErr = err
 				return
 			}
-			_, err = ing.Ingest(builder, parsed)
+			xml.ingester = &ls.Ingester{Schema: layer}
+			_, err = xml.ingester.Ingest(builder, parsed)
 			if err != nil {
 				doneErr = err
 				return

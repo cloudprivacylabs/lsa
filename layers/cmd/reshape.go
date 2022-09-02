@@ -120,7 +120,7 @@ func (rs *ReshapeStep) Run(pipeline *pipeline.PipelineContext) error {
 	reshaper.Builder = ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		EmbedSchemaNodes: true,
 	})
-	err = reshaper.Reshape(pipeline.Context, pipeline.Graph)
+	err = reshaper.Reshape(pipeline.Context, pipeline.Graph, &ls.Ingester{Schema: rs.layer})
 	if err != nil {
 		return err
 	}
