@@ -29,6 +29,7 @@ type Reshaper struct {
 	TargetSchema *ls.Layer
 	Builder      ls.GraphBuilder
 	Script       *TransformScript
+	ingester     *ls.Ingester
 }
 
 type path[X any] struct {
@@ -167,7 +168,7 @@ func (reshaper Reshaper) fillNode(node *txDocNode) error {
 	return reshaper.fillNodes(nodes)
 }
 
-func (reshaper Reshaper) Reshape(ctx *ls.Context, sourceGraph *lpg.Graph) error {
+func (reshaper Reshaper) Reshape(ctx *ls.Context, sourceGraph *lpg.Graph, ingester *ls.Ingester) error {
 	c := reshapeContext{
 		Context:     ctx,
 		symbols:     make(map[string]opencypher.Value),
@@ -182,7 +183,7 @@ func (reshaper Reshaper) Reshape(ctx *ls.Context, sourceGraph *lpg.Graph) error 
 		return err
 	}
 	for _, root := range roots {
-		_, err := ls.Ingest(reshaper.Builder, root)
+		_, err := ingester.Ingest(reshaper.Builder, root)
 		if err != nil {
 			return err
 		}

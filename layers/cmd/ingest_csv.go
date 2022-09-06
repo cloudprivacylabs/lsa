@@ -40,6 +40,7 @@ type CSVIngester struct {
 	IngestByRows bool   `json:"ingestByRows" yaml:"ingestByRows"`
 	Delimiter    string `json:"delimiter" yaml:"delimiter"`
 	initialized  bool
+	ingester     *ls.Ingester
 }
 
 func (CSVIngester) Help() {
@@ -72,6 +73,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 		}
 		pipeline.Properties["layer"] = layer
 		ci.initialized = true
+		ci.ingester = &ls.Ingester{Schema: layer}
 	}
 
 	parser := csvingest.Parser{
@@ -162,7 +164,8 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 				if parsed == nil {
 					return
 				}
-				r, err := ls.Ingest(builder, parsed)
+
+				r, err := ci.ingester.Ingest(builder, parsed)
 				if err != nil {
 					doneErr = err
 					return

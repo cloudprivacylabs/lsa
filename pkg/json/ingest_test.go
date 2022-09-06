@@ -93,7 +93,7 @@ func TestIngestFlat(t *testing.T) {
 	parser := Parser{
 		Layer: schema,
 	}
-	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr, &ls.Ingester{Schema: schema})
 	if err != nil {
 		t.Error(err)
 	}
@@ -132,13 +132,13 @@ func TestIngestFlat(t *testing.T) {
 	parser = Parser{
 		Layer: schema,
 	}
-	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr, &ls.Ingester{Schema: schema})
 	if err != nil {
 		t.Error(err)
 	}
 
 	parser.IngestNullValues = true
-	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr, &ls.Ingester{Schema: schema})
 	if err != nil {
 		t.Error(err)
 	}
@@ -220,7 +220,7 @@ func TestIngestPoly(t *testing.T) {
 	parser := Parser{
 		Layer: schema,
 	}
-	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr, &ls.Ingester{Schema: schema})
 	if err != nil {
 		t.Error(err)
 	}
@@ -282,7 +282,7 @@ func TestIngestRootAnnotation(t *testing.T) {
 	parser := Parser{
 		Layer: layers[0].Layer,
 	}
-	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr)
+	_, err = IngestBytes(ls.DefaultContext(), "http://base", []byte(inputStr), parser, bldr, &ls.Ingester{Schema: layers[0].Layer})
 	if err != nil {
 		t.Error(err)
 	}
