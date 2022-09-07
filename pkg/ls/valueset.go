@@ -422,6 +422,8 @@ func (vsi *ValuesetInfo) findResultNodes(contextDocumentNode, contextSchemaNode,
 	return
 }
 
+var seen = map[string]struct{}{}
+
 func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, layer *Layer, contextDocumentNode, contextSchemaNode *lpg.Node, resultSchemaNodeID string, resultValue string) error {
 	// There is value. If there is a node, update it. Otherwise, insert it
 	resultSchemaNode := layer.GetAttributeByID(resultSchemaNodeID)
@@ -432,6 +434,7 @@ func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, l
 	if err != nil {
 		return err
 	}
+
 	switch len(resultNodes) {
 	case 0: // insert it
 		ctx.GetLogger().Debug(map[string]interface{}{"valueset.createResultNodes": "inserting", "schId": resultSchemaNodeID})
@@ -441,7 +444,41 @@ func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, l
 		}
 		switch GetIngestAs(resultSchemaNode) {
 		case "node":
-			_, n, err := builder.RawValueAsNode(resultSchemaNode, parent, resultValue)
+			node, err := EnsurePath(contextDocumentNode, nil, contextSchemaNode, resultSchemaNode, func(parentDocNode, childSchemaNode *lpg.Node) (*lpg.Node, error) {
+				// if parentDocNode.HasLabel(AttributeTypeObject) {
+
+				// 	contextSchemaNode.ForEachProperty(func(s string, i interface{}) bool {
+				// 		// fmt.Println(s, i)
+				// 		return true
+				// 	})
+				// 	// if AsPropertyValue(resultSchemaNode.GetProperty(AttributeNameTerm)).AsString() != AsPropertyValue(childSchemaNode.GetProperty(AttributeNameTerm)).AsString() {
+				// 	if _, ok := seen[AsPropertyValue(childSchemaNode.GetProperty(AttributeNameTerm)).AsString()]; !ok && AsPropertyValue(childSchemaNode.GetProperty(AttributeNameTerm)).AsString() != "" {
+				// 		newNode := InstantiateSchemaNode(builder.targetGraph, childSchemaNode, true, map[*lpg.Node]*lpg.Node{})
+				// 		// newNode := builder.NewNode(childSchemaNode)
+				// 		if AsPropertyValue(parentDocNode.GetProperty(SchemaNodeIDTerm)).AsString() == "schroot" {
+				// 			if !contextDocumentNode.HasLabel(AttributeTypeValue) {
+				// 				fmt.Println("HERE")
+				// 				builder.GetGraph().NewEdge(parentDocNode, newNode, HasTerm, nil)
+				// 				seen[AsPropertyValue(childSchemaNode.GetProperty(AttributeNameTerm)).AsString()] = struct{}{}
+				// 				for k := range seen {
+				// 					fmt.Println(k)
+				// 				}
+				// 				return newNode, nil
+				// 			}
+				// 		}
+				// 	}
+				// 	// }
+				// }
+				// return parent, nil
+				newNode := InstantiateSchemaNode(builder.targetGraph, childSchemaNode, true, map[*lpg.Node]*lpg.Node{})
+				// newNode := builder.NewNode(childSchemaNode)
+				builder.GetGraph().NewEdge(parentDocNode, newNode, HasTerm, nil)
+				return newNode, nil
+			})
+			if err != nil {
+				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create path: %s", err.Error())}
+			}
+			_, n, err := builder.RawValueAsNode(resultSchemaNode, node, resultValue)
 			if err != nil {
 				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
 			}
