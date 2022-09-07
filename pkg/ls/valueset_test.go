@@ -290,9 +290,9 @@ func TestStructuredDeepVS(t *testing.T) {
   "@type": "Object",
  "@id": "schroot",
   "attributes": {
-    "src": {
+    "test": {
       "@type": "Object",
-      "attributeName": "src",
+      "attributeName": "test",
       "https://lschema.org/vs/context":"schroot",
       "https://lschema.org/vs/requestKeys": ["c","s"],
       "https://lschema.org/vs/requestValues": ["code","system"],
@@ -372,10 +372,21 @@ func TestStructuredDeepVS(t *testing.T) {
 		t.Error(err)
 	}
 
+	// x := JSONMarshaler{}
+	// b, _ := x.Marshal(builder.GetGraph())
+	// f, err := os.Create("test5.dot")
+	// w := bufio.NewWriter(f)
+	// _, err = w.WriteString(string(b))
+	// w.Flush()
+
 	// Graph must have 6 nodes
 	if builder.GetGraph().NumNodes() != 6 {
 		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
 	}
+	// for nodeItr := builder.GetGraph().GetNodes(); nodeItr.Next(); {
+	// 	node := nodeItr.Node()
+	// 	t.Log(node.String())
+	// }
 	tgtCodeNodes := FindChildInstanceOf(rootNode, "tgtcode")
 	if len(tgtCodeNodes) == 1 {
 		t.Errorf("tgtcode")
