@@ -20,8 +20,8 @@ import (
 	"github.com/cloudprivacylabs/lpg"
 )
 
-func instantiatePathNodeFunc(g *lpg.Graph) func(parent, schemaNode *lpg.Node, seen map[string]struct{}) (*lpg.Node, error) {
-	return func(parent, schemaNode *lpg.Node, seen map[string]struct{}) (*lpg.Node, error) {
+func instantiatePathNodeFunc(g *lpg.Graph) func(parent, schemaNode *lpg.Node) (*lpg.Node, error) {
+	return func(parent, schemaNode *lpg.Node) (*lpg.Node, error) {
 		newNode := InstantiateSchemaNode(g, schemaNode, true, map[*lpg.Node]*lpg.Node{})
 		g.NewEdge(parent, newNode, HasTerm, nil)
 		return newNode, nil

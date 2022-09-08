@@ -15,9 +15,7 @@
 package ls
 
 import (
-	"bufio"
 	"encoding/json"
-	"os"
 	"testing"
 	//	"github.com/cloudprivacylabs/lpg"
 )
@@ -374,21 +372,10 @@ func TestStructuredDeepVS(t *testing.T) {
 		t.Error(err)
 	}
 
-	x := JSONMarshaler{}
-	b, _ := x.Marshal(builder.GetGraph())
-	f, err := os.Create("why.dot")
-	w := bufio.NewWriter(f)
-	_, err = w.WriteString(string(b))
-	w.Flush()
-
-	// Graph must have 6 nodes
-	if builder.GetGraph().NumNodes() != 6 {
+	// Graph must have 7 nodes
+	if builder.GetGraph().NumNodes() != 7 {
 		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
 	}
-	// for nodeItr := builder.GetGraph().GetNodes(); nodeItr.Next(); {
-	// 	node := nodeItr.Node()
-	// 	t.Log(node.String())
-	// }
 	tgtCodeNodes := FindChildInstanceOf(rootNode, "tgtcode")
 	if len(tgtCodeNodes) == 1 {
 		t.Errorf("tgtcode")

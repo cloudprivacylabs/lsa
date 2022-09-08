@@ -422,10 +422,8 @@ func (vsi *ValuesetInfo) findResultNodes(contextDocumentNode, contextSchemaNode,
 	return
 }
 
-// var seen = map[*lpg.Node]struct{}{}
-var i = 0
-
 func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, layer *Layer, contextDocumentNode, contextSchemaNode *lpg.Node, resultSchemaNodeID string, resultValue string) error {
+	fmt.Println(resultSchemaNodeID, resultValue)
 	// There is value. If there is a node, update it. Otherwise, insert it
 	resultSchemaNode := layer.GetAttributeByID(resultSchemaNodeID)
 	if resultSchemaNode == nil {
@@ -435,31 +433,6 @@ func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, l
 	if err != nil {
 		return err
 	}
-	var node *lpg.Node
-	// if i < 1 {
-	i += 1
-	n, _ := EnsurePath(contextDocumentNode, nil, contextSchemaNode, resultSchemaNode, func(parentDocNode, childSchemaNode *lpg.Node, seen map[string]struct{}) (*lpg.Node, error) {
-		newNode := InstantiateSchemaNode(builder.targetGraph, childSchemaNode, true, map[*lpg.Node]*lpg.Node{})
-		if _, ok := seen[GetNodeID(newNode)]; !ok {
-			// if childSchemaNode.HasLabel(AttributeTypeObject) {
-			// newNode := builder.NewNode(childSchemaNode)
-			builder.GetGraph().NewEdge(parentDocNode, newNode, HasTerm, nil)
-			return newNode, nil
-		}
-		return nil, nil
-		// }
-		// if childSchemaNode.HasLabel(AttributeTypeValue) {
-		// 	newNode := builder.NewNode(resultSchemaNode)
-		// 	builder.GetGraph().NewEdge(parentDocNode, newNode, HasTerm, nil)
-		// 	return newNode, nil
-		// }
-		// return nil, nil
-	})
-	node = n
-	// }
-	if err != nil {
-		return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create path: %s", err.Error())}
-	}
 
 	switch len(resultNodes) {
 	case 0: // insert it
@@ -468,16 +441,25 @@ func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, l
 		if parent == nil {
 			parent = contextDocumentNode
 		}
-		if node == nil {
-			node = parent
-		}
 		switch GetIngestAs(resultSchemaNode) {
 		case "node":
-			_, n, err := builder.RawValueAsNode(resultSchemaNode, node, resultValue)
+			_, err := EnsurePath(contextDocumentNode, nil, contextSchemaNode, resultSchemaNode, func(parentDocNode, childSchemaNode *lpg.Node) (*lpg.Node, error) {
+				if GetNodeID(childSchemaNode) == GetNodeID(resultSchemaNode) {
+					_, n, err := builder.RawValueAsNode(childSchemaNode, parentDocNode, resultValue)
+					if err != nil {
+						return nil, ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
+					}
+					ctx.GetLogger().Debug(map[string]interface{}{"valueset.createResultNodes": "insert", "schId": resultSchemaNode, "newNode": n})
+					return n, nil
+				}
+				newNode := InstantiateSchemaNode(builder.targetGraph, childSchemaNode, true, map[*lpg.Node]*lpg.Node{})
+				builder.GetGraph().NewEdge(parentDocNode, newNode, HasTerm, nil)
+				return newNode, nil
+			})
 			if err != nil {
-				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
+				return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create path: %s", err.Error())}
 			}
-			ctx.GetLogger().Debug(map[string]interface{}{"valueset.createResultNodes": "insert", "schId": resultSchemaNode, "newNode": n})
+
 		case "edge":
 			_, err := builder.RawValueAsEdge(resultSchemaNode, parent, resultValue)
 			if err != nil {
@@ -549,8 +531,6 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilde
 		}
 		if err := vsi.createResultNodes(ctx, builder, layer, contextDocumentNode, contextSchemaNode, resultNodeID, resultValue); err != nil {
 			return err
-		} else {
-			break
 		}
 	}
 	return nil
