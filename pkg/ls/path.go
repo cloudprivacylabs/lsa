@@ -35,7 +35,7 @@ func (e ErrPathInstantiation) Error() string {
 // will be an instance of schemaNode. Each node will be created using
 // the instanate func that takes the parent document node, and the
 // schema node to instantiate.
-func EnsurePath(rootDocNode, ancestorDocNode *lpg.Node, rootSchemaNode, schemaNode *lpg.Node, instantiate func(parentDocNode, schemaNode *lpg.Node) (*lpg.Node, error)) (*lpg.Node, error) {
+func EnsurePath(rootDocNode, ancestorDocNode *lpg.Node, rootSchemaNode, schemaNode *lpg.Node, instantiate func(parentDocNode, schemaNode *lpg.Node, seen map[string]struct{}) (*lpg.Node, error)) (*lpg.Node, error) {
 	// Find the path in schema from the root to the schema node. There
 	// must be at most one.
 	schemaPath := GetAttributePath(rootSchemaNode, schemaNode)
@@ -80,19 +80,23 @@ func EnsurePath(rootDocNode, ancestorDocNode *lpg.Node, rootSchemaNode, schemaNo
 		return docPathNode, nil
 	}
 
+	seen := make(map[string]struct{})
 	for ; len(schemaPath) > 1; schemaPath = schemaPath[1:] {
 		children := FindChildInstanceOf(docPathNode, GetNodeID(schemaPath[1]))
 		switch len(children) {
 		case 0:
 			// Instantiate the schemaPath[1] under docPathNode
-			newNode, err := instantiate(docPathNode, schemaPath[1])
-			if err != nil {
-				return nil, ErrPathInstantiation{
-					TargetNode: GetNodeID(schemaNode),
-					Msg:        fmt.Sprintf("Error while instantiating node for %s: %s", GetNodeID(schemaPath[1]), err.Error()),
+			if _, ok := seen[GetNodeID(schemaPath[1])]; !ok {
+				newNode, err := instantiate(docPathNode, schemaPath[1], seen)
+				seen[GetNodeID(schemaPath[1])] = struct{}{}
+				if err != nil {
+					return nil, ErrPathInstantiation{
+						TargetNode: GetNodeID(schemaNode),
+						Msg:        fmt.Sprintf("Error while instantiating node for %s: %s", GetNodeID(schemaPath[1]), err.Error()),
+					}
 				}
+				docPathNode = newNode
 			}
-			docPathNode = newNode
 
 		case 1:
 			docPathNode = children[0]
@@ -103,6 +107,9 @@ func EnsurePath(rootDocNode, ancestorDocNode *lpg.Node, rootSchemaNode, schemaNo
 				Msg:        fmt.Sprintf("Multiple child nodes of %s", GetNodeID(schemaPath[1])),
 			}
 		}
+	}
+	for n := range seen {
+		fmt.Println(n)
 	}
 	return docPathNode, nil
 }

@@ -463,7 +463,7 @@ func (gb GraphBuilder) PostIngestSchemaNode(schemaRootNode, schemaNode, docRootN
 		}
 		parentSchemaNode := GetParentAttribute(schemaNode)
 		for _, parentDocNode := range nodeIDMap[GetNodeID(parentSchemaNode)] {
-			docNode, e := EnsurePath(docRootNode, parentDocNode, schemaRootNode, schemaNode, func(parentNode, childSchemaNode *lpg.Node) (*lpg.Node, error) {
+			docNode, e := EnsurePath(docRootNode, parentDocNode, schemaRootNode, schemaNode, func(parentNode, childSchemaNode *lpg.Node, seen map[string]struct{}) (*lpg.Node, error) {
 				n := gb.NewNode(childSchemaNode)
 				gb.targetGraph.NewEdge(parentNode, n, HasTerm, nil)
 				return n, nil
