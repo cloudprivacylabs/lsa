@@ -195,6 +195,29 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 	return nil
 }
 
+type CSVJoinIngester struct {
+	Repo                 string   `json:"repo" yaml:"repo"`
+	Schemas              []string `json:"schema" yaml:"schema"`
+	Type                 string   `json:"type" yaml:"type"`
+	Bundle               []string `json:"bundle" yaml:"bundle"`
+	CompiledSchemas      []string `json:"compiledSchema" yaml:"compiledSchema"`
+	EmbedSchemaNodes     bool     `json:"embedSchemaNodes" yaml:"embedSchemaNodes"`
+	OnlySchemaAttributes bool     `json:"onlySchemaAttributes" yaml:"onlySchemaAttributes"`
+	IngestNullValues     bool     `json:"ingestNullValues" yaml:"ingestNullValues"`
+	StartRow             int      `json:"startRow" yaml:"startRow"`
+	EndRow               int      `json:"endRow" yaml:"endRow"`
+	HeaderRow            int      `json:"headerRow" yaml:"headerRow"`
+	ID                   string   `json:"id" yaml:"id"`
+	IngestByRows         bool     `json:"ingestByRows" yaml:"ingestByRows"`
+	Delimiter            string   `json:"delimiter" yaml:"delimiter"`
+	initialized          bool
+	ingester             *ls.Ingester
+}
+
+func (ci *CSVIngester) ingestCSVJoin(schemas []string, cols int, bundle string) {
+	// TODO
+}
+
 func init() {
 	ingestCmd.AddCommand(ingestCSVCmd)
 	ingestCSVCmd.Flags().Int("startRow", 1, "Start row 0-based")
@@ -204,6 +227,7 @@ func init() {
 	ingestCSVCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 	ingestCSVCmd.Flags().String("delimiter", ",", "Delimiter char")
 	ingestCSVCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
+	ingestCSVCmd.Flags().Bool("csvjoin", false, "Ingest a CSV, where the data is the result of a SQL join")
 	ingestCSVCmd.Flags().Bool("byFile", false, "Ingest one file at a time. Default is row at a time.")
 
 	pipeline.RegisterPipelineStep("ingest/csv", func() pipeline.Step {
