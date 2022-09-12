@@ -20,6 +20,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"reflect"
 	"strings"
 	"text/template"
 
@@ -196,30 +197,127 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 }
 
 type CSVJoinIngester struct {
-	Repo                 string   `json:"repo" yaml:"repo"`
-	Schemas              []string `json:"schema" yaml:"schema"`
-	Type                 string   `json:"type" yaml:"type"`
-	Bundle               []string `json:"bundle" yaml:"bundle"`
-	CompiledSchemas      []string `json:"compiledSchema" yaml:"compiledSchema"`
-	EmbedSchemaNodes     bool     `json:"embedSchemaNodes" yaml:"embedSchemaNodes"`
-	OnlySchemaAttributes bool     `json:"onlySchemaAttributes" yaml:"onlySchemaAttributes"`
-	IngestNullValues     bool     `json:"ingestNullValues" yaml:"ingestNullValues"`
-	StartRow             int      `json:"startRow" yaml:"startRow"`
-	EndRow               int      `json:"endRow" yaml:"endRow"`
-	HeaderRow            int      `json:"headerRow" yaml:"headerRow"`
-	ID                   string   `json:"id" yaml:"id"`
-	IngestByRows         bool     `json:"ingestByRows" yaml:"ingestByRows"`
-	Delimiter            string   `json:"delimiter" yaml:"delimiter"`
-	initialized          bool
-	ingester             *ls.Ingester
+	BaseIngestParams
+	Schemas      []string `json:"schemas" yaml:"schemas"`
+	StartRow     int      `json:"startRow" yaml:"startRow"`
+	EndRow       int      `json:"endRow" yaml:"endRow"`
+	HeaderRow    int      `json:"headerRow" yaml:"headerRow"`
+	ID           string   `json:"id" yaml:"id"`
+	IngestByRows bool     `json:"ingestByRows" yaml:"ingestByRows"`
+	Delimiter    string   `json:"delimiter" yaml:"delimiter"`
+	ColumnRange  uint     `json:"columnRange" yaml:"columnRange"`
+	initialized  bool
+	ingester     *ls.Ingester
 }
 
-func (ci *CSVIngester) ingestCSVJoin(schemas []string, cols int, bundle string) {
+/*
+// vertical scan
+	for i := 0; i < len(strs[0]); i++ {
+		currentChar := strs[0][i]
+		for j := 1; j < len(strs); j++ {
+			if i == len(strs[j]) || currentChar != strs[j][i] {
+				return strs[0][0:i]
+			}
+		}
+	}
+	return strs[0]
+*/
+func (cji *CSVJoinIngester) ingestCSVJoin(context *ls.Context, layer *ls.Layer, bundle string, schemas []string, columnRange uint, stream io.ReadCloser) error {
 	// TODO
+	// var graphBoundaryByRow int
+	findSchemaDeviation := func(row1, row2 []string, position int) int {
+		for x := position; x < int(columnRange); x++ {
+			if row1[x] != row2[x] {
+				return x
+			}
+		}
+		return 0
+	}
+	reader := csv.NewReader(stream)
+	var schemaRange int
+	var nextSchemaRange int
+	var firstSchemaRangeValues []string
+	data, err := reader.ReadAll()
+	if err == io.EOF {
+		return err
+	}
+	// establish the first schema boundary
+	schemaRange = findSchemaDeviation(data[0], data[1], 0)
+	firstSchemaRangeValues = data[0][0:schemaRange]
+	prevRangeValues := firstSchemaRangeValues
+	var nextRangeValues []string
+	parser := csvingest.Parser{
+		OnlySchemaAttributes: cji.OnlySchemaAttributes,
+		SchemaNode:           layer.GetSchemaRootNode(),
+		IngestNullValues:     cji.IngestNullValues,
+	}
+	builder := ls.NewGraphBuilder(ls.NewDocumentGraph(), ls.GraphBuilderOptions{
+		EmbedSchemaNodes:     cji.EmbedSchemaNodes,
+		OnlySchemaAttributes: cji.OnlySchemaAttributes,
+	})
+	parsed, err := parser.ParseDoc(context, "", firstSchemaRangeValues)
+	if err != nil {
+		return err
+	}
+	if parsed == nil {
+		return fmt.Errorf("Parsed is nil")
+	}
+
+	r, err := cji.ingester.Ingest(builder, parsed)
+	if err != nil {
+		return err
+	}
+	parent := r
+	// assert schema ranges are same length
+	for rowIdx, row := range data {
+		for colIdx := schemaRange; colIdx < int(columnRange); colIdx += schemaRange {
+			// create nodes on a per row by schema range basis
+			if colIdx == schemaRange {
+				// graph boundary is found when current row does having the matching schema values for the schema range
+				// establish new range and first schema values for that range
+				if !reflect.DeepEqual(firstSchemaRangeValues, row[0:colIdx]) {
+					// graphBoundaryByRow = rowIdx
+					builder = ls.NewGraphBuilder(ls.NewDocumentGraph(), ls.GraphBuilderOptions{
+						EmbedSchemaNodes:     cji.EmbedSchemaNodes,
+						OnlySchemaAttributes: cji.OnlySchemaAttributes,
+					})
+					firstSchemaRangeValues = data[rowIdx][0:schemaRange]
+				}
+			}
+			if rowIdx+1 < len(data) && colIdx+schemaRange < len(row) {
+				nextSchemaRange = findSchemaDeviation(row[colIdx:schemaRange], data[rowIdx+1][colIdx:schemaRange], colIdx)
+				nextRangeValues = row[colIdx:schemaRange]
+			}
+			if !reflect.DeepEqual(prevRangeValues, nextRangeValues) {
+				n := builder.NewNode(parent)
+				builder.GetGraph().NewEdge(r, n, ls.HasTerm, nil)
+			}
+		}
+	}
+	// // vertical scan to find graph boundary
+	// for rowIdx, row := range data {
+	// 	// graph boundary found
+	// 	if !reflect.DeepEqual(row[0:schemaRange], firstSchemaRangeValues) {
+
+	// 	}
+	// }
+	return nil
+}
+
+func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
+	// TODO
+	layer, err := LoadSchemaFromFileOrRepo(pipeline.Context, cji.CompiledSchema, cji.Repo, cji.Schema, cji.Type, cji.Bundle)
+	if err != nil {
+		return err
+	}
+	cji.initialized = true
+	cji.ingester = &ls.Ingester{Schema: layer}
+	return nil
 }
 
 func init() {
 	ingestCmd.AddCommand(ingestCSVCmd)
+	ingestCmd.AddCommand(ingestCSVJoinCmd)
 	ingestCSVCmd.Flags().Int("startRow", 1, "Start row 0-based")
 	ingestCSVCmd.Flags().Int("endRow", -1, "End row 0-based")
 	ingestCSVCmd.Flags().Int("headerRow", 0, "Header row 0-based (default: 0) ")
@@ -227,11 +325,23 @@ func init() {
 	ingestCSVCmd.Flags().String("compiledschema", "", "Use the given compiled schema")
 	ingestCSVCmd.Flags().String("delimiter", ",", "Delimiter char")
 	ingestCSVCmd.Flags().String("initialGraph", "", "Load this graph and ingest data onto it")
-	ingestCSVCmd.Flags().Bool("csvjoin", false, "Ingest a CSV, where the data is the result of a SQL join")
 	ingestCSVCmd.Flags().Bool("byFile", false, "Ingest one file at a time. Default is row at a time.")
 
 	pipeline.RegisterPipelineStep("ingest/csv", func() pipeline.Step {
 		return &CSVIngester{
+			BaseIngestParams: BaseIngestParams{
+				EmbedSchemaNodes: true,
+			},
+			EndRow:       -1,
+			HeaderRow:    0,
+			StartRow:     1,
+			Delimiter:    ",",
+			IngestByRows: true,
+		}
+	})
+
+	pipeline.RegisterPipelineStep("ingest/csv/join", func() pipeline.Step {
+		return &CSVJoinIngester{
 			BaseIngestParams: BaseIngestParams{
 				EmbedSchemaNodes: true,
 			},
@@ -286,6 +396,52 @@ var ingestCSVCmd = &cobra.Command{
 			NewWriteGraphStep(cmd),
 		}
 		_, err = runPipeline(p, initialGraph, args)
+		return err
+	},
+}
+
+var ingestCSVJoinCmd = &cobra.Command{
+	Use:   "csvjoin",
+	Short: "Ingest a CSV document whose content is the result of SQL joins and enrich it with a schema",
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		initialGraph, _ := cmd.Flags().GetString("initialGraph")
+		ing := CSVJoinIngester{}
+		ing.fromCmd(cmd)
+		var err error
+		ing.StartRow, err = cmd.Flags().GetInt("startRow")
+		if err != nil {
+			return err
+		}
+		ing.EndRow, err = cmd.Flags().GetInt("endRow")
+		if err != nil {
+			return err
+		}
+		ing.HeaderRow, err = cmd.Flags().GetInt("headerRow")
+		if err != nil {
+			return err
+		}
+		if ing.HeaderRow >= ing.StartRow {
+			return fmt.Errorf("Header row is ahead of start row")
+		}
+		ing.ID, err = cmd.Flags().GetString("id")
+		if err != nil {
+			return err
+		}
+		ing.Delimiter, err = cmd.Flags().GetString("delimiter")
+		if err != nil {
+			return err
+		}
+		byFile, err := cmd.Flags().GetBool("byFile")
+		if err != nil {
+			return err
+		}
+		ing.IngestByRows = !byFile
+		pl := []pipeline.Step{
+			&ing,
+			NewWriteGraphStep(cmd),
+		}
+		_, err = runPipeline(pl, initialGraph, args)
 		return err
 	},
 }
