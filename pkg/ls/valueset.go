@@ -423,7 +423,6 @@ func (vsi *ValuesetInfo) findResultNodes(contextDocumentNode, contextSchemaNode,
 }
 
 func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, layer *Layer, contextDocumentNode, contextSchemaNode *lpg.Node, resultSchemaNodeID string, resultValue string) error {
-	fmt.Println(resultSchemaNodeID, resultValue)
 	// There is value. If there is a node, update it. Otherwise, insert it
 	resultSchemaNode := layer.GetAttributeByID(resultSchemaNodeID)
 	if resultSchemaNode == nil {
@@ -444,7 +443,7 @@ func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, l
 		switch GetIngestAs(resultSchemaNode) {
 		case "node":
 			_, err := EnsurePath(contextDocumentNode, nil, contextSchemaNode, resultSchemaNode, func(parentDocNode, childSchemaNode *lpg.Node) (*lpg.Node, error) {
-				if GetNodeID(childSchemaNode) == GetNodeID(resultSchemaNode) {
+				if GetNodeID(childSchemaNode) == resultSchemaNodeID {
 					_, n, err := builder.RawValueAsNode(childSchemaNode, parentDocNode, resultValue)
 					if err != nil {
 						return nil, ErrValueset{SchemaNodeID: vsi.ContextID, Msg: fmt.Sprintf("Cannot create new node: %s", err.Error())}
