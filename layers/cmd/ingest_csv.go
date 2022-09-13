@@ -16,11 +16,12 @@ package cmd
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/csv"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
-	"reflect"
 	"strings"
 	"text/template"
 
@@ -198,110 +199,81 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 
 type CSVJoinIngester struct {
 	BaseIngestParams
-	Schemas      []string `json:"schemas" yaml:"schemas"`
-	StartRow     int      `json:"startRow" yaml:"startRow"`
-	EndRow       int      `json:"endRow" yaml:"endRow"`
-	HeaderRow    int      `json:"headerRow" yaml:"headerRow"`
-	ID           string   `json:"id" yaml:"id"`
-	IngestByRows bool     `json:"ingestByRows" yaml:"ingestByRows"`
-	Delimiter    string   `json:"delimiter" yaml:"delimiter"`
-	ColumnRange  uint     `json:"columnRange" yaml:"columnRange"`
+	StartRow     int    `json:"startRow" yaml:"startRow"`
+	EndRow       int    `json:"endRow" yaml:"endRow"`
+	HeaderRow    int    `json:"headerRow" yaml:"headerRow"`
+	ID           string `json:"id" yaml:"id"`
+	IngestByRows bool   `json:"ingestByRows" yaml:"ingestByRows"`
+	Delimiter    string `json:"delimiter" yaml:"delimiter"`
+	ColumnRange  uint   `json:"columnRange" yaml:"columnRange"`
 	initialized  bool
 	ingester     *ls.Ingester
 }
 
-/*
-// vertical scan
-	for i := 0; i < len(strs[0]); i++ {
-		currentChar := strs[0][i]
-		for j := 1; j < len(strs); j++ {
-			if i == len(strs[j]) || currentChar != strs[j][i] {
-				return strs[0][0:i]
-			}
-		}
-	}
-	return strs[0]
-*/
-func (cji *CSVJoinIngester) ingestCSVJoin(context *ls.Context, layer *ls.Layer, bundle string, schemas []string, columnRange uint, stream io.ReadCloser) error {
-	// TODO
-	// var graphBoundaryByRow int
-	findSchemaDeviation := func(row1, row2 []string, position int) int {
-		for x := position; x < int(columnRange); x++ {
-			if row1[x] != row2[x] {
-				return x
-			}
-		}
-		return 0
-	}
-	reader := csv.NewReader(stream)
-	var schemaRange int
-	var nextSchemaRange int
-	var firstSchemaRangeValues []string
-	data, err := reader.ReadAll()
-	if err == io.EOF {
-		return err
-	}
-	// establish the first schema boundary
-	schemaRange = findSchemaDeviation(data[0], data[1], 0)
-	firstSchemaRangeValues = data[0][0:schemaRange]
-	prevRangeValues := firstSchemaRangeValues
-	var nextRangeValues []string
-	parser := csvingest.Parser{
-		OnlySchemaAttributes: cji.OnlySchemaAttributes,
-		SchemaNode:           layer.GetSchemaRootNode(),
-		IngestNullValues:     cji.IngestNullValues,
-	}
-	builder := ls.NewGraphBuilder(ls.NewDocumentGraph(), ls.GraphBuilderOptions{
-		EmbedSchemaNodes:     cji.EmbedSchemaNodes,
-		OnlySchemaAttributes: cji.OnlySchemaAttributes,
-	})
-	parsed, err := parser.ParseDoc(context, "", firstSchemaRangeValues)
-	if err != nil {
-		return err
-	}
-	if parsed == nil {
-		return fmt.Errorf("Parsed is nil")
-	}
+type CSVJoinConfig struct {
+	VariantID        string
+	StartCol, EndCol int
+	IDCols           []int
+}
 
-	r, err := cji.ingester.Ingest(builder, parsed)
-	if err != nil {
-		return err
-	}
-	parent := r
-	// assert schema ranges are same length
-	for rowIdx, row := range data {
-		for colIdx := schemaRange; colIdx < int(columnRange); colIdx += schemaRange {
-			// create nodes on a per row by schema range basis
-			if colIdx == schemaRange {
-				// graph boundary is found when current row does having the matching schema values for the schema range
-				// establish new range and first schema values for that range
-				if !reflect.DeepEqual(firstSchemaRangeValues, row[0:colIdx]) {
-					// graphBoundaryByRow = rowIdx
-					builder = ls.NewGraphBuilder(ls.NewDocumentGraph(), ls.GraphBuilderOptions{
-						EmbedSchemaNodes:     cji.EmbedSchemaNodes,
-						OnlySchemaAttributes: cji.OnlySchemaAttributes,
-					})
-					firstSchemaRangeValues = data[rowIdx][0:schemaRange]
+type joinData struct {
+	CSVJoinConfig
+	data []string
+	id   string
+}
+
+func (cji *CSVJoinIngester) ingestCSVJoin(entities []CSVJoinConfig, stream io.ReadCloser) error {
+	reader := csv.NewReader(stream)
+	seenIds := make(map[string][]string)
+	done := false
+	var schemaRootID string
+
+ROWS:
+	for row := 0; !done; row++ {
+		newRow := true
+		rowData, err := reader.Read()
+		if err == io.EOF {
+			done = true
+			break
+		}
+		if err != nil {
+			return err
+		}
+		joinCtx := make([]joinData, 0)
+		for _, schema := range entities {
+			data := rowData[schema.StartCol : schema.EndCol+1]
+			hashID := GenerateHashFromIDs(data)
+			if newRow {
+				// new graph
+				if schemaRootID != "" && schemaRootID != hashID {
+
 				}
 			}
-			if rowIdx+1 < len(data) && colIdx+schemaRange < len(row) {
-				nextSchemaRange = findSchemaDeviation(row[colIdx:schemaRange], data[rowIdx+1][colIdx:schemaRange], colIdx)
-				nextRangeValues = row[colIdx:schemaRange]
+			if _, seen := seenIds[hashID]; seen {
+				newRow = false
+				continue
 			}
-			if !reflect.DeepEqual(prevRangeValues, nextRangeValues) {
-				n := builder.NewNode(parent)
-				builder.GetGraph().NewEdge(r, n, ls.HasTerm, nil)
+			newRow = false
+			joinCtx = append(joinCtx, joinData{
+				data: data,
+				id:   hashID,
+			})
+			schemaRootID = joinCtx[0].id
+			seenIds[hashID] = data
+			if schema.EndCol == len(rowData)-1 {
+				continue ROWS
 			}
 		}
 	}
-	// // vertical scan to find graph boundary
-	// for rowIdx, row := range data {
-	// 	// graph boundary found
-	// 	if !reflect.DeepEqual(row[0:schemaRange], firstSchemaRangeValues) {
-
-	// 	}
-	// }
 	return nil
+}
+
+func GenerateHashFromIDs(ids []string) string {
+	if len(ids) == 0 {
+		return ids[0]
+	}
+	hash := sha256.Sum256([]byte(strings.Join(ids, "")))
+	return hex.EncodeToString(hash[:])
 }
 
 func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
