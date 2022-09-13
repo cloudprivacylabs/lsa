@@ -83,16 +83,37 @@ func (ctx *reshapeContext) exportResults(rs opencypher.ResultSet) error {
 	if len(rs.Rows) == 0 {
 		return nil
 	}
-	if len(rs.Rows) > 1 {
-		return fmt.Errorf("Multiple results in the resultset")
-	}
+	namedResults := make(map[string]opencypher.Value)
 	for _, row := range rs.Rows {
 		for varName, val := range row {
 			if opencypher.IsNamedResult(varName) {
-				ctx.setSymbolValue(varName, val)
+				existing, ok := namedResults[varName]
+				if !ok {
+					namedResults[varName] = val
+				} else {
+					if arr, ok := existing.Get().([]opencypher.Value); ok {
+						namedResults[varName] = opencypher.RValue{Value: append(arr, val)}
+					} else {
+						namedResults[varName] = opencypher.RValue{Value: []opencypher.Value{existing, val}}
+					}
+				}
 			}
 		}
 	}
+	for k, v := range namedResults {
+		ctx.setSymbolValue(k, v)
+	}
+	// if len(rs.Rows) > 1 {
+	// 	return fmt.Errorf("Multiple results in the resultset")
+	// }
+	// for _, row := range rs.Rows {
+	// 	for varName, val := range row {
+	// 		if opencypher.IsNamedResult(varName) {
+	// 			ctx.setSymbolValue(varName, val)
+	// 		}
+	// 	}
+	// }
+
 	return nil
 }
 
@@ -217,46 +238,6 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 			}
 		}
 	}
-	// If the node is marked as a map context, evaluate that expr
-	if ev := MapContextSemantics.GetEvaluatable(reshaper.Script.GetProperties(schemaNode)); ev != nil {
-		evalContext := ctx.getEvalContext()
-		mapContext, err := ev.Evaluate(evalContext)
-		if err != nil {
-			return nil, wrapReshapeError(err, schemaNodeID)
-		}
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "mapContext": mapContext})
-		node, err := getAtMostOneNode(mapContext)
-		if err != nil {
-			return nil, wrapReshapeError(err, schemaNodeID)
-		}
-		if node != nil {
-			ctx.mapContext.push(node)
-			defer ctx.mapContext.pop()
-		}
-	}
-
-	// This is the case where the schema node has `mapProperty:
-	// propName`. In this case, nodes under the map context that has the
-	// property `propName: schemaNodeId` will be selected as the source
-	// nodes.
-	if mapProperty := ls.AsPropertyValue(reshaper.Script.GetProperties(schemaNode).GetProperty(MapPropertyTerm)).AsString(); len(mapProperty) > 0 {
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "valueFrom": MapPropertyTerm})
-		// Find the nodes under the map context whose mapProperty property points to schemaNodeID
-		nodeValues := reshaper.findNodesUnderMapContext(ctx, mapProperty, []string{schemaNodeID})
-		return reshaper.generateOutput(ctx, nodeValues)
-	}
-
-	// This is the case where the script contains a direct mapping for
-	// the node. There is a mapping with source and target in the
-	// script, and the source nodes are the nodes whose schemaNodeId are
-	// the source values.
-	if nodeMappings := reshaper.Script.GetMappingsByTarget(schemaNodeID); len(nodeMappings) != 0 {
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "valueFrom": "map by target"})
-		// Find the nodes under the map context whose source node ID is given in
-		nodeValues := reshaper.findNodesUnderMapContext(ctx, ls.SchemaNodeIDTerm, getMappingSources(nodeMappings))
-		return reshaper.generateOutput(ctx, nodeValues)
-	}
-
 	processValueExpr := func(term string) ([]opencypher.Value, error) {
 		evaluatables := ValueExprTermSemantics.GetEvaluatables(term, reshaper.Script.GetProperties(schemaNode))
 		if len(evaluatables) == 0 {
@@ -272,12 +253,6 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 			if isEmptyValue(sv) {
 				continue
 			}
-			rs, ok := sv.Get().(opencypher.ResultSet)
-			if ok {
-				if err := ctx.exportResults(rs); err != nil {
-					return nil, err
-				}
-			}
 			ret = append(ret, sv)
 			if term == ValueExprTerm || term == ValueExprFirstTerm {
 				break
@@ -285,6 +260,8 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 		}
 		return ret, nil
 	}
+
+	var results []opencypher.Value
 
 	// Evaluate value expressions
 	{
@@ -300,13 +277,98 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 		if err != nil {
 			return nil, wrapReshapeError(err, schemaNodeID)
 		}
-		results := make([]opencypher.Value, 0, len(v1)+len(v2)+len(v3))
+		results = make([]opencypher.Value, 0, len(v1)+len(v2)+len(v3))
 		results = append(results, v1...)
 		results = append(results, v2...)
 		results = append(results, v3...)
-		if len(results) > 0 {
-			return reshaper.generateOutput(ctx, results)
+	}
+
+	// This is the case where the schema node has `mapProperty:
+	// propName`. In this case, nodes under the map context that has the
+	// property `propName: schemaNodeId` will be selected as the source
+	// nodes.
+	if mapProperty := ls.AsPropertyValue(reshaper.Script.GetProperties(schemaNode).GetProperty(MapPropertyTerm)).AsString(); len(mapProperty) > 0 {
+		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "valueFrom": MapPropertyTerm})
+		// Find the nodes under the map context whose mapProperty property points to schemaNodeID
+		nodeValues := reshaper.findNodesUnderMapContext(ctx, mapProperty, []string{schemaNodeID})
+		for _, v := range nodeValues {
+			results = append(results, opencypher.RValue{Value: v})
 		}
+	}
+
+	// This is the case where the script contains a direct mapping for
+	// the node. There is a mapping with source and target in the
+	// script, and the source nodes are the nodes whose schemaNodeId are
+	// the source values.
+	if nodeMappings := reshaper.Script.GetMappingsByTarget(schemaNodeID); len(nodeMappings) != 0 {
+		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "valueFrom": "map by target"})
+		// Find the nodes under the map context whose source node ID is given in
+		nodeValues := reshaper.findNodesUnderMapContext(ctx, ls.SchemaNodeIDTerm, getMappingSources(nodeMappings))
+		for _, v := range nodeValues {
+			results = append(results, opencypher.RValue{Value: v})
+		}
+	}
+
+	if len(results) > 0 {
+		// If the node is marked as a map context, evaluate that expr
+		mapContextExpr := MapContextSemantics.GetEvaluatable(reshaper.Script.GetProperties(schemaNode))
+		process := func(result opencypher.Value) ([]*txDocNode, error) {
+			if mapContextExpr != nil {
+				evalContext := ctx.getEvalContext()
+				mapContext, err := mapContextExpr.Evaluate(evalContext)
+				if err != nil {
+					return nil, wrapReshapeError(err, schemaNodeID)
+				}
+				ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "mapContext": mapContext})
+				node, err := getAtMostOneNode(mapContext)
+				if err != nil {
+					return nil, wrapReshapeError(err, schemaNodeID)
+				}
+				if node != nil {
+					ctx.mapContext.push(node)
+					defer ctx.mapContext.pop()
+				}
+			}
+			output, err := reshaper.generateOutput(ctx, result)
+			if err != nil {
+				return nil, err
+			}
+			return output, nil
+		}
+
+		ret := make([]*txDocNode, 0)
+		for _, result := range results {
+			if rs, ok := result.Get().(opencypher.ResultSet); ok {
+				for _, row := range rs.Rows {
+					ctx.exportVars(row)
+					if len(row) > 1 {
+						return nil, wrapReshapeError(fmt.Errorf("Multiple columns in result set"), schemaNodeID)
+					}
+					for _, val := range row {
+						v, err := process(val)
+						if err != nil {
+							return nil, err
+						}
+						ret = append(ret, v...)
+					}
+				}
+			} else if arr, ok := result.Get().([]*lpg.Node); ok {
+				for _, x := range arr {
+					v, err := process(opencypher.RValue{Value: x})
+					if err != nil {
+						return nil, err
+					}
+					ret = append(ret, v...)
+				}
+			} else if _, ok := result.Get().(*lpg.Node); ok {
+				v, err := process(result)
+				if err != nil {
+					return nil, err
+				}
+				ret = append(ret, v...)
+			}
+		}
+		return ret, nil
 	}
 
 	// If not a value node, try reshaping subtree
@@ -314,6 +376,9 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 		v, err := reshaper.handleNode(ctx, nil)
 		if err != nil {
 			return nil, err
+		}
+		if v == nil {
+			return nil, nil
 		}
 		return []*txDocNode{v}, nil
 	}
@@ -374,8 +439,15 @@ func (reshaper Reshaper) handleNode(ctx *reshapeContext, input *lpg.Node) (*txDo
 		if input == nil {
 			return nil, nil
 		}
+		val, err := ls.GetNodeValue(input)
+		if err != nil {
+			return nil, err
+		}
+		ret.value = val
+		ret.rawValue, _ = ls.GetRawNodeValue(input)
+		return ret, nil
 	}
-	return ret, nil
+	return nil, nil
 }
 
 func (reshaper Reshaper) generateOutput(ctx *reshapeContext, input interface{}) ([]*txDocNode, error) {
@@ -402,6 +474,9 @@ func (reshaper Reshaper) generateOutput(ctx *reshapeContext, input interface{}) 
 		v, err := reshaper.handleNode(ctx, values)
 		if err != nil {
 			return nil, err
+		}
+		if v == nil {
+			return nil, nil
 		}
 		return []*txDocNode{v}, nil
 	case []*lpg.Node:
@@ -448,7 +523,9 @@ func (reshaper Reshaper) generateOutput(ctx *reshapeContext, input interface{}) 
 				if err != nil {
 					return nil, err
 				}
-				ret = append(ret, result)
+				if result != nil {
+					ret = append(ret, result)
+				}
 			} else {
 				if len(row) > 1 {
 					return nil, fmt.Errorf("Resultset has multiple columns where one expected")
@@ -555,7 +632,7 @@ func getAtMostOneNode(value opencypher.Value) (*lpg.Node, error) {
 	}
 	rs, ok := val.(opencypher.ResultSet)
 	if !ok {
-		return nil, fmt.Errorf("Unhandled result type: %T", rs)
+		return nil, fmt.Errorf("Unhandled result type: %T", val)
 	}
 	if len(rs.Rows) == 0 {
 		return nil, nil

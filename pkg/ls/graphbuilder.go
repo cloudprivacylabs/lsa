@@ -317,6 +317,9 @@ func (gb GraphBuilder) ValueAsProperty(schemaNode *lpg.Node, graphPath []*lpg.No
 		propertyName = AsPropertyValue(schemaNode.GetProperty(AttributeNameTerm)).AsString()
 	}
 	if len(propertyName) == 0 {
+		propertyName = GetNodeID(schemaNode)
+	}
+	if len(propertyName) == 0 {
 		return ErrCannotDeterminePropertyName{SchemaNodeID: GetNodeID(schemaNode)}
 	}
 	var targetNode *lpg.Node

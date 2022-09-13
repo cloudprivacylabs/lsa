@@ -55,7 +55,7 @@ func InputsFromFiles(files []string) func() (PipelineEntryInfo, io.ReadCloser, e
 			if err != nil {
 				return DefaultPipelineEntryInfo{}, nil, err
 			}
-			return nil, io.NopCloser(inp), nil
+			return DefaultPipelineEntryInfo{}, io.NopCloser(inp), nil
 		}
 		if i >= len(files) {
 			return nil, nil, nil
