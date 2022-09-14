@@ -224,42 +224,48 @@ type joinData struct {
 
 func (cji *CSVJoinIngester) ingestCSVJoin(entities []CSVJoinConfig, stream io.ReadCloser) error {
 	reader := csv.NewReader(stream)
+	reader.Comma = '\t'
+	// reader.LazyQuotes = true
+	// reader.FieldsPerRecord = -1
 	seenIds := make(map[string][]string)
-	done := false
-	var schemaRootID string
+	joinCtx := make([]joinData, 0)
 
 ROWS:
-	for row := 0; !done; row++ {
-		newRow := true
+	for row := 0; ; row++ {
 		rowData, err := reader.Read()
 		if err == io.EOF {
-			done = true
 			break
 		}
 		if err != nil {
 			return err
 		}
-		joinCtx := make([]joinData, 0)
-		for _, schema := range entities {
-			data := rowData[schema.StartCol : schema.EndCol+1]
-			hashID := GenerateHashFromIDs(data)
-			if newRow {
-				// new graph
-				if schemaRootID != "" && schemaRootID != hashID {
+		if row == cji.HeaderRow {
+			continue
+		}
 
+		// compare between joinCtx[0].id and first range of row
+		if len(joinCtx) > 0 {
+			checkRange := GenerateHashFromIDs(rowData[0:len(joinCtx[0].data)])
+			if checkRange != joinCtx[0].id {
+				// new graph, output previous
+				joinCtx = make([]joinData, 0)
+				seenIds = make(map[string][]string)
+				fmt.Println("new graph")
+			}
+		}
+		for _, schema := range entities {
+			if schema.EndCol < len(rowData) {
+				data := rowData[schema.StartCol : schema.EndCol+1]
+				hashID := GenerateHashFromIDs(data)
+				if _, seen := seenIds[hashID]; seen {
+					continue
 				}
+				joinCtx = append(joinCtx, joinData{
+					data: data,
+					id:   hashID,
+				})
+				seenIds[hashID] = data
 			}
-			if _, seen := seenIds[hashID]; seen {
-				newRow = false
-				continue
-			}
-			newRow = false
-			joinCtx = append(joinCtx, joinData{
-				data: data,
-				id:   hashID,
-			})
-			schemaRootID = joinCtx[0].id
-			seenIds[hashID] = data
 			if schema.EndCol == len(rowData)-1 {
 				continue ROWS
 			}
@@ -272,7 +278,9 @@ func GenerateHashFromIDs(ids []string) string {
 	if len(ids) == 0 {
 		return ids[0]
 	}
-	hash := sha256.Sum256([]byte(strings.Join(ids, "")))
+	buf := bytes.Buffer{}
+	buf.WriteString(strings.Join(ids, ""))
+	hash := sha256.Sum256([]byte(buf.String()))
 	return hex.EncodeToString(hash[:])
 }
 
