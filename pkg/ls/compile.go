@@ -70,63 +70,66 @@ func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, l
 	newLayer := NewLayerInGraph(d.g)
 	newLayer.SetID(layer.GetID())
 	newLayer.SetLayerType(SchemaTerm)
-	// attributeMap keeps track of copied attribute nodes. Key belongs
-	// to layer, value belongs to d.g
-	attributeMap := make(map[*lpg.Node]*lpg.Node)
 	// Copy the root node of the layer into the compiled graph.
 	layerRoot := layer.GetSchemaRootNode()
+	nodeSlice := layer.NodeSlice()
+	// attributeMap keeps track of copied attribute nodes. Key belongs
+	// to layer, value belongs to d.g
+	attributeMap := make(map[*lpg.Node]*lpg.Node, len(nodeSlice))
 
 	newRoot := d.copyNode(layerRoot)
 	d.g.NewEdge(newLayer.GetLayerRootNode(), newRoot, LayerRootTerm, nil)
 	attributeMap[layerRoot] = newRoot
 	// newAttributes contains only those attributes that are copied. The
 	// key belongs to layer
-	newAttributes := make(map[*lpg.Node]struct{})
+	newAttributes := make(map[*lpg.Node]struct{}, len(nodeSlice))
 
-	var err error
 	// Copy the attributes in this layer
-	ForEachAttributeNode(layerRoot, func(node *lpg.Node, _ []*lpg.Node) bool {
+	type nodeCopy struct {
+		layerNode    *lpg.Node
+		newAttribute bool
+		compiledNode *lpg.Node
+	}
+	layerNodes := make([]nodeCopy, 0, len(nodeSlice))
+	for _, node := range nodeSlice {
+		nc := nodeCopy{
+			layerNode: node,
+		}
 		attrID := GetNodeID(node)
 		existingAttr := newLayer.GetAttributeByID(attrID)
 		if existingAttr != nil && existingAttr != newRoot {
-			err = ErrInvalidSchema(fmt.Sprintf("Node %s is duplicated by %s. If same schema appears under a different name, change namespaces", attrID, ref))
-			return false
+			return nil, ErrInvalidSchema(fmt.Sprintf("Node %s is duplicated by %s. If same schema appears under a different name, change namespaces", attrID, ref))
 		}
 		if existingAttr == nil {
 			existingAttr = d.copyNode(node)
+			nc.newAttribute = true
 			newAttributes[node] = struct{}{}
 			d.schemaNodeMap[node] = existingAttr
 		}
+		nc.compiledNode = existingAttr
 		attributeMap[node] = existingAttr
-		return true
-	})
-	if err != nil {
-		return nil, err
+		layerNodes = append(layerNodes, nc)
 	}
 	// Iterate all nodes again. This time, link them
-	ForEachAttributeNode(layerRoot, func(node *lpg.Node, _ []*lpg.Node) bool {
-		compiledNode := attributeMap[node]
-		_, isNewNode := newAttributes[node]
-
-		for edges := node.GetEdges(lpg.OutgoingEdge); edges.Next(); {
+	for _, nc := range layerNodes {
+		for edges := nc.layerNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			layerEdge := edges.Edge()
 			if IsAttributeNode(layerEdge.GetTo()) {
 				// If either the from or to is in newAttributes, then we need to add this edge
 				_, toNew := newAttributes[layerEdge.GetTo()]
-				if isNewNode || toNew {
-					d.copyEdge(compiledNode, attributeMap[layerEdge.GetTo()], layerEdge)
+				if nc.newAttribute || toNew {
+					d.copyEdge(nc.compiledNode, attributeMap[layerEdge.GetTo()], layerEdge)
 				}
 			} else {
 				// Link to a non-attribute node
 				// If this is a new node, we have to copy this subtree
-				if isNewNode {
+				if nc.newAttribute {
 					lpg.CopySubgraph(layerEdge.GetTo(), d.g, ClonePropertyValueFunc, d.schemaNodeMap)
-					d.g.NewEdge(compiledNode, d.schemaNodeMap[layerEdge.GetTo()], layerEdge.GetLabel(), nil)
+					d.g.NewEdge(nc.compiledNode, d.schemaNodeMap[layerEdge.GetTo()], layerEdge.GetLabel(), nil)
 				}
 			}
 		}
-		return true
-	})
+	}
 
 	d.layers[ref] = newLayer
 	return newLayer, nil

@@ -21,8 +21,8 @@ import (
 // NewDocumentGraph creates a new graph with the correct indexes for document ingestion
 func NewDocumentGraph() *lpg.Graph {
 	g := lpg.NewGraph()
-	g.AddNodePropertyIndex(EntitySchemaTerm)
-	g.AddNodePropertyIndex(SchemaNodeIDTerm)
+	g.AddNodePropertyIndex(EntitySchemaTerm, lpg.BtreeIndex)
+	g.AddNodePropertyIndex(SchemaNodeIDTerm, lpg.HashIndex)
 	for _, f := range newDocGraphHooks {
 		f(g)
 	}

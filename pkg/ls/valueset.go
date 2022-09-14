@@ -163,14 +163,14 @@ func (e ErrValueset) Error() string {
 
 func init() {
 	RegisterNewDocGraphHook(func(g *lpg.Graph) {
-		g.AddNodePropertyIndex(ValuesetContextTerm)
-		g.AddNodePropertyIndex(ValuesetContextExprTerm)
-		g.AddNodePropertyIndex(ValuesetTablesTerm)
+		g.AddNodePropertyIndex(ValuesetContextTerm, lpg.HashIndex)
+		g.AddNodePropertyIndex(ValuesetContextExprTerm, lpg.HashIndex)
+		g.AddNodePropertyIndex(ValuesetTablesTerm, lpg.HashIndex)
 	})
 	RegisterNewLayerGraphHook(func(g *lpg.Graph) {
-		g.AddNodePropertyIndex(ValuesetContextTerm)
-		g.AddNodePropertyIndex(ValuesetContextExprTerm)
-		g.AddNodePropertyIndex(ValuesetTablesTerm)
+		g.AddNodePropertyIndex(ValuesetContextTerm, lpg.HashIndex)
+		g.AddNodePropertyIndex(ValuesetContextExprTerm, lpg.HashIndex)
+		g.AddNodePropertyIndex(ValuesetTablesTerm, lpg.HashIndex)
 	})
 }
 
