@@ -135,8 +135,7 @@ Type the expression to run as a single line.
 
 Commands:
    exit   Terminate shell
-   graph  Print graph
-`)
+   graph  Print graph`)
 
 		var g *lpg.Graph
 		var err error
