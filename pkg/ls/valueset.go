@@ -221,7 +221,7 @@ func ValuesetInfoFromNode(node *lpg.Node) (*ValuesetInfo, error) {
 // vsiDocumentNode can be nil
 //
 // If ValuesetInfo contains RequestValues, the request values
-func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode *lpg.Node) (map[string]string, error) {
+func (vsi *ValuesetInfo) GetRequest(ctx *Context, contextDocumentNode, vsiDocumentNode *lpg.Node) (map[string]string, error) {
 	ret := make(map[string]string)
 	if len(vsi.RequestExprs) > 0 {
 		evalctx := opencypher.NewEvalContext(vsiDocumentNode.GetGraph())
@@ -293,32 +293,21 @@ func (vsi *ValuesetInfo) GetRequest(contextDocumentNode, vsiDocumentNode *lpg.No
 		} else {
 			// Locate a child node
 			// match (n)-[]->({SchemaNodeIDTerm:reqv})
-			pattern := lpg.Pattern{
-				{
-					Name: "n",
-				},
-				{
-					Min: 1,
-					Max: -1,
-				},
-				{
-					Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(SchemaNodeIDTerm, reqv)},
-				}}
-			p := lpg.PatternSymbol{}
-			p.Add(contextDocumentNode)
-			acc, err := pattern.FindPaths(contextDocumentNode.GetGraph(), map[string]*lpg.PatternSymbol{"n": &p})
-			if err != nil {
-				return nil, err
-			}
-			nodes := acc.GetTailNodes()
-			if len(nodes) > 1 {
-				return nil, ErrInvalidValuesetSpec{Msg: fmt.Sprintf("Multiple nodes instance of %s", reqv)}
-			}
-			if len(nodes) == 1 {
+			ctx.GetLogger().Debug(map[string]interface{}{"valueset.GetRequest": "locate child node", "requested": reqv, "start": contextDocumentNode})
+			var found *lpg.Node
+			IterateDescendants(contextDocumentNode, func(node *lpg.Node) bool {
+				if AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString() == reqv {
+					found = node
+					return false
+				}
+				return true
+			}, FollowEdgesInEntity, false)
+
+			if found != nil {
 				if len(vsi.RequestKeys) == 0 {
-					ret[""], _ = GetRawNodeValue(nodes[0])
+					ret[""], _ = GetRawNodeValue(found)
 				} else {
-					ret[vsi.RequestKeys[index]], _ = GetRawNodeValue(nodes[0])
+					ret[vsi.RequestKeys[index]], _ = GetRawNodeValue(found)
 				}
 			}
 		}
@@ -537,7 +526,7 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilde
 
 // ProcessByContextNode processes the value set of the given context  node and the schema node containing the vsi
 func (prc *ValuesetProcessor) ProcessByContextNode(ctx *Context, builder GraphBuilder, contextDocNode, contextSchemaNode, vsiDocNode *lpg.Node, vsi *ValuesetInfo) error {
-	kv, err := vsi.GetRequest(contextDocNode, vsiDocNode)
+	kv, err := vsi.GetRequest(ctx, contextDocNode, vsiDocNode)
 	if err != nil {
 		return err
 	}

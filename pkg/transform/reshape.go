@@ -78,6 +78,14 @@ func (ctx *reshapeContext) exportVars(row map[string]opencypher.Value) {
 	}
 }
 
+func (ctx *reshapeContext) exportEmptyResults(rs opencypher.ResultSet) {
+	for _, x := range rs.Cols {
+		if opencypher.IsNamedResult(x) {
+			ctx.setSymbolValue(x, opencypher.RValue{})
+		}
+	}
+}
+
 // Export the named result columns
 func (ctx *reshapeContext) exportResults(rs opencypher.ResultSet) error {
 	if len(rs.Rows) == 0 {
@@ -235,6 +243,8 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 				if err := ctx.exportResults(rs); err != nil {
 					return nil, wrapReshapeError(err, schemaNodeID)
 				}
+			} else {
+				ctx.exportEmptyResults(rs)
 			}
 		}
 	}
