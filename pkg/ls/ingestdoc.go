@@ -148,7 +148,7 @@ func (ing *Ingester) GetPostIngestSchemaNodes(schemaRootNode *lpg.Node) []*lpg.N
 			if pv == nil {
 				return true
 			}
-			_, ok := pv.GetSem().Metadata.(PostNodeIngest)
+			_, ok := pv.GetSem().Metadata.(PostIngest)
 			if !ok {
 				return true
 			}
