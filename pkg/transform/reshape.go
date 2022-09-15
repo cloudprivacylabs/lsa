@@ -322,7 +322,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 	if len(results) > 0 {
 		// If the node is marked as a map context, evaluate that expr
 		mapContextExpr := MapContextSemantics.GetEvaluatable(reshaper.Script.GetProperties(schemaNode))
-		process := func(result opencypher.Value) ([]*txDocNode, error) {
+		process := func(result interface{}) ([]*txDocNode, error) {
 			if mapContextExpr != nil {
 				evalContext := ctx.getEvalContext()
 				mapContext, err := mapContextExpr.Evaluate(evalContext)
@@ -351,16 +351,11 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 			if rs, ok := result.Get().(opencypher.ResultSet); ok {
 				for _, row := range rs.Rows {
 					ctx.exportVars(row)
-					if len(row) > 1 {
-						return nil, wrapReshapeError(fmt.Errorf("Multiple columns in result set"), schemaNodeID)
+					v, err := process(opencypher.ResultSet{Rows: []map[string]opencypher.Value{row}})
+					if err != nil {
+						return nil, err
 					}
-					for _, val := range row {
-						v, err := process(val)
-						if err != nil {
-							return nil, err
-						}
-						ret = append(ret, v...)
-					}
+					ret = append(ret, v...)
 				}
 			} else if arr, ok := result.Get().([]*lpg.Node); ok {
 				for _, x := range arr {
