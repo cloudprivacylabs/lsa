@@ -42,7 +42,7 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 
 func forkPipeline(pipe Pipeline, ctx *PipelineContext, name string) error {
 	pctx := &PipelineContext{
-		Context:     ls.DefaultContext().SetLogger(ls.NewDefaultLogger()),
+		Context:     ls.DefaultContext().SetLogger(ctx.GetLogger()),
 		Graph:       ctx.Graph,
 		Roots:       ctx.Roots,
 		NextInput:   ctx.NextInput,
