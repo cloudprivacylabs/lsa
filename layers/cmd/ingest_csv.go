@@ -22,12 +22,12 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"runtime/debug"
 	"strings"
 	"text/template"
 
 	"github.com/spf13/cobra"
 
-	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
@@ -268,7 +268,7 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 			pipeline.SetGraph(cmdutil.NewDocumentGraph())
 		}
 		//
-		seenIds := make(map[string][]string)
+		seenIDs := make(map[string]map[string]struct{})
 		joinCtx := make([]joinData, 0)
 		done := false
 		var doneErr error
@@ -276,7 +276,7 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 			func() {
 				defer func() {
 					if err := recover(); err != nil {
-						pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, row: %d %v", entryInfo.GetName(), row, err))
+						pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, row: %d, %v, %v", entryInfo.GetName(), row, err, string(debug.Stack())))
 						doneErr = fmt.Errorf("%v", err)
 					}
 				}()
@@ -319,53 +319,37 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 				if len(joinCtx) > 0 {
 					firstEntityHash := GenerateHashFromIDs(rowData, joinCtx[0].IDCols)
 					if firstEntityHash != joinCtx[0].id {
-						// ingest previous graph
-						pipeline.Context.GetLogger().Debug(map[string]interface{}{"csvingest.row": row, "stage": "Parsing"})
-						//////////////////// not joinCtx[0].data, need all data
-						csvGraphData := make([]string, 0, len(joinCtx))
-						for _, val := range joinCtx {
-							csvGraphData = append(csvGraphData, val.data...)
-						}
-						parsed, err := cji.parseCSV(pipeline, parser, csvGraphData, buf)
+						// ingest previous graph and the constituent entities
+						pipeline.Context.GetLogger().Debug(map[string]interface{}{"csvingest.row": row - 1, "stage": "Parsing"})
+						err = cji.csvParseIngestEntities(pipeline, joinCtx, parser, builder, buf, entryInfo.GetName())
 						if err != nil {
 							doneErr = err
 							return
 						}
-						r, err := cji.ingestCSV(builder, parsed)
-						if err != nil {
-							doneErr = err
-							return
-						}
-						if cmdutil.GetConfig().SourceProperty == "" {
-							r.SetProperty("source", entryInfo.GetName())
-						} else {
-							r.SetProperty(cmdutil.GetConfig().SourceProperty, entryInfo.GetName())
-						}
-
-						// new graph, output previous
+						// new graph
+						pipeline.Context.GetLogger().Debug(map[string]interface{}{"csvingest.row": row, "stage": "New Graph"})
 						builder = ls.NewGraphBuilder(pipeline.Graph, ls.GraphBuilderOptions{
 							EmbedSchemaNodes:     cji.EmbedSchemaNodes,
 							OnlySchemaAttributes: cji.OnlySchemaAttributes,
 						})
 						joinCtx = make([]joinData, 0)
-						seenIds = make(map[string][]string)
-						fmt.Println("new graph")
 					}
 				}
 				for _, schema := range cji.entities {
 					if schema.EndCol < len(rowData) {
-						// seenIds = make(map[string][]string)
 						hashID := GenerateHashFromIDs(rowData, schema.IDCols)
-						if _, seen := seenIds[hashID]; seen {
+						if _, seen := seenIDs[schema.VariantID][hashID]; seen {
 							continue
 						}
+						// new map for every entity
+						seenIDs = make(map[string]map[string]struct{})
 						data := rowData[schema.StartCol : schema.EndCol+1]
 						joinCtx = append(joinCtx, joinData{
 							CSVJoinConfig: schema,
 							data:          data,
 							id:            hashID,
 						})
-						seenIds[hashID] = data
+						seenIDs[schema.VariantID][hashID] = struct{}{}
 					}
 				}
 			}()
@@ -377,70 +361,73 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 	return nil
 }
 
-func (cji *CSVJoinIngester) ingestCSVJoin(entities []CSVJoinConfig, reader *csv.Reader) error {
-	// reader := csv.NewReader(stream)
-	// reader.Comma = rune(cji.Delimiter[0])
-	seenIds := make(map[string][]string)
-	joinCtx := make([]joinData, 0)
-	for row := 0; ; row++ {
-		rowData, err := reader.Read()
-		if err == io.EOF {
-			break
-		}
+// func (cji *CSVJoinIngester) ingestCSVJoin(entities []CSVJoinConfig, reader *csv.Reader) error {
+// 	// reader := csv.NewReader(stream)
+// 	// reader.Comma = rune(cji.Delimiter[0])
+// 	seenIds := make(map[string][]string)
+// 	joinCtx := make([]joinData, 0)
+// 	for row := 0; ; row++ {
+// 		rowData, err := reader.Read()
+// 		if err == io.EOF {
+// 			break
+// 		}
+// 		if err != nil {
+// 			return err
+// 		}
+// 		if row == cji.HeaderRow {
+// 			continue
+// 		}
+
+// 		// compare between joinCtx[0].id and first range of row
+// 		if len(joinCtx) > 0 {
+// 			checkRange := GenerateHashFromIDs(rowData, joinCtx[0].IDCols)
+// 			if checkRange != joinCtx[0].id {
+// 				// new graph, output previous
+// 				joinCtx = make([]joinData, 0)
+// 				seenIds = make(map[string][]string)
+// 				fmt.Println("new graph")
+// 			}
+// 		}
+// 		for _, schema := range entities {
+// 			if schema.EndCol < len(rowData) {
+// 				hashID := GenerateHashFromIDs(rowData, schema.IDCols)
+// 				if _, seen := seenIds[hashID]; seen {
+// 					continue
+// 				}
+// 				data := rowData[schema.StartCol : schema.EndCol+1]
+// 				joinCtx = append(joinCtx, joinData{
+// 					CSVJoinConfig: schema,
+// 					data:          data,
+// 					id:            hashID,
+// 				})
+// 				seenIds[hashID] = data
+// 			}
+// 		}
+// 	}
+
+// 	return nil
+// }
+
+func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineContext, joinCtx []joinData, parser csvingest.Parser, builder ls.GraphBuilder, buf bytes.Buffer, entryName string) error {
+	for _, csvEntityData := range joinCtx {
+		parsed, err := parser.ParseDoc(pipeline.Context, strings.TrimSpace(buf.String()), csvEntityData.data)
 		if err != nil {
 			return err
 		}
-		if row == cji.HeaderRow {
-			continue
+		if parsed == nil {
+			return err
 		}
-
-		// compare between joinCtx[0].id and first range of row
-		if len(joinCtx) > 0 {
-			checkRange := GenerateHashFromIDs(rowData, joinCtx[0].IDCols)
-			if checkRange != joinCtx[0].id {
-				// new graph, output previous
-				joinCtx = make([]joinData, 0)
-				seenIds = make(map[string][]string)
-				fmt.Println("new graph")
-			}
+		r, err := cji.ingester.Ingest(builder, parsed)
+		if err != nil {
+			return err
 		}
-		for _, schema := range entities {
-			if schema.EndCol < len(rowData) {
-				hashID := GenerateHashFromIDs(rowData, schema.IDCols)
-				if _, seen := seenIds[hashID]; seen {
-					continue
-				}
-				data := rowData[schema.StartCol : schema.EndCol+1]
-				joinCtx = append(joinCtx, joinData{
-					CSVJoinConfig: schema,
-					data:          data,
-					id:            hashID,
-				})
-				seenIds[hashID] = data
-			}
+		if cmdutil.GetConfig().SourceProperty == "" {
+			r.SetProperty("source", entryName)
+		} else {
+			r.SetProperty(cmdutil.GetConfig().SourceProperty, entryName)
 		}
 	}
-
 	return nil
-}
-
-func (cji *CSVJoinIngester) parseCSV(pipeline *pipeline.PipelineContext, parser csvingest.Parser, data []string, buf bytes.Buffer) (ls.ParsedDocNode, error) {
-	parsed, err := parser.ParseDoc(pipeline.Context, strings.TrimSpace(buf.String()), data)
-	if err != nil {
-		return nil, err
-	}
-	if parsed == nil {
-		return nil, err
-	}
-	return parsed, nil
-}
-
-func (cji *CSVJoinIngester) ingestCSV(builder ls.GraphBuilder, parsed ls.ParsedDocNode) (*lpg.Node, error) {
-	r, err := cji.ingester.Ingest(builder, parsed)
-	if err != nil {
-		return nil, err
-	}
-	return r, nil
 }
 
 func GenerateHashFromIDs(rowData []string, ids []int) string {
