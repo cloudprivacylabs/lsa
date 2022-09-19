@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
@@ -11,7 +10,8 @@ import (
 func TestCSVJoinIngest(t *testing.T) {
 	cji := CSVJoinIngester{
 		BaseIngestParams: BaseIngestParams{
-			Bundle: []string{"testdata/ingest-csvjoin.bundle.json"},
+			Bundle:           []string{"testdata/ingest-csvjoin.bundle.json"},
+			EmbedSchemaNodes: true,
 		},
 		StartRow: 1,
 		EndRow:   -1,
@@ -42,12 +42,11 @@ func TestCSVJoinIngest(t *testing.T) {
 	}
 	pctx := pipeline.NewContext(ls.DefaultContext(), p, nil, pipeline.InputsFromFiles([]string{"testdata/csvjoin.csv"}))
 	err := cji.Run(pctx)
-	x := ls.JSONMarshaler{}
-	b, err := x.Marshal(pctx.Graph)
-	if err != nil {
-		t.Error(err)
-	}
-	fmt.Println(string(b))
+
+	// x := ls.JSONMarshaler{}
+	// f, err := os.Create("test.dot")
+	// x.Encode(pctx.Graph, f)
+
 	// lpg.CheckIsomorphism()
 	if err != nil {
 		t.Error(err)

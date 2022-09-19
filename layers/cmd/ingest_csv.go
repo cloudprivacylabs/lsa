@@ -249,12 +249,11 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 			return errors.New("Unexpected schema")
 		}
 		parsers := make(map[string]csvingest.Parser)
-		for i, variant := range cji.entities {
+		for _, variant := range cji.entities {
 			layer, err = schLoader.LoadSchema(variant.VariantID)
 			if err != nil {
 				return err
 			}
-			pipeline.Properties[fmt.Sprintf("layer: %s", cji.entities[i].VariantID)] = layer
 			cji.ingester[variant.VariantID] = &ls.Ingester{Schema: layer}
 			parser := csvingest.Parser{
 				OnlySchemaAttributes: cji.OnlySchemaAttributes,
@@ -278,6 +277,7 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 		joinCtx := make([]joinData, 0)
 		done := false
 		var doneErr error
+		var newGraphStart int = cji.StartRow
 		for row := 0; !done; row++ {
 			func() {
 				defer func() {
@@ -310,24 +310,23 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 					EmbedSchemaNodes:     cji.EmbedSchemaNodes,
 					OnlySchemaAttributes: cji.OnlySchemaAttributes,
 				})
-				templateData := map[string]interface{}{
-					"rowIndex":  row,
-					"dataIndex": row - cji.StartRow,
-					"columns":   rowData,
-				}
-				buf := bytes.Buffer{}
-				if err := idTmp.Execute(&buf, templateData); err != nil {
-					doneErr = err
-					return
-				}
-
 				// compare between joinCtx[0].id and first range of row
 				if len(joinCtx) > 0 {
 					firstEntityHash := GenerateHashFromIDs(rowData, joinCtx[0].IDCols)
 					if firstEntityHash != joinCtx[0].id {
+						buf := bytes.Buffer{}
+						templateData := map[string]interface{}{
+							"rowIndex":  newGraphStart,
+							"dataIndex": row - cji.StartRow,
+							"columns":   rowData,
+						}
+						if err := idTmp.Execute(&buf, templateData); err != nil {
+							doneErr = err
+							return
+						}
 						// ingest previous graph and the constituent entities
 						pipeline.Context.GetLogger().Debug(map[string]interface{}{"csvingest.row": row - 1, "stage": "Parsing"})
-						err = cji.csvParseIngestEntities(pipeline, cji.ingester[joinCtx[0].VariantID], joinCtx, parsers[joinCtx[0].VariantID], builder, strings.TrimSpace(buf.String()), entryInfo.GetName())
+						err = cji.csvParseIngestEntities(pipeline, cji.ingester[joinCtx[0].VariantID], joinCtx, parsers, builder, strings.TrimSpace(buf.String()), entryInfo.GetName())
 						if err != nil {
 							doneErr = err
 							return
@@ -339,6 +338,24 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 							OnlySchemaAttributes: cji.OnlySchemaAttributes,
 						})
 						joinCtx = make([]joinData, 0)
+						newGraphStart = row
+						buf.Reset()
+						defer func() {
+							templateData := map[string]interface{}{
+								"rowIndex":  newGraphStart,
+								"dataIndex": row - cji.StartRow,
+								"columns":   rowData,
+							}
+							if err := idTmp.Execute(&buf, templateData); err != nil {
+								doneErr = err
+								return
+							}
+							err = cji.csvParseIngestEntities(pipeline, cji.ingester[joinCtx[0].VariantID], joinCtx, parsers, builder, strings.TrimSpace(buf.String()), entryInfo.GetName())
+							if err != nil {
+								doneErr = err
+								return
+							}
+						}()
 					}
 				}
 				// cdata := make([]string, 0, len(rowData))
@@ -369,9 +386,9 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 	return nil
 }
 
-func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineContext, ingester *ls.Ingester, joinCtx []joinData, parser csvingest.Parser, builder ls.GraphBuilder, id string, entryName string) error {
+func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineContext, ingester *ls.Ingester, joinCtx []joinData, parsers map[string]csvingest.Parser, builder ls.GraphBuilder, id string, entryName string) error {
 	for _, csvEntityData := range joinCtx {
-		parsed, err := parser.ParseDoc(pipeline.Context, id, csvEntityData.data)
+		parsed, err := parsers[csvEntityData.VariantID].ParseDoc(pipeline.Context, id, csvEntityData.data)
 		if err != nil {
 			return err
 		}
