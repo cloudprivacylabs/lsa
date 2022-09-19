@@ -200,16 +200,15 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 
 type CSVJoinIngester struct {
 	BaseIngestParams
-	StartRow     int    `json:"startRow" yaml:"startRow"`
-	EndRow       int    `json:"endRow" yaml:"endRow"`
-	HeaderRow    int    `json:"headerRow" yaml:"headerRow"`
-	ID           string `json:"id" yaml:"id"`
-	IngestByRows bool   `json:"ingestByRows" yaml:"ingestByRows"`
-	Delimiter    string `json:"delimiter" yaml:"delimiter"`
-	ColumnRange  uint   `json:"columnRange" yaml:"columnRange"`
-	initialized  bool
-	ingester     *ls.Ingester
-	entities     []CSVJoinConfig
+	StartRow    int    `json:"startRow" yaml:"startRow"`
+	EndRow      int    `json:"endRow" yaml:"endRow"`
+	HeaderRow   int    `json:"headerRow" yaml:"headerRow"`
+	ID          string `json:"id" yaml:"id"`
+	Delimiter   string `json:"delimiter" yaml:"delimiter"`
+	ColumnRange uint   `json:"columnRange" yaml:"columnRange"`
+	initialized bool
+	ingester    []*ls.Ingester
+	entities    []CSVJoinConfig
 }
 
 type CSVJoinConfig struct {
@@ -236,7 +235,7 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 		cji.initialized = true
 	}
 
-	for {
+	for i := 0; ; i++ {
 		entryInfo, stream, err := pipeline.NextInput()
 		if err != nil {
 			return err
@@ -246,15 +245,15 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 		}
 		pipeline.Context.GetLogger().Debug(map[string]interface{}{"csvingest": "start new stream"})
 		reader := csv.NewReader(stream)
-		if !cji.IngestByRows {
-			pipeline.SetGraph(cmdutil.NewDocumentGraph())
+		if cji.Schema != "" {
+			return errors.New("Unexpected schema")
 		}
-		layer, err = schLoader.LoadSchema(cji.Schema)
+		layer, err = schLoader.LoadSchema(cji.entities[i].VariantID)
 		if err != nil {
 			return err
 		}
-		pipeline.Properties["layer"] = layer
-		cji.ingester = &ls.Ingester{Schema: layer}
+		pipeline.Properties[fmt.Sprintf("layer: %s", cji.entities[i].VariantID)] = layer
+		cji.ingester[i] = &ls.Ingester{Schema: layer}
 		parser := csvingest.Parser{
 			OnlySchemaAttributes: cji.OnlySchemaAttributes,
 			SchemaNode:           layer.GetSchemaRootNode(),
@@ -324,7 +323,7 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 					if firstEntityHash != joinCtx[0].id {
 						// ingest previous graph and the constituent entities
 						pipeline.Context.GetLogger().Debug(map[string]interface{}{"csvingest.row": row - 1, "stage": "Parsing"})
-						err = cji.csvParseIngestEntities(pipeline, joinCtx, parser, builder, buf, entryInfo.GetName())
+						err = cji.csvParseIngestEntities(pipeline, cji.ingester[i], joinCtx, parser, builder, strings.TrimSpace(buf.String()), entryInfo.GetName())
 						if err != nil {
 							doneErr = err
 							return
@@ -340,21 +339,21 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 				}
 				// cdata := make([]string, 0, len(rowData))
 				// copy(cdata, rowData)
-				for _, schema := range cji.entities {
-					if schema.EndCol < len(rowData) {
-						hashID := GenerateHashFromIDs(rowData, schema.IDCols)
-						if _, seen := seenIDs[schema.VariantID][hashID]; seen {
+				for _, entity := range cji.entities {
+					if entity.EndCol < len(rowData) {
+						hashID := GenerateHashFromIDs(rowData, entity.IDCols)
+						if _, seen := seenIDs[entity.VariantID][hashID]; seen {
 							continue
 						}
 						// new map for every entity
 						seenIDs = make(map[string]map[string]struct{})
-						data := rowData[schema.StartCol : schema.EndCol+1]
+						data := rowData[entity.StartCol : entity.EndCol+1]
 						joinCtx = append(joinCtx, joinData{
-							CSVJoinConfig: schema,
+							CSVJoinConfig: entity,
 							data:          data,
 							id:            hashID,
 						})
-						seenIDs[schema.VariantID][hashID] = struct{}{}
+						seenIDs[entity.VariantID] = map[string]struct{}{hashID: struct{}{}}
 					}
 				}
 			}()
@@ -366,16 +365,16 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 	return nil
 }
 
-func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineContext, joinCtx []joinData, parser csvingest.Parser, builder ls.GraphBuilder, buf bytes.Buffer, entryName string) error {
+func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineContext, ingester *ls.Ingester, joinCtx []joinData, parser csvingest.Parser, builder ls.GraphBuilder, id string, entryName string) error {
 	for _, csvEntityData := range joinCtx {
-		parsed, err := parser.ParseDoc(pipeline.Context, strings.TrimSpace(buf.String()), csvEntityData.data)
+		parsed, err := parser.ParseDoc(pipeline.Context, id, csvEntityData.data)
 		if err != nil {
 			return err
 		}
 		if parsed == nil {
 			return err
 		}
-		r, err := cji.ingester.Ingest(builder, parsed)
+		r, err := ingester.Ingest(builder, parsed)
 		if err != nil {
 			return err
 		}
@@ -396,7 +395,7 @@ func GenerateHashFromIDs(rowData []string, ids []int) string {
 		return hex.EncodeToString(h.Sum(nil))
 	}
 	// generate hash only for given column ids
-	h.Write([]byte(strings.Join(rowData[ids[0]:ids[len(ids)]], "")))
+	h.Write([]byte(strings.Join(rowData[ids[0]:ids[len(ids)-1]], "")))
 	return hex.EncodeToString(h.Sum(nil))
 }
 
@@ -430,11 +429,10 @@ func init() {
 			BaseIngestParams: BaseIngestParams{
 				EmbedSchemaNodes: true,
 			},
-			EndRow:       -1,
-			HeaderRow:    0,
-			StartRow:     1,
-			Delimiter:    ",",
-			IngestByRows: true,
+			EndRow:    -1,
+			HeaderRow: 0,
+			StartRow:  1,
+			Delimiter: ",",
 		}
 	})
 }
@@ -517,11 +515,6 @@ var ingestCSVJoinCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		byFile, err := cmd.Flags().GetBool("byFile")
-		if err != nil {
-			return err
-		}
-		ing.IngestByRows = !byFile
 		pl := []pipeline.Step{
 			&ing,
 			NewWriteGraphStep(cmd),
