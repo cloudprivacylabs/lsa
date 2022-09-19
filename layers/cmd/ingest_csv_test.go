@@ -36,7 +36,7 @@ func TestCSVJoinIngest(t *testing.T) {
 			},
 		},
 	}
-	cji.ingester = make([]*ls.Ingester, len(cji.entities))
+	cji.ingester = make(map[string]*ls.Ingester)
 	p := []pipeline.Step{
 		&cji,
 	}
