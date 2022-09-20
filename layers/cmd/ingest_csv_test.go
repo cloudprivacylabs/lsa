@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"bytes"
+	"encoding/json"
 	"os"
 	"testing"
 
@@ -53,10 +53,8 @@ func TestCSVJoinIngest(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	buf := bytes.Buffer{}
-	buf.ReadFrom(f)
 	expectedGraph := lpg.NewGraph()
-	err = m.Unmarshal(buf.Bytes(), expectedGraph)
+	err = m.Decode(expectedGraph, json.NewDecoder(f))
 	if err != nil {
 		t.Error(err)
 	}
@@ -116,7 +114,7 @@ func TestCSVJoinIngest(t *testing.T) {
 func TestCSVJoinLinkedIngest(t *testing.T) {
 	cji := CSVJoinIngester{
 		BaseIngestParams: BaseIngestParams{
-			Bundle:           []string{"testdata/ingest-csvjoin-linked.bundle.json"},
+			Bundle:           []string{"ingest-csvjoin-linked.bundle.json"},
 			EmbedSchemaNodes: true,
 		},
 		StartRow: 1,
@@ -153,11 +151,8 @@ func TestCSVJoinLinkedIngest(t *testing.T) {
 	}
 	m := ls.JSONMarshaler{}
 	f, err := os.Open("testdata/csvjoiningest-linked-test.json")
-	buf := bytes.Buffer{}
-	buf.ReadFrom(f)
-	// x.Encode(pctx.Graph, f)
 	expectedGraph := lpg.NewGraph()
-	err = m.Unmarshal(buf.Bytes(), expectedGraph)
+	err = m.Decode(expectedGraph, json.NewDecoder(f))
 	if err != nil {
 		t.Error(err)
 	}
