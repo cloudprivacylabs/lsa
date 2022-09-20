@@ -23,6 +23,7 @@ import (
 	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
 
 	"github.com/spf13/cobra"
@@ -49,6 +50,15 @@ available in pipeline property "ocResult".`)
 
 func (oc *OCStep) Run(pipeline *pipeline.PipelineContext) error {
 	ctx := opencypher.NewEvalContext(pipeline.Graph)
+	ctx.PropertyValueFromNativeFilter = func(key string, value interface{}) interface{} {
+		if s, ok := value.(string); ok {
+			return ls.StringPropertyValue(key, s)
+		}
+		if arr, ok := value.([]string); ok {
+			return ls.StringSlicePropertyValue(key, arr)
+		}
+		return ls.StringPropertyValue(key, fmt.Sprint(value))
+	}
 	for _, expr := range oc.Expr {
 		output, err := opencypher.ParseAndEvaluate(expr, ctx)
 		if err != nil {
