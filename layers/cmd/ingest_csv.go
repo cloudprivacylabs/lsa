@@ -293,7 +293,7 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 				})
 				rowData, err := reader.Read()
 				if err == io.EOF {
-					err = templateExecute(newGraphStart, row, cji.StartRow, rowData, idTmp, buf)
+					err = templateExecute(newGraphStart, cji.StartRow, row, rowData, idTmp, &buf)
 					if err != nil {
 						doneErr = err
 						return
@@ -325,7 +325,7 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 				if len(joinCtx) > 0 {
 					firstEntityHash := GenerateHashFromIDs(rowData, joinCtx[0].IDCols)
 					if firstEntityHash != joinCtx[0].id {
-						err = templateExecute(newGraphStart, row, cji.StartRow, rowData, idTmp, buf)
+						err = templateExecute(newGraphStart, cji.StartRow, row, rowData, idTmp, &buf)
 						if err != nil {
 							doneErr = err
 							return
@@ -345,10 +345,9 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 						})
 						joinCtx = make([]joinData, 0)
 						newGraphStart = row
+						seenIDs = make(map[string]map[string]struct{})
 					}
 				}
-				// cdata := make([]string, 0, len(rowData))
-				// copy(cdata, rowData)
 				for _, entity := range cji.entities {
 					if entity.EndCol < len(rowData) {
 						hashID := GenerateHashFromIDs(rowData, entity.IDCols)
@@ -356,7 +355,6 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 							continue
 						}
 						// new map for every entity
-						// seenIDs = make(map[string]map[string]struct{})
 						data := rowData[entity.StartCol : entity.EndCol+1]
 						joinCtx = append(joinCtx, joinData{
 							CSVJoinConfig: entity,
@@ -397,13 +395,13 @@ func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineCo
 	return nil
 }
 
-func templateExecute(newGraphStart, startRow, row int, rowData []string, idTmp *template.Template, buf bytes.Buffer) error {
+func templateExecute(newGraphStart, startRow, row int, rowData []string, idTmp *template.Template, buf *bytes.Buffer) error {
 	templateData := map[string]interface{}{
 		"rowIndex":  newGraphStart,
 		"dataIndex": row - startRow,
 		"columns":   rowData,
 	}
-	if err := idTmp.Execute(&buf, templateData); err != nil {
+	if err := idTmp.Execute(buf, templateData); err != nil {
 		return err
 	}
 	return nil
