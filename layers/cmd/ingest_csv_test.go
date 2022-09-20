@@ -45,12 +45,16 @@ func TestCSVJoinIngest(t *testing.T) {
 	}
 	pctx := pipeline.NewContext(ls.DefaultContext(), p, nil, pipeline.InputsFromFiles([]string{"testdata/csvjoin.csv"}))
 	err := cji.Run(pctx)
-
+	if err != nil {
+		t.Error(err)
+	}
 	m := ls.JSONMarshaler{}
-	f, err := os.Open("testdata/csvingest-test.json")
+	f, err := os.Open("testdata/csvjoiningest-test.json")
+	if err != nil {
+		t.Error(err)
+	}
 	buf := bytes.Buffer{}
 	buf.ReadFrom(f)
-	// x.Encode(pctx.Graph, f)
 	expectedGraph := lpg.NewGraph()
 	err = m.Unmarshal(buf.Bytes(), expectedGraph)
 	if err != nil {
@@ -144,7 +148,9 @@ func TestCSVJoinLinkedIngest(t *testing.T) {
 	}
 	pctx := pipeline.NewContext(ls.DefaultContext(), p, nil, pipeline.InputsFromFiles([]string{"testdata/csvjoin.csv"}))
 	err := cji.Run(pctx)
-
+	if err != nil {
+		t.Error(err)
+	}
 	m := ls.JSONMarshaler{}
 	f, err := os.Open("testdata/csvjoiningest-linked-test.json")
 	buf := bytes.Buffer{}
