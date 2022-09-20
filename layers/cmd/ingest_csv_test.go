@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"os"
 	"testing"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
@@ -44,13 +43,7 @@ func TestCSVJoinIngest(t *testing.T) {
 	pctx := pipeline.NewContext(ls.DefaultContext(), p, nil, pipeline.InputsFromFiles([]string{"testdata/csvjoin.csv"}))
 	err := cji.Run(pctx)
 
-	x := ls.JSONMarshaler{}
-	f, err := os.Create("test.dot")
-	x.Encode(pctx.Graph, f)
-
-	// lpg.CheckIsomorphism()
 	if err != nil {
 		t.Error(err)
 	}
-	t.Fail()
 }
