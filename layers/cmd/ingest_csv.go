@@ -286,8 +286,23 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 						doneErr = fmt.Errorf("%v", err)
 					}
 				}()
+				buf := bytes.Buffer{}
+				builder := ls.NewGraphBuilder(pipeline.Graph, ls.GraphBuilderOptions{
+					EmbedSchemaNodes:     cji.EmbedSchemaNodes,
+					OnlySchemaAttributes: cji.OnlySchemaAttributes,
+				})
 				rowData, err := reader.Read()
 				if err == io.EOF {
+					err = templateExecute(newGraphStart, row, cji.StartRow, rowData, idTmp, buf)
+					if err != nil {
+						doneErr = err
+						return
+					}
+					err = cji.csvParseIngestEntities(pipeline, cji.ingester[joinCtx[0].VariantID], joinCtx, parsers, builder, strings.TrimSpace(buf.String()), entryInfo.GetName())
+					if err != nil {
+						doneErr = err
+						return
+					}
 					done = true
 					return
 				}
@@ -306,21 +321,12 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 					done = true
 					return
 				}
-				builder := ls.NewGraphBuilder(pipeline.Graph, ls.GraphBuilderOptions{
-					EmbedSchemaNodes:     cji.EmbedSchemaNodes,
-					OnlySchemaAttributes: cji.OnlySchemaAttributes,
-				})
 				// compare between joinCtx[0].id and first range of row
 				if len(joinCtx) > 0 {
 					firstEntityHash := GenerateHashFromIDs(rowData, joinCtx[0].IDCols)
 					if firstEntityHash != joinCtx[0].id {
-						buf := bytes.Buffer{}
-						templateData := map[string]interface{}{
-							"rowIndex":  newGraphStart,
-							"dataIndex": row - cji.StartRow,
-							"columns":   rowData,
-						}
-						if err := idTmp.Execute(&buf, templateData); err != nil {
+						err = templateExecute(newGraphStart, row, cji.StartRow, rowData, idTmp, buf)
+						if err != nil {
 							doneErr = err
 							return
 						}
@@ -331,7 +337,7 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 							doneErr = err
 							return
 						}
-						// new graph
+						// new graph / reset builder, context, buffer
 						pipeline.Context.GetLogger().Debug(map[string]interface{}{"csvingest.row": row, "stage": "New Graph"})
 						builder = ls.NewGraphBuilder(pipeline.Graph, ls.GraphBuilderOptions{
 							EmbedSchemaNodes:     cji.EmbedSchemaNodes,
@@ -339,23 +345,6 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 						})
 						joinCtx = make([]joinData, 0)
 						newGraphStart = row
-						buf.Reset()
-						defer func() {
-							templateData := map[string]interface{}{
-								"rowIndex":  newGraphStart,
-								"dataIndex": row - cji.StartRow,
-								"columns":   rowData,
-							}
-							if err := idTmp.Execute(&buf, templateData); err != nil {
-								doneErr = err
-								return
-							}
-							err = cji.csvParseIngestEntities(pipeline, cji.ingester[joinCtx[0].VariantID], joinCtx, parsers, builder, strings.TrimSpace(buf.String()), entryInfo.GetName())
-							if err != nil {
-								doneErr = err
-								return
-							}
-						}()
 					}
 				}
 				// cdata := make([]string, 0, len(rowData))
@@ -367,7 +356,7 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 							continue
 						}
 						// new map for every entity
-						seenIDs = make(map[string]map[string]struct{})
+						// seenIDs = make(map[string]map[string]struct{})
 						data := rowData[entity.StartCol : entity.EndCol+1]
 						joinCtx = append(joinCtx, joinData{
 							CSVJoinConfig: entity,
@@ -404,6 +393,18 @@ func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineCo
 		} else {
 			r.SetProperty(cmdutil.GetConfig().SourceProperty, entryName)
 		}
+	}
+	return nil
+}
+
+func templateExecute(newGraphStart, startRow, row int, rowData []string, idTmp *template.Template, buf bytes.Buffer) error {
+	templateData := map[string]interface{}{
+		"rowIndex":  newGraphStart,
+		"dataIndex": row - startRow,
+		"columns":   rowData,
+	}
+	if err := idTmp.Execute(&buf, templateData); err != nil {
+		return err
 	}
 	return nil
 }
