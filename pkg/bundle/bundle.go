@@ -64,6 +64,7 @@ func (b *Bundle) Merge(bundle Bundle) {
 		b.Variants = make(map[string]*Variant)
 	}
 	b.Spreadsheets = append(b.Spreadsheets, bundle.Spreadsheets...)
+	b.JSONSchemas = append(b.JSONSchemas, bundle.JSONSchemas...)
 	for typeName, variant := range bundle.Variants {
 		existingVariant, ok := b.Variants[typeName]
 		if !ok || existingVariant == nil {
