@@ -16,6 +16,7 @@ package ls
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/cloudprivacylabs/lpg"
@@ -128,7 +129,10 @@ func TestValueLink(t *testing.T) {
 	fkValFound := false
 	for nodeItr := builder.GetGraph().GetNodes(); nodeItr.Next(); {
 		node := nodeItr.Node()
-		if _, ok := node.GetProperty(ReferenceFK); ok {
+		if val, ok := node.GetProperty(ReferenceFK); ok {
+			if !reflect.DeepEqual(val.([]string), []string{"123"}) {
+				t.Errorf("Wrong fk val")
+			}
 			fkValFound = true
 		}
 	}
