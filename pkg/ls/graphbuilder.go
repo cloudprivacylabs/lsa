@@ -593,6 +593,9 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, e
 		if len(ref) == 0 {
 			continue
 		}
+		if docNode != nil {
+			docNode.SetProperty(ReferenceFK, fk)
+		}
 		link(ref)
 	}
 

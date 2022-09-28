@@ -52,6 +52,8 @@ The aField field may itself be a foreign key value. Then, omit fk, or use aField
 */
 
 var (
+	// ReferenceFK specifies the foreign key value
+	ReferenceFK = NewTerm(LS+"Reference/", "fkValue", false, false, OverrideComposition, nil)
 	// ReferenceFKFor is used for value nodes that are foreign keys
 	ReferenceFKFor = NewTerm(LS+"Reference/", "fkFor", false, false, OverrideComposition, nil)
 	// ReferenceFKTerm specifies the foreign key attribute ID
@@ -154,6 +156,7 @@ func GetLinkSpec(schemaNode *lpg.Node) (*LinkSpec, error) {
 	if link == nil {
 		return nil, nil
 	}
+	// schemaNode.SetProperty(ReferenceFK, "test_fk_val")
 	ret := LinkSpec{
 		SchemaNode:   schemaNode,
 		TargetEntity: ref,

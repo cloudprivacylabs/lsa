@@ -16,6 +16,7 @@ package ls
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/cloudprivacylabs/lpg"
@@ -125,6 +126,19 @@ func TestValueLink(t *testing.T) {
 
 	entityInfo := GetEntityInfo(builder.GetGraph())
 	builder.LinkNodes(DefaultContext(), layer3, entityInfo)
+	fkValFound := false
+	for nodeItr := builder.GetGraph().GetNodes(); nodeItr.Next(); {
+		node := nodeItr.Node()
+		if val, ok := node.GetProperty(ReferenceFK); ok {
+			if !reflect.DeepEqual(val.([]string), []string{"123"}) {
+				t.Errorf("Wrong fk val")
+			}
+			fkValFound = true
+		}
+	}
+	if !fkValFound {
+		t.Errorf("No fk val found")
+	}
 	// There must be an edge from root1 to root3
 	found := false
 	for edges := root1.GetEdges(lpg.OutgoingEdge); edges.Next(); {
