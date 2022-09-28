@@ -125,6 +125,16 @@ func TestValueLink(t *testing.T) {
 
 	entityInfo := GetEntityInfo(builder.GetGraph())
 	builder.LinkNodes(DefaultContext(), layer3, entityInfo)
+	fkValFound := false
+	for nodeItr := builder.GetGraph().GetNodes(); nodeItr.Next(); {
+		node := nodeItr.Node()
+		if _, ok := node.GetProperty(ReferenceFK); ok {
+			fkValFound = true
+		}
+	}
+	if !fkValFound {
+		t.Errorf("No fk val found")
+	}
 	// There must be an edge from root1 to root3
 	found := false
 	for edges := root1.GetEdges(lpg.OutgoingEdge); edges.Next(); {
