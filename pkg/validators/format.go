@@ -1,7 +1,7 @@
 package validators
 
 import (
-	"github.com/santhosh-tekuri/jsonschema/v3"
+	"github.com/cloudprivacylabs/lsa/pkg/json/jsonschema"
 
 	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"

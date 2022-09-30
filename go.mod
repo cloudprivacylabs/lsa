@@ -8,8 +8,6 @@ require (
 	github.com/bserdar/jsonstream v0.0.0-20190428032403-9f1769267072
 	github.com/nleeper/goment v1.4.2
 	github.com/piprate/json-gold v0.4.0
-	github.com/santhosh-tekuri/jsonschema/v3 v3.0.1
-	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0
 	github.com/spf13/cobra v1.1.3
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/text v0.3.7

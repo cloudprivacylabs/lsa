@@ -16,7 +16,7 @@ package cmd
 
 import (
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
-	"github.com/santhosh-tekuri/jsonschema/v3"
+	"github.com/cloudprivacylabs/lsa/pkg/json/jsonschema"
 	"github.com/spf13/cobra"
 )
 
@@ -43,7 +43,7 @@ var validateJsonCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		err = sch.ValidateInterface(data)
+		err = sch.Validate(data)
 		if err != nil {
 			failErr(err)
 		}

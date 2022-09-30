@@ -21,8 +21,8 @@ import (
 	"github.com/bserdar/jsonom"
 
 	jsonsch "github.com/cloudprivacylabs/lsa/pkg/json"
+	"github.com/cloudprivacylabs/lsa/pkg/json/jsonschema"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/santhosh-tekuri/jsonschema/v5"
 )
 
 // Bundle defines type names for variants so references can be resolved
