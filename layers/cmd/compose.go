@@ -15,13 +15,16 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	jsonsch "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -31,6 +34,8 @@ func init() {
 	composeCmd.Flags().String("repo", "", "Schema repository directory. If a repository is given, all layers are resolved using that repository. Otherwise, all layers are read as files.")
 	composeCmd.Flags().StringSlice("bundle", nil, "Bundle file(s)")
 	composeCmd.Flags().String("type", "", "Value Type")
+
+	composeCmd.AddCommand(composeJsonSchemaCmd)
 }
 
 var composeCmd = &cobra.Command{
@@ -98,5 +103,31 @@ var composeCmd = &cobra.Command{
 				cmdutil.WriteGraph(cmd, output.Graph, format, os.Stdout)
 			}
 		}
+	},
+}
+
+var composeJsonSchemaCmd = &cobra.Command{
+	Use:   "jsonschema",
+	Short: "Compose a json schema from components",
+
+	Args: cobra.MinimumNArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		ctx := getContext()
+		composed, err := jsonsch.ComposeSchema(ctx, args[0], args[1:], func(ctx *ls.Context, name string) (io.ReadCloser, error) {
+			data, err := cmdutil.ReadURL(name)
+			if err != nil {
+				return nil, err
+			}
+			return io.NopCloser(bytes.NewReader(data)), nil
+		})
+		if err != nil {
+			return err
+		}
+		data, err := json.MarshalIndent(composed, "", "  ")
+		if err != nil {
+			return err
+		}
+		fmt.Println(string(data))
+		return nil
 	},
 }

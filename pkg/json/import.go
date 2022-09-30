@@ -286,12 +286,22 @@ func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, 
 		}
 	}
 
+	addExtensions := func() {
+		if ext, ok := sch.Extensions[X_LS]; ok {
+			mext, _ := ext.(annotationExtSchema)
+			if len(mext) > 0 {
+				target.annotations = map[string]interface{}(mext)
+			}
+		}
+	}
+
 	ctx.newProp(sch, target)
 	if sch.Ref != nil {
 		target.ref = sch.Ref.Location
 		ref := ctx.findEntity(sch.Ref)
 		if ref != nil {
 			target.reference = ref
+			addExtensions()
 			return target, nil
 		}
 		p, err := importSchema(ctx, sch.Ref)
@@ -299,6 +309,7 @@ func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, 
 			return nil, err
 		}
 		target.localReference = p
+		addExtensions()
 		return target, nil
 	}
 
@@ -381,12 +392,7 @@ func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, 
 			target.defaultValue = &s
 		}
 	}
-	if ext, ok := sch.Extensions[X_LS]; ok {
-		mext, _ := ext.(annotationExtSchema)
-		if len(mext) > 0 {
-			target.annotations = map[string]interface{}(mext)
-		}
-	}
+	addExtensions()
 
 	return target, nil
 }
