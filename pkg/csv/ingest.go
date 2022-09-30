@@ -29,7 +29,7 @@ func ParseIngest(context *ls.Context, ingester *ls.Ingester, parser Parser, buil
 		return nil, err
 	}
 	if parsed == nil {
-		return nil, errors.New("nil parser")
+		return nil, errors.New("Parsed CSV document is nil")
 	}
 
 	r, err := ingester.Ingest(builder, parsed)
