@@ -107,8 +107,9 @@ var composeCmd = &cobra.Command{
 }
 
 var composeJsonSchemaCmd = &cobra.Command{
-	Use:   "jsonschema",
-	Short: "Compose a json schema from components",
+	Use:     "json",
+	Aliases: []string{"jsonschema"},
+	Short:   "Compose a json document from components",
 
 	Args: cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
