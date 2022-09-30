@@ -15,7 +15,29 @@
 package csv
 
 import (
+	"errors"
+
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 const CSV = ls.LS + "csv/"
+
+func ParseIngest(context *ls.Context, ingester *ls.Ingester, parser Parser, builder ls.GraphBuilder, baseID string, data []string) (*lpg.Node, error) {
+	parsed, err := parser.ParseDoc(context, baseID, data)
+	if err != nil {
+		return nil, err
+	}
+	if parsed == nil {
+		return nil, errors.New("Parsed CSV document is nil")
+	}
+
+	r, err := ingester.Ingest(builder, parsed)
+	if err != nil {
+		return nil, err
+	}
+	if err := builder.LinkNodes(context, ingester.Schema, ls.GetEntityInfo(builder.GetGraph())); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
