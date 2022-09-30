@@ -216,6 +216,9 @@ func (reshaper Reshaper) Reshape(ctx *ls.Context, sourceGraph *lpg.Graph, ingest
 		if err != nil {
 			return err
 		}
+		if err := reshaper.Builder.LinkNodes(ctx, ingester.Schema, ls.GetEntityInfo(reshaper.Builder.GetGraph())); err != nil {
+			return err
+		}
 	}
 	return nil
 }
