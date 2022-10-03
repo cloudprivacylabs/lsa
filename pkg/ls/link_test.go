@@ -130,7 +130,7 @@ func TestValueLink(t *testing.T) {
 	for nodeItr := builder.GetGraph().GetNodes(); nodeItr.Next(); {
 		node := nodeItr.Node()
 		if val, ok := node.GetProperty(ReferenceFK); ok {
-			if !reflect.DeepEqual(val.([]string), []string{"123"}) {
+			if !reflect.DeepEqual(val.([][]string), [][]string{{"123"}}) {
 				t.Errorf("Wrong fk val")
 			}
 			fkValFound = true
