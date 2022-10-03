@@ -244,15 +244,8 @@ func (spec *LinkSpec) GetForeignKeys(entityRoot *lpg.Node) ([]ForeignKeyInfo, er
 	// There can be multiple instances of a foreign key in an
 	// entity. ForeignKeyNdoes[i] keeps all the nodes for spec.FK[i]
 	foreignKeyNodes := make([][]*lpg.Node, len(spec.FK))
-	foreignKeyInfo := make([]ForeignKeyInfo, 0, len(spec.FK))
 	IterateDescendants(entityRoot, func(n *lpg.Node) bool {
 		attrId := AsPropertyValue(n.GetProperty(SchemaNodeIDTerm)).AsString()
-		if attrId == GetAttributeID(spec.SchemaNode) {
-			foreignKeyInfo = append(foreignKeyInfo, ForeignKeyInfo{
-				DocumentNodes: []*lpg.Node{n},
-				ForeignKey:    make([]string, 0),
-			})
-		}
 		if len(attrId) == 0 {
 			return true
 		}
@@ -279,12 +272,13 @@ func (spec *LinkSpec) GetForeignKeys(entityRoot *lpg.Node) ([]ForeignKeyInfo, er
 	//   0          1         2
 	// fk0_key0  fk0_key1  fk0_key2  --> foreign key 1
 	// fk1_key0  fk1_key1  fk1_key2  --> foreign key 2
-	// fks := make([][]string, numKeys)
+	foreignKeyInfo := make([]ForeignKeyInfo, numKeys)
 	for i := 0; i < numKeys; i++ {
 		for key := 0; key < len(spec.FK); key++ {
 			v, _ := GetRawNodeValue(foreignKeyNodes[i][key])
-			if len(foreignKeyInfo) > 0 {
-				foreignKeyInfo[i].ForeignKey = []string{v}
+			foreignKeyInfo[i] = ForeignKeyInfo{
+				DocumentNodes: []*lpg.Node{foreignKeyNodes[i][key]},
+				ForeignKey:    []string{v},
 			}
 		}
 	}
