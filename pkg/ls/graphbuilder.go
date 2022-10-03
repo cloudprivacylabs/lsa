@@ -527,16 +527,17 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, e
 		}
 	}
 
-	foreignKeysMap, err := spec.GetForeignKeys(entityRoot)
+	foreignKeys, err := spec.GetForeignKeys(entityRoot)
 	if err != nil {
 		return err
 	}
-	if len(foreignKeysMap) == 0 && len(spec.FK) != 0 {
+	if len(foreignKeys) == 0 && len(spec.FK) != 0 {
 		// Nothing to link
 		return nil
 	}
 	if docNode != nil {
-		docNode.SetProperty(ReferenceFK, foreignKeysMap[docNode])
+		docNode.SetProperty(ReferenceFK, foreignKeys[0].ForeignKey)
+		// foreignKeys[0].DocumentNodes[0].SetProperty(ReferenceFK, foreignKeys[0].ForeignKey)
 	}
 	g := parentNode.GetGraph()
 	var nodeProperties map[string]interface{}
@@ -587,18 +588,17 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, e
 		link(ref)
 		return nil
 	}
-	for _, foreignKeys := range foreignKeysMap {
-		for _, fk := range foreignKeys {
-			ref, err := spec.FindReference(entityInfo, fk)
-			if err != nil {
-				return err
-			}
-			if len(ref) == 0 {
-				continue
-			}
-			link(ref)
+	for _, fk := range foreignKeys {
+		ref, err := spec.FindReference(entityInfo, fk.ForeignKey)
+		if err != nil {
+			return err
 		}
+		if len(ref) == 0 {
+			continue
+		}
+		link(ref)
 	}
+
 	return nil
 }
 
