@@ -536,8 +536,11 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, e
 		return nil
 	}
 	if docNode != nil {
-		docNode.SetProperty(ReferenceFK, foreignKeys[0].ForeignKey)
-		// foreignKeys[0].DocumentNodes[0].SetProperty(ReferenceFK, foreignKeys[0].ForeignKey)
+		if len(spec.FK) == 1 {
+			docNode.SetProperty(ReferenceFK, StringPropertyValue(ReferenceFK, foreignKeys[0].ForeignKey[0]))
+		} else {
+			docNode.SetProperty(ReferenceFK, StringSlicePropertyValue(ReferenceFK, foreignKeys[0].ForeignKey))
+		}
 	}
 	g := parentNode.GetGraph()
 	var nodeProperties map[string]interface{}
