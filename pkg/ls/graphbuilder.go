@@ -535,7 +535,14 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, e
 		// Nothing to link
 		return nil
 	}
-
+	if docNode != nil {
+		docNode.SetProperty(ReferenceFKFor, StringPropertyValue(ReferenceFKFor, spec.TargetEntity))
+		if len(spec.FK) == 1 {
+			docNode.SetProperty(ReferenceFK, StringPropertyValue(ReferenceFK, foreignKeys[0].ForeignKey[0]))
+		} else {
+			docNode.SetProperty(ReferenceFK, StringSlicePropertyValue(ReferenceFK, foreignKeys[0].ForeignKey))
+		}
+	}
 	g := parentNode.GetGraph()
 	var nodeProperties map[string]interface{}
 	if spec.IngestAs == IngestAsEdge && docNode != nil {
@@ -586,15 +593,12 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, e
 		return nil
 	}
 	for _, fk := range foreignKeys {
-		ref, err := spec.FindReference(entityInfo, fk)
+		ref, err := spec.FindReference(entityInfo, fk.ForeignKey)
 		if err != nil {
 			return err
 		}
 		if len(ref) == 0 {
 			continue
-		}
-		if docNode != nil {
-			docNode.SetProperty(ReferenceFK, fk)
 		}
 		link(ref)
 	}
