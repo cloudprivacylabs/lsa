@@ -536,6 +536,7 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, e
 		return nil
 	}
 	if docNode != nil {
+		docNode.SetProperty(ReferenceFKFor, StringPropertyValue(ReferenceFKFor, spec.TargetEntity))
 		if len(spec.FK) == 1 {
 			docNode.SetProperty(ReferenceFK, StringPropertyValue(ReferenceFK, foreignKeys[0].ForeignKey[0]))
 		} else {
