@@ -21,6 +21,9 @@ const compiledJsonFormatTerm = "$compiledJsonFormat"
 
 // ValidateValue checks if the value matches the format
 func (validator JsonFormatValidator) validateValue(value, format string) error {
+	if len(value) == 0 {
+		return nil
+	}
 	f := jsonschema.Formats[format]
 	if f == nil {
 		return ls.ErrValidation{Validator: JsonFormatTerm, Msg: "Unknown format: " + format}
