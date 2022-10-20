@@ -2,6 +2,8 @@ module github.com/cloudprivacylabs/lsa
 
 go 1.18
 
+replace github.com/cloudprivacylabs/opencypher => ../opencypher
+
 require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/bserdar/jsonom v0.0.0-20211005020717-9af6d87a0e9f

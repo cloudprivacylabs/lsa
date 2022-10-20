@@ -100,3 +100,16 @@ func IsTermRegistered(term string) bool {
 	_, ok := registeredTerms[term]
 	return ok
 }
+
+// SameTerm returns true if term1 is an alias of term2 or vice versa
+func SameTerm(term1, term2 string) bool {
+	if term1 == term2 {
+		return true
+	}
+	s1 := registeredTerms[term1]
+	s2 := registeredTerms[term2]
+	if s1 == nil && s2 == nil {
+		return false
+	}
+	return s1 == s2
+}

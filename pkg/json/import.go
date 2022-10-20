@@ -372,7 +372,20 @@ func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, 
 		}
 	default:
 		if len(sch.Types) > 0 {
-			target.typ = sch.Types
+			for _, x := range sch.Types {
+				switch x {
+				case "string":
+					target.typ = append(target.typ, "string")
+				case "integer":
+					target.typ = append(target.typ, "json:integer")
+				case "number":
+					target.typ = append(target.typ, "json:number")
+				case "object":
+				case "array":
+				case "boolean":
+					target.typ = append(target.typ, "json:boolean")
+				}
+			}
 		}
 		target.format = sch.Format
 		if len(sch.Enum) > 0 {

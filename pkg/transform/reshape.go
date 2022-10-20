@@ -111,16 +111,6 @@ func (ctx *reshapeContext) exportResults(rs opencypher.ResultSet) error {
 	for k, v := range namedResults {
 		ctx.setSymbolValue(k, v)
 	}
-	// if len(rs.Rows) > 1 {
-	// 	return fmt.Errorf("Multiple results in the resultset")
-	// }
-	// for _, row := range rs.Rows {
-	// 	for varName, val := range row {
-	// 		if opencypher.IsNamedResult(varName) {
-	// 			ctx.setSymbolValue(varName, val)
-	// 		}
-	// 	}
-	// }
 
 	return nil
 }
@@ -175,7 +165,7 @@ func (reshaper Reshaper) fillNode(node *txDocNode) error {
 	if node.sourceNode != nil {
 		val, err := ls.GetNodeValue(node.sourceNode)
 		if err != nil {
-			return err
+			return fmt.Errorf("%s: %w", node.GetSchemaNodeID(), err)
 		}
 		node.value = val
 		node.sourceNode.ForEachProperty(func(key string, value interface{}) bool {

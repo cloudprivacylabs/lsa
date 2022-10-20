@@ -86,3 +86,10 @@ func (node *txDocNode) GetNativeValue() (interface{}, bool) {
 func (node *txDocNode) GetValue() string {
 	return node.rawValue
 }
+
+func (node *txDocNode) GetSchemaNodeID() string {
+	if node.schemaNode == nil {
+		return ""
+	}
+	return ls.GetNodeID(node.schemaNode)
+}
