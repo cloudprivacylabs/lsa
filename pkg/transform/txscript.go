@@ -16,7 +16,6 @@ package transform
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/url"
 
 	"github.com/cloudprivacylabs/lpg"
@@ -29,33 +28,6 @@ type TransformScript struct {
 	// TargetSchemaNodes are keyed by schema node ID, and contains
 	// transformation elements for each target schema node
 	TargetSchemaNodes map[string]NodeTransformAnnotations `json:"reshapeNodes,omitempty" yaml:"reshapeNodes,omitempty"`
-
-	// Map specifies source schema nodes that map to one or more target schema nodes
-	Map []NodeMapping `json:"map,omitempty" yaml:"map,omitempty"`
-
-	nodeMappingsByTarget map[string][]*NodeMapping
-}
-
-type NodeMapping struct {
-	SourceNodeID  string   `json:"source" yaml:"source"`
-	SourceNodeIDs []string `json:"sources" yaml:"sources"`
-	TargetNodeID  string   `json:"target" yaml:"target"`
-	TargetNodeIDs []string `json:"targets" yaml:"targets"`
-}
-
-func (m NodeMapping) GetSources() []string {
-	if len(m.SourceNodeID) > 0 {
-		return []string{m.SourceNodeID}
-	}
-	return m.SourceNodeIDs
-}
-
-func getMappingSources(s []*NodeMapping) []string {
-	ret := make([]string, 0)
-	for _, x := range s {
-		ret = append(ret, x.GetSources()...)
-	}
-	return ret
 }
 
 func (t *TransformScript) Compile(ctx *ls.Context) error {
@@ -77,30 +49,11 @@ func (t *TransformScript) Compile(ctx *ls.Context) error {
 		}
 	}
 
-	t.nodeMappingsByTarget = make(map[string][]*NodeMapping)
-	for i, m := range t.Map {
-		if len(m.SourceNodeID) > 0 && len(m.SourceNodeIDs) > 0 {
-			return fmt.Errorf("Both source and sources in mapping")
-		}
-		if len(m.TargetNodeID) > 0 && len(m.TargetNodeIDs) > 0 {
-			return fmt.Errorf("Both target and targets in mapping")
-		}
-		if len(m.TargetNodeID) > 0 {
-			t.nodeMappingsByTarget[m.TargetNodeID] = append(t.nodeMappingsByTarget[m.TargetNodeID], &t.Map[i])
-		}
-		for _, x := range m.TargetNodeIDs {
-			t.nodeMappingsByTarget[x] = append(t.nodeMappingsByTarget[x], &t.Map[i])
-		}
-	}
 	return nil
 }
 
-func (t *TransformScript) GetMappingsByTarget(target string) []*NodeMapping {
-	if t == nil || t.nodeMappingsByTarget == nil {
-		return nil
-	}
-	return t.nodeMappingsByTarget[target]
-}
+// NodeTransformAnnotations contains a term, and one or more annotations
+type NodeTransformAnnotations map[string]interface{}
 
 func (t *TransformScript) GetProperties(schemaNode *lpg.Node) ls.CompilablePropertyContainer {
 	if t == nil {
@@ -114,6 +67,37 @@ func (t *TransformScript) GetProperties(schemaNode *lpg.Node) ls.CompilablePrope
 	return tn
 }
 
+// GetSources returns the "source" or "sources" property
+func (t *TransformScript) GetSources(schemaNode *lpg.Node) []string {
+	nd := t.GetProperties(schemaNode)
+	if nd == nil {
+		return nil
+	}
+	prop, ok := nd.GetProperty(SourcesTerm)
+	if ok {
+		if s, ok := prop.([]interface{}); ok {
+			ret := make([]string, 0, len(s))
+			for _, x := range s {
+				ret = append(ret, x.(string))
+			}
+			return ret
+		}
+	}
+	if s := ls.AsPropertyValue(nd.GetProperty(SourcesTerm)).AsStringSlice(); len(s) > 0 {
+		return s
+	}
+	prop, ok = nd.GetProperty(SourceTerm)
+	if ok {
+		if s, ok := prop.(string); ok {
+			return []string{s}
+		}
+	}
+	if s := ls.AsPropertyValue(nd.GetProperty(SourceTerm)).AsString(); len(s) > 0 {
+		return []string{s}
+	}
+	return nil
+}
+
 func (nd NodeTransformAnnotations) GetProperty(key string) (interface{}, bool) {
 	v, ok := nd[key]
 	return v, ok
@@ -122,12 +106,6 @@ func (nd NodeTransformAnnotations) GetProperty(key string) (interface{}, bool) {
 func (nd NodeTransformAnnotations) SetProperty(key string, value interface{}) {
 	nd[key] = value
 }
-
-type SourceAnnotations struct {
-}
-
-// NodeTransformAnnotations contains a term, and one or more annotations
-type NodeTransformAnnotations map[string]interface{}
 
 func (nd *NodeTransformAnnotations) setProperties(mv map[string]interface{}) {
 	set := func(k string, v interface{}) {

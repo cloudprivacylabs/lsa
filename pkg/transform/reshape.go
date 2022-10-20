@@ -253,12 +253,11 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 			if err != nil {
 				return nil, err
 			}
-			if isEmptyValue(sv) {
-				continue
-			}
 			ret = append(ret, sv)
 			if term == ValueExprTerm || term == ValueExprFirstTerm {
-				break
+				if !isEmptyValue(sv) {
+					break
+				}
 			}
 		}
 		return ret, nil
@@ -303,10 +302,10 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 	// the node. There is a mapping with source and target in the
 	// script, and the source nodes are the nodes whose schemaNodeId are
 	// the source values.
-	if nodeMappings := reshaper.Script.GetMappingsByTarget(schemaNodeID); len(nodeMappings) != 0 {
+	if nodeMappings := reshaper.Script.GetSources(schemaNode); len(nodeMappings) != 0 {
 		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "valueFrom": "map by target"})
 		// Find the nodes under the map context whose source node ID is given in
-		nodeValues := reshaper.findNodesUnderMapContext(ctx, ls.SchemaNodeIDTerm, getMappingSources(nodeMappings))
+		nodeValues := reshaper.findNodesUnderMapContext(ctx, ls.SchemaNodeIDTerm, nodeMappings)
 		for _, v := range nodeValues {
 			results = append(results, opencypher.RValue{Value: v})
 		}

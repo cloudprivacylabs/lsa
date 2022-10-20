@@ -30,6 +30,9 @@ var MapPropertyTerm = ls.NewTerm(TRANSFORM, "mapProperty", false, false, ls.Over
 // under that node
 var MapContextTerm = ls.NewTerm(TRANSFORM, "mapContext", false, false, ls.OverrideComposition, MapContextSemantics)
 
+var SourceTerm = ls.NewTerm(TRANSFORM, "source", false, false, ls.OverrideComposition, nil)
+var SourcesTerm = ls.NewTerm(TRANSFORM, "sources", false, true, ls.OverrideComposition, nil)
+
 var MapContextSemantics = mapContextSemantics{}
 
 type mapContextSemantics struct{}
