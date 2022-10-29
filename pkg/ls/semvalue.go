@@ -60,3 +60,18 @@ func GetValueAccessor(term string) ValueAccessor {
 	acc, _ := GetTermMetadata(term).(ValueAccessor)
 	return acc
 }
+
+// FormatNodeValue formats the node value as string
+func FormatNodeValue(node *lpg.Node) (string, error) {
+	valueType := AsPropertyValue(node.GetProperty(ValueTypeTerm)).AsString()
+	vac := GetValueAccessor(valueType)
+	if vac == nil {
+		s, _ := GetRawNodeValue(node)
+		return s, nil
+	}
+	v, err := GetNodeValue(node)
+	if err != nil {
+		return "", err
+	}
+	return vac.FormatNativeValue(v, nil, node)
+}
