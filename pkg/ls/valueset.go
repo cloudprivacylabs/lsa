@@ -224,6 +224,9 @@ func ValuesetInfoFromNode(node *lpg.Node) (*ValuesetInfo, error) {
 func (vsi *ValuesetInfo) GetRequest(ctx *Context, contextDocumentNode, vsiDocumentNode *lpg.Node) (map[string]string, error) {
 	ret := make(map[string]string)
 	if len(vsi.RequestExprs) > 0 {
+		if vsiDocumentNode == nil {
+			return nil, ErrInvalidValuesetSpec{Msg: fmt.Sprintf("An opencypher expression is given for %s, but there is no document node", GetNodeID(vsi.SchemaNode))}
+		}
 		evalctx := opencypher.NewEvalContext(vsiDocumentNode.GetGraph())
 		evalctx.SetVar("this", opencypher.ValueOf(vsiDocumentNode))
 		for index, expr := range vsi.RequestExprs {
