@@ -1,12 +1,27 @@
-<div class="row my-4">
-  <div class="col-12 termheader">
-    <h2><code>{{.Get "term"}}</code></h2>
-    <div class="row">
-      <div class="col-6">
-        <label>JSON-LD Key:</label>
-        <pre>{{.Get "key"}}</pre>
-      </div>
+<div class="my-4 p-2 termheader">
+  <div class="row">
+    <div class="col-12">
+      <h2><code>{{.Get "term"}}</code></h2>
     </div>
   </div>
+  <div class="row">
+    <div class="col-12">
+      JSON-LD Key:  <code>{{.Get "key"}}</code>
+    </div>
+  </div>
+  {{if (.Get "type")}}
+  <div class="row">
+    <div class="col-12">
+      Term Type: {{.Get "type"}}
+    </div>
+  </div>
+  {{end}}
+  {{if (.Get "use")}}
+  <div class="row">
+    <div class="col-12">
+      Use in: {{.Get "use"}}
+    </div>
+  </div>
+  {{end}}
   {{.Inner}}
 </div>
