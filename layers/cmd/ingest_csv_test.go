@@ -63,38 +63,9 @@ func TestCSVJoinIngest(t *testing.T) {
 		if !n1.GetLabels().IsEqual(n2.GetLabels()) {
 			return false
 		}
-		s1, _ := ls.GetRawNodeValue(n1)
-		s2, _ := ls.GetRawNodeValue(n2)
-		if s1 != s2 {
+		if !ls.IsPropertiesEqual(ls.PropertiesAsMap(n1), ls.PropertiesAsMap(n2)) {
 			return false
 		}
-		// Expected properties must be a subset
-		propertiesOK := true
-		n2.ForEachProperty(func(k string, v interface{}) bool {
-			pv, ok := v.(*ls.PropertyValue)
-			if !ok {
-				return true
-			}
-			v2, ok := n1.GetProperty(k)
-			if !ok {
-				propertiesOK = false
-				return false
-			}
-			pv2, ok := v2.(*ls.PropertyValue)
-			if !ok {
-				propertiesOK = false
-				return false
-			}
-			if !pv2.IsEqual(pv) {
-				propertiesOK = false
-				return false
-			}
-			return true
-		})
-		if !propertiesOK {
-			return false
-		}
-		t.Logf("True\n")
 		return true
 	}, func(e1, e2 *lpg.Edge) bool {
 		return e1.GetLabel() == e2.GetLabel() && ls.IsPropertiesEqual(ls.PropertiesAsMap(e1), ls.PropertiesAsMap(e2))
@@ -114,7 +85,7 @@ func TestCSVJoinIngest(t *testing.T) {
 func TestCSVJoinLinkedIngest(t *testing.T) {
 	cji := CSVJoinIngester{
 		BaseIngestParams: BaseIngestParams{
-			Bundle:           []string{"ingest-csvjoin-linked.bundle.json"},
+			Bundle:           []string{"testdata/ingest-csvjoin-linked.bundle.json"},
 			EmbedSchemaNodes: true,
 		},
 		StartRow: 1,
