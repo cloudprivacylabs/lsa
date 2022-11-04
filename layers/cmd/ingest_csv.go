@@ -156,6 +156,10 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 					return
 				}
 				pipeline.Context.GetLogger().Debug(map[string]interface{}{"csvingest.row": row, "stage": "Parsing"})
+				pipeline.EntryLogger(pipeline, map[string]interface{}{
+					"input": entryInfo.GetName(),
+					"row":   row,
+				})
 				r, err := csvingest.ParseIngest(pipeline.Context, ci.ingester, parser, builder, strings.TrimSpace(buf.String()), rowData)
 				if err != nil {
 					doneErr = err
