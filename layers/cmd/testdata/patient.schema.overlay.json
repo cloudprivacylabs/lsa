@@ -1,0 +1,20 @@
+{
+    "@context": "../../schemas/ls.json",
+    "@id": "http://example.org/Patient/ovl",
+    "@type": "Overlay",
+    "valueType": "Patient",
+    "layer": {
+        "@type": "Object",
+        "@id": "http://example.org/Patient",
+        "foos": {
+            "@type": "Array",
+            "arrayElements": {
+                "@id": "https://exmaple.org/Patient/foos/elements",
+                "@type": "Reference",
+                "ref": "Foo",
+                "multi": true,
+                "dir": "to"
+            }
+        }
+    }
+}
