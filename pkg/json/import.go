@@ -19,7 +19,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/santhosh-tekuri/jsonschema/v5"
+	"github.com/cloudprivacylabs/lsa/pkg/json/jsonschema"
 
 	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -286,12 +286,22 @@ func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, 
 		}
 	}
 
+	addExtensions := func() {
+		if ext, ok := sch.Extensions[X_LS]; ok {
+			mext, _ := ext.(annotationExtSchema)
+			if len(mext) > 0 {
+				target.annotations = map[string]interface{}(mext)
+			}
+		}
+	}
+
 	ctx.newProp(sch, target)
 	if sch.Ref != nil {
 		target.ref = sch.Ref.Location
 		ref := ctx.findEntity(sch.Ref)
 		if ref != nil {
 			target.reference = ref
+			addExtensions()
 			return target, nil
 		}
 		p, err := importSchema(ctx, sch.Ref)
@@ -299,6 +309,7 @@ func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, 
 			return nil, err
 		}
 		target.localReference = p
+		addExtensions()
 		return target, nil
 	}
 
@@ -361,7 +372,20 @@ func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, 
 		}
 	default:
 		if len(sch.Types) > 0 {
-			target.typ = sch.Types
+			for _, x := range sch.Types {
+				switch x {
+				case "string":
+					target.typ = append(target.typ, "string")
+				case "integer":
+					target.typ = append(target.typ, "json:integer")
+				case "number":
+					target.typ = append(target.typ, "json:number")
+				case "object":
+				case "array":
+				case "boolean":
+					target.typ = append(target.typ, "json:boolean")
+				}
+			}
 		}
 		target.format = sch.Format
 		if len(sch.Enum) > 0 {
@@ -381,12 +405,7 @@ func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, 
 			target.defaultValue = &s
 		}
 	}
-	if ext, ok := sch.Extensions[X_LS]; ok {
-		mext, _ := ext.(annotationExtSchema)
-		if len(mext) > 0 {
-			target.annotations = map[string]interface{}(mext)
-		}
-	}
+	addExtensions()
 
 	return target, nil
 }

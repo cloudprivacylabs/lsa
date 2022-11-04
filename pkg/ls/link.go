@@ -52,6 +52,8 @@ The aField field may itself be a foreign key value. Then, omit fk, or use aField
 */
 
 var (
+	// ReferenceFK specifies the foreign key value
+	ReferenceFK = NewTerm(LS+"Reference/", "fkValue", false, false, OverrideComposition, nil)
 	// ReferenceFKFor is used for value nodes that are foreign keys
 	ReferenceFKFor = NewTerm(LS+"Reference/", "fkFor", false, false, OverrideComposition, nil)
 	// ReferenceFKTerm specifies the foreign key attribute ID
@@ -76,6 +78,11 @@ var (
 	// ReferenceMultiTerm specifies if there can be more than one link targets
 	ReferenceMultiTerm = NewTerm(LS+"Reference/", "multi", false, false, OverrideComposition, nil)
 )
+
+type ForeignKeyInfo struct {
+	DocumentNodes []*lpg.Node
+	ForeignKey    []string
+}
 
 type ErrInvalidLinkSpec struct {
 	ID  string
@@ -154,6 +161,7 @@ func GetLinkSpec(schemaNode *lpg.Node) (*LinkSpec, error) {
 	if link == nil {
 		return nil, nil
 	}
+	// schemaNode.SetProperty(ReferenceFK, "test_fk_val")
 	ret := LinkSpec{
 		SchemaNode:   schemaNode,
 		TargetEntity: ref,
@@ -232,7 +240,7 @@ func (spec *LinkSpec) FindReference(entityInfo map[*lpg.Node]EntityInfo, fk []st
 }
 
 // GetForeignKeys returns the foreign keys for the link spec given the entity root node
-func (spec *LinkSpec) GetForeignKeys(entityRoot *lpg.Node) ([][]string, error) {
+func (spec *LinkSpec) GetForeignKeys(entityRoot *lpg.Node) ([]ForeignKeyInfo, error) {
 	// There can be multiple instances of a foreign key in an
 	// entity. ForeignKeyNdoes[i] keeps all the nodes for spec.FK[i]
 	foreignKeyNodes := make([][]*lpg.Node, len(spec.FK))
@@ -264,12 +272,15 @@ func (spec *LinkSpec) GetForeignKeys(entityRoot *lpg.Node) ([][]string, error) {
 	//   0          1         2
 	// fk0_key0  fk0_key1  fk0_key2  --> foreign key 1
 	// fk1_key0  fk1_key1  fk1_key2  --> foreign key 2
-	fks := make([][]string, numKeys)
+	foreignKeyInfo := make([]ForeignKeyInfo, numKeys)
 	for i := 0; i < numKeys; i++ {
 		for key := 0; key < len(spec.FK); key++ {
 			v, _ := GetRawNodeValue(foreignKeyNodes[i][key])
-			fks[i] = append(fks[i], v)
+			foreignKeyInfo[i] = ForeignKeyInfo{
+				DocumentNodes: []*lpg.Node{foreignKeyNodes[i][key]},
+				ForeignKey:    []string{v},
+			}
 		}
 	}
-	return fks, nil
+	return foreignKeyInfo, nil
 }

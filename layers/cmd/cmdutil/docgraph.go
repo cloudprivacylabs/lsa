@@ -10,7 +10,7 @@ func NewDocumentGraph() *lpg.Graph {
 	cfg := GetConfig()
 	grph := ls.NewDocumentGraph()
 	for _, p := range cfg.IndexedProperties {
-		grph.AddNodePropertyIndex(p)
+		grph.AddNodePropertyIndex(p, lpg.BtreeIndex)
 	}
 	return grph
 }

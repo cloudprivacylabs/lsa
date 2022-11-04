@@ -33,9 +33,15 @@ func IngestStream(ctx *ls.Context, baseID string, input io.Reader, parser Parser
 	if err != nil {
 		return nil, err
 	}
+	if node == nil {
+		return nil, nil
+	}
 	pd, err := parser.ParseDoc(ctx, baseID, node)
 	if err != nil {
 		return nil, err
+	}
+	if pd == nil {
+		return nil, nil
 	}
 	root, err := ingester.Ingest(builder, pd)
 	if err != nil {

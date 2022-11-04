@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	"runtime/debug"
 
 	"github.com/spf13/cobra"
 
@@ -73,7 +74,7 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 		func() {
 			defer func() {
 				if err := recover(); err != nil {
-					pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, %v", xml.Schema, err))
+					pipeline.ErrorLogger(pipeline, fmt.Errorf("Error in file: %s, %v, %v", xml.Schema, err, string(debug.Stack())))
 					doneErr = fmt.Errorf("%v", err)
 				}
 			}()

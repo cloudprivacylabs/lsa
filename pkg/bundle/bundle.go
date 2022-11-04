@@ -21,8 +21,8 @@ import (
 	"github.com/bserdar/jsonom"
 
 	jsonsch "github.com/cloudprivacylabs/lsa/pkg/json"
+	"github.com/cloudprivacylabs/lsa/pkg/json/jsonschema"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/santhosh-tekuri/jsonschema/v5"
 )
 
 // Bundle defines type names for variants so references can be resolved
@@ -64,6 +64,7 @@ func (b *Bundle) Merge(bundle Bundle) {
 		b.Variants = make(map[string]*Variant)
 	}
 	b.Spreadsheets = append(b.Spreadsheets, bundle.Spreadsheets...)
+	b.JSONSchemas = append(b.JSONSchemas, bundle.JSONSchemas...)
 	for typeName, variant := range bundle.Variants {
 		existingVariant, ok := b.Variants[typeName]
 		if !ok || existingVariant == nil {

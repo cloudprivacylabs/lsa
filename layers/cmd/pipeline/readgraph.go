@@ -48,6 +48,7 @@ func (rd ReadGraphStep) Run(pipeline *PipelineContext) error {
 			pipeline.SetGraph(gs.G)
 			pipeline.Set("input", entryInfo.GetName())
 			if err := pipeline.Next(); err != nil {
+				return fmt.Errorf("While processing %v: %w", entryInfo.GetName(), err)
 			}
 		}
 	}

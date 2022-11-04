@@ -317,6 +317,9 @@ func (gb GraphBuilder) ValueAsProperty(schemaNode *lpg.Node, graphPath []*lpg.No
 		propertyName = AsPropertyValue(schemaNode.GetProperty(AttributeNameTerm)).AsString()
 	}
 	if len(propertyName) == 0 {
+		propertyName = GetNodeID(schemaNode)
+	}
+	if len(propertyName) == 0 {
 		return ErrCannotDeterminePropertyName{SchemaNodeID: GetNodeID(schemaNode)}
 	}
 	var targetNode *lpg.Node
@@ -496,6 +499,23 @@ func (gb GraphBuilder) PostIngest(schemaRootNode, docRootNode *lpg.Node) error {
 	return err
 }
 
+// NewUniqueEdge create a new edge if one does not exist.
+func (gb GraphBuilder) NewUniqueEdge(fromNode, toNode *lpg.Node, label string, properties map[string]interface{}) *lpg.Edge {
+	for edges := fromNode.GetEdgesWithLabel(lpg.OutgoingEdge, label); edges.Next(); {
+		edge := edges.Edge()
+		if edge.GetTo() != toNode {
+			continue
+		}
+		if properties != nil {
+			for k, v := range properties {
+				edge.SetProperty(k, v)
+			}
+		}
+		return edge
+	}
+	return gb.targetGraph.NewEdge(fromNode, toNode, label, properties)
+}
+
 // Link the given node, or create a link from the parent node.
 //
 // `spec` is the link spec. `docNode` contains the ingested document
@@ -532,8 +552,14 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, e
 		// Nothing to link
 		return nil
 	}
-
-	g := parentNode.GetGraph()
+	if docNode != nil {
+		docNode.SetProperty(ReferenceFKFor, StringPropertyValue(ReferenceFKFor, spec.TargetEntity))
+		if len(spec.FK) == 1 {
+			docNode.SetProperty(ReferenceFK, StringPropertyValue(ReferenceFK, foreignKeys[0].ForeignKey[0]))
+		} else {
+			docNode.SetProperty(ReferenceFK, StringSlicePropertyValue(ReferenceFK, foreignKeys[0].ForeignKey))
+		}
+	}
 	var nodeProperties map[string]interface{}
 	if spec.IngestAs == IngestAsEdge && docNode != nil {
 		// This document node is removed and a link from the parent to the target is created
@@ -545,28 +571,28 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, e
 		for _, linkRef := range ref {
 			if specIsValueNode {
 				if spec.Forward {
-					g.NewEdge(linkNode, linkRef, spec.Label, nodeProperties)
+					gb.NewUniqueEdge(linkNode, linkRef, spec.Label, nodeProperties)
 				} else {
-					g.NewEdge(linkRef, linkNode, spec.Label, nodeProperties)
+					gb.NewUniqueEdge(linkRef, linkNode, spec.Label, nodeProperties)
 				}
 			} else {
 				if spec.IngestAs == IngestAsEdge {
 					// Node is already removed. Make an edge
 					if spec.Forward {
-						g.NewEdge(parentNode, linkRef, spec.Label, nodeProperties)
+						gb.NewUniqueEdge(parentNode, linkRef, spec.Label, nodeProperties)
 					} else {
-						g.NewEdge(linkRef, parentNode, spec.Label, nodeProperties)
+						gb.NewUniqueEdge(linkRef, parentNode, spec.Label, nodeProperties)
 					}
 				} else {
 					if docNode == nil {
 						docNode = gb.NewNode(spec.SchemaNode)
-						gb.targetGraph.NewEdge(parentNode, docNode, HasTerm, nil)
+						gb.NewUniqueEdge(parentNode, docNode, HasTerm, nil)
 					}
 					// A link from this document node to target is created
 					if spec.Forward {
-						gb.targetGraph.NewEdge(docNode, linkRef, spec.Label, nil)
+						gb.NewUniqueEdge(docNode, linkRef, spec.Label, nil)
 					} else {
-						gb.targetGraph.NewEdge(linkRef, docNode, spec.Label, nil)
+						gb.NewUniqueEdge(linkRef, docNode, spec.Label, nil)
 					}
 				}
 			}
@@ -583,7 +609,7 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, e
 		return nil
 	}
 	for _, fk := range foreignKeys {
-		ref, err := spec.FindReference(entityInfo, fk)
+		ref, err := spec.FindReference(entityInfo, fk.ForeignKey)
 		if err != nil {
 			return err
 		}

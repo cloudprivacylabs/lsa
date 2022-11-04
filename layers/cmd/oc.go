@@ -15,9 +15,15 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strings"
 
+	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
+	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
 
 	"github.com/spf13/cobra"
@@ -44,6 +50,15 @@ available in pipeline property "ocResult".`)
 
 func (oc *OCStep) Run(pipeline *pipeline.PipelineContext) error {
 	ctx := opencypher.NewEvalContext(pipeline.Graph)
+	ctx.PropertyValueFromNativeFilter = func(key string, value interface{}) interface{} {
+		if s, ok := value.(string); ok {
+			return ls.StringPropertyValue(key, s)
+		}
+		if arr, ok := value.([]string); ok {
+			return ls.StringSlicePropertyValue(key, arr)
+		}
+		return ls.StringPropertyValue(key, fmt.Sprint(value))
+	}
 	for _, expr := range oc.Expr {
 		output, err := opencypher.ParseAndEvaluate(expr, ctx)
 		if err != nil {
@@ -60,6 +75,7 @@ func (oc *OCStep) Run(pipeline *pipeline.PipelineContext) error {
 func init() {
 	rootCmd.AddCommand(ocCmd)
 	rootCmd.AddCommand(ocqCmd)
+	rootCmd.AddCommand(ociCmd)
 	ocCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	ocCmd.Flags().String("output", "json", "Output format, json, jsonld, or dot")
 	ocCmd.Flags().String("expr", "", "Opencypher expression to run")
@@ -67,6 +83,8 @@ func init() {
 	ocqCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 	ocqCmd.Flags().String("expr", "", "Opencypher expression to run")
 	ocqCmd.MarkFlagRequired("expr")
+
+	ociCmd.Flags().String("input", "json", "Input graph format (json, jsonld)")
 
 	pipeline.RegisterPipelineStep("oc", func() pipeline.Step { return &OCStep{} })
 }
@@ -112,5 +130,55 @@ var ocqCmd = &cobra.Command{
 		}
 		fmt.Println(ctx.Properties["ocResult"])
 		return nil
+	},
+}
+
+var ociCmd = &cobra.Command{
+	Use:   "oci",
+	Short: "Run opencypher expressions interactively",
+	Args:  cobra.MaximumNArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Println(`Interactive opencypher evaluator. 
+
+Type the expression to run as a single line. 
+
+Commands:
+   exit   Terminate shell
+   graph  Print graph`)
+
+		var g *lpg.Graph
+		var err error
+
+		input, _ := cmd.Flags().GetString("input")
+		if len(args) > 0 {
+			fmt.Println("Reading ", args[0])
+			g, err = cmdutil.ReadGraph(args, nil, input)
+			if err != nil {
+				return err
+			}
+			fmt.Println("Read ", args[0])
+		} else {
+			g = lpg.NewGraph()
+		}
+
+		for {
+			fmt.Print("> ")
+			text, _ := reader.ReadString('\n')
+			// convert CRLF to LF
+			text = strings.Replace(text, "\n", "", -1)
+			switch text {
+			case "exit", "quit":
+				return nil
+			case "graph":
+			default:
+				ctx := opencypher.NewEvalContext(g)
+				output, err := opencypher.ParseAndEvaluate(text, ctx)
+				if err != nil {
+					fmt.Println(err)
+				}
+				fmt.Println(output)
+			}
+		}
 	},
 }

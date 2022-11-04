@@ -22,6 +22,7 @@ type PipelineContext struct {
 	Properties  map[string]interface{}
 	GraphOwner  *PipelineContext
 	ErrorLogger func(*PipelineContext, error)
+	EntryLogger func(*PipelineContext, map[string]interface{})
 }
 
 type PipelineEntryInfo interface {
@@ -55,7 +56,7 @@ func InputsFromFiles(files []string) func() (PipelineEntryInfo, io.ReadCloser, e
 			if err != nil {
 				return DefaultPipelineEntryInfo{}, nil, err
 			}
-			return nil, io.NopCloser(inp), nil
+			return DefaultPipelineEntryInfo{}, io.NopCloser(inp), nil
 		}
 		if i >= len(files) {
 			return nil, nil, nil
@@ -87,6 +88,7 @@ func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph *lpg.Graph, i
 		ErrorLogger: func(pctx *PipelineContext, err error) {
 			fmt.Println(fmt.Errorf("pipeline error: %w", err))
 		},
+		EntryLogger: func(_ *PipelineContext, _ map[string]interface{}) {},
 	}
 	ctx.GraphOwner = ctx
 	return ctx

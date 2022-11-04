@@ -24,7 +24,7 @@ import (
 )
 
 // ComposeSchema composes a JSON schema with zero or more
-// overlays. The return is a JSON schema. While composing, mathcing
+// overlays. The return is a JSON schema. While composing, matching
 // objects are merged, matching arrays and values are overridden by
 // the overlays. Overlays are composed in the order given.
 func ComposeSchema(ctx *ls.Context, name string, overlays []string, loader func(*ls.Context, string) (io.ReadCloser, error)) (jsonom.Node, error) {

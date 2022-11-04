@@ -33,7 +33,7 @@ type Layer struct {
 // NewLayerGraph creates a new graph indexes to store layers
 func NewLayerGraph() *lpg.Graph {
 	g := lpg.NewGraph()
-	g.AddNodePropertyIndex(NodeIDTerm)
+	g.AddNodePropertyIndex(NodeIDTerm, lpg.HashIndex)
 	for _, f := range newLayerGraphHooks {
 		f(g)
 	}
@@ -353,6 +353,9 @@ func GetAttributePath(root, node *lpg.Node) []*lpg.Node {
 		for edges := node.GetEdges(lpg.IncomingEdge); edges.Next(); {
 			hasEdges = true
 			edge := edges.Edge()
+			if IsCompilationArtifact(edge) {
+				continue
+			}
 			if IsAttributeTreeEdge(edge) && IsAttributeNode(edge.GetFrom()) {
 				ret = append(ret, edge.GetFrom())
 				node = edge.GetFrom()
@@ -387,6 +390,27 @@ func (l *Layer) FindAttributeByID(id string) (*lpg.Node, []*lpg.Node) {
 		return nil, nil
 	}
 	return node, l.GetAttributePath(node)
+}
+
+func (l *Layer) NodeSlice() []*lpg.Node {
+	var forEach func(*lpg.Node)
+	seen := make(map[*lpg.Node]struct{})
+	ret := make([]*lpg.Node, 0)
+	forEach = func(root *lpg.Node) {
+		if _, exists := seen[root]; exists {
+			return
+		}
+		seen[root] = struct{}{}
+		if !IsAttributeNode(root) {
+			return
+		}
+		ret = append(ret, root)
+		for outgoing := root.GetEdges(lpg.OutgoingEdge); outgoing.Next(); {
+			forEach(outgoing.Edge().GetTo())
+		}
+	}
+	forEach(l.GetSchemaRootNode())
+	return ret
 }
 
 // FindFirstAttribute returns the first attribute for which the predicate holds
