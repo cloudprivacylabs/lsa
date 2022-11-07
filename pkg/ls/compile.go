@@ -233,7 +233,9 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 		return nil, err
 	}
 	compiled.GetSchemaRootNode().SetProperty(EntitySchemaTerm, StringPropertyValue(EntitySchemaTerm, compiled.GetID()))
-	// parseIncludeAttribute
+	if err := compiler.compileIncludeAttribute(context, ctx); err != nil {
+		return nil, err
+	}
 	if err := compiler.compileReferences(context, ctx); err != nil {
 		return nil, err
 	}
@@ -246,15 +248,15 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 	return compiled, nil
 }
 
-func (compiler *Compiler) parseIncludeAttribute(context *Context, ctx *compilerContext) error {
+func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compilerContext) error {
 	nodeMap := make(map[*lpg.Node]*lpg.Node)
 	copySubtree := func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph) {
 		nodeMap[includeNode] = targetNode
 		for edges := includeNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
-			if IsAttributeTreeEdge(edge) {
-				continue
-			}
+			// if IsAttributeTreeEdge(edge) {
+			// 	continue
+			// }
 			includeNamespace := GetAttributeID(edge.GetTo())
 			suffix := filepath.Base(includeNamespace)
 			SetAttributeID(targetNode, filepath.Dir(GetAttributeID(targetNode)+"/"+suffix))
@@ -262,16 +264,16 @@ func (compiler *Compiler) parseIncludeAttribute(context *Context, ctx *compilerC
 			lpg.CopyEdge(edge, tgtGraph, ClonePropertyValueFunc, nodeMap)
 		}
 	}
-	context.GetLogger().Debug(map[string]interface{}{"mth": "parseIncludeAttribute"})
+	context.GetLogger().Debug(map[string]interface{}{"mth": "compileIncludeAttribute"})
 	// Process until there are nodes with "include" attribute
 	for {
-		incNodes := compiler.CGraph.GetGraph().GetNodesWithProperty(AttributeIncludeTerm)
+		incNodes := compiler.CGraph.GetGraph().GetNodesWithProperty(IncludeSchemaTerm)
 		if !incNodes.Next() {
 			break
 		}
 		srcNode := incNodes.Node()
-		includeRef := AsPropertyValue(srcNode.GetProperty(AttributeIncludeTerm)).AsString()
-		srcNode.RemoveProperty(AttributeIncludeTerm)
+		includeRef := AsPropertyValue(srcNode.GetProperty(IncludeSchemaTerm)).AsString()
+		srcNode.RemoveProperty(IncludeSchemaTerm)
 		includeSchema, err := compiler.loadSchema(ctx, includeRef)
 		if err != nil {
 			return err
@@ -282,6 +284,13 @@ func (compiler *Compiler) parseIncludeAttribute(context *Context, ctx *compilerC
 		includeRoot := includeSchema.GetSchemaRootNode()
 		if includeRoot == nil {
 			return ErrNotFound(includeRef)
+		}
+		srcTypes := lpg.NewStringSet(FilterAttributeTypes(srcNode.GetLabels().Slice())...)
+		includeTypes := FilterAttributeTypes(includeRoot.GetLabels().Slice())
+		for _, typ := range includeTypes {
+			if !srcTypes.Has(typ) {
+				return ErrNotFound(fmt.Sprintf("attribute type for source: %v do not match with include: %v", srcNode, includeRoot))
+			}
 		}
 		copySubtree(srcNode, includeRoot, srcNode.GetGraph())
 	}
