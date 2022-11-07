@@ -1,45 +1,131 @@
 {
-    "@context": "../../schemas/ls.json",
-    "@id": "http://example.org/Person/schemaBase",
-    "@type": "Schema",
-    "description": [
-    "This schema defines a Person object with firstName, lastName, and a list of contacts.",
-    "Elements of the contact list are references to a Contact schema."
-    ],
-    "valueType": "https://example.org/Person",
-    "layer": {
-        "@type": "Object",
-        "@id": "http://example.org/Person",
-        "attributes": [
-            {
-                "@id": "http://example.org/Person/firstName",
-                "@type": "Value",
-                "attributeName":"firstName"
-            },
-            {
-                "@id": "http://example.org/Person/lastName",
-                "@type": "Value",
-                "attributeName": "lastName"
-            },
-            {
-                "@id": "http://example.org/Person/contact",
-                "@type": "Array",
-                "attributeName": "contact",
-                "arrayElements": {
-                    "@type": "Object",
-                    "@id": "http://example.org/Person/contact/items",
-                    "ref": "https://example.org/Contact",
-                    "http://example.org/Contact/value": {
-                        "@type": "Value",
-                        "attributeName": "value"
-                    },
-                    "http://example.org/Contact/type": {
-                        "@type": "Value",
-                        "attributeName": "type",
-                        "asProperty": "type"
-                    }
-                }
+    "nodes": [
+        {
+            "n": 3,
+            "labels": [
+                "https://lschema.org/Attribute",
+                "https://lschema.org/Value"
+            ],
+            "properties": {
+                "https://lschema.org/attributeIndex": "1",
+                "https://lschema.org/attributeName": "lastName",
+                "https://lschema.org/nodeId": "http://example.org/Person/lastName"
             }
-        ]
-    }
+        },
+        {
+            "n": 4,
+            "labels": [
+                "https://lschema.org/Attribute",
+                "https://lschema.org/Array"
+            ],
+            "properties": {
+                "https://lschema.org/attributeIndex": "2",
+                "https://lschema.org/attributeName": "contact",
+                "https://lschema.org/nodeId": "http://example.org/Person/contact"
+            },
+            "edges": [
+                {
+                    "to": 5,
+                    "label": "https://lschema.org/Array/elements"
+                }
+            ]
+        },
+        {
+            "n": 5,
+            "labels": [
+                "https://lschema.org/Attribute",
+                "https://lschema.org/Object"
+            ],
+            "properties": {
+                "https://lschema.org/nodeId": "http:/example.org/Person/contact/items"
+            },
+            "edges": [
+                {
+                    "to": 6,
+                    "label": "https://lschema.org/Object/attributes"
+                },
+                {
+                    "to": 7,
+                    "label": "https://lschema.org/Object/attributes"
+                }
+            ]
+        },
+        {
+            "n": 6,
+            "labels": [
+                "https://lschema.org/Attribute",
+                "https://lschema.org/Value"
+            ],
+            "properties": {
+                "https://lschema.org/asProperty": "type",
+                "https://lschema.org/attributeIndex": "0",
+                "https://lschema.org/attributeName": "type",
+                "https://lschema.org/nodeId": "http://example.org/Contact/type"
+            }
+        },
+        {
+            "n": 7,
+            "labels": [
+                "https://lschema.org/Attribute",
+                "https://lschema.org/Value"
+            ],
+            "properties": {
+                "https://lschema.org/attributeIndex": "1",
+                "https://lschema.org/attributeName": "value",
+                "https://lschema.org/nodeId": "http://example.org/Contact/value"
+            }
+        },
+        {
+            "n": 0,
+            "labels": [
+                "https://lschema.org/Schema"
+            ],
+            "properties": {
+                "https://lschema.org/nodeId": "http://example.org/Person/schemaBase"
+            },
+            "edges": [
+                {
+                    "to": 1,
+                    "label": "https://lschema.org/layer"
+                }
+            ]
+        },
+        {
+            "n": 1,
+            "labels": [
+                "https://lschema.org/Attribute",
+                "https://lschema.org/Object",
+                "https://example.org/Person"
+            ],
+            "properties": {
+                "https://lschema.org/nodeId": "http://example.org/Person"
+            },
+            "edges": [
+                {
+                    "to": 2,
+                    "label": "https://lschema.org/Object/attributes"
+                },
+                {
+                    "to": 3,
+                    "label": "https://lschema.org/Object/attributes"
+                },
+                {
+                    "to": 4,
+                    "label": "https://lschema.org/Object/attributes"
+                }
+            ]
+        },
+        {
+            "n": 2,
+            "labels": [
+                "https://lschema.org/Attribute",
+                "https://lschema.org/Value"
+            ],
+            "properties": {
+                "https://lschema.org/attributeIndex": "0",
+                "https://lschema.org/attributeName": "firstName",
+                "https://lschema.org/nodeId": "http://example.org/Person/firstName"
+            }
+        }
+    ]
 }

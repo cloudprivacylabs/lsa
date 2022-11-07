@@ -99,32 +99,17 @@ func TestCompileIncludeAttribute(t *testing.T) {
 		t.Errorf("Cannot compile %v", err)
 		return
 	}
-	f, err := os.ReadFile("testdata/includeschema.json")
+	f, err := os.Open("testdata/includeschema_expected.json")
 	if err != nil {
 		t.Error(err)
 	}
-	// expectedGraph := lpg.NewGraph()
-	// m := JSONMarshaler{}
-	// if err := m.Decode(expectedGraph, json.NewDecoder(f)); err != nil {
-	// 	t.Error(err)
-	// }
-	var v interface{}
-	if err := json.Unmarshal([]byte(f), &v); err != nil {
-		t.Error(err)
-	}
-	layer, err := UnmarshalLayer(v, nil)
-	if err != nil {
-		t.Error(err)
-	}
+	expectedGraph := lpg.NewGraph()
 	m := JSONMarshaler{}
-	x, _ := os.Create("cgraph.json")
-	m.Encode(compiler.CGraph.GetGraph(), x)
-	//
-	x, _ = os.Create("exp.json")
-	m.Encode(layer.Graph, x)
-	//
-	if !lpg.CheckIsomorphism(compiler.CGraph.GetGraph(), layer.Graph, checkNodeEquivalence, checkEdgeEquivalence) {
-		log.Fatalf("Result:\n%s\nExpected:\n%s", testPrintGraph(compiler.CGraph.GetGraph()), testPrintGraph(layer.Graph))
+	if err := m.Decode(expectedGraph, json.NewDecoder(f)); err != nil {
+		t.Error(err)
+	}
+	if !lpg.CheckIsomorphism(compiler.CGraph.GetGraph(), expectedGraph, checkNodeEquivalence, checkEdgeEquivalence) {
+		log.Fatalf("Result:\n%s\nExpected:\n%s", testPrintGraph(compiler.CGraph.GetGraph()), testPrintGraph(expectedGraph))
 	}
 }
 
