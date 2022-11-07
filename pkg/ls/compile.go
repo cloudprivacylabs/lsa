@@ -16,6 +16,7 @@ package ls
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/cloudprivacylabs/lpg"
 )
@@ -232,7 +233,7 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 		return nil, err
 	}
 	compiled.GetSchemaRootNode().SetProperty(EntitySchemaTerm, StringPropertyValue(EntitySchemaTerm, compiled.GetID()))
-
+	// parseIncludeAttribute
 	if err := compiler.compileReferences(context, ctx); err != nil {
 		return nil, err
 	}
@@ -243,6 +244,48 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 		return nil, err
 	}
 	return compiled, nil
+}
+
+func (compiler *Compiler) parseIncludeAttribute(context *Context, ctx *compilerContext) error {
+	nodeMap := make(map[*lpg.Node]*lpg.Node)
+	copySubtree := func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph) {
+		nodeMap[includeNode] = targetNode
+		for edges := includeNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
+			edge := edges.Edge()
+			if IsAttributeTreeEdge(edge) {
+				continue
+			}
+			includeNamespace := GetAttributeID(edge.GetTo())
+			suffix := filepath.Base(includeNamespace)
+			SetAttributeID(targetNode, filepath.Dir(GetAttributeID(targetNode)+"/"+suffix))
+			lpg.CopySubgraph(edge.GetTo(), tgtGraph, ClonePropertyValueFunc, nodeMap)
+			lpg.CopyEdge(edge, tgtGraph, ClonePropertyValueFunc, nodeMap)
+		}
+	}
+	context.GetLogger().Debug(map[string]interface{}{"mth": "parseIncludeAttribute"})
+	// Process until there are nodes with "include" attribute
+	for {
+		incNodes := compiler.CGraph.GetGraph().GetNodesWithProperty(AttributeIncludeTerm)
+		if !incNodes.Next() {
+			break
+		}
+		srcNode := incNodes.Node()
+		includeRef := AsPropertyValue(srcNode.GetProperty(AttributeIncludeTerm)).AsString()
+		srcNode.RemoveProperty(AttributeIncludeTerm)
+		includeSchema, err := compiler.loadSchema(ctx, includeRef)
+		if err != nil {
+			return err
+		}
+		if includeSchema == nil {
+			return ErrNotFound(includeRef)
+		}
+		includeRoot := includeSchema.GetSchemaRootNode()
+		if includeRoot == nil {
+			return ErrNotFound(includeRef)
+		}
+		copySubtree(srcNode, includeRoot, srcNode.GetGraph())
+	}
+	return nil
 }
 
 func (compiler *Compiler) compileReferences(context *Context, ctx *compilerContext) error {
