@@ -32,7 +32,7 @@ var HashTerm = NewTerm(LS, "hash", false, false, OverrideComposition, hashSemant
 
 type hashSemantics struct{}
 
-// ProcessNodePostDocIngest will search for nods that are instances of
+// ProcessNodePostDocIngest will search for nodes that are instances of
 // the schema node ids given in the docnode, get a hash of those, and
 // populate this node value with that hash
 func (hashSemantics) ProcessNodePostDocIngest(term *PropertyValue, docNode *lpg.Node) error {

@@ -227,7 +227,7 @@ func (vsi *ValuesetInfo) GetRequest(ctx *Context, contextDocumentNode, vsiDocume
 		if vsiDocumentNode == nil {
 			return nil, ErrInvalidValuesetSpec{Msg: fmt.Sprintf("An opencypher expression is given for %s, but there is no document node", GetNodeID(vsi.SchemaNode))}
 		}
-		evalctx := opencypher.NewEvalContext(vsiDocumentNode.GetGraph())
+		evalctx := NewEvalContext(vsiDocumentNode.GetGraph())
 		evalctx.SetVar("this", opencypher.ValueOf(vsiDocumentNode))
 		for index, expr := range vsi.RequestExprs {
 			result, err := expr.Evaluate(evalctx)

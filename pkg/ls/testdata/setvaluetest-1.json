@@ -1,0 +1,26 @@
+{
+    "@context": "../../schemas/ls.json",
+    "@type": "Schema",
+    "@id": "testSchema",
+    "layer": {
+        "@id": "schemaRoot",
+        "@type": "Object",
+        "attributes": {
+            "attr1": { 
+                "@type": "Value" 
+            },
+            "attr2": { 
+                "@type": "Object",
+                "attributes": {
+                    "attr3": { 
+                        "@type": "Value"
+                    },
+                    "attr4": {
+                        "@type": "Value",
+                        "https://lschema.org/setValue": "match (this)<-[]-()-[]->(n {`https://lschema.org/schemaNodeId`:\"attr3\"}) return n.`https://lschema.org/value`"
+                    }
+                }
+            }
+        }
+    }
+}

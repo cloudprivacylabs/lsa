@@ -18,23 +18,20 @@ func TestCSVJoinIngest(t *testing.T) {
 		},
 		StartRow: 1,
 		EndRow:   -1,
-		entities: []CSVJoinConfig{
+		Entities: []CSVJoinConfig{
 			{
 				VariantID: "Patient",
-				StartCol:  0,
-				EndCol:    2,
+				Cols:      []int{0, 1, 2},
 				IDCols:    []int{0, 1, 2},
 			},
 			{
 				VariantID: "Foo",
-				StartCol:  3,
-				EndCol:    5,
+				Cols:      []int{3, 4, 5},
 				IDCols:    []int{0, 1, 2, 3, 4, 5},
 			},
 			{
 				VariantID: "Bar",
-				StartCol:  6,
-				EndCol:    8,
+				Cols:      []int{6, 7, 8},
 				IDCols:    []int{0, 1, 2, 3, 4, 5, 6, 7, 8},
 			},
 		},
@@ -90,23 +87,20 @@ func TestCSVJoinLinkedIngest(t *testing.T) {
 		},
 		StartRow: 1,
 		EndRow:   -1,
-		entities: []CSVJoinConfig{
+		Entities: []CSVJoinConfig{
 			{
 				VariantID: "Patient",
-				StartCol:  0,
-				EndCol:    2,
+				Cols:      []int{0, 1, 2},
 				IDCols:    []int{0, 1, 2},
 			},
 			{
 				VariantID: "Foo",
-				StartCol:  3,
-				EndCol:    5,
+				Cols:      []int{3, 4, 5},
 				IDCols:    []int{0, 1, 2, 3, 4, 5},
 			},
 			{
 				VariantID: "Bar",
-				StartCol:  6,
-				EndCol:    8,
+				Cols:      []int{6, 7, 8},
 				IDCols:    []int{0, 1, 2, 3, 4, 5, 6, 7, 8},
 			},
 		},

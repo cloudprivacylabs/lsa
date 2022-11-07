@@ -94,7 +94,7 @@ func (wr *Writer) BuildRow(root *lpg.Node) ([]string, error) {
 		if col.parsedQuery == nil {
 			continue
 		}
-		ctx := opencypher.NewEvalContext(root.GetGraph())
+		ctx := ls.NewEvalContext(root.GetGraph())
 		ctx.SetVar("root", opencypher.RValue{Value: root})
 		result, err := col.parsedQuery.Evaluate(ctx)
 		if err != nil {
@@ -152,7 +152,7 @@ func (wr *Writer) WriteRows(writer *csv.Writer, g *lpg.Graph) error {
 	if len(wr.RowRootQuery) == 0 {
 		roots = lpg.Sources(g)
 	} else {
-		evalctx := opencypher.NewEvalContext(g)
+		evalctx := ls.NewEvalContext(g)
 		v, err := opencypher.ParseAndEvaluate(wr.RowRootQuery, evalctx)
 		if err != nil {
 			return err
