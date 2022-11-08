@@ -311,14 +311,7 @@ func (gb GraphBuilder) ValueAsProperty(schemaNode *lpg.Node, graphPath []*lpg.No
 	if !schemaNode.HasLabel(AttributeTypeValue) {
 		return ErrSchemaValidation{Msg: "A value expected here"}
 	}
-	asPropertyOf := AsPropertyValue(schemaNode.GetProperty(AsPropertyOfTerm)).AsString()
-	propertyName := AsPropertyValue(schemaNode.GetProperty(PropertyNameTerm)).AsString()
-	if len(propertyName) == 0 {
-		propertyName = AsPropertyValue(schemaNode.GetProperty(AttributeNameTerm)).AsString()
-	}
-	if len(propertyName) == 0 {
-		propertyName = GetNodeID(schemaNode)
-	}
+	asPropertyOf, propertyName := GetIngestAsProperty(schemaNode)
 	if len(propertyName) == 0 {
 		return ErrCannotDeterminePropertyName{SchemaNodeID: GetNodeID(schemaNode)}
 	}
@@ -521,7 +514,7 @@ func (gb GraphBuilder) NewUniqueEdge(fromNode, toNode *lpg.Node, label string, p
 // `spec` is the link spec. `docNode` contains the ingested document
 // node that will be linked. It can be nil. `parentNode` is the
 // document node containing the docNode.
-func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, entityInfo map[*lpg.Node]EntityInfo) error {
+func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, entityInfo EntityInfoIndex) error {
 	entityRoot := GetEntityRoot(parentNode)
 	if entityRoot == nil {
 		return ErrCannotResolveLink(*spec)
@@ -623,6 +616,7 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, e
 }
 
 func (gb GraphBuilder) LinkNodes(ctx *Context, schema *Layer, entityInfo map[*lpg.Node]EntityInfo) error {
+	eix := IndexEntityInfo(entityInfo)
 	for nodes := schema.Graph.GetNodes(); nodes.Next(); {
 		attrNode := nodes.Node()
 		ls, err := GetLinkSpec(attrNode)
@@ -653,12 +647,12 @@ func (gb GraphBuilder) LinkNodes(ctx *Context, schema *Layer, entityInfo map[*lp
 				}
 				// childNode is an instance of attrNode, which is a link
 				childFound = true
-				if err := gb.LinkNode(ls, childNode, parent, entityInfo); err != nil {
+				if err := gb.LinkNode(ls, childNode, parent, eix); err != nil {
 					return err
 				}
 			}
 			if !childFound {
-				if err := gb.LinkNode(ls, nil, parent, entityInfo); err != nil {
+				if err := gb.LinkNode(ls, nil, parent, eix); err != nil {
 					return err
 				}
 			}

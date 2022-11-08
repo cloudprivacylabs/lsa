@@ -15,6 +15,8 @@
 package ls
 
 import (
+	"strings"
+
 	"github.com/cloudprivacylabs/lpg"
 )
 
@@ -37,18 +39,16 @@ func RegisterNewDocGraphHook(f func(*lpg.Graph)) {
 
 // EntityInfo contains the entity information in the doc graph
 type EntityInfo struct {
-	root *lpg.Node
-	sch  string
+	root      *lpg.Node
+	sch       string
+	valueType []string
+	id        []string
 }
 
 func (e EntityInfo) GetRoot() *lpg.Node      { return e.root }
 func (e EntityInfo) GetEntitySchema() string { return e.sch }
-func (e EntityInfo) GetID() []string {
-	return AsPropertyValue(e.root.GetProperty(EntityIDTerm)).MustStringSlice()
-}
-func (e EntityInfo) GetValueType() []string {
-	return FilterNonLayerTypes(e.root.GetLabels().Slice())
-}
+func (e EntityInfo) GetID() []string         { return e.id }
+func (e EntityInfo) GetValueType() []string  { return e.valueType }
 
 // GetEntityInfo returns all the nodes that are entity roots,
 // i.e. nodes containing EntitySchemaTerm
@@ -58,10 +58,67 @@ func GetEntityInfo(g *lpg.Graph) map[*lpg.Node]EntityInfo {
 		node := nodes.Node()
 		sch := AsPropertyValue(node.GetProperty(EntitySchemaTerm)).AsString()
 		if len(sch) > 0 {
-			ret[node] = EntityInfo{root: node, sch: sch}
+			types := FilterNonLayerTypes(node.GetLabels().Slice())
+			ret[node] = EntityInfo{
+				root:      node,
+				sch:       sch,
+				valueType: types,
+				id:        AsPropertyValue(node.GetProperty(EntityIDTerm)).MustStringSlice(),
+			}
 		}
 	}
 	return ret
+}
+
+// GetEntityInfoIndex returns a fast-access entity info
+func GetEntityInfoIndex(g *lpg.Graph) EntityInfoIndex {
+	return IndexEntityInfo(GetEntityInfo(g))
+}
+
+type EntityInfoIndex struct {
+	indexByType map[string]map[string][]*lpg.Node
+}
+
+func (e EntityInfoIndex) getFkHash(fk []string) string {
+	if len(fk) == 1 {
+		return fk[0]
+	}
+	return strings.Join(fk, " ")
+}
+
+func (e EntityInfoIndex) Find(entityName string, fk []string) []*lpg.Node {
+	m := e.indexByType[entityName]
+	if m == nil {
+		return nil
+	}
+	h := e.getFkHash(fk)
+	return m[h]
+}
+
+// IndexEntityInfo returns a fast-access version of entity info
+func IndexEntityInfo(entityInfo map[*lpg.Node]EntityInfo) EntityInfoIndex {
+	ix := EntityInfoIndex{
+		indexByType: make(map[string]map[string][]*lpg.Node),
+	}
+
+	add := func(t, hash string, node *lpg.Node) {
+		m := ix.indexByType[t]
+		if m == nil {
+			m = make(map[string][]*lpg.Node)
+			ix.indexByType[t] = m
+		}
+		m[hash] = append(m[hash], node)
+	}
+	for node, ei := range entityInfo {
+		hash := ix.getFkHash(ei.GetID())
+		add(ei.sch, hash, node)
+		for _, t := range ei.valueType {
+			if t != ei.sch {
+				add(t, hash, node)
+			}
+		}
+	}
+	return ix
 }
 
 // GetParentDocumentNodes returns the document nodes that have incoming edges to this node

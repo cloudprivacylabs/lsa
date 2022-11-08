@@ -291,6 +291,10 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 		var doneErr error
 		var newGraphStart int = cji.StartRow
 		for row := 0; !done; row++ {
+			pipeline.EntryLogger(pipeline, map[string]interface{}{
+				"input": entryInfo.GetName(),
+				"row":   row,
+			})
 			func() {
 				defer func() {
 					if err := recover(); err != nil {
