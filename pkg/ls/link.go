@@ -208,35 +208,8 @@ func GetLinkSpec(schemaNode *lpg.Node) (*LinkSpec, error) {
 }
 
 // FindReference finds the root nodes with entitySchema=spec.Schema, with entityId=fk
-func (spec *LinkSpec) FindReference(entityInfo map[*lpg.Node]EntityInfo, fk []string) ([]*lpg.Node, error) {
-	ret := make([]*lpg.Node, 0)
-	for _, ei := range entityInfo {
-		var exists bool
-		for _, typeName := range ei.GetValueType() {
-			if typeName == spec.TargetEntity {
-				exists = true
-				break
-			}
-		}
-		if exists || ei.GetEntitySchema() == spec.TargetEntity {
-			id := ei.GetID()
-			if len(fk) > 0 && len(id) != len(fk) {
-				continue
-			}
-			found := true
-			for i := range fk {
-				if id[i] != fk[i] {
-					found = false
-					break
-				}
-			}
-			if found {
-				ret = append(ret, ei.GetRoot())
-			}
-		}
-	}
-
-	return ret, nil
+func (spec *LinkSpec) FindReference(entityInfo EntityInfoIndex, fk []string) ([]*lpg.Node, error) {
+	return entityInfo.Find(spec.TargetEntity, fk), nil
 }
 
 // GetForeignKeys returns the foreign keys for the link spec given the entity root node

@@ -17,7 +17,8 @@ package ls
 import (
 	"encoding/json"
 	"testing"
-	//	"github.com/cloudprivacylabs/lpg"
+
+	"github.com/cloudprivacylabs/lpg"
 )
 
 func TestBasicVS(t *testing.T) {
@@ -267,6 +268,109 @@ func TestStructuredVS(t *testing.T) {
 
 	// Graph must have 6 nodes
 	if builder.GetGraph().NumNodes() != 6 {
+		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
+	}
+
+	tgtCodeNodes := FindChildInstanceOf(rootNode, "tgtcode")
+	if len(tgtCodeNodes) != 1 {
+		t.Errorf("No tgtcode")
+	}
+	tgtSystemNodes := FindChildInstanceOf(rootNode, "tgtsystem")
+	if len(tgtSystemNodes) != 1 {
+		t.Errorf("No tgtsystem")
+	}
+}
+
+func TestStructuredVSProperty(t *testing.T) {
+	schText := `{
+"@context": "../../schemas/ls.json",
+"@id":"http://1",
+"@type": "Schema",
+"valueType": "test",
+"layer" :{
+  "@type": "Object",
+ "@id": "schroot",
+  "attributes": {
+    "src": {
+      "@type": "Object",
+      "attributeName": "src",
+      "https://lschema.org/vs/context":"schroot",
+      "https://lschema.org/vs/requestKeys": ["c","s"],
+      "https://lschema.org/vs/requestValues": ["code","system"],
+      "https://lschema.org/vs/resultKeys": ["tc","ts"],
+      "https://lschema.org/vs/resultValues": ["tgtcode","tgtsystem"],
+      "attributes": {
+        "code": {
+          "@type": "Value",
+          "attributeName": "code"
+        },
+        "system": {
+          "@type": "Value",
+          "attributeName": "system",
+          "ingestAs": "property"
+        }
+      }
+    },
+    "tgtcode": {
+       "@type": "Value",
+       "attributeName": "tgtcode"
+    },
+    "tgtsystem": {
+      "@type": "Value",
+      "attributeName": "tgtsystem"
+    }
+  }
+}
+}`
+	var v interface{}
+	if err := json.Unmarshal([]byte(schText), &v); err != nil {
+		t.Error(err)
+		return
+	}
+	layer, err := UnmarshalLayer(v, nil)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	builder := NewGraphBuilder(nil, GraphBuilderOptions{
+		EmbedSchemaNodes: true,
+	})
+	vsFunc := func(_ *Context, req ValuesetLookupRequest) (ValuesetLookupResponse, error) {
+		ret := ValuesetLookupResponse{}
+		if req.KeyValues["c"] == "a" && req.KeyValues["s"] == "b" {
+			ret.KeyValues = map[string]string{"tc": "aa", "ts": "bb"}
+		}
+		return ret, nil
+	}
+
+	rootNode := builder.NewNode(layer.GetAttributeByID("schroot"))
+	srcNode := layer.GetAttributeByID("src")
+	codeNode := layer.GetAttributeByID("code")
+	systemNode := layer.GetAttributeByID("system")
+
+	_, src, _ := builder.ObjectAsNode(srcNode, rootNode)
+	builder.RawValueAsNode(codeNode, src, "a")
+	builder.RawValueAsProperty(systemNode, []*lpg.Node{rootNode, src}, "b")
+
+	// Graph must have 3 nodes
+	if builder.GetGraph().NumNodes() != 3 {
+		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
+	}
+	processor, err := NewValuesetProcessor(layer, vsFunc, nil)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	DefaultLogLevel = LogLevelDebug
+	ctx := DefaultContext()
+	err = processor.ProcessGraph(ctx, builder)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Graph must have 6 nodes
+	if builder.GetGraph().NumNodes() != 5 {
 		t.Errorf("NumNodes: %d", builder.GetGraph().NumNodes())
 	}
 

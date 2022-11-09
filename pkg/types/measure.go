@@ -182,7 +182,7 @@ func SetMeasureService(ctx *ls.Context, svc MeasureService) {
 
 func getMeasureValueNodes(ctx *ls.Context, g *lpg.Graph, measureSchemaNode *lpg.Node) ([]*lpg.Node, error) {
 	valueNodes := make([]*lpg.Node, 0)
-	evalCtx := opencypher.NewEvalContext(g)
+	evalCtx := ls.NewEvalContext(g)
 	results, err := ls.CompileOCSemantics{}.Evaluate(measureSchemaNode, MeasureValueNodeExpr, evalCtx)
 	if err != nil {
 		return nil, ErrMeasureProcessing{
@@ -227,7 +227,7 @@ func findUnit(valueNode, measureSchemaNode *lpg.Node) (string, error) {
 	if valueNode == nil {
 		return "", nil
 	}
-	evalCtx := opencypher.NewEvalContext(valueNode.GetGraph())
+	evalCtx := ls.NewEvalContext(valueNode.GetGraph())
 	evalCtx.SetVar("valueNode", opencypher.ValueOf(valueNode))
 	results, err := ls.CompileOCSemantics{}.Evaluate(measureSchemaNode, MeasureUnitExpr, evalCtx)
 	if err != nil {

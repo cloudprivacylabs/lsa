@@ -176,6 +176,18 @@ func GetIngestAs(schemaNode *lpg.Node) string {
 	return "node"
 }
 
+func GetIngestAsProperty(schemaNode *lpg.Node) (asPropertyOf, propertyName string) {
+	asPropertyOf = AsPropertyValue(schemaNode.GetProperty(AsPropertyOfTerm)).AsString()
+	propertyName = AsPropertyValue(schemaNode.GetProperty(PropertyNameTerm)).AsString()
+	if len(propertyName) == 0 {
+		propertyName = AsPropertyValue(schemaNode.GetProperty(AttributeNameTerm)).AsString()
+	}
+	if len(propertyName) == 0 {
+		propertyName = GetNodeID(schemaNode)
+	}
+	return
+}
+
 func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, *lpg.Node, error) {
 	root := cursor.getInput()
 	schemaNode := root.GetSchemaNode()

@@ -138,7 +138,7 @@ func (ctx *reshapeContext) fillEvalContext(ectx *opencypher.EvalContext) {
 }
 
 func (ctx *reshapeContext) getEvalContext() *opencypher.EvalContext {
-	ectx := opencypher.NewEvalContext(ctx.sourceGraph)
+	ectx := ls.NewEvalContext(ctx.sourceGraph)
 	ctx.fillEvalContext(ectx)
 	return ectx
 }
@@ -342,12 +342,14 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 		for _, result := range results {
 			if rs, ok := result.Get().(opencypher.ResultSet); ok {
 				for _, row := range rs.Rows {
-					ctx.exportVars(row)
-					v, err := process(opencypher.ResultSet{Rows: []map[string]opencypher.Value{row}})
-					if err != nil {
-						return nil, err
+					if !isEmptyRow(row) {
+						ctx.exportVars(row)
+						v, err := process(opencypher.ResultSet{Rows: []map[string]opencypher.Value{row}})
+						if err != nil {
+							return nil, err
+						}
+						ret = append(ret, v...)
 					}
-					ret = append(ret, v...)
 				}
 			} else if arr, ok := result.Get().([]*lpg.Node); ok {
 				for _, x := range arr {
@@ -594,15 +596,23 @@ func isEmptyValue(v opencypher.Value) bool {
 		return true
 	}
 	if len(rs.Rows) == 1 {
-		if len(rs.Rows[0]) == 1 {
-			for _, v := range rs.Rows[0] {
-				if v.Get() == nil {
-					return true
-				}
+		for _, v := range rs.Rows[0] {
+			if v.Get() != nil {
+				return false
 			}
 		}
+		return true
 	}
 	return false
+}
+
+func isEmptyRow(row map[string]opencypher.Value) bool {
+	for _, v := range row {
+		if v.Get() != nil {
+			return false
+		}
+	}
+	return true
 }
 
 func getAtMostOneNode(value opencypher.Value) (*lpg.Node, error) {

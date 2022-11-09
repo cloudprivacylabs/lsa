@@ -131,6 +131,11 @@ type ValuesetInfo struct {
 	// values. The elements of this match the keys array
 	RequestValues []string
 
+	// This is initialized if RequestValues is nonempty. It is
+	// initialized to point to the schema paths corresponding to the
+	// request value entries
+	requestSchemaPaths [][]*lpg.Node
+
 	// Request expressions
 	RequestExprs []opencypher.Evaluatable
 
@@ -176,7 +181,7 @@ func init() {
 
 // ValueSetInfoFromNode parses the valueset information from a
 // node. Returns nil if the node does not have valueset info
-func ValuesetInfoFromNode(node *lpg.Node) (*ValuesetInfo, error) {
+func ValuesetInfoFromNode(layer *Layer, node *lpg.Node) (*ValuesetInfo, error) {
 	ctxp := AsPropertyValue(node.GetProperty(ValuesetContextTerm))
 	ctexpr := AsPropertyValue(node.GetProperty(ValuesetContextExprTerm))
 	tablep := AsPropertyValue(node.GetProperty(ValuesetTablesTerm))
@@ -191,6 +196,16 @@ func ValuesetInfoFromNode(node *lpg.Node) (*ValuesetInfo, error) {
 		ResultKeys:    AsPropertyValue(node.GetProperty(ValuesetResultKeysTerm)).MustStringSlice(),
 		ResultValues:  AsPropertyValue(node.GetProperty(ValuesetResultValuesTerm)).MustStringSlice(),
 		SchemaNode:    node,
+	}
+	if len(ret.RequestValues) > 0 {
+		ret.requestSchemaPaths = make([][]*lpg.Node, len(ret.RequestValues))
+		for i, v := range ret.RequestValues {
+			node := layer.GetAttributeByID(v)
+			if node == nil {
+				return nil, fmt.Errorf("Attribute %s not found", v)
+			}
+			ret.requestSchemaPaths[i] = layer.GetAttributePath(node)
+		}
 	}
 	if ctexpr != nil && ctexpr.IsString() {
 		var err error
@@ -227,7 +242,7 @@ func (vsi *ValuesetInfo) GetRequest(ctx *Context, contextDocumentNode, vsiDocume
 		if vsiDocumentNode == nil {
 			return nil, ErrInvalidValuesetSpec{Msg: fmt.Sprintf("An opencypher expression is given for %s, but there is no document node", GetNodeID(vsi.SchemaNode))}
 		}
-		evalctx := opencypher.NewEvalContext(vsiDocumentNode.GetGraph())
+		evalctx := NewEvalContext(vsiDocumentNode.GetGraph())
 		evalctx.SetVar("this", opencypher.ValueOf(vsiDocumentNode))
 		for index, expr := range vsi.RequestExprs {
 			result, err := expr.Evaluate(evalctx)
@@ -297,20 +312,60 @@ func (vsi *ValuesetInfo) GetRequest(ctx *Context, contextDocumentNode, vsiDocume
 			// Locate a child node
 			// match (n)-[]->({SchemaNodeIDTerm:reqv})
 			ctx.GetLogger().Debug(map[string]interface{}{"valueset.GetRequest": "locate child node", "requested": reqv, "start": contextDocumentNode})
-			var found *lpg.Node
-			IterateDescendants(contextDocumentNode, func(node *lpg.Node) bool {
-				if AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString() == reqv {
-					found = node
-					return false
-				}
-				return true
-			}, FollowEdgesInEntity, false)
+			// If ingestAs for the schema node is "property", get the parent node
+			schemaPath := vsi.requestSchemaPaths[index]
+			switch GetIngestAs(schemaPath[len(schemaPath)-1]) {
+			case "node", "edge":
+				var found *lpg.Node
+				IterateDescendants(contextDocumentNode, func(node *lpg.Node) bool {
+					if AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString() == reqv {
+						found = node
+						return false
+					}
+					return true
+				}, FollowEdgesInEntity, false)
 
-			if found != nil {
-				if len(vsi.RequestKeys) == 0 {
-					ret[""], _ = GetRawNodeValue(found)
+				if found != nil {
+					if len(vsi.RequestKeys) == 0 {
+						ret[""], _ = GetRawNodeValue(found)
+					} else {
+						ret[vsi.RequestKeys[index]], _ = GetRawNodeValue(found)
+					}
+				}
+			case "property":
+				asPropertyOf, propertyName := GetIngestAsProperty(schemaPath[len(schemaPath)-1])
+				var targetSchemaNode *lpg.Node
+				if len(asPropertyOf) == 0 {
+					targetSchemaNode = schemaPath[len(schemaPath)-2]
 				} else {
-					ret[vsi.RequestKeys[index]], _ = GetRawNodeValue(found)
+					// Find ancestor that is instance of asPropertyOf
+					for i := len(schemaPath) - 2; i >= 0; i-- {
+						if AsPropertyValue(schemaPath[i].GetProperty(SchemaNodeIDTerm)).AsString() == asPropertyOf {
+							targetSchemaNode = schemaPath[i]
+							break
+						}
+					}
+				}
+				if targetSchemaNode != nil {
+					var found *lpg.Node
+					targetSchemaNodeID := GetNodeID(targetSchemaNode)
+					IterateDescendants(contextDocumentNode, func(node *lpg.Node) bool {
+						if AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString() == targetSchemaNodeID {
+							found = node
+							return false
+						}
+						return true
+					}, FollowEdgesInEntity, false)
+					if found != nil {
+						val, ok := found.GetProperty(propertyName)
+						if ok {
+							if len(vsi.RequestKeys) == 0 {
+								ret[""] = AsPropertyValue(val, true).AsString()
+							} else {
+								ret[vsi.RequestKeys[index]] = AsPropertyValue(val, true).AsString()
+							}
+						}
+					}
 				}
 			}
 		}
@@ -596,7 +651,7 @@ func (prc *ValuesetProcessor) init() error {
 				continue
 			}
 			seen[node] = struct{}{}
-			vsi, e := ValuesetInfoFromNode(node)
+			vsi, e := ValuesetInfoFromNode(prc.layer, node)
 			if e != nil {
 				err = e
 				return

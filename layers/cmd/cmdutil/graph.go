@@ -205,12 +205,20 @@ func WriteGraph(cmd *cobra.Command, graph *lpg.Graph, format string, out io.Writ
 	switch format {
 	case "json":
 		m := ls.JSONMarshaler{}
-		return m.Encode(graph, out)
+		if err := m.Encode(graph, out); err != nil {
+			return err
+		}
+		_, err := fmt.Fprintln(out, "")
+		return err
 	case "jsonld":
 		marshaler := ls.LDMarshaler{}
 		intf := marshaler.Marshal(graph)
 		enc := json.NewEncoder(out)
-		return enc.Encode(intf)
+		if err := enc.Encode(intf); err != nil {
+			return err
+		}
+		_, err := fmt.Fprintln(out, "")
+		return err
 	case "dot":
 		renderer := dot.Renderer{Options: dot.DefaultOptions()}
 		renderer.Options.Rankdir, _ = cmd.Flags().GetString("rankdir")
