@@ -533,3 +533,37 @@ func GetLayerEntityRoot(node *lpg.Node) *lpg.Node {
 	}
 	return find(node)
 }
+
+// GetPathFromEntityRoot returns the path from the entity root node of the schema
+func GetPathFromRoot(schemaNode *lpg.Node) []*lpg.Node {
+	path := make([]*lpg.Node, 0)
+	var find func(*lpg.Node) *lpg.Node
+	seen := make(map[*lpg.Node]struct{})
+	find = func(root *lpg.Node) *lpg.Node {
+		if _, ok := root.GetProperty(EntitySchemaTerm); ok {
+			return root
+		}
+		if _, ok := seen[root]; ok {
+			return nil
+		}
+		seen[root] = struct{}{}
+		for edges := root.GetEdges(lpg.IncomingEdge); edges.Next(); {
+			edge := edges.Edge()
+			ancestor := edge.GetFrom()
+			if !ancestor.GetLabels().Has(AttributeNodeTerm) {
+				continue
+			}
+			ret := find(ancestor)
+			if ret != nil {
+				path = append(path, ret)
+				return ret
+			}
+		}
+		return nil
+	}
+	node := find(schemaNode)
+	if node != nil {
+		path = append(path, node)
+	}
+	return path
+}

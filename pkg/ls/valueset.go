@@ -204,7 +204,7 @@ func ValuesetInfoFromNode(layer *Layer, node *lpg.Node) (*ValuesetInfo, error) {
 			if node == nil {
 				return nil, fmt.Errorf("Attribute %s not found", v)
 			}
-			ret.requestSchemaPaths[i] = layer.GetAttributePath(node)
+			ret.requestSchemaPaths[i] = GetPathFromRoot(node)
 		}
 	}
 	if ctexpr != nil && ctexpr.IsString() {
