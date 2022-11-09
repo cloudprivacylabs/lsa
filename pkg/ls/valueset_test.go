@@ -188,6 +188,7 @@ func TestStructuredVS(t *testing.T) {
 "layer" :{
   "@type": "Object",
  "@id": "schroot",
+ "https://lschema.org/entitySchema":"test",
   "attributes": {
     "src": {
       "@type": "Object",
@@ -290,6 +291,7 @@ func TestStructuredVSProperty(t *testing.T) {
 "layer" :{
   "@type": "Object",
  "@id": "schroot",
+ "https://lschema.org/entitySchema":"test",
   "attributes": {
     "src": {
       "@type": "Object",
@@ -392,6 +394,7 @@ func TestStructuredDeepVS(t *testing.T) {
 "valueType": "test",
 "layer" :{
   "@type": "Object",
+ "https://lschema.org/entitySchema":"test",
  "@id": "schroot",
   "attributes": {
     "test": {
