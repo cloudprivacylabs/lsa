@@ -556,7 +556,7 @@ func GetPathFromRoot(schemaNode *lpg.Node) []*lpg.Node {
 			ret := find(ancestor)
 			if ret != nil {
 				path = append(path, ret)
-				return ret
+				return root
 			}
 		}
 		return nil
