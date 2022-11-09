@@ -16,7 +16,7 @@ package ls
 
 import (
 	"fmt"
-	"path/filepath"
+	"strings"
 
 	"github.com/cloudprivacylabs/lpg"
 )
@@ -250,19 +250,26 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 
 func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compilerContext) error {
 	nodeMap := make(map[*lpg.Node]*lpg.Node)
-	copySubtree := func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph) {
+	copySubtree := func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph) error {
 		nodeMap[includeNode] = targetNode
 		for edges := includeNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
-			// if IsAttributeTreeEdge(edge) {
-			// 	continue
-			// }
+			srcTypes := lpg.NewStringSet(FilterAttributeTypes(targetNode.GetLabels().Slice())...)
+			includeTypes := FilterAttributeTypes(includeNode.GetLabels().Slice())
+			for _, typ := range includeTypes {
+				if !srcTypes.Has(typ) {
+					return ErrNotFound(fmt.Sprintf("attribute type for source: %v do not match with include: %v", targetNode, includeNode))
+				}
+				srcTypes.Add(typ)
+			}
+			targetNode.SetLabels(srcTypes)
 			includeNamespace := GetAttributeID(edge.GetTo())
-			suffix := filepath.Base(includeNamespace)
-			SetAttributeID(targetNode, filepath.Dir(GetAttributeID(targetNode)+"/"+suffix))
+			sfxIx := strings.LastIndex(includeNamespace, "/")
+			SetAttributeID(targetNode, GetAttributeID(targetNode)+includeNamespace[sfxIx:])
 			lpg.CopySubgraph(edge.GetTo(), tgtGraph, ClonePropertyValueFunc, nodeMap)
 			lpg.CopyEdge(edge, tgtGraph, ClonePropertyValueFunc, nodeMap)
 		}
+		return nil
 	}
 	context.GetLogger().Debug(map[string]interface{}{"mth": "compileIncludeAttribute"})
 	// Process until there are nodes with "include" attribute
@@ -285,14 +292,12 @@ func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compile
 		if includeRoot == nil {
 			return ErrNotFound(includeRef)
 		}
-		srcTypes := lpg.NewStringSet(FilterAttributeTypes(srcNode.GetLabels().Slice())...)
-		includeTypes := FilterAttributeTypes(includeRoot.GetLabels().Slice())
-		for _, typ := range includeTypes {
-			if !srcTypes.Has(typ) {
-				return ErrNotFound(fmt.Sprintf("attribute type for source: %v do not match with include: %v", srcNode, includeRoot))
-			}
+		if err := ComposeProperties(context, srcNode, includeRoot); err != nil {
+			return err
 		}
-		copySubtree(srcNode, includeRoot, srcNode.GetGraph())
+		if err := copySubtree(srcNode, includeRoot, srcNode.GetGraph()); err != nil {
+			return err
+		}
 	}
 	return nil
 }
