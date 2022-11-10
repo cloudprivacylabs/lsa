@@ -250,7 +250,7 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 
 func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compilerContext) error {
 	nodeMap := make(map[*lpg.Node]*lpg.Node)
-	copySubtree := func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph) error {
+	copySubtree := func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph, namespace string) error {
 		nodeMap[includeNode] = targetNode
 		for edges := includeNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
@@ -263,9 +263,12 @@ func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compile
 				srcTypes.Add(typ)
 			}
 			targetNode.SetLabels(srcTypes)
-			includeNamespace := GetAttributeID(edge.GetTo())
-			sfxIx := strings.LastIndex(includeNamespace, "/")
-			SetAttributeID(targetNode, GetAttributeID(targetNode)+includeNamespace[sfxIx:])
+			if namespace != "" {
+				sfxIx := strings.LastIndex(namespace, "/")
+				if sfxIx != -1 {
+					SetAttributeID(targetNode, GetAttributeID(targetNode)+namespace[sfxIx:])
+				}
+			}
 			lpg.CopySubgraph(edge.GetTo(), tgtGraph, ClonePropertyValueFunc, nodeMap)
 			lpg.CopyEdge(edge, tgtGraph, ClonePropertyValueFunc, nodeMap)
 		}
@@ -295,7 +298,8 @@ func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compile
 		if err := ComposeProperties(context, srcNode, includeRoot); err != nil {
 			return err
 		}
-		if err := copySubtree(srcNode, includeRoot, srcNode.GetGraph()); err != nil {
+		namespace, ok := srcNode.GetProperty(NamespaceTerm)
+		if err := copySubtree(srcNode, includeRoot, srcNode.GetGraph(), AsPropertyValue(namespace, ok).AsString()); err != nil {
 			return err
 		}
 	}
