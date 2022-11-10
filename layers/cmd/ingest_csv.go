@@ -250,6 +250,7 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 			}
 		}
 	}
+	pipeline.Properties["layer"] = cji.Entities[0].layer
 
 	for {
 		entryInfo, stream, err := pipeline.NextInput()
