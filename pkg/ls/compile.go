@@ -252,16 +252,16 @@ func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compile
 	nodeMap := make(map[*lpg.Node]*lpg.Node)
 	copySubtree := func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph, namespace string) error {
 		nodeMap[includeNode] = targetNode
+		srcTypes := lpg.NewStringSet(FilterAttributeTypes(targetNode.GetLabels().Slice())...)
+		includeTypes := FilterAttributeTypes(includeNode.GetLabels().Slice())
+		for _, typ := range includeTypes {
+			if !srcTypes.Has(typ) {
+				return ErrNotFound(fmt.Sprintf("attribute type for source: %v do not match with include: %v", targetNode, includeNode))
+			}
+			srcTypes.Add(typ)
+		}
 		for edges := includeNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
-			srcTypes := lpg.NewStringSet(FilterAttributeTypes(targetNode.GetLabels().Slice())...)
-			includeTypes := FilterAttributeTypes(includeNode.GetLabels().Slice())
-			for _, typ := range includeTypes {
-				if !srcTypes.Has(typ) {
-					return ErrNotFound(fmt.Sprintf("attribute type for source: %v do not match with include: %v", targetNode, includeNode))
-				}
-				srcTypes.Add(typ)
-			}
 			targetNode.SetLabels(srcTypes)
 			if namespace != "" {
 				sfxIx := strings.LastIndex(namespace, "/")
@@ -299,6 +299,7 @@ func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compile
 			return err
 		}
 		namespace, ok := srcNode.GetProperty(NamespaceTerm)
+		srcNode.RemoveProperty(NamespaceTerm)
 		if err := copySubtree(srcNode, includeRoot, srcNode.GetGraph(), AsPropertyValue(namespace, ok).AsString()); err != nil {
 			return err
 		}
