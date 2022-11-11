@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"sync"
 
 	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
@@ -23,6 +24,9 @@ type PipelineContext struct {
 	GraphOwner  *PipelineContext
 	ErrorLogger func(*PipelineContext, error)
 	EntryLogger func(*PipelineContext, map[string]interface{})
+	// If any goroutines are started with this pipeline, waitgroup is used to wait for them
+	Wait sync.WaitGroup
+	Err  chan error
 }
 
 type PipelineEntryInfo interface {
@@ -96,7 +100,26 @@ func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph *lpg.Graph, i
 
 // Run pipeline
 func Run(ctx *PipelineContext) error {
-	return ctx.Next()
+	ctx.Err = make(chan error)
+	errors := make([]error, 0)
+	go func() {
+		for e := range ctx.Err {
+			errors = append(errors, e)
+		}
+	}()
+	err := ctx.Next()
+	ctx.Wait.Wait()
+	close(ctx.Err)
+	if err == nil && len(errors) == 0 {
+		return nil
+	}
+	if len(errors) > 0 && err != nil {
+		return fmt.Errorf("%v %w", errors, err)
+	}
+	if len(errors) == 0 {
+		return err
+	}
+	return nil
 }
 
 func (ctx *PipelineContext) SetGraph(g *lpg.Graph) *PipelineContext {
@@ -117,6 +140,11 @@ func (ctx *PipelineContext) Next() error {
 	}
 	ctx.CurrentStep--
 	return err
+}
+
+// HasNext returns if there is a next step in the pipeline
+func (ctx *PipelineContext) HasNext() bool {
+	return ctx.CurrentStep+1 < len(ctx.Steps)
 }
 
 var registeredSteps = make(map[string]func() Step)

@@ -86,3 +86,68 @@ func TestHashNested(t *testing.T) {
 	_ = attr1
 	_ = attr2
 }
+
+func TestHashProperty(t *testing.T) {
+	layer, err := UnmarshalLayerFromSlice([]byte(`{
+  "@context": "../../schemas/ls.json",
+  "@type": "Schema",
+  "@id": "testSchema",
+  "layer": {
+    "@id": "schemaRoot",
+    "@type": "Object",
+    "attributes": {
+       "attr1": { 
+          "@type": "Value" ,
+          "ingestAs":"property"
+       },
+       "attr2": { 
+          "@type": "Object",
+          "attributes": {
+             "attr3": { 
+                "@type": "Value",
+                "https://lschema.org/hash": [ "attr5", "attr1" ]
+             },
+             "attr4": {
+                "@type": "Object",
+                "attributes": {
+                   "attr5": { "@type": "Value" }
+                }
+             }
+          }
+       }
+    }
+  }
+}`))
+	if err != nil {
+		panic(err)
+	}
+	compiler := Compiler{}
+	layer, err = compiler.CompileSchema(DefaultContext(), layer)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	gb := NewGraphBuilder(nil, GraphBuilderOptions{EmbedSchemaNodes: true})
+	_, schemaRoot, _ := gb.ObjectAsNode(layer.GetAttributeByID("schemaRoot"), nil)
+	attr1 := gb.RawValueAsProperty(layer.GetAttributeByID("attr1"), []*lpg.Node{schemaRoot}, "attr1")
+	_, attr2, _ := gb.ObjectAsNode(layer.GetAttributeByID("attr2"), schemaRoot)
+	if err := gb.PostIngest(layer.GetAttributeByID("schemaRoot"), schemaRoot); err != nil {
+		t.Error(err)
+	}
+
+	buf := bytes.Buffer{}
+	lpg.JSON{}.Encode(gb.GetGraph(), &buf)
+	t.Log(buf.String())
+	nodeIDMap := GetSchemaNodeIDMap(schemaRoot)
+	attr3 := nodeIDMap["attr3"]
+	if len(attr3) != 1 {
+		t.Errorf("Expecting 1 node")
+	}
+	sum := fmt.Sprintf("%x", sha256.Sum256([]byte("attr1")))
+	if v, _ := GetRawNodeValue(attr3[0]); v != sum {
+		t.Errorf("Wrong value")
+	}
+	_ = attr1
+	_ = attr2
+}

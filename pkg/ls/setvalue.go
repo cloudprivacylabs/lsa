@@ -43,7 +43,7 @@ func (setValueSemantics) CompileTerm(node CompilablePropertyContainer, term stri
 // ProcessNodePostDocIngest will evaluate the opencypher expressions
 // given in the term for the docNode and set the value of the docnode
 // based on that
-func (setValueSemantics) ProcessNodePostDocIngest(term *PropertyValue, docNode *lpg.Node) error {
+func (setValueSemantics) ProcessNodePostDocIngest(schemaRootNode, schemaNode *lpg.Node, term *PropertyValue, docNode *lpg.Node) error {
 	v, _ := docNode.GetProperty("$compiled_" + term.GetSem().Term)
 	exprs, _ := v.([]opencypher.Evaluatable)
 	evalContext := NewEvalContext(docNode.GetGraph())

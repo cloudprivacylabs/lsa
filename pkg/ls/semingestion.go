@@ -27,5 +27,5 @@ type PostNodeIngest interface {
 
 // PostIngest is called after the ingestion of a document.
 type PostIngest interface {
-	ProcessNodePostDocIngest(term *PropertyValue, docNode *lpg.Node) error
+	ProcessNodePostDocIngest(schemaRootNode, schemaNode *lpg.Node, term *PropertyValue, docNode *lpg.Node) error
 }

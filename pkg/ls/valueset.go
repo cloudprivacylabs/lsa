@@ -170,12 +170,10 @@ func init() {
 	RegisterNewDocGraphHook(func(g *lpg.Graph) {
 		g.AddNodePropertyIndex(ValuesetContextTerm, lpg.HashIndex)
 		g.AddNodePropertyIndex(ValuesetContextExprTerm, lpg.HashIndex)
-		g.AddNodePropertyIndex(ValuesetTablesTerm, lpg.HashIndex)
 	})
 	RegisterNewLayerGraphHook(func(g *lpg.Graph) {
 		g.AddNodePropertyIndex(ValuesetContextTerm, lpg.HashIndex)
 		g.AddNodePropertyIndex(ValuesetContextExprTerm, lpg.HashIndex)
-		g.AddNodePropertyIndex(ValuesetTablesTerm, lpg.HashIndex)
 	})
 }
 
@@ -313,58 +311,19 @@ func (vsi *ValuesetInfo) GetRequest(ctx *Context, contextDocumentNode, vsiDocume
 			// match (n)-[]->({SchemaNodeIDTerm:reqv})
 			ctx.GetLogger().Debug(map[string]interface{}{"valueset.GetRequest": "locate child node", "requested": reqv, "start": contextDocumentNode})
 			// If ingestAs for the schema node is "property", get the parent node
-			schemaPath := vsi.requestSchemaPaths[index]
-			switch GetIngestAs(schemaPath[len(schemaPath)-1]) {
-			case "node", "edge":
-				var found *lpg.Node
-				IterateDescendants(contextDocumentNode, func(node *lpg.Node) bool {
-					if AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString() == reqv {
-						found = node
-						return false
-					}
-					return true
-				}, FollowEdgesInEntity, false)
-
-				if found != nil {
+			attrRef, found := GetAttributeReferenceBySchemaPath(vsi.requestSchemaPaths[index], contextDocumentNode)
+			if found {
+				if !attrRef.IsProperty() {
 					if len(vsi.RequestKeys) == 0 {
-						ret[""], _ = GetRawNodeValue(found)
+						ret[""], _ = GetRawNodeValue(attrRef.Node)
 					} else {
-						ret[vsi.RequestKeys[index]], _ = GetRawNodeValue(found)
+						ret[vsi.RequestKeys[index]], _ = GetRawNodeValue(attrRef.Node)
 					}
-				}
-			case "property":
-				asPropertyOf, propertyName := GetIngestAsProperty(schemaPath[len(schemaPath)-1])
-				var targetSchemaNode *lpg.Node
-				if len(asPropertyOf) == 0 {
-					targetSchemaNode = schemaPath[len(schemaPath)-2]
 				} else {
-					// Find ancestor that is instance of asPropertyOf
-					for i := len(schemaPath) - 2; i >= 0; i-- {
-						if AsPropertyValue(schemaPath[i].GetProperty(SchemaNodeIDTerm)).AsString() == asPropertyOf {
-							targetSchemaNode = schemaPath[i]
-							break
-						}
-					}
-				}
-				if targetSchemaNode != nil {
-					var found *lpg.Node
-					targetSchemaNodeID := GetNodeID(targetSchemaNode)
-					IterateDescendants(contextDocumentNode, func(node *lpg.Node) bool {
-						if AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString() == targetSchemaNodeID {
-							found = node
-							return false
-						}
-						return true
-					}, FollowEdgesInEntity, false)
-					if found != nil {
-						val, ok := found.GetProperty(propertyName)
-						if ok {
-							if len(vsi.RequestKeys) == 0 {
-								ret[""] = AsPropertyValue(val, true).AsString()
-							} else {
-								ret[vsi.RequestKeys[index]] = AsPropertyValue(val, true).AsString()
-							}
-						}
+					if len(vsi.RequestKeys) == 0 {
+						ret[""] = attrRef.AsPropertyValue().AsString()
+					} else {
+						ret[vsi.RequestKeys[index]] = attrRef.AsPropertyValue().AsString()
 					}
 				}
 			}
