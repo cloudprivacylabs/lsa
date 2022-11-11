@@ -445,7 +445,7 @@ func (gb GraphBuilder) PostIngestSchemaNode(schemaRootNode, schemaNode, docRootN
 
 		// First process all doc nodes that already exist
 		for _, docNode := range nodeIDMap[schemaNodeID] {
-			if e := ni.ProcessNodePostDocIngest(pv, docNode); e != nil {
+			if e := ni.ProcessNodePostDocIngest(schemaRootNode, schemaNode, pv, docNode); e != nil {
 				err = e
 				return false
 			}
@@ -468,7 +468,7 @@ func (gb GraphBuilder) PostIngestSchemaNode(schemaRootNode, schemaNode, docRootN
 				err = e
 				return false
 			}
-			if e := ni.ProcessNodePostDocIngest(pv, docNode); e != nil {
+			if e := ni.ProcessNodePostDocIngest(schemaRootNode, schemaNode, pv, docNode); e != nil {
 				err = e
 				return false
 			}
@@ -494,9 +494,18 @@ func (gb GraphBuilder) PostIngest(schemaRootNode, docRootNode *lpg.Node) error {
 
 // NewUniqueEdge create a new edge if one does not exist.
 func (gb GraphBuilder) NewUniqueEdge(fromNode, toNode *lpg.Node, label string, properties map[string]interface{}) *lpg.Edge {
-	for edges := fromNode.GetEdgesWithLabel(lpg.OutgoingEdge, label); edges.Next(); {
-		edge := edges.Edge()
-		if edge.GetTo() != toNode {
+	fromItr := fromNode.GetEdgesWithLabel(lpg.OutgoingEdge, label)
+	toItr := toNode.GetEdgesWithLabel(lpg.IncomingEdge, label)
+	itr := fromItr
+	if fromItr.MaxSize() != -1 && toItr.MaxSize() != -1 {
+		if fromItr.MaxSize() > toItr.MaxSize() {
+			itr = toItr
+		}
+	}
+	for itr.Next() {
+		edge := itr.Edge()
+		if edge.GetTo() != toNode ||
+			edge.GetFrom() != fromNode {
 			continue
 		}
 		if properties != nil {

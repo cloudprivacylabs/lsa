@@ -200,8 +200,8 @@ const (
 
 // SkipEdgesToNodeWithType returns a function that skips edges that go
 // to a node with the given type
-func SkipEdgesToNodeWithType(typ string) func(*lpg.Edge, []*lpg.Node) EdgeFuncResult {
-	return func(edge *lpg.Edge, _ []*lpg.Node) EdgeFuncResult {
+func SkipEdgesToNodeWithType(typ string) func(*lpg.Edge) EdgeFuncResult {
+	return func(edge *lpg.Edge) EdgeFuncResult {
 		if edge.GetTo().GetLabels().Has(typ) {
 			return SkipEdgeResult
 		}

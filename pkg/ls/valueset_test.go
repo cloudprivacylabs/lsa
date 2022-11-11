@@ -29,6 +29,7 @@ func TestBasicVS(t *testing.T) {
 "valueType": "test",
 "layer" :{
   "@type": "Object",
+"https://lschema.org/entitySchema":"test",
  "@id": "schroot",
   "attributes": {
     "src": {
@@ -103,6 +104,7 @@ func TestBasicVSExpr(t *testing.T) {
 "valueType": "test",
 "layer" :{
   "@type": "Object",
+"https://lschema.org/entitySchema":"test",
  "@id": "schroot",
   "attributes": {
     "src": {
@@ -187,6 +189,7 @@ func TestStructuredVS(t *testing.T) {
 "valueType": "test",
 "layer" :{
   "@type": "Object",
+"https://lschema.org/entitySchema":"test",
  "@id": "schroot",
  "https://lschema.org/entitySchema":"test",
   "attributes": {
@@ -289,6 +292,7 @@ func TestStructuredVSProperty(t *testing.T) {
 "@type": "Schema",
 "valueType": "test",
 "layer" :{
+"https://lschema.org/entitySchema":"test",
   "@type": "Object",
  "@id": "schroot",
  "https://lschema.org/entitySchema":"test",
@@ -394,7 +398,7 @@ func TestStructuredDeepVS(t *testing.T) {
 "valueType": "test",
 "layer" :{
   "@type": "Object",
- "https://lschema.org/entitySchema":"test",
+"https://lschema.org/entitySchema":"test",
  "@id": "schroot",
   "attributes": {
     "test": {

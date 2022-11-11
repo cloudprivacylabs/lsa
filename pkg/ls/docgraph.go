@@ -281,3 +281,86 @@ func SetEntityIDVectorElementFromNode(docNode *lpg.Node, value string) error {
 	}
 	return SetEntityIDVectorElement(entityRootNode, schemaNodeID, value)
 }
+
+// AttributeReference points to an attribute in a document. The
+// attribute can be a node, or a property of a node
+type AttributeReference struct {
+	Node     *lpg.Node
+	Property string
+}
+
+func (a AttributeReference) IsProperty() bool { return len(a.Property) > 0 }
+
+func (a AttributeReference) AsPropertyValue() *PropertyValue {
+	return AsPropertyValue(a.Node.GetProperty(a.Property))
+}
+
+// GetAttributeReferenceBySchemaNode returns the attribute reference
+// whose instance is under docContextNode
+func GetAttributeReferenceBySchemaNode(schemaRootNode, schemaNode *lpg.Node, docContextNode *lpg.Node) (AttributeReference, bool) {
+	path := GetPathFromRoot(schemaNode)
+	return GetAttributeReferenceBySchemaPath(path, docContextNode)
+}
+
+func GetAttributeReferenceBySchemaPath(schemaPath []*lpg.Node, docContextNode *lpg.Node) (AttributeReference, bool) {
+	if len(schemaPath) == 0 {
+		return AttributeReference{}, false
+	}
+	attr := GetNodeID(schemaPath[len(schemaPath)-1])
+	// If ingestAs for the schema node is "property", get the parent node
+	switch GetIngestAs(schemaPath[len(schemaPath)-1]) {
+	case "node", "edge":
+		var found *lpg.Node
+		IterateDescendants(docContextNode, func(node *lpg.Node) bool {
+			instance := AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString()
+			if instance == attr {
+				found = node
+				return false
+			}
+			return true
+		}, FollowEdgesInEntity, false)
+		if found != nil {
+			return AttributeReference{
+				Node: found,
+			}, true
+		}
+		return AttributeReference{}, false
+
+	case "property":
+		asPropertyOf, propertyName := GetIngestAsProperty(schemaPath[len(schemaPath)-1])
+		var targetSchemaNode *lpg.Node
+		if len(asPropertyOf) == 0 {
+			if len(schemaPath) < 2 {
+				return AttributeReference{}, false
+			}
+			targetSchemaNode = schemaPath[len(schemaPath)-2]
+		} else {
+			// Find ancestor that is instance of asPropertyOf
+			for i := len(schemaPath) - 2; i >= 0; i-- {
+				if AsPropertyValue(schemaPath[i].GetProperty(SchemaNodeIDTerm)).AsString() == asPropertyOf {
+					targetSchemaNode = schemaPath[i]
+					break
+				}
+			}
+		}
+		if targetSchemaNode != nil {
+			var found *lpg.Node
+			targetSchemaNodeID := GetNodeID(targetSchemaNode)
+			IterateDescendants(docContextNode, func(node *lpg.Node) bool {
+				if AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString() == targetSchemaNodeID {
+					found = node
+					return false
+				}
+				return true
+			}, FollowEdgesInEntity, false)
+			if found != nil {
+				return AttributeReference{
+					Node:     found,
+					Property: propertyName,
+				}, true
+			}
+			return AttributeReference{}, false
+		}
+	}
+	return AttributeReference{}, false
+}

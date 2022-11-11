@@ -49,6 +49,7 @@ func forkPipeline(pipe Pipeline, ctx *PipelineContext, name string) error {
 		Steps:       pipe,
 		CurrentStep: -1,
 		GraphOwner:  ctx.GraphOwner,
+		Err:         ctx.Err,
 	}
 	cpMap := make(map[string]interface{})
 	for k, prop := range ctx.Properties {
