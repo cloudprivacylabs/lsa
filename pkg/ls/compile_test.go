@@ -16,7 +16,6 @@ package ls
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 	"testing"
@@ -109,22 +108,6 @@ func TestCompileIncludeAttribute(t *testing.T) {
 	if err := m.Decode(expectedGraph, json.NewDecoder(f)); err != nil {
 		t.Error(err)
 	}
-	fmt.Println(compiled.layerInfo.GetLabels().Slice())
-	// var v interface{}
-	// if err := json.Unmarshal([]byte(f), &v); err != nil {
-	// 	t.Error(err)
-	// }
-	// layer, err := UnmarshalLayer(v, nil)
-	// if err != nil {
-	// 	t.Error(err)
-	// }
-	m = JSONMarshaler{}
-	x, _ := os.Create("cgraph.json")
-	m.Encode(compiler.CGraph.GetGraph(), x)
-	//
-	// x, _ = os.Create("exp.json")
-	// m.Encode(layer.Graph, x)
-	// //
 	if !lpg.CheckIsomorphism(compiler.CGraph.GetGraph(), expectedGraph, checkNodeEquivalence, checkEdgeEquivalence) {
 		log.Fatalf("Result:\n%s\nExpected:\n%s", testPrintGraph(compiler.CGraph.GetGraph()), testPrintGraph(expectedGraph))
 	}
