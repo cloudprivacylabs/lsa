@@ -252,17 +252,8 @@ func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compile
 	nodeMap := make(map[*lpg.Node]*lpg.Node)
 	copySubtree := func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph, namespace string) error {
 		nodeMap[includeNode] = targetNode
-		srcTypes := lpg.NewStringSet(FilterAttributeTypes(targetNode.GetLabels().Slice())...)
-		includeTypes := FilterAttributeTypes(includeNode.GetLabels().Slice())
-		for _, typ := range includeTypes {
-			if !srcTypes.Has(typ) {
-				return ErrNotFound(fmt.Sprintf("attribute type for source: %v do not match with include: %v", targetNode, includeNode))
-			}
-			srcTypes.Add(typ)
-		}
 		for edges := includeNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
-			targetNode.SetLabels(srcTypes)
 			if namespace != "" {
 				sfxIx := strings.LastIndex(namespace, "/")
 				if sfxIx != -1 {
@@ -300,6 +291,17 @@ func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compile
 		}
 		namespace, ok := srcNode.GetProperty(NamespaceTerm)
 		srcNode.RemoveProperty(NamespaceTerm)
+		srcTypes := lpg.NewStringSet(FilterAttributeTypes(srcNode.GetLabels().Slice())...)
+		includeTypes := FilterAttributeTypes(includeRoot.GetLabels().Slice())
+		for _, typ := range includeTypes {
+			if !srcTypes.Has(typ) {
+				return ErrNotFound(fmt.Sprintf("attribute type for source: %v do not match with include: %v", srcNode, includeRoot))
+			}
+		}
+		srcLabels := srcNode.GetLabels()
+		nonLayerIncludeTypes := FilterNonLayerTypes(includeRoot.GetLabels().Slice())
+		srcLabels.Add(nonLayerIncludeTypes...)
+		srcNode.SetLabels(srcLabels)
 		if err := copySubtree(srcNode, includeRoot, srcNode.GetGraph(), AsPropertyValue(namespace, ok).AsString()); err != nil {
 			return err
 		}
