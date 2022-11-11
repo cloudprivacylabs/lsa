@@ -54,7 +54,7 @@ func (hashSemantics) ProcessNodePostDocIngest(schemaRootNode, schemaNode *lpg.No
 			}
 		}
 		return true
-	}, FollowEdgesInEntity, false)
+	}, SkipDocumentNodes, false)
 	refs := make([]AttributeReference, len(nodes))
 	for i := range nodes {
 		sch := schemaNodes[nodes[i]]
