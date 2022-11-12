@@ -16,6 +16,7 @@ package ls
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/cloudprivacylabs/lpg"
 )
@@ -232,7 +233,9 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 		return nil, err
 	}
 	compiled.GetSchemaRootNode().SetProperty(EntitySchemaTerm, StringPropertyValue(EntitySchemaTerm, compiled.GetID()))
-
+	if err := compiler.compileIncludeAttribute(context, ctx); err != nil {
+		return nil, err
+	}
 	if err := compiler.compileReferences(context, ctx); err != nil {
 		return nil, err
 	}
@@ -243,6 +246,67 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 		return nil, err
 	}
 	return compiled, nil
+}
+
+func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compilerContext) error {
+	nodeMap := make(map[*lpg.Node]*lpg.Node)
+	copySubtree := func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph, namespace string) error {
+		nodeMap[includeNode] = targetNode
+		for edges := includeNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
+			edge := edges.Edge()
+			if namespace != "" {
+				sfxIx := strings.LastIndex(namespace, "/")
+				if sfxIx != -1 {
+					SetAttributeID(targetNode, GetAttributeID(targetNode)+namespace[sfxIx:])
+				}
+			}
+			lpg.CopySubgraph(edge.GetTo(), tgtGraph, ClonePropertyValueFunc, nodeMap)
+			lpg.CopyEdge(edge, tgtGraph, ClonePropertyValueFunc, nodeMap)
+		}
+		return nil
+	}
+	context.GetLogger().Debug(map[string]interface{}{"mth": "compileIncludeAttribute"})
+	// Process until there are nodes with "include" attribute
+	for {
+		incNodes := compiler.CGraph.GetGraph().GetNodesWithProperty(IncludeSchemaTerm)
+		if !incNodes.Next() {
+			break
+		}
+		srcNode := incNodes.Node()
+		includeRef := AsPropertyValue(srcNode.GetProperty(IncludeSchemaTerm)).AsString()
+		srcNode.RemoveProperty(IncludeSchemaTerm)
+		includeSchema, err := compiler.loadSchema(ctx, includeRef)
+		if err != nil {
+			return err
+		}
+		if includeSchema == nil {
+			return ErrNotFound(includeRef)
+		}
+		includeRoot := includeSchema.GetSchemaRootNode()
+		if includeRoot == nil {
+			return ErrNotFound(includeRef)
+		}
+		if err := ComposeProperties(context, srcNode, includeRoot); err != nil {
+			return err
+		}
+		namespace, ok := srcNode.GetProperty(NamespaceTerm)
+		srcNode.RemoveProperty(NamespaceTerm)
+		srcTypes := lpg.NewStringSet(FilterAttributeTypes(srcNode.GetLabels().Slice())...)
+		includeTypes := FilterAttributeTypes(includeRoot.GetLabels().Slice())
+		for _, typ := range includeTypes {
+			if !srcTypes.Has(typ) {
+				return ErrNotFound(fmt.Sprintf("attribute type for source: %v do not match with include: %v", srcNode, includeRoot))
+			}
+		}
+		srcLabels := srcNode.GetLabels()
+		nonLayerIncludeTypes := FilterNonLayerTypes(includeRoot.GetLabels().Slice())
+		srcLabels.Add(nonLayerIncludeTypes...)
+		srcNode.SetLabels(srcLabels)
+		if err := copySubtree(srcNode, includeRoot, srcNode.GetGraph(), AsPropertyValue(namespace, ok).AsString()); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (compiler *Compiler) compileReferences(context *Context, ctx *compilerContext) error {

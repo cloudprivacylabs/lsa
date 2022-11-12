@@ -1,0 +1,37 @@
+{
+    "@context": "../../schemas/ls.json",
+    "@id": "http://example.org/Person/schemaBase",
+    "@type": "Schema",
+    "description": [
+    "This schema defines a Person object with firstName, lastName, and a list of contacts.",
+    "Elements of the contact list are references to a Contact schema."
+    ],
+    "valueType": "https://example.org/Person",
+    "layer": {
+        "@type": "Object",
+        "@id": "http://example.org/Person",
+        "attributes": [
+            {
+                "@id": "http://example.org/Person/firstName",
+                "@type": "Value",
+                "attributeName":"firstName"
+            },
+            {
+                "@id": "http://example.org/Person/lastName",
+                "@type": "Value",
+                "attributeName": "lastName"
+            },
+            {
+                "@id": "http://example.org/Person/contact",
+                "@type": "Array",
+                "attributeName": "contact",
+                "arrayElements": {
+                    "@type": "Object",
+                    "@id": "http://example.org/Person/contact/items",
+                    "ref": "https://example.org/Contact",
+                    "include": "testdata/contact.schema.json"
+                }
+            }
+        ]
+    }
+}

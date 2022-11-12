@@ -16,7 +16,11 @@ package ls
 
 import (
 	"encoding/json"
+	"log"
+	"os"
 	"testing"
+
+	"github.com/cloudprivacylabs/lpg"
 )
 
 type compileTestCase struct {
@@ -64,4 +68,117 @@ func TestCompile(t *testing.T) {
 		err := json.Unmarshal(in, &c)
 		return c, err
 	})
+}
+
+func TestCompileIncludeAttribute(t *testing.T) {
+	compiler := Compiler{
+		Loader: SchemaLoaderFunc(func(x string) (*Layer, error) {
+			data, err := os.ReadFile(x)
+			if err != nil {
+				return nil, err
+			}
+			var v interface{}
+			if err := json.Unmarshal([]byte(data), &v); err != nil {
+				return nil, err
+			}
+			return UnmarshalLayer(v, nil)
+		}),
+		CGraph: &DefaultCompiledGraph{},
+	}
+	ctx := &compilerContext{
+		loadedSchemas: make(map[string]*Layer),
+	}
+	ref := "testdata/includeschema.json"
+	compiled, err := compiler.loadSchema(ctx, ref)
+	if err != nil {
+		t.Errorf("Cannot load schema %v", err)
+	}
+	compiled, err = compiler.CGraph.PutCompiledSchema(DefaultContext(), ref, compiled)
+	err = compiler.compileIncludeAttribute(DefaultContext(), ctx)
+	if err != nil {
+		t.Errorf("Cannot compile %v", err)
+		return
+	}
+	f, err := os.Open("testdata/includeschema_expected.json")
+	if err != nil {
+		t.Error(err)
+	}
+	expectedGraph := lpg.NewGraph()
+	m := JSONMarshaler{}
+	if err := m.Decode(expectedGraph, json.NewDecoder(f)); err != nil {
+		t.Error(err)
+	}
+	if !lpg.CheckIsomorphism(compiler.CGraph.GetGraph(), expectedGraph, checkNodeEquivalence, checkEdgeEquivalence) {
+		log.Fatalf("Result:\n%s\nExpected:\n%s", testPrintGraph(compiler.CGraph.GetGraph()), testPrintGraph(expectedGraph))
+	}
+}
+
+func testPrintGraph(g *lpg.Graph) string {
+	m := JSONMarshaler{}
+	result, _ := m.Marshal(g)
+	return string(result)
+}
+
+func checkNodeEquivalence(n1, n2 *lpg.Node) bool {
+	return isNodeIdentical(n1, n2)
+}
+
+func checkEdgeEquivalence(e1, e2 *lpg.Edge) bool {
+	if e1.GetLabel() != e2.GetLabel() {
+		return false
+	}
+	if !IsPropertiesEqual(PropertiesAsMap(e1), PropertiesAsMap(e2)) {
+		return false
+	}
+	return true
+}
+
+// Return true if n1 is identical to n2
+func isNodeIdentical(n1, n2 *lpg.Node) bool {
+	if !n1.GetLabels().IsEqual(n2.GetLabels()) {
+		return false
+	}
+	eq := true
+	n1.ForEachProperty(func(k string, v interface{}) bool {
+		pv, ok := v.(*PropertyValue)
+		if !ok {
+			return true
+		}
+		v2, ok := n2.GetProperty(k)
+		if !ok {
+			eq = false
+			return false
+		}
+		pv2, ok := v2.(*PropertyValue)
+		if !ok {
+			eq = false
+			return false
+		}
+		if !pv2.IsEqual(pv) {
+			eq = false
+			return false
+		}
+		return true
+	})
+	if !eq {
+		return false
+	}
+	n2.ForEachProperty(func(k string, v interface{}) bool {
+		_, ok := v.(*PropertyValue)
+		if !ok {
+			return true
+		}
+		v2, ok := n2.GetProperty(k)
+		if !ok {
+			eq = false
+			return false
+		}
+		_, ok = v2.(*PropertyValue)
+		if !ok {
+			eq = false
+			return false
+		}
+		return true
+	})
+	return eq
 }
