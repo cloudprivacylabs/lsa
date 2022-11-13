@@ -191,6 +191,7 @@ func TestStructuredVS(t *testing.T) {
   "@type": "Object",
 "https://lschema.org/entitySchema":"test",
  "@id": "schroot",
+ "https://lschema.org/entitySchema":"test",
   "attributes": {
     "src": {
       "@type": "Object",
@@ -294,6 +295,7 @@ func TestStructuredVSProperty(t *testing.T) {
 "https://lschema.org/entitySchema":"test",
   "@type": "Object",
  "@id": "schroot",
+ "https://lschema.org/entitySchema":"test",
   "attributes": {
     "src": {
       "@type": "Object",

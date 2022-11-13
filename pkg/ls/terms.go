@@ -125,6 +125,12 @@ var (
 
 	// TypeDiscriminatorTerm represents a set of schema field hints for defining polymorphic objects
 	TypeDiscriminatorTerm = NewTerm(LS, "typeDiscriminator", false, false, NoComposition, nil)
+
+	// IncludeSchemaTerm represents another schema to replace and copy its contents
+	IncludeSchemaTerm = NewTerm(LS, "include", false, false, OverrideComposition, nil)
+
+	// Namespace defines the namespace prefix
+	NamespaceTerm = NewTerm(LS, "namespace", false, false, OverrideComposition, nil)
 )
 
 // Attribute types defines the terms describing attribute types. Each
