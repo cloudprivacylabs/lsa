@@ -15,6 +15,8 @@
 package ls
 
 import (
+	"sync"
+
 	"github.com/cloudprivacylabs/lpg"
 	"golang.org/x/text/encoding"
 )
@@ -28,6 +30,9 @@ import (
 type Layer struct {
 	Graph     *lpg.Graph
 	layerInfo *lpg.Node
+
+	linkSpecsOnce sync.Once
+	linkSpecs     []*LinkSpec
 }
 
 // NewLayerGraph creates a new graph indexes to store layers
@@ -566,4 +571,26 @@ func GetPathFromRoot(schemaNode *lpg.Node) []*lpg.Node {
 		path = append(path, node)
 	}
 	return path
+}
+
+// GetLinkSpecs retrieves link specs for the layer
+func (l *Layer) GetLinkSpecs() ([]*LinkSpec, error) {
+	var err error
+	l.linkSpecsOnce.Do(func() {
+		specs := make([]*LinkSpec, 0)
+		for nodes := l.Graph.GetNodes(); nodes.Next(); {
+			attrNode := nodes.Node()
+			var ls *LinkSpec
+			ls, err = GetLinkSpec(attrNode)
+			if err != nil {
+				return
+			}
+			if ls == nil {
+				continue
+			}
+			specs = append(specs, ls)
+		}
+		l.linkSpecs = specs
+	})
+	return l.linkSpecs, err
 }

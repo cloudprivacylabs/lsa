@@ -189,7 +189,6 @@ func GetEntityIDFields(node *lpg.Node) *PropertyValue {
 // GetNodesInstanceOf returns document nodes that are instance of the given attribute id
 func GetNodesInstanceOf(g *lpg.Graph, attrId string) []*lpg.Node {
 	pattern := lpg.Pattern{{
-		Labels: lpg.NewStringSet(DocumentNodeTerm),
 		Properties: map[string]interface{}{
 			SchemaNodeIDTerm: StringPropertyValue(SchemaNodeIDTerm, attrId),
 		},

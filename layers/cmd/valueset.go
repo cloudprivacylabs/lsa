@@ -523,6 +523,7 @@ type ValuesetStep struct {
 	initialized bool
 	valuesets   Valuesets
 	layer       *ls.Layer
+	prc         ls.ValuesetProcessor
 }
 
 func (ValuesetStep) Help() {
@@ -559,6 +560,11 @@ func (vs *ValuesetStep) Run(pipeline *pipeline.PipelineContext) error {
 		if vs.layer == nil {
 			return fmt.Errorf("No schema")
 		}
+
+		vs.prc, err = ls.NewValuesetProcessor(vs.layer, vs.valuesets.Lookup, vs.Tables)
+		if err != nil {
+			return err
+		}
 		vs.initialized = true
 	}
 	builder := ls.NewGraphBuilder(pipeline.Graph, ls.GraphBuilderOptions{
@@ -566,11 +572,7 @@ func (vs *ValuesetStep) Run(pipeline *pipeline.PipelineContext) error {
 	})
 
 	pipeline.Context.GetLogger().Debug(map[string]interface{}{"pipeline": "valueset"})
-	prc, err := ls.NewValuesetProcessor(vs.layer, vs.valuesets.Lookup, vs.Tables)
-	if err != nil {
-		return err
-	}
-	err = prc.ProcessGraph(pipeline.Context, builder)
+	err := vs.prc.ProcessGraph(pipeline.Context, builder)
 	if err != nil {
 		return err
 	}

@@ -523,11 +523,7 @@ func (gb GraphBuilder) NewUniqueEdge(fromNode, toNode *lpg.Node, label string, p
 // `spec` is the link spec. `docNode` contains the ingested document
 // node that will be linked. It can be nil. `parentNode` is the
 // document node containing the docNode.
-func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, entityInfo EntityInfoIndex) error {
-	entityRoot := GetEntityRoot(parentNode)
-	if entityRoot == nil {
-		return ErrCannotResolveLink(*spec)
-	}
+func (gb GraphBuilder) linkNode(spec *LinkSpec, docNode, parentNode, entityRoot *lpg.Node, foreignKeys []ForeignKeyInfo, entityInfo EntityInfoIndex) error {
 
 	var linkNode *lpg.Node
 	specIsValueNode := spec.SchemaNode.HasLabel(AttributeTypeValue)
@@ -546,14 +542,6 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, e
 		}
 	}
 
-	foreignKeys, err := spec.GetForeignKeys(entityRoot)
-	if err != nil {
-		return err
-	}
-	if len(foreignKeys) == 0 && len(spec.FK) != 0 {
-		// Nothing to link
-		return nil
-	}
 	if docNode != nil {
 		docNode.SetProperty(ReferenceFKFor, StringPropertyValue(ReferenceFKFor, spec.TargetEntity))
 		if len(spec.FK) == 1 {
@@ -625,25 +613,44 @@ func (gb GraphBuilder) LinkNode(spec *LinkSpec, docNode, parentNode *lpg.Node, e
 }
 
 func (gb GraphBuilder) LinkNodes(ctx *Context, schema *Layer, entityInfo map[*lpg.Node]EntityInfo) error {
+	specs, err := schema.GetLinkSpecs()
+	if err != nil {
+		return err
+	}
+	return gb.LinkNodesWithSpecs(ctx, specs, entityInfo)
+}
+
+func (gb GraphBuilder) LinkNodesWithSpecs(ctx *Context, specs []*LinkSpec, entityInfo map[*lpg.Node]EntityInfo) error {
 	eix := IndexEntityInfo(entityInfo)
-	for nodes := schema.Graph.GetNodes(); nodes.Next(); {
-		attrNode := nodes.Node()
-		ls, err := GetLinkSpec(attrNode)
-		if err != nil {
-			return err
-		}
-		if ls == nil {
-			continue
-		}
-		attrId := GetNodeID(attrNode)
+	for _, spec := range specs {
+		attrId := GetNodeID(spec.SchemaNode)
 		ctx.GetLogger().Debug(map[string]interface{}{"graphBuilder": "linkNodes", "linking": attrId})
-		// Found a link spec. Find corresponding parent nodes in the document
-		parentSchemaNode := GetParentAttribute(attrNode)
 		// Find nodes that are instance of this node
-		parentSchemaNodeID := GetNodeID(parentSchemaNode)
+		parentSchemaNodeID := GetNodeID(spec.ParentSchemaNode)
 		parentDocNodes := GetNodesInstanceOf(gb.targetGraph, parentSchemaNodeID)
 		ctx.GetLogger().Debug(map[string]interface{}{"graphBuilder": "linkNodes", "parentSchemaNodeID": parentSchemaNodeID})
+
+		fkMap := make(map[*lpg.Node][]ForeignKeyInfo)
+
 		for _, parent := range parentDocNodes {
+			entityRoot := GetEntityRoot(parent)
+			if entityRoot == nil {
+				return ErrCannotResolveLink(*spec)
+			}
+			foreignKeys, ok := fkMap[entityRoot]
+			if !ok {
+				var err error
+				foreignKeys, err = spec.GetForeignKeys(entityRoot)
+				if err != nil {
+					return err
+				}
+				fkMap[entityRoot] = foreignKeys
+			}
+			if len(foreignKeys) == 0 && len(spec.FK) != 0 {
+				// Nothing to link
+				continue
+			}
+
 			// Each parent node has at least one reference node child
 			childFound := false
 			for edges := parent.GetEdges(lpg.OutgoingEdge); edges.Next(); {
@@ -656,12 +663,12 @@ func (gb GraphBuilder) LinkNodes(ctx *Context, schema *Layer, entityInfo map[*lp
 				}
 				// childNode is an instance of attrNode, which is a link
 				childFound = true
-				if err := gb.LinkNode(ls, childNode, parent, eix); err != nil {
+				if err := gb.linkNode(spec, childNode, parent, entityRoot, foreignKeys, eix); err != nil {
 					return err
 				}
 			}
 			if !childFound {
-				if err := gb.LinkNode(ls, nil, parent, eix); err != nil {
+				if err := gb.linkNode(spec, nil, parent, entityRoot, foreignKeys, eix); err != nil {
 					return err
 				}
 			}

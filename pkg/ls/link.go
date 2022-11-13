@@ -136,6 +136,9 @@ type LinkSpec struct {
 	Multi bool
 	// IngestAs node or edge
 	IngestAs string
+
+	// Initialized when linkSpec is initialized
+	ParentSchemaNode *lpg.Node
 }
 
 // GetLinkSpec returns a link spec from the node if there is one. The node is a schema node
@@ -203,6 +206,8 @@ func GetLinkSpec(schemaNode *lpg.Node) (*LinkSpec, error) {
 			ret.FK = []string{GetNodeID(schemaNode)}
 		}
 	}
+	// Found a link spec. Find corresponding parent nodes in the document
+	ret.ParentSchemaNode = GetParentAttribute(schemaNode)
 	schemaNode.SetProperty("$linkSpec", &ret)
 	return &ret, nil
 }
@@ -228,7 +233,7 @@ func (spec *LinkSpec) GetForeignKeys(entityRoot *lpg.Node) ([]ForeignKeyInfo, er
 			}
 		}
 		return true
-	}, OnlyDocumentNodes, false)
+	}, FollowEdgesInEntity, false)
 	// All foreign key elements must have the same number of elements, and no index must be skipped
 	var numKeys int
 	for index := 0; index < len(foreignKeyNodes); index++ {
