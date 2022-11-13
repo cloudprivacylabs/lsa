@@ -26,6 +26,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/cloudprivacylabs/lpg"
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
@@ -404,11 +405,24 @@ func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineCo
 	for _, csvEntityData := range joinCtx {
 		parser := parsers[csvEntityData.VariantID]
 
-		root, err := csvingest.ParseIngest(pipeline.Context, ingester, *parser, builder, id, csvEntityData.data)
+		parsed, err := parser.ParseDoc(pipeline.Context, id, csvEntityData.data)
 		if err != nil {
 			return err
 		}
+		if parsed == nil {
+			return errors.New("Parsed CSV document is nil")
+		}
 
+		_, err = ingester.Ingest(builder, parsed)
+		if err != nil {
+			return err
+		}
+	}
+
+	if err := builder.LinkNodes(pipeline.Context, ingester.Schema, ls.GetEntityInfo(builder.GetGraph())); err != nil {
+		return err
+	}
+	for _, root := range lpg.Sources(builder.GetGraph()) {
 		if cmdutil.GetConfig().SourceProperty == "" {
 			root.SetProperty("source", entryName)
 		} else {
