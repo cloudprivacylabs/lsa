@@ -250,18 +250,24 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 
 func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compilerContext) error {
 	nodeMap := make(map[*lpg.Node]*lpg.Node)
-	copySubtree := func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph, namespace string) error {
+	var copySubtree func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph, namespace string) error
+	copySubtree = func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph, namespace string) error {
 		nodeMap[includeNode] = targetNode
+		if namespace != "" {
+			sfxIx := strings.LastIndex(GetAttributeID(targetNode), "/")
+			if sfxIx != -1 {
+				SetAttributeID(targetNode, namespace+GetAttributeID(targetNode)[sfxIx:])
+			}
+		}
 		for edges := includeNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
-			if namespace != "" {
-				sfxIx := strings.LastIndex(namespace, "/")
-				if sfxIx != -1 {
-					SetAttributeID(targetNode, GetAttributeID(targetNode)+namespace[sfxIx:])
-				}
-			}
 			lpg.CopySubgraph(edge.GetTo(), tgtGraph, ClonePropertyValueFunc, nodeMap)
 			lpg.CopyEdge(edge, tgtGraph, ClonePropertyValueFunc, nodeMap)
+			for tedges := targetNode.GetEdges(lpg.OutgoingEdge); tedges.Next(); {
+				if err := copySubtree(tedges.Edge().GetTo(), edge.GetTo(), tgtGraph, namespace); err != nil {
+					return err
+				}
+			}
 		}
 		return nil
 	}
