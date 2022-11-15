@@ -250,23 +250,25 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 
 func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compilerContext) error {
 	nodeMap := make(map[*lpg.Node]*lpg.Node)
-	var copySubtree func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph, namespace string) error
-	copySubtree = func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph, namespace string) error {
+	setNamespace := func(targetNode *lpg.Node, namespace string) {
+		sfxIx := strings.LastIndex(GetAttributeID(targetNode), "/")
+		if sfxIx != -1 {
+			SetAttributeID(targetNode, namespace+GetAttributeID(targetNode)[sfxIx:])
+		}
+	}
+	copySubtree := func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph, namespace string) error {
 		nodeMap[includeNode] = targetNode
 		if namespace != "" {
-			sfxIx := strings.LastIndex(GetAttributeID(targetNode), "/")
-			if sfxIx != -1 {
-				SetAttributeID(targetNode, namespace+GetAttributeID(targetNode)[sfxIx:])
-			}
+			setNamespace(targetNode, namespace)
 		}
 		for edges := includeNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
 			lpg.CopySubgraph(edge.GetTo(), tgtGraph, ClonePropertyValueFunc, nodeMap)
 			lpg.CopyEdge(edge, tgtGraph, ClonePropertyValueFunc, nodeMap)
-			for tedges := targetNode.GetEdges(lpg.OutgoingEdge); tedges.Next(); {
-				if err := copySubtree(tedges.Edge().GetTo(), edge.GetTo(), tgtGraph, namespace); err != nil {
-					return err
-				}
+		}
+		for n := range nodeMap {
+			if namespace != "" {
+				setNamespace(n, namespace)
 			}
 		}
 		return nil
