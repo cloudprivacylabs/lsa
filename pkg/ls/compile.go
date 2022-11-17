@@ -250,18 +250,26 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 
 func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compilerContext) error {
 	nodeMap := make(map[*lpg.Node]*lpg.Node)
+	setNamespace := func(targetNode *lpg.Node, namespace string) {
+		sfxIx := strings.LastIndex(GetAttributeID(targetNode), "/")
+		if sfxIx != -1 {
+			SetAttributeID(targetNode, namespace+GetAttributeID(targetNode)[sfxIx:])
+		}
+	}
 	copySubtree := func(targetNode, includeNode *lpg.Node, tgtGraph *lpg.Graph, namespace string) error {
 		nodeMap[includeNode] = targetNode
+		if namespace != "" {
+			setNamespace(targetNode, namespace)
+		}
 		for edges := includeNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
-			if namespace != "" {
-				sfxIx := strings.LastIndex(namespace, "/")
-				if sfxIx != -1 {
-					SetAttributeID(targetNode, GetAttributeID(targetNode)+namespace[sfxIx:])
-				}
-			}
 			lpg.CopySubgraph(edge.GetTo(), tgtGraph, ClonePropertyValueFunc, nodeMap)
 			lpg.CopyEdge(edge, tgtGraph, ClonePropertyValueFunc, nodeMap)
+		}
+		for n := range nodeMap {
+			if namespace != "" {
+				setNamespace(n, namespace)
+			}
 		}
 		return nil
 	}
