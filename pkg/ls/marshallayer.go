@@ -173,10 +173,10 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 	types := attribute.GetLabels()
 	types.Add(AttributeNodeTerm)
 	if len(inode.ID) == 0 {
-		return MakeErrInvalidInput("", fmt.Sprintf("Attribute node without an ID: %v", inode.Node))
+		return MakeErrInvalidInput("", fmt.Sprintf("Parsing %s: Attribute node without an ID: %v", target.GetID(), inode.Node))
 	}
 	if strings.HasPrefix(inode.ID, "_") {
-		return MakeErrInvalidInput("", fmt.Sprintf("Attribute node does not have an ID: %v", inode.Node))
+		return MakeErrInvalidInput("", fmt.Sprintf("Parsing %s: Attribute node does not have an ID: %v", target.GetID(), inode.Node))
 	}
 
 	SetAttributeID(attribute, inode.ID)
@@ -218,7 +218,7 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 			follow := LDGetNodeID(attr)
 			attrNode := allNodes[follow]
 			if attrNode == nil {
-				return MakeErrInvalidInput(inode.ID, "Cannot follow link in attribute list:"+follow)
+				return MakeErrInvalidInput(inode.ID, fmt.Sprintf("Parsing %s: Cannot follow link in attribute list: %v", target.GetID(), follow))
 			}
 			if err := unmarshalAttributeNode(target, attrNode, allNodes, interner); err != nil {
 				return err
@@ -231,7 +231,7 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 		// There can be at most one reference
 		oid := LDGetNodeValue(inode.Node[ReferenceTerm])
 		if len(oid) == 0 {
-			return MakeErrInvalidInput(inode.ID)
+			return MakeErrInvalidInput(inode.ID, fmt.Sprintf("Parsing %s: No references in reference node", target.GetID()))
 		}
 		attribute.SetProperty(ReferenceTerm, StringPropertyValue(ReferenceTerm, oid))
 
@@ -240,18 +240,18 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 		itemsArr, _ := inode.Node[ArrayItemsTerm].([]interface{})
 		switch len(itemsArr) {
 		case 0:
-			return MakeErrInvalidInput(inode.ID, "Invalid array items")
+			return MakeErrInvalidInput(inode.ID, fmt.Sprintf("Parsing %s: Invalid array items", target.GetID()))
 		case 1:
 			itemsNode := allNodes[LDGetNodeID(itemsArr[0])]
 			if itemsNode == nil {
-				return MakeErrInvalidInput(inode.ID, "Cannot follow link to array items")
+				return MakeErrInvalidInput(inode.ID, fmt.Sprintf("Parsing %s: Cannot follow link to array items", target.GetID()))
 			}
 			if err := unmarshalAttributeNode(target, itemsNode, allNodes, interner); err != nil {
 				return err
 			}
 			target.Graph.NewEdge(inode.GraphNode, itemsNode.GraphNode, ArrayItemsTerm, nil)
 		default:
-			return MakeErrInvalidInput(inode.ID, "Multiple array items")
+			return MakeErrInvalidInput(inode.ID, fmt.Sprintf("Parsing %s: Multiple array items", target.GetID()))
 		}
 
 	case types.Has(AttributeTypeComposite) || types.Has(AttributeTypePolymorphic):
@@ -264,12 +264,12 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 		// m must be a list
 		elements := LDGetListElements(inode.Node[t])
 		if elements == nil {
-			return MakeErrInvalidInput(inode.ID, "@list expected")
+			return MakeErrInvalidInput(inode.ID, fmt.Sprintf("Parsing %s: @list expected", target.GetID()))
 		}
 		for index, element := range elements {
 			nnode := allNodes[LDGetNodeID(element)]
 			if nnode == nil {
-				return MakeErrInvalidInput(inode.ID, "Cannot follow link")
+				return MakeErrInvalidInput(inode.ID, fmt.Sprintf("Parsing %s: Cannot follow link", target.GetID()))
 			}
 			if err := unmarshalAttributeNode(target, nnode, allNodes, interner); err != nil {
 				return err

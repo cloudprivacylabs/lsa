@@ -210,11 +210,27 @@ type CSVJoinConfig struct {
 	VariantID string `json:"variantId" yaml:"variantId"`
 	Cols      []int  `json:"cols" yaml:"cols"`
 	IDCols    []int  `json:"idCols" yaml:"idCols"`
+	// Any one of these columns must be full to assume this is valid entry
+	Any []int `json:"any" yaml:"any"`
 
 	layer *ls.Layer
 }
 
 func (c CSVJoinConfig) makeRowData(rowData []string) []string {
+	if len(c.Any) > 0 {
+		full := false
+		for _, i := range c.Any {
+			if i >= 0 && i < len(rowData) {
+				if len(strings.TrimSpace(rowData[i])) > 0 {
+					full = true
+					break
+				}
+			}
+		}
+		if !full {
+			return nil
+		}
+	}
 	ret := make([]string, len(c.Cols))
 	for index, i := range c.Cols {
 		if i >= 0 && i < len(rowData) {
@@ -317,7 +333,7 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 						return err
 					}
 					pipeline.Context.GetLogger().Debug(map[string]interface{}{"csvingest.row": row - 1, "stage": "Parsing"})
-					err = cji.csvParseIngestEntities(pipeline, cji.ingester[joinCtx[0].VariantID], joinCtx, parsers, builder, strings.TrimSpace(buf.String()), entryInfo.GetName())
+					err = cji.csvParseIngestEntities(pipeline, cji.ingester, joinCtx, parsers, builder, strings.TrimSpace(buf.String()), entryInfo.GetName())
 					if err != nil {
 						return err
 					}
@@ -401,9 +417,10 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 	return nil
 }
 
-func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineContext, ingester *ls.Ingester, joinCtx []joinData, parsers map[string]*csvingest.Parser, builder ls.GraphBuilder, id string, entryName string) error {
+func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineContext, ingesters map[string]*ls.Ingester, joinCtx []joinData, parsers map[string]*csvingest.Parser, builder ls.GraphBuilder, id string, entryName string) error {
 	for _, csvEntityData := range joinCtx {
 		parser := parsers[csvEntityData.VariantID]
+		ingester := ingesters[csvEntityData.VariantID]
 
 		parsed, err := parser.ParseDoc(pipeline.Context, id, csvEntityData.data)
 		if err != nil {
@@ -419,7 +436,7 @@ func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineCo
 		}
 	}
 
-	if err := builder.LinkNodes(pipeline.Context, ingester.Schema, ls.GetEntityInfo(builder.GetGraph())); err != nil {
+	if err := builder.LinkNodes(pipeline.Context, ingesters[joinCtx[0].VariantID].Schema, ls.GetEntityInfo(builder.GetGraph())); err != nil {
 		return err
 	}
 	for _, root := range lpg.Sources(builder.GetGraph()) {
@@ -479,6 +496,7 @@ func init() {
 		return &CSVIngester{
 			BaseIngestParams: BaseIngestParams{
 				EmbedSchemaNodes: true,
+				IngestNullValues: false,
 			},
 			EndRow:       -1,
 			HeaderRow:    0,
@@ -492,6 +510,7 @@ func init() {
 		return &CSVJoinIngester{
 			BaseIngestParams: BaseIngestParams{
 				EmbedSchemaNodes: true,
+				IngestNullValues: false,
 			},
 			EndRow:    -1,
 			HeaderRow: 0,

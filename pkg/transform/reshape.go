@@ -222,14 +222,14 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 	ctx.GetLogger().Debug(map[string]interface{}{"mth": "reshapeNode", "building": schemaNodeID})
 
 	// Evaluate expressions and export values
-	for _, expr := range EvaluateTermSemantics.GetEvaluatables(reshaper.Script.GetProperties(schemaNode)) {
+	for _, expr := range EvaluateTermSemantics.GetEvaluatables(reshaper.Script.GetProperties(ctx.schemaPath.items)) {
 		evalContext := ctx.getEvalContext()
 		v, err := expr.Evaluate(evalContext)
 		if err != nil {
 			return nil, wrapReshapeError(err, schemaNodeID)
 		}
 		ctx.GetLogger().Info(map[string]interface{}{"reshape": schemaNodeID,
-			"evaluateTermExpr": EvaluateTermSemantics.Get(reshaper.Script.GetProperties(schemaNode)),
+			"evaluateTermExpr": EvaluateTermSemantics.Get(reshaper.Script.GetProperties(ctx.schemaPath.items)),
 			"result":           v})
 		if rs, ok := v.Get().(opencypher.ResultSet); ok {
 			if len(rs.Rows) > 0 {
@@ -242,7 +242,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 		}
 	}
 	processValueExpr := func(term string) ([]opencypher.Value, error) {
-		evaluatables := ValueExprTermSemantics.GetEvaluatables(term, reshaper.Script.GetProperties(schemaNode))
+		evaluatables := ValueExprTermSemantics.GetEvaluatables(term, reshaper.Script.GetProperties(ctx.schemaPath.items))
 		if len(evaluatables) == 0 {
 			return nil, nil
 		}
@@ -289,7 +289,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 	// propName`. In this case, nodes under the map context that has the
 	// property `propName: schemaNodeId` will be selected as the source
 	// nodes.
-	if mapProperty := ls.AsPropertyValue(reshaper.Script.GetProperties(schemaNode).GetProperty(MapPropertyTerm)).AsString(); len(mapProperty) > 0 {
+	if mapProperty := ls.AsPropertyValue(reshaper.Script.GetProperties(ctx.schemaPath.items).GetProperty(MapPropertyTerm)).AsString(); len(mapProperty) > 0 {
 		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "valueFrom": MapPropertyTerm})
 		// Find the nodes under the map context whose mapProperty property points to schemaNodeID
 		nodeValues := reshaper.findNodesUnderMapContext(ctx, mapProperty, []string{schemaNodeID})
@@ -302,7 +302,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 	// the node. There is a mapping with source and target in the
 	// script, and the source nodes are the nodes whose schemaNodeId are
 	// the source values.
-	if nodeMappings := reshaper.Script.GetSources(schemaNode); len(nodeMappings) != 0 {
+	if nodeMappings := reshaper.Script.GetSources(ctx.schemaPath.items); len(nodeMappings) != 0 {
 		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "valueFrom": "map by target"})
 		// Find the nodes under the map context whose source node ID is given in
 		nodeValues := reshaper.findNodesUnderMapContext(ctx, ls.SchemaNodeIDTerm, nodeMappings)
@@ -313,7 +313,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 
 	if len(results) > 0 {
 		// If the node is marked as a map context, evaluate that expr
-		mapContextExpr := MapContextSemantics.GetEvaluatable(reshaper.Script.GetProperties(schemaNode))
+		mapContextExpr := MapContextSemantics.GetEvaluatable(reshaper.Script.GetProperties(ctx.schemaPath.items))
 		process := func(result interface{}) ([]*txDocNode, error) {
 			if mapContextExpr != nil {
 				evalContext := ctx.getEvalContext()
@@ -390,6 +390,8 @@ func (reshaper Reshaper) handlePrimitiveValue(ctx *reshapeContext, input interfa
 	}
 	ret := newTxDocNode(ctx.schemaPath.last())
 	ret.value = input
+	ctx.GetLogger().Debug(map[string]interface{}{"reshape": ls.GetNodeID(ctx.schemaPath.last()),
+		"value": input})
 
 	return ret, nil
 }

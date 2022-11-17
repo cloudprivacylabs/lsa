@@ -86,6 +86,11 @@ var (
 	// direct descendant of one of the nodes from the document node up
 	// to the context node.
 	ValuesetResultValuesTerm = NewTerm(LS, "vs/resultValues", false, false, OverrideComposition, nil)
+
+	// ValuesetResultContext determines the node under which the results
+	// will be added. This is needed if the results will be added under
+	// a different entity attached to the valueset context.
+	ValuesetResultContextTerm = NewTerm(LS, "vs/resultContext", false, false, OverrideComposition, nil)
 )
 
 // ValuesetInfo describes value set information for a schema node.
@@ -112,8 +117,7 @@ var (
 type ValuesetInfo struct {
 	// If the valueset lookup requires a single value, the attribute id
 	// of the source node. Otherwise, the root node containing all the
-	// required values. Results of the valueset lookup will also be
-	// inserted under this node. If this is empty, then the entity root
+	// required values. If this is empty, then the entity root
 	// node is the context node
 	ContextID string
 
@@ -144,6 +148,9 @@ type ValuesetInfo struct {
 
 	// The attribute ids of the nodes under this node to receive values
 	ResultValues []string
+
+	// If empty, will be set to the ContextID. The results will be added under this node.
+	ResultContext string
 
 	// The schemanode containing the valueset info
 	SchemaNode *lpg.Node
@@ -194,6 +201,7 @@ func ValuesetInfoFromNode(layer *Layer, node *lpg.Node) (*ValuesetInfo, error) {
 		ResultKeys:    AsPropertyValue(node.GetProperty(ValuesetResultKeysTerm)).MustStringSlice(),
 		ResultValues:  AsPropertyValue(node.GetProperty(ValuesetResultValuesTerm)).MustStringSlice(),
 		SchemaNode:    node,
+		ResultContext: AsPropertyValue(node.GetProperty(ValuesetResultContextTerm)).AsString(),
 	}
 	if len(ret.RequestValues) > 0 {
 		ret.requestSchemaPaths = make([][]*lpg.Node, len(ret.RequestValues))
@@ -332,11 +340,11 @@ func (vsi *ValuesetInfo) GetRequest(ctx *Context, contextDocumentNode, vsiDocume
 	return ret, nil
 }
 
-// GetContextNodes returns the contexts node for the given document
-func (vsi *ValuesetInfo) GetContextNodes(g *lpg.Graph) ([]*lpg.Node, error) {
+// getContextNodes returns the contexts node for the given document
+func (vsi *ValuesetInfo) getContextNodes(g *lpg.Graph, contextID string) ([]*lpg.Node, error) {
 	pattern := lpg.Pattern{
 		{
-			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(SchemaNodeIDTerm, vsi.ContextID)},
+			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(SchemaNodeIDTerm, contextID)},
 		},
 	}
 	return pattern.FindNodes(g, nil)
@@ -487,7 +495,7 @@ func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, l
 	return nil
 }
 
-func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilder, layer *Layer, contextDocumentNode, contextSchemaNode *lpg.Node, result ValuesetLookupResponse) error {
+func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilder, layer *Layer, contextDocumentNode, contextSchemaNode, resultContextSchemaNode *lpg.Node, result ValuesetLookupResponse) error {
 	if len(result.KeyValues) == 0 {
 		return nil
 	}
@@ -502,9 +510,23 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilde
 		}
 		for _, v := range result.KeyValues {
 			SetRawNodeValue(contextDocumentNode, v)
-			return nil
+		}
+		return nil
+	}
+	// We have to make sure the context document node that will receive the result exists in the document
+	resultContextDocumentNode := contextDocumentNode
+	if resultContextSchemaNode != contextSchemaNode {
+		var err error
+		resultContextDocumentNode, err = EnsurePath(contextDocumentNode, nil, contextSchemaNode, resultContextSchemaNode, func(parentDocNode, childSchemaNode *lpg.Node) (*lpg.Node, error) {
+			newNode := InstantiateSchemaNode(builder.targetGraph, childSchemaNode, true, map[*lpg.Node]*lpg.Node{})
+			builder.GetGraph().NewEdge(parentDocNode, newNode, HasTerm, nil)
+			return newNode, nil
+		})
+		if err != nil {
+			return err
 		}
 	}
+
 	// If only one resultValues is specified and there is one result
 	if len(vsi.ResultKeys) == 0 && len(vsi.ResultValues) == 1 && len(result.KeyValues) == 1 {
 		ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.applyOneNode"})
@@ -513,7 +535,7 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilde
 		for _, v := range result.KeyValues {
 			resultValue = v
 		}
-		if err := vsi.createResultNodes(ctx, builder, layer, contextDocumentNode, contextSchemaNode, resultNodeID, resultValue); err != nil {
+		if err := vsi.createResultNodes(ctx, builder, layer, resultContextDocumentNode, resultContextSchemaNode, resultNodeID, resultValue); err != nil {
 			return err
 		}
 		return nil
@@ -528,13 +550,13 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilde
 		resultValue, ok := result.KeyValues[resultKey]
 		if !ok {
 			// No value. If there is a resultNodeID, remove it
-			resultNodes := FindChildInstanceOf(contextDocumentNode, resultNodeID)
+			resultNodes := FindChildInstanceOf(resultContextDocumentNode, resultNodeID)
 			for _, n := range resultNodes {
 				n.DetachAndRemove()
 			}
 			return nil
 		}
-		if err := vsi.createResultNodes(ctx, builder, layer, contextDocumentNode, contextSchemaNode, resultNodeID, resultValue); err != nil {
+		if err := vsi.createResultNodes(ctx, builder, layer, resultContextDocumentNode, resultContextSchemaNode, resultNodeID, resultValue); err != nil {
 			return err
 		}
 	}
@@ -542,7 +564,7 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilde
 }
 
 // ProcessByContextNode processes the value set of the given context  node and the schema node containing the vsi
-func (prc *ValuesetProcessor) ProcessByContextNode(ctx *Context, builder GraphBuilder, contextDocNode, contextSchemaNode, vsiDocNode *lpg.Node, vsi *ValuesetInfo) error {
+func (prc *ValuesetProcessor) ProcessByContextNode(ctx *Context, builder GraphBuilder, contextDocNode, contextSchemaNode, resultContextSchemaNode, vsiDocNode *lpg.Node, vsi *ValuesetInfo) error {
 	kv, err := vsi.GetRequest(ctx, contextDocNode, vsiDocNode)
 	if err != nil {
 		return err
@@ -560,7 +582,7 @@ func (prc *ValuesetProcessor) ProcessByContextNode(ctx *Context, builder GraphBu
 		ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process", "result": result, "contextDocNode": contextDocNode})
 		// If there is nonzero result, put it back into the doc
 		if len(result.KeyValues) > 0 {
-			if err := vsi.ApplyValuesetResponse(ctx, builder, prc.layer, contextDocNode, contextSchemaNode, result); err != nil {
+			if err := vsi.ApplyValuesetResponse(ctx, builder, prc.layer, contextDocNode, contextSchemaNode, resultContextSchemaNode, result); err != nil {
 				return err
 			}
 		}
@@ -569,13 +591,13 @@ func (prc *ValuesetProcessor) ProcessByContextNode(ctx *Context, builder GraphBu
 }
 
 // Process processes the value set of the given context document node and the schema node containing the vsi
-func (prc *ValuesetProcessor) Process(ctx *Context, builder GraphBuilder, vsiDocNode, contextSchemaNode *lpg.Node, vsi *ValuesetInfo) error {
+func (prc *ValuesetProcessor) Process(ctx *Context, builder GraphBuilder, vsiDocNode, contextSchemaNode, resultContextSchemaNode *lpg.Node, vsi *ValuesetInfo) error {
 	contextDocNode, err := vsi.GetContextNode(vsiDocNode)
 	if err != nil {
 		return err
 	}
 	ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process", "contextNode": contextSchemaNode, "docNode": vsiDocNode})
-	return prc.ProcessByContextNode(ctx, builder, contextDocNode, contextSchemaNode, vsiDocNode, vsi)
+	return prc.ProcessByContextNode(ctx, builder, contextDocNode, contextSchemaNode, resultContextSchemaNode, vsiDocNode, vsi)
 }
 
 type ValuesetProcessor struct {
@@ -654,22 +676,29 @@ func (prc *ValuesetProcessor) ProcessGraphValueset(ctx *Context, builder GraphBu
 	if contextSchemaNode == nil {
 		return nil
 	}
+	resultContextSchemaNode := contextSchemaNode
+	if len(vsi.ResultContext) > 0 {
+		resultContextSchemaNode = prc.layer.GetAttributeByID(vsi.ResultContext)
+		if resultContextSchemaNode == nil {
+			return nil
+		}
+	}
 	ctx.GetLogger().Debug(map[string]interface{}{"mth": "processGraphValueset", "stage": "found context node", "vsi": vsi})
 	if len(vsiDocNodes) == 0 {
-		contextNodes, err := vsi.GetContextNodes(builder.GetGraph())
+		contextNodes, err := vsi.getContextNodes(builder.GetGraph(), vsi.ContextID)
 		if err != nil {
 			return err
 		}
 		ctx.GetLogger().Debug(map[string]interface{}{"mth": "processGraphValueset", "numContextNodes": len(contextNodes)})
 		for _, contextNode := range contextNodes {
-			if err := prc.ProcessByContextNode(ctx, builder, contextNode, contextSchemaNode, nil, vsi); err != nil {
+			if err := prc.ProcessByContextNode(ctx, builder, contextNode, contextSchemaNode, resultContextSchemaNode, nil, vsi); err != nil {
 				return err
 			}
 		}
 		return nil
 	}
 	for _, vsiDocNode := range vsiDocNodes {
-		if err := prc.Process(ctx, builder, vsiDocNode, contextSchemaNode, vsi); err != nil {
+		if err := prc.Process(ctx, builder, vsiDocNode, contextSchemaNode, resultContextSchemaNode, vsi); err != nil {
 			return err
 		}
 	}

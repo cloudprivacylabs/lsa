@@ -33,7 +33,7 @@ func (e ErrPathInstantiation) Error() string {
 // start at rootDocNode, which is an instance of rootSchemaNode, will
 // pass through ancestorDocNode if ancestorDocNode is not nil, and
 // will be an instance of schemaNode. Each node will be created using
-// the instanate func that takes the parent document node, and the
+// the instantiate func that takes the parent document node, and the
 // schema node to instantiate.
 func EnsurePath(rootDocNode, ancestorDocNode *lpg.Node, rootSchemaNode, schemaNode *lpg.Node, instantiate func(parentDocNode, schemaNode *lpg.Node) (*lpg.Node, error)) (*lpg.Node, error) {
 	// Find the path in schema from the root to the schema node. There

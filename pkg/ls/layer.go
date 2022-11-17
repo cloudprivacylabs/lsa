@@ -358,6 +358,11 @@ func GetAttributePath(root, node *lpg.Node) []*lpg.Node {
 		for edges := node.GetEdges(lpg.IncomingEdge); edges.Next(); {
 			hasEdges = true
 			edge := edges.Edge()
+			if edge.GetFrom() == root {
+				ret = append(ret, edge.GetFrom())
+				node = edge.GetFrom()
+				break
+			}
 			if IsCompilationArtifact(edge) {
 				continue
 			}

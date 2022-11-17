@@ -16,7 +16,9 @@ package transform
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/url"
+	"strings"
 
 	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
@@ -27,26 +29,77 @@ import (
 type TransformScript struct {
 	// TargetSchemaNodes are keyed by schema node ID, and contains
 	// transformation elements for each target schema node
+	//
+	// The schema node ID can be a suffix of the schema node path,
+	// elements separated by space
 	TargetSchemaNodes map[string]NodeTransformAnnotations `json:"reshapeNodes,omitempty" yaml:"reshapeNodes,omitempty"`
+
+	// Keyed by the last part of the target schema node key
+	compiledTargetSchemaNodes map[string][]*compiledAnnotations
+}
+
+type compiledAnnotations struct {
+	path        []string
+	annotations NodeTransformAnnotations
+}
+
+func (c compiledAnnotations) pathMatch(schemaPath []*lpg.Node) bool {
+	if len(schemaPath) < len(c.path) {
+		return false
+	}
+	s := schemaPath[len(schemaPath)-len(c.path):]
+	for i := range s {
+		if ls.GetNodeID(s[i]) != c.path[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func (t *TransformScript) getMatching(schemaPath []*lpg.Node) *compiledAnnotations {
+	last := ls.GetNodeID(schemaPath[len(schemaPath)-1])
+	annotations := t.compiledTargetSchemaNodes[last]
+	if len(annotations) == 0 {
+		return nil
+	}
+	for _, ann := range annotations {
+		if ann.pathMatch(schemaPath) {
+			return ann
+		}
+	}
+	return nil
 }
 
 func (t *TransformScript) Compile(ctx *ls.Context) error {
 	if t == nil {
 		return nil
 	}
+	t.compiledTargetSchemaNodes = make(map[string][]*compiledAnnotations)
 	for sid, ann := range t.TargetSchemaNodes {
 		ctx.GetLogger().Debug(map[string]interface{}{"script.compile.schemaNodeId": sid})
+
+		fields := strings.Fields(sid)
+		if len(fields) == 0 {
+			return fmt.Errorf("Transformation script error: no elements in target schema path")
+		}
+		termNode := fields[len(fields)-1]
+		val := &compiledAnnotations{
+			path:        fields,
+			annotations: NodeTransformAnnotations{},
+		}
 		for k, v := range ann {
 			pv, ok := v.(*ls.PropertyValue)
 			if ok {
 				if !ls.IsTermRegistered(k) {
 					ctx.GetLogger().Info(map[string]interface{}{"script.compile": "Unknown term", "term": k})
 				}
-				if err := ls.GetTermCompiler(k).CompileTerm(ann, k, pv); err != nil {
+				val.annotations[k] = v
+				if err := ls.GetTermCompiler(k).CompileTerm(val.annotations, k, pv); err != nil {
 					return err
 				}
 			}
 		}
+		t.compiledTargetSchemaNodes[termNode] = append(t.compiledTargetSchemaNodes[termNode], val)
 	}
 
 	return nil
@@ -55,21 +108,23 @@ func (t *TransformScript) Compile(ctx *ls.Context) error {
 // NodeTransformAnnotations contains a term, and one or more annotations
 type NodeTransformAnnotations map[string]interface{}
 
-func (t *TransformScript) GetProperties(schemaNode *lpg.Node) ls.CompilablePropertyContainer {
+func (t *TransformScript) GetProperties(schemaPath []*lpg.Node) ls.CompilablePropertyContainer {
 	if t == nil {
-		return schemaNode
+		return schemaPath[len(schemaPath)-1]
 	}
-	id := ls.GetNodeID(schemaNode)
-	tn, ok := t.TargetSchemaNodes[id]
-	if !ok {
-		return schemaNode
+	ann := t.getMatching(schemaPath)
+	if ann == nil {
+		return schemaPath[len(schemaPath)-1]
 	}
-	return tn
+	return ann.annotations
 }
 
 // GetSources returns the "source" or "sources" property
-func (t *TransformScript) GetSources(schemaNode *lpg.Node) []string {
-	nd := t.GetProperties(schemaNode)
+func (t *TransformScript) GetSources(schemaPath []*lpg.Node) []string {
+	if t == nil {
+		return nil
+	}
+	nd := t.GetProperties(schemaPath)
 	if nd == nil {
 		return nil
 	}
