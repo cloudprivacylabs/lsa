@@ -612,16 +612,24 @@ func (gb GraphBuilder) linkNode(spec *LinkSpec, docNode, parentNode, entityRoot 
 	return nil
 }
 
-func (gb GraphBuilder) LinkNodes(ctx *Context, schema *Layer, entityInfo map[*lpg.Node]EntityInfo) error {
+func (gb GraphBuilder) LinkNodes(ctx *Context, schema *Layer) error {
+	entityInfo := GetEntityInfo(gb.GetGraph())
+	eix := IndexEntityInfo(entityInfo)
+	if RemoveDuplicateEntities(eix) {
+		entityInfo = GetEntityInfo(gb.GetGraph())
+		eix = IndexEntityInfo(entityInfo)
+	}
 	specs, err := schema.GetLinkSpecs()
 	if err != nil {
 		return err
 	}
-	return gb.LinkNodesWithSpecs(ctx, specs, entityInfo)
+	if err := gb.LinkNodesWithSpecs(ctx, specs, eix); err != nil {
+		return err
+	}
+	return nil
 }
 
-func (gb GraphBuilder) LinkNodesWithSpecs(ctx *Context, specs []*LinkSpec, entityInfo map[*lpg.Node]EntityInfo) error {
-	eix := IndexEntityInfo(entityInfo)
+func (gb GraphBuilder) LinkNodesWithSpecs(ctx *Context, specs []*LinkSpec, eix EntityInfoIndex) error {
 	for _, spec := range specs {
 		attrId := GetNodeID(spec.SchemaNode)
 		ctx.GetLogger().Debug(map[string]interface{}{"graphBuilder": "linkNodes", "linking": attrId})

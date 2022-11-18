@@ -164,6 +164,17 @@ var (
 	OneOfTerm = NewTerm(LS, "Polymorphic/oneOf", false, true, ErrorComposition, nil)
 )
 
+// IsAttributeType returns true if the term is one of the attribute types
+func IsAttributeType(typeName string) bool {
+	return typeName == AttributeTypeValue ||
+		typeName == AttributeNodeTerm ||
+		typeName == AttributeTypeObject ||
+		typeName == AttributeTypeArray ||
+		typeName == AttributeTypeReference ||
+		typeName == AttributeTypeComposite ||
+		typeName == AttributeTypePolymorphic
+}
+
 // FilterAttributeTypes returns all recognized attribute types from
 // the given types array. This is mainly used for validation, to
 // ensure there is only one attribute type

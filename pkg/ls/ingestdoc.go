@@ -77,6 +77,80 @@ type ParsedDocNode interface {
 	GetProperties() map[string]interface{}
 }
 
+// Returns the entity schema if this is a root
+func getParsedDocNodeEntitySchema(node ParsedDocNode) string {
+	sch := node.GetSchemaNode()
+	if sch == nil {
+		return ""
+	}
+	s := AsPropertyValue(sch.GetProperty(EntitySchemaTerm)).AsString()
+	return s
+}
+
+// Collect entity ID for the entity from the given root
+func collectEntityID(entityRoot ParsedDocNode) []string {
+	var iterateEntity func(ParsedDocNode)
+	idFields := GetEntityIDFields(entityRoot.GetSchemaNode()).MustStringSlice()
+	if len(idFields) == 0 {
+		return nil
+	}
+	idValues := make([]string, len(idFields))
+
+	iterateEntity = func(root ParsedDocNode) {
+		sch := root.GetSchemaNode()
+		if sch != nil {
+			schNodeID := GetNodeID(sch)
+			for i := range idFields {
+				if schNodeID == idFields[i] {
+					if native, ok := root.(HasNativeValue); ok {
+						if v, ok := native.GetNativeValue(); ok {
+							idValues[i] = fmt.Sprint(v)
+						} else {
+							idValues[i] = root.GetValue()
+						}
+					} else {
+						idValues[i] = root.GetValue()
+					}
+				}
+			}
+		}
+		for _, child := range root.GetChildren() {
+			if len(getParsedDocNodeEntitySchema(child)) != 0 {
+				continue
+			}
+			iterateEntity(child)
+		}
+	}
+	iterateEntity(entityRoot)
+	for _, x := range idValues {
+		if len(x) == 0 {
+			return nil
+		}
+	}
+	return idValues
+}
+
+type ingestedEntityInfo struct {
+	schemaName string
+	id         []string
+	node       *lpg.Node
+}
+
+func (iei ingestedEntityInfo) check(schemaName string, id []string) bool {
+	if iei.schemaName != schemaName {
+		return false
+	}
+	if len(iei.id) != len(id) {
+		return false
+	}
+	for i := range id {
+		if id[i] != iei.id[i] {
+			return false
+		}
+	}
+	return true
+}
+
 // HasNativeValue is implemented by parsed doc nodes if the node knows its native value
 type HasNativeValue interface {
 	GetNativeValue() (interface{}, bool)
@@ -87,8 +161,9 @@ type HasLabels interface {
 }
 
 type ingestCursor struct {
-	input  []ParsedDocNode
-	output []*lpg.Node
+	input      []ParsedDocNode
+	output     []*lpg.Node
+	entityInfo map[string][]*ingestedEntityInfo
 }
 
 func (i ingestCursor) getInput() ParsedDocNode {
@@ -102,6 +177,27 @@ func (i ingestCursor) getOutput() *lpg.Node {
 	return i.output[len(i.output)-1]
 }
 
+func (i ingestCursor) findInIngestedEntityInfo(schemaName string, id []string) *ingestedEntityInfo {
+	inf := i.entityInfo[schemaName]
+	if len(inf) == 0 {
+		return nil
+	}
+	for i := range inf {
+		if inf[i].check(schemaName, id) {
+			return inf[i]
+		}
+	}
+	return nil
+}
+
+func (i ingestCursor) addEntityInfo(schemaName string, entityId []string, node *lpg.Node) {
+	i.entityInfo[schemaName] = append(i.entityInfo[schemaName], &ingestedEntityInfo{
+		schemaName: schemaName,
+		id:         entityId,
+		node:       node,
+	})
+}
+
 type Ingester struct {
 	mu                    sync.RWMutex
 	Schema                *Layer
@@ -110,7 +206,8 @@ type Ingester struct {
 
 func (ing *Ingester) Ingest(builder GraphBuilder, root ParsedDocNode) (*lpg.Node, error) {
 	cursor := ingestCursor{
-		input: []ParsedDocNode{root},
+		input:      []ParsedDocNode{root},
+		entityInfo: make(map[string][]*ingestedEntityInfo),
 	}
 	_, n, err := ingestWithCursor(builder, cursor)
 	if err != nil {
@@ -236,6 +333,20 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, *lpg.Nod
 		}
 		switch GetIngestAs(schemaNode) {
 		case "node":
+
+			var entitySchema string
+			var entityId []string
+
+			if entitySchema = getParsedDocNodeEntitySchema(root); len(entitySchema) > 0 {
+				entityId = collectEntityID(root)
+				if len(entityId) > 0 {
+					ei := cursor.findInIngestedEntityInfo(entitySchema, entityId)
+					if ei != nil {
+						builder.GetGraph().NewEdge(cursor.getOutput(), ei.node, HasTerm, nil)
+						return true, ei.node, nil
+					}
+				}
+			}
 			_, node, err := builder.ValueAsNode(schemaNode, cursor.getOutput(), setValue)
 			if err != nil {
 				return false, nil, err
@@ -248,6 +359,10 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, *lpg.Nod
 			}
 			if err := builder.PostNodeIngest(schemaNode, node); err != nil {
 				return hasData, node, err
+			}
+			if len(entitySchema) > 0 && len(entityId) > 0 {
+				// If here, we created a new entity root node
+				cursor.addEntityInfo(entitySchema, entityId, node)
 			}
 			return hasData, node, nil
 		case "edge":
@@ -283,6 +398,20 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, *lpg.Nod
 	newCursor := cursor
 	switch GetIngestAs(schemaNode) {
 	case "node":
+		var entitySchema string
+		var entityId []string
+
+		if entitySchema = getParsedDocNodeEntitySchema(root); len(entitySchema) > 0 {
+			entityId = collectEntityID(root)
+			if len(entityId) > 0 {
+				ei := cursor.findInIngestedEntityInfo(entitySchema, entityId)
+				if ei != nil {
+					// connect
+					builder.GetGraph().NewEdge(cursor.getOutput(), ei.node, HasTerm, nil)
+					return true, ei.node, nil
+				}
+			}
+		}
 		_, node, err := builder.CollectionAsNode(schemaNode, cursor.getOutput(), typeTerm)
 		if err != nil {
 			return false, nil, err
@@ -292,6 +421,10 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, *lpg.Nod
 		setLabels(node)
 		newCursor.output = append(newCursor.output, node)
 		hasData = true
+		if len(entitySchema) > 0 && len(entityId) > 0 {
+			// If here, we created a new entity root node
+			cursor.addEntityInfo(entitySchema, entityId, node)
+		}
 	case "edge":
 		edge, err := builder.CollectionAsEdge(schemaNode, cursor.getOutput(), typeTerm)
 		if err != nil {

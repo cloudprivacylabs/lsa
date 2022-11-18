@@ -63,8 +63,7 @@ func TestBasicLink(t *testing.T) {
 	builder.RawValueAsNode(layer2.GetAttributeByID("idField"), root2, "456")
 	builder.RawValueAsNode(layer2.GetAttributeByID("https://rootid"), root2, "123")
 
-	entityInfo := GetEntityInfo(builder.GetGraph())
-	builder.LinkNodes(DefaultContext(), layer2, entityInfo)
+	builder.LinkNodes(DefaultContext(), layer2)
 	// There must be an edge from root1 to root2
 	found := false
 	for edges := root1.GetEdges(lpg.OutgoingEdge); edges.Next(); {
@@ -124,8 +123,7 @@ func TestValueLink(t *testing.T) {
 	fmt.Println(nd)
 	builder.RawValueAsNode(nd, root3, "123")
 
-	entityInfo := GetEntityInfo(builder.GetGraph())
-	builder.LinkNodes(DefaultContext(), layer3, entityInfo)
+	builder.LinkNodes(DefaultContext(), layer3)
 	fkValFound := false
 	for nodeItr := builder.GetGraph().GetNodes(); nodeItr.Next(); {
 		node := nodeItr.Node()

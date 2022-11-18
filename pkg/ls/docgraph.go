@@ -95,6 +95,25 @@ func (e EntityInfoIndex) Find(entityName string, fk []string) []*lpg.Node {
 	return m[h]
 }
 
+// FindDuplicates returns all nodes that are duplicated
+func (e EntityInfoIndex) FindDuplicates() [][]*lpg.Node {
+	ret := make([][]*lpg.Node, 0)
+	for typeName, ix := range e.indexByType {
+		if typeName == DocumentNodeTerm {
+			continue
+		}
+		if IsAttributeType(typeName) {
+			continue
+		}
+		for _, nodes := range ix {
+			if len(nodes) > 1 {
+				ret = append(ret, nodes)
+			}
+		}
+	}
+	return ret
+}
+
 // IndexEntityInfo returns a fast-access version of entity info
 func IndexEntityInfo(entityInfo map[*lpg.Node]EntityInfo) EntityInfoIndex {
 	ix := EntityInfoIndex{
@@ -362,4 +381,59 @@ func GetAttributeReferenceBySchemaPath(schemaPath []*lpg.Node, docContextNode *l
 		}
 	}
 	return AttributeReference{}, false
+}
+
+// RemoveDuplicateEntities will assume that if there are multiple
+// entities with the same ID, their contents are also identical. It
+// will keep one of the duplicate entity roots, and remove all
+// others. Returns true if things changed.
+func RemoveDuplicateEntities(eix EntityInfoIndex) bool {
+	duplicates := eix.FindDuplicates()
+	if len(duplicates) == 0 {
+		return false
+	}
+	g := duplicates[0][0].GetGraph()
+	toRemove := make(map[*lpg.Node]struct{})
+	for _, duplicateGroup := range duplicates {
+		// Pick the first node, remove the others
+		for dup := 1; dup < len(duplicateGroup); dup++ {
+			// Redirect all incoming nodes to the chosen one
+			for incoming := duplicateGroup[dup].GetEdges(lpg.IncomingEdge); incoming.Next(); {
+				edge := incoming.Edge()
+				props := make(map[string]interface{})
+				edge.ForEachProperty(func(k string, v interface{}) bool {
+					props[k] = v
+					return true
+				})
+				g.NewEdge(edge.GetFrom(), duplicateGroup[0], edge.GetLabel(), props)
+				toRemove[edge.GetTo()] = struct{}{}
+				edge.Remove()
+			}
+			toRemove[duplicateGroup[dup]] = struct{}{}
+		}
+	}
+	removed := make(map[*lpg.Node]struct{})
+	for {
+		if len(toRemove) == 0 {
+			break
+		}
+		for node := range toRemove {
+			delete(toRemove, node)
+			if _, r := removed[node]; r {
+				continue
+			}
+			if !IsEntityRoot(node) {
+				for edges := node.GetEdges(lpg.OutgoingEdge); edges.Next(); {
+					edge := edges.Edge()
+					if !IsEntityRoot(edge.GetTo()) {
+						toRemove[edge.GetTo()] = struct{}{}
+					}
+					edge.Remove()
+				}
+			}
+			node.DetachAndRemove()
+			removed[node] = struct{}{}
+		}
+	}
+	return true
 }
