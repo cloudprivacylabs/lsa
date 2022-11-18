@@ -104,7 +104,7 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 					e.SetProperty(cmdutil.GetConfig().SourceProperty, entryInfo.GetName())
 				}
 			}
-			if err := builder.LinkNodes(pipeline.Context, xml.parser.Layer, ls.GetEntityInfo(builder.GetGraph())); err != nil {
+			if err := builder.LinkNodes(pipeline.Context, xml.parser.Layer); err != nil {
 				doneErr = err
 				return
 			}

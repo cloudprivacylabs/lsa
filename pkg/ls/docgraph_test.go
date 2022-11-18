@@ -32,14 +32,12 @@ func TestDup(t *testing.T) {
 		return
 	}
 	ei := GetEntityInfo(g)
-	eix := IndexEntityInfo(ei)
-	if len(eix.FindDuplicates()) == 0 {
+	if len(FindDuplicatedEntities(ei)) == 0 {
 		t.Errorf("No dups")
 	}
-	RemoveDuplicateEntities(eix)
+	RemoveDuplicateEntities(ei)
 	ei = GetEntityInfo(g)
-	eix = IndexEntityInfo(ei)
-	dups := eix.FindDuplicates()
+	dups := FindDuplicatedEntities(ei)
 	if len(dups) != 0 {
 		t.Errorf("There are still duplicates: %v", dups)
 	}

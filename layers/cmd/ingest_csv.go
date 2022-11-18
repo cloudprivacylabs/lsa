@@ -436,7 +436,7 @@ func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineCo
 		}
 	}
 
-	if err := builder.LinkNodes(pipeline.Context, ingesters[joinCtx[0].VariantID].Schema, ls.GetEntityInfo(builder.GetGraph())); err != nil {
+	if err := builder.LinkNodes(pipeline.Context, ingesters[joinCtx[0].VariantID].Schema); err != nil {
 		return err
 	}
 	for _, root := range lpg.Sources(builder.GetGraph()) {

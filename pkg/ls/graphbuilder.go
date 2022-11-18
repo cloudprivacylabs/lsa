@@ -182,10 +182,10 @@ func (gb GraphBuilder) ValueSetAsEdge(node, schemaNode, parentDocumentNode *lpg.
 	}
 }
 
-//  ValueAsEdge ingests a value using the following scheme:
+//	ValueAsEdge ingests a value using the following scheme:
 //
-//  input: (name: value)
-//  output: --(label)-->(value:value, attributeName:name)
+//	input: (name: value)
+//	output: --(label)-->(value:value, attributeName:name)
 //
 // where label=attributeName (in this case "name") if edgeLabel is not
 // specified in schema.
@@ -394,7 +394,7 @@ func (gb GraphBuilder) ArrayAsNode(schemaNode, parentNode *lpg.Node, types ...st
 
 // ObjectAsEdge creates an object node as an edge using the following scheme:
 //
-//  parent --object--> _blankNode --...
+//	parent --object--> _blankNode --...
 func (gb GraphBuilder) ObjectAsEdge(schemaNode, parentNode *lpg.Node, types ...string) (*lpg.Edge, error) {
 	return gb.CollectionAsEdge(schemaNode, parentNode, AttributeTypeObject, types...)
 }
@@ -614,11 +614,10 @@ func (gb GraphBuilder) linkNode(spec *LinkSpec, docNode, parentNode, entityRoot 
 
 func (gb GraphBuilder) LinkNodes(ctx *Context, schema *Layer) error {
 	entityInfo := GetEntityInfo(gb.GetGraph())
-	eix := IndexEntityInfo(entityInfo)
-	if RemoveDuplicateEntities(eix) {
+	if RemoveDuplicateEntities(entityInfo) {
 		entityInfo = GetEntityInfo(gb.GetGraph())
-		eix = IndexEntityInfo(entityInfo)
 	}
+	eix := IndexEntityInfo(entityInfo)
 	specs, err := schema.GetLinkSpecs()
 	if err != nil {
 		return err

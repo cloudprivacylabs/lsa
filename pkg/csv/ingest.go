@@ -36,7 +36,7 @@ func ParseIngest(context *ls.Context, ingester *ls.Ingester, parser Parser, buil
 	if err != nil {
 		return nil, err
 	}
-	if err := builder.LinkNodes(context, ingester.Schema, ls.GetEntityInfo(builder.GetGraph())); err != nil {
+	if err := builder.LinkNodes(context, ingester.Schema); err != nil {
 		return nil, err
 	}
 	return r, nil

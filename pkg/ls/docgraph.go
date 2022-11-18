@@ -70,6 +70,49 @@ func GetEntityInfo(g *lpg.Graph) map[*lpg.Node]EntityInfo {
 	return ret
 }
 
+// FindDuplicatedEntities returns all entity root nodes with nonempty ids that are duplicated
+func FindDuplicatedEntities(ei map[*lpg.Node]EntityInfo) [][]*lpg.Node {
+	// Map by entity type, then by entity id hash
+	entityIndex := make(map[string]map[string][]*lpg.Node)
+	entityIdKey := func(key []string) string {
+		if len(key) == 1 {
+			return key[0]
+		}
+		return strings.Join(key, " ")
+	}
+	for node, info := range ei {
+		key := info.GetID()
+		if len(key) == 0 {
+			continue
+		}
+		empty := true
+		for _, x := range key {
+			if len(x) != 0 {
+				empty = false
+			}
+		}
+		if empty {
+			continue
+		}
+		m, ok := entityIndex[info.GetEntitySchema()]
+		if !ok {
+			m = make(map[string][]*lpg.Node)
+			entityIndex[info.GetEntitySchema()] = m
+		}
+		k := entityIdKey(key)
+		m[k] = append(m[k], node)
+	}
+	ret := make([][]*lpg.Node, 0)
+	for _, m := range entityIndex {
+		for _, n := range m {
+			if len(n) > 1 {
+				ret = append(ret, n)
+			}
+		}
+	}
+	return ret
+}
+
 // GetEntityInfoIndex returns a fast-access entity info
 func GetEntityInfoIndex(g *lpg.Graph) EntityInfoIndex {
 	return IndexEntityInfo(GetEntityInfo(g))
@@ -93,25 +136,6 @@ func (e EntityInfoIndex) Find(entityName string, fk []string) []*lpg.Node {
 	}
 	h := e.getFkHash(fk)
 	return m[h]
-}
-
-// FindDuplicates returns all nodes that are duplicated
-func (e EntityInfoIndex) FindDuplicates() [][]*lpg.Node {
-	ret := make([][]*lpg.Node, 0)
-	for typeName, ix := range e.indexByType {
-		if typeName == DocumentNodeTerm {
-			continue
-		}
-		if IsAttributeType(typeName) {
-			continue
-		}
-		for _, nodes := range ix {
-			if len(nodes) > 1 {
-				ret = append(ret, nodes)
-			}
-		}
-	}
-	return ret
 }
 
 // IndexEntityInfo returns a fast-access version of entity info
@@ -387,8 +411,8 @@ func GetAttributeReferenceBySchemaPath(schemaPath []*lpg.Node, docContextNode *l
 // entities with the same ID, their contents are also identical. It
 // will keep one of the duplicate entity roots, and remove all
 // others. Returns true if things changed.
-func RemoveDuplicateEntities(eix EntityInfoIndex) bool {
-	duplicates := eix.FindDuplicates()
+func RemoveDuplicateEntities(ei map[*lpg.Node]EntityInfo) bool {
+	duplicates := FindDuplicatedEntities(ei)
 	if len(duplicates) == 0 {
 		return false
 	}
