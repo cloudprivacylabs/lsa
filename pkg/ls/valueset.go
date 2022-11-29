@@ -113,7 +113,6 @@ var (
 // The valueset info may specify one or mode valuesets to lookup
 // (TableIDs). If none specified, all compatible valuesets should be
 // looked up.
-//
 type ValuesetInfo struct {
 	// If the valueset lookup requires a single value, the attribute id
 	// of the source node. Otherwise, the root node containing all the
@@ -674,12 +673,14 @@ func (prc *ValuesetProcessor) ProcessGraphValueset(ctx *Context, builder GraphBu
 	ctx.GetLogger().Debug(map[string]interface{}{"mth": "processGraphValueset", "stage": "looking up context nodes", "vsi": vsi})
 	contextSchemaNode := prc.layer.GetAttributeByID(vsi.ContextID)
 	if contextSchemaNode == nil {
+		ctx.GetLogger().Debug(map[string]interface{}{"mth": "processGraphValueset", "stage": "No context node", "id": vsi.ContextID})
 		return nil
 	}
 	resultContextSchemaNode := contextSchemaNode
 	if len(vsi.ResultContext) > 0 {
 		resultContextSchemaNode = prc.layer.GetAttributeByID(vsi.ResultContext)
 		if resultContextSchemaNode == nil {
+			ctx.GetLogger().Debug(map[string]interface{}{"mth": "processGraphValueset", "stage": "No result context node", "id": vsi.ResultContext})
 			return nil
 		}
 	}

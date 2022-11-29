@@ -193,13 +193,7 @@ func GetLinkSpec(schemaNode *lpg.Node) (*LinkSpec, error) {
 		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Direction is not one of: `to`, `from`, `toTarget`, `fromTarget`"}
 	}
 
-	fk := AsPropertyValue(schemaNode.GetProperty(ReferenceFKTerm))
-	if fk.IsString() {
-		ret.FK = []string{fk.AsString()}
-	}
-	if fk.IsStringSlice() {
-		ret.FK = fk.AsStringSlice()
-	}
+	ret.FK = AsPropertyValue(schemaNode.GetProperty(ReferenceFKTerm)).MustStringSlice()
 	if len(ret.FK) == 0 {
 		// If schema node is a value node, then the node is the FK
 		if schemaNode.GetLabels().Has(AttributeTypeValue) {
