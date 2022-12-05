@@ -29,13 +29,16 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
+	"github.com/cloudprivacylabs/lsa/layers/cmd/valueset"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
 type Valuesets struct {
-	Services     map[string]string   `json:"services" yaml:"services"`
-	Spreadsheets []string            `json:"spreadsheets" yaml:"spreadsheets"`
-	Sets         map[string]Valueset `json:"valuesets" yaml:"valuesets"`
+	Services             map[string]string   `json:"services" yaml:"services"`
+	Spreadsheets         []string            `json:"spreadsheets" yaml:"spreadsheets"`
+	Sets                 map[string]Valueset `json:"valuesets" yaml:"valuesets"`
+	DatabasesConfigFiles []string            `json:"databases" yaml:"databases"`
+	Databases            map[string][]interface{}
 }
 
 type Valueset struct {
@@ -250,6 +253,32 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 	results := make([]ls.ValuesetLookupResponse, n)
 	errs := make([]error, n)
 	for idx, id := range req.TableIDs {
+		// if config files in vsets exist, lookup
+		if len(vsets.DatabasesConfigFiles) > 0 {
+			for _, f := range vsets.DatabasesConfigFiles {
+				cfg, err := valueset.LoadConfig(f, nil)
+				if err != nil {
+					return ls.ValuesetLookupResponse{}, err
+				}
+				resp, err := cfg.ValueSetLookup(ctx, id, nil)
+				if err != nil {
+					return ls.ValuesetLookupResponse{}, err
+				}
+				return ls.ValuesetLookupResponse{KeyValues: resp}, nil
+			}
+		}
+		// if tableID exists in of the databases, lookup
+		if db, ok := vsets.Databases[id]; ok {
+			cfg, err := valueset.UnmarshalConfig(map[string][]interface{}{id: db}, nil)
+			if err != nil {
+				return ls.ValuesetLookupResponse{}, err
+			}
+			resp, err := cfg.ValueSetLookup(ctx, id, nil)
+			if err != nil {
+				return ls.ValuesetLookupResponse{}, nil
+			}
+			return ls.ValuesetLookupResponse{KeyValues: resp}, nil
+		}
 		if v, ok := vsets.Services[id]; ok {
 			id := id
 			wg.Add(1)
@@ -319,6 +348,7 @@ type valuesetMarshal struct {
 	Services     map[string]string `json:"services" yaml:"services"`
 	Spreadsheets []string          `json:"spreadsheets" yaml:"spreadsheets"`
 	Sets         []Valueset        `json:"valuesets" yaml:"valuesets"`
+	Databases    map[string][]interface{}
 }
 
 func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
@@ -353,6 +383,12 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 				return fmt.Errorf("Service %s already defined", k)
 			}
 			vs.Services[k] = v
+		}
+		for k, v := range vm.Databases {
+			if _, exists := vs.Databases[k]; exists {
+				return fmt.Errorf("Value set database %s already defined", k)
+			}
+			vs.Databases[k] = v
 		}
 	}
 	return nil
