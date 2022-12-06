@@ -327,11 +327,13 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 		vs.Services = make(map[string]string)
 	}
 	for _, file := range files {
+		ctx.GetLogger().Debug(map[string]interface{}{"valueset-file": file})
 		var vm valuesetMarshal
 		err := cmdutil.ReadJSON(file, &vm)
 		if err != nil {
 			return err
 		}
+		ctx.GetLogger().Debug(map[string]interface{}{"valuesets": vm})
 		vs.Spreadsheets = vm.Spreadsheets
 		if err := vs.LoadSpreadsheets(ctx, filepath.Dir(file)); err != nil {
 			return err
@@ -341,18 +343,23 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 				return fmt.Errorf("Value set %s already defined", v.ID)
 			}
 			vs.Sets[v.ID] = v
+			ctx.GetLogger().Debug(map[string]interface{}{"valueset": v.ID})
 		}
 		if len(vm.ID) > 0 {
 			if _, exists := vs.Sets[vm.ID]; exists {
 				return fmt.Errorf("Value set %s already defined", vm.ID)
 			}
 			vs.Sets[vm.ID] = vm.Valueset
+			ctx.GetLogger().Debug(map[string]interface{}{"valueset": vm.ID})
 		}
 		for k, v := range vm.Services {
 			if _, exists := vs.Services[k]; exists {
 				return fmt.Errorf("Service %s already defined", k)
 			}
 			vs.Services[k] = v
+		}
+		for k := range vs.Sets {
+			ctx.GetLogger().Debug(map[string]interface{}{"valueset": k})
 		}
 	}
 	return nil

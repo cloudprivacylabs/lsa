@@ -194,15 +194,15 @@ func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []
 //
 // valueType determines the schema header start
 //
-//  valueType, v
-//  entityIdFields, f, f, ...
+//	valueType, v
+//	entityIdFields, f, f, ...
 //
-//   @id,   @type,      <term>,     <term>
-//  layerId, Schema,,...
-//  layerId, Overlay,  true,        true   --> true means include this attribute in overlay
-//  attrId, Object,   termValue, termValue
-//  attrId, Value,   termValue, termValue
-//   ...
+//	 @id,   @type,      <term>,     <term>
+//	layerId, Schema,,...
+//	layerId, Overlay,  true,        true   --> true means include this attribute in overlay
+//	attrId, Object,   termValue, termValue
+//	attrId, Value,   termValue, termValue
+//	 ...
 //
 // The terms are expanded using the JSON-LD context given.
 func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface{}) ([]*ls.Layer, error) {
@@ -311,11 +311,27 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 		if len(typ) != 1 {
 			continue
 		}
+		switch typ[0] {
+		case "Schema":
+			typ[0] = ls.SchemaTerm
+		case "Overlay":
+			typ[0] = ls.OverlayTerm
+		case "Value":
+			typ[0] = ls.AttributeTypeValue
+		case "Object":
+			typ[0] = ls.AttributeTypeObject
+		case "Array":
+			typ[0] = ls.AttributeTypeArray
+		case "Polymoprhic":
+			typ[0] = ls.AttributeTypePolymorphic
+		case "Composite":
+			typ[0] = ls.AttributeTypeComposite
+		}
 		if len(mrow["@id"]) != 1 {
 			continue
 		}
 		// This must be an overlay or schema
-		if typ[0] == "Schema" || typ[0] == ls.SchemaTerm || typ[0] == "Overlay" || typ[0] == ls.OverlayTerm {
+		if typ[0] == ls.SchemaTerm || typ[0] == ls.OverlayTerm {
 			layerInfo = append(layerInfo, mrow)
 		} else {
 			// Attr row
