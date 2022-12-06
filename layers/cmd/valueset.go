@@ -37,7 +37,7 @@ type Valuesets struct {
 	Services     map[string]string   `json:"services" yaml:"services"`
 	Spreadsheets []string            `json:"spreadsheets" yaml:"spreadsheets"`
 	Sets         map[string]Valueset `json:"valuesets" yaml:"valuesets"`
-	databases    map[string][]valueset.ValuesetDB
+	databases    map[string]valueset.ValuesetDB
 }
 
 type Valueset struct {
@@ -254,7 +254,7 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 	for idx, id := range req.TableIDs {
 		// if tableID exists in of the databases, lookup
 		if db, ok := vsets.databases[id]; ok {
-			resp, err := db[idx].ValueSetLookup(ctx, id, nil)
+			resp, err := db.ValueSetLookup(ctx, id, nil)
 			if err != nil {
 				return ls.ValuesetLookupResponse{}, nil
 			}
@@ -326,11 +326,11 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 
 type valuesetMarshal struct {
 	Valueset
-	Services      map[string]string                `json:"services" yaml:"services"`
-	Spreadsheets  []string                         `json:"spreadsheets" yaml:"spreadsheets"`
-	Sets          []Valueset                       `json:"valuesets" yaml:"valuesets"`
-	DatabaseFiles []string                         `json:"databaseFiles" yaml:"databaseFiles"`
-	Databases     map[string][]valueset.ValuesetDB `json:"databases" yaml:"databases"`
+	Services      map[string]string              `json:"services" yaml:"services"`
+	Spreadsheets  []string                       `json:"spreadsheets" yaml:"spreadsheets"`
+	Sets          []Valueset                     `json:"valuesets" yaml:"valuesets"`
+	DatabaseFiles []string                       `json:"databaseFiles" yaml:"databaseFiles"`
+	Databases     map[string]valueset.ValuesetDB `json:"databases" yaml:"databases"`
 }
 
 func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
@@ -381,7 +381,7 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 				if _, exists := vs.databases[tId]; exists {
 					return fmt.Errorf("Value set database %s already defined", tId)
 				}
-				vs.databases[tId] = cfg.ValuesetDBs
+				vs.databases[tId] = cfg.ValuesetDBs[ix]
 			}
 		}
 	}
