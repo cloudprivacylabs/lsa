@@ -248,25 +248,16 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 		ctx.GetLogger().Debug(map[string]interface{}{"valueset.found": found})
 		return found, nil
 	}
+	if len(vsets.DatabasesConfigFiles) > 0 {
+		if err := LoadValuesetFiles(ctx, &vsets, vsets.DatabasesConfigFiles); err != nil {
+			return ls.ValuesetLookupResponse{}, err
+		}
+	}
 	var n int = len(req.TableIDs)
 	var wg sync.WaitGroup
 	results := make([]ls.ValuesetLookupResponse, n)
 	errs := make([]error, n)
 	for idx, id := range req.TableIDs {
-		// if config files in vsets exist, lookup
-		if len(vsets.DatabasesConfigFiles) > 0 {
-			for _, f := range vsets.DatabasesConfigFiles {
-				cfg, err := valueset.LoadConfig(f, nil)
-				if err != nil {
-					return ls.ValuesetLookupResponse{}, err
-				}
-				resp, err := cfg.ValueSetLookup(ctx, id, nil)
-				if err != nil {
-					return ls.ValuesetLookupResponse{}, err
-				}
-				return ls.ValuesetLookupResponse{KeyValues: resp}, nil
-			}
-		}
 		// if tableID exists in of the databases, lookup
 		if db, ok := vsets.Databases[id]; ok {
 			cfg, err := valueset.UnmarshalConfig(map[string][]interface{}{id: db}, nil)
@@ -345,10 +336,10 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 
 type valuesetMarshal struct {
 	Valueset
-	Services     map[string]string `json:"services" yaml:"services"`
-	Spreadsheets []string          `json:"spreadsheets" yaml:"spreadsheets"`
-	Sets         []Valueset        `json:"valuesets" yaml:"valuesets"`
-	Databases    map[string][]interface{}
+	Services     map[string]string        `json:"services" yaml:"services"`
+	Spreadsheets []string                 `json:"spreadsheets" yaml:"spreadsheets"`
+	Sets         []Valueset               `json:"valuesets" yaml:"valuesets"`
+	Databases    map[string][]interface{} `json:"databases" yaml:"databases"`
 }
 
 func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
@@ -389,6 +380,22 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 				return fmt.Errorf("Value set database %s already defined", k)
 			}
 			vs.Databases[k] = v
+		}
+		for ix, f := range vs.DatabasesConfigFiles {
+			cfg, err := valueset.LoadConfig(f, nil)
+			if err != nil {
+				return err
+			}
+			for tId := range cfg.ValuesetDBs[ix].GetTableIds() {
+				if _, exists := vs.Databases[tId]; exists {
+					continue
+				}
+				resp, err := cfg.ValueSetLookup(ctx, tId, nil)
+				if err != nil {
+					return err
+				}
+				vs.Databases[tId] = append(vs.Databases[tId], resp)
+			}
 		}
 	}
 	return nil
