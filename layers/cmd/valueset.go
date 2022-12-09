@@ -326,11 +326,11 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 
 type valuesetMarshal struct {
 	Valueset
-	Services      map[string]string              `json:"services" yaml:"services"`
-	Spreadsheets  []string                       `json:"spreadsheets" yaml:"spreadsheets"`
-	Sets          []Valueset                     `json:"valuesets" yaml:"valuesets"`
-	DatabaseFiles []string                       `json:"databaseFiles" yaml:"databaseFiles"`
-	Databases     map[string]valueset.ValuesetDB `json:"databases" yaml:"databases"`
+	Services      map[string]string      `json:"services" yaml:"services"`
+	Spreadsheets  []string               `json:"spreadsheets" yaml:"spreadsheets"`
+	Sets          []Valueset             `json:"valuesets" yaml:"valuesets"`
+	DatabaseFiles []string               `json:"databaseFiles" yaml:"databaseFiles"`
+	Databases     map[string]interface{} `json:"databases" yaml:"databases"`
 }
 
 func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
@@ -374,7 +374,7 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 			if _, exists := vs.databases[k]; exists {
 				return fmt.Errorf("Value set database %s already defined", k)
 			}
-			vs.databases[k] = v
+			vs.databases[k] = v.(valueset.ValuesetDB)
 		}
 		for ix, f := range vm.DatabaseFiles {
 			cfg, err := valueset.LoadConfig(f, nil)
