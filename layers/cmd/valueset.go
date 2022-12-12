@@ -254,8 +254,8 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 	for idx, id := range req.TableIDs {
 		// if tableID exists in of the databases, lookup
 		for _, db := range vsets.databases {
-			if _, has := db.GetTableIDs()[id]; has {
-				resp, err := db.ValueSetLookup(ctx, id, nil)
+			if _, has := db.GetTableIds()[id]; has {
+				resp, err := db.ValueSetLookup(ctx, id, req.KeyValues)
 				if err != nil {
 					return ls.ValuesetLookupResponse{}, nil
 				}
@@ -343,7 +343,7 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 	for _, file := range files {
 		ctx.GetLogger().Debug(map[string]interface{}{"valueset-file": file})
 		var vm valuesetMarshal
-		err := cmdutil.ReadJSON(file, &vm)
+		err := cmdutil.ReadJSONOrYAML(file, &vm)
 		if err != nil {
 			return err
 		}
@@ -375,15 +375,13 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 		// call unmarshalConfig here
 		// TODO: Check duplicates
 		vs.databases = make([]valueset.ValuesetDB, 0)
-		for ix, dbItem := range vm.Databases {
-			db, _ := dbItem["database"].(map[string]interface{})
-			for key := range db {
-				vsdb, err := valueset.UnmarshalSingleDatabaseConfig(db, nil)
-				if err != nil {
-					return fmt.Errorf("Cannot unmarshal database: %v", db)
-				}
-				vs.databases = append(vs.databases, vsdb)
+		for _, dbItem := range vm.Databases {
+			db := cmdutil.YAMLToMap(dbItem["database"])
+			vsdb, err := valueset.UnmarshalSingleDatabaseConfig(db.(map[string]interface{}), nil)
+			if err != nil {
+				return fmt.Errorf("Cannot unmarshal database: %v", db)
 			}
+			vs.databases = append(vs.databases, vsdb)
 		}
 		for _, f := range vm.DatabaseFiles {
 			cfg, err := valueset.LoadConfig(f, nil)
