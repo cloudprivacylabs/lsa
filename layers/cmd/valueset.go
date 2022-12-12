@@ -37,7 +37,7 @@ type Valuesets struct {
 	Services     map[string]string   `json:"services" yaml:"services"`
 	Spreadsheets []string            `json:"spreadsheets" yaml:"spreadsheets"`
 	Sets         map[string]Valueset `json:"valuesets" yaml:"valuesets"`
-	databases    map[string]valueset.ValuesetDB
+	databases    []map[string]valueset.ValuesetDB
 }
 
 type Valueset struct {
@@ -253,12 +253,14 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 	errs := make([]error, n)
 	for idx, id := range req.TableIDs {
 		// if tableID exists in of the databases, lookup
-		if db, ok := vsets.databases[id]; ok {
-			resp, err := db.ValueSetLookup(ctx, id, nil)
-			if err != nil {
-				return ls.ValuesetLookupResponse{}, nil
+		if idx < len(vsets.databases) {
+			if db, ok := vsets.databases[idx][id]; ok {
+				resp, err := db.ValueSetLookup(ctx, id, nil)
+				if err != nil {
+					return ls.ValuesetLookupResponse{}, nil
+				}
+				return ls.ValuesetLookupResponse{KeyValues: resp}, nil
 			}
-			return ls.ValuesetLookupResponse{KeyValues: resp}, nil
 		}
 		if v, ok := vsets.Services[id]; ok {
 			id := id
@@ -326,11 +328,11 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 
 type valuesetMarshal struct {
 	Valueset
-	Services      map[string]string      `json:"services" yaml:"services"`
-	Spreadsheets  []string               `json:"spreadsheets" yaml:"spreadsheets"`
-	Sets          []Valueset             `json:"valuesets" yaml:"valuesets"`
-	DatabaseFiles []string               `json:"databaseFiles" yaml:"databaseFiles"`
-	Databases     map[string]interface{} `json:"databases" yaml:"databases"`
+	Services      map[string]string        `json:"services" yaml:"services"`
+	Spreadsheets  []string                 `json:"spreadsheets" yaml:"spreadsheets"`
+	Sets          []Valueset               `json:"valuesets" yaml:"valuesets"`
+	DatabaseFiles []string                 `json:"databaseFiles" yaml:"databaseFiles"`
+	Databases     []map[string]interface{} `json:"databases" yaml:"databases"`
 }
 
 func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
@@ -370,11 +372,23 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 			}
 			vs.Services[k] = v
 		}
-		for k, v := range vm.Databases {
-			if _, exists := vs.databases[k]; exists {
-				return fmt.Errorf("Value set database %s already defined", k)
+		// call unmarshalCOnfig here
+		for _, db := range vm.Databases {
+			ix := 0
+			for key := range db {
+				if ix < len(vs.databases) {
+					if _, exists := vs.databases[ix][key]; exists {
+						return fmt.Errorf("Value set database %s already defined", key)
+					}
+					vsdb, err := valueset.UnmarshalSingleDatabaseConfig(db, nil)
+					if err != nil {
+						return fmt.Errorf("Cannot unmarshal database: %v", db)
+					}
+					vs.databases[ix][key] = vsdb
+					ix++
+				}
 			}
-			vs.databases[k] = v.(valueset.ValuesetDB)
+			// vs.databases[k] = v.(valueset.ValuesetDB)
 		}
 		for ix, f := range vm.DatabaseFiles {
 			cfg, err := valueset.LoadConfig(f, nil)
@@ -382,10 +396,10 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 				return err
 			}
 			for tId := range cfg.ValuesetDBs[ix].GetTableIds() {
-				if _, exists := vs.databases[tId]; exists {
+				if _, exists := vs.databases[ix][tId]; exists {
 					return fmt.Errorf("Value set database %s already defined", tId)
 				}
-				vs.databases[tId] = cfg.ValuesetDBs[ix]
+				vs.databases[ix][tId] = cfg.ValuesetDBs[ix]
 			}
 		}
 	}

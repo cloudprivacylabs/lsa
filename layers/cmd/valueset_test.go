@@ -1,12 +1,18 @@
 package cmd
 
 import (
+	"context"
+	"database/sql"
 	"fmt"
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	"github.com/cloudprivacylabs/lsa/layers/cmd/valueset"
+	vs "github.com/cloudprivacylabs/lsa/layers/cmd/valueset"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/mitchellh/mapstructure"
 )
 
 // Match looks at req.
@@ -169,6 +175,93 @@ func TestSplitCell(t *testing.T) {
 		got := tt.opt.splitCell(tt.header, tt.cell)
 		if !reflect.DeepEqual(got, tt.expected) {
 			t.Errorf("Got %v, expected %v", got, tt.expected)
+		}
+	}
+}
+
+func init() {
+	vs.RegisterDB("pgx", NewMockPostgresqlDataStore)
+}
+
+type mockPgxDataStore struct {
+	MockDatabase `mapstructure:",squash"`
+}
+
+type MockDatabase struct {
+	DB        *sql.DB
+	Params    Params         `json:"params" yaml:"params"`
+	Valuesets []MockValueset `json:"valuesets" yaml:"valuesets"`
+	tableIds  map[string]struct{}
+	once      sync.Once
+}
+
+type Params struct {
+	DatabaseName string `json:"db" yaml:"db"`
+	User         string `json:"user" yaml:"user"`
+	Pwd          string `json:"pwd" yaml:"pwd"`
+	URI          string `json:"uri" yaml:"uri"`
+}
+
+type MockValueset struct {
+	TableId string      `yaml:"tableId"`
+	Queries []mockQuery `yaml:"queries"`
+}
+
+type mockQuery struct {
+	Query string `yaml:"query"`
+}
+
+func (pgx *mockPgxDataStore) ValueSetLookup(ctx context.Context, tableId string, queryParams map[string]string) (map[string]string, error) {
+	return nil, nil
+}
+
+func (pgx *mockPgxDataStore) GetTableIds() map[string]struct{} {
+	return nil
+}
+
+func (pgx *mockPgxDataStore) Close() error {
+	return nil
+}
+
+func NewMockPostgresqlDataStore(value interface{}, env map[string]string) (valueset.ValuesetDB, error) {
+	psqlDs := &mockPgxDataStore{}
+	if err := mapstructure.Decode(value, psqlDs); err != nil {
+		return psqlDs, err
+	}
+	psqlDs.tableIds = make(map[string]struct{})
+	for _, vs := range psqlDs.Valuesets {
+		psqlDs.tableIds[vs.TableId] = struct{}{}
+	}
+	psqlDs.Params.URI = env["uri"]
+	psqlDs.Params.User = env["users"]
+	psqlDs.Params.Pwd = env["pwd"]
+	return psqlDs, nil
+}
+
+func TestLoadValuesetConfig(t *testing.T) {
+	env := map[string]string{
+		"uri":      "SOME_URI",
+		"pgx_user": "someUser",
+		"password": "somePwd",
+	}
+	f := "testdata/config/valueset-databases.yaml"
+	var uc struct {
+		Databases []map[string]interface{} `json:"databases" yaml:"databases"`
+	}
+	if err := cmdutil.ReadJSONOrYAML(f, &uc); err != nil {
+		t.Error(err)
+	}
+	cfg, err := vs.LoadConfig(f, env)
+	if err != nil {
+		t.Error(err)
+	}
+	for ix, dt := range uc.Databases {
+		db, err := vs.UnmarshalSingleDatabaseConfig(dt, env)
+		if err != nil {
+			t.Error(err)
+		}
+		if !reflect.DeepEqual(db, cfg.ValuesetDBs[ix]) {
+			t.Errorf("mismatched databases ValusetDBs, got %v, expected :%v", db, cfg.ValuesetDBs[ix])
 		}
 	}
 }
