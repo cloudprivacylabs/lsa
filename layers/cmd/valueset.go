@@ -259,6 +259,11 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 				if err != nil {
 					return ls.ValuesetLookupResponse{}, nil
 				}
+				if resp == nil {
+					fmt.Println()
+					fmt.Println(id)
+					fmt.Println()
+				}
 				return ls.ValuesetLookupResponse{KeyValues: resp}, nil
 			}
 		}
