@@ -38,6 +38,7 @@ type Valuesets struct {
 	Spreadsheets []string            `json:"spreadsheets" yaml:"spreadsheets"`
 	Sets         map[string]Valueset `json:"valuesets" yaml:"valuesets"`
 	databases    []valueset.ValuesetDB
+	cache        *ValuesetCache[string, map[string]string]
 }
 
 type Valueset struct {
@@ -222,6 +223,9 @@ func (vs Valueset) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupRespon
 
 // Lookup can be used as the external lookup func of LookupProcessor
 func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, error) {
+	if resp, has := vsets.cache.Lookup(req); has {
+		return resp, nil
+	}
 	found := ls.ValuesetLookupResponse{}
 	lookup := func(v Valueset) error {
 		rsp, err := v.Lookup(req)
@@ -245,6 +249,7 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 			}
 		}
 		ctx.GetLogger().Debug(map[string]interface{}{"valueset.found": found})
+		vsets.cache.Set(req, found)
 		return found, nil
 	}
 	var n int = len(req.TableIDs)
@@ -255,13 +260,15 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 		// if tableID exists in of the databases, lookup
 		for _, db := range vsets.databases {
 			if _, has := db.GetTableIds()[id]; has {
-				resp, err := db.ValueSetLookup(ctx, id, req.KeyValues)
+				kv, err := db.ValueSetLookup(ctx, id, req.KeyValues)
 				if err != nil {
 					return ls.ValuesetLookupResponse{}, nil
 				}
-				if len(resp) > 0 {
-					return ls.ValuesetLookupResponse{KeyValues: resp}, nil
-				}
+				// if len(kv) > 0 {
+				resp := ls.ValuesetLookupResponse{KeyValues: kv}
+				vsets.cache.Set(req, resp)
+				return resp, nil
+				// }
 			}
 		}
 		if v, ok := vsets.Services[id]; ok {
@@ -325,6 +332,7 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 	if counter == 1 {
 		return results[resultIdx], nil
 	}
+	vsets.cache.Set(req, found)
 	return found, nil
 }
 
@@ -341,6 +349,11 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 	if vs.Sets == nil {
 		vs.Sets = make(map[string]Valueset)
 		vs.Services = make(map[string]string)
+		cache, err := NewValuesetCache()
+		if err != nil {
+			return err
+		}
+		vs.cache = &cache
 	}
 	for _, file := range files {
 		ctx.GetLogger().Debug(map[string]interface{}{"valueset-file": file})

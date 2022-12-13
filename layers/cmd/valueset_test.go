@@ -225,9 +225,22 @@ func (pgx *mockPgxDataStore) Close() error {
 
 func NewMockPostgresqlDataStore(value interface{}, env map[string]string) (valueset.ValuesetDB, error) {
 	psqlDs := &mockPgxDataStore{}
-	if err := mapstructure.Decode(value, psqlDs); err != nil {
+	config := &mapstructure.DecoderConfig{
+		WeaklyTypedInput: true,
+		Result:           &psqlDs,
+	}
+	decoder, err := mapstructure.NewDecoder(config)
+	if err != nil {
+		panic(err)
+	}
+	if err := decoder.Decode(value); err != nil {
 		return psqlDs, err
 	}
+	// for _, v := range value.(map[string]interface{}) {
+	// 	if err := mapstructure.Decode(v, &psqlDs); err != nil {
+	// 		return psqlDs, err
+	// 	}
+	// }
 	psqlDs.tableIds = make(map[string]struct{})
 	for _, vs := range psqlDs.Valuesets {
 		psqlDs.tableIds[vs.TableId] = struct{}{}

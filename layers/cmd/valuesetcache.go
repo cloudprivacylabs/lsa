@@ -1,12 +1,9 @@
 package cmd
 
 import (
-	"bytes"
 	"crypto/sha256"
-	"encoding/gob"
 	"encoding/hex"
 	"sort"
-	"sync"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	lru "github.com/hashicorp/golang-lru/v2"
@@ -14,9 +11,10 @@ import (
 
 const cache_size = 65000
 
+// ValuesetCache is a thread-safe fixed size cache which uses ARC; stores the hash of a ValuesetRequest
+// and its matching ValuesetResponse
 type ValuesetCache[K string, V map[string]string] struct {
 	ARCCache *lru.ARCCache[K, V]
-	mu       sync.Mutex
 }
 
 func NewValuesetCache[K string, V map[string]string]() (ValuesetCache[K, V], error) {
@@ -27,10 +25,9 @@ func NewValuesetCache[K string, V map[string]string]() (ValuesetCache[K, V], err
 	return ValuesetCache[K, V]{ARCCache: cache}, nil
 }
 
+// ValuesetCache.Lookup returns the cached ValuesetLookupResponse if exists
 func (cache *ValuesetCache[K, V]) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, bool) {
-	cache.mu.Lock()
-	defer cache.mu.Unlock()
-	val, ok := cache.ARCCache.Get(K(generateHashFromPair(req.KeyValues)))
+	val, ok := cache.ARCCache.Get(K(generateHashFromRequest(req)))
 	if !ok {
 		return ls.ValuesetLookupResponse{}, false
 	}
@@ -39,44 +36,22 @@ func (cache *ValuesetCache[K, V]) Lookup(req ls.ValuesetLookupRequest) (ls.Value
 
 // ValuesetCache.Set caches a generated hash as a key, storing the request as its corresponding value
 func (cache *ValuesetCache[K, V]) Set(req ls.ValuesetLookupRequest, res ls.ValuesetLookupResponse) {
-	cache.mu.Lock()
-	cache.ARCCache.Add(K(generateHashFromPair(req.KeyValues)), V(req.KeyValues))
-	cache.mu.Unlock()
+	cache.ARCCache.Add(K(generateHashFromRequest(req)), V(req.KeyValues))
 }
 
-func generateHashFromPair(keyValues map[string]string) string {
-	pairList := make(pairList, len(keyValues))
-	pairListIdx := 0
-	for k, v := range keyValues {
-		pairList[pairListIdx] = pair{k, v}
-		pairListIdx++
+func generateHashFromRequest(req ls.ValuesetLookupRequest) string {
+	collection := make([]string, 0, len(req.KeyValues)*2+len(req.TableIDs))
+	collection = append(collection, req.TableIDs...)
+	for k, v := range req.KeyValues {
+		collection = append(collection, k, v)
 	}
-	sort.Sort(pairList)
-	// generate hash on sorted pair list
+	sort.SliceStable(collection, func(i, j int) bool {
+		return collection[i] < collection[j]
+	})
+	// generate hash on sorted list
 	h := sha256.New()
-	h.Write(hashPair(pairList))
+	for _, v := range collection {
+		h.Write([]byte(v))
+	}
 	return hex.EncodeToString(h.Sum(nil))
 }
-
-func hashPair(s []pair) []byte {
-	var b bytes.Buffer
-	gob.NewEncoder(&b).Encode(s)
-	return b.Bytes()
-}
-
-type pair struct {
-	Key   string
-	Value string
-}
-
-type pairList []pair
-
-type Sort interface {
-	Len() int
-	Less(i, j int) bool
-	Swap(i, j int)
-}
-
-func (p pairList) Len() int           { return len(p) }
-func (p pairList) Less(i, j int) bool { return p[i].Value < p[j].Value }
-func (p pairList) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
