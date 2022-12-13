@@ -390,12 +390,17 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 		// call unmarshalConfig here
 		// TODO: Check duplicates
 		vs.databases = make([]valueset.ValuesetDB, 0)
+		seenDBs := make(map[interface{}]struct{})
 		for _, dbItem := range vm.Databases {
 			db := cmdutil.YAMLToMap(dbItem["database"])
+			if _, seen := seenDBs[db]; seen {
+				return fmt.Errorf("database %v already defined", db)
+			}
 			vsdb, err := valueset.UnmarshalSingleDatabaseConfig(db.(map[string]interface{}), nil)
 			if err != nil {
 				return fmt.Errorf("Cannot unmarshal database: %v", db)
 			}
+			seenDBs[db] = struct{}{}
 			vs.databases = append(vs.databases, vsdb)
 		}
 		for _, f := range vm.DatabaseFiles {
