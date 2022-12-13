@@ -18,6 +18,8 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0
 )
 
+require github.com/hashicorp/golang-lru/v2 v2.0.1 // indirect
+
 require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
 	github.com/richardlehane/mscfb v1.0.4 // indirect

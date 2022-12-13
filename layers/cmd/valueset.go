@@ -259,12 +259,9 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 				if err != nil {
 					return ls.ValuesetLookupResponse{}, nil
 				}
-				if resp == nil {
-					fmt.Println()
-					fmt.Println(id)
-					fmt.Println()
+				if len(resp) > 0 {
+					return ls.ValuesetLookupResponse{KeyValues: resp}, nil
 				}
-				return ls.ValuesetLookupResponse{KeyValues: resp}, nil
 			}
 		}
 		if v, ok := vsets.Services[id]; ok {
