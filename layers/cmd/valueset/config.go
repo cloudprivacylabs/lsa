@@ -36,43 +36,59 @@ func RegisterDB(name string, fn func(interface{}, map[string]string) (ValuesetDB
 }
 
 type unmarshalConfig struct {
-	Databases map[string]interface{} `json:"databases" yaml:"databases"`
+	Databases []map[string]interface{} `json:"databases" yaml:"databases"`
 }
 
-func UnmarshalConfig(configMap map[string][]interface{}, env map[string]string) (Config, error) {
+func UnmarshalDatabasesConfig(configMap []map[string]interface{}, env map[string]string) (Config, error) {
 	cfg := Config{
 		ValuesetDBs: make([]ValuesetDB, 0),
 		valueset:    make(map[string]ValuesetDB),
 	}
 	for _, rec := range configMap {
 		for _, mp := range rec {
-			for _, vals := range mp.(map[string]interface{}) {
-				for key := range vals.(map[string]interface{}) {
-					if fn, ok := valuesetFactory[key]; ok {
-						vsdb, err := fn(vals, env)
-						if err != nil {
-							return Config{}, err
-						}
-						cfg.valueset[key] = vsdb
-						cfg.ValuesetDBs = append(cfg.ValuesetDBs, vsdb)
+			for key := range mp.(map[string]interface{}) {
+				if fn, ok := valuesetFactory[key]; ok {
+					vsdb, err := fn(mp, env)
+					if err != nil {
+						return Config{}, err
 					}
+					cfg.valueset[key] = vsdb
+					cfg.ValuesetDBs = append(cfg.ValuesetDBs, vsdb)
 				}
 			}
-
 		}
 	}
 	return cfg, nil
 }
 
+func UnmarshalSingleDatabaseConfig(database map[string]interface{}, env map[string]string) (ValuesetDB, error) {
+	for _, vals := range database {
+		dbVals := cmdutil.YAMLToMap(vals)
+		for key := range dbVals.(map[string]interface{}) {
+			if fn, ok := valuesetFactory[key]; ok {
+				vsdb, err := fn(dbVals, env)
+				if err != nil {
+					return nil, err
+				}
+				return vsdb, nil
+			}
+		}
+	}
+	return nil, nil
+}
+
+// should get the root of the file
 func LoadConfig(filename string, env map[string]string) (Config, error) {
 	var uc unmarshalConfig
-	if err := cmdutil.ReadJSONOrYAML(filename, &uc.Databases); err != nil {
+	if err := cmdutil.ReadJSONOrYAML(filename, &uc); err != nil {
 		return Config{}, err
 	}
-	ymlMap := make(map[string][]interface{}, 0)
-	for key, rec := range uc.Databases {
-		m := cmdutil.YAMLToMap(rec)
-		ymlMap[key] = m.([]interface{})
+	configMap := make([]map[string]interface{}, 0)
+	for _, rec := range uc.Databases {
+		for key, v := range rec {
+			m := cmdutil.YAMLToMap(v)
+			configMap = append(configMap, map[string]interface{}{key: m})
+		}
 	}
-	return UnmarshalConfig(ymlMap, env)
+	return UnmarshalDatabasesConfig(configMap, env)
 }
