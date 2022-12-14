@@ -22,7 +22,7 @@ func (NoCache) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, 
 	return ls.ValuesetLookupResponse{}, false
 }
 
-func (NoCache) Set(req ls.ValuesetLookupRequest, res ls.ValuesetLookupResponse)
+func (NoCache) Set(req ls.ValuesetLookupRequest, res ls.ValuesetLookupResponse) {}
 
 type LRUCache[K string, V map[string]string] struct {
 	ARCCache *lru.ARCCache[K, V]
