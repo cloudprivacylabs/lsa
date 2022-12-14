@@ -1,4 +1,4 @@
-package cmd
+package valueset
 
 import (
 	"crypto/sha256"
@@ -11,22 +11,33 @@ import (
 
 const cache_size = 65000
 
-// ValuesetCache is a thread-safe fixed size cache which uses ARC; stores the hash of a ValuesetRequest
-// and its matching ValuesetResponse
-type ValuesetCache[K string, V map[string]string] struct {
+type ValuesetCache interface {
+	Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, bool)
+	Set(req ls.ValuesetLookupRequest, res ls.ValuesetLookupResponse)
+}
+
+type NoCache struct{}
+
+func (NoCache) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, bool) {
+	return ls.ValuesetLookupResponse{}, false
+}
+
+func (NoCache) Set(req ls.ValuesetLookupRequest, res ls.ValuesetLookupResponse)
+
+type LRUCache[K string, V map[string]string] struct {
 	ARCCache *lru.ARCCache[K, V]
 }
 
-func NewValuesetCache[K string, V map[string]string]() (ValuesetCache[K, V], error) {
+func NewValuesetCache[K string, V map[string]string]() (LRUCache[K, V], error) {
 	cache, err := lru.NewARC[K, V](cache_size)
 	if err != nil {
-		return ValuesetCache[K, V]{}, err
+		return LRUCache[K, V]{}, err
 	}
-	return ValuesetCache[K, V]{ARCCache: cache}, nil
+	return LRUCache[K, V]{ARCCache: cache}, nil
 }
 
 // ValuesetCache.Lookup returns the cached ValuesetLookupResponse if exists
-func (cache *ValuesetCache[K, V]) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, bool) {
+func (cache *LRUCache[K, V]) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, bool) {
 	val, ok := cache.ARCCache.Get(K(generateHashFromRequest(req)))
 	if !ok {
 		return ls.ValuesetLookupResponse{}, false
@@ -35,7 +46,7 @@ func (cache *ValuesetCache[K, V]) Lookup(req ls.ValuesetLookupRequest) (ls.Value
 }
 
 // ValuesetCache.Set caches a generated hash as a key, storing the request as its corresponding value
-func (cache *ValuesetCache[K, V]) Set(req ls.ValuesetLookupRequest, res ls.ValuesetLookupResponse) {
+func (cache *LRUCache[K, V]) Set(req ls.ValuesetLookupRequest, res ls.ValuesetLookupResponse) {
 	cache.ARCCache.Add(K(generateHashFromRequest(req)), V(req.KeyValues))
 }
 

@@ -38,7 +38,7 @@ type Valuesets struct {
 	Spreadsheets []string            `json:"spreadsheets" yaml:"spreadsheets"`
 	Sets         map[string]Valueset `json:"valuesets" yaml:"valuesets"`
 	databases    []valueset.ValuesetDB
-	cache        *ValuesetCache[string, map[string]string]
+	cache        valueset.ValuesetCache
 }
 
 type Valueset struct {
@@ -241,17 +241,17 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 		return nil
 	}
 	ctx.GetLogger().Debug(map[string]interface{}{"valueset.lookup": req})
-	if len(req.TableIDs) == 0 {
-		for _, v := range vsets.Sets {
-			if err := lookup(v); err != nil {
-				ctx.GetLogger().Debug(map[string]interface{}{"valueset.err": err})
-				return ls.ValuesetLookupResponse{}, err
-			}
-		}
-		ctx.GetLogger().Debug(map[string]interface{}{"valueset.found": found})
-		vsets.cache.Set(req, found)
-		return found, nil
-	}
+	// if len(req.TableIDs) == 0 {
+	// 	for _, v := range vsets.Sets {
+	// 		if err := lookup(v); err != nil {
+	// 			ctx.GetLogger().Debug(map[string]interface{}{"valueset.err": err})
+	// 			return ls.ValuesetLookupResponse{}, err
+	// 		}
+	// 	}
+	// 	ctx.GetLogger().Debug(map[string]interface{}{"valueset.found": found})
+	// 	vsets.cache.Set(req, found)
+	// 	return found, nil
+	// }
 	var n int = len(req.TableIDs)
 	var wg sync.WaitGroup
 	results := make([]ls.ValuesetLookupResponse, n)
@@ -330,6 +330,7 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 		}
 	}
 	if counter == 1 {
+		vsets.cache.Set(req, results[resultIdx])
 		return results[resultIdx], nil
 	}
 	vsets.cache.Set(req, found)
@@ -345,16 +346,12 @@ type valuesetMarshal struct {
 	Databases     []map[string]interface{} `json:"databases" yaml:"databases"`
 }
 
-func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
+func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, cache valueset.ValuesetCache, files []string) error {
 	if vs.Sets == nil {
 		vs.Sets = make(map[string]Valueset)
 		vs.Services = make(map[string]string)
-		cache, err := NewValuesetCache()
-		if err != nil {
-			return err
-		}
-		vs.cache = &cache
 	}
+	vs.cache = cache
 	for _, file := range files {
 		ctx.GetLogger().Debug(map[string]interface{}{"valueset-file": file})
 		var vm valuesetMarshal
@@ -567,7 +564,7 @@ func (vsets *Valuesets) LoadSpreadsheets(ctx *ls.Context, reldir string) error {
 func loadValuesetsCmd(ctx *ls.Context, cmd *cobra.Command, valuesets *Valuesets) {
 	vsf, _ := cmd.Flags().GetStringSlice("valueset")
 	if len(vsf) > 0 {
-		err := LoadValuesetFiles(ctx, valuesets, vsf)
+		err := LoadValuesetFiles(ctx, valuesets, valuesets.cache, vsf)
 		if err != nil {
 			failErr(err)
 		}
@@ -583,6 +580,7 @@ type ValuesetStep struct {
 	valuesets   Valuesets
 	layer       *ls.Layer
 	prc         ls.ValuesetProcessor
+	cache       valueset.ValuesetCache
 }
 
 func (ValuesetStep) Help() {
@@ -604,7 +602,7 @@ params:
 
 func (vs *ValuesetStep) Run(pipeline *pipeline.PipelineContext) error {
 	if !vs.initialized {
-		err := LoadValuesetFiles(pipeline.Context, &vs.valuesets, vs.ValuesetFiles)
+		err := LoadValuesetFiles(pipeline.Context, &vs.valuesets, vs.cache, vs.ValuesetFiles)
 		if err != nil {
 			return err
 		}
