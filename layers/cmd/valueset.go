@@ -241,17 +241,6 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 		return nil
 	}
 	ctx.GetLogger().Debug(map[string]interface{}{"valueset.lookup": req})
-	// if len(req.TableIDs) == 0 {
-	// 	for _, v := range vsets.Sets {
-	// 		if err := lookup(v); err != nil {
-	// 			ctx.GetLogger().Debug(map[string]interface{}{"valueset.err": err})
-	// 			return ls.ValuesetLookupResponse{}, err
-	// 		}
-	// 	}
-	// 	ctx.GetLogger().Debug(map[string]interface{}{"valueset.found": found})
-	// 	vsets.cache.Set(req, found)
-	// 	return found, nil
-	// }
 	var n int = len(req.TableIDs)
 	var wg sync.WaitGroup
 	results := make([]ls.ValuesetLookupResponse, n)
@@ -384,8 +373,6 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, cache valueset.ValuesetCa
 			}
 			vs.Services[k] = v
 		}
-		// call unmarshalConfig here
-		// TODO: Check duplicates
 		vs.databases = make([]valueset.ValuesetDB, 0)
 		seenDBs := make(map[interface{}]struct{})
 		for _, dbItem := range vm.Databases {
