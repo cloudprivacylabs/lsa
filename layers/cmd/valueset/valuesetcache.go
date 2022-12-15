@@ -28,7 +28,7 @@ type LRUCache[K string, V map[string]string] struct {
 	ARCCache *lru.ARCCache[K, V]
 }
 
-func NewValuesetCache[K string, V map[string]string]() (LRUCache[K, V], error) {
+func NewValuesetLRUCache[K string, V map[string]string]() (LRUCache[K, V], error) {
 	cache, err := lru.NewARC[K, V](cache_size)
 	if err != nil {
 		return LRUCache[K, V]{}, err
