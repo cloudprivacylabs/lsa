@@ -567,7 +567,7 @@ type ValuesetStep struct {
 	valuesets   Valuesets
 	layer       *ls.Layer
 	prc         ls.ValuesetProcessor
-	cache       valueset.ValuesetCache
+	noop        bool
 }
 
 func (ValuesetStep) Help() {
@@ -589,7 +589,17 @@ params:
 
 func (vs *ValuesetStep) Run(pipeline *pipeline.PipelineContext) error {
 	if !vs.initialized {
-		err := LoadValuesetFiles(pipeline.Context, &vs.valuesets, vs.cache, vs.ValuesetFiles)
+		var cache valueset.ValuesetCache
+		if !vs.noop {
+			c, err := valueset.NewValuesetLRUCache()
+			if err != nil {
+				return err
+			}
+			cache = &c
+		} else {
+			cache = valueset.NoCache{}
+		}
+		err := LoadValuesetFiles(pipeline.Context, &vs.valuesets, cache, vs.ValuesetFiles)
 		if err != nil {
 			return err
 		}
