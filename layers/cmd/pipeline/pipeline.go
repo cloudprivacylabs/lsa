@@ -21,6 +21,7 @@ type PipelineContext struct {
 	CurrentStep int
 	Steps       []Step
 	Properties  map[string]interface{}
+	Env         map[string]string
 	GraphOwner  *PipelineContext
 	ErrorLogger func(*PipelineContext, error)
 	EntryLogger func(*PipelineContext, map[string]interface{})
@@ -75,12 +76,15 @@ func InputsFromFiles(files []string) func() (PipelineEntryInfo, io.ReadCloser, e
 }
 
 // create new pipeline context with an optional initial graph and inputs func
-func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph *lpg.Graph, inputs func() (PipelineEntryInfo, io.ReadCloser, error)) *PipelineContext {
+func NewContext(lsctx *ls.Context, env map[string]string, pipeline Pipeline, initialGraph *lpg.Graph, inputs func() (PipelineEntryInfo, io.ReadCloser, error)) *PipelineContext {
 	var g *lpg.Graph
 	if initialGraph != nil {
 		g = initialGraph
 	} else {
 		g = cmdutil.NewDocumentGraph()
+	}
+	if env == nil {
+		env = make(map[string]string)
 	}
 	ctx := &PipelineContext{
 		Graph:       g,
@@ -88,6 +92,7 @@ func NewContext(lsctx *ls.Context, pipeline Pipeline, initialGraph *lpg.Graph, i
 		NextInput:   inputs,
 		Steps:       pipeline,
 		CurrentStep: -1,
+		Env:         env,
 		Properties:  make(map[string]interface{}),
 		ErrorLogger: func(pctx *PipelineContext, err error) {
 			fmt.Println(fmt.Errorf("pipeline error: %w", err))

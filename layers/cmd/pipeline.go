@@ -6,6 +6,7 @@ import (
 	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
+	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 )
 
@@ -34,7 +35,7 @@ func NewReadGraphStep(cmd *cobra.Command) pipeline.ReadGraphStep {
 	return rd
 }
 
-func runPipeline(steps []pipeline.Step, initialGraph string, inputs []string) (*pipeline.PipelineContext, error) {
+func runPipeline(steps []pipeline.Step, env map[string]string, initialGraph string, inputs []string) (*pipeline.PipelineContext, error) {
 	var g *lpg.Graph
 	var err error
 	if initialGraph != "" {
@@ -43,7 +44,7 @@ func runPipeline(steps []pipeline.Step, initialGraph string, inputs []string) (*
 			return nil, err
 		}
 	}
-	pctx := pipeline.NewContext(getContext(), steps, g, pipeline.InputsFromFiles(inputs))
+	pctx := pipeline.NewContext(getContext(), env, steps, g, pipeline.InputsFromFiles(inputs))
 	return pctx, pipeline.Run(pctx)
 }
 
@@ -60,8 +61,16 @@ var pipelineCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
+		// load env from .env file here
+		if err = godotenv.Load(); err != nil {
+			return err
+		}
+		env, err := godotenv.Unmarshal("KEY=value")
+		if err != nil {
+			return err
+		}
 		initialGraph, _ := cmd.Flags().GetString("initialGraph")
-		_, err = runPipeline(steps, initialGraph, args)
+		_, err = runPipeline(steps, env, initialGraph, args)
 		return err
 	},
 }

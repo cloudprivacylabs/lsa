@@ -21,6 +21,7 @@ import (
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/transform"
+	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 )
 
@@ -157,7 +158,11 @@ var reshapeCmd = &cobra.Command{
 			step,
 			NewWriteGraphStep(cmd),
 		}
-		_, err := runPipeline(p, "", args)
+		env, err := godotenv.Unmarshal("KEY=value")
+		if err != nil {
+			return err
+		}
+		_, err = runPipeline(p, env, "", args)
 		return err
 	},
 }
