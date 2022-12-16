@@ -376,15 +376,14 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, cache valueset.ValuesetCa
 		vs.databases = make([]valueset.ValuesetDB, 0)
 		seenDBs := make(map[interface{}]struct{})
 		for _, dbItem := range vm.Databases {
-			db := cmdutil.YAMLToMap(dbItem["database"])
-			if _, seen := seenDBs[db]; seen {
-				return fmt.Errorf("database %v already defined", db)
+			if _, seen := seenDBs[&dbItem]; seen {
+				return fmt.Errorf("database %v already defined", dbItem)
 			}
-			vsdb, err := valueset.UnmarshalSingleDatabaseConfig(db.(map[string]interface{}), nil)
+			vsdb, err := valueset.UnmarshalSingleDatabaseConfig(dbItem, nil)
 			if err != nil {
-				return fmt.Errorf("Cannot unmarshal database: %v", db)
+				return fmt.Errorf("Cannot unmarshal database: %v", dbItem)
 			}
-			seenDBs[db] = struct{}{}
+			seenDBs[&dbItem] = struct{}{}
 			vs.databases = append(vs.databases, vsdb)
 		}
 		for _, f := range vm.DatabaseFiles {
