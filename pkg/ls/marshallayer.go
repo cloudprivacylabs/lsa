@@ -240,6 +240,10 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 		itemsArr, _ := inode.Node[ArrayItemsTerm].([]interface{})
 		switch len(itemsArr) {
 		case 0:
+			// Allowed in an overlay
+			if target.GetLayerType() == OverlayTerm {
+				break
+			}
 			return MakeErrInvalidInput(inode.ID, fmt.Sprintf("Parsing %s: Invalid array items", target.GetID()))
 		case 1:
 			itemsNode := allNodes[LDGetNodeID(itemsArr[0])]

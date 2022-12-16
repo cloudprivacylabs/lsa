@@ -29,6 +29,7 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
+	"github.com/cloudprivacylabs/lsa/layers/cmd/valueset"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -36,6 +37,8 @@ type Valuesets struct {
 	Services     map[string]string   `json:"services" yaml:"services"`
 	Spreadsheets []string            `json:"spreadsheets" yaml:"spreadsheets"`
 	Sets         map[string]Valueset `json:"valuesets" yaml:"valuesets"`
+	databases    []valueset.ValuesetDB
+	cache        valueset.ValuesetCache
 }
 
 type Valueset struct {
@@ -220,6 +223,9 @@ func (vs Valueset) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLookupRespon
 
 // Lookup can be used as the external lookup func of LookupProcessor
 func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, error) {
+	if resp, has := vsets.cache.Lookup(req); has {
+		return resp, nil
+	}
 	found := ls.ValuesetLookupResponse{}
 	lookup := func(v Valueset) error {
 		rsp, err := v.Lookup(req)
@@ -235,21 +241,25 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 		return nil
 	}
 	ctx.GetLogger().Debug(map[string]interface{}{"valueset.lookup": req})
-	if len(req.TableIDs) == 0 {
-		for _, v := range vsets.Sets {
-			if err := lookup(v); err != nil {
-				ctx.GetLogger().Debug(map[string]interface{}{"valueset.err": err})
-				return ls.ValuesetLookupResponse{}, err
-			}
-		}
-		ctx.GetLogger().Debug(map[string]interface{}{"valueset.found": found})
-		return found, nil
-	}
 	var n int = len(req.TableIDs)
 	var wg sync.WaitGroup
 	results := make([]ls.ValuesetLookupResponse, n)
 	errs := make([]error, n)
 	for idx, id := range req.TableIDs {
+		// if tableID exists in of the databases, lookup
+		for _, db := range vsets.databases {
+			if _, has := db.GetTableIds()[id]; has {
+				kv, err := db.ValueSetLookup(ctx, id, req.KeyValues)
+				if err != nil {
+					return ls.ValuesetLookupResponse{}, nil
+				}
+				// if len(kv) > 0 {
+				resp := ls.ValuesetLookupResponse{KeyValues: kv}
+				vsets.cache.Set(req, resp)
+				return resp, nil
+				// }
+			}
+		}
 		if v, ok := vsets.Services[id]; ok {
 			id := id
 			wg.Add(1)
@@ -309,29 +319,36 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 		}
 	}
 	if counter == 1 {
+		vsets.cache.Set(req, results[resultIdx])
 		return results[resultIdx], nil
 	}
+	vsets.cache.Set(req, found)
 	return found, nil
 }
 
 type valuesetMarshal struct {
 	Valueset
-	Services     map[string]string `json:"services" yaml:"services"`
-	Spreadsheets []string          `json:"spreadsheets" yaml:"spreadsheets"`
-	Sets         []Valueset        `json:"valuesets" yaml:"valuesets"`
+	Services      map[string]string        `json:"services" yaml:"services"`
+	Spreadsheets  []string                 `json:"spreadsheets" yaml:"spreadsheets"`
+	Sets          []Valueset               `json:"valuesets" yaml:"valuesets"`
+	DatabaseFiles []string                 `json:"databaseFiles" yaml:"databaseFiles"`
+	Databases     []map[string]interface{} `json:"databases" yaml:"databases"`
 }
 
-func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
+func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, cache valueset.ValuesetCache, files []string) error {
 	if vs.Sets == nil {
 		vs.Sets = make(map[string]Valueset)
 		vs.Services = make(map[string]string)
 	}
+	vs.cache = cache
 	for _, file := range files {
+		ctx.GetLogger().Debug(map[string]interface{}{"valueset-file": file})
 		var vm valuesetMarshal
-		err := cmdutil.ReadJSON(file, &vm)
+		err := cmdutil.ReadJSONOrYAML(file, &vm)
 		if err != nil {
 			return err
 		}
+		ctx.GetLogger().Debug(map[string]interface{}{"valuesets": vm})
 		vs.Spreadsheets = vm.Spreadsheets
 		if err := vs.LoadSpreadsheets(ctx, filepath.Dir(file)); err != nil {
 			return err
@@ -341,12 +358,14 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 				return fmt.Errorf("Value set %s already defined", v.ID)
 			}
 			vs.Sets[v.ID] = v
+			ctx.GetLogger().Debug(map[string]interface{}{"valueset": v.ID})
 		}
 		if len(vm.ID) > 0 {
 			if _, exists := vs.Sets[vm.ID]; exists {
 				return fmt.Errorf("Value set %s already defined", vm.ID)
 			}
 			vs.Sets[vm.ID] = vm.Valueset
+			ctx.GetLogger().Debug(map[string]interface{}{"valueset": vm.ID})
 		}
 		for k, v := range vm.Services {
 			if _, exists := vs.Services[k]; exists {
@@ -354,6 +373,29 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, files []string) error {
 			}
 			vs.Services[k] = v
 		}
+		vs.databases = make([]valueset.ValuesetDB, 0)
+		seenDBs := make(map[interface{}]struct{})
+		for _, dbItem := range vm.Databases {
+			if _, seen := seenDBs[&dbItem]; seen {
+				return fmt.Errorf("database %v already defined", dbItem)
+			}
+			vsdb, err := valueset.UnmarshalSingleDatabaseConfig(dbItem, nil)
+			if err != nil {
+				return fmt.Errorf("Cannot unmarshal database: %v", dbItem)
+			}
+			seenDBs[&dbItem] = struct{}{}
+			vs.databases = append(vs.databases, vsdb)
+		}
+		for _, f := range vm.DatabaseFiles {
+			cfg, err := valueset.LoadConfig(f, nil)
+			if err != nil {
+				return err
+			}
+			vs.databases = append(vs.databases, cfg.ValuesetDBs...)
+		}
+	}
+	for k := range vs.Sets {
+		ctx.GetLogger().Debug(map[string]interface{}{"valueset": k})
 	}
 	return nil
 }
@@ -508,7 +550,7 @@ func (vsets *Valuesets) LoadSpreadsheets(ctx *ls.Context, reldir string) error {
 func loadValuesetsCmd(ctx *ls.Context, cmd *cobra.Command, valuesets *Valuesets) {
 	vsf, _ := cmd.Flags().GetStringSlice("valueset")
 	if len(vsf) > 0 {
-		err := LoadValuesetFiles(ctx, valuesets, vsf)
+		err := LoadValuesetFiles(ctx, valuesets, valuesets.cache, vsf)
 		if err != nil {
 			failErr(err)
 		}
@@ -524,6 +566,7 @@ type ValuesetStep struct {
 	valuesets   Valuesets
 	layer       *ls.Layer
 	prc         ls.ValuesetProcessor
+	noop        bool
 }
 
 func (ValuesetStep) Help() {
@@ -545,7 +588,17 @@ params:
 
 func (vs *ValuesetStep) Run(pipeline *pipeline.PipelineContext) error {
 	if !vs.initialized {
-		err := LoadValuesetFiles(pipeline.Context, &vs.valuesets, vs.ValuesetFiles)
+		var cache valueset.ValuesetCache
+		if !vs.noop {
+			c, err := valueset.NewValuesetLRUCache()
+			if err != nil {
+				return err
+			}
+			cache = &c
+		} else {
+			cache = valueset.NoCache{}
+		}
+		err := LoadValuesetFiles(pipeline.Context, &vs.valuesets, cache, vs.ValuesetFiles)
 		if err != nil {
 			return err
 		}

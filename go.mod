@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
-	github.com/bserdar/jsonom v0.0.0-20211005020717-9af6d87a0e9f
+	github.com/bserdar/jsonom v1.0.0
 	github.com/bserdar/jsonstream v0.0.0-20190428032403-9f1769267072
 	github.com/nleeper/goment v1.4.4
 	github.com/piprate/json-gold v0.4.0
@@ -17,6 +17,8 @@ require (
 	github.com/cloudprivacylabs/lpg v1.0.11
 	github.com/mitchellh/go-homedir v1.1.0
 )
+
+require github.com/hashicorp/golang-lru/v2 v2.0.1
 
 require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
@@ -38,6 +40,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/mitchellh/mapstructure v1.5.0
 	github.com/neo4j/neo4j-go-driver v1.8.3
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 // indirect
