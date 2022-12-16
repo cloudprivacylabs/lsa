@@ -22,7 +22,7 @@ func (c *captureStep) Run(ctx *pipeline.PipelineContext) error {
 }
 
 func TestCSVJoinIngest(t *testing.T) {
-	env, err := godotenv.Unmarshal("KEY=value")
+	env, err := godotenv.Read(".env")
 	if err != nil {
 		t.Error(err)
 	}
@@ -99,7 +99,7 @@ func TestCSVJoinIngest(t *testing.T) {
 }
 
 func TestCSVJoinLinkedIngest(t *testing.T) {
-	env, err := godotenv.Unmarshal("KEY=value")
+	env, err := godotenv.Read(".env")
 	if err != nil {
 		t.Error(err)
 	}

@@ -20,7 +20,7 @@ func TestPersonPipeline(t *testing.T) {
 	oldTarget := ExportTarget
 	var buf bytes.Buffer
 	ExportTarget = &buf
-	env, err := godotenv.Unmarshal("KEY=value")
+	env, err := godotenv.Read(".env")
 	if err != nil {
 		t.Error(err)
 		return

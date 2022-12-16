@@ -693,7 +693,7 @@ Individual valueset objects can be given as separate files as well:
 			step,
 			NewWriteGraphStep(cmd),
 		}
-		env, err := godotenv.Unmarshal("KEY=value")
+		env, err := godotenv.Read(".env")
 		if err != nil {
 			return err
 		}

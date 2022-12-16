@@ -65,7 +65,7 @@ var exportJSONCmd = &cobra.Command{
 			NewReadGraphStep(cmd),
 			step,
 		}
-		env, err := godotenv.Unmarshal("KEY=value")
+		env, err := godotenv.Read(".env")
 		if err != nil {
 			return err
 		}

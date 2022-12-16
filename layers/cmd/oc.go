@@ -104,7 +104,10 @@ var ocCmd = &cobra.Command{
 			step,
 			NewWriteGraphStep(cmd),
 		}
-		env, err := godotenv.Unmarshal("KEY=value")
+		env, err := godotenv.Read(".env")
+		if err != nil {
+			return err
+		}
 		_, err = runPipeline(p, env, "", args)
 		if err != nil {
 			return err
@@ -126,7 +129,7 @@ var ocqCmd = &cobra.Command{
 			NewReadGraphStep(cmd),
 			step,
 		}
-		env, err := godotenv.Unmarshal("KEY=value")
+		env, err := godotenv.Read(".env")
 		if err != nil {
 			return err
 		}

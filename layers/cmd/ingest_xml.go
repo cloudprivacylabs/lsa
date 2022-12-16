@@ -147,7 +147,7 @@ var ingestXMLCmd = &cobra.Command{
 			&ing,
 			NewWriteGraphStep(cmd),
 		}
-		env, err := godotenv.Unmarshal("KEY=value")
+		env, err := godotenv.Read(".env")
 		if err != nil {
 			return err
 		}

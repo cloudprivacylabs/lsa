@@ -128,7 +128,7 @@ row root node. If a column query is not specified, it is assumed to be:
 			NewReadGraphStep(cmd),
 			step,
 		}
-		env, err := godotenv.Unmarshal("KEY=value")
+		env, err := godotenv.Read(".env")
 		if err != nil {
 			return err
 		}

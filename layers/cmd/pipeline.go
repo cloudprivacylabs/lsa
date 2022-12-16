@@ -65,7 +65,7 @@ var pipelineCmd = &cobra.Command{
 		if err = godotenv.Load(); err != nil {
 			return err
 		}
-		env, err := godotenv.Unmarshal("KEY=value")
+		env, err := godotenv.Read(".env")
 		if err != nil {
 			return err
 		}
