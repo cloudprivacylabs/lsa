@@ -34,7 +34,7 @@ func NewReadGraphStep(cmd *cobra.Command) pipeline.ReadGraphStep {
 	return rd
 }
 
-func runPipeline(steps []pipeline.Step, initialGraph string, inputs []string) (*pipeline.PipelineContext, error) {
+func runPipeline(steps []pipeline.Step, env map[string]string, initialGraph string, inputs []string) (*pipeline.PipelineContext, error) {
 	var g *lpg.Graph
 	var err error
 	if initialGraph != "" {
@@ -43,7 +43,7 @@ func runPipeline(steps []pipeline.Step, initialGraph string, inputs []string) (*
 			return nil, err
 		}
 	}
-	pctx := pipeline.NewContext(getContext(), steps, g, pipeline.InputsFromFiles(inputs))
+	pctx := pipeline.NewContext(getContext(), env, steps, g, pipeline.InputsFromFiles(inputs))
 	return pctx, pipeline.Run(pctx)
 }
 
@@ -61,7 +61,7 @@ var pipelineCmd = &cobra.Command{
 			failErr(err)
 		}
 		initialGraph, _ := cmd.Flags().GetString("initialGraph")
-		_, err = runPipeline(steps, initialGraph, args)
+		_, err = runPipeline(steps, Environment, initialGraph, args)
 		return err
 	},
 }

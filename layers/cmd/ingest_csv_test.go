@@ -52,7 +52,7 @@ func TestCSVJoinIngest(t *testing.T) {
 		&cji,
 		&capture,
 	}
-	pctx := pipeline.NewContext(ls.DefaultContext(), p, nil, pipeline.InputsFromFiles([]string{"testdata/csvjoin.csv"}))
+	pctx := pipeline.NewContext(ls.DefaultContext(), nil, p, nil, pipeline.InputsFromFiles([]string{"testdata/csvjoin.csv"}))
 	err := pctx.Next()
 	if err != nil {
 		t.Error(err)
@@ -125,7 +125,7 @@ func TestCSVJoinLinkedIngest(t *testing.T) {
 		&cji,
 		&capture,
 	}
-	pctx := pipeline.NewContext(ls.DefaultContext(), p, nil, pipeline.InputsFromFiles([]string{"testdata/csvjoin.csv"}))
+	pctx := pipeline.NewContext(ls.DefaultContext(), nil, p, nil, pipeline.InputsFromFiles([]string{"testdata/csvjoin.csv"}))
 	err := pctx.Next()
 	if err != nil {
 		t.Error(err)

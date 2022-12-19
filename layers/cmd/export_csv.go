@@ -127,7 +127,7 @@ row root node. If a column query is not specified, it is assumed to be:
 			NewReadGraphStep(cmd),
 			step,
 		}
-		_, err := runPipeline(p, "", args)
+		_, err := runPipeline(p, Environment, "", args)
 		return err
 	},
 }

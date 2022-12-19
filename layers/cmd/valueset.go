@@ -335,7 +335,7 @@ type valuesetMarshal struct {
 	Databases     []map[string]interface{} `json:"databases" yaml:"databases"`
 }
 
-func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, cache valueset.ValuesetCache, files []string) error {
+func LoadValuesetFiles(ctx *ls.Context, env map[string]string, vs *Valuesets, cache valueset.ValuesetCache, files []string) error {
 	if vs.Sets == nil {
 		vs.Sets = make(map[string]Valueset)
 		vs.Services = make(map[string]string)
@@ -379,7 +379,7 @@ func LoadValuesetFiles(ctx *ls.Context, vs *Valuesets, cache valueset.ValuesetCa
 			if _, seen := seenDBs[&dbItem]; seen {
 				return fmt.Errorf("database %v already defined", dbItem)
 			}
-			vsdb, err := valueset.UnmarshalSingleDatabaseConfig(dbItem, nil)
+			vsdb, err := valueset.UnmarshalSingleDatabaseConfig(dbItem, env)
 			if err != nil {
 				return fmt.Errorf("Cannot unmarshal database: %v", dbItem)
 			}
@@ -547,10 +547,10 @@ func (vsets *Valuesets) LoadSpreadsheets(ctx *ls.Context, reldir string) error {
 	return nil
 }
 
-func loadValuesetsCmd(ctx *ls.Context, cmd *cobra.Command, valuesets *Valuesets) {
+func loadValuesetsCmd(ctx *ls.Context, env map[string]string, cmd *cobra.Command, valuesets *Valuesets) {
 	vsf, _ := cmd.Flags().GetStringSlice("valueset")
 	if len(vsf) > 0 {
-		err := LoadValuesetFiles(ctx, valuesets, valuesets.cache, vsf)
+		err := LoadValuesetFiles(ctx, env, valuesets, valuesets.cache, vsf)
 		if err != nil {
 			failErr(err)
 		}
@@ -598,7 +598,7 @@ func (vs *ValuesetStep) Run(pipeline *pipeline.PipelineContext) error {
 		} else {
 			cache = valueset.NoCache{}
 		}
-		err := LoadValuesetFiles(pipeline.Context, &vs.valuesets, cache, vs.ValuesetFiles)
+		err := LoadValuesetFiles(pipeline.Context, pipeline.Env, &vs.valuesets, cache, vs.ValuesetFiles)
 		if err != nil {
 			return err
 		}
@@ -692,7 +692,7 @@ Individual valueset objects can be given as separate files as well:
 			step,
 			NewWriteGraphStep(cmd),
 		}
-		_, err := runPipeline(p, "", args)
+		_, err := runPipeline(p, Environment, "", args)
 		return err
 	},
 }

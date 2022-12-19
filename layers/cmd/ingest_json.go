@@ -135,7 +135,7 @@ var ingestJSONCmd = &cobra.Command{
 			&ing,
 			NewWriteGraphStep(cmd),
 		}
-		_, err := runPipeline(p, initialGraph, args)
+		_, err := runPipeline(p, Environment, initialGraph, args)
 		return err
 	},
 }

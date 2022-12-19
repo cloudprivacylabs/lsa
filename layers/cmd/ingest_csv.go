@@ -561,7 +561,7 @@ var ingestCSVCmd = &cobra.Command{
 			&ing,
 			NewWriteGraphStep(cmd),
 		}
-		_, err = runPipeline(p, initialGraph, args)
+		_, err = runPipeline(p, Environment, initialGraph, args)
 		return err
 	},
 }
@@ -602,7 +602,7 @@ var ingestCSVJoinCmd = &cobra.Command{
 			&ing,
 			NewWriteGraphStep(cmd),
 		}
-		_, err = runPipeline(pl, initialGraph, args)
+		_, err = runPipeline(pl, Environment, initialGraph, args)
 		return err
 	},
 }

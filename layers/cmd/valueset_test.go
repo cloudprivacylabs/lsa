@@ -66,7 +66,8 @@ func TestValuesetSpreadSheet(t *testing.T) {
 		Spreadsheets: []string{"testdata/valueset_sample.xlsx"},
 		cache:        vs.NoCache{},
 	}
-	err := LoadValuesetFiles(ls.DefaultContext(), vs, vs.cache, nil)
+	env := make(map[string]string)
+	err := LoadValuesetFiles(ls.DefaultContext(), env, vs, vs.cache, nil)
 	if err != nil {
 		t.Error(err)
 	}
