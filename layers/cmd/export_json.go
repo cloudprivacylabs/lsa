@@ -17,7 +17,6 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lpg"
@@ -65,11 +64,7 @@ var exportJSONCmd = &cobra.Command{
 			NewReadGraphStep(cmd),
 			step,
 		}
-		env, err := godotenv.Read(".env")
-		if err != nil {
-			return err
-		}
-		_, err = runPipeline(p, env, "", args)
+		_, err := runPipeline(p, Environment, "", args)
 		return err
 	},
 }

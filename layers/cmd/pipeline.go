@@ -6,7 +6,6 @@ import (
 	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
-	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 )
 
@@ -61,16 +60,8 @@ var pipelineCmd = &cobra.Command{
 		if err != nil {
 			failErr(err)
 		}
-		// load env from .env file here
-		if err = godotenv.Load(); err != nil {
-			return err
-		}
-		env, err := godotenv.Read(".env")
-		if err != nil {
-			return err
-		}
 		initialGraph, _ := cmd.Flags().GetString("initialGraph")
-		_, err = runPipeline(steps, env, initialGraph, args)
+		_, err = runPipeline(steps, Environment, initialGraph, args)
 		return err
 	},
 }

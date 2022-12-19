@@ -9,7 +9,6 @@ import (
 	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/joho/godotenv"
 )
 
 type captureStep struct {
@@ -22,10 +21,6 @@ func (c *captureStep) Run(ctx *pipeline.PipelineContext) error {
 }
 
 func TestCSVJoinIngest(t *testing.T) {
-	env, err := godotenv.Read(".env")
-	if err != nil {
-		t.Error(err)
-	}
 	cji := CSVJoinIngester{
 		BaseIngestParams: BaseIngestParams{
 			Bundle:           []string{"testdata/ingest-csvjoin.bundle.json"},
@@ -57,8 +52,8 @@ func TestCSVJoinIngest(t *testing.T) {
 		&cji,
 		&capture,
 	}
-	pctx := pipeline.NewContext(ls.DefaultContext(), env, p, nil, pipeline.InputsFromFiles([]string{"testdata/csvjoin.csv"}))
-	err = pctx.Next()
+	pctx := pipeline.NewContext(ls.DefaultContext(), nil, p, nil, pipeline.InputsFromFiles([]string{"testdata/csvjoin.csv"}))
+	err := pctx.Next()
 	if err != nil {
 		t.Error(err)
 	}
@@ -99,10 +94,6 @@ func TestCSVJoinIngest(t *testing.T) {
 }
 
 func TestCSVJoinLinkedIngest(t *testing.T) {
-	env, err := godotenv.Read(".env")
-	if err != nil {
-		t.Error(err)
-	}
 	cji := CSVJoinIngester{
 		BaseIngestParams: BaseIngestParams{
 			Bundle:           []string{"testdata/ingest-csvjoin-linked.bundle.json"},
@@ -134,8 +125,8 @@ func TestCSVJoinLinkedIngest(t *testing.T) {
 		&cji,
 		&capture,
 	}
-	pctx := pipeline.NewContext(ls.DefaultContext(), env, p, nil, pipeline.InputsFromFiles([]string{"testdata/csvjoin.csv"}))
-	err = pctx.Next()
+	pctx := pipeline.NewContext(ls.DefaultContext(), nil, p, nil, pipeline.InputsFromFiles([]string{"testdata/csvjoin.csv"}))
+	err := pctx.Next()
 	if err != nil {
 		t.Error(err)
 	}

@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
@@ -128,11 +127,7 @@ row root node. If a column query is not specified, it is assumed to be:
 			NewReadGraphStep(cmd),
 			step,
 		}
-		env, err := godotenv.Read(".env")
-		if err != nil {
-			return err
-		}
-		_, err = runPipeline(p, env, "", args)
+		_, err := runPipeline(p, Environment, "", args)
 		return err
 	},
 }

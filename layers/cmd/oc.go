@@ -25,7 +25,6 @@ import (
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
-	"github.com/joho/godotenv"
 
 	"github.com/spf13/cobra"
 )
@@ -104,11 +103,7 @@ var ocCmd = &cobra.Command{
 			step,
 			NewWriteGraphStep(cmd),
 		}
-		env, err := godotenv.Read(".env")
-		if err != nil {
-			return err
-		}
-		_, err = runPipeline(p, env, "", args)
+		_, err := runPipeline(p, Environment, "", args)
 		if err != nil {
 			return err
 		}
@@ -129,11 +124,7 @@ var ocqCmd = &cobra.Command{
 			NewReadGraphStep(cmd),
 			step,
 		}
-		env, err := godotenv.Read(".env")
-		if err != nil {
-			return err
-		}
-		ctx, err := runPipeline(p, env, "", args)
+		ctx, err := runPipeline(p, Environment, "", args)
 		if err != nil {
 			return err
 		}

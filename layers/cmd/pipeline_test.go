@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
-	"github.com/joho/godotenv"
 )
 
 func TestPersonPipeline(t *testing.T) {
@@ -20,12 +19,7 @@ func TestPersonPipeline(t *testing.T) {
 	oldTarget := ExportTarget
 	var buf bytes.Buffer
 	ExportTarget = &buf
-	env, err := godotenv.Read(".env")
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	_, err = runPipeline(steps, env, "", []string{"testdata/person_sample.json"})
+	_, err = runPipeline(steps, nil, "", []string{"testdata/person_sample.json"})
 	ExportTarget = oldTarget
 	if err != nil {
 		t.Error(err)

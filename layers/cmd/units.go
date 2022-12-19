@@ -21,7 +21,6 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
@@ -177,11 +176,7 @@ var measuresCmd = &cobra.Command{
 			step,
 			NewWriteGraphStep(cmd),
 		}
-		env, err := godotenv.Read(".env")
-		if err != nil {
-			return err
-		}
-		_, err = runPipeline(p, env, "", args)
+		_, err := runPipeline(p, Environment, "", args)
 		return err
 	},
 }

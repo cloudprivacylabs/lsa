@@ -27,7 +27,6 @@ import (
 	"text/template"
 
 	"github.com/cloudprivacylabs/lpg"
-	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
@@ -562,11 +561,7 @@ var ingestCSVCmd = &cobra.Command{
 			&ing,
 			NewWriteGraphStep(cmd),
 		}
-		env, err := godotenv.Read(".env")
-		if err != nil {
-			return err
-		}
-		_, err = runPipeline(p, env, initialGraph, args)
+		_, err = runPipeline(p, Environment, initialGraph, args)
 		return err
 	},
 }
@@ -607,11 +602,7 @@ var ingestCSVJoinCmd = &cobra.Command{
 			&ing,
 			NewWriteGraphStep(cmd),
 		}
-		env, err := godotenv.Read(".env")
-		if err != nil {
-			return err
-		}
-		_, err = runPipeline(pl, env, initialGraph, args)
+		_, err = runPipeline(pl, Environment, initialGraph, args)
 		return err
 	},
 }
