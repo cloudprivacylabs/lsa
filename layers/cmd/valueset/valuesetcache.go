@@ -28,12 +28,12 @@ type LRUCache[K string, V map[string]string] struct {
 	ARCCache *lru.ARCCache[K, V]
 }
 
-func NewValuesetLRUCache[K string, V map[string]string]() (LRUCache[K, V], error) {
+func NewValuesetLRUCache[K string, V map[string]string]() (*LRUCache[K, V], error) {
 	cache, err := lru.NewARC[K, V](cache_size)
 	if err != nil {
-		return LRUCache[K, V]{}, err
+		return nil, err
 	}
-	return LRUCache[K, V]{ARCCache: cache}, nil
+	return &LRUCache[K, V]{ARCCache: cache}, nil
 }
 
 // ValuesetCache.Lookup returns the cached ValuesetLookupResponse if exists

@@ -226,6 +226,15 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 	if resp, has := vsets.cache.Lookup(req); has {
 		return resp, nil
 	}
+	resp, err := vsets.lookup(ctx, req)
+	if err != nil {
+		return resp, err
+	}
+	vsets.cache.Set(req, resp)
+	return resp, nil
+}
+
+func (vsets Valuesets) lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls.ValuesetLookupResponse, error) {
 	found := ls.ValuesetLookupResponse{}
 	lookup := func(v Valueset) error {
 		rsp, err := v.Lookup(req)
@@ -255,7 +264,6 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 				}
 				// if len(kv) > 0 {
 				resp := ls.ValuesetLookupResponse{KeyValues: kv}
-				vsets.cache.Set(req, resp)
 				return resp, nil
 				// }
 			}
@@ -319,10 +327,8 @@ func (vsets Valuesets) Lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 		}
 	}
 	if counter == 1 {
-		vsets.cache.Set(req, results[resultIdx])
 		return results[resultIdx], nil
 	}
-	vsets.cache.Set(req, found)
 	return found, nil
 }
 
@@ -566,7 +572,6 @@ type ValuesetStep struct {
 	valuesets   Valuesets
 	layer       *ls.Layer
 	prc         ls.ValuesetProcessor
-	noop        bool
 }
 
 func (ValuesetStep) Help() {
@@ -586,19 +591,18 @@ params:
 	fmt.Println(baseIngestParamsHelp)
 }
 
+var valuesetCache valueset.ValuesetCache
+
 func (vs *ValuesetStep) Run(pipeline *pipeline.PipelineContext) error {
 	if !vs.initialized {
-		var cache valueset.ValuesetCache
-		if !vs.noop {
-			c, err := valueset.NewValuesetLRUCache()
+		var err error
+		if valuesetCache == nil {
+			valuesetCache, err = valueset.NewValuesetLRUCache()
 			if err != nil {
 				return err
 			}
-			cache = &c
-		} else {
-			cache = valueset.NoCache{}
 		}
-		err := LoadValuesetFiles(pipeline.Context, pipeline.Env, &vs.valuesets, cache, vs.ValuesetFiles)
+		err = LoadValuesetFiles(pipeline.Context, pipeline.Env, &vs.valuesets, valuesetCache, vs.ValuesetFiles)
 		if err != nil {
 			return err
 		}

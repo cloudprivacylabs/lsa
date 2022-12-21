@@ -64,9 +64,9 @@ func UnmarshalDatabasesConfig(configMap []map[string]interface{}, env map[string
 func UnmarshalSingleDatabaseConfig(database map[string]interface{}, env map[string]string) (ValuesetDB, error) {
 	for _, vals := range database {
 		dbVals := cmdutil.YAMLToMap(vals)
-		for key := range dbVals.(map[string]interface{}) {
+		for key, value := range dbVals.(map[string]interface{}) {
 			if fn, ok := valuesetFactory[key]; ok {
-				vsdb, err := fn(dbVals, env)
+				vsdb, err := fn(value, env)
 				if err != nil {
 					return nil, err
 				}
