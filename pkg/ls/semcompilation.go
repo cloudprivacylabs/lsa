@@ -15,6 +15,9 @@
 package ls
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/opencypher"
 )
@@ -207,4 +210,70 @@ func (c CompileOCSemantics) Evaluate(target CompilablePropertyContainer, term st
 		ret = append(ret, rs)
 	}
 	return ret, nil
+}
+
+// DialectValueSemantics is a compilation implementation for terms
+// containing an expression, or value. The property is expected to be:
+//
+//	dialect: value
+//
+// For example:
+//
+//	opencypher:  expr
+//
+// is an expression
+//
+//	literal: value
+//
+// is a literal
+//
+// Anything else is error
+type DialectValueSemantics struct{}
+
+type DialectValue struct {
+	Dialect string
+	Value   any
+}
+
+func (DialectValueSemantics) CompileTerm(target CompilablePropertyContainer, term string, value *PropertyValue) error {
+	if value == nil {
+		return nil
+	}
+	result := make([]DialectValue, 0)
+	for _, str := range value.MustStringSlice() {
+		parts := strings.SplitN(str, ":", 2)
+		if len(parts) != 2 {
+			return fmt.Errorf("Invalid dialect:value expression: %s", str)
+		}
+		parts[0] = strings.TrimSpace(parts[0])
+		switch parts[0] {
+		case "opencypher":
+			e, err := opencypher.Parse(parts[1])
+			if err != nil {
+				return err
+			}
+			result = append(result, DialectValue{
+				Dialect: "opencypher",
+				Value:   e,
+			})
+		case "literal":
+			result = append(result, DialectValue{
+				Dialect: "literal",
+				Value:   parts[1],
+			})
+		default:
+			return fmt.Errorf("Unknown dialect in expression: %s", parts[0])
+		}
+	}
+	target.SetProperty("$compiled_"+term, result)
+	return nil
+}
+
+func (DialectValueSemantics) Compiled(target CompilablePropertyContainer, term string) []DialectValue {
+	x, _ := target.GetProperty("$compiled_" + term)
+	if x == nil {
+		return nil
+	}
+	ret, _ := x.([]DialectValue)
+	return ret
 }

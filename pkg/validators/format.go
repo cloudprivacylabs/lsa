@@ -1,6 +1,8 @@
 package validators
 
 import (
+	"fmt"
+
 	"github.com/cloudprivacylabs/lsa/pkg/json/jsonschema"
 
 	"github.com/cloudprivacylabs/lpg"
@@ -26,10 +28,10 @@ func (validator JsonFormatValidator) validateValue(value, format string) error {
 	}
 	f := jsonschema.Formats[format]
 	if f == nil {
-		return ls.ErrValidation{Validator: JsonFormatTerm, Msg: "Unknown format: " + format}
+		return ls.ErrValidation{Validator: JsonFormatTerm, Msg: fmt.Sprintf("Unknown format: %s: %v ", format, value)}
 	}
 	if !f(value) {
-		return ls.ErrValidation{Validator: JsonFormatTerm, Msg: "Invalid value for " + format}
+		return ls.ErrValidation{Validator: JsonFormatTerm, Msg: fmt.Sprintf("Invalid value for %s: %v", format, value)}
 	}
 	return nil
 }
