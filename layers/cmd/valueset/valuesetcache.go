@@ -47,7 +47,11 @@ func (cache *LRUCache[K, V]) Lookup(req ls.ValuesetLookupRequest) (ls.ValuesetLo
 
 // ValuesetCache.Set caches a generated hash as a key, storing the request as its corresponding value
 func (cache *LRUCache[K, V]) Set(req ls.ValuesetLookupRequest, res ls.ValuesetLookupResponse) {
-	cache.ARCCache.Add(K(generateHashFromRequest(req)), V(req.KeyValues))
+	kv := make(map[string]string, len(res.KeyValues))
+	for k, v := range res.KeyValues {
+		kv[k] = v
+	}
+	cache.ARCCache.Add(K(generateHashFromRequest(req)), V(kv))
 }
 
 func generateHashFromRequest(req ls.ValuesetLookupRequest) string {
