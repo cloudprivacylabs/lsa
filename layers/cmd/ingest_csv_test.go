@@ -20,6 +20,8 @@ func (c *captureStep) Run(ctx *pipeline.PipelineContext) error {
 	return nil
 }
 
+func (c *captureStep) Name() string { return "capture" }
+
 func TestCSVJoinIngest(t *testing.T) {
 	cji := CSVJoinIngester{
 		BaseIngestParams: BaseIngestParams{
