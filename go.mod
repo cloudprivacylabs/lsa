@@ -21,6 +21,7 @@ require (
 require (
 	github.com/hashicorp/golang-lru/v2 v2.0.1
 	github.com/joho/godotenv v1.4.0
+	github.com/neo4j/neo4j-go-driver/v5 v5.4.0
 )
 
 require (
@@ -44,7 +45,7 @@ require (
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0
-	github.com/neo4j/neo4j-go-driver v1.8.3
+	github.com/neo4j/neo4j-go-driver v1.8.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 // indirect
 	github.com/spf13/pflag v1.0.5
