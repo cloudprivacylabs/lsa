@@ -33,6 +33,8 @@ type OCStep struct {
 	Expr []string
 }
 
+func (OCStep) Name() string { return "oc" }
+
 func (OCStep) Help() {
 	fmt.Println(`Run Opencypher expression(s) on the graph
 

@@ -47,6 +47,8 @@ type CSVIngester struct {
 	ingester     *ls.Ingester
 }
 
+func (CSVIngester) Name() string { return "ingest/csv" }
+
 func (CSVIngester) Help() {
 	fmt.Println(`Ingest CSV Data
 Ingest CSV data from files using a schema variant and output a graph
@@ -205,6 +207,8 @@ type CSVJoinIngester struct {
 	initialized bool
 	ingester    map[string]*ls.Ingester
 }
+
+func (CSVJoinIngester) Name() string { return "ingest/csv/join" }
 
 type CSVJoinConfig struct {
 	VariantID string `json:"variantId" yaml:"variantId"`

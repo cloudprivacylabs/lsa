@@ -37,6 +37,8 @@ type CSVExport struct {
 	csvWriter     *csv.Writer
 }
 
+func (CSVExport) Name() string { return "export/csv" }
+
 func (CSVExport) Help() {
 	fmt.Println(`Export CSV Data from Graph
 Export the graph in the pipeline context as a CSV file

@@ -16,6 +16,8 @@ type ReadGraphStep struct {
 	Format string `json:"format" yaml:"format"`
 }
 
+func (ReadGraphStep) Name() string { return "readGraph" }
+
 func (ReadGraphStep) Help() {
 	fmt.Println(`Read graph
 Read graph file(s)

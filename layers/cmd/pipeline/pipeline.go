@@ -24,7 +24,8 @@ type PipelineContext struct {
 	Env         map[string]string
 	GraphOwner  *PipelineContext
 	ErrorLogger func(*PipelineContext, error)
-	EntryLogger func(*PipelineContext, map[string]interface{})
+	EntryLogger func(*PipelineContext, map[string]any)
+	InfoLogger  func(*PipelineContext, map[string]any)
 	// If any goroutines are started with this pipeline, waitgroup is used to wait for them
 	Wait sync.WaitGroup
 	Err  chan error
@@ -43,6 +44,7 @@ func (pinfo DefaultPipelineEntryInfo) GetName() string {
 }
 
 type Step interface {
+	Name() string
 	Run(*PipelineContext) error
 }
 
@@ -97,7 +99,8 @@ func NewContext(lsctx *ls.Context, env map[string]string, pipeline Pipeline, ini
 		ErrorLogger: func(pctx *PipelineContext, err error) {
 			fmt.Println(fmt.Errorf("pipeline error: %w", err))
 		},
-		EntryLogger: func(_ *PipelineContext, _ map[string]interface{}) {},
+		InfoLogger:  func(_ *PipelineContext, _ map[string]any) {},
+		EntryLogger: func(_ *PipelineContext, _ map[string]any) {},
 	}
 	ctx.GraphOwner = ctx
 	return ctx
@@ -138,7 +141,9 @@ func (ctx *PipelineContext) Next() error {
 		ctx.CurrentStep--
 		return nil
 	}
+
 	err := ctx.Steps[ctx.CurrentStep].Run(ctx)
+
 	var perr PipelineError
 	if err != nil && !errors.As(err, &perr) {
 		err = PipelineError{Wrapped: err, Step: ctx.CurrentStep}

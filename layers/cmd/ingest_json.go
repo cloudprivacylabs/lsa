@@ -33,6 +33,8 @@ type JSONIngester struct {
 	ingester    *ls.Ingester
 }
 
+func (JSONIngester) Name() string { return "ingest/json" }
+
 func (JSONIngester) Help() {
 	fmt.Println(`Ingest JSON data
 Ingest a JSON file using a schema variant and output a graph

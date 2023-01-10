@@ -98,6 +98,8 @@ type MeasureStep struct {
 	layer       *ls.Layer
 }
 
+func (MeasureStep) Name() string { return "measures" }
+
 func (MeasureStep) Help() {
 	fmt.Println(`Process measures
 Create/validate/update measure nodes in a graph

@@ -17,6 +17,8 @@ type ForkStep struct {
 	Steps map[string]Pipeline `json:"pipelines" yaml:"pipelines"`
 }
 
+func (ForkStep) Name() string { return "fork" }
+
 func (ForkStep) Help() {
 	fmt.Println(`Create multiple parallel pipelines.
 

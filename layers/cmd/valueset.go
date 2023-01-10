@@ -574,6 +574,8 @@ type ValuesetStep struct {
 	prc         ls.ValuesetProcessor
 }
 
+func (ValuesetStep) Name() string { return "valuesets" }
+
 func (ValuesetStep) Help() {
 	fmt.Println(`Valueset Lookup
 Perform valueset lookup on an ingested graph

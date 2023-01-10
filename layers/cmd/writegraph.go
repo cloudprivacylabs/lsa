@@ -14,6 +14,8 @@ type WriteGraphStep struct {
 	Cmd           *cobra.Command
 }
 
+func (WriteGraphStep) Name() string { return "writeGraph" }
+
 func init() {
 	pipeline.RegisterPipelineStep("writeGraph", func() pipeline.Step {
 		return &WriteGraphStep{

@@ -34,6 +34,8 @@ type XMLIngester struct {
 	ingester    *ls.Ingester
 }
 
+func (XMLIngester) Name() string { return "ingest/xml" }
+
 func (XMLIngester) Help() {
 	fmt.Println(`Ingest XML data
 Ingest an XML file based on a schema variant and output a graph

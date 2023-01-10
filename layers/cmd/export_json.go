@@ -26,6 +26,8 @@ import (
 
 type JSONExport struct{}
 
+func (JSONExport) Name() string { return "export/json" }
+
 func (JSONExport) Help() {
 	fmt.Println(`Export JSON Data from Graph
 Export the graph in the pipeline context as a JSON file.

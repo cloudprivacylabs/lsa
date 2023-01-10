@@ -33,6 +33,8 @@ type ReshapeStep struct {
 	ingester    *ls.Ingester
 }
 
+func (ReshapeStep) Name() string { return "reshape" }
+
 func (ReshapeStep) Help() {
 	fmt.Println(`Reshape graph to fit into another schema
 
