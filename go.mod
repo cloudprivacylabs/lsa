@@ -21,7 +21,6 @@ require (
 require (
 	github.com/hashicorp/golang-lru/v2 v2.0.1
 	github.com/joho/godotenv v1.4.0
-	github.com/neo4j/neo4j-go-driver/v5 v5.4.0
 )
 
 require (
@@ -37,7 +36,7 @@ require (
 
 require (
 	github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210803070921-b358b509191a // indirect
-	github.com/cloudprivacylabs/opencypher v1.0.0-beta-12
+	github.com/cloudprivacylabs/opencypher v1.0.0-beta-13
 )
 
 require (

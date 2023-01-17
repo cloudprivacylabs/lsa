@@ -20,11 +20,11 @@ import (
 	"time"
 
 	"github.com/araddon/dateparse"
-	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/nleeper/goment"
 
 	"github.com/cloudprivacylabs/lpg"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
+	"github.com/cloudprivacylabs/opencypher"
 )
 
 type ErrCannotParseTemporalValue string
@@ -252,7 +252,7 @@ var XSDGYearMonthTerm = ls.NewTerm(XSD, "gYearMonth", false, false, ls.OverrideC
 
 // XSDDate is a node-type that identifies the underlying value as an XML date. The format is:
 //
-//  [-]CCYY-MM-DD[Z|(+|-)hh:mm]
+//	[-]CCYY-MM-DD[Z|(+|-)hh:mm]
 var XSDDateTerm = ls.NewTerm(XSD, "date", false, false, ls.OverrideComposition, struct {
 	XSDDateParser
 }{
@@ -275,7 +275,7 @@ var XSDDateTimeTerm = ls.NewTerm(XSD, "dateTime", false, false, ls.OverrideCompo
 
 // JSONDate is a node-type that identifies the underlying value as a JSON date value
 //
-//  YYYY-MM-DD
+//	YYYY-MM-DD
 var JSONDateTerm = ls.NewTerm(JSON, "date", false, false, ls.OverrideComposition, struct {
 	JSONDateParser
 }{
@@ -296,9 +296,9 @@ var JSONDateTimeTerm = ls.NewTerm(JSON, "date-time", false, false, ls.OverrideCo
 // JSONTime is a node-type that identifies the underlying value as a
 // JSON time value
 //
-//   HH:mm
-//   HH:mm:ss
-//   HH:mm:ssZ
+//	HH:mm
+//	HH:mm:ss
+//	HH:mm:ssZ
 var JSONTimeTerm = ls.NewTerm(JSON, "time", false, false, ls.OverrideComposition, struct {
 	JSONTimeParser
 }{
@@ -485,7 +485,7 @@ func (f gomentFormat) formatTime(in TimeOfDay) (string, error) {
 
 // GetNativeValue parses an XSDDate value.
 //
-//  [-]CCYY-MM-DD[Z|(+|-)hh:mm]
+//	[-]CCYY-MM-DD[Z|(+|-)hh:mm]
 func (XSDDateParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
@@ -503,9 +503,9 @@ func (parser XSDDateParser) FormatNativeValue(newValue, oldValue interface{}, no
 	var oldDate Date
 	var ok bool
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 
 	case string:
@@ -613,11 +613,11 @@ func (parser XSDDateTimeParser) FormatNativeValue(newValue, oldValue interface{}
 	var old DateTime
 	var ok bool
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case string:
 		t, err := dateparse.ParseStrict(v)
@@ -725,11 +725,11 @@ func (parser XSDTimeParser) FormatNativeValue(newValue, oldValue interface{}, no
 		return "", nil
 	}
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case string:
 		t, err := dateparse.ParseStrict(v)
@@ -766,7 +766,7 @@ type JSONDateParser struct{}
 
 // ParseValue parses a JSON date
 //
-//   YYYY-MM-DD
+//	YYYY-MM-DD
 func (JSONDateParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
@@ -783,11 +783,11 @@ func (parser JSONDateParser) FormatNativeValue(newValue, oldValue interface{}, n
 	var old Date
 	var ok bool
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case string:
 		t, err := dateparse.ParseStrict(v)
@@ -879,7 +879,7 @@ type JSONDateTimeParser struct{}
 
 // ParseValue parses a JSON date-time
 //
-//   YYYY-MM-DD
+//	YYYY-MM-DD
 func (JSONDateTimeParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
@@ -893,11 +893,11 @@ func (parser JSONDateTimeParser) FormatNativeValue(newValue, oldValue interface{
 		return "", nil
 	}
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case string:
 		t, err := dateparse.ParseStrict(v)
@@ -945,9 +945,9 @@ type JSONTimeParser struct{}
 
 // ParseValue parses a JSON time
 //
-//   HH:mm
-//   HH:mm:ss
-//   HH:mm:ssZ
+//	HH:mm
+//	HH:mm:ss
+//	HH:mm:ssZ
 func (JSONTimeParser) GetNativeValue(value string, node *lpg.Node) (interface{}, error) {
 	if len(value) == 0 {
 		return nil, nil
@@ -962,11 +962,11 @@ func (parser JSONTimeParser) FormatNativeValue(newValue, oldValue interface{}, n
 		return "", nil
 	}
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case string:
 		t, err := dateparse.ParseStrict(v)
@@ -1052,11 +1052,11 @@ func (parser PatternDateTimeParser) FormatNativeValue(newValue, oldValue interfa
 	var old Date
 	var ok bool
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case string:
 		t, err := dateparse.ParseStrict(v)
@@ -1170,11 +1170,11 @@ func (parser PatternDateParser) FormatNativeValue(newValue, oldValue interface{}
 	var old Date
 	var ok bool
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case string:
 		t, err := dateparse.ParseStrict(v)
@@ -1286,11 +1286,11 @@ func (parser PatternTimeParser) FormatNativeValue(newValue, oldValue interface{}
 		formatter = goFormat("15:04:05.999999999Z07:00")
 	}
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case string:
 		t, err := dateparse.ParseStrict(v)
@@ -1340,11 +1340,11 @@ func (parser XSDGDayParser) FormatNativeValue(newValue, oldValue interface{}, no
 		return "", nil
 	}
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case time.Time:
 		return "", ErrIncompatibleTypes{XSDGDayTerm, v}
@@ -1386,11 +1386,11 @@ func (parser XSDGMonthParser) FormatNativeValue(newValue, oldValue interface{}, 
 		return "", nil
 	}
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case time.Time:
 		return "", ErrIncompatibleTypes{XSDGMonthTerm, v}
@@ -1428,11 +1428,11 @@ func (parser XSDGMonthDayParser) FormatNativeValue(newValue, oldValue interface{
 		return "", nil
 	}
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case time.Time:
 		return "", ErrIncompatibleTypes{XSDGMonthDayTerm, v}
@@ -1476,11 +1476,11 @@ func (parser XSDGYearParser) FormatNativeValue(newValue, oldValue interface{}, n
 		return "", nil
 	}
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case Date:
 		return v.ToTime().Format("2006"), nil
@@ -1514,11 +1514,11 @@ func (parser XSDGYearMonthParser) FormatNativeValue(newValue, oldValue interface
 		return "", nil
 	}
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case Date:
 		return v.ToTime().Format("2006-01"), nil
@@ -1554,11 +1554,11 @@ func (parser UnixTimeParser) FormatNativeValue(newValue, oldValue interface{}, n
 		return "", nil
 	}
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case string:
 		t, err := dateparse.ParseStrict(v)
@@ -1614,11 +1614,11 @@ func (parser UnixTimeNanoParser) FormatNativeValue(newValue, oldValue interface{
 		return "", nil
 	}
 	switch v := newValue.(type) {
-	case neo4j.Date:
+	case opencypher.Date:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalDateTime:
+	case opencypher.LocalDateTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
-	case neo4j.LocalTime:
+	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case string:
 		t, err := dateparse.ParseStrict(v)

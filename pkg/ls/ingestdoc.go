@@ -327,7 +327,11 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, *lpg.Nod
 			nativeValue, hasNativeValue = nvi.GetNativeValue()
 			if hasNativeValue {
 				setValue = func(node *lpg.Node) error {
-					return SetNodeValue(node, nativeValue)
+					err := SetNodeValue(node, nativeValue)
+					if err != nil {
+						fmt.Println(node)
+					}
+					return err
 				}
 			}
 		}
