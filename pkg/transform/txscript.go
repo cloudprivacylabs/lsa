@@ -156,7 +156,7 @@ func (t *TransformScript) GetSources(schemaPath []*lpg.Node) []string {
 func (t *TransformScript) Validate(targetSchema *ls.Layer) error {
 	for key := range t.TargetSchemaNodes {
 		if targetSchema.GetAttributeByID(key) == nil {
-			return fmt.Errorf("invalid schema key: %s", key)
+			return ls.ErrNotFound(key)
 		}
 	}
 	return nil
