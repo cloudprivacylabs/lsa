@@ -113,6 +113,9 @@ func (rs *ReshapeStep) Run(pipeline *pipeline.PipelineContext) error {
 			if err := rs.script.Compile(pipeline.Context); err != nil {
 				return err
 			}
+			if err := rs.script.Validate(rs.layer); err != nil {
+				return err
+			}
 		}
 		rs.initialized = true
 		rs.ingester = &ls.Ingester{Schema: rs.layer}
