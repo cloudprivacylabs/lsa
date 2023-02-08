@@ -25,8 +25,7 @@ operation: unique
 params:
   labels:
     - lbl1
-    - lbl2
-`)
+    - lbl2`)
 }
 
 func (rd UniqueStep) Run(pipeline *PipelineContext) error {
