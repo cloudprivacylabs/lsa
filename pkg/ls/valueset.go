@@ -595,7 +595,7 @@ func (prc *ValuesetProcessor) Process(ctx *Context, builder GraphBuilder, vsiDoc
 	if err != nil {
 		return err
 	}
-	ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process", "contextNode": contextSchemaNode, "docNode": vsiDocNode})
+	ctx.GetLogger().Debug(map[string]interface{}{"mth": "valueset.process", "vsi": vsi, "contextNode": contextSchemaNode, "docNode": vsiDocNode, "contextDocNode": contextDocNode})
 	return prc.ProcessByContextNode(ctx, builder, contextDocNode, contextSchemaNode, resultContextSchemaNode, vsiDocNode, vsi)
 }
 
@@ -669,6 +669,7 @@ func (prc *ValuesetProcessor) init() error {
 }
 
 func (prc *ValuesetProcessor) ProcessGraphValueset(ctx *Context, builder GraphBuilder, vsi *ValuesetInfo) error {
+
 	vsiDocNodes := vsi.GetDocNodes(builder.GetGraph())
 	ctx.GetLogger().Debug(map[string]interface{}{"mth": "processGraphValueset", "stage": "looking up context nodes", "vsi": vsi})
 	contextSchemaNode := prc.layer.GetAttributeByID(vsi.ContextID)

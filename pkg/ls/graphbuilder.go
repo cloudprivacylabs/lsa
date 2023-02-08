@@ -614,11 +614,6 @@ func (gb GraphBuilder) linkNode(spec *LinkSpec, docNode, parentNode, entityRoot 
 
 func (gb GraphBuilder) LinkNodes(ctx *Context, schema *Layer) error {
 	entityInfo := GetEntityInfo(gb.GetGraph())
-	// This is commented because it is perfectly valid to have multiple entities with the same id.
-	//
-	// if RemoveDuplicateEntities(entityInfo) {
-	// 	entityInfo = GetEntityInfo(gb.GetGraph())
-	// }
 	eix := IndexEntityInfo(entityInfo)
 	specs, err := schema.GetLinkSpecs()
 	if err != nil {

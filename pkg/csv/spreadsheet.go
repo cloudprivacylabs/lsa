@@ -36,6 +36,53 @@ func ReadCSV(input io.Reader, csvSeparator string) ([][]string, error) {
 	return data, nil
 }
 
+type Row struct {
+	Index   int
+	Headers []string
+	Row     []string
+	Err     error
+}
+
+func StreamCSVRows(input io.Reader, csvSeparator string, headerRow int) (<-chan Row, error) {
+	reader := csv.NewReader(input)
+	reader.LazyQuotes = true
+	reader.FieldsPerRecord = -1
+	if len(csvSeparator) > 0 {
+		reader.Comma = rune(csvSeparator[0])
+	}
+	ch := make(chan Row)
+	go func() {
+		defer close(ch)
+		n := 0
+		var header []string
+		for {
+			row, err := reader.Read()
+			if err == io.EOF {
+				return
+			}
+			if err != nil {
+				ch <- Row{Index: n, Err: err}
+				return
+			}
+			if n < headerRow {
+				n++
+				continue
+			}
+			if n == headerRow {
+				header = make([]string, len(row))
+				copy(header, row)
+				n++
+				continue
+			}
+			rowData := make([]string, len(row))
+			copy(rowData, row)
+			ch <- Row{Index: n, Headers: header, Row: rowData}
+			n++
+		}
+	}()
+	return ch, nil
+}
+
 // ReadExcel reads an excel file
 func ReadExcel(input io.Reader) (map[string][][]string, error) {
 	f, err := excelize.OpenReader(input)
@@ -53,4 +100,46 @@ func ReadExcel(input io.Reader) (map[string][][]string, error) {
 		ret[sheet] = rows
 	}
 	return ret, nil
+}
+
+// StreamExcelSheetRows reads an excel file and streams its rows. Close the reader to stop streaming
+func StreamExcelSheetRows(input io.Reader, sheet string, headerRow int) (<-chan Row, error) {
+	f, err := excelize.OpenReader(input)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	rows, err := f.Rows(sheet)
+	if err != nil {
+		return nil, err
+	}
+	ch := make(chan Row)
+	go func() {
+		defer rows.Close()
+		defer close(ch)
+		n := 0
+		var header []string
+		for rows.Next() {
+			row, err := rows.Columns()
+			if err != nil {
+				ch <- Row{Index: n, Err: err}
+				return
+			}
+			if n < headerRow {
+				n++
+				continue
+			}
+			if n == headerRow {
+				header = make([]string, len(row))
+				copy(header, row)
+				n++
+				continue
+			}
+			rowData := make([]string, len(row))
+			copy(rowData, row)
+			ch <- Row{Index: n, Headers: header, Row: rowData}
+			n++
+		}
+	}()
+	return ch, nil
 }

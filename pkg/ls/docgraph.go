@@ -15,6 +15,7 @@
 package ls
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/cloudprivacylabs/lpg"
@@ -50,6 +51,13 @@ func (e EntityInfo) GetEntitySchema() string { return e.sch }
 func (e EntityInfo) GetID() []string         { return e.id }
 func (e EntityInfo) GetValueType() []string  { return e.valueType }
 
+func (e EntityInfo) String() string {
+	return fmt.Sprintf(`rootNode: %v
+schema: %s"
+id: %v
+`, e.root, e.sch, e.id)
+}
+
 // GetEntityInfo returns all the nodes that are entity roots,
 // i.e. nodes containing EntitySchemaTerm
 func GetEntityInfo(g *lpg.Graph) map[*lpg.Node]EntityInfo {
@@ -64,49 +72,6 @@ func GetEntityInfo(g *lpg.Graph) map[*lpg.Node]EntityInfo {
 				sch:       sch,
 				valueType: types,
 				id:        AsPropertyValue(node.GetProperty(EntityIDTerm)).MustStringSlice(),
-			}
-		}
-	}
-	return ret
-}
-
-// FindDuplicatedEntities returns all entity root nodes with nonempty ids that are duplicated
-func FindDuplicatedEntities(ei map[*lpg.Node]EntityInfo) [][]*lpg.Node {
-	// Map by entity type, then by entity id hash
-	entityIndex := make(map[string]map[string][]*lpg.Node)
-	entityIdKey := func(key []string) string {
-		if len(key) == 1 {
-			return key[0]
-		}
-		return strings.Join(key, " ")
-	}
-	for node, info := range ei {
-		key := info.GetID()
-		if len(key) == 0 {
-			continue
-		}
-		empty := true
-		for _, x := range key {
-			if len(x) != 0 {
-				empty = false
-			}
-		}
-		if empty {
-			continue
-		}
-		m, ok := entityIndex[info.GetEntitySchema()]
-		if !ok {
-			m = make(map[string][]*lpg.Node)
-			entityIndex[info.GetEntitySchema()] = m
-		}
-		k := entityIdKey(key)
-		m[k] = append(m[k], node)
-	}
-	ret := make([][]*lpg.Node, 0)
-	for _, m := range entityIndex {
-		for _, n := range m {
-			if len(n) > 1 {
-				ret = append(ret, n)
 			}
 		}
 	}
@@ -405,59 +370,4 @@ func GetAttributeReferenceBySchemaPath(schemaPath []*lpg.Node, docContextNode *l
 		}
 	}
 	return AttributeReference{}, false
-}
-
-// RemoveDuplicateEntities will assume that if there are multiple
-// entities with the same ID, their contents are also identical. It
-// will keep one of the duplicate entity roots, and remove all
-// others. Returns true if things changed.
-func RemoveDuplicateEntities(ei map[*lpg.Node]EntityInfo) bool {
-	duplicates := FindDuplicatedEntities(ei)
-	if len(duplicates) == 0 {
-		return false
-	}
-	g := duplicates[0][0].GetGraph()
-	toRemove := make(map[*lpg.Node]struct{})
-	for _, duplicateGroup := range duplicates {
-		// Pick the first node, remove the others
-		for dup := 1; dup < len(duplicateGroup); dup++ {
-			// Redirect all incoming nodes to the chosen one
-			for incoming := duplicateGroup[dup].GetEdges(lpg.IncomingEdge); incoming.Next(); {
-				edge := incoming.Edge()
-				props := make(map[string]interface{})
-				edge.ForEachProperty(func(k string, v interface{}) bool {
-					props[k] = v
-					return true
-				})
-				g.NewEdge(edge.GetFrom(), duplicateGroup[0], edge.GetLabel(), props)
-				toRemove[edge.GetTo()] = struct{}{}
-				edge.Remove()
-			}
-			toRemove[duplicateGroup[dup]] = struct{}{}
-		}
-	}
-	removed := make(map[*lpg.Node]struct{})
-	for {
-		if len(toRemove) == 0 {
-			break
-		}
-		for node := range toRemove {
-			delete(toRemove, node)
-			if _, r := removed[node]; r {
-				continue
-			}
-			if !IsEntityRoot(node) {
-				for edges := node.GetEdges(lpg.OutgoingEdge); edges.Next(); {
-					edge := edges.Edge()
-					if !IsEntityRoot(edge.GetTo()) {
-						toRemove[edge.GetTo()] = struct{}{}
-					}
-					edge.Remove()
-				}
-			}
-			node.DetachAndRemove()
-			removed[node] = struct{}{}
-		}
-	}
-	return true
 }

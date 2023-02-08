@@ -261,22 +261,28 @@ var OnlyDocumentNodes = FollowEdgesToNodeWithType(DocumentNodeTerm)
 func IterateDescendants(from *lpg.Node, nodeFunc func(*lpg.Node) bool, edgeFunc func(*lpg.Edge) EdgeFuncResult, ordered bool) bool {
 	return iterateDescendants(from, func(node *lpg.Node, _ []*lpg.Node) bool {
 		return nodeFunc(node)
-	}, edgeFunc, ordered, make([]*lpg.Node, 0, 16), map[*lpg.Node]struct{}{})
+	}, edgeFunc, ordered, make([]*lpg.Node, 0, 16), map[*lpg.Node]struct{}{}, false)
 }
 
-func IterateDescendantsp(from *lpg.Node, nodeFunc func(*lpg.Node, []*lpg.Node) bool, edgeFunc func(*lpg.Edge) EdgeFuncResult, ordered bool) bool {
-	return iterateDescendants(from, nodeFunc, edgeFunc, ordered, make([]*lpg.Node, 0, 16), map[*lpg.Node]struct{}{})
+func IterateDescendantsp(from *lpg.Node, nodeFunc func(*lpg.Node, []*lpg.Node) bool, edgeFunc func(*lpg.Edge) EdgeFuncResult, ordered bool, visitSeenNodes bool) bool {
+	return iterateDescendants(from, nodeFunc, edgeFunc, ordered, make([]*lpg.Node, 0, 16), map[*lpg.Node]struct{}{}, visitSeenNodes)
 }
 
-func iterateDescendants(root *lpg.Node, nodeFunc func(*lpg.Node, []*lpg.Node) bool, edgeFunc func(*lpg.Edge) EdgeFuncResult, ordered bool, path []*lpg.Node, seen map[*lpg.Node]struct{}) bool {
-	if _, exists := seen[root]; exists {
+func iterateDescendants(root *lpg.Node, nodeFunc func(*lpg.Node, []*lpg.Node) bool, edgeFunc func(*lpg.Edge) EdgeFuncResult, ordered bool, path []*lpg.Node, seen map[*lpg.Node]struct{}, visitSeenNodes bool) bool {
+	_, seenNode := seen[root]
+	if seenNode && !visitSeenNodes {
 		return true
 	}
-	seen[root] = struct{}{}
+	if !seenNode {
+		seen[root] = struct{}{}
+	}
 
 	path = append(path, root)
 	if nodeFunc != nil && !nodeFunc(root, path) {
 		return false
+	}
+	if seenNode {
+		return true
 	}
 
 	outgoing := root.GetEdges(lpg.OutgoingEdge)
@@ -296,7 +302,7 @@ func iterateDescendants(root *lpg.Node, nodeFunc func(*lpg.Node, []*lpg.Node) bo
 		case SkipEdgeResult:
 		case FollowEdgeResult:
 			next := edge.GetTo()
-			if !iterateDescendants(next, nodeFunc, edgeFunc, ordered, path, seen) {
+			if !iterateDescendants(next, nodeFunc, edgeFunc, ordered, path, seen, visitSeenNodes) {
 				return false
 			}
 		}

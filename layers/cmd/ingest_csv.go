@@ -113,6 +113,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 			pipeline.SetGraph(cmdutil.NewDocumentGraph())
 		}
 		reader.Comma = rune(ci.Delimiter[0])
+		reader.LazyQuotes = true
 		var doneErr error
 		done := false
 		for row := 0; !done; row++ {
@@ -286,6 +287,8 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 		if cji.Schema != "" {
 			return errors.New("Unexpected schema")
 		}
+		reader.Comma = rune(cji.Delimiter[0])
+		reader.LazyQuotes = true
 		parsers := make(map[string]*csvingest.Parser)
 		for _, variant := range cji.Entities {
 			cji.ingester[variant.VariantID] = &ls.Ingester{Schema: variant.layer}
