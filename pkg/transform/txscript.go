@@ -153,6 +153,15 @@ func (t *TransformScript) GetSources(schemaPath []*lpg.Node) []string {
 	return nil
 }
 
+func (t *TransformScript) Validate(targetSchema *ls.Layer) error {
+	for key := range t.TargetSchemaNodes {
+		if targetSchema.GetAttributeByID(key) == nil {
+			return ls.ErrNotFound(key)
+		}
+	}
+	return nil
+}
+
 func (nd NodeTransformAnnotations) GetProperty(key string) (interface{}, bool) {
 	v, ok := nd[key]
 	return v, ok
