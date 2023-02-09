@@ -256,16 +256,18 @@ func (vsets Valuesets) lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 	errs := make([]error, n)
 	for idx, id := range req.TableIDs {
 		// if tableID exists in of the databases, lookup
+		searchedDBs := false
 		for _, db := range vsets.databases {
 			if _, has := db.GetTableIds()[id]; has {
+				searchedDBs = true
 				kv, err := db.ValueSetLookup(ctx, id, req.KeyValues)
 				if err != nil {
 					return ls.ValuesetLookupResponse{}, nil
 				}
-				// if len(kv) > 0 {
-				resp := ls.ValuesetLookupResponse{KeyValues: kv}
-				return resp, nil
-				// }
+				if len(kv) > 0 {
+					resp := ls.ValuesetLookupResponse{KeyValues: kv}
+					return resp, nil
+				}
 			}
 		}
 		if v, ok := vsets.Services[id]; ok {
@@ -305,7 +307,7 @@ func (vsets Valuesets) lookup(ctx *ls.Context, req ls.ValuesetLookupRequest) (ls
 			if err := lookup(v); err != nil {
 				errs[idx] = err
 			}
-		} else {
+		} else if !searchedDBs {
 			errs[idx] = fmt.Errorf("Valueset not found: %s", id)
 		}
 	}
