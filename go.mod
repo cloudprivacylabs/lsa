@@ -14,7 +14,7 @@ require (
 )
 
 require (
-	github.com/cloudprivacylabs/lpg v1.0.11
+	github.com/cloudprivacylabs/lpg v1.0.14
 	github.com/mitchellh/go-homedir v1.1.0
 )
 
@@ -36,7 +36,7 @@ require (
 
 require (
 	github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210803070921-b358b509191a // indirect
-	github.com/cloudprivacylabs/opencypher v1.0.0-beta-13
+	github.com/cloudprivacylabs/opencypher v1.0.0-beta-14
 )
 
 require (
