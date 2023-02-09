@@ -21,6 +21,9 @@ import (
 // PostIngestSchemaNode calls the post ingest functions for properties
 // of the document nodes for the given schema node.
 func (gb GraphBuilder) AddDefaults(schemaRootNode, docRootNode *lpg.Node) {
+	if schemaRootNode == nil {
+		return
+	}
 	ForEachAttributeNode(schemaRootNode, func(node *lpg.Node, path []*lpg.Node) bool {
 		def, exists := node.GetProperty(DefaultValueTerm)
 		if !exists {
