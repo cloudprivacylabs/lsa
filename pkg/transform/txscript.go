@@ -155,8 +155,10 @@ func (t *TransformScript) GetSources(schemaPath []*lpg.Node) []string {
 
 func (t *TransformScript) Validate(targetSchema *ls.Layer) error {
 	for key := range t.TargetSchemaNodes {
-		if targetSchema.GetAttributeByID(key) == nil {
-			return ls.ErrNotFound(key)
+		for _, fld := range strings.Fields(key) {
+			if targetSchema.GetAttributeByID(fld) == nil {
+				return ls.ErrNotFound(fld)
+			}
 		}
 	}
 	return nil
