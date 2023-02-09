@@ -221,6 +221,7 @@ func (ing *Ingester) Ingest(builder GraphBuilder, root ParsedDocNode) (*lpg.Node
 	for _, schemaNode := range snodes {
 		builder.PostIngestSchemaNode(root.GetSchemaNode(), schemaNode, n, nodeIDMap)
 	}
+	builder.AddDefaults(root.GetSchemaNode(), n)
 	return n, err
 }
 

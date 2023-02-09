@@ -489,6 +489,7 @@ func (gb GraphBuilder) PostIngest(schemaRootNode, docRootNode *lpg.Node) error {
 		err = gb.PostIngestSchemaNode(schemaRootNode, schemaNode, docRootNode, nodeIDMap)
 		return err == nil
 	})
+	gb.AddDefaults(schemaRootNode, docRootNode)
 	return err
 }
 
