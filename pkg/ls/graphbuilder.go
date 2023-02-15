@@ -353,7 +353,13 @@ func (gb GraphBuilder) CollectionAsNode(schemaNode, parentNode *lpg.Node, typeTe
 	ret.SetLabels(t)
 	var edge *lpg.Edge
 	if parentNode != nil {
-		edge = gb.targetGraph.NewEdge(parentNode, ret, HasTerm, nil)
+		edgeLabel := HasTerm
+		if schemaNode != nil {
+			if s := AsPropertyValue(schemaNode.GetProperty(EdgeLabelTerm)).AsString(); len(s) > 0 {
+				edgeLabel = s
+			}
+		}
+		edge = gb.targetGraph.NewEdge(parentNode, ret, edgeLabel, nil)
 	}
 	return edge, ret, nil
 }
