@@ -291,6 +291,26 @@ func LoadBundle(base string, bundleLoader func(parentBundle, loadBundle string) 
 	return loadBundleChain("", base, bundleLoader)
 }
 
+// NewBundleFromVariants creates a new bundle from the given variants
+func NewBundleFromVariants(variantMap map[string]*ls.Layer) Bundle {
+	ret := Bundle{
+		Variants: make(map[string]*Variant),
+		layers:   make(map[string]*ls.Layer),
+		variants: make(map[string]*ls.Layer),
+	}
+	for v, layer := range variantMap {
+		ret.variants[v] = layer
+		ret.Variants[v] = &Variant{
+			SchemaRef: SchemaRef{
+				layer:   layer,
+				LayerID: layer.GetID(),
+			},
+		}
+		ret.layers[layer.GetID()] = layer
+	}
+	return ret
+}
+
 // Build collects all parts of a bundle and builds the layers
 func (bundle *Bundle) Build(ctx *ls.Context, spreadsheetLoader func(*ls.Context, string) ([][][]string, error), jsonLoader func(*ls.Context, string) (io.ReadCloser, error), layerLoader func(*ls.Context, string) (*ls.Layer, error)) error {
 	err := bundle.loadSpreadsheets(ctx, spreadsheetLoader)
@@ -304,6 +324,14 @@ func (bundle *Bundle) Build(ctx *ls.Context, spreadsheetLoader func(*ls.Context,
 
 	err = bundle.loadVariants(ctx, layerLoader)
 	return err
+}
+
+func (bundle *Bundle) GetCachedLayers() map[string]*ls.Layer {
+	ret := make(map[string]*ls.Layer)
+	for k, v := range bundle.getLayers() {
+		ret[k] = v
+	}
+	return ret
 }
 
 // GetLayer returns the layer for the given variant. Returns nil if

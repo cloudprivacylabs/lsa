@@ -68,6 +68,14 @@ func NewLayerInGraph(g *lpg.Graph) *Layer {
 	return ret
 }
 
+func NewLayerFromRootNode(layerInfoNode *lpg.Node) *Layer {
+	ret := Layer{
+		Graph:     layerInfoNode.GetGraph(),
+		layerInfo: layerInfoNode,
+	}
+	return &ret
+}
+
 // LayersFromGraph returns the layers from an existing graph. All
 // Schema and Overlay nodes are returned as layers.
 func LayersFromGraph(g *lpg.Graph) []*Layer {
