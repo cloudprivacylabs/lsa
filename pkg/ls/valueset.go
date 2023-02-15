@@ -465,7 +465,7 @@ func (vsi *ValuesetInfo) createResultNodes(ctx *Context, builder GraphBuilder, l
 					return n, nil
 				}
 				newNode := InstantiateSchemaNode(builder.targetGraph, childSchemaNode, true, map[*lpg.Node]*lpg.Node{})
-				builder.GetGraph().NewEdge(parentDocNode, newNode, GetEdgeLabelForChildren(parentDocNode), nil)
+				builder.GetGraph().NewEdge(parentDocNode, newNode, GetOutputEdgeLabel(parentDocNode), nil)
 				return newNode, nil
 			})
 			if err != nil {
@@ -518,7 +518,7 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilde
 		var err error
 		resultContextDocumentNode, err = EnsurePath(contextDocumentNode, nil, contextSchemaNode, resultContextSchemaNode, func(parentDocNode, childSchemaNode *lpg.Node) (*lpg.Node, error) {
 			newNode := InstantiateSchemaNode(builder.targetGraph, childSchemaNode, true, map[*lpg.Node]*lpg.Node{})
-			builder.GetGraph().NewEdge(parentDocNode, newNode, GetEdgeLabelForChildren(parentDocNode), nil)
+			builder.GetGraph().NewEdge(parentDocNode, newNode, GetOutputEdgeLabel(parentDocNode), nil)
 			return newNode, nil
 		})
 		if err != nil {

@@ -608,10 +608,14 @@ func (l *Layer) GetLinkSpecs() ([]*LinkSpec, error) {
 	return l.linkSpecs, err
 }
 
-// GetEdgeLabelForChildren returns the label that should be used to
-// connect child nodes. This is determined by the edgeLabel term
-func GetEdgeLabelForChildren(parentNode *lpg.Node) string {
-	pv, exists := GetNodeOrSchemaProperty(parentNode, EdgeLabelTerm)
+// GetOutputEdgeLabel returns the label that should be used to connect
+// child nodes. This is determined by the outputEdgeLabel
+// term. ParentNode is either a schema node or a doc node
+func GetOutputEdgeLabel(parentNode *lpg.Node) string {
+	if parentNode == nil {
+		return HasTerm
+	}
+	pv, exists := GetNodeOrSchemaProperty(parentNode, OutputEdgeLabelTerm)
 	if !exists {
 		return HasTerm
 	}

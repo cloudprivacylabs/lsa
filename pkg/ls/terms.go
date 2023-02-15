@@ -96,6 +96,9 @@ var (
 	// EdgeLabelTerm represents the value used as an edge label, when ingesting an edge
 	EdgeLabelTerm = NewTerm(LS, "edgeLabel", false, false, OverrideComposition, nil)
 
+	// OutputEdgeLabelTerm determines the labels of the output edges
+	OutputEdgeLabelTerm = NewTerm(LS, "outputEdgeLabel", false, false, OverrideComposition, nil)
+
 	// PropertyNameTerm represents the value used as a property name when ingesting a property
 	PropertyNameTerm = NewTerm(LS, "propertyName", false, false, OverrideComposition, nil)
 
