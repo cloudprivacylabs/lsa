@@ -20,7 +20,7 @@ import (
 	"github.com/cloudprivacylabs/lpg"
 )
 
-var UUIDTerm = NewTerm(LS, "uuid", false, false, OverrideComposition, uuidSemantics{})
+var UUIDTerm = NewTerm(LS, "uuid").SetComposition(OverrideComposition).SetTags(SchemaElementTag).SetMetadata(uuidSemantics{}).Term
 
 type uuidSemantics struct{}
 

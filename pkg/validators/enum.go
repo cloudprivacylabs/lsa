@@ -11,29 +11,29 @@ import (
 //
 // Enumeration is declared as a string slice:
 //
-//  {
-//     @id: attrId,
-//     @type: Value,
-//     validation/enumeration: ["a","b","c"]
-//  }
-var EnumTerm = ls.NewTerm(ls.LS, "validation/enumeration", false, false, ls.OverrideComposition, struct {
+//	{
+//	   @id: attrId,
+//	   @type: Value,
+//	   validation/enumeration: ["a","b","c"]
+//	}
+var EnumTerm = ls.NewTerm(ls.LS, "validation/enumeration").SetComposition(ls.OverrideComposition).SetTags(ls.ValidationTag, ls.SchemaElementTag).SetMetadata(struct {
 	EnumValidator
 }{
 	EnumValidator{},
-})
+}).Term
 
 // ConstTerm is used for constant value validator
 //
 // Const is declared as a string value:
 //
-//  {
-//     @id: attrId,
-//     @type: Value,
-//     validation/const: "a"
-//  }
+//	{
+//	   @id: attrId,
+//	   @type: Value,
+//	   validation/const: "a"
+//	}
 //
 // Const is syntactic sugar for enum with a single value
-var ConstTerm = ls.NewTerm(ls.LS, "validation/const", false, false, ls.OverrideComposition, struct {
+var ConstTerm = ls.NewTerm(ls.LS, "validation/const").SetComposition(ls.OverrideComposition).SetTags(ls.ValidationTag, ls.SchemaElementTag).SetMetadata(struct {
 	EnumValidator
 }{
 	EnumValidator{},

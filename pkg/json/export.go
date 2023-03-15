@@ -197,29 +197,22 @@ func exportJSON(node *lpg.Node, options ExportOptions, seen map[*lpg.Node]struct
 		return ret, nil
 
 	case types.Has(ls.AttributeTypeValue):
-		value, ok := ls.GetRawNodeValue(node)
+		nativeValue, err := ls.GetNodeValue(node)
+		if err != nil {
+			return nil, err
+		}
+		if nativeValue == nil {
+			return jsonom.NewValue(nil), nil
+		}
+		switch nativeValue.(type) {
+		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, bool, string, json.Number:
+			return jsonom.NewValue(nativeValue), nil
+		}
+		raw, ok := ls.GetRawNodeValue(node)
 		if !ok {
 			return nil, nil
 		}
-		valueStr := value
-		switch {
-		case types.Has(BooleanTypeTerm):
-			if valueStr == "true" {
-				return jsonom.BoolValue(true), nil
-			}
-			if valueStr == "false" {
-				return jsonom.BoolValue(false), nil
-			}
-			return nil, ErrInvalidBooleanValue{NodeID: ls.GetNodeID(node), Value: valueStr}
-		case types.Has(StringTypeTerm):
-			return jsonom.StringValue(valueStr), nil
-		case types.Has(NumberTypeTerm), types.Has(IntegerTypeTerm):
-			return jsonom.NewValue(json.Number(valueStr)), nil
-		case types.Has(ObjectTypeTerm), types.Has(ArrayTypeTerm):
-			return nil, ErrValueExpected{NodeID: ls.GetNodeID(node)}
-		default:
-			return jsonom.NewValue(valueStr), nil
-		}
+		return jsonom.NewValue(raw), nil
 	}
 	return nil, nil
 }

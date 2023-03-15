@@ -19,7 +19,7 @@ import (
 	"github.com/cloudprivacylabs/opencypher"
 )
 
-var EvaluateTerm = ls.NewTerm(TRANSFORM, "evaluate", false, false, ls.SetComposition, EvaluateTermSemantics)
+var EvaluateTerm = ls.NewTerm(TRANSFORM, "evaluate").SetComposition(ls.SetComposition).SetMetadata(EvaluateTermSemantics).SetTags(ls.SchemaElementTag).Term
 
 type evaluateTermSemantics struct{}
 

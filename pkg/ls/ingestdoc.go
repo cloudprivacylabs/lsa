@@ -77,6 +77,29 @@ type ParsedDocNode interface {
 	GetProperties() map[string]interface{}
 }
 
+// BasicParsedDocNode is the default implementation of a parsed doc node
+type BasicParsedDocNode struct {
+	SchemaNode     *lpg.Node
+	TypeTerm       string
+	ID             string
+	Value          string
+	ValueTypes     []string
+	AttributeIndex int
+	AttributeName  string
+	Children       []ParsedDocNode
+	Properties     map[string]interface{}
+}
+
+func (b *BasicParsedDocNode) GetSchemaNode() *lpg.Node              { return b.SchemaNode }
+func (b *BasicParsedDocNode) GetTypeTerm() string                   { return b.TypeTerm }
+func (b *BasicParsedDocNode) GetID() string                         { return b.ID }
+func (b *BasicParsedDocNode) GetValue() string                      { return b.Value }
+func (b *BasicParsedDocNode) GetValueTypes() []string               { return b.ValueTypes }
+func (b *BasicParsedDocNode) GetAttributeIndex() int                { return b.AttributeIndex }
+func (b *BasicParsedDocNode) GetAttributeName() string              { return b.AttributeName }
+func (b *BasicParsedDocNode) GetChildren() []ParsedDocNode          { return b.Children }
+func (b *BasicParsedDocNode) GetProperties() map[string]interface{} { return b.Properties }
+
 // Returns the entity schema if this is a root
 func getParsedDocNodeEntitySchema(node ParsedDocNode) string {
 	sch := node.GetSchemaNode()

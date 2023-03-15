@@ -53,30 +53,30 @@ The aField field may itself be a foreign key value. Then, omit fk, or use aField
 
 var (
 	// ReferenceFK specifies the foreign key value
-	ReferenceFK = NewTerm(LS+"Reference/", "fkValue", false, false, OverrideComposition, nil)
+	ReferenceFK = NewTerm(LS+"Reference/", "fkValue").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 	// ReferenceFKFor is used for value nodes that are foreign keys
-	ReferenceFKFor = NewTerm(LS+"Reference/", "fkFor", false, false, OverrideComposition, nil)
+	ReferenceFKFor = NewTerm(LS+"Reference/", "fkFor").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 	// ReferenceFKTerm specifies the foreign key attribute ID
-	ReferenceFKTerm = NewTerm(LS+"Reference/", "fk", false, false, OverrideComposition, nil)
+	ReferenceFKTerm = NewTerm(LS+"Reference/", "fk").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// ReferenceLabelTerm specifies the edge label between the referenced nodes
-	ReferenceLabelTerm = NewTerm(LS+"Reference/", "label", false, false, OverrideComposition, nil)
+	ReferenceLabelTerm = NewTerm(LS+"Reference/", "label").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// ReferenceDirectionTerm specifies the direction of the edge. If
 	// "to" or "toTarget", the edge points to the target entity.
 	// If "from" or "fromTarget", the edge points
 	// to this entity.
-	ReferenceDirectionTerm = NewTerm(LS+"Reference/", "dir", false, false, OverrideComposition, nil)
+	ReferenceDirectionTerm = NewTerm(LS+"Reference/", "dir").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// ReferenceLinkNodeTerm specifies the node in the current entity
 	// that will be linked to the other entity. If the references are
 	// defined in a Reference type node, then the node itself if the
 	// link. Otherwise, this gives the node that must be linked to the
 	// other entity.
-	ReferenceLinkNodeTerm = NewTerm(LS+"Reference/", "linkNode", false, false, OverrideComposition, nil)
+	ReferenceLinkNodeTerm = NewTerm(LS+"Reference/", "linkNode").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// ReferenceMultiTerm specifies if there can be more than one link targets
-	ReferenceMultiTerm = NewTerm(LS+"Reference/", "multi", false, false, OverrideComposition, nil)
+	ReferenceMultiTerm = NewTerm(LS+"Reference/", "multi").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 )
 
 type ForeignKeyInfo struct {

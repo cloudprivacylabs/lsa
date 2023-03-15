@@ -34,22 +34,67 @@ type TermSemantics struct {
 
 	Composition CompositionType
 
+	// Tags define additional metadata about a term
+	Tags map[string]struct{}
+
 	Metadata interface{}
 }
 
+// Known tags for term semantics
+const (
+	// SchemaElementTag means that the term is used for schema definitions only
+	SchemaElementTag = "schemaElement"
+
+	// ProvenanceTag means that the term is provenance related
+	ProvenanceTag = "provenance"
+
+	// ValidationTag means that the tag is about validation
+	ValidationTag = "validation"
+)
+
 // NewTerm registers a term with given semantics, and returns the term.
-func NewTerm(ns, lname string, isID, isList bool, comp CompositionType, md interface{}, aliases ...string) string {
+func NewTerm(ns, lname string, aliases ...string) TermSemantics {
 	t := TermSemantics{Term: ns + lname,
 		Namespace:   ns,
 		LName:       lname,
 		Aliases:     aliases,
-		IsID:        isID,
-		IsList:      isList,
-		Composition: comp,
-		Metadata:    md,
+		Composition: OverrideComposition,
+		Tags:        make(map[string]struct{}),
 	}
 	RegisterTerm(t)
-	return t.Term
+	return t
+}
+
+func (t TermSemantics) SetID(v bool) TermSemantics {
+	t.IsID = v
+	return t
+}
+
+func (t TermSemantics) SetList(v bool) TermSemantics {
+	t.IsList = v
+	return t
+}
+
+func (t TermSemantics) SetComposition(comp CompositionType) TermSemantics {
+	t.Composition = comp
+	return t
+}
+
+func (t TermSemantics) SetAliases(aliases ...string) TermSemantics {
+	t.Aliases = aliases
+	return t
+}
+
+func (t TermSemantics) SetMetadata(md any) TermSemantics {
+	t.Metadata = md
+	return t
+}
+
+func (t TermSemantics) SetTags(tags ...string) TermSemantics {
+	for _, tag := range tags {
+		t.Tags[tag] = struct{}{}
+	}
+	return t
 }
 
 func (t TermSemantics) Compose(target, src *PropertyValue) (*PropertyValue, error) {

@@ -33,96 +33,96 @@ func (o ErrOverflow) Error() string {
 	return fmt.Sprintf("Overflow: Node ID: %s  Type: %s Value: %v", o.NodeID, o.Type, o.Value)
 }
 
-var JSONNumber = ls.NewTerm(JSON, "number", false, false, ls.OverrideComposition, struct {
+var JSONNumber = ls.NewTerm(JSON, "number", "json:number").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	JSONNumberParser
 }{
 	JSONNumberParser{},
-}, "json:number")
+}).Term
 
-var JSONInteger = ls.NewTerm(JSON, "integer", false, false, ls.OverrideComposition, struct {
+var JSONInteger = ls.NewTerm(JSON, "integer", "json:integer").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	SignedIntParser[int8]
 }{
 	SignedIntParser[int8]{},
-}, "json:integer")
+}).Term
 
 var one64 = int64(1)
 var zero64 = int64(-1)
 var negativeOne64 = int64(-1)
 
-var XSDByte = ls.NewTerm(XSD, "byte", false, false, ls.OverrideComposition, struct {
+var XSDByte = ls.NewTerm(XSD, "byte", "xsd:byte", "xs:byte").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	SignedIntParser[int8]
 }{
 	SignedIntParser[int8]{},
-}, "xsd:byte", "xs:byte")
-var XSDInt = ls.NewTerm(XSD, "int", false, false, ls.OverrideComposition, struct {
+}).Term
+var XSDInt = ls.NewTerm(XSD, "int", "xsd:int", "xs:int", "xsd:integer", "xs:integer", XSD+"integer").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	SignedIntParser[int32]
 }{
 	SignedIntParser[int32]{},
-}, "xsd:int", "xs:int", "xsd:integer", "xs:integer", XSD+"integer")
-var XSDLong = ls.NewTerm(XSD, "long", false, false, ls.OverrideComposition, struct {
+}).Term
+var XSDLong = ls.NewTerm(XSD, "long", "xsd:long", "xs:long", "int", "integer", ls.LS+"int", ls.LS+"integer", "ls:int", "ls:integer").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	SignedIntParser[int64]
 }{
 	SignedIntParser[int64]{},
-}, "xsd:long", "xs:long", "int", "integer", ls.LS+"int", ls.LS+"integer", "ls:int", "ls:integer")
-var XSDDecimal = ls.NewTerm(XSD, "decimal", false, false, ls.OverrideComposition, struct {
+}).Term
+var XSDDecimal = ls.NewTerm(XSD, "decimal", "xsd:decimal", "xs:decimal", "ls:float", ls.LS+"float", "ls:double", ls.LS+"double", "double", "float").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	DecimalParser
 }{
 	DecimalParser{},
-}, "xsd:decimal", "xs:decimal", "ls:float", ls.LS+"float", "ls:double", ls.LS+"double", "double", "float")
+}).Term
 
-var XSDNegativeInteger = ls.NewTerm(XSD, "negativeInteger", false, false, ls.OverrideComposition, struct {
+var XSDNegativeInteger = ls.NewTerm(XSD, "negativeInteger", "xsd:negativeInteger", "xs:negativeInteger").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	SignedIntParser[int64]
 }{
 	SignedIntParser[int64]{
 		max: &negativeOne64,
 	},
-}, "xsd:negativeInteger", "xs:negativeInteger")
-var XSDNonNegativeInteger = ls.NewTerm(XSD, "nonNegativeInteger", false, false, ls.OverrideComposition, struct {
+}).Term
+var XSDNonNegativeInteger = ls.NewTerm(XSD, "nonNegativeInteger", "xsd:nonNegativeInteger", "xs:nonNegativeInteger").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	SignedIntParser[int64]
 }{
 	SignedIntParser[int64]{
 		min: &zero64,
 	},
-}, "xsd:nonNegativeInteger", "xs:nonNegativeInteger")
-var XSDPositiveInteger = ls.NewTerm(XSD, "positiveInteger", false, false, ls.OverrideComposition, struct {
+}).Term
+var XSDPositiveInteger = ls.NewTerm(XSD, "positiveInteger", "xsd:positiveInteger", "xs:positiveInteger").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	SignedIntParser[int64]
 }{
 	SignedIntParser[int64]{
 		min: &one64,
 	},
-}, "xsd:positiveInteger", "xs:positiveInteger")
-var XSDNonPositiverInteger = ls.NewTerm(XSD, "nonPositiveInteger", false, false, ls.OverrideComposition, struct {
+}).Term
+var XSDNonPositiverInteger = ls.NewTerm(XSD, "nonPositiveInteger", "xsd:nonPositiveInteger", "xs:nonPositiveInteger").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	SignedIntParser[int64]
 }{
 	SignedIntParser[int64]{
 		max: &zero64,
 	},
-}, "xsd:nonPositiveInteger", "xs:nonPositiveInteger")
-var XSDShort = ls.NewTerm(XSD, "short", false, false, ls.OverrideComposition, struct {
+}).Term
+var XSDShort = ls.NewTerm(XSD, "short", "xsd:short", "xs:short").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	SignedIntParser[int16]
 }{
 	SignedIntParser[int16]{},
-}, "xsd:short", "xs:short")
-var XSDUnsignedLong = ls.NewTerm(XSD, "unsignedLong", false, false, ls.OverrideComposition, struct {
+}).Term
+var XSDUnsignedLong = ls.NewTerm(XSD, "unsignedLong", "xsd:unsignedLong", "xs:unsignedLong").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	UnsignedIntParser[uint64]
 }{
 	UnsignedIntParser[uint64]{},
-}, "xsd:unsignedLong", "xs:unsignedLong")
-var XSDUnsignedInt = ls.NewTerm(XSD, "unsignedInt", false, false, ls.OverrideComposition, struct {
+}).Term
+var XSDUnsignedInt = ls.NewTerm(XSD, "unsignedInt", "xsd:unsignedInt", "xs:unsignedInt").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	UnsignedIntParser[uint32]
 }{
 	UnsignedIntParser[uint32]{},
-}, "xsd:unsignedInt", "xs:unsignedInt")
-var XSDUnsignedShort = ls.NewTerm(XSD, "unsignedShort", false, false, ls.OverrideComposition, struct {
+}).Term
+var XSDUnsignedShort = ls.NewTerm(XSD, "unsignedShort", "xsd:unsignedShort", "xs:unsignedShort").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	UnsignedIntParser[uint16]
 }{
 	UnsignedIntParser[uint16]{},
-}, "xsd:unsignedShort", "xs:unsignedShort")
-var XSDUnsignedByte = ls.NewTerm(XSD, "unsignedByte", false, false, ls.OverrideComposition, struct {
+}).Term
+var XSDUnsignedByte = ls.NewTerm(XSD, "unsignedByte", "xsd:unsignedByte", "xs:unsignedByte").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	UnsignedIntParser[uint8]
 }{
 	UnsignedIntParser[uint8]{},
-}, "xsd:unsignedByte", "xs:unsignedByte")
+}).Term
 
 type signedInt interface {
 	int8 | int16 | int32 | int64

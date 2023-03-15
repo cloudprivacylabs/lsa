@@ -36,9 +36,44 @@ func CopyGraph(target, source *lpg.Graph, nodeSelector func(*lpg.Node) bool, edg
 	}
 	for edges := source.GetEdges(); edges.Next(); {
 		edge := edges.Edge()
-		if edgeSelector(edge) {
-			CloneEdge(nodeMap[edge.GetFrom()], nodeMap[edge.GetTo()], edge, target)
+		from := nodeMap[edge.GetFrom()]
+		to := nodeMap[edge.GetTo()]
+		if from == nil || to == nil {
+			continue
 		}
+		if edgeSelector(edge) {
+			CloneEdge(from, to, edge, target)
+		}
+	}
+	return nodeMap
+}
+
+// CopyGraphWithCloneFunc source to target using the optional node/edge cloners. Return a node map from the in to target nodes
+func CopyGraphWithCloneFunc(target, source *lpg.Graph, nodeCloner func(*lpg.Node, *lpg.Graph) *lpg.Node, edgeCloner func(*lpg.Edge, map[*lpg.Node]*lpg.Node, *lpg.Graph) *lpg.Edge) map[*lpg.Node]*lpg.Node {
+	if nodeCloner == nil {
+		nodeCloner = CloneNode
+	}
+	if edgeCloner == nil {
+		edgeCloner = func(source *lpg.Edge, nodeMap map[*lpg.Node]*lpg.Node, g *lpg.Graph) *lpg.Edge {
+			from := nodeMap[source.GetFrom()]
+			to := nodeMap[source.GetTo()]
+			if from == nil || to == nil {
+				return nil
+			}
+			return CloneEdge(from, to, source, g)
+		}
+	}
+	nodeMap := make(map[*lpg.Node]*lpg.Node)
+	for n := source.GetNodes(); n.Next(); {
+		node := n.Node()
+		newNode := nodeCloner(node, target)
+		if newNode != nil {
+			nodeMap[node] = newNode
+		}
+	}
+	for edges := source.GetEdges(); edges.Next(); {
+		edge := edges.Edge()
+		edgeCloner(edge, nodeMap, target)
 	}
 	return nodeMap
 }

@@ -174,11 +174,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 					doneErr = err
 					return
 				}
-				if cmdutil.GetConfig().SourceProperty == "" {
-					r.SetProperty("source", entryInfo.GetName())
-				} else {
-					r.SetProperty(cmdutil.GetConfig().SourceProperty, entryInfo.GetName())
-				}
+				r.SetProperty(ls.SourceTerm, fmt.Sprintf("%s#%d", entryInfo.GetName(), row))
 				if ci.IngestByRows {
 					if err := pipeline.Next(); err != nil {
 						doneErr = err
@@ -451,11 +447,7 @@ func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineCo
 		return err
 	}
 	for _, root := range lpg.Sources(builder.GetGraph()) {
-		if cmdutil.GetConfig().SourceProperty == "" {
-			root.SetProperty("source", entryName)
-		} else {
-			root.SetProperty(cmdutil.GetConfig().SourceProperty, entryName)
-		}
+		root.SetProperty(ls.SourceTerm, entryName)
 	}
 	return nil
 }

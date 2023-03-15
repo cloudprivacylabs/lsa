@@ -190,11 +190,11 @@ type GDay int
 func (g GDay) String() string { return strconv.Itoa(int(g)) }
 
 // XSDGday can be used as a node-type to interpret the underlying value as a day (GDay)
-var XSDGDayTerm = ls.NewTerm(XSD, "gDay", false, false, ls.OverrideComposition, struct {
+var XSDGDayTerm = ls.NewTerm(XSD, "gDay", "xsd:gDay", "xs:gDay").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	XSDGDayParser
 }{
 	XSDGDayParser: XSDGDayParser{},
-}, "xsd:gDay", "xs:gDay")
+}).Term
 
 // GMonth is XML Gregorian month part of date
 type GMonth int
@@ -202,11 +202,11 @@ type GMonth int
 func (g GMonth) String() string { return strconv.Itoa(int(g)) }
 
 // XSDGMonth can be used as node-type to interpret the underlying value as a month (int)
-var XSDGMonthTerm = ls.NewTerm(XSD, "gMonth", false, false, ls.OverrideComposition, struct {
+var XSDGMonthTerm = ls.NewTerm(XSD, "gMonth", "xsd:gMonth", "xs:gMonth").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	XSDGMonthParser
 }{
 	XSDGMonthParser: XSDGMonthParser{},
-}, "xsd:gMonth", "xs:gMonth")
+}).Term
 
 // GMonth is XML Gregorian year part of date
 type GYear int
@@ -214,11 +214,11 @@ type GYear int
 func (g GYear) String() string { return strconv.Itoa(int(g)) }
 
 // XSDGYear can be used as a node-type to interpret the underlying value as a year value (int)
-var XSDGYearTerm = ls.NewTerm(XSD, "gYear", false, false, ls.OverrideComposition, struct {
+var XSDGYearTerm = ls.NewTerm(XSD, "gYear", "xsd:gYear", "xs:gYear").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	XSDGYearParser
 }{
 	XSDGYearParser: XSDGYearParser{},
-}, "xsd:gYear", "xs:gYear")
+}).Term
 
 // GMonthDay is XML Gregorian part of Month/Day
 type GMonthDay struct {
@@ -229,11 +229,11 @@ type GMonthDay struct {
 func (g GMonthDay) String() string { return fmt.Sprintf("%02d-%02d", g.Month, g.Day) }
 
 // XSDMonthDay can be used as a node-type to interpret the underlying value as a MM-DD
-var XSDGMonthDayTerm = ls.NewTerm(XSD, "gMonthDay", false, false, ls.OverrideComposition, struct {
+var XSDGMonthDayTerm = ls.NewTerm(XSD, "gMonthDay", "xsd:gMonthDay", "xs:gMonthDay").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	XSDGMonthDayParser
 }{
 	XSDGMonthDayParser: XSDGMonthDayParser{},
-}, "xsd:gMonthDay", "xs:gMonthDay")
+}).Term
 
 // GYearMonth is XML Gregorian part of Year/Month
 type GYearMonth struct {
@@ -244,54 +244,54 @@ type GYearMonth struct {
 func (g GYearMonth) String() string { return fmt.Sprintf("%04d-%02d", g.Year, g.Month) }
 
 // XSDGYearMonth can be used as a node-type to interpret the underlying value as a YYYY-MM
-var XSDGYearMonthTerm = ls.NewTerm(XSD, "gYearMonth", false, false, ls.OverrideComposition, struct {
+var XSDGYearMonthTerm = ls.NewTerm(XSD, "gYearMonth", "xsd:gYearMonth", "xs:gYearMonth").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	XSDGYearMonthParser
 }{
 	XSDGYearMonthParser: XSDGYearMonthParser{},
-}, "xsd:gYearMonth", "xs:gYearMonth")
+}).Term
 
 // XSDDate is a node-type that identifies the underlying value as an XML date. The format is:
 //
 //	[-]CCYY-MM-DD[Z|(+|-)hh:mm]
-var XSDDateTerm = ls.NewTerm(XSD, "date", false, false, ls.OverrideComposition, struct {
+var XSDDateTerm = ls.NewTerm(XSD, "date", "xsd:date", "xs:date").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	XSDDateParser
 }{
 	XSDDateParser: XSDDateParser{},
-}, "xsd:date", "xs:date")
+}).Term
 
 // XSDTime is a node-type that identifies the underlying value as an XML time.
-var XSDTimeTerm = ls.NewTerm(XSD, "time", false, false, ls.OverrideComposition, struct {
+var XSDTimeTerm = ls.NewTerm(XSD, "time", "xsd:time", "xs:time").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	XSDTimeParser
 }{
 	XSDTimeParser: XSDTimeParser{},
-}, "xsd:time", "xs:time")
+}).Term
 
 // XSDDateTime is a node-type that identifies the underlying value as an XML date-time value
-var XSDDateTimeTerm = ls.NewTerm(XSD, "dateTime", false, false, ls.OverrideComposition, struct {
+var XSDDateTimeTerm = ls.NewTerm(XSD, "dateTime", "xsd:dateTime", "xs:dateTime").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	XSDDateTimeParser
 }{
 	XSDDateTimeParser: XSDDateTimeParser{},
-}, "xsd:dateTime", "xs:dateTime")
+}).Term
 
 // JSONDate is a node-type that identifies the underlying value as a JSON date value
 //
 //	YYYY-MM-DD
-var JSONDateTerm = ls.NewTerm(JSON, "date", false, false, ls.OverrideComposition, struct {
+var JSONDateTerm = ls.NewTerm(JSON, "date", "json:date").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	JSONDateParser
 }{
 	JSONDateParser: JSONDateParser{},
-}, "json:date")
+}).Term
 
 // JSONDateTime is a node-type that identifies the underlying value as
 // a JSON datetime value, RFC3339 or RFC3339Nano
 //
 // YYYY-MM-DDTHH:mm:ssZ
 // YYYY-MM-DDTHH:mm:ss.00000Z
-var JSONDateTimeTerm = ls.NewTerm(JSON, "date-time", false, false, ls.OverrideComposition, struct {
+var JSONDateTimeTerm = ls.NewTerm(JSON, "date-time", "json:date-time").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	JSONDateTimeParser
 }{
 	JSONDateTimeParser: JSONDateTimeParser{},
-}, "json:date-time")
+}).Term
 
 // JSONTime is a node-type that identifies the underlying value as a
 // JSON time value
@@ -299,44 +299,44 @@ var JSONDateTimeTerm = ls.NewTerm(JSON, "date-time", false, false, ls.OverrideCo
 //	HH:mm
 //	HH:mm:ss
 //	HH:mm:ssZ
-var JSONTimeTerm = ls.NewTerm(JSON, "time", false, false, ls.OverrideComposition, struct {
+var JSONTimeTerm = ls.NewTerm(JSON, "time", "json:time").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	JSONTimeParser
 }{
 	JSONTimeParser: JSONTimeParser{},
-}, "json:time")
+}).Term
 
-var UnixTimeTerm = ls.NewTerm(Unix, "time", false, false, ls.OverrideComposition, struct {
+var UnixTimeTerm = ls.NewTerm(Unix, "time", "unix:time").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	UnixTimeParser
 }{
 	UnixTimeParser: UnixTimeParser{},
-}, "unix:time")
+}).Term
 
-var UnixTimeNanoTerm = ls.NewTerm(Unix, "timeNano", false, false, ls.OverrideComposition, struct {
+var UnixTimeNanoTerm = ls.NewTerm(Unix, "timeNano", "unix:timeNano").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	UnixTimeNanoParser
 }{
 	UnixTimeNanoParser: UnixTimeNanoParser{},
-}, "unix:timeNano")
+}).Term
 
-var PatternDateTimeTerm = ls.NewTerm(ls.LS, "dateTime", false, false, ls.OverrideComposition, struct {
+var PatternDateTimeTerm = ls.NewTerm(ls.LS, "dateTime", "ls:dateTime").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	PatternDateTimeParser
 }{
 	PatternDateTimeParser: PatternDateTimeParser{},
-}, "ls:dateTime")
+}).Term
 
-var PatternDateTerm = ls.NewTerm(ls.LS, "date", false, false, ls.OverrideComposition, struct {
+var PatternDateTerm = ls.NewTerm(ls.LS, "date", "ls:date").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	PatternDateParser
 }{
 	PatternDateParser: PatternDateParser{},
-}, "ls:date")
+}).Term
 
-var PatternTimeTerm = ls.NewTerm(ls.LS, "time", false, false, ls.OverrideComposition, struct {
+var PatternTimeTerm = ls.NewTerm(ls.LS, "time", "ls:time").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	PatternTimeParser
 }{
 	PatternTimeParser: PatternTimeParser{},
-}, "ls:time")
+}).Term
 
-var GoTimeFormatTerm = ls.NewTerm(ls.LS, "goTimeFormat", false, false, ls.SetComposition, nil, "ls:goTimeFormat")
-var MomentTimeFormatTerm = ls.NewTerm(ls.LS, "momentTimeFormat", false, false, ls.SetComposition, nil, "ls:momentTimeFormat")
+var GoTimeFormatTerm = ls.NewTerm(ls.LS, "goTimeFormat", "ls:goTimeFormat").SetComposition(ls.SetComposition).Term
+var MomentTimeFormatTerm = ls.NewTerm(ls.LS, "momentTimeFormat", "ls:momentTimeFormat").SetComposition(ls.SetComposition).Term
 
 type XSDDateParser struct{}
 

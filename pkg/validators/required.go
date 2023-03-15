@@ -9,15 +9,15 @@ import (
 
 // RequiredTerm validates if a required properties exist.
 //
-//  {
-//    @id: attrId
-//    validation/required: true
-//  }
-var RequiredTerm = ls.NewTerm(ls.LS, "validation/required", false, false, ls.OverrideComposition, struct {
+//	{
+//	  @id: attrId
+//	  validation/required: true
+//	}
+var RequiredTerm = ls.NewTerm(ls.LS, "validation/required").SetComposition(ls.OverrideComposition).SetTags(ls.ValidationTag, ls.SchemaElementTag).SetMetadata(struct {
 	RequiredValidator
 }{
 	RequiredValidator{},
-})
+}).Term
 
 // RequiredValidator validates if a required value exists
 type RequiredValidator struct{}

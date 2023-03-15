@@ -359,7 +359,7 @@ func GetAttributeReferenceBySchemaPath(schemaPath []*lpg.Node, docContextNode *l
 					return false
 				}
 				return true
-			}, FollowEdgesInEntity, false)
+			}, OnlyDocumentNodes, false)
 			if found != nil {
 				return AttributeReference{
 					Node:     found,

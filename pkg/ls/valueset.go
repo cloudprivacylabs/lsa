@@ -51,46 +51,46 @@ var (
 	// A node must contain either the ValuesetContextTerm or the ValuesetTablesTerm to be used in lookup
 	//
 	// If context is empty, entity root is assumed
-	ValuesetContextTerm = NewTerm(LS, "vs/context", false, false, OverrideComposition, nil)
+	ValuesetContextTerm = NewTerm(LS, "vs/context").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 	// ValuesetContextExprTerm is an opencyper expression that gives the context node using "this" as the current node
-	ValuesetContextExprTerm = NewTerm(LS, "vs/contextExpr", false, false, OverrideComposition, nil)
+	ValuesetContextExprTerm = NewTerm(LS, "vs/contextExpr").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// ValuesetTablesTerm specifies the list of table IDs to
 	// lookup. This is optional.  A node must contain either the
 	// ValuesetContextTerm or the ValuesetTablesTerm to be used in
 	// lookup
-	ValuesetTablesTerm = NewTerm(LS, "vs/valuesets", false, false, OverrideComposition, nil)
+	ValuesetTablesTerm = NewTerm(LS, "vs/valuesets").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// ValuesetRequestKeysTerm specifies the keys that will be used in
 	// the valueset request. These keys are interpreted by the valueset
 	// lookup.
-	ValuesetRequestKeysTerm = NewTerm(LS, "vs/requestKeys", false, false, OverrideComposition, nil)
+	ValuesetRequestKeysTerm = NewTerm(LS, "vs/requestKeys").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// ValuesetRequestValuesTerm contains entries matching
 	// ValuesetRequestKeysTerm. It specifies the schema node IDs of the
 	// nodes containing values to lookup
-	ValuesetRequestValuesTerm = NewTerm(LS, "vs/requestValues", false, false, OverrideComposition, nil)
+	ValuesetRequestValuesTerm = NewTerm(LS, "vs/requestValues").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// ValuesetRequestTerm specifies one or more openCypher expressions
 	// that builds up a valuest lookup request. The named results of
 	// those expressions are added to the request key/value pairs
-	ValuesetRequestTerm = NewTerm(LS, "vs/request", false, false, OverrideComposition, CompileOCSemantics{})
+	ValuesetRequestTerm = NewTerm(LS, "vs/request").SetComposition(OverrideComposition).SetTags(SchemaElementTag).SetMetadata(CompileOCSemantics{}).Term
 
 	// ValuesetResultKeys term contains the keys that will be returned
 	// from the valueset lookup. Values of these keys will be inserted under the context
-	ValuesetResultKeysTerm = NewTerm(LS, "vs/resultKeys", false, false, OverrideComposition, nil)
+	ValuesetResultKeysTerm = NewTerm(LS, "vs/resultKeys").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// ValuesetResultValuesTerm specifies the schema node IDs for the
 	// nodes that will receive the matching key values. If there is only
 	// one, resultKeys is optional The result value nodes must be a
 	// direct descendant of one of the nodes from the document node up
 	// to the context node.
-	ValuesetResultValuesTerm = NewTerm(LS, "vs/resultValues", false, false, OverrideComposition, nil)
+	ValuesetResultValuesTerm = NewTerm(LS, "vs/resultValues").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// ValuesetResultContext determines the node under which the results
 	// will be added. This is needed if the results will be added under
 	// a different entity attached to the valueset context.
-	ValuesetResultContextTerm = NewTerm(LS, "vs/resultContext", false, false, OverrideComposition, nil)
+	ValuesetResultContextTerm = NewTerm(LS, "vs/resultContext").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 )
 
 // ValuesetInfo describes value set information for a schema node.
@@ -202,16 +202,6 @@ func ValuesetInfoFromNode(layer *Layer, node *lpg.Node) (*ValuesetInfo, error) {
 		SchemaNode:    node,
 		ResultContext: AsPropertyValue(node.GetProperty(ValuesetResultContextTerm)).AsString(),
 	}
-	if len(ret.RequestValues) > 0 {
-		ret.requestSchemaPaths = make([][]*lpg.Node, len(ret.RequestValues))
-		for i, v := range ret.RequestValues {
-			node := layer.GetAttributeByID(v)
-			if node == nil {
-				return nil, fmt.Errorf("Attribute %s not found", v)
-			}
-			ret.requestSchemaPaths[i] = GetPathFromRoot(node)
-		}
-	}
 	if ctexpr != nil && ctexpr.IsString() {
 		var err error
 		ret.ContextExpr, err = opencypher.Parse(ctexpr.AsString())
@@ -224,6 +214,40 @@ func ValuesetInfoFromNode(layer *Layer, node *lpg.Node) (*ValuesetInfo, error) {
 		entityRoot := GetLayerEntityRoot(node)
 		if entityRoot != nil {
 			ret.ContextID = GetNodeID(entityRoot)
+		}
+	}
+	if len(ret.RequestValues) > 0 {
+		contextNode := layer.GetAttributeByID(ret.ContextID)
+		var contextPath []*lpg.Node
+		IterateDescendantsp(layer.GetSchemaRootNode(), func(n *lpg.Node, p []*lpg.Node) bool {
+			if GetNodeID(n) == ret.ContextID {
+				contextPath = p
+				return false
+			}
+			return true
+		}, OnlyAttributeNodes, false, false)
+		if contextPath == nil {
+			return nil, fmt.Errorf("Not found: %s", ret.ContextID)
+		}
+		ret.requestSchemaPaths = make([][]*lpg.Node, len(ret.RequestValues))
+		// These must be under context node
+		for i, v := range ret.RequestValues {
+			node := layer.GetAttributeByID(v)
+			if node == nil {
+				return nil, fmt.Errorf("Attribute %s not found", v)
+			}
+			var found []*lpg.Node
+			IterateDescendantsp(contextNode, func(n *lpg.Node, p []*lpg.Node) bool {
+				if n == node {
+					found = p
+					return false
+				}
+				return true
+			}, OnlyAttributeNodes, false, false)
+			if len(found) < 1 {
+				return nil, fmt.Errorf("Not found: %s", v)
+			}
+			ret.requestSchemaPaths[i] = append(contextPath, found[1:]...)
 		}
 	}
 	return ret, nil
@@ -515,8 +539,11 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilde
 	// We have to make sure the context document node that will receive the result exists in the document
 	resultContextDocumentNode := contextDocumentNode
 	if resultContextSchemaNode != contextSchemaNode {
+		entityRootSchemaNode := GetLayerEntityRoot(contextSchemaNode)
+		entityRootDocNode := GetEntityRootNode(contextDocumentNode)
 		var err error
-		resultContextDocumentNode, err = EnsurePath(contextDocumentNode, nil, contextSchemaNode, resultContextSchemaNode, func(parentDocNode, childSchemaNode *lpg.Node) (*lpg.Node, error) {
+		//		resultContextDocumentNode, err = EnsurePath(contextDocumentNode, nil, contextSchemaNode, resultContextSchemaNode, func(parentDocNode, childSchemaNode *lpg.Node) (*lpg.Node, error) {
+		resultContextDocumentNode, err = EnsurePath(entityRootDocNode, nil, entityRootSchemaNode, resultContextSchemaNode, func(parentDocNode, childSchemaNode *lpg.Node) (*lpg.Node, error) {
 			newNode := InstantiateSchemaNode(builder.targetGraph, childSchemaNode, true, map[*lpg.Node]*lpg.Node{})
 			builder.GetGraph().NewEdge(parentDocNode, newNode, GetOutputEdgeLabel(parentDocNode), nil)
 			return newNode, nil

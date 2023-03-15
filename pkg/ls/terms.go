@@ -18,18 +18,18 @@ const LS = "https://lschema.org/"
 
 var (
 	// SchemaTerm is the layer type for schemas
-	SchemaTerm = NewTerm(LS, "Schema", false, false, NoComposition, nil)
+	SchemaTerm = NewTerm(LS, "Schema").SetComposition(NoComposition).SetTags(SchemaElementTag).Term
 
 	// OverlayTerm is the layer type for overlays
-	OverlayTerm = NewTerm(LS, "Overlay", false, false, NoComposition, nil)
+	OverlayTerm = NewTerm(LS, "Overlay").SetComposition(NoComposition).SetTags(SchemaElementTag).Term
 
 	// ComposeTerm is used for overlays to redefine term compositions. One of CompositionType constants
-	ComposeTerm = NewTerm(LS, "compose", false, false, OverrideComposition, nil)
+	ComposeTerm = NewTerm(LS, "compose").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// AttributeOverlaysTerm lists the overlays for schema attributes
 	// that are matched by ID, as opposed to matching by ID and their
 	// place in the layer
-	AttributeOverlaysTerm = NewTerm(LS, "attributeOverlays", false, true, OverrideComposition, nil)
+	AttributeOverlaysTerm = NewTerm(LS, "attributeOverlays").SetList(true).SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// NSMapTerm specifies a namespace map for an overlay. A Namespace
 	// map includes one or more expressions of the form:
@@ -41,130 +41,133 @@ var (
 	//
 	// This is necessary when a different variants of a schema is used in
 	// a complex schema. Each variant gets its own namespace.
-	NSMapTerm = NewTerm(LS, "nsMap", false, false, OverrideComposition, nil)
+	NSMapTerm = NewTerm(LS, "nsMap").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// CharacterEncodingTerm is used to specify a character encoding for
 	// the data processed with the layer
-	CharacterEncodingTerm = NewTerm(LS, "characterEncoding", false, false, OverrideComposition, nil)
+	CharacterEncodingTerm = NewTerm(LS, "characterEncoding").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// InstanceOfTerm is an edge term that is used to connect values with
 	// their schema specifications
-	InstanceOfTerm = NewTerm(LS, "instanceOf", false, false, ErrorComposition, nil)
+	InstanceOfTerm = NewTerm(LS, "instanceOf").SetComposition(ErrorComposition).Term
 
 	// SchemaNodeIDTerm denotes the schema node ID for ingested nodes
-	SchemaNodeIDTerm = NewTerm(LS, "schemaNodeId", false, false, ErrorComposition, nil)
+	SchemaNodeIDTerm = NewTerm(LS, "schemaNodeId").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Term
 
 	// SchemaVariantTerm is the schema variant type
-	SchemaVariantTerm = NewTerm(LS, "SchemaVariant", false, false, NoComposition, nil)
+	SchemaVariantTerm = NewTerm(LS, "SchemaVariant").SetComposition(NoComposition).SetTags(SchemaElementTag).Term
 
 	// DescriptionTerm is used for comments/descriptions
-	DescriptionTerm = NewTerm(LS, "description", false, false, SetComposition, nil)
+	DescriptionTerm = NewTerm(LS, "description").SetComposition(SetComposition).SetTags(SchemaElementTag).Term
 
 	// AttributeNameTerm represents the name of an attribute
-	AttributeNameTerm = NewTerm(LS, "attributeName", false, false, OverrideComposition, nil)
+	AttributeNameTerm = NewTerm(LS, "attributeName").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// AttributeIndexTerm represents the index of an array element
-	AttributeIndexTerm = NewTerm(LS, "attributeIndex", false, false, NoComposition, nil)
+	AttributeIndexTerm = NewTerm(LS, "attributeIndex").SetComposition(NoComposition).SetTags(SchemaElementTag).Term
 
 	// ConditionalTerm specifies conditions for ingestion
-	ConditionalTerm = NewTerm(LS, "conditional", false, false, OverrideComposition, nil)
+	ConditionalTerm = NewTerm(LS, "conditional").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// LayerRootTerm is an edge term that connects layer node to the root node of the schema
-	LayerRootTerm = NewTerm(LS, "layer", false, false, ErrorComposition, nil)
+	LayerRootTerm = NewTerm(LS, "layer").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Term
 
 	// DefaultValueTerm is the default value for an attribute if attribute is not present
-	DefaultValueTerm = NewTerm(LS, "defaultValue", false, false, OverrideComposition, nil)
+	DefaultValueTerm = NewTerm(LS, "defaultValue").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// Format specifies a type-specific formatting directive, such as a date format
-	FormatTerm = NewTerm(LS, "format", false, false, OverrideComposition, nil)
+	FormatTerm = NewTerm(LS, "format").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 	// EntitySchemaTerm is inserted by the schema compilation to mark
 	// entity roots. It records the schema ID containing the entity
 	// definition.
-	EntitySchemaTerm = NewTerm(LS, "entitySchema", false, false, ErrorComposition, nil)
+	EntitySchemaTerm = NewTerm(LS, "entitySchema").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Term
 
 	// NodeIDTerm keeps the node ID or the attribute ID
-	NodeIDTerm = NewTerm(LS, "nodeId", false, false, ErrorComposition, nil)
+	NodeIDTerm = NewTerm(LS, "nodeId").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Term
 
 	// IngestAsTerm ingests value as an edge, node, or property
-	IngestAsTerm = NewTerm(LS, "ingestAs", false, false, OverrideComposition, nil)
+	IngestAsTerm = NewTerm(LS, "ingestAs").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// AsPropertyOfTerm is optional. If specified, it gives the nearest
 	// ancestor node that is an instance of the given type. If not, it
 	// is the parent document node
-	AsPropertyOfTerm = NewTerm(LS, "asPropertyOf", false, false, OverrideComposition, nil)
+	AsPropertyOfTerm = NewTerm(LS, "asPropertyOf").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// EdgeLabelTerm represents the value used as an edge label, when ingesting an edge
-	EdgeLabelTerm = NewTerm(LS, "edgeLabel", false, false, OverrideComposition, nil)
+	EdgeLabelTerm = NewTerm(LS, "edgeLabel").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// OutputEdgeLabelTerm determines the labels of the output edges
-	OutputEdgeLabelTerm = NewTerm(LS, "outputEdgeLabel", false, false, OverrideComposition, nil)
+	OutputEdgeLabelTerm = NewTerm(LS, "outputEdgeLabel").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// PropertyNameTerm represents the value used as a property name when ingesting a property
-	PropertyNameTerm = NewTerm(LS, "propertyName", false, false, OverrideComposition, nil)
+	PropertyNameTerm = NewTerm(LS, "propertyName").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// DocumentNodeTerm is the type of document nodes
-	DocumentNodeTerm = NewTerm(LS, "DocumentNode", false, false, ErrorComposition, nil)
+	DocumentNodeTerm = NewTerm(LS, "DocumentNode").SetComposition(ErrorComposition).Term
 
 	// NodeValueTerm is the property key used to keep node value
-	NodeValueTerm = NewTerm(LS, "value", false, false, ErrorComposition, nil)
+	NodeValueTerm = NewTerm(LS, "value").SetComposition(ErrorComposition).Term
 
 	// ValueTypeTerm defines the type of a value
-	ValueTypeTerm = NewTerm(LS, "valueType", false, false, OverrideComposition, nil)
+	ValueTypeTerm = NewTerm(LS, "valueType").SetComposition(OverrideComposition).Term
 
 	// HasTerm is an edge term for linking document elements
-	HasTerm = NewTerm(LS, "has", false, false, ErrorComposition, nil)
+	HasTerm = NewTerm(LS, "has").SetComposition(ErrorComposition).Term
 
 	// EntityIDFieldsTerm is a string or []string that lists the attribute IDs
 	// for entity ID. It is defined at the root node of a layer. All
 	// attribute IDs must refer to value nodes.
-	EntityIDFieldsTerm = NewTerm(LS, "entityIdFields", false, false, OverrideComposition, nil)
+	EntityIDFieldsTerm = NewTerm(LS, "entityIdFields").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// EntityIDTerm is a string or []string that gives the unique ID of
 	// an entity. This is a node property at the root node of an entity
-	EntityIDTerm = NewTerm(LS, "entityId", false, false, OverrideComposition, nil)
+	EntityIDTerm = NewTerm(LS, "entityId").SetComposition(OverrideComposition).Term
 
 	// LabeledAsTerm adds labels to JSON schemas
-	LabeledAsTerm = NewTerm(LS, "labeledAs", false, false, OverrideComposition, nil)
+	LabeledAsTerm = NewTerm(LS, "labeledAs").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// TypeDiscriminatorTerm represents a set of schema field hints for defining polymorphic objects
-	TypeDiscriminatorTerm = NewTerm(LS, "typeDiscriminator", false, false, NoComposition, nil)
+	TypeDiscriminatorTerm = NewTerm(LS, "typeDiscriminator").SetComposition(NoComposition).SetTags(SchemaElementTag).Term
 
 	// IncludeSchemaTerm represents another schema to replace and copy its contents
-	IncludeSchemaTerm = NewTerm(LS, "include", false, false, OverrideComposition, nil)
+	IncludeSchemaTerm = NewTerm(LS, "include").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 
 	// Namespace defines the namespace prefix
-	NamespaceTerm = NewTerm(LS, "namespace", false, false, OverrideComposition, nil)
+	NamespaceTerm = NewTerm(LS, "namespace").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+
+	// SourceTerm gives the source information for the data element
+	SourceTerm = NewTerm(LS, "provenance/source").SetComposition(OverrideComposition).SetTags(ProvenanceTag).Term
 )
 
 // Attribute types defines the terms describing attribute types. Each
 // attribute must have one of the attribute types plus the Attribute
 // type, marking the object as an attribute.
 var (
-	AttributeTypeValue       = NewTerm(LS, "Value", false, false, OverrideComposition, nil)
-	AttributeTypeObject      = NewTerm(LS, "Object", false, false, OverrideComposition, nil)
-	AttributeTypeArray       = NewTerm(LS, "Array", false, false, OverrideComposition, nil)
-	AttributeTypeReference   = NewTerm(LS, "Reference", false, false, OverrideComposition, nil)
-	AttributeTypeComposite   = NewTerm(LS, "Composite", false, false, OverrideComposition, nil)
-	AttributeTypePolymorphic = NewTerm(LS, "Polymorphic", false, false, OverrideComposition, nil)
-	AttributeNodeTerm        = NewTerm(LS, "Attribute", false, false, OverrideComposition, nil)
+	AttributeTypeValue       = NewTerm(LS, "Value").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+	AttributeTypeObject      = NewTerm(LS, "Object").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+	AttributeTypeArray       = NewTerm(LS, "Array").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+	AttributeTypeReference   = NewTerm(LS, "Reference").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+	AttributeTypeComposite   = NewTerm(LS, "Composite").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+	AttributeTypePolymorphic = NewTerm(LS, "Polymorphic").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+	AttributeNodeTerm        = NewTerm(LS, "Attribute").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 )
 
 // Layer terms includes type specific terms recognized by the schema
 // compiler. These are terms used to define elements of an attribute.
 var (
 	// Unordered named attributes (json object)
-	ObjectAttributesTerm = NewTerm(LS, "Object/attributes", false, false, ErrorComposition, nil)
+	ObjectAttributesTerm = NewTerm(LS, "Object/attributes").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Term
 	// Ordered named attributes (json object, xml elements)
-	ObjectAttributeListTerm = NewTerm(LS, "Object/attributeList", false, true, ErrorComposition, nil)
+	ObjectAttributeListTerm = NewTerm(LS, "Object/attributeList").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Term
 	// Reference to another schema. This will be resolved to another
 	// schema during compilation
-	ReferenceTerm = NewTerm(LS, "Reference/ref", false, false, OverrideComposition, nil)
+	ReferenceTerm = NewTerm(LS, "Reference/ref").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
 	// ArrayItems contains the definition for the items of the array
-	ArrayItemsTerm = NewTerm(LS, "Array/elements", false, false, ErrorComposition, nil)
+	ArrayItemsTerm = NewTerm(LS, "Array/elements").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Term
 	// All components of a composite attribute
-	AllOfTerm = NewTerm(LS, "Composite/allOf", false, true, ErrorComposition, nil)
+	AllOfTerm = NewTerm(LS, "Composite/allOf").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Term
 	// All options of a polymorphic attribute
-	OneOfTerm = NewTerm(LS, "Polymorphic/oneOf", false, true, ErrorComposition, nil)
+	OneOfTerm = NewTerm(LS, "Polymorphic/oneOf").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Term
 )
 
 // IsAttributeType returns true if the term is one of the attribute types

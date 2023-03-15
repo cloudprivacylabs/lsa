@@ -212,7 +212,7 @@ func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode *lpg.N
 	//	newNode.SetProperty(ls.DescriptionTerm, ls.StringPropertyValue(attr.description))
 	//}
 	if len(attr.typ) > 0 {
-		newNode.SetProperty(ls.ValueTypeTerm, ls.StringSlicePropertyValue(ls.ValueTypeTerm, attr.typ))
+		newNode.SetProperty(ls.ValueTypeTerm, ls.StringPropertyValue(ls.ValueTypeTerm, attr.typ[0]))
 	}
 	if len(attr.key) > 0 {
 		newNode.SetProperty(ls.AttributeNameTerm, ls.StringPropertyValue(ls.AttributeNameTerm, attr.key))

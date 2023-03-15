@@ -8,11 +8,11 @@ import (
 )
 
 // PatternTerm validates against a regex
-var PatternTerm = ls.NewTerm(ls.LS, "validation/pattern", false, false, ls.OverrideComposition, struct {
+var PatternTerm = ls.NewTerm(ls.LS, "validation/pattern").SetComposition(ls.OverrideComposition).SetTags(ls.ValidationTag, ls.SchemaElementTag).SetMetadata(struct {
 	PatternValidator
 }{
 	PatternValidator{},
-})
+}).Term
 
 // PatternValidator validates a string value against a regex
 type PatternValidator struct{}

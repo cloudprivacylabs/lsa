@@ -361,11 +361,16 @@ func (l *Layer) GetAttributePath(node *lpg.Node) []*lpg.Node {
 func GetAttributePath(root, node *lpg.Node) []*lpg.Node {
 	ret := make([]*lpg.Node, 0)
 	ret = append(ret, node)
+	seen := make(map[*lpg.Node]struct{})
 	for node != root {
 		hasEdges := false
 		for edges := node.GetEdges(lpg.IncomingEdge); edges.Next(); {
-			hasEdges = true
 			edge := edges.Edge()
+			if _, ok := seen[edge.GetFrom()]; ok {
+				continue
+			}
+			seen[edge.GetFrom()] = struct{}{}
+			hasEdges = true
 			if edge.GetFrom() == root {
 				ret = append(ret, edge.GetFrom())
 				node = edge.GetFrom()

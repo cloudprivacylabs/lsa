@@ -23,10 +23,10 @@ const JSON = "https://json.org#"
 
 // JSON related vocabulry
 var (
-	StringTypeTerm  = ls.NewTerm(JSON, "string", false, false, ls.OverrideComposition, nil)
-	NumberTypeTerm  = ls.NewTerm(JSON, "number", false, false, ls.OverrideComposition, nil)
-	IntegerTypeTerm = ls.NewTerm(JSON, "integer", false, false, ls.OverrideComposition, nil)
-	BooleanTypeTerm = ls.NewTerm(JSON, "boolean", false, false, ls.OverrideComposition, nil)
-	ObjectTypeTerm  = ls.NewTerm(JSON, "object", false, false, ls.OverrideComposition, nil)
-	ArrayTypeTerm   = ls.NewTerm(JSON, "array", false, false, ls.OverrideComposition, nil)
+	StringTypeTerm  = ls.NewTerm(JSON, "string").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
+	NumberTypeTerm  = ls.NewTerm(JSON, "number").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
+	IntegerTypeTerm = ls.NewTerm(JSON, "integer").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
+	BooleanTypeTerm = ls.NewTerm(JSON, "boolean").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
+	ObjectTypeTerm  = ls.NewTerm(JSON, "object").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
+	ArrayTypeTerm   = ls.NewTerm(JSON, "array").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
 )

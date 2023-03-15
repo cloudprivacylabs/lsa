@@ -246,6 +246,10 @@ var SkipDocumentNodes = SkipEdgesToNodeWithType(DocumentNodeTerm)
 // follow edges that reach to document nodes
 var OnlyDocumentNodes = FollowEdgesToNodeWithType(DocumentNodeTerm)
 
+// OnlyAttributeNodes can be used in IterateDescendants edge func to
+// follow edges that reach to Attribute nodes
+var OnlyAttributeNodes = FollowEdgesToNodeWithType(AttributeNodeTerm)
+
 // IterateDescendants iterates the descendants of the node based on
 // the results of nodeFunc and edgeFunc.
 //
@@ -510,6 +514,18 @@ func FindChildInstanceOf(parent *lpg.Node, childAttrID string) []*lpg.Node {
 		}
 	}
 	return ret
+}
+
+// FindFirstChildIf returns the first child node for which the predicate returns true
+func FindFirstChildIf(parent *lpg.Node, pred func(*lpg.Node) bool) *lpg.Node {
+	for edges := parent.GetEdges(lpg.OutgoingEdge); edges.Next(); {
+		edge := edges.Edge()
+		child := edge.GetTo()
+		if pred(child) {
+			return child
+		}
+	}
+	return nil
 }
 
 // GetEntityRootNode returns the entity root node containing this node

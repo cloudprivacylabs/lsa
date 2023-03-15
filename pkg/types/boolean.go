@@ -22,17 +22,17 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-var JSONBooleanTerm = ls.NewTerm(JSON, "boolean", false, false, ls.OverrideComposition, struct {
+var JSONBooleanTerm = ls.NewTerm(JSON, "boolean", "json:boolean").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	JSONBooleanParser
 }{
 	JSONBooleanParser{},
-}, "json:boolean")
+}).Term
 
-var XMLBooleanTerm = ls.NewTerm(XSD, "boolean", false, false, ls.OverrideComposition, struct {
+var XMLBooleanTerm = ls.NewTerm(XSD, "boolean", "xsd:boolean", "xs:boolean").SetComposition(ls.OverrideComposition).SetMetadata(struct {
 	XMLBooleanParser
 }{
 	XMLBooleanParser{},
-}, "xsd:boolean", "xs:boolean")
+}).Term
 
 type JSONBooleanParser struct{}
 

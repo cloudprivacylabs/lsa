@@ -93,11 +93,7 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 			}
 			entities := ls.GetEntityInfo(pipeline.Graph)
 			for e := range entities {
-				if cmdutil.GetConfig().SourceProperty == "" {
-					e.SetProperty("source", entryInfo.GetName())
-				} else {
-					e.SetProperty(cmdutil.GetConfig().SourceProperty, entryInfo.GetName())
-				}
+				e.SetProperty(ls.SourceTerm, entryInfo.GetName())
 			}
 			if err := pipeline.Next(); err != nil {
 				doneErr = err

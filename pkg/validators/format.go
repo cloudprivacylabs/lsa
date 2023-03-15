@@ -10,11 +10,11 @@ import (
 )
 
 // JsonFormatTerm validates if the value matches one of the json format implementations
-var JsonFormatTerm = ls.NewTerm(ls.LS, "validation/json/format", false, false, ls.OverrideComposition, struct {
+var JsonFormatTerm = ls.NewTerm(ls.LS, "validation/json/format").SetComposition(ls.OverrideComposition).SetTags(ls.ValidationTag, ls.SchemaElementTag).SetMetadata(struct {
 	JsonFormatValidator
 }{
 	JsonFormatValidator{},
-})
+}).Term
 
 // JsonFormatValidator checks if the input value matches a given format
 type JsonFormatValidator struct{}

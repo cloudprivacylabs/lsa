@@ -23,15 +23,15 @@ import (
 // graph nodes that contain the mapped schema node id. The contents of
 // the nodes under the mapContext that have prop:schemaNodeId will be
 // assigned to the current node
-var MapPropertyTerm = ls.NewTerm(TRANSFORM, "mapProperty", false, false, ls.OverrideComposition, nil)
+var MapPropertyTerm = ls.NewTerm(TRANSFORM, "mapProperty").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
 
 // MapContextTerm gives an opencypher expression that results in a
 // node. That node will be used as the context for the map operations
 // under that node
-var MapContextTerm = ls.NewTerm(TRANSFORM, "mapContext", false, false, ls.OverrideComposition, MapContextSemantics)
+var MapContextTerm = ls.NewTerm(TRANSFORM, "mapContext").SetComposition(ls.OverrideComposition).SetMetadata(MapContextSemantics).SetTags(ls.SchemaElementTag).Term
 
-var SourceTerm = ls.NewTerm(TRANSFORM, "source", false, false, ls.OverrideComposition, nil)
-var SourcesTerm = ls.NewTerm(TRANSFORM, "sources", false, true, ls.OverrideComposition, nil)
+var SourceTerm = ls.NewTerm(TRANSFORM, "source").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
+var SourcesTerm = ls.NewTerm(TRANSFORM, "sources").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
 
 var MapContextSemantics = mapContextSemantics{}
 
