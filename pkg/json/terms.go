@@ -23,10 +23,10 @@ const JSON = "https://json.org#"
 
 // JSON related vocabulry
 var (
-	StringTypeTerm  = ls.NewTerm(JSON, "string").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
-	NumberTypeTerm  = ls.NewTerm(JSON, "number").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
-	IntegerTypeTerm = ls.NewTerm(JSON, "integer").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
-	BooleanTypeTerm = ls.NewTerm(JSON, "boolean").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
-	ObjectTypeTerm  = ls.NewTerm(JSON, "object").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
-	ArrayTypeTerm   = ls.NewTerm(JSON, "array").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
+	StringTypeTerm  = ls.NewTerm(JSON, "string").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Register()
+	NumberTypeTerm  = ls.NewTerm(JSON, "number").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Register()
+	IntegerTypeTerm = ls.NewTerm(JSON, "integer").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Register()
+	BooleanTypeTerm = ls.NewTerm(JSON, "boolean").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Register()
+	ObjectTypeTerm  = ls.NewTerm(JSON, "object").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Register()
+	ArrayTypeTerm   = ls.NewTerm(JSON, "array").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Register()
 )

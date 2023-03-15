@@ -23,10 +23,10 @@ const XML = "https://lschema.org/xml/"
 // NamespaceTerm captures the element/attribute namespace in the
 // ingested data graph. It also determines the namespace for the
 // schema element/attribute.
-var NamespaceTerm = ls.NewTerm(XML, "ns").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
+var NamespaceTerm = ls.NewTerm(XML, "ns").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Register()
 
 // ValueAttributeTerm gives the name of the attribute containing the value of the node
-var ValueAttributeTerm = ls.NewTerm(XML, "valueAttr").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
+var ValueAttributeTerm = ls.NewTerm(XML, "valueAttr").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Register()
 
 // AttributeTerm marks the attribute as an XML attribute of an element
-var AttributeTerm = ls.NewTerm(XML, "attribute").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Term
+var AttributeTerm = ls.NewTerm(XML, "attribute").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Register()

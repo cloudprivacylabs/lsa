@@ -14,7 +14,7 @@ var JsonFormatTerm = ls.NewTerm(ls.LS, "validation/json/format").SetComposition(
 	JsonFormatValidator
 }{
 	JsonFormatValidator{},
-}).Term
+}).Register()
 
 // JsonFormatValidator checks if the input value matches a given format
 type JsonFormatValidator struct{}

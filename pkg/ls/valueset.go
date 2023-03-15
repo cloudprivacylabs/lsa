@@ -51,46 +51,46 @@ var (
 	// A node must contain either the ValuesetContextTerm or the ValuesetTablesTerm to be used in lookup
 	//
 	// If context is empty, entity root is assumed
-	ValuesetContextTerm = NewTerm(LS, "vs/context").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+	ValuesetContextTerm = NewTerm(LS, "vs/context").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
 	// ValuesetContextExprTerm is an opencyper expression that gives the context node using "this" as the current node
-	ValuesetContextExprTerm = NewTerm(LS, "vs/contextExpr").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+	ValuesetContextExprTerm = NewTerm(LS, "vs/contextExpr").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
 
 	// ValuesetTablesTerm specifies the list of table IDs to
 	// lookup. This is optional.  A node must contain either the
 	// ValuesetContextTerm or the ValuesetTablesTerm to be used in
 	// lookup
-	ValuesetTablesTerm = NewTerm(LS, "vs/valuesets").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+	ValuesetTablesTerm = NewTerm(LS, "vs/valuesets").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
 
 	// ValuesetRequestKeysTerm specifies the keys that will be used in
 	// the valueset request. These keys are interpreted by the valueset
 	// lookup.
-	ValuesetRequestKeysTerm = NewTerm(LS, "vs/requestKeys").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+	ValuesetRequestKeysTerm = NewTerm(LS, "vs/requestKeys").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
 
 	// ValuesetRequestValuesTerm contains entries matching
 	// ValuesetRequestKeysTerm. It specifies the schema node IDs of the
 	// nodes containing values to lookup
-	ValuesetRequestValuesTerm = NewTerm(LS, "vs/requestValues").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+	ValuesetRequestValuesTerm = NewTerm(LS, "vs/requestValues").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
 
 	// ValuesetRequestTerm specifies one or more openCypher expressions
 	// that builds up a valuest lookup request. The named results of
 	// those expressions are added to the request key/value pairs
-	ValuesetRequestTerm = NewTerm(LS, "vs/request").SetComposition(OverrideComposition).SetTags(SchemaElementTag).SetMetadata(CompileOCSemantics{}).Term
+	ValuesetRequestTerm = NewTerm(LS, "vs/request").SetComposition(OverrideComposition).SetTags(SchemaElementTag).SetMetadata(CompileOCSemantics{}).Register()
 
 	// ValuesetResultKeys term contains the keys that will be returned
 	// from the valueset lookup. Values of these keys will be inserted under the context
-	ValuesetResultKeysTerm = NewTerm(LS, "vs/resultKeys").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+	ValuesetResultKeysTerm = NewTerm(LS, "vs/resultKeys").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
 
 	// ValuesetResultValuesTerm specifies the schema node IDs for the
 	// nodes that will receive the matching key values. If there is only
 	// one, resultKeys is optional The result value nodes must be a
 	// direct descendant of one of the nodes from the document node up
 	// to the context node.
-	ValuesetResultValuesTerm = NewTerm(LS, "vs/resultValues").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+	ValuesetResultValuesTerm = NewTerm(LS, "vs/resultValues").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
 
 	// ValuesetResultContext determines the node under which the results
 	// will be added. This is needed if the results will be added under
 	// a different entity attached to the valueset context.
-	ValuesetResultContextTerm = NewTerm(LS, "vs/resultContext").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Term
+	ValuesetResultContextTerm = NewTerm(LS, "vs/resultContext").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
 )
 
 // ValuesetInfo describes value set information for a schema node.
@@ -239,7 +239,8 @@ func ValuesetInfoFromNode(layer *Layer, node *lpg.Node) (*ValuesetInfo, error) {
 			var found []*lpg.Node
 			IterateDescendantsp(contextNode, func(n *lpg.Node, p []*lpg.Node) bool {
 				if n == node {
-					found = p
+					found = make([]*lpg.Node, len(p))
+					copy(found, p)
 					return false
 				}
 				return true
@@ -247,7 +248,9 @@ func ValuesetInfoFromNode(layer *Layer, node *lpg.Node) (*ValuesetInfo, error) {
 			if len(found) < 1 {
 				return nil, fmt.Errorf("Not found: %s", v)
 			}
-			ret.requestSchemaPaths[i] = append(contextPath, found[1:]...)
+			ret.requestSchemaPaths[i] = make([]*lpg.Node, len(contextPath)+len(found)-1)
+			copy(ret.requestSchemaPaths[i], contextPath)
+			copy(ret.requestSchemaPaths[i][len(contextPath):], found[1:])
 		}
 	}
 	return ret, nil

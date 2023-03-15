@@ -12,7 +12,7 @@ var PatternTerm = ls.NewTerm(ls.LS, "validation/pattern").SetComposition(ls.Over
 	PatternValidator
 }{
 	PatternValidator{},
-}).Term
+}).Register()
 
 // PatternValidator validates a string value against a regex
 type PatternValidator struct{}

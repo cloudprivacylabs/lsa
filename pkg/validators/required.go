@@ -17,7 +17,7 @@ var RequiredTerm = ls.NewTerm(ls.LS, "validation/required").SetComposition(ls.Ov
 	RequiredValidator
 }{
 	RequiredValidator{},
-}).Term
+}).Register()
 
 // RequiredValidator validates if a required value exists
 type RequiredValidator struct{}

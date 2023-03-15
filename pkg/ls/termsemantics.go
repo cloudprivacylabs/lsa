@@ -52,7 +52,7 @@ const (
 	ValidationTag = "validation"
 )
 
-// NewTerm registers a term with given semantics, and returns the term.
+// NewTerm create a new term.
 func NewTerm(ns, lname string, aliases ...string) TermSemantics {
 	t := TermSemantics{Term: ns + lname,
 		Namespace:   ns,
@@ -61,8 +61,13 @@ func NewTerm(ns, lname string, aliases ...string) TermSemantics {
 		Composition: OverrideComposition,
 		Tags:        make(map[string]struct{}),
 	}
-	RegisterTerm(t)
 	return t
+}
+
+// Register a term and return its name
+func (t TermSemantics) Register() string {
+	RegisterTerm(t)
+	return t.Term
 }
 
 func (t TermSemantics) SetID(v bool) TermSemantics {

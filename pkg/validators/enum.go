@@ -20,7 +20,7 @@ var EnumTerm = ls.NewTerm(ls.LS, "validation/enumeration").SetComposition(ls.Ove
 	EnumValidator
 }{
 	EnumValidator{},
-}).Term
+}).Register()
 
 // ConstTerm is used for constant value validator
 //
@@ -37,7 +37,7 @@ var ConstTerm = ls.NewTerm(ls.LS, "validation/const").SetComposition(ls.Override
 	EnumValidator
 }{
 	EnumValidator{},
-})
+}).Register
 
 // EnumValidator checks if a value is equal to one of the given options.
 type EnumValidator struct{}

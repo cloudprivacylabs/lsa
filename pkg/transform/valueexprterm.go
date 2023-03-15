@@ -22,9 +22,9 @@ import (
 // ValueExprTerm defines one or more opencypher expressions that
 // defines the value of the node. The first one that returns nonempty
 // resultset will be evaluated
-var ValueExprTerm = ls.NewTerm(TRANSFORM, "valueExpr").SetComposition(ls.OverrideComposition).SetMetadata(ValueExprTermSemantics).SetTags(ls.SchemaElementTag).Term
-var ValueExprFirstTerm = ls.NewTerm(TRANSFORM, "valueExpr.first").SetComposition(ls.OverrideComposition).SetMetadata(ValueExprTermSemantics).SetTags(ls.SchemaElementTag).Term
-var ValueExprAllTerm = ls.NewTerm(TRANSFORM, "valueExpr.all").SetComposition(ls.OverrideComposition).SetMetadata(ValueExprTermSemantics).SetTags(ls.SchemaElementTag).Term
+var ValueExprTerm = ls.NewTerm(TRANSFORM, "valueExpr").SetComposition(ls.OverrideComposition).SetMetadata(ValueExprTermSemantics).SetTags(ls.SchemaElementTag).Register()
+var ValueExprFirstTerm = ls.NewTerm(TRANSFORM, "valueExpr.first").SetComposition(ls.OverrideComposition).SetMetadata(ValueExprTermSemantics).SetTags(ls.SchemaElementTag).Register()
+var ValueExprAllTerm = ls.NewTerm(TRANSFORM, "valueExpr.all").SetComposition(ls.OverrideComposition).SetMetadata(ValueExprTermSemantics).SetTags(ls.SchemaElementTag).Register()
 
 type valueExprTermSemantics struct{}
 

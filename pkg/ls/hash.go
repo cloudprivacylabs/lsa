@@ -25,10 +25,10 @@ import (
 	"github.com/cloudprivacylabs/lpg"
 )
 
-var HashSHA256Term = NewTerm(LS, "hash.sha256").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Term
-var HashSHA1Term = NewTerm(LS, "hash.sha1").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Term
-var HashSHA512Term = NewTerm(LS, "hash.sha512").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Term
-var HashTerm = NewTerm(LS, "hash").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Term
+var HashSHA256Term = NewTerm(LS, "hash.sha256").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Register()
+var HashSHA1Term = NewTerm(LS, "hash.sha1").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Register()
+var HashSHA512Term = NewTerm(LS, "hash.sha512").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Register()
+var HashTerm = NewTerm(LS, "hash").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Register()
 
 type hashSemantics struct{}
 

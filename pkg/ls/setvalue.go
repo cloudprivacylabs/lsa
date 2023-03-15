@@ -19,7 +19,7 @@ import (
 	"github.com/cloudprivacylabs/opencypher"
 )
 
-var SetValueTerm = NewTerm(LS, "setValue").SetComposition(OverrideComposition).SetMetadata(setValueSemantics{}).SetTags(SchemaElementTag).Term
+var SetValueTerm = NewTerm(LS, "setValue").SetComposition(OverrideComposition).SetMetadata(setValueSemantics{}).SetTags(SchemaElementTag).Register()
 
 type setValueSemantics struct{}
 

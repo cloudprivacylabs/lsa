@@ -83,36 +83,36 @@ var MeasureTerm = ls.NewTerm(ls.LS, "Measure", "Measure").SetComposition(ls.Over
 	measureParser
 }{
 	measureParser{},
-}).Term
+}).Register()
 
 // MeasureUnitTerm is a node property term giving measure unit
-var MeasureUnitTerm = ls.NewTerm(ls.LS, "measure/unit").SetComposition(ls.OverrideComposition).Term
+var MeasureUnitTerm = ls.NewTerm(ls.LS, "measure/unit").SetComposition(ls.OverrideComposition).Register()
 
 // MeasureValueTerm is a node property term giving measure value.
-var MeasureValueTerm = ls.NewTerm(ls.LS, "measure/value").SetComposition(ls.OverrideComposition).Term
+var MeasureValueTerm = ls.NewTerm(ls.LS, "measure/value").SetComposition(ls.OverrideComposition).Register()
 
 // MeasureUseUnitTerm is a node property that specifies that all
 // measures must be converted to this unit
-var MeasureUseUnitTerm = ls.NewTerm(ls.LS, "measure/useUnit").SetComposition(ls.OverrideComposition).Term
+var MeasureUseUnitTerm = ls.NewTerm(ls.LS, "measure/useUnit").SetComposition(ls.OverrideComposition).Register()
 
 // MeasureUnitDomainTerm is a node property that specifies that the measure is of a certain domain
-var MeasureUnitDomainTerm = ls.NewTerm(ls.LS, "measure/unitDomain").SetComposition(ls.OverrideComposition).Term
+var MeasureUnitDomainTerm = ls.NewTerm(ls.LS, "measure/unitDomain").SetComposition(ls.OverrideComposition).Register()
 
 // MeasureUnitExpr gives the expression that returns the unit. The
 // result can be a node or a value. The expression is evaluated with
 // (valueNode) bound to the value node of the unit expr
-var MeasureUnitExpr = ls.NewTerm(ls.LS, "measure/unitExpr").SetComposition(ls.OverrideComposition).SetMetadata(ls.CompileOCSemantics{}).Term
+var MeasureUnitExpr = ls.NewTerm(ls.LS, "measure/unitExpr").SetComposition(ls.OverrideComposition).SetMetadata(ls.CompileOCSemantics{}).Register()
 
 // MeasureValueExpr gives the expression that returns the measured value node. The result must be a node.
-var MeasureValueNodeExpr = ls.NewTerm(ls.LS, "measure/valueNodeExpr").SetComposition(ls.OverrideComposition).SetMetadata(ls.CompileOCSemantics{}).Term
+var MeasureValueNodeExpr = ls.NewTerm(ls.LS, "measure/valueNodeExpr").SetComposition(ls.OverrideComposition).SetMetadata(ls.CompileOCSemantics{}).Register()
 
 // MeasureUnitNode gives the schema node id containing the unit. This
 // node must appear under the common parent with measure node
-var MeasureUnitNode = ls.NewTerm(ls.LS, "measure/unitNode").SetComposition(ls.OverrideComposition).Term
+var MeasureUnitNode = ls.NewTerm(ls.LS, "measure/unitNode").SetComposition(ls.OverrideComposition).Register()
 
 // MeasureValueNode gives the schema node id containing the value. This
 // node must appear under the common parent with measure node
-var MeasureValueNode = ls.NewTerm(ls.LS, "measure/valueNode").SetComposition(ls.OverrideComposition).Term
+var MeasureValueNode = ls.NewTerm(ls.LS, "measure/valueNode").SetComposition(ls.OverrideComposition).Register()
 
 type ErrMultipleNodesMatch struct {
 	Src string
