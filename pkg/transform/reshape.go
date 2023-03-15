@@ -29,7 +29,15 @@ type Reshaper struct {
 	TargetSchema *ls.Layer
 	Builder      ls.GraphBuilder
 	Script       *TransformScript
-	ingester     *ls.Ingester
+
+	Config ReshapeConfig
+}
+
+type ReshapeConfig struct {
+	// Carry over the node properties that have this namespace prefix
+	PreserveNodePropertyNamespaces []string
+	// Carry over the node properties whose terms have these tags. If nil, ls.Provenance is assumed. If empty, nothing is carried over
+	PreserveNodePropertyTags []string
 }
 
 type path[X any] struct {
@@ -60,6 +68,9 @@ type reshapeContext struct {
 	schemaPath    path[*lpg.Node]
 	generatedPath path[*txDocNode]
 	mapContext    path[*lpg.Node]
+
+	preserveNodeNamespaces   map[string]struct{}
+	preserveNodePropertyTags map[string]struct{}
 }
 
 func (ctx *reshapeContext) sub() *reshapeContext {
@@ -67,6 +78,20 @@ func (ctx *reshapeContext) sub() *reshapeContext {
 	ret.parent = ctx
 	ret.symbols = make(map[string]opencypher.Value)
 	return &ret
+}
+
+func (ctx *reshapeContext) preserveTag(tag string) bool {
+	for x := range ctx.preserveNodeNamespaces {
+		if strings.HasPrefix(tag, x) {
+			return true
+		}
+	}
+	term := ls.GetTermInfo(tag)
+	if term == nil {
+		return false
+	}
+	_, has := term.Tags[tag]
+	return has
 }
 
 // Export the named variables in the resultset
@@ -189,10 +214,24 @@ func (reshaper Reshaper) fillNode(node *txDocNode) error {
 
 func (reshaper Reshaper) Reshape(ctx *ls.Context, sourceGraph *lpg.Graph, ingester *ls.Ingester) error {
 	c := reshapeContext{
-		Context:     ctx,
-		symbols:     make(map[string]opencypher.Value),
-		sourceGraph: sourceGraph,
+		Context:                  ctx,
+		symbols:                  make(map[string]opencypher.Value),
+		sourceGraph:              sourceGraph,
+		preserveNodeNamespaces:   make(map[string]struct{}),
+		preserveNodePropertyTags: make(map[string]struct{}),
 	}
+
+	if reshaper.Config.PreserveNodePropertyTags == nil {
+		c.preserveNodePropertyTags[ls.ProvenanceTag] = struct{}{}
+	} else {
+		for _, x := range reshaper.Config.PreserveNodePropertyTags {
+			c.preserveNodePropertyTags[x] = struct{}{}
+		}
+	}
+	for _, x := range reshaper.Config.PreserveNodePropertyNamespaces {
+		c.preserveNodeNamespaces[x] = struct{}{}
+	}
+
 	c.schemaPath.push(reshaper.TargetSchema.GetSchemaRootNode())
 	roots, err := reshaper.reshapeNode(&c)
 	if err != nil {
@@ -399,6 +438,15 @@ func (reshaper Reshaper) handlePrimitiveValue(ctx *reshapeContext, input interfa
 func (reshaper Reshaper) handleNode(ctx *reshapeContext, input *lpg.Node) (*txDocNode, error) {
 	ret := newTxDocNode(ctx.schemaPath.last())
 	ret.sourceNode = input
+	if input != nil {
+		input.ForEachProperty(func(k string, v any) bool {
+			if ctx.preserveTag(k) {
+				ret.properties[k] = v
+			}
+			return true
+		})
+	}
+
 	ctx.generatedPath.push(ret)
 	defer ctx.generatedPath.pop()
 	// Descend into the schema
