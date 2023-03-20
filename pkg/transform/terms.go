@@ -33,6 +33,9 @@ var MapContextTerm = ls.NewTerm(TRANSFORM, "mapContext").SetComposition(ls.Overr
 var SourceTerm = ls.NewTerm(TRANSFORM, "source").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Register()
 var SourcesTerm = ls.NewTerm(TRANSFORM, "sources").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Register()
 
+// Provenance specifies the source node from which to copy provenance information, which includes all properties in ls:provenance/ namespace
+var ProvenanceTerm = ls.NewTerm(TRANSFORM, "provenance").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).SetMetadata(ls.CompileOCSemantics{}).Register()
+
 var MapContextSemantics = mapContextSemantics{}
 
 type mapContextSemantics struct{}
@@ -42,7 +45,7 @@ func (mapContextSemantics) CompileTerm(target ls.CompilablePropertyContainer, te
 	if err != nil {
 		return err
 	}
-	target.SetProperty("$compiled_"+MapContextTerm, e)
+	target.SetProperty("$compiled_"+term, e)
 	return nil
 }
 

@@ -80,18 +80,22 @@ func (ctx *reshapeContext) sub() *reshapeContext {
 	return &ret
 }
 
-func (ctx *reshapeContext) preserveTag(tag string) bool {
+func (ctx *reshapeContext) preserveTag(property string) bool {
 	for x := range ctx.preserveNodeNamespaces {
-		if strings.HasPrefix(tag, x) {
+		if strings.HasPrefix(property, x) {
 			return true
 		}
 	}
-	term := ls.GetTermInfo(tag)
+	term := ls.GetTermInfo(property)
 	if term == nil {
 		return false
 	}
-	_, has := term.Tags[tag]
-	return has
+	for tag := range term.Tags {
+		if _, has := ctx.preserveNodePropertyTags[tag]; has {
+			return true
+		}
+	}
+	return false
 }
 
 // Export the named variables in the resultset
@@ -324,6 +328,28 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 		results = append(results, v3...)
 	}
 
+	provenance, err := ls.CompileOCSemantics{}.Evaluate(reshaper.Script.GetProperties(ctx.schemaPath.items), ProvenanceTerm, ctx.getEvalContext())
+	if err != nil {
+		return nil, wrapReshapeError(err, schemaNodeID)
+	}
+	provenanceProperties := make(map[string]any)
+	if len(provenance) == 1 {
+		// Result must be a node
+		provenanceNode, err := getAtMostOneNode(opencypher.RValue{Value: provenance[0]})
+		if err != nil {
+			return nil, wrapReshapeError(err, schemaNodeID)
+		}
+		if provenanceNode != nil {
+			prefix := ls.LS + "provenance/"
+			provenanceNode.ForEachProperty(func(k string, v any) bool {
+				if strings.HasPrefix(k, prefix) {
+					provenanceProperties[k] = v
+				}
+				return true
+			})
+		}
+	}
+
 	// This is the case where the schema node has `mapProperty:
 	// propName`. In this case, nodes under the map context that has the
 	// property `propName: schemaNodeId` will be selected as the source
@@ -373,6 +399,13 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 			output, err := reshaper.generateOutput(ctx, result)
 			if err != nil {
 				return nil, err
+			}
+			for _, x := range output {
+				for k, v := range provenanceProperties {
+					if _, exists := x.properties[k]; !exists {
+						x.properties[k] = v
+					}
+				}
 			}
 			return output, nil
 		}
@@ -568,7 +601,16 @@ func (reshaper Reshaper) generateOutput(ctx *reshapeContext, input interface{}) 
 						ctx.setSymbolValue(k, v)
 					}
 				}
-				result, err := reshaper.handleNode(ctx, nil)
+				var node *lpg.Node
+				if len(row) == 1 {
+					for _, v := range row {
+						x, ok := v.Get().(*lpg.Node)
+						if ok {
+							node = x
+						}
+					}
+				}
+				result, err := reshaper.handleNode(ctx, node)
 				if err != nil {
 					return nil, err
 				}

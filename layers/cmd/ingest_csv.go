@@ -26,8 +26,9 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/cloudprivacylabs/lpg"
 	"github.com/spf13/cobra"
+
+	"github.com/cloudprivacylabs/lpg"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
@@ -174,7 +175,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 					doneErr = err
 					return
 				}
-				r.SetProperty(ls.SourceTerm, fmt.Sprintf("%s#%d", entryInfo.GetName(), row))
+				r.SetProperty(ls.SourceTerm, ls.StringPropertyValue(ls.SourceTerm, fmt.Sprintf("%s#%d", entryInfo.GetName(), row)))
 				if ci.IngestByRows {
 					if err := pipeline.Next(); err != nil {
 						doneErr = err
@@ -197,14 +198,15 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 
 type CSVJoinIngester struct {
 	BaseIngestParams
-	StartRow    int             `json:"startRow" yaml:"startRow"`
-	EndRow      int             `json:"endRow" yaml:"endRow"`
-	HeaderRow   int             `json:"headerRow" yaml:"headerRow"`
-	ID          string          `json:"id" yaml:"id"`
-	Delimiter   string          `json:"delimiter" yaml:"delimiter"`
-	Entities    []CSVJoinConfig `json:"entities" yaml:"entities"`
-	initialized bool
-	ingester    map[string]*ls.Ingester
+	StartRow      int             `json:"startRow" yaml:"startRow"`
+	EndRow        int             `json:"endRow" yaml:"endRow"`
+	HeaderRow     int             `json:"headerRow" yaml:"headerRow"`
+	ID            string          `json:"id" yaml:"id"`
+	Delimiter     string          `json:"delimiter" yaml:"delimiter"`
+	Entities      []CSVJoinConfig `json:"entities" yaml:"entities"`
+	initialized   bool
+	ingester      map[string]*ls.Ingester
+	combinedLayer *ls.Layer
 }
 
 func (CSVJoinIngester) Name() string { return "ingest/csv/join" }
@@ -260,17 +262,23 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 		if len(cji.Entities) == 0 {
 			return fmt.Errorf("No entities")
 		}
-		compiler := ls.Compiler{
-			Loader: schLoader,
-		}
+		combinedGraph := ls.NewLayerGraph()
+		nodeMap := make(map[*lpg.Node]*lpg.Node)
 		for i := range cji.Entities {
+			compiler := ls.Compiler{
+				Loader: schLoader,
+			}
 			cji.Entities[i].layer, err = compiler.Compile(pipeline.Context, cji.Entities[i].VariantID)
 			if err != nil {
 				return err
 			}
+			for k, v := range ls.CopyGraph(combinedGraph, cji.Entities[i].layer.Graph, nil, nil) {
+				nodeMap[k] = v
+			}
 		}
+		cji.combinedLayer = ls.NewLayerFromRootNode(nodeMap[cji.Entities[0].layer.GetLayerRootNode()])
 	}
-	pipeline.Properties["layer"] = cji.Entities[0].layer
+	pipeline.Properties["layer"] = cji.combinedLayer
 
 	for {
 		entryInfo, stream, err := pipeline.NextInput()
@@ -436,6 +444,7 @@ func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineCo
 		if parsed == nil {
 			return errors.New("Parsed CSV document is nil")
 		}
+		parsed.GetProperties()[ls.SourceTerm] = ls.StringPropertyValue(ls.SourceTerm, entryName)
 
 		_, err = ingester.Ingest(builder, parsed)
 		if err != nil {
@@ -445,9 +454,6 @@ func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineCo
 
 	if err := builder.LinkNodes(pipeline.Context, ingesters[joinCtx[0].VariantID].Schema); err != nil {
 		return err
-	}
-	for _, root := range lpg.Sources(builder.GetGraph()) {
-		root.SetProperty(ls.SourceTerm, entryName)
 	}
 	return nil
 }

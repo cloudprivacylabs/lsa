@@ -93,7 +93,7 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 			}
 			entities := ls.GetEntityInfo(pipeline.Graph)
 			for e := range entities {
-				e.SetProperty(ls.SourceTerm, entryInfo.GetName())
+				e.SetProperty(ls.SourceTerm, ls.StringPropertyValue(ls.SourceTerm, entryInfo.GetName()))
 			}
 			if err := pipeline.Next(); err != nil {
 				doneErr = err

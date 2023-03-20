@@ -26,6 +26,7 @@ type rootNode struct {
 	schemaNode *lpg.Node
 	id         string
 	children   []ls.ParsedDocNode
+	properties map[string]interface{}
 }
 
 func (i rootNode) GetSchemaNode() *lpg.Node              { return i.schemaNode }
@@ -34,7 +35,7 @@ func (i rootNode) GetValue() string                      { return "" }
 func (i rootNode) GetValueTypes() []string               { return nil }
 func (i rootNode) GetChildren() []ls.ParsedDocNode       { return i.children }
 func (i rootNode) GetID() string                         { return i.id }
-func (i rootNode) GetProperties() map[string]interface{} { return nil }
+func (i rootNode) GetProperties() map[string]interface{} { return i.properties }
 func (i rootNode) GetAttributeIndex() int                { return 0 }
 func (i rootNode) GetAttributeName() string              { return "" }
 
@@ -135,6 +136,7 @@ func (ing Parser) parseRow(ctx parserContext, row []string) (ls.ParsedDocNode, e
 				name:       columnName,
 				id:         strings.Join(id, "."),
 				index:      columnIndex,
+				properties: make(map[string]any),
 			}
 		} else if ctx.schemaNode != nil || !ing.OnlySchemaAttributes {
 			var schemaNode *lpg.Node
@@ -154,6 +156,7 @@ func (ing Parser) parseRow(ctx parserContext, row []string) (ls.ParsedDocNode, e
 				value:      columnData,
 				id:         strings.Join(id, "."),
 				index:      columnIndex,
+				properties: make(map[string]any),
 			}
 		}
 		if newChild != nil {
@@ -170,6 +173,7 @@ func (ing Parser) parseRow(ctx parserContext, row []string) (ls.ParsedDocNode, e
 			schemaNode: ctx.schemaNode,
 			id:         ctx.baseID,
 			children:   make([]ls.ParsedDocNode, 0, len(children)),
+			properties: make(map[string]any),
 		}
 		for _, x := range children {
 			node.children = append(node.children, x)

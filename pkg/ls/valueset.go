@@ -210,8 +210,8 @@ func ValuesetInfoFromNode(layer *Layer, node *lpg.Node) (*ValuesetInfo, error) {
 		}
 	}
 	ret.RequestExprs = CompileOCSemantics{}.Compiled(node, ValuesetRequestTerm)
+	entityRoot := GetLayerEntityRoot(node)
 	if len(ret.ContextID) == 0 && ret.ContextExpr == nil {
-		entityRoot := GetLayerEntityRoot(node)
 		if entityRoot != nil {
 			ret.ContextID = GetNodeID(entityRoot)
 		}
@@ -219,7 +219,7 @@ func ValuesetInfoFromNode(layer *Layer, node *lpg.Node) (*ValuesetInfo, error) {
 	if len(ret.RequestValues) > 0 {
 		contextNode := layer.GetAttributeByID(ret.ContextID)
 		var contextPath []*lpg.Node
-		IterateDescendantsp(layer.GetSchemaRootNode(), func(n *lpg.Node, p []*lpg.Node) bool {
+		IterateDescendantsp(entityRoot, func(n *lpg.Node, p []*lpg.Node) bool {
 			if GetNodeID(n) == ret.ContextID {
 				contextPath = p
 				return false
