@@ -86,7 +86,7 @@ func TestIngestFlat(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
+	// strtable
 	bldr := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		OnlySchemaAttributes: false,
 	})
