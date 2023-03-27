@@ -86,7 +86,6 @@ func TestIngestFlat(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	// strtable
 	bldr := ls.NewGraphBuilder(nil, ls.GraphBuilderOptions{
 		OnlySchemaAttributes: false,
 	})
@@ -229,6 +228,12 @@ func TestIngestPoly(t *testing.T) {
 		nodes := []*lpg.Node{}
 		for nx := bldr.GetGraph().GetNodes(); nx.Next(); {
 			node := nx.Node()
+			/*
+				http://base
+				http://base.field1
+				http://base.field2
+				http://base.field2.t
+			*/
 			if ls.GetNodeID(node) == nodeId {
 				nodes = append(nodes, node)
 			}

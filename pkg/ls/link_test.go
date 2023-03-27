@@ -22,6 +22,7 @@ import (
 	"github.com/cloudprivacylabs/lpg"
 )
 
+// fail
 func TestBasicLink(t *testing.T) {
 	schemas := make([]*Layer, 2)
 	for i, x := range []string{"testdata/link_1/root.json", "testdata/link_1/2.json"} {
@@ -35,6 +36,10 @@ func TestBasicLink(t *testing.T) {
 	compiler := Compiler{
 		Loader: SchemaLoaderFunc(func(ref string) (*Layer, error) {
 			for i := range schemas {
+				/*
+					https://root
+					https://2
+				*/
 				if ref == schemas[i].GetID() {
 					return schemas[i], nil
 				}
@@ -78,6 +83,7 @@ func TestBasicLink(t *testing.T) {
 
 }
 
+// fail
 func TestValueLink(t *testing.T) {
 	schemas := make([]*Layer, 2)
 	for i, x := range []string{"testdata/link_1/root.json", "testdata/link_1/3.json"} {
@@ -141,6 +147,10 @@ func TestValueLink(t *testing.T) {
 	found := false
 	for edges := root1.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 		edge := edges.Edge()
+		/*
+			edge.GetTo() (:https://lschema.org/DocumentNode:https://lschema.org/Value {0:https://idField 3:0 4:123})
+			root3 (:3:https://lschema.org/DocumentNode:https://lschema.org/Object {0:3 1:https://3})
+		*/
 		if edge.GetTo() == root3 {
 			found = true
 		}
