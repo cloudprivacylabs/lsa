@@ -91,6 +91,7 @@ func TestCSVJoinIngest(t *testing.T) {
 			result, _ := m.Marshal(capture.graphs[i])
 			expected, _ := m.Marshal(expectedGraph)
 			t.Errorf("Result is different from the expected: Result:\n%s\nExpected:\n%s", string(result), string(expected))
+			break
 		}
 	}
 }
