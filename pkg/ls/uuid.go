@@ -17,7 +17,7 @@ package ls
 import (
 	"github.com/google/uuid"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 var UUIDTerm = NewTerm(LS, "uuid").SetComposition(OverrideComposition).SetTags(SchemaElementTag).SetMetadata(uuidSemantics{}).Register()

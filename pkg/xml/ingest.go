@@ -19,7 +19,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 var ErrExtraCharacters = errors.New("Extra characters before document")

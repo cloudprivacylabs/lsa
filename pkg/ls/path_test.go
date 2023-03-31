@@ -17,7 +17,7 @@ package ls
 import (
 	"testing"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 func instantiatePathNodeFunc(g *lpg.Graph) func(parent, schemaNode *lpg.Node) (*lpg.Node, error) {

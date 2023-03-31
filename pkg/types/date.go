@@ -22,7 +22,7 @@ import (
 	"github.com/araddon/dateparse"
 	"github.com/nleeper/goment"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
 )

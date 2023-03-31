@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 // IsDocumentNode returns if the node has the DocumentNodeTerm as one of its labels

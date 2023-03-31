@@ -21,7 +21,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 	jsonsch "github.com/cloudprivacylabs/lsa/pkg/json"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )

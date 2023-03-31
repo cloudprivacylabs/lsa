@@ -19,7 +19,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 func TestSetValue(t *testing.T) {

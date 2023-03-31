@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"testing"
-	//	"github.com/cloudprivacylabs/lpg"
+	//	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 type ingestTest struct {
@@ -30,9 +30,12 @@ func TestEdges(t *testing.T) {
 }
 
 // attr1:
-//    -- attr1 -- > (value: "..")
+//
+//	-- attr1 -- > (value: "..")
+//
 // attr3:
-//    -- edgeLabel --> (value: "..")
+//
+//	-- edgeLabel --> (value: "..")
 func (tc ingestTest) testValueAsEdge(t *testing.T) {
 	// g := graph.NewOCGraph()
 	var schMap interface{}

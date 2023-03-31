@@ -21,7 +21,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 

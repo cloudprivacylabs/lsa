@@ -17,7 +17,7 @@ package ls
 import (
 	"sync"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 	"golang.org/x/text/encoding"
 )
 

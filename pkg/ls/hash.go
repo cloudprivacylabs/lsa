@@ -22,7 +22,7 @@ import (
 	"hash"
 	"strings"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 var HashSHA256Term = NewTerm(LS, "hash.sha256").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Register()

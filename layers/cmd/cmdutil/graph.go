@@ -24,7 +24,7 @@ import (
 	"github.com/bserdar/jsonstream"
 	"github.com/spf13/cobra"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 	"github.com/cloudprivacylabs/lsa/pkg/dot"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )

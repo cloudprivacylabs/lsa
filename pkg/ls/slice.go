@@ -15,7 +15,7 @@
 package ls
 
 import (
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 // GetSliceByTermsFunc is used in the Slice function to select nodes

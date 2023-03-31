@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 // NewDocumentGraph creates a new graph with the correct indexes for document ingestion

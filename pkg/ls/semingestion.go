@@ -15,7 +15,7 @@
 package ls
 
 import (
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 // PostNodeIngest is called after the ingestion of a node. If the node

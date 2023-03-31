@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 // JSONMarshaler marshals/unmarshals a graph

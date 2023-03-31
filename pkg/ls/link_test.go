@@ -19,7 +19,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 // fail

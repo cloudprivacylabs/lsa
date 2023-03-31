@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 // A CompiledGraph is a graph of compiled schemas

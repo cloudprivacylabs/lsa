@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/pipeline"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )

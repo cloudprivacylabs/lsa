@@ -251,6 +251,10 @@ func (bundle *Bundle) importJSONSchema(ctx *ls.Context, typeTerm string, importE
 // empty, schema type will be used. If there are overlays, the variant
 // will be built using the schema as the base, so caller must create a
 // clone if necessary.
+func (bundle *Bundle) Add(ctx *ls.Context, typeName string, schema *ls.Layer, overlays ...*ls.Layer) (*ls.Layer, error) {
+	return bundle.add(ctx, typeName, schema, overlays...)
+}
+
 func (bundle *Bundle) add(ctx *ls.Context, typeName string, schema *ls.Layer, overlays ...*ls.Layer) (*ls.Layer, error) {
 	if bundle.variants == nil {
 		bundle.variants = make(map[string]*ls.Layer)
@@ -332,6 +336,41 @@ func (bundle *Bundle) GetCachedLayers() map[string]*ls.Layer {
 		ret[k] = v
 	}
 	return ret
+}
+
+func (bundle *Bundle) LoadSchema(variant string) (*ls.Layer, error) {
+	if bundle.variants == nil {
+		bundle.variants = make(map[string]*ls.Layer)
+	}
+	layer, exists := bundle.variants[variant]
+	if exists {
+		return layer, nil
+	}
+	v, exists := bundle.Variants[variant]
+	if !exists {
+		return nil, nil
+	}
+	base := bundle.getLayers()[v.LayerID]
+	if base == nil {
+		return nil, ls.ErrNotFound(fmt.Sprintf("Cannot find base layer for variant %s", variant))
+	}
+
+	ovl := make([]*ls.Layer, 0, len(v.Overlays))
+	for _, o := range v.Overlays {
+		overlay := bundle.getLayers()[o.LayerID]
+		if overlay == nil {
+			return nil, ls.ErrNotFound(fmt.Sprintf("Cannot find overlay %s for variant %s", o.LayerID, variant))
+		}
+		ovl = append(ovl, overlay)
+	}
+	if len(ovl) > 0 {
+		base = base.Clone()
+	}
+	l, err := bundle.add(ls.DefaultContext(), variant, base, ovl...)
+	if err != nil {
+		return nil, fmt.Errorf("While composing variant: %s: %w", variant, err)
+	}
+	return l, nil
 }
 
 // GetLayer returns the layer for the given variant. Returns nil if

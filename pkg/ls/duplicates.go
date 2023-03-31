@@ -15,7 +15,7 @@
 package ls
 
 import (
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 // ConsolidateDuplicateEntities finds all nodes that have identical

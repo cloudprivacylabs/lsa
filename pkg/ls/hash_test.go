@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 func TestHashNested(t *testing.T) {

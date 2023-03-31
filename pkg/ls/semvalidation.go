@@ -17,7 +17,7 @@ package ls
 import (
 	"fmt"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 // A NodeValidator is used to validate document nodes based on their

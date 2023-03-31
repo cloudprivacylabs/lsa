@@ -2,10 +2,6 @@ module github.com/cloudprivacylabs/lsa
 
 go 1.19
 
-replace github.com/cloudprivacylabs/opencypher => /Users/jasoncruz/opencypher
-
-replace github.com/cloudprivacylabs/lpg => /Users/jasoncruz/lpg
-
 require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/bserdar/jsonom v1.0.0
@@ -17,13 +13,11 @@ require (
 	golang.org/x/text v0.3.7
 )
 
-require (
-	github.com/cloudprivacylabs/lpg v1.0.14
-	github.com/mitchellh/go-homedir v1.1.0
-)
+require github.com/mitchellh/go-homedir v1.1.0
 
 require (
-	github.com/cloudprivacylabs/opencypher v0.0.0-00010101000000-000000000000
+	github.com/cloudprivacylabs/lpg/v2 v2.0.0
+	github.com/cloudprivacylabs/opencypher v1.0.0-beta-15
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/golang-lru/v2 v2.0.1
 	github.com/joho/godotenv v1.4.0

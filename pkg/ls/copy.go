@@ -15,7 +15,7 @@
 package ls
 
 import (
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 // CopyGraph source to target using the optional node/edge selectors. Return a node map from the in to target nodes

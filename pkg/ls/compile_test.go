@@ -20,7 +20,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 type compileTestCase struct {

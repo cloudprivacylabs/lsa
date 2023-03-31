@@ -1,7 +1,7 @@
 package ls
 
 import (
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 func ProcessLabeledAs(graph *lpg.Graph) {

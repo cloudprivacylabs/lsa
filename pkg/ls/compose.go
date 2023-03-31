@@ -17,7 +17,7 @@ package ls
 import (
 	"strings"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 // Compose schema layers. Directly modifies the source and the
@@ -290,7 +290,7 @@ func (e ErrInvalidNSMapExpression) Error() string { return "Invalid nsMap: " + s
 
 // ParseNSMap parses a string pair of the form
 //
-//    string1 -> string2
+//	string1 -> string2
 //
 // This is used in nsMap expression to specify namespace (prefix)
 // mapping for node ids.

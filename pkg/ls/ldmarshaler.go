@@ -17,7 +17,7 @@ package ls
 import (
 	"fmt"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 // LDMarshaler renders a graph in JSON-LD flattened format

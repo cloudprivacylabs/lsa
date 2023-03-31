@@ -17,7 +17,7 @@ package ls
 import (
 	"fmt"
 
-	"github.com/cloudprivacylabs/lpg"
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 // ErrInconsistentTypes is returned if a node has multiple types that
