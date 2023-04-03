@@ -33,7 +33,7 @@ type Bundle struct {
 	Variants     map[string]*Variant    `json:"variants" yaml:"variants"`
 
 	// Layers, keyed by layer ID
-	layers map[string]*ls.Layer
+	Layers map[string]*ls.Layer
 
 	// Variant schemas, keyed by variant name
 	variants map[string]*ls.Layer
@@ -76,10 +76,10 @@ func (b *Bundle) Merge(bundle Bundle) {
 }
 
 func (b *Bundle) getLayers() map[string]*ls.Layer {
-	if b.layers == nil {
-		b.layers = make(map[string]*ls.Layer)
+	if b.Layers == nil {
+		b.Layers = make(map[string]*ls.Layer)
 	}
-	return b.layers
+	return b.Layers
 }
 
 func (b *Bundle) addLayer(id string, layer *ls.Layer) error {
@@ -256,6 +256,9 @@ func (bundle *Bundle) Add(ctx *ls.Context, typeName string, schema *ls.Layer, ov
 }
 
 func (bundle *Bundle) add(ctx *ls.Context, typeName string, schema *ls.Layer, overlays ...*ls.Layer) (*ls.Layer, error) {
+	if bundle.Layers == nil {
+		bundle.Layers = make(map[string]*ls.Layer)
+	}
 	if bundle.variants == nil {
 		bundle.variants = make(map[string]*ls.Layer)
 	}
@@ -299,7 +302,7 @@ func LoadBundle(base string, bundleLoader func(parentBundle, loadBundle string) 
 func NewBundleFromVariants(variantMap map[string]*ls.Layer) Bundle {
 	ret := Bundle{
 		Variants: make(map[string]*Variant),
-		layers:   make(map[string]*ls.Layer),
+		Layers:   make(map[string]*ls.Layer),
 		variants: make(map[string]*ls.Layer),
 	}
 	for v, layer := range variantMap {
@@ -310,7 +313,7 @@ func NewBundleFromVariants(variantMap map[string]*ls.Layer) Bundle {
 				LayerID: layer.GetID(),
 			},
 		}
-		ret.layers[layer.GetID()] = layer
+		ret.Layers[layer.GetID()] = layer
 	}
 	return ret
 }
