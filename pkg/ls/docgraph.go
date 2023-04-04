@@ -60,6 +60,8 @@ id: %v
 
 // GetEntityInfo returns all the nodes that are entity roots,
 // i.e. nodes containing EntitySchemaTerm
+//
+// Deprecated
 func GetEntityInfo(g *lpg.Graph) map[*lpg.Node]EntityInfo {
 	ret := make(map[*lpg.Node]EntityInfo)
 	for nodes := g.GetNodesWithProperty(EntitySchemaTerm); nodes.Next(); {
@@ -72,6 +74,26 @@ func GetEntityInfo(g *lpg.Graph) map[*lpg.Node]EntityInfo {
 				sch:       sch,
 				valueType: types,
 				id:        AsPropertyValue(node.GetProperty(EntityIDTerm)).MustStringSlice(),
+			}
+		}
+	}
+	return ret
+}
+
+// GetEntityRootsByID returns all nodes that have entity id
+func GetEntityRootsByID(g *lpg.Graph) map[*lpg.Node]EntityInfo {
+	ret := make(map[*lpg.Node]EntityInfo)
+	for nodes := g.GetNodesWithProperty(EntityIDTerm); nodes.Next(); {
+		node := nodes.Node()
+		id := AsPropertyValue(node.GetProperty(EntityIDTerm)).MustStringSlice()
+		if len(id) > 0 {
+			sch := AsPropertyValue(node.GetProperty(EntitySchemaTerm)).AsString()
+			types := FilterNonLayerTypes(node.GetLabels().Slice())
+			ret[node] = EntityInfo{
+				root:      node,
+				sch:       sch,
+				valueType: types,
+				id:        id,
 			}
 		}
 	}
