@@ -15,6 +15,7 @@
 package ls
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -33,7 +34,7 @@ type NodeCompiler interface {
 	// CompileNode gets a node and compiles the associated term on that
 	// node. It should store the compiled state into node.Compiled with
 	// the an opaque key
-	CompileNode(*Layer, *lpg.Node) error
+	CompileNode(context.Context, *Layer, *lpg.Node) error
 }
 
 // EdgeCompiler interface represents term compilation algorithm when
@@ -45,7 +46,7 @@ type EdgeCompiler interface {
 	// CompileEdge gets an edge and compiles the associated term on that
 	// edge. It should store the compiled state into edge.Compiled with
 	// an opaque key
-	CompileEdge(*Layer, *lpg.Edge) error
+	CompileEdge(context.Context, *Layer, *lpg.Edge) error
 }
 
 // CompilablePropertyContainer contains properties and a compiled data map
@@ -69,8 +70,8 @@ type TermCompiler interface {
 type emptyCompiler struct{}
 
 // CompileNode returns the value unmodified
-func (emptyCompiler) CompileNode(*Layer, *lpg.Node) error { return nil }
-func (emptyCompiler) CompileEdge(*Layer, *lpg.Edge) error { return nil }
+func (emptyCompiler) CompileNode(context.Context, *Layer, *lpg.Node) error { return nil }
+func (emptyCompiler) CompileEdge(context.Context, *Layer, *lpg.Edge) error { return nil }
 func (emptyCompiler) CompileTerm(CompilablePropertyContainer, string, *PropertyValue) error {
 	return nil
 }

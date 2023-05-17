@@ -27,14 +27,14 @@ import (
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
-type bundlesSchemaLoader struct {
-	bundles []*bundle.Bundle
+type BundlesSchemaLoader struct {
+	Bundles []*bundle.Bundle
 	ctx     *ls.Context
 }
 
-func (b bundlesSchemaLoader) LoadSchema(ref string) (*ls.Layer, error) {
+func (b BundlesSchemaLoader) LoadSchema(ref string) (*ls.Layer, error) {
 	var ret *ls.Layer
-	for _, bnd := range b.bundles {
+	for _, bnd := range b.Bundles {
 		l, err := bnd.GetLayer(b.ctx, ref)
 		if err != nil {
 			return nil, err
@@ -83,7 +83,7 @@ func RecalculatePaths(bnd *bundle.Bundle, dir string) {
 	}
 }
 
-func LoadBundle(ctx *ls.Context, file []string) (ls.SchemaLoader, error) {
+func LoadBundle(ctx *ls.Context, file []string) (BundlesSchemaLoader, error) {
 	ctx.GetLogger().Debug(map[string]interface{}{"loadBundle": file})
 	bundles := make([]*bundle.Bundle, 0, len(file))
 	for _, f := range file {
@@ -96,7 +96,7 @@ func LoadBundle(ctx *ls.Context, file []string) (ls.SchemaLoader, error) {
 			return bnd, nil
 		})
 		if err != nil {
-			return nil, fmt.Errorf("While reading %s: %w", f, err)
+			return BundlesSchemaLoader{}, fmt.Errorf("While reading %s: %w", f, err)
 		}
 		if err := b.Build(ctx, func(ctx *ls.Context, fname string) ([][][]string, error) {
 			return cmdutil.ReadSheets(fname)
@@ -114,11 +114,11 @@ func LoadBundle(ctx *ls.Context, file []string) (ls.SchemaLoader, error) {
 			}
 			return ls.UnmarshalLayer(v, ctx.GetInterner())
 		}); err != nil {
-			return nil, err
+			return BundlesSchemaLoader{}, err
 		}
 		bundles = append(bundles, &b)
 	}
-	return bundlesSchemaLoader{bundles: bundles, ctx: ctx}, nil
+	return BundlesSchemaLoader{Bundles: bundles, ctx: ctx}, nil
 }
 
 // ReadLayers reads layer(s) from jsongraph, jsonld
