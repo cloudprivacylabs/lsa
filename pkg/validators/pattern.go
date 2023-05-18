@@ -45,7 +45,7 @@ func (validator PatternValidator) ValidateNode(docNode, schemaNode *lpg.Node) er
 }
 
 // Compile the pattern
-func (validator PatternValidator) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
+func (validator PatternValidator) CompileTerm(_ *ls.CompileContext, target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	if !value.IsString() {
 		return ls.ErrValidatorCompile{Validator: PatternTerm, Msg: "Pattern is not a string value"}
 	}

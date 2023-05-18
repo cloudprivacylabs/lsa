@@ -74,6 +74,7 @@ func (t *TransformScript) Compile(ctx *ls.Context) error {
 	if t == nil {
 		return nil
 	}
+	cctx := &ls.CompileContext{}
 	t.compiledTargetSchemaNodes = make(map[string][]*compiledAnnotations)
 	for sid, ann := range t.TargetSchemaNodes {
 		ctx.GetLogger().Debug(map[string]interface{}{"script.compile.schemaNodeId": sid})
@@ -94,7 +95,7 @@ func (t *TransformScript) Compile(ctx *ls.Context) error {
 					ctx.GetLogger().Info(map[string]interface{}{"script.compile": "Unknown term", "term": k})
 				}
 				val.annotations[k] = v
-				if err := ls.GetTermCompiler(k).CompileTerm(val.annotations, k, pv); err != nil {
+				if err := ls.GetTermCompiler(k).CompileTerm(cctx, val.annotations, k, pv); err != nil {
 					return err
 				}
 			}

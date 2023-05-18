@@ -40,8 +40,8 @@ var MapContextSemantics = mapContextSemantics{}
 
 type mapContextSemantics struct{}
 
-func (mapContextSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
-	e, err := opencypher.Parse(value.AsString())
+func (mapContextSemantics) CompileTerm(ctx *ls.CompileContext, target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
+	e, err := ctx.CompileOpencypher(value.AsString())
 	if err != nil {
 		return err
 	}

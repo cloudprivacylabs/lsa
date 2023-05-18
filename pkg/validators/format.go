@@ -57,7 +57,7 @@ func (validator JsonFormatValidator) ValidateNode(docNode, schemaNode *lpg.Node)
 	return validator.ValidateValue(&value, schemaNode)
 }
 
-func (validator JsonFormatValidator) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
+func (validator JsonFormatValidator) CompileTerm(_ *ls.CompileContext, target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	if !value.IsString() {
 		return ls.ErrValidatorCompile{Validator: JsonFormatTerm, Msg: "Invalid format value"}
 	}

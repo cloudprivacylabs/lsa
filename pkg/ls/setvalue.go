@@ -24,13 +24,13 @@ var SetValueTerm = NewTerm(LS, "setValue").SetComposition(OverrideComposition).S
 type setValueSemantics struct{}
 
 // CompileTerm will compile the expression in setValue term.
-func (setValueSemantics) CompileTerm(node CompilablePropertyContainer, term string, value *PropertyValue) error {
+func (setValueSemantics) CompileTerm(ctx *CompileContext, node CompilablePropertyContainer, term string, value *PropertyValue) error {
 	if value == nil {
 		return nil
 	}
 	expr := make([]opencypher.Evaluatable, 0)
 	for _, str := range value.MustStringSlice() {
-		e, err := opencypher.Parse(str)
+		e, err := ctx.CompileOpencypher(str)
 		if err != nil {
 			return err
 		}

@@ -15,7 +15,6 @@
 package ls
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
@@ -477,7 +476,7 @@ func (compiler Compiler) resolveComposition(context *Context, compositeNode *lpg
 
 // CompileTerms compiles all node and edge terms of the layer
 func CompileTerms(layer *Layer) error {
-	ctx := context.TODO()
+	ctx := &CompileContext{}
 	var err error
 	IterateDescendants(layer.GetSchemaRootNode(), func(node *lpg.Node) bool {
 		// Compile all non-attribute nodes
@@ -488,7 +487,7 @@ func CompileTerms(layer *Layer) error {
 		}
 		node.ForEachProperty(func(k string, val interface{}) bool {
 			if v, ok := val.(*PropertyValue); ok {
-				err = GetTermCompiler(k).CompileTerm(node, k, v)
+				err = GetTermCompiler(k).CompileTerm(ctx, node, k, v)
 				if err != nil {
 					return false
 				}
@@ -505,7 +504,7 @@ func CompileTerms(layer *Layer) error {
 			}
 			edge.ForEachProperty(func(k string, val interface{}) bool {
 				if v, ok := val.(*PropertyValue); ok {
-					err = GetTermCompiler(k).CompileTerm(edge, k, v)
+					err = GetTermCompiler(k).CompileTerm(ctx, edge, k, v)
 					if err != nil {
 						return false
 					}
@@ -525,7 +524,7 @@ func CompileTerms(layer *Layer) error {
 
 // CompileGraphNodeTerms compiles all node terms of the graph
 func CompileGraphNodeTerms(g *lpg.Graph) error {
-	ctx := context.TODO()
+	ctx := &CompileContext{}
 	for nodes := g.GetNodes(); nodes.Next(); {
 		node := nodes.Node()
 		// Compile all non-attribute nodes
@@ -537,7 +536,7 @@ func CompileGraphNodeTerms(g *lpg.Graph) error {
 		var err error
 		node.ForEachProperty(func(k string, val interface{}) bool {
 			if v, ok := val.(*PropertyValue); ok {
-				err = GetTermCompiler(k).CompileTerm(node, k, v)
+				err = GetTermCompiler(k).CompileTerm(ctx, node, k, v)
 				if err != nil {
 					return false
 				}

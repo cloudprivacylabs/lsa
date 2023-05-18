@@ -15,13 +15,49 @@
 package ls
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
 	"github.com/cloudprivacylabs/lpg/v2"
 	"github.com/cloudprivacylabs/opencypher"
 )
+
+// An instance of CompileContext is passed to all compile
+// functions. It contains a statement cache to prevent recompiling
+// same statemement multiple times
+type CompileContext struct {
+	statementCache map[any]any
+}
+
+// GetCompiledStatement returns the compiled statement if any
+func (c *CompileContext) GetCompiledStatement(statement any) (any, bool) {
+	if c.statementCache != nil {
+		return nil, false
+	}
+	stmt, exists := c.statementCache[statement]
+	return stmt, exists
+}
+
+// SetCompiledStatement sets a compiled statement
+func (c *CompileContext) SetCompiledStatement(statement, compiled any) {
+	if c.statementCache == nil {
+		c.statementCache = make(map[any]any)
+	}
+	c.statementCache[statement] = compiled
+}
+
+func (c *CompileContext) CompileOpencypher(statement string) (opencypher.Evaluatable, error) {
+	compiled, exists := c.GetCompiledStatement(statement)
+	if exists {
+		return compiled.(opencypher.Evaluatable), nil
+	}
+	compiled, err := opencypher.Parse(statement)
+	if err != nil {
+		return nil, err
+	}
+	c.SetCompiledStatement(statement, compiled)
+	return compiled.(opencypher.Evaluatable), nil
+}
 
 // NodeCompiler interface represents term compilation algorithm when
 // the term is a node.
@@ -34,7 +70,7 @@ type NodeCompiler interface {
 	// CompileNode gets a node and compiles the associated term on that
 	// node. It should store the compiled state into node.Compiled with
 	// the an opaque key
-	CompileNode(context.Context, *Layer, *lpg.Node) error
+	CompileNode(*CompileContext, *Layer, *lpg.Node) error
 }
 
 // EdgeCompiler interface represents term compilation algorithm when
@@ -46,7 +82,7 @@ type EdgeCompiler interface {
 	// CompileEdge gets an edge and compiles the associated term on that
 	// edge. It should store the compiled state into edge.Compiled with
 	// an opaque key
-	CompileEdge(context.Context, *Layer, *lpg.Edge) error
+	CompileEdge(*CompileContext, *Layer, *lpg.Edge) error
 }
 
 // CompilablePropertyContainer contains properties and a compiled data map
@@ -64,15 +100,15 @@ type TermCompiler interface {
 	// CompileTerm gets a node or edge, the term and its value, and
 	// compiles it. It can store compilation data in the compiled data
 	// map.
-	CompileTerm(CompilablePropertyContainer, string, *PropertyValue) error
+	CompileTerm(*CompileContext, CompilablePropertyContainer, string, *PropertyValue) error
 }
 
 type emptyCompiler struct{}
 
 // CompileNode returns the value unmodified
-func (emptyCompiler) CompileNode(context.Context, *Layer, *lpg.Node) error { return nil }
-func (emptyCompiler) CompileEdge(context.Context, *Layer, *lpg.Edge) error { return nil }
-func (emptyCompiler) CompileTerm(CompilablePropertyContainer, string, *PropertyValue) error {
+func (emptyCompiler) CompileNode(*CompileContext, *Layer, *lpg.Node) error { return nil }
+func (emptyCompiler) CompileEdge(*CompileContext, *Layer, *lpg.Edge) error { return nil }
+func (emptyCompiler) CompileTerm(*CompileContext, CompilablePropertyContainer, string, *PropertyValue) error {
 	return nil
 }
 
@@ -165,13 +201,13 @@ func (p *CompiledProperties) CopyTo(target *CompiledProperties) {
 // property.
 type CompileOCSemantics struct{}
 
-func (CompileOCSemantics) CompileTerm(target CompilablePropertyContainer, term string, value *PropertyValue) error {
+func (CompileOCSemantics) CompileTerm(ctx *CompileContext, target CompilablePropertyContainer, term string, value *PropertyValue) error {
 	if value == nil {
 		return nil
 	}
 	expr := make([]opencypher.Evaluatable, 0)
 	for _, str := range value.MustStringSlice() {
-		e, err := opencypher.Parse(str)
+		e, err := ctx.CompileOpencypher(str)
 		if err != nil {
 			return err
 		}
@@ -236,7 +272,7 @@ type DialectValue struct {
 	Value   any
 }
 
-func (DialectValueSemantics) CompileTerm(target CompilablePropertyContainer, term string, value *PropertyValue) error {
+func (DialectValueSemantics) CompileTerm(ctx *CompileContext, target CompilablePropertyContainer, term string, value *PropertyValue) error {
 	if value == nil {
 		return nil
 	}
@@ -249,7 +285,7 @@ func (DialectValueSemantics) CompileTerm(target CompilablePropertyContainer, ter
 		parts[0] = strings.TrimSpace(parts[0])
 		switch parts[0] {
 		case "opencypher":
-			e, err := opencypher.Parse(parts[1])
+			e, err := ctx.CompileOpencypher(parts[1])
 			if err != nil {
 				return err
 			}

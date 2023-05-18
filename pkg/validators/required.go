@@ -73,7 +73,7 @@ func (validator RequiredValidator) Validate(docNode, schemaNode *lpg.Node) error
 }
 
 // CompileTerm compiles the required properties array
-func (validator RequiredValidator) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
+func (validator RequiredValidator) CompileTerm(_ *ls.CompileContext, target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	if !value.IsString() && !value.IsStringSlice() {
 		return ls.ErrValidatorCompile{Validator: RequiredTerm, Object: target, Msg: "Array of required attributes expected"}
 	}

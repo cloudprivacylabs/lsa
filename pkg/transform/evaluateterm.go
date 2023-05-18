@@ -29,13 +29,13 @@ func (evaluateTermSemantics) Get(node ls.CompilablePropertyContainer) []string {
 	return ls.AsPropertyValue(node.GetProperty(EvaluateTerm)).MustStringSlice()
 }
 
-func (evaluateTermSemantics) CompileTerm(target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
+func (evaluateTermSemantics) CompileTerm(ctx *ls.CompileContext, target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	if value == nil {
 		return nil
 	}
 	expr := make([]opencypher.Evaluatable, 0)
 	for _, str := range value.MustStringSlice() {
-		e, err := opencypher.Parse(str)
+		e, err := ctx.CompileOpencypher(str)
 		if err != nil {
 			return err
 		}
