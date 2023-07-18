@@ -9,8 +9,8 @@ require (
 	github.com/nleeper/goment v1.4.4
 	github.com/piprate/json-gold v0.4.0
 	github.com/spf13/cobra v1.1.3
-	github.com/stretchr/testify v1.7.0
-	golang.org/x/text v0.3.7
+	github.com/stretchr/testify v1.8.0
+	golang.org/x/text v0.9.0
 )
 
 require github.com/mitchellh/go-homedir v1.1.0
@@ -28,12 +28,12 @@ require github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210803070921-b358b5091
 require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
 	github.com/richardlehane/mscfb v1.0.4 // indirect
-	github.com/richardlehane/msoleps v1.0.1 // indirect
-	github.com/xuri/efp v0.0.0-20220407160117-ad0f7a785be8 // indirect
-	github.com/xuri/excelize/v2 v2.6.0
+	github.com/richardlehane/msoleps v1.0.3 // indirect
+	github.com/xuri/efp v0.0.0-20220603152613-6918739fd470 // indirect
+	github.com/xuri/excelize/v2 v2.7.1
 	github.com/xuri/nfp v0.0.0-20220409054826-5e722a1d9e22 // indirect
-	golang.org/x/crypto v0.0.0-20220408190544-5352b0902921 // indirect
-	golang.org/x/net v0.0.0-20220407224826-aac1ed45d8e3 // indirect
+	golang.org/x/crypto v0.8.0 // indirect
+	golang.org/x/net v0.9.0 // indirect
 )
 
 require (
@@ -46,5 +46,5 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/tkuchiki/go-timezone v0.2.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

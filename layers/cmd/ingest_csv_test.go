@@ -22,6 +22,8 @@ func (c *captureStep) Run(ctx *pipeline.PipelineContext) error {
 
 func (c *captureStep) Name() string { return "capture" }
 
+func (c *captureStep) Flush(*pipeline.PipelineContext) error { return nil }
+
 func TestCSVJoinIngest(t *testing.T) {
 	cji := CSVJoinIngester{
 		BaseIngestParams: BaseIngestParams{
