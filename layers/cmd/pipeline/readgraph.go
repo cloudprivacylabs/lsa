@@ -18,6 +18,8 @@ type ReadGraphStep struct {
 
 func (ReadGraphStep) Name() string { return "readGraph" }
 
+func (ReadGraphStep) Flush(*PipelineContext) error { return nil }
+
 func (ReadGraphStep) Help() {
 	fmt.Println(`Read graph
 Read graph file(s)

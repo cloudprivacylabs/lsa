@@ -35,6 +35,10 @@ type OCStep struct {
 
 func (OCStep) Name() string { return "oc" }
 
+func (oc *OCStep) Flush(pipeline *pipeline.PipelineContext) error {
+	return pipeline.FlushNext()
+}
+
 func (OCStep) Help() {
 	fmt.Println(`Run Opencypher expression(s) on the graph
 

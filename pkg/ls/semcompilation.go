@@ -31,7 +31,7 @@ type CompileContext struct {
 
 // GetCompiledStatement returns the compiled statement if any
 func (c *CompileContext) GetCompiledStatement(statement any) (any, bool) {
-	if c.statementCache != nil {
+	if c.statementCache == nil {
 		return nil, false
 	}
 	stmt, exists := c.statementCache[statement]

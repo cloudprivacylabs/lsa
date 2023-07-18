@@ -42,6 +42,15 @@ func (fork ForkStep) Run(ctx *PipelineContext) error {
 	return nil
 }
 
+func (fork ForkStep) Flush(ctx *PipelineContext) error {
+	for _, pipe := range fork.Steps {
+		if err := pipe[0].Flush(ctx); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func forkPipeline(pipe Pipeline, ctx *PipelineContext, name string) error {
 	pctx := &PipelineContext{
 		Context:     ls.DefaultContext().SetLogger(ctx.GetLogger()),

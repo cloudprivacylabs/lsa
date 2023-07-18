@@ -70,6 +70,10 @@ params:`)
   ingestByRows: false  # If true, ingest row by row. Otherwise, ingest one file at a time.`)
 }
 
+func (ci *CSVIngester) Flush(ctx *pipeline.PipelineContext) error {
+	return ctx.FlushNext()
+}
+
 func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 	var layer *ls.Layer
 	var err error
@@ -99,6 +103,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 	if ci.HeaderRow >= ci.StartRow {
 		return errors.New("Header row is ahead of start row")
 	}
+	defer ci.Flush(pipeline)
 
 	for {
 		entryInfo, stream, err := pipeline.NextInput()
@@ -211,6 +216,10 @@ type CSVJoinIngester struct {
 
 func (CSVJoinIngester) Name() string { return "ingest/csv/join" }
 
+func (cji *CSVJoinIngester) Flush(pipeline *pipeline.PipelineContext) error {
+	return pipeline.FlushNext()
+}
+
 type CSVJoinConfig struct {
 	VariantID string `json:"variantId" yaml:"variantId"`
 	Cols      []int  `json:"cols" yaml:"cols"`
@@ -279,7 +288,7 @@ func (cji *CSVJoinIngester) Run(pipeline *pipeline.PipelineContext) error {
 		cji.combinedLayer = ls.NewLayerFromRootNode(nodeMap[cji.Entities[0].layer.GetLayerRootNode()])
 	}
 	pipeline.Properties["layer"] = cji.combinedLayer
-
+	defer cji.Flush(pipeline)
 	for {
 		entryInfo, stream, err := pipeline.NextInput()
 		if err != nil {

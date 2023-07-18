@@ -37,6 +37,10 @@ operation: export/json
 params:`)
 }
 
+func (*JSONExport) Flush(*pipeline.PipelineContext) error {
+	return nil
+}
+
 func (*JSONExport) Run(pipeline *pipeline.PipelineContext) error {
 	for _, node := range lpg.Sources(pipeline.Graph) {
 		exportOptions := jsoningest.ExportOptions{}

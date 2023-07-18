@@ -117,7 +117,7 @@ type ErrValidatorCompile struct {
 }
 
 func (e ErrValidatorCompile) Error() string {
-	return fmt.Sprintf("Validator compile error for %s at %s: %s %s", e.Validator, e.Object, e.Msg, e.Err)
+	return fmt.Sprintf("Validator compile error for %s at %v: %s %s", e.Validator, e.Object, e.Msg, e.Err)
 }
 
 func (e ErrValidatorCompile) Unwrap() error { return e.Err }

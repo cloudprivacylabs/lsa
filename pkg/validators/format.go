@@ -59,10 +59,10 @@ func (validator JsonFormatValidator) ValidateNode(docNode, schemaNode *lpg.Node)
 
 func (validator JsonFormatValidator) CompileTerm(_ *ls.CompileContext, target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
 	if !value.IsString() {
-		return ls.ErrValidatorCompile{Validator: JsonFormatTerm, Msg: "Invalid format value"}
+		return ls.ErrValidatorCompile{Validator: JsonFormatTerm, Object: target, Msg: fmt.Sprintf("Invalid format value: %v", value)}
 	}
 	if jsonschema.Formats[value.AsString()] == nil {
-		return ls.ErrValidatorCompile{Validator: JsonFormatTerm, Msg: "Invalid format value"}
+		return ls.ErrValidatorCompile{Validator: JsonFormatTerm, Object: target, Msg: "Invalid format value"}
 	}
 	target.SetProperty(compiledJsonFormatTerm, value.AsString())
 	return nil

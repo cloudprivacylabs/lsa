@@ -56,6 +56,10 @@ params:`)
         The query is evauated with 'root' pointing to the current row root node`)
 }
 
+func (*CSVExport) Flush(*pipeline.PipelineContext) error {
+	return nil
+}
+
 func (ecsv *CSVExport) Run(pipeline *pipeline.PipelineContext) error {
 	if !ecsv.initialized {
 		if ecsv.SpecFile != "" {

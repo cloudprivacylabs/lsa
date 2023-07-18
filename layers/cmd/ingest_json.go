@@ -45,6 +45,10 @@ params:`)
 	fmt.Println(`  id:""   # Base ID for the root node`)
 }
 
+func (ji *JSONIngester) Flush(pipeline *pipeline.PipelineContext) error {
+	return pipeline.FlushNext()
+}
+
 func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 	var layer *ls.Layer
 	var err error
@@ -62,6 +66,7 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 		ji.initialized = true
 		ji.ingester = &ls.Ingester{Schema: layer}
 	}
+	defer ji.Flush(pipeline)
 
 	for {
 		entryInfo, stream, err := pipeline.NextInput()

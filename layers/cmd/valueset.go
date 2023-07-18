@@ -595,6 +595,10 @@ params:
 	fmt.Println(baseIngestParamsHelp)
 }
 
+func (vs *ValuesetStep) Flush(pipeline *pipeline.PipelineContext) error {
+	return pipeline.FlushNext()
+}
+
 var valuesetCache valueset.ValuesetCache
 
 func (vs *ValuesetStep) Run(pipeline *pipeline.PipelineContext) error {

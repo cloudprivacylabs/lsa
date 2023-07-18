@@ -46,6 +46,10 @@ params:`)
 	fmt.Println(`  id:""   # Base ID for the root node`)
 }
 
+func (xml *XMLIngester) Flush(pipeline *pipeline.PipelineContext) error {
+	return pipeline.FlushNext()
+}
+
 func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 	var layer *ls.Layer
 	var err error
@@ -64,6 +68,7 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 		xml.ingester = &ls.Ingester{Schema: layer}
 	}
 
+	defer xml.Flush(pipeline)
 	for {
 		entryInfo, stream, err := pipeline.NextInput()
 		if err != nil {

@@ -100,6 +100,10 @@ type MeasureStep struct {
 
 func (MeasureStep) Name() string { return "measures" }
 
+func (ms *MeasureStep) Flush(pipeline *pipeline.PipelineContext) error {
+	return pipeline.FlushNext()
+}
+
 func (MeasureStep) Help() {
 	fmt.Println(`Process measures
 Create/validate/update measure nodes in a graph

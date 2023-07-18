@@ -18,6 +18,8 @@ type UniqueStep struct {
 
 func (UniqueStep) Name() string { return "unique" }
 
+func (UniqueStep) Flush(*PipelineContext) error { return nil }
+
 func (UniqueStep) Help() {
 	fmt.Println(`Remove nodes with given labels that share the same id
 

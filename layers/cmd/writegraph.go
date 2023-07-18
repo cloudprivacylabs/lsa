@@ -16,6 +16,8 @@ type WriteGraphStep struct {
 
 func (WriteGraphStep) Name() string { return "writeGraph" }
 
+func (WriteGraphStep) Flush(*pipeline.PipelineContext) error { return nil }
+
 func init() {
 	pipeline.RegisterPipelineStep("writeGraph", func() pipeline.Step {
 		return &WriteGraphStep{

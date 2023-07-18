@@ -46,6 +46,7 @@ func (pinfo DefaultPipelineEntryInfo) GetName() string {
 type Step interface {
 	Name() string
 	Run(*PipelineContext) error
+	Flush(*PipelineContext) error
 }
 
 type Pipeline []Step
@@ -143,6 +144,23 @@ func (ctx *PipelineContext) Next() error {
 	}
 
 	err := ctx.Steps[ctx.CurrentStep].Run(ctx)
+
+	var perr PipelineError
+	if err != nil && !errors.As(err, &perr) {
+		err = PipelineError{Wrapped: err, Step: ctx.CurrentStep}
+	}
+	ctx.CurrentStep--
+	return err
+}
+
+func (ctx *PipelineContext) FlushNext() error {
+	ctx.CurrentStep++
+	if ctx.CurrentStep >= len(ctx.Steps) {
+		ctx.CurrentStep--
+		return nil
+	}
+
+	err := ctx.Steps[ctx.CurrentStep].Flush(ctx)
 
 	var perr PipelineError
 	if err != nil && !errors.As(err, &perr) {

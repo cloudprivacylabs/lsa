@@ -16,7 +16,7 @@ require (
 require github.com/mitchellh/go-homedir v1.1.0
 
 require (
-	github.com/cloudprivacylabs/lpg/v2 v2.0.0
+	github.com/cloudprivacylabs/lpg/v2 v2.0.1
 	github.com/cloudprivacylabs/opencypher v1.0.0-beta-15
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/golang-lru/v2 v2.0.1

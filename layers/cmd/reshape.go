@@ -35,6 +35,10 @@ type ReshapeStep struct {
 
 func (ReshapeStep) Name() string { return "reshape" }
 
+func (rs *ReshapeStep) Flush(pipeline *pipeline.PipelineContext) error {
+	return pipeline.FlushNext()
+}
+
 func (ReshapeStep) Help() {
 	fmt.Println(`Reshape graph to fit into another schema
 
