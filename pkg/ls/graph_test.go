@@ -22,15 +22,15 @@ import (
 
 func TestWalkNodesInEntity(t *testing.T) {
 	g := lpg.NewGraph()
-	n1 := g.NewNode([]string{"root", DocumentNodeTerm}, nil)
-	n2 := g.NewNode([]string{"eroot", DocumentNodeTerm}, map[string]interface{}{
-		EntitySchemaTerm: StringPropertyValue(EntitySchemaTerm, "schA"),
+	n1 := g.NewNode([]string{"root", DocumentNodeTerm.Name}, nil)
+	n2 := g.NewNode([]string{"eroot", DocumentNodeTerm.Name}, map[string]interface{}{
+		EntitySchemaTerm.Name: EntitySchemaTerm.MustPropertyValue("schA"),
 	})
-	n3 := g.NewNode([]string{"3", DocumentNodeTerm}, nil)
-	n4 := g.NewNode([]string{"4", DocumentNodeTerm}, nil)
-	n5 := g.NewNode([]string{"5", DocumentNodeTerm}, nil)
-	n6 := g.NewNode([]string{"root2", DocumentNodeTerm}, map[string]interface{}{
-		EntitySchemaTerm: StringPropertyValue(EntitySchemaTerm, "schB"),
+	n3 := g.NewNode([]string{"3", DocumentNodeTerm.Name}, nil)
+	n4 := g.NewNode([]string{"4", DocumentNodeTerm.Name}, nil)
+	n5 := g.NewNode([]string{"5", DocumentNodeTerm.Name}, nil)
+	n6 := g.NewNode([]string{"root2", DocumentNodeTerm.Name}, map[string]interface{}{
+		EntitySchemaTerm.Name: EntitySchemaTerm.MustPropertyValue("schB"),
 	})
 	n7 := g.NewNode([]string{"7"}, nil)
 

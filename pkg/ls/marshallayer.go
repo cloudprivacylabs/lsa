@@ -24,31 +24,31 @@ import (
 )
 
 type LDNode struct {
-	Node      map[string]interface{}
+	Node      map[string]any
 	ID        string
 	Types     []string
 	GraphNode *lpg.Node
 	processed bool
 }
 
-func getNodesFromGraph(in interface{}, interner Interner) (map[string]*LDNode, error) {
+func getNodesFromGraph(in any, interner Interner) (map[string]*LDNode, error) {
 	proc := ld.NewJsonLdProcessor()
 	flattened, err := proc.Flatten(in, nil, nil)
 	if err != nil {
 		return nil, err
 	}
-	if m, ok := flattened.(map[string]interface{}); ok {
+	if m, ok := flattened.(map[string]any); ok {
 		flattened = m["@graph"]
 	}
 	// In a flattened graph, the root object is the layer, with a link to attributes
-	nodes, _ := flattened.([]interface{})
+	nodes, _ := flattened.([]any)
 	if len(nodes) == 0 {
 		return nil, MakeErrInvalidInput("", "Cannot parse layer")
 	}
 
 	inputNodes := make(map[string]*LDNode)
 	for _, node := range nodes {
-		m, ok := node.(map[string]interface{})
+		m, ok := node.(map[string]any)
 		if !ok {
 			continue
 		}
@@ -61,7 +61,7 @@ func getNodesFromGraph(in interface{}, interner Interner) (map[string]*LDNode, e
 }
 
 // UnmarshalLayer unmarshals a schema ar overlay
-func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
+func UnmarshalLayer(in any, interner Interner) (*Layer, error) {
 	if interner == nil {
 		interner = NewInterner()
 	}
@@ -73,7 +73,7 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 	var rootNode *LDNode
 	for _, v := range inputNodes {
 		for _, t := range v.Types {
-			if t == SchemaTerm || t == OverlayTerm {
+			if t == SchemaTerm.Name || t == OverlayTerm.Name {
 				if rootNode != nil {
 					return nil, MakeErrInvalidInput("Multiple root nodes")
 				}
@@ -84,7 +84,7 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 	if rootNode == nil {
 		return nil, MakeErrInvalidInput("No schema or overlay type node")
 	}
-	targetType := LDGetNodeValue(rootNode.Node[ValueTypeTerm])
+	targetType := LDGetNodeValue(rootNode.Node[ValueTypeTerm.Name])
 	target := NewLayer()
 	rootNode.GraphNode = target.GetLayerRootNode()
 	rootNode.GraphNode.SetLabels(lpg.NewStringSet(rootNode.Types...))
@@ -93,16 +93,16 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 		return nil, MakeErrInvalidInput("No layer @id")
 	}
 	// The root node must connect to the layer node
-	layerRoot := inputNodes[LDGetNodeID(rootNode.Node[LayerRootTerm])]
+	layerRoot := inputNodes[LDGetNodeID(rootNode.Node[LayerRootTerm.Name])]
 	if layerRoot != nil {
-		layerRoot.GraphNode = target.Graph.NewNode([]string{AttributeNodeTerm}, nil)
+		layerRoot.GraphNode = target.Graph.NewNode([]string{AttributeNodeTerm.Name}, nil)
 		if ld.IsURL(layerRoot.ID) {
 			SetAttributeID(layerRoot.GraphNode, layerRoot.ID)
 		}
 		if strings.HasPrefix(layerRoot.ID, "_") {
 			return nil, MakeErrInvalidInput("layer root cannot be blank node. Enter a unique @id")
 		}
-		target.Graph.NewEdge(target.GetLayerRootNode(), layerRoot.GraphNode, LayerRootTerm, nil)
+		target.Graph.NewEdge(target.GetLayerRootNode(), layerRoot.GraphNode, LayerRootTerm.Name, nil)
 	}
 
 	for _, node := range inputNodes {
@@ -126,7 +126,7 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 		if node.GraphNode == nil {
 			continue
 		}
-		if !node.GraphNode.GetLabels().Has(AttributeNodeTerm) && node != rootNode {
+		if !node.GraphNode.GetLabels().Has(AttributeNodeTerm.Name) && node != rootNode {
 			continue
 		}
 		// This is an attribute node
@@ -135,9 +135,9 @@ func UnmarshalLayer(in interface{}, interner Interner) (*Layer, error) {
 		}
 	}
 	// If this is an overlay, deal with attributeOverlays
-	if target.GetLayerType() == OverlayTerm {
-		for _, attr := range LDGetListElements(rootNode.Node[AttributeOverlaysTerm]) {
-			attrNode, ok := attr.(map[string]interface{})
+	if target.GetLayerType() == OverlayTerm.Name {
+		for _, attr := range LDGetListElements(rootNode.Node[AttributeOverlaysTerm.Name]) {
+			attrNode, ok := attr.(map[string]any)
 			if !ok {
 				continue
 			}
@@ -171,7 +171,7 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 	inode.processed = true
 	attribute := inode.GraphNode
 	types := attribute.GetLabels()
-	types.Add(AttributeNodeTerm)
+	types.Add(AttributeNodeTerm.Name)
 	if len(inode.ID) == 0 {
 		return MakeErrInvalidInput("", fmt.Sprintf("Parsing %s: Attribute node without an ID: %v", target.GetID(), inode.Node))
 	}
@@ -182,7 +182,7 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 	SetAttributeID(attribute, inode.ID)
 
 	// Process the nested attribute nodes
-	if arr, ok := inode.Node["@type"].([]interface{}); ok {
+	if arr, ok := inode.Node["@type"].([]any); ok {
 		for _, t := range arr {
 			if str, ok := t.(string); ok {
 				types.Add(interner.Intern(str))
@@ -192,22 +192,22 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 	attribute.SetLabels(types)
 
 	switch {
-	case types.Has(AttributeTypeObject):
+	case types.Has(AttributeTypeObject.Name):
 		// m must be an array of attributes. It can be under a @list
-		k := ObjectAttributesTerm
+		k := ObjectAttributesTerm.Name
 		val, ok := inode.Node[k]
 		if !ok {
-			k = ObjectAttributeListTerm
+			k = ObjectAttributeListTerm.Name
 			val = inode.Node[k]
 		}
-		attrArray, ok := val.([]interface{})
+		attrArray, ok := val.([]any)
 		if !ok {
 			break
 		}
 		if len(attrArray) == 1 {
-			if m, ok := attrArray[0].(map[string]interface{}); ok {
+			if m, ok := attrArray[0].(map[string]any); ok {
 				if l, ok := m["@list"]; ok {
-					if a, ok := l.([]interface{}); ok {
+					if a, ok := l.([]any); ok {
 						attrArray = a
 					}
 				}
@@ -227,21 +227,21 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 			target.Graph.NewEdge(inode.GraphNode, attrNode.GraphNode, k, nil)
 		}
 
-	case types.Has(AttributeTypeReference):
+	case types.Has(AttributeTypeReference.Name):
 		// There can be at most one reference
-		oid := LDGetNodeValue(inode.Node[ReferenceTerm])
+		oid := LDGetNodeValue(inode.Node[ReferenceTerm.Name])
 		if len(oid) == 0 {
 			return MakeErrInvalidInput(inode.ID, fmt.Sprintf("Parsing %s: No references in reference node", target.GetID()))
 		}
-		attribute.SetProperty(ReferenceTerm, StringPropertyValue(ReferenceTerm, oid))
+		attribute.SetProperty(ReferenceTerm.Name, ReferenceTerm.MustPropertyValue(oid))
 
-	case types.Has(AttributeTypeArray):
+	case types.Has(AttributeTypeArray.Name):
 		// m must be an array of 1
-		itemsArr, _ := inode.Node[ArrayItemsTerm].([]interface{})
+		itemsArr, _ := inode.Node[ArrayItemsTerm.Name].([]any)
 		switch len(itemsArr) {
 		case 0:
 			// Allowed in an overlay
-			if target.GetLayerType() == OverlayTerm {
+			if target.GetLayerType() == OverlayTerm.Name {
 				break
 			}
 			return MakeErrInvalidInput(inode.ID, fmt.Sprintf("Parsing %s: Invalid array items", target.GetID()))
@@ -253,17 +253,17 @@ func unmarshalAttributeNode(target *Layer, inode *LDNode, allNodes map[string]*L
 			if err := unmarshalAttributeNode(target, itemsNode, allNodes, interner); err != nil {
 				return err
 			}
-			target.Graph.NewEdge(inode.GraphNode, itemsNode.GraphNode, ArrayItemsTerm, nil)
+			target.Graph.NewEdge(inode.GraphNode, itemsNode.GraphNode, ArrayItemsTerm.Name, nil)
 		default:
 			return MakeErrInvalidInput(inode.ID, fmt.Sprintf("Parsing %s: Multiple array items", target.GetID()))
 		}
 
-	case types.Has(AttributeTypeComposite) || types.Has(AttributeTypePolymorphic):
+	case types.Has(AttributeTypeComposite.Name) || types.Has(AttributeTypePolymorphic.Name):
 		var t string
-		if types.Has(AttributeTypeComposite) {
-			t = AllOfTerm
+		if types.Has(AttributeTypeComposite.Name) {
+			t = AllOfTerm.Name
 		} else {
-			t = OneOfTerm
+			t = OneOfTerm.Name
 		}
 		// m must be a list
 		elements := LDGetListElements(inode.Node[t])
@@ -294,13 +294,13 @@ func unmarshalAnnotations(target *Layer, node *LDNode, allNodes map[string]*LDNo
 	for key, value := range node.Node {
 		key = interner.Intern(key)
 		if key[0] == '@' ||
-			key == ObjectAttributesTerm ||
-			key == ObjectAttributeListTerm ||
-			key == ReferenceTerm ||
-			key == ArrayItemsTerm ||
-			key == AllOfTerm ||
-			key == OneOfTerm ||
-			key == LayerRootTerm {
+			key == ObjectAttributesTerm.Name ||
+			key == ObjectAttributeListTerm.Name ||
+			key == ReferenceTerm.Name ||
+			key == ArrayItemsTerm.Name ||
+			key == AllOfTerm.Name ||
+			key == OneOfTerm.Name ||
+			key == LayerRootTerm.Name {
 			continue
 		}
 
@@ -313,9 +313,9 @@ func unmarshalAnnotations(target *Layer, node *LDNode, allNodes map[string]*LDNo
 }
 
 // Marshals the layer into an expanded jsonld document
-func MarshalLayer(layer *Layer) (interface{}, error) {
+func MarshalLayer(layer *Layer) (any, error) {
 	schRoot := layer.GetSchemaRootNode()
-	var layerOut interface{}
+	var layerOut any
 	nodeMap := make(map[*lpg.Node]string)
 	if schRoot != nil {
 		var err error
@@ -324,8 +324,8 @@ func MarshalLayer(layer *Layer) (interface{}, error) {
 			return nil, err
 		}
 	}
-	attrOverlays := make([]interface{}, 0)
-	for edges := layer.GetLayerRootNode().GetEdgesWithLabel(lpg.OutgoingEdge, AttributeOverlaysTerm); edges.Next(); {
+	attrOverlays := make([]any, 0)
+	for edges := layer.GetLayerRootNode().GetEdgesWithLabel(lpg.OutgoingEdge, AttributeOverlaysTerm.Name); edges.Next(); {
 		attr := edges.Edge().GetTo()
 		attrOut, err := marshalNode(layer, attr, nodeMap)
 		if err != nil {
@@ -333,13 +333,13 @@ func MarshalLayer(layer *Layer) (interface{}, error) {
 		}
 		attrOverlays = append(attrOverlays, attrOut)
 	}
-	v := map[string]interface{}{}
+	v := map[string]any{}
 	if len(attrOverlays) > 0 {
-		v[AttributeOverlaysTerm] = []interface{}{
-			map[string]interface{}{"@list": attrOverlays}}
+		v[AttributeOverlaysTerm.Name] = []any{
+			map[string]any{"@list": attrOverlays}}
 	}
 	if layerOut != nil {
-		v[LayerRootTerm] = []interface{}{layerOut}
+		v[LayerRootTerm.Name] = []any{layerOut}
 	}
 	if id := layer.GetID(); len(id) > 0 {
 		v["@id"] = id
@@ -347,8 +347,8 @@ func MarshalLayer(layer *Layer) (interface{}, error) {
 	if t := layer.GetLayerType(); len(t) > 0 {
 		v["@type"] = []string{t}
 	}
-	layer.GetLayerRootNode().ForEachProperty(func(k string, value interface{}) bool {
-		if _, p := value.(*PropertyValue); !p {
+	layer.GetLayerRootNode().ForEachProperty(func(k string, value any) bool {
+		if _, p := value.(PropertyValue); !p {
 			return true
 		}
 		val, err := GetTermMarshaler(k).MarshalLd(layer, layer.GetLayerRootNode(), k)
@@ -360,15 +360,15 @@ func MarshalLayer(layer *Layer) (interface{}, error) {
 		}
 		return true
 	})
-	return []interface{}{v}, nil
+	return []any{v}, nil
 }
 
-func marshalNode(layer *Layer, node *lpg.Node, nodeMap map[*lpg.Node]string) (interface{}, error) {
+func marshalNode(layer *Layer, node *lpg.Node, nodeMap map[*lpg.Node]string) (any, error) {
 	if nodeId, ok := nodeMap[node]; ok {
-		return []interface{}{map[string]interface{}{"@id": nodeId}}, nil
+		return []any{map[string]any{"@id": nodeId}}, nil
 	}
 	nodeMap[node] = GetNodeID(node)
-	m := make(map[string]interface{})
+	m := make(map[string]any)
 	s := GetAttributeID(node)
 	if len(s) > 0 {
 		m["@id"] = s
@@ -379,8 +379,8 @@ func marshalNode(layer *Layer, node *lpg.Node, nodeMap map[*lpg.Node]string) (in
 	}
 
 	var err error
-	node.ForEachProperty(func(k string, value interface{}) bool {
-		if _, p := value.(*PropertyValue); !p {
+	node.ForEachProperty(func(k string, value any) bool {
+		if _, p := value.(PropertyValue); !p {
 			return true
 		}
 		val, err := GetTermMarshaler(k).MarshalLd(layer, node, k)
@@ -407,29 +407,29 @@ func marshalNode(layer *Layer, node *lpg.Node, nodeMap map[*lpg.Node]string) (in
 		}
 		existing := m[edge.GetLabel()]
 		switch edge.GetLabel() {
-		case ObjectAttributeListTerm, AllOfTerm, OneOfTerm:
+		case ObjectAttributeListTerm.Name, AllOfTerm.Name, OneOfTerm.Name:
 			if existing == nil {
-				m[edge.GetLabel()] = []interface{}{map[string]interface{}{"@list": []interface{}{toNode}}}
+				m[edge.GetLabel()] = []any{map[string]any{"@list": []any{toNode}}}
 			} else {
-				listMap := existing.([]interface{})[0].(map[string]interface{})
-				listMap["@list"] = append(listMap["@list"].([]interface{}), toNode)
+				listMap := existing.([]any)[0].(map[string]any)
+				listMap["@list"] = append(listMap["@list"].([]any), toNode)
 			}
 
-		case ObjectAttributesTerm:
+		case ObjectAttributesTerm.Name:
 			if existing == nil {
-				m[ObjectAttributesTerm] = []interface{}{toNode}
+				m[ObjectAttributesTerm.Name] = []any{toNode}
 			} else {
-				m[ObjectAttributesTerm] = append(m[ObjectAttributesTerm].([]interface{}), toNode)
+				m[ObjectAttributesTerm.Name] = append(m[ObjectAttributesTerm.Name].([]any), toNode)
 			}
 
-		case ArrayItemsTerm:
-			m[ArrayItemsTerm] = []interface{}{toNode}
+		case ArrayItemsTerm.Name:
+			m[ArrayItemsTerm.Name] = []any{toNode}
 
 		default:
 			if existing == nil {
-				m[edge.GetLabel()] = []interface{}{toNode}
+				m[edge.GetLabel()] = []any{toNode}
 			} else {
-				m[edge.GetLabel()] = append(m[edge.GetLabel()].([]interface{}), toNode)
+				m[edge.GetLabel()] = append(m[edge.GetLabel()].([]any), toNode)
 			}
 		}
 	}

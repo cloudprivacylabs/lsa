@@ -61,7 +61,7 @@ func GetAttributeValidator(term string) (NodeValidator, ValueValidator) {
 func ValidateDocumentNode(node *lpg.Node) error {
 	// Get the schema
 	var schemaNode *lpg.Node
-	schemaNodes := lpg.NextNodesWith(node, InstanceOfTerm)
+	schemaNodes := lpg.NextNodesWith(node, InstanceOfTerm.Name)
 	if len(schemaNodes) == 1 {
 		schemaNode = schemaNodes[0]
 	}

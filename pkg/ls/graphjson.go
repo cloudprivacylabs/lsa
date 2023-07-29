@@ -3,7 +3,6 @@ package ls
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 
 	"github.com/cloudprivacylabs/lpg/v2"
@@ -14,35 +13,21 @@ type JSONMarshaler struct {
 	lpg.JSON
 }
 
-func (JSONMarshaler) propertyUnmarshaler(key string, value json.RawMessage) (string, interface{}, error) {
-	if key == NodeIDTerm {
-		var s string
-		if err := json.Unmarshal(value, &s); err != nil {
-			return "", nil, err
-		}
-		return key, s, nil
+func (JSONMarshaler) propertyUnmarshaler(key string, value json.RawMessage) (string, any, error) {
+	term := GetTerm(key)
+	var val any
+	if err := json.Unmarshal(value, &val); err != nil {
+		return "", nil, err
 	}
-	// Must be string, or []string
-	var str string
-	var slice []string
-	if err := json.Unmarshal(value, &str); err != nil {
-		if err := json.Unmarshal(value, &slice); err != nil {
-			return "", nil, fmt.Errorf("Value %s is not a string or []string", key)
-		}
-		return key, StringSlicePropertyValue(key, slice), nil
+	result, err := term.Type.Coerce(val)
+	if err != nil {
+		return "", nil, err
 	}
-	return key, StringPropertyValue(key, str), nil
+	return key, NewPropertyValue(key, result), nil
 }
 
 func (JSONMarshaler) propertyMarshaler(key string, value interface{}) (string, json.RawMessage, error) {
-	if key == NodeIDTerm {
-		msg, err := json.Marshal(value)
-		if err != nil {
-			return "", nil, err
-		}
-		return key, msg, nil
-	}
-	pv, ok := value.(*PropertyValue)
+	pv, ok := value.(PropertyValue)
 	if ok {
 		d, err := json.Marshal(pv)
 		return key, d, err

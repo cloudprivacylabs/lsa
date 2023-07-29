@@ -70,7 +70,7 @@ func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, l
 	// This algorithm relies on unique attribute IDs
 	newLayer := NewLayerInGraph(d.g)
 	newLayer.SetID(layer.GetID())
-	newLayer.SetLayerType(SchemaTerm)
+	newLayer.SetLayerType(SchemaTerm.Name)
 	// Copy the root node of the layer into the compiled graph.
 	layerRoot := layer.GetSchemaRootNode()
 	nodeSlice := layer.NodeSlice()
@@ -79,7 +79,7 @@ func (d *DefaultCompiledGraph) PutCompiledSchema(context *Context, ref string, l
 	attributeMap := make(map[*lpg.Node]*lpg.Node, len(nodeSlice))
 
 	newRoot := d.copyNode(layerRoot)
-	d.g.NewEdge(newLayer.GetLayerRootNode(), newRoot, LayerRootTerm, nil)
+	d.g.NewEdge(newLayer.GetLayerRootNode(), newRoot, LayerRootTerm.Name, nil)
 	attributeMap[layerRoot] = newRoot
 	// newAttributes contains only those attributes that are copied. The
 	// key belongs to layer
@@ -164,7 +164,11 @@ type compilerContext struct {
 
 // IsCompilationArtifact returns true if the edge is a compilation artifact
 func IsCompilationArtifact(edge *lpg.Edge) bool {
-	return AsPropertyValue(edge.GetProperty("compilationArtifact")).AsString() == "true"
+	p, ok := GetPropertyValue(edge, "compilationArtifact")
+	if !ok {
+		return false
+	}
+	return p.Value() == true
 }
 
 func (c *compilerContext) blankNodeNamer(node *lpg.Node) {
@@ -232,7 +236,7 @@ func (compiler *Compiler) compile(context *Context, ctx *compilerContext, ref st
 	if err != nil {
 		return nil, err
 	}
-	compiled.GetSchemaRootNode().SetProperty(EntitySchemaTerm, StringPropertyValue(EntitySchemaTerm, compiled.GetID()))
+	compiled.GetSchemaRootNode().SetProperty(EntitySchemaTerm.Name, EntitySchemaTerm.MustPropertyValue(compiled.GetID()))
 	if err := compiler.compileIncludeAttribute(context, ctx); err != nil {
 		return nil, err
 	}
@@ -276,13 +280,13 @@ func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compile
 	context.GetLogger().Debug(map[string]interface{}{"mth": "compileIncludeAttribute"})
 	// Process until there are nodes with "include" attribute
 	for {
-		incNodes := compiler.CGraph.GetGraph().GetNodesWithProperty(IncludeSchemaTerm)
+		incNodes := compiler.CGraph.GetGraph().GetNodesWithProperty(IncludeSchemaTerm.Name)
 		if !incNodes.Next() {
 			break
 		}
 		srcNode := incNodes.Node()
-		includeRef := AsPropertyValue(srcNode.GetProperty(IncludeSchemaTerm)).AsString()
-		srcNode.RemoveProperty(IncludeSchemaTerm)
+		includeRef := IncludeSchemaTerm.PropertyValue(srcNode)
+		srcNode.RemoveProperty(IncludeSchemaTerm.Name)
 		includeSchema, err := compiler.loadSchema(ctx, includeRef)
 		if err != nil {
 			return err
@@ -297,8 +301,8 @@ func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compile
 		if err := ComposeProperties(context, srcNode, includeRoot); err != nil {
 			return err
 		}
-		namespace, ok := srcNode.GetProperty(NamespaceTerm)
-		srcNode.RemoveProperty(NamespaceTerm)
+		namespace := NamespaceTerm.PropertyValue(srcNode)
+		srcNode.RemoveProperty(NamespaceTerm.Name)
 		srcTypes := lpg.NewStringSet(FilterAttributeTypes(srcNode.GetLabels().Slice())...)
 		includeTypes := FilterAttributeTypes(includeRoot.GetLabels().Slice())
 		for _, typ := range includeTypes {
@@ -310,7 +314,7 @@ func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compile
 		nonLayerIncludeTypes := FilterNonLayerTypes(includeRoot.GetLabels().Slice())
 		srcLabels.Add(nonLayerIncludeTypes...)
 		srcNode.SetLabels(srcLabels)
-		if err := copySubtree(srcNode, includeRoot, srcNode.GetGraph(), AsPropertyValue(namespace, ok).AsString()); err != nil {
+		if err := copySubtree(srcNode, includeRoot, srcNode.GetGraph(), namespace); err != nil {
 			return err
 		}
 	}
@@ -320,7 +324,7 @@ func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compile
 func (compiler *Compiler) compileReferences(context *Context, ctx *compilerContext) error {
 	context.GetLogger().Debug(map[string]interface{}{"mth": "compileReferences"})
 	// Process until there are reference nodes left
-	refset := lpg.NewStringSet(AttributeTypeReference)
+	refset := lpg.NewStringSet(AttributeTypeReference.Name)
 	for {
 		refNodes := compiler.CGraph.GetGraph().GetNodesWithAllLabels(refset)
 		if !refNodes.Next() {
@@ -329,7 +333,7 @@ func (compiler *Compiler) compileReferences(context *Context, ctx *compilerConte
 		context.GetLogger().Debug(map[string]interface{}{"mth": "compileReferences", "nReferences": refNodes.MaxSize(), "nNodes": compiler.CGraph.GetGraph().NumNodes()})
 
 		refNode := refNodes.Node()
-		ref := AsPropertyValue(refNode.GetProperty(ReferenceTerm)).AsString()
+		ref := ReferenceTerm.PropertyValue(refNode)
 		context.GetLogger().Debug(map[string]interface{}{"mth": "compileReferences", "ref": ref})
 		// already loaded and added to the graph?
 		compiledSchema := compiler.CGraph.GetCompiledSchema(ref)
@@ -373,14 +377,14 @@ func (compiler *Compiler) linkReference(context *Context, refNode *lpg.Node, sch
 	// This is no longer a reference node
 	linkTo := schema.GetSchemaRootNode()
 	types := refNode.GetLabels()
-	types.Remove(AttributeTypeReference)
+	types.Remove(AttributeTypeReference.Name)
 	types.AddSet(linkTo.GetLabels())
 	refNode.SetLabels(types)
 	// Compose the properties of the compiled root node with the referenced node
 	if err := ComposeProperties(context, refNode, linkTo); err != nil {
 		return err
 	}
-	refNode.SetProperty(ReferenceTerm, StringPropertyValue(ReferenceTerm, ref))
+	refNode.SetProperty(ReferenceTerm.Name, ReferenceTerm.MustPropertyValue(ref))
 	// Attach the node to all the children of the compiled node
 	for edges := linkTo.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 		edge := edges.Edge()
@@ -388,9 +392,9 @@ func (compiler *Compiler) linkReference(context *Context, refNode *lpg.Node, sch
 		// Mark all edges that connect the original schema node as
 		// "compilationArtifact", so we can trace back the schema nodes
 		// correctly
-		edge.SetProperty("compilationArtifact", StringPropertyValue("compilationArtifact", "true"))
+		edge.SetProperty("compilationArtifact", NewPropertyValue("compilationArtifact", true))
 	}
-	refNode.SetProperty(EntitySchemaTerm, StringPropertyValue(EntitySchemaTerm, schema.GetID()))
+	refNode.SetProperty(EntitySchemaTerm.Name, EntitySchemaTerm.MustPropertyValue(schema.GetID()))
 	return nil
 }
 
@@ -399,7 +403,7 @@ func (compiler Compiler) resolveCompositions(context *Context, root *lpg.Node) e
 	completed := map[*lpg.Node]struct{}{}
 	var err error
 	ForEachAttributeNode(root, func(n *lpg.Node, _ []*lpg.Node) bool {
-		if n.GetLabels().Has(AttributeTypeComposite) {
+		if n.GetLabels().Has(AttributeTypeComposite.Name) {
 			if _, processed := completed[n]; !processed {
 				if x := compiler.resolveComposition(context, n, completed); x != nil {
 					err = x
@@ -415,12 +419,12 @@ func (compiler Compiler) resolveCompositions(context *Context, root *lpg.Node) e
 func (compiler Compiler) resolveComposition(context *Context, compositeNode *lpg.Node, completed map[*lpg.Node]struct{}) error {
 	completed[compositeNode] = struct{}{}
 	// At the end of this process, composite node will be converted into an object node
-	for edges := compositeNode.GetEdgesWithLabel(lpg.OutgoingEdge, AllOfTerm); edges.Next(); {
+	for edges := compositeNode.GetEdgesWithLabel(lpg.OutgoingEdge, AllOfTerm.Name); edges.Next(); {
 		allOfEdge := edges.Edge()
 	top:
 		component := allOfEdge.GetTo()
 		switch {
-		case component.GetLabels().Has(AttributeTypeObject):
+		case component.GetLabels().Has(AttributeTypeObject.Name):
 			//  Input:
 			//    compositeNode ---> component --> attributes
 			//  Output:
@@ -444,20 +448,20 @@ func (compiler Compiler) resolveComposition(context *Context, compositeNode *lpg
 			compositeNode.SetLabels(types)
 			// Copy non-property items
 			component.ForEachProperty(func(key string, value interface{}) bool {
-				if _, ok := value.(*PropertyValue); !ok {
+				if _, ok := value.(PropertyValue); !ok {
 					compositeNode.SetProperty(key, value)
 				}
 				return true
 			})
 
-		case component.GetLabels().Has(AttributeTypeValue) ||
-			component.GetLabels().Has(AttributeTypeArray) ||
-			component.GetLabels().Has(AttributeTypePolymorphic):
+		case component.GetLabels().Has(AttributeTypeValue.Name) ||
+			component.GetLabels().Has(AttributeTypeArray.Name) ||
+			component.GetLabels().Has(AttributeTypePolymorphic.Name):
 			// This node becomes an attribute of the main node.
 			allOfEdge.Remove()
-			compiler.CGraph.GetGraph().NewEdge(compositeNode, component, ObjectAttributeListTerm, nil)
+			compiler.CGraph.GetGraph().NewEdge(compositeNode, component, ObjectAttributeListTerm.Name, nil)
 
-		case component.GetLabels().Has(AttributeTypeComposite):
+		case component.GetLabels().Has(AttributeTypeComposite.Name):
 			if err := compiler.resolveComposition(context, component, completed); err != nil {
 				return err
 			}
@@ -468,8 +472,8 @@ func (compiler Compiler) resolveComposition(context *Context, compositeNode *lpg
 	}
 	// Convert the node to an object
 	types := compositeNode.GetLabels()
-	types.Remove(AttributeTypeComposite)
-	types.Add(AttributeTypeObject)
+	types.Remove(AttributeTypeComposite.Name)
+	types.Add(AttributeTypeObject.Name)
 	compositeNode.SetLabels(types)
 	return nil
 }
@@ -486,7 +490,7 @@ func CompileTerms(layer *Layer) error {
 			}
 		}
 		node.ForEachProperty(func(k string, val interface{}) bool {
-			if v, ok := val.(*PropertyValue); ok {
+			if v, ok := val.(PropertyValue); ok {
 				err = GetTermCompiler(k).CompileTerm(ctx, node, k, v)
 				if err != nil {
 					return false
@@ -503,7 +507,7 @@ func CompileTerms(layer *Layer) error {
 				return false
 			}
 			edge.ForEachProperty(func(k string, val interface{}) bool {
-				if v, ok := val.(*PropertyValue); ok {
+				if v, ok := val.(PropertyValue); ok {
 					err = GetTermCompiler(k).CompileTerm(ctx, edge, k, v)
 					if err != nil {
 						return false
@@ -535,7 +539,7 @@ func CompileGraphNodeTerms(g *lpg.Graph) error {
 		}
 		var err error
 		node.ForEachProperty(func(k string, val interface{}) bool {
-			if v, ok := val.(*PropertyValue); ok {
+			if v, ok := val.(PropertyValue); ok {
 				err = GetTermCompiler(k).CompileTerm(ctx, node, k, v)
 				if err != nil {
 					return false

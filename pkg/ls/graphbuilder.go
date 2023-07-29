@@ -71,15 +71,11 @@ func (gb GraphBuilder) GetGraph() *lpg.Graph {
 }
 
 func determineEdgeLabel(schemaNode *lpg.Node) string {
-	if x, ok := schemaNode.GetProperty(EdgeLabelTerm); ok {
-		if label := x.(*PropertyValue).AsString(); len(label) > 0 {
-			return label
-		}
+	if str := EdgeLabelTerm.PropertyValue(schemaNode); len(str) > 0 {
+		return str
 	}
-	if x, ok := schemaNode.GetProperty(AttributeNameTerm); ok {
-		if label := x.(*PropertyValue).AsString(); len(label) > 0 {
-			return label
-		}
+	if str := AttributeNameTerm.PropertyValue(schemaNode); len(str) > 0 {
+		return str
 	}
 	return ""
 }
@@ -93,17 +89,17 @@ func determineEdgeLabel(schemaNode *lpg.Node) string {
 // schema node, and the value will be the copied schema node in
 // targetGraph. Returns the new node.
 func InstantiateSchemaNode(targetGraph *lpg.Graph, schemaNode *lpg.Node, embedSchemaNodes bool, schemaNodeMap map[*lpg.Node]*lpg.Node) *lpg.Node {
-	types := []string{DocumentNodeTerm}
+	types := []string{DocumentNodeTerm.Name}
 	for l := range schemaNode.GetLabels().M {
-		if l != AttributeNodeTerm {
+		if l != AttributeNodeTerm.Name {
 			types = append(types, l)
 		}
 	}
 	newNode := targetGraph.NewNode(types, nil)
-	newNode.SetProperty(SchemaNodeIDTerm, StringPropertyValue(SchemaNodeIDTerm, GetNodeID(schemaNode)))
+	newNode.SetProperty(SchemaNodeIDTerm.Name, SchemaNodeIDTerm.MustPropertyValue(GetNodeID(schemaNode)))
 	// If this is an entity boundary, mark it
-	if pv, rootNode := schemaNode.GetProperty(EntitySchemaTerm); rootNode {
-		newNode.SetProperty(EntitySchemaTerm, pv)
+	if pv, rootNode := schemaNode.GetProperty(EntitySchemaTerm.Name); rootNode {
+		newNode.SetProperty(EntitySchemaTerm.Name, pv)
 	}
 
 	copyNodesAttachedToSchema := func(targetNode *lpg.Node) {
@@ -119,15 +115,11 @@ func InstantiateSchemaNode(targetGraph *lpg.Graph, schemaNode *lpg.Node, embedSc
 
 	if embedSchemaNodes {
 		schemaNode.ForEachProperty(func(k string, v interface{}) bool {
-			if k == NodeIDTerm {
+			if k == NodeIDTerm.Name {
 				return true
 			}
 			if _, ok := newNode.GetProperty(k); !ok {
-				if pv, ok := v.(*PropertyValue); ok {
-					newNode.SetProperty(k, pv.Clone())
-				} else {
-					newNode.SetProperty(k, v)
-				}
+				newNode.SetProperty(k, v)
 			}
 			return true
 		})
@@ -135,19 +127,19 @@ func InstantiateSchemaNode(targetGraph *lpg.Graph, schemaNode *lpg.Node, embedSc
 		return newNode
 	}
 	pat := lpg.Pattern{{
-		Labels:     lpg.NewStringSet(AttributeNodeTerm),
-		Properties: map[string]interface{}{NodeIDTerm: GetNodeID(schemaNode)},
+		Labels:     lpg.NewStringSet(AttributeNodeTerm.Name),
+		Properties: map[string]interface{}{NodeIDTerm.Name: NodeIDTerm.MustPropertyValue(GetNodeID(schemaNode))},
 	}}
 	nodes, _ := pat.FindNodes(targetGraph, nil)
 	// Copy the schema node into this
 	// If the schema node already exists in the target graph, use it
 	if len(nodes) != 0 {
-		targetGraph.NewEdge(newNode, nodes[0], InstanceOfTerm, nil)
+		targetGraph.NewEdge(newNode, nodes[0], InstanceOfTerm.Name, nil)
 	} else {
 		// Copy the node
 		newSchemaNode := lpg.CopyNode(schemaNode, targetGraph, ClonePropertyValueFunc)
 		schemaNodeMap[schemaNode] = newSchemaNode
-		targetGraph.NewEdge(newNode, newSchemaNode, InstanceOfTerm, nil)
+		targetGraph.NewEdge(newNode, newSchemaNode, InstanceOfTerm.Name, nil)
 		copyNodesAttachedToSchema(newSchemaNode)
 	}
 	return newNode
@@ -158,7 +150,7 @@ func InstantiateSchemaNode(targetGraph *lpg.Graph, schemaNode *lpg.Node, embedSc
 // instanceOf edge to the schema node.
 func (gb GraphBuilder) NewNode(schemaNode *lpg.Node) *lpg.Node {
 	if schemaNode == nil {
-		return gb.targetGraph.NewNode([]string{DocumentNodeTerm}, nil)
+		return gb.targetGraph.NewNode([]string{DocumentNodeTerm.Name}, nil)
 	}
 
 	return InstantiateSchemaNode(gb.targetGraph, schemaNode, gb.options.EmbedSchemaNodes, gb.schemaNodeMap)
@@ -205,7 +197,7 @@ func (gb GraphBuilder) NativeValueAsEdge(schemaNode, parentDocumentNode *lpg.Nod
 func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode *lpg.Node, setValue func(*lpg.Node) error, types ...string) (*lpg.Edge, error) {
 	var edgeLabel string
 	if schemaNode != nil {
-		if !schemaNode.HasLabel(AttributeTypeValue) {
+		if !schemaNode.HasLabel(AttributeTypeValue.Name) {
 			return nil, ErrSchemaValidation{Msg: "A value is expected here"}
 		}
 		edgeLabel = determineEdgeLabel(schemaNode)
@@ -225,7 +217,7 @@ func (gb GraphBuilder) ValueAsEdge(schemaNode, parentDocumentNode *lpg.Node, set
 	}
 	t := node.GetLabels()
 	t.Add(types...)
-	t.Add(AttributeTypeValue)
+	t.Add(AttributeTypeValue.Name)
 	node.SetLabels(t)
 	edge := gb.targetGraph.NewEdge(parentDocumentNode, node, edgeLabel, nil)
 	return edge, nil
@@ -256,7 +248,7 @@ func (gb GraphBuilder) NativeValueAsNode(schemaNode, parentDocumentNode *lpg.Nod
 
 func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode *lpg.Node, setValue func(*lpg.Node) error, types ...string) (*lpg.Edge, *lpg.Node, error) {
 	if schemaNode != nil {
-		if !schemaNode.HasLabel(AttributeTypeValue) {
+		if !schemaNode.HasLabel(AttributeTypeValue.Name) {
 			return nil, nil, ErrSchemaValidation{Msg: "A value expected here"}
 		}
 	} else {
@@ -274,11 +266,11 @@ func (gb GraphBuilder) ValueAsNode(schemaNode, parentDocumentNode *lpg.Node, set
 	}
 	t := newNode.GetLabels()
 	t.Add(types...)
-	t.Add(AttributeTypeValue)
+	t.Add(AttributeTypeValue.Name)
 	newNode.SetLabels(t)
 	var edge *lpg.Edge
 	if parentDocumentNode != nil {
-		edge = gb.targetGraph.NewEdge(parentDocumentNode, newNode, HasTerm, nil)
+		edge = gb.targetGraph.NewEdge(parentDocumentNode, newNode, HasTerm.Name, nil)
 	}
 	return edge, newNode, nil
 }
@@ -292,13 +284,13 @@ func (gb GraphBuilder) ValueSetAsProperty(schemaNode *lpg.Node, graphPath []*lpg
 
 func (gb GraphBuilder) RawValueAsProperty(schemaNode *lpg.Node, graphPath []*lpg.Node, value string) error {
 	return gb.ValueAsProperty(schemaNode, graphPath, func(node *lpg.Node, key string) {
-		node.SetProperty(key, StringPropertyValue(key, value))
+		node.SetProperty(key, NewPropertyValue(key, value))
 	})
 }
 
 func (gb GraphBuilder) NativeValueAsProperty(schemaNode *lpg.Node, graphPath []*lpg.Node, value interface{}) error {
 	return gb.ValueAsProperty(schemaNode, graphPath, func(node *lpg.Node, key string) {
-		node.SetProperty(key, StringPropertyValue(key, fmt.Sprint(value)))
+		node.SetProperty(key, NewPropertyValue(key, fmt.Sprint(value)))
 	})
 }
 
@@ -308,7 +300,7 @@ func (gb GraphBuilder) ValueAsProperty(schemaNode *lpg.Node, graphPath []*lpg.No
 	if schemaNode == nil {
 		return ErrInvalidInput{Msg: "Missing schema node"}
 	}
-	if !schemaNode.HasLabel(AttributeTypeValue) {
+	if !schemaNode.HasLabel(AttributeTypeValue.Name) {
 		return ErrSchemaValidation{Msg: "A value expected here"}
 	}
 	asPropertyOf, propertyName := GetIngestAsProperty(schemaNode)
@@ -321,7 +313,7 @@ func (gb GraphBuilder) ValueAsProperty(schemaNode *lpg.Node, graphPath []*lpg.No
 	} else {
 		// Find ancestor that is instance of asPropertyOf
 		for i := len(graphPath) - 1; i >= 0; i-- {
-			if AsPropertyValue(graphPath[i].GetProperty(SchemaNodeIDTerm)).AsString() == asPropertyOf {
+			if SchemaNodeIDTerm.PropertyValue(graphPath[i]) == asPropertyOf {
 				targetNode = graphPath[i]
 				break
 			}
@@ -331,8 +323,8 @@ func (gb GraphBuilder) ValueAsProperty(schemaNode *lpg.Node, graphPath []*lpg.No
 		return ErrCannotFindAncestor{SchemaNodeID: GetNodeID(schemaNode)}
 	}
 	setValue(targetNode, propertyName)
-	if v, ok := targetNode.GetProperty(propertyName); ok {
-		gb.setEntityID(AsPropertyValue(v, ok).AsString(), graphPath[len(graphPath)-1], schemaNode)
+	if v, ok := GetPropertyValueAs[string](targetNode, propertyName); ok {
+		gb.setEntityID(v, graphPath[len(graphPath)-1], schemaNode)
 	}
 	return nil
 }
@@ -385,22 +377,22 @@ func (gb GraphBuilder) CollectionAsEdge(schemaNode, parentNode *lpg.Node, typeTe
 
 // ObjectAsNode creates a new object node
 func (gb GraphBuilder) ObjectAsNode(schemaNode, parentNode *lpg.Node, types ...string) (*lpg.Edge, *lpg.Node, error) {
-	return gb.CollectionAsNode(schemaNode, parentNode, AttributeTypeObject, types...)
+	return gb.CollectionAsNode(schemaNode, parentNode, AttributeTypeObject.Name, types...)
 }
 
 func (gb GraphBuilder) ArrayAsNode(schemaNode, parentNode *lpg.Node, types ...string) (*lpg.Edge, *lpg.Node, error) {
-	return gb.CollectionAsNode(schemaNode, parentNode, AttributeTypeArray, types...)
+	return gb.CollectionAsNode(schemaNode, parentNode, AttributeTypeArray.Name, types...)
 }
 
 // ObjectAsEdge creates an object node as an edge using the following scheme:
 //
 //	parent --object--> _blankNode --...
 func (gb GraphBuilder) ObjectAsEdge(schemaNode, parentNode *lpg.Node, types ...string) (*lpg.Edge, error) {
-	return gb.CollectionAsEdge(schemaNode, parentNode, AttributeTypeObject, types...)
+	return gb.CollectionAsEdge(schemaNode, parentNode, AttributeTypeObject.Name, types...)
 }
 
 func (gb GraphBuilder) ArrayAsEdge(schemaNode, parentNode *lpg.Node, types ...string) (*lpg.Edge, error) {
-	return gb.CollectionAsEdge(schemaNode, parentNode, AttributeTypeArray, types...)
+	return gb.CollectionAsEdge(schemaNode, parentNode, AttributeTypeArray.Name, types...)
 }
 
 // PostNodeIngest calls the post node ingestion functions for properties that has one
@@ -410,11 +402,11 @@ func (gp GraphBuilder) PostNodeIngest(schemaNode, docNode *lpg.Node) error {
 	}
 	var err error
 	schemaNode.ForEachProperty(func(key string, value interface{}) bool {
-		pv := AsPropertyValue(value, true)
-		if pv == nil {
+		pv, ok := value.(PropertyValue)
+		if !ok {
 			return true
 		}
-		ni, ok := pv.GetSem().Metadata.(PostNodeIngest)
+		ni, ok := pv.Sem().Metadata.(PostNodeIngest)
 		if !ok {
 			return true
 		}
@@ -434,11 +426,11 @@ func (gb GraphBuilder) PostIngestSchemaNode(schemaRootNode, schemaNode, docRootN
 	var err error
 	schemaNodeID := GetNodeID(schemaNode)
 	schemaNode.ForEachProperty(func(key string, value interface{}) bool {
-		pv := AsPropertyValue(value, true)
-		if pv == nil {
+		pv, ok := value.(PropertyValue)
+		if !ok {
 			return true
 		}
-		ni, ok := pv.GetSem().Metadata.(PostIngest)
+		ni, ok := pv.Sem().Metadata.(PostIngest)
 		if !ok {
 			return true
 		}
@@ -461,7 +453,7 @@ func (gb GraphBuilder) PostIngestSchemaNode(schemaRootNode, schemaNode, docRootN
 		for _, parentDocNode := range nodeIDMap[GetNodeID(parentSchemaNode)] {
 			docNode, e := EnsurePath(docRootNode, parentDocNode, schemaRootNode, schemaNode, func(parentNode, childSchemaNode *lpg.Node) (*lpg.Node, error) {
 				n := gb.NewNode(childSchemaNode)
-				gb.targetGraph.NewEdge(parentNode, n, HasTerm, nil)
+				gb.targetGraph.NewEdge(parentNode, n, HasTerm.Name, nil)
 				return n, nil
 			})
 			if e != nil {
@@ -527,7 +519,7 @@ func (gb GraphBuilder) NewUniqueEdge(fromNode, toNode *lpg.Node, label string, p
 func (gb GraphBuilder) linkNode(spec *LinkSpec, docNode, parentNode, entityRoot *lpg.Node, foreignKeys []ForeignKeyInfo, entityInfo EntityInfoIndex) error {
 
 	var linkNode *lpg.Node
-	specIsValueNode := spec.SchemaNode.HasLabel(AttributeTypeValue)
+	specIsValueNode := spec.SchemaNode.HasLabel(AttributeTypeValue.Name)
 	if specIsValueNode {
 		if len(spec.LinkNode) != 0 {
 			WalkNodesInEntity(entityRoot, func(n *lpg.Node) bool {
@@ -544,12 +536,8 @@ func (gb GraphBuilder) linkNode(spec *LinkSpec, docNode, parentNode, entityRoot 
 	}
 
 	if docNode != nil {
-		docNode.SetProperty(ReferenceFKFor, StringPropertyValue(ReferenceFKFor, spec.TargetEntity))
-		if len(spec.FK) == 1 {
-			docNode.SetProperty(ReferenceFK, StringPropertyValue(ReferenceFK, foreignKeys[0].ForeignKey[0]))
-		} else {
-			docNode.SetProperty(ReferenceFK, StringSlicePropertyValue(ReferenceFK, foreignKeys[0].ForeignKey))
-		}
+		docNode.SetProperty(ReferenceFKFor.Name, ReferenceFKFor.MustPropertyValue(spec.TargetEntity))
+		docNode.SetProperty(ReferenceFK.Name, ReferenceFK.MustPropertyValue(foreignKeys[0].ForeignKey))
 	}
 	var nodeProperties map[string]interface{}
 	if spec.IngestAs == IngestAsEdge && docNode != nil {
@@ -577,7 +565,7 @@ func (gb GraphBuilder) linkNode(spec *LinkSpec, docNode, parentNode, entityRoot 
 				} else {
 					if docNode == nil {
 						docNode = gb.NewNode(spec.SchemaNode)
-						gb.NewUniqueEdge(parentNode, docNode, HasTerm, nil)
+						gb.NewUniqueEdge(parentNode, docNode, HasTerm.Name, nil)
 					}
 					// A link from this document node to target is created
 					if spec.Forward {
@@ -663,7 +651,7 @@ func (gb GraphBuilder) LinkNodesWithSpecs(ctx *Context, specs []*LinkSpec, eix E
 				if !IsDocumentNode(childNode) {
 					continue
 				}
-				if AsPropertyValue(childNode.GetProperty(SchemaNodeIDTerm)).AsString() != attrId {
+				if SchemaNodeIDTerm.PropertyValue(childNode) != attrId {
 					continue
 				}
 				// childNode is an instance of attrNode, which is a link

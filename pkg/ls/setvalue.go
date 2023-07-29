@@ -24,12 +24,12 @@ var SetValueTerm = NewTerm(LS, "setValue").SetComposition(OverrideComposition).S
 type setValueSemantics struct{}
 
 // CompileTerm will compile the expression in setValue term.
-func (setValueSemantics) CompileTerm(ctx *CompileContext, node CompilablePropertyContainer, term string, value *PropertyValue) error {
-	if value == nil {
+func (setValueSemantics) CompileTerm(ctx *CompileContext, node CompilablePropertyContainer, term string, value PropertyValue) error {
+	if value.Value() == nil {
 		return nil
 	}
 	expr := make([]opencypher.Evaluatable, 0)
-	for _, str := range value.MustStringSlice() {
+	for _, str := range value.AsStringSlice() {
 		e, err := ctx.CompileOpencypher(str)
 		if err != nil {
 			return err
@@ -43,12 +43,12 @@ func (setValueSemantics) CompileTerm(ctx *CompileContext, node CompilablePropert
 // ProcessNodePostDocIngest will evaluate the opencypher expressions
 // given in the term for the docNode and set the value of the docnode
 // based on that
-func (setValueSemantics) ProcessNodePostDocIngest(schemaRootNode, schemaNode *lpg.Node, term *PropertyValue, docNode *lpg.Node) error {
-	v, _ := docNode.GetProperty("$compiled_" + term.GetSem().Term)
+func (setValueSemantics) ProcessNodePostDocIngest(schemaRootNode, schemaNode *lpg.Node, term PropertyValue, docNode *lpg.Node) error {
+	v, _ := docNode.GetProperty("$compiled_" + term.Sem().Name)
 	exprs, _ := v.([]opencypher.Evaluatable)
 	evalContext := NewEvalContext(docNode.GetGraph())
 	evalContext.SetVar("this", opencypher.ValueOf(docNode))
-	var lastResult interface{}
+	var lastResult any
 	for _, expr := range exprs {
 		result, err := expr.Evaluate(evalContext)
 		if err != nil {

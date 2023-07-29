@@ -23,61 +23,46 @@ import (
 
 // IsDocumentNode returns if the node has the DocumentNodeTerm as one of its labels
 func IsDocumentNode(node *lpg.Node) bool {
-	return node.GetLabels().Has(DocumentNodeTerm)
+	return node.GetLabels().Has(DocumentNodeTerm.Name)
 }
 
 // IsAttributeNode returns true if the node has Attribute type
 func IsAttributeNode(node *lpg.Node) bool {
-	return node.GetLabels().Has(AttributeNodeTerm)
+	return node.GetLabels().Has(AttributeNodeTerm.Name)
 }
 
 // GetNodeIndex returns the value of attribute index term as int
 func GetNodeIndex(node *lpg.Node) int {
-	p := AsPropertyValue(node.GetProperty(AttributeIndexTerm))
-	if p == nil || !p.IsString() {
-		return 0
-	}
-	return p.AsInt()
+	v, _ := GetPropertyValueAs[int](node, AttributeIndexTerm.Name)
+	return v
 }
 
 func SetNodeIndex(node *lpg.Node, index int) {
-	node.SetProperty(AttributeIndexTerm, IntPropertyValue(AttributeIndexTerm, index))
+	node.SetProperty(AttributeIndexTerm.Name, AttributeIndexTerm.MustPropertyValue(index))
 }
 
 // GetNodeID returns the nodeid
 func GetNodeID(node *lpg.Node) string {
-	if node == nil {
-		return ""
-	}
-	v, _ := node.GetProperty(NodeIDTerm)
-	s, _ := v.(string)
-	return s
+	return NodeIDTerm.PropertyValue(node)
 }
 
 // SetNodeID sets the node ID
 func SetNodeID(node *lpg.Node, ID string) {
-	node.SetProperty(NodeIDTerm, ID)
+	node.SetProperty(NodeIDTerm.Name, NewPropertyValue(NodeIDTerm.Name, ID))
 }
 
 // GetRawNodeValue returns the unprocessed node value
 func GetRawNodeValue(node *lpg.Node) (string, bool) {
-	pv := AsPropertyValue(node.GetProperty(NodeValueTerm))
-	if pv == nil {
-		return "", false
-	}
-	if !pv.IsString() {
-		return "", false
-	}
-	return pv.AsString(), true
+	return GetPropertyValueAs[string](node, NodeValueTerm.Name)
 }
 
 func RemoveRawNodeValue(node *lpg.Node) {
-	node.RemoveProperty(NodeValueTerm)
+	node.RemoveProperty(NodeValueTerm.Name)
 }
 
 // SetRawNodeValue sets the unprocessed node value
 func SetRawNodeValue(node *lpg.Node, value string) {
-	node.SetProperty(NodeValueTerm, StringPropertyValue(NodeValueTerm, value))
+	node.SetProperty(NodeValueTerm.Name, NewPropertyValue(NodeValueTerm.Name, value))
 }
 
 // GetNodeValue returns the field value processed by the schema type
@@ -112,7 +97,7 @@ func SetNodeValue(node *lpg.Node, value interface{}) error {
 	}
 	if accessor == nil {
 		if value == nil {
-			node.RemoveProperty(NodeValueTerm)
+			node.RemoveProperty(NodeValueTerm.Name)
 			return nil
 		}
 		SetRawNodeValue(node, fmt.Sprint(value))
@@ -156,17 +141,17 @@ func GetNodeValueAccessor(node *lpg.Node) (ValueAccessor, error) {
 		return nil
 	}
 	typeFound := false
-	p, _ := node.GetProperty(ValueTypeTerm)
-	if pv, ok := p.(*PropertyValue); ok {
+	p, _ := node.GetProperty(ValueTypeTerm.Name)
+	if pv, ok := p.(PropertyValue); ok {
 		typeFound = true
-		for _, x := range pv.MustStringSlice() {
+		for _, x := range pv.AsStringSlice() {
 			if err := setAccessor(x); err != nil {
 				return nil, err
 			}
 		}
 	}
 	if !typeFound {
-		iedges := lpg.EdgeSlice(node.GetEdgesWithLabel(lpg.OutgoingEdge, InstanceOfTerm))
+		iedges := lpg.EdgeSlice(node.GetEdgesWithLabel(lpg.OutgoingEdge, InstanceOfTerm.Name))
 		if len(iedges) == 1 {
 			for t := range iedges[0].GetTo().GetLabels().M {
 				if err := setAccessor(t); err != nil {
@@ -222,7 +207,7 @@ func FollowEdgesToNodeWithType(typ string) func(*lpg.Edge) EdgeFuncResult {
 
 // FollowEdgesInEntity follows only the document edges that do not cross entity boundaries
 func FollowEdgesInEntity(edge *lpg.Edge) EdgeFuncResult {
-	if _, ok := GetNodeOrSchemaProperty(edge.GetTo(), EntitySchemaTerm); ok {
+	if _, ok := GetNodeOrSchemaProperty(edge.GetTo(), EntitySchemaTerm.Name); ok {
 		return SkipEdgeResult
 	}
 	return FollowEdgeResult
@@ -230,25 +215,25 @@ func FollowEdgesInEntity(edge *lpg.Edge) EdgeFuncResult {
 
 // IsNodeEntityRoot checks if node is an entity root
 func IsNodeEntityRoot(node *lpg.Node) bool {
-	_, ok := GetNodeOrSchemaProperty(node, EntitySchemaTerm)
+	_, ok := GetNodeOrSchemaProperty(node, EntitySchemaTerm.Name)
 	return ok
 }
 
 // SkipSchemaNodes can be used in IterateDescendants edge func
 // to skip all edges that go to a schema node
-var SkipSchemaNodes = SkipEdgesToNodeWithType(AttributeNodeTerm)
+var SkipSchemaNodes = SkipEdgesToNodeWithType(AttributeNodeTerm.Name)
 
 // SkipDocumentNodes can be used in IterateDescendants edge func
 // to skip all edges that go to a document node
-var SkipDocumentNodes = SkipEdgesToNodeWithType(DocumentNodeTerm)
+var SkipDocumentNodes = SkipEdgesToNodeWithType(DocumentNodeTerm.Name)
 
 // OnlyDocumentNodes can be used in IterateDescendants edge func to
 // follow edges that reach to document nodes
-var OnlyDocumentNodes = FollowEdgesToNodeWithType(DocumentNodeTerm)
+var OnlyDocumentNodes = FollowEdgesToNodeWithType(DocumentNodeTerm.Name)
 
 // OnlyAttributeNodes can be used in IterateDescendants edge func to
 // follow edges that reach to Attribute nodes
-var OnlyAttributeNodes = FollowEdgesToNodeWithType(AttributeNodeTerm)
+var OnlyAttributeNodes = FollowEdgesToNodeWithType(AttributeNodeTerm.Name)
 
 // IterateDescendants iterates the descendants of the node based on
 // the results of nodeFunc and edgeFunc.
@@ -355,7 +340,7 @@ func IterateAncestors(root *lpg.Node, nodeFunc func(*lpg.Node) bool, edgeFunc fu
 // InstanceOf returns the nodes that are connect to this node via
 // instanceOf term,
 func InstanceOf(node *lpg.Node) []*lpg.Node {
-	return lpg.NextNodesWith(node, InstanceOfTerm)
+	return lpg.NextNodesWith(node, InstanceOfTerm.Name)
 }
 
 // CombineNodeTypes returns a combination of the types of all the given nodes
@@ -394,27 +379,30 @@ func DocumentNodesUnder(node ...*lpg.Node) []*lpg.Node {
 
 // GetNodeOrSchemaProperty gets the node property with the key from
 // the node, or from the schema nodes it is attached to
-func GetNodeOrSchemaProperty(node *lpg.Node, key string) (*PropertyValue, bool) {
-	prop, _ := node.GetProperty(key)
-	if pd, ok := prop.(*PropertyValue); ok {
-		return pd, true
+func GetNodeOrSchemaProperty(node *lpg.Node, key string) (PropertyValue, bool) {
+	prop, ok := GetPropertyValue(node, key)
+	if ok {
+		return prop, true
 	}
 	for _, n := range InstanceOf(node) {
-		prop, _ = n.GetProperty(key)
-		if pd, ok := prop.(*PropertyValue); ok {
-			return pd, true
+		prop, ok = GetPropertyValue(n, key)
+		if ok {
+			return prop, true
 		}
 	}
-	return nil, false
+	return PropertyValue{}, false
 }
 
 // GetNodeSchemaNodeID returns the schema node ID of a document node. Returns empty string if not found.
 func GetNodeSchemaNodeID(documentNode *lpg.Node) string {
-	p, ok := GetNodeOrSchemaProperty(documentNode, SchemaNodeIDTerm)
+	p, ok := GetNodeOrSchemaProperty(documentNode, SchemaNodeIDTerm.Name)
 	if !ok {
 		return ""
 	}
-	return p.AsString()
+	if s, ok := p.Value().(string); ok {
+		return s
+	}
+	return ""
 }
 
 // IsAttributeTreeEdge returns true if the edge is an edge between two
@@ -424,11 +412,11 @@ func IsAttributeTreeEdge(edge *lpg.Edge) bool {
 		return false
 	}
 	l := edge.GetLabel()
-	return l == ObjectAttributesTerm ||
-		l == ObjectAttributeListTerm ||
-		l == ArrayItemsTerm ||
-		l == AllOfTerm ||
-		l == OneOfTerm
+	return l == ObjectAttributesTerm.Name ||
+		l == ObjectAttributeListTerm.Name ||
+		l == ArrayItemsTerm.Name ||
+		l == AllOfTerm.Name ||
+		l == OneOfTerm.Name
 }
 
 // SortEdges sorts edges by their target node index
@@ -477,13 +465,13 @@ func SortEdgesItr(edges lpg.EdgeIterator) lpg.EdgeIterator {
 
 // CloneNode clones the sourcenode in targetgraph
 func CloneNode(sourceNode *lpg.Node, targetGraph *lpg.Graph) *lpg.Node {
-	return lpg.CopyNode(sourceNode, targetGraph, func(key string, value interface{}) interface{} {
+	return lpg.CopyNode(sourceNode, targetGraph, func(key string, value any) any {
 		return value
 	})
 }
 
 func CloneEdge(fromInTarget, toInTarget *lpg.Node, sourceEdge *lpg.Edge, targetGraph *lpg.Graph) *lpg.Edge {
-	return lpg.CloneEdge(fromInTarget, toInTarget, sourceEdge, targetGraph, func(key string, value interface{}) interface{} {
+	return lpg.CloneEdge(fromInTarget, toInTarget, sourceEdge, targetGraph, func(key string, value any) any {
 		return value
 	})
 }
@@ -506,10 +494,10 @@ func FindChildInstanceOf(parent *lpg.Node, childAttrID string) []*lpg.Node {
 	for edges := parent.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 		edge := edges.Edge()
 		child := edge.GetTo()
-		if !child.GetLabels().Has(DocumentNodeTerm) {
+		if !child.GetLabels().Has(DocumentNodeTerm.Name) {
 			continue
 		}
-		if childAttrID == AsPropertyValue(child.GetProperty(SchemaNodeIDTerm)).AsString() {
+		if childAttrID == SchemaNodeIDTerm.PropertyValue(child) {
 			ret = append(ret, child)
 		}
 	}
@@ -543,7 +531,7 @@ func GetEntityRootNode(aNode *lpg.Node) *lpg.Node {
 			if nextNode == edge.GetTo() {
 				continue
 			}
-			if !nextNode.GetLabels().Has(DocumentNodeTerm) {
+			if !nextNode.GetLabels().Has(DocumentNodeTerm.Name) {
 				continue
 			}
 			nNodes++

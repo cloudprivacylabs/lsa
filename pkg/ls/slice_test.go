@@ -35,7 +35,7 @@ func (tc sliceTestCase) Run(t *testing.T) {
 		t.Errorf("%s: Cannot unmarshal layer: %v", tc.Name, err)
 		return
 	}
-	slice := sch.Slice(OverlayTerm, GetSliceByTermsFunc(tc.Terms, false))
+	slice := sch.Slice(OverlayTerm.Name, GetSliceByTermsFunc(tc.Terms, false))
 	marshaled, err := MarshalLayer(slice)
 	if err != nil {
 		t.Error(err)

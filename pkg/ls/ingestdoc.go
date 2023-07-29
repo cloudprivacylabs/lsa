@@ -106,14 +106,14 @@ func getParsedDocNodeEntitySchema(node ParsedDocNode) string {
 	if sch == nil {
 		return ""
 	}
-	s := AsPropertyValue(sch.GetProperty(EntitySchemaTerm)).AsString()
+	s := EntitySchemaTerm.PropertyValue(sch)
 	return s
 }
 
 // Collect entity ID for the entity from the given root
 func collectEntityID(entityRoot ParsedDocNode) []string {
 	var iterateEntity func(ParsedDocNode)
-	idFields := GetEntityIDFields(entityRoot.GetSchemaNode()).MustStringSlice()
+	idFields := GetEntityIDFields(entityRoot.GetSchemaNode()).AsStringSlice()
 	if len(idFields) == 0 {
 		return nil
 	}
@@ -265,11 +265,11 @@ func (ing *Ingester) GetPostIngestSchemaNodes(schemaRootNode *lpg.Node) []*lpg.N
 	}
 	ForEachAttributeNode(schemaRootNode, func(schemaNode *lpg.Node, _ []*lpg.Node) bool {
 		schemaNode.ForEachProperty(func(key string, value interface{}) bool {
-			pv := AsPropertyValue(value, true)
-			if pv == nil {
+			pv, ok := value.(PropertyValue)
+			if !ok {
 				return true
 			}
-			_, ok := pv.GetSem().Metadata.(PostIngest)
+			_, ok = pv.Sem().Metadata.(PostIngest)
 			if !ok {
 				return true
 			}
@@ -286,11 +286,7 @@ func GetIngestAs(schemaNode *lpg.Node) string {
 	if schemaNode == nil {
 		return "node"
 	}
-	p, ok := schemaNode.GetProperty(IngestAsTerm)
-	if !ok {
-		return "node"
-	}
-	s := AsPropertyValue(p, ok).AsString()
+	s := IngestAsTerm.PropertyValue(schemaNode)
 	if s == "edge" || s == "property" || s == "none" {
 		return s
 	}
@@ -298,10 +294,10 @@ func GetIngestAs(schemaNode *lpg.Node) string {
 }
 
 func GetIngestAsProperty(schemaNode *lpg.Node) (asPropertyOf, propertyName string) {
-	asPropertyOf = AsPropertyValue(schemaNode.GetProperty(AsPropertyOfTerm)).AsString()
-	propertyName = AsPropertyValue(schemaNode.GetProperty(PropertyNameTerm)).AsString()
+	asPropertyOf = AsPropertyOfTerm.PropertyValue(schemaNode)
+	propertyName = PropertyNameTerm.PropertyValue(schemaNode)
 	if len(propertyName) == 0 {
-		propertyName = AsPropertyValue(schemaNode.GetProperty(AttributeNameTerm)).AsString()
+		propertyName = AttributeNameTerm.PropertyValue(schemaNode)
 	}
 	if len(propertyName) == 0 {
 		propertyName = GetNodeID(schemaNode)
@@ -330,16 +326,16 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, *lpg.Nod
 		node.SetLabels(labels)
 	}
 	setProp := func(node *lpg.Node) {
-		node.SetProperty(AttributeIndexTerm, StringPropertyValue(AttributeIndexTerm, strconv.Itoa(root.GetAttributeIndex())))
+		node.SetProperty(AttributeIndexTerm.Name, AttributeIndexTerm.MustPropertyValue(root.GetAttributeIndex()))
 		if s := root.GetAttributeName(); len(s) > 0 {
-			node.SetProperty(AttributeNameTerm, StringPropertyValue(AttributeNameTerm, s))
+			node.SetProperty(AttributeNameTerm.Name, AttributeNameTerm.MustPropertyValue(s))
 		}
 		for k, v := range root.GetProperties() {
 			node.SetProperty(k, v)
 		}
 	}
 	hasData := false
-	if typeTerm == AttributeTypeValue {
+	if typeTerm == AttributeTypeValue.Name {
 		setValue := func(node *lpg.Node) error {
 			SetRawNodeValue(node, root.GetValue())
 			return nil
@@ -367,7 +363,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, *lpg.Nod
 				if len(entityId) > 0 {
 					ei := cursor.findInIngestedEntityInfo(entitySchema, entityId)
 					if ei != nil {
-						builder.GetGraph().NewEdge(cursor.getOutput(), ei.node, HasTerm, nil)
+						builder.GetGraph().NewEdge(cursor.getOutput(), ei.node, HasTerm.Name, nil)
 						return true, ei.node, nil
 					}
 				}
@@ -432,7 +428,7 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, *lpg.Nod
 				ei := cursor.findInIngestedEntityInfo(entitySchema, entityId)
 				if ei != nil {
 					// connect
-					builder.GetGraph().NewEdge(cursor.getOutput(), ei.node, HasTerm, nil)
+					builder.GetGraph().NewEdge(cursor.getOutput(), ei.node, HasTerm.Name, nil)
 					return true, ei.node, nil
 				}
 			}
@@ -480,14 +476,15 @@ func ingestWithCursor(builder GraphBuilder, cursor ingestCursor) (bool, *lpg.Nod
 			if n == -1 {
 				n = child.GetAttributeIndex()
 			}
-			node.SetProperty(AttributeIndexTerm, IntPropertyValue(AttributeIndexTerm, n))
+			node.SetProperty(AttributeIndexTerm.Name, AttributeIndexTerm.MustPropertyValue(n))
 		}
 	}
 	if err := builder.PostNodeIngest(schemaNode, newCursor.getOutput()); err != nil {
 		return hasData, newCursor.getOutput(), err
 	}
 	if schemaNode != nil && hasData {
-		switch AsPropertyValue(schemaNode.GetProperty(ConditionalTerm)).AsString() {
+		s := ConditionalTerm.PropertyValue(schemaNode)
+		switch s {
 		case "mustHaveChildren":
 			if !hasChildren {
 				newCursor.getOutput().DetachAndRemove()

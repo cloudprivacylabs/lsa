@@ -7,11 +7,14 @@ import (
 func ProcessLabeledAs(graph *lpg.Graph) {
 	for nodeItr := graph.GetNodes(); nodeItr.Next(); {
 		node := nodeItr.Node()
-		if node.HasLabel(AttributeNodeTerm) {
+		if node.HasLabel(AttributeNodeTerm.Name) {
 			labels := node.GetLabels()
-			labels.Add(AsPropertyValue(node.GetProperty(LabeledAsTerm)).MustStringSlice()...)
+			p := LabeledAsTerm.PropertyValue(node)
+			if len(p) > 0 {
+				labels.Add(p...)
+			}
 			node.SetLabels(labels)
-			node.RemoveProperty(LabeledAsTerm)
+			node.RemoveProperty(LabeledAsTerm.Name)
 		}
 	}
 }

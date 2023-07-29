@@ -152,7 +152,7 @@ func (tc ingestTest) testObjectAsEdge(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if edge2.GetFrom() != edge.GetTo() && edge2.GetLabel() != HasTerm {
+	if edge2.GetFrom() != edge.GetTo() && edge2.GetLabel() != HasTerm.Name {
 		t.Errorf("Wrong path")
 	}
 }
@@ -216,7 +216,7 @@ func (tc ingestTest) TestArrayAsEdge(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if edge2.GetFrom() != edge.GetTo() && edge2.GetLabel() != HasTerm {
+	if edge2.GetFrom() != edge.GetTo() && edge2.GetLabel() != HasTerm.Name {
 		t.Errorf("Wrong path")
 	}
 }

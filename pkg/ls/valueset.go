@@ -51,46 +51,46 @@ var (
 	// A node must contain either the ValuesetContextTerm or the ValuesetTablesTerm to be used in lookup
 	//
 	// If context is empty, entity root is assumed
-	ValuesetContextTerm = NewTerm(LS, "vs/context").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ValuesetContextTerm = StringTerm{NewTerm(LS, "vs/context").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 	// ValuesetContextExprTerm is an opencyper expression that gives the context node using "this" as the current node
-	ValuesetContextExprTerm = NewTerm(LS, "vs/contextExpr").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ValuesetContextExprTerm = StringTerm{NewTerm(LS, "vs/contextExpr").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// ValuesetTablesTerm specifies the list of table IDs to
 	// lookup. This is optional.  A node must contain either the
 	// ValuesetContextTerm or the ValuesetTablesTerm to be used in
 	// lookup
-	ValuesetTablesTerm = NewTerm(LS, "vs/valuesets").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ValuesetTablesTerm = StringSliceTerm{NewTerm(LS, "vs/valuesets").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// ValuesetRequestKeysTerm specifies the keys that will be used in
 	// the valueset request. These keys are interpreted by the valueset
 	// lookup.
-	ValuesetRequestKeysTerm = NewTerm(LS, "vs/requestKeys").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ValuesetRequestKeysTerm = StringSliceTerm{NewTerm(LS, "vs/requestKeys").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// ValuesetRequestValuesTerm contains entries matching
 	// ValuesetRequestKeysTerm. It specifies the schema node IDs of the
 	// nodes containing values to lookup
-	ValuesetRequestValuesTerm = NewTerm(LS, "vs/requestValues").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ValuesetRequestValuesTerm = StringSliceTerm{NewTerm(LS, "vs/requestValues").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// ValuesetRequestTerm specifies one or more openCypher expressions
 	// that builds up a valuest lookup request. The named results of
 	// those expressions are added to the request key/value pairs
-	ValuesetRequestTerm = NewTerm(LS, "vs/request").SetComposition(OverrideComposition).SetTags(SchemaElementTag).SetMetadata(CompileOCSemantics{}).Register()
+	ValuesetRequestTerm = StringSliceTerm{NewTerm(LS, "vs/request").SetComposition(OverrideComposition).SetTags(SchemaElementTag).SetMetadata(CompileOCSemantics{}).Register()}
 
 	// ValuesetResultKeys term contains the keys that will be returned
 	// from the valueset lookup. Values of these keys will be inserted under the context
-	ValuesetResultKeysTerm = NewTerm(LS, "vs/resultKeys").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ValuesetResultKeysTerm = StringSliceTerm{NewTerm(LS, "vs/resultKeys").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// ValuesetResultValuesTerm specifies the schema node IDs for the
 	// nodes that will receive the matching key values. If there is only
 	// one, resultKeys is optional The result value nodes must be a
 	// direct descendant of one of the nodes from the document node up
 	// to the context node.
-	ValuesetResultValuesTerm = NewTerm(LS, "vs/resultValues").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ValuesetResultValuesTerm = StringSliceTerm{NewTerm(LS, "vs/resultValues").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// ValuesetResultContext determines the node under which the results
 	// will be added. This is needed if the results will be added under
 	// a different entity attached to the valueset context.
-	ValuesetResultContextTerm = NewTerm(LS, "vs/resultContext").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ValuesetResultContextTerm = StringTerm{NewTerm(LS, "vs/resultContext").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 )
 
 // ValuesetInfo describes value set information for a schema node.
@@ -174,42 +174,42 @@ func (e ErrValueset) Error() string {
 
 func init() {
 	RegisterNewDocGraphHook(func(g *lpg.Graph) {
-		g.AddNodePropertyIndex(ValuesetContextTerm, lpg.HashIndex)
-		g.AddNodePropertyIndex(ValuesetContextExprTerm, lpg.HashIndex)
+		g.AddNodePropertyIndex(ValuesetContextTerm.Name, lpg.HashIndex)
+		g.AddNodePropertyIndex(ValuesetContextExprTerm.Name, lpg.HashIndex)
 	})
 	RegisterNewLayerGraphHook(func(g *lpg.Graph) {
-		g.AddNodePropertyIndex(ValuesetContextTerm, lpg.HashIndex)
-		g.AddNodePropertyIndex(ValuesetContextExprTerm, lpg.HashIndex)
+		g.AddNodePropertyIndex(ValuesetContextTerm.Name, lpg.HashIndex)
+		g.AddNodePropertyIndex(ValuesetContextExprTerm.Name, lpg.HashIndex)
 	})
 }
 
 // ValueSetInfoFromNode parses the valueset information from a
 // node. Returns nil if the node does not have valueset info
 func ValuesetInfoFromNode(layer *Layer, node *lpg.Node) (*ValuesetInfo, error) {
-	ctxp := AsPropertyValue(node.GetProperty(ValuesetContextTerm))
-	ctexpr := AsPropertyValue(node.GetProperty(ValuesetContextExprTerm))
-	tablep := AsPropertyValue(node.GetProperty(ValuesetTablesTerm))
-	if ctexpr == nil && ctxp == nil && tablep == nil {
+	ctxp := ValuesetContextTerm.PropertyValue(node)
+	ctexpr := ValuesetContextExprTerm.PropertyValue(node)
+	tablep := ValuesetTablesTerm.PropertyValue(node)
+	if len(ctexpr) == 0 && len(ctxp) == 0 && len(tablep) == 0 {
 		return nil, nil
 	}
 	ret := &ValuesetInfo{
-		ContextID:     ctxp.AsString(),
-		TableIDs:      tablep.MustStringSlice(),
-		RequestKeys:   AsPropertyValue(node.GetProperty(ValuesetRequestKeysTerm)).MustStringSlice(),
-		RequestValues: AsPropertyValue(node.GetProperty(ValuesetRequestValuesTerm)).MustStringSlice(),
-		ResultKeys:    AsPropertyValue(node.GetProperty(ValuesetResultKeysTerm)).MustStringSlice(),
-		ResultValues:  AsPropertyValue(node.GetProperty(ValuesetResultValuesTerm)).MustStringSlice(),
+		ContextID:     ctxp,
+		TableIDs:      tablep,
 		SchemaNode:    node,
-		ResultContext: AsPropertyValue(node.GetProperty(ValuesetResultContextTerm)).AsString(),
+		ResultValues:  ValuesetResultValuesTerm.PropertyValue(node),
+		ResultKeys:    ValuesetResultKeysTerm.PropertyValue(node),
+		RequestValues: ValuesetRequestValuesTerm.PropertyValue(node),
+		RequestKeys:   ValuesetRequestKeysTerm.PropertyValue(node),
+		ResultContext: ValuesetResultContextTerm.PropertyValue(node),
 	}
-	if ctexpr != nil && ctexpr.IsString() {
+	if len(ctexpr) > 0 {
 		var err error
-		ret.ContextExpr, err = opencypher.Parse(ctexpr.AsString())
+		ret.ContextExpr, err = opencypher.Parse(ctexpr)
 		if err != nil {
 			return nil, err
 		}
 	}
-	ret.RequestExprs = CompileOCSemantics{}.Compiled(node, ValuesetRequestTerm)
+	ret.RequestExprs = CompileOCSemantics{}.Compiled(node, ValuesetRequestTerm.Name)
 	entityRoot := GetLayerEntityRoot(node)
 	if len(ret.ContextID) == 0 && ret.ContextExpr == nil {
 		if entityRoot != nil {
@@ -333,7 +333,7 @@ func (vsi *ValuesetInfo) GetRequest(ctx *Context, contextDocumentNode, vsiDocume
 	// and values of same length
 	// There are some request value fields under this node. Collect them.
 	for index, reqv := range vsi.RequestValues {
-		if reqv == AsPropertyValue(contextDocumentNode.GetProperty(SchemaNodeIDTerm)).AsString() {
+		if reqv == SchemaNodeIDTerm.PropertyValue(contextDocumentNode) {
 			value, _ := GetRawNodeValue(contextDocumentNode)
 			if len(vsi.RequestKeys) == 0 {
 				ret[""] = value
@@ -354,10 +354,12 @@ func (vsi *ValuesetInfo) GetRequest(ctx *Context, contextDocumentNode, vsiDocume
 						ret[vsi.RequestKeys[index]], _ = GetRawNodeValue(attrRef.Node)
 					}
 				} else {
+					pv, _ := attrRef.AsPropertyValue()
+					str, _ := pv.Value().(string)
 					if len(vsi.RequestKeys) == 0 {
-						ret[""] = attrRef.AsPropertyValue().AsString()
+						ret[""] = str
 					} else {
-						ret[vsi.RequestKeys[index]] = attrRef.AsPropertyValue().AsString()
+						ret[vsi.RequestKeys[index]] = str
 					}
 				}
 			}
@@ -370,7 +372,7 @@ func (vsi *ValuesetInfo) GetRequest(ctx *Context, contextDocumentNode, vsiDocume
 func (vsi *ValuesetInfo) getContextNodes(g *lpg.Graph, contextID string) ([]*lpg.Node, error) {
 	pattern := lpg.Pattern{
 		{
-			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(SchemaNodeIDTerm, contextID)},
+			Properties: map[string]any{SchemaNodeIDTerm.Name: SchemaNodeIDTerm.MustPropertyValue(contextID)},
 		},
 	}
 	return pattern.FindNodes(g, nil)
@@ -382,7 +384,7 @@ func (vsi *ValuesetInfo) getContextNodes(g *lpg.Graph, contextID string) ([]*lpg
 func (vsi *ValuesetInfo) GetContextNode(docNode *lpg.Node) (*lpg.Node, error) {
 	pattern := lpg.Pattern{
 		{
-			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(SchemaNodeIDTerm, vsi.ContextID)},
+			Properties: map[string]any{SchemaNodeIDTerm.Name: SchemaNodeIDTerm.MustPropertyValue(vsi.ContextID)},
 		},
 		{
 			Min: 0,
@@ -411,7 +413,7 @@ func (vsi *ValuesetInfo) GetContextNode(docNode *lpg.Node) (*lpg.Node, error) {
 func (vsi *ValuesetInfo) GetDocNodes(g *lpg.Graph) []*lpg.Node {
 	pattern := lpg.Pattern{
 		{
-			Properties: map[string]interface{}{SchemaNodeIDTerm: StringPropertyValue(SchemaNodeIDTerm, GetNodeID(vsi.SchemaNode))},
+			Properties: map[string]any{SchemaNodeIDTerm.Name: SchemaNodeIDTerm.MustPropertyValue(GetNodeID(vsi.SchemaNode))},
 		}}
 	nodes, err := pattern.FindNodes(g, nil)
 	if err != nil {
@@ -439,7 +441,7 @@ func (vsi *ValuesetInfo) findResultNodes(contextDocumentNode, contextSchemaNode,
 	resultParent = contextDocumentNode
 	depth := 0
 	IterateDescendants(contextDocumentNode, func(node *lpg.Node) bool {
-		schemaNodeID := AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString()
+		schemaNodeID := SchemaNodeIDTerm.PropertyValue(node)
 		if len(schemaNodeID) == 0 {
 			return true
 		}
@@ -531,7 +533,7 @@ func (vsi *ValuesetInfo) ApplyValuesetResponse(ctx *Context, builder GraphBuilde
 		if len(result.KeyValues) != 1 {
 			return ErrValueset{SchemaNodeID: vsi.ContextID, Msg: "Multiple results from valueset lookup, but no ResultKeys specified in the schema"}
 		}
-		if !contextSchemaNode.HasLabel(AttributeTypeValue) {
+		if !contextSchemaNode.HasLabel(AttributeTypeValue.Name) {
 			return ErrValueset{SchemaNodeID: GetNodeID(contextSchemaNode), Msg: "Trying to set the value of a non-value node using valueset"}
 		}
 		for _, v := range result.KeyValues {
@@ -689,9 +691,9 @@ func (prc *ValuesetProcessor) init() error {
 			prc.vsis = append(prc.vsis, *vsi)
 		}
 	}
-	scan(prc.layer.Graph.GetNodesWithProperty(ValuesetContextTerm))
-	scan(prc.layer.Graph.GetNodesWithProperty(ValuesetContextExprTerm))
-	scan(prc.layer.Graph.GetNodesWithProperty(ValuesetTablesTerm))
+	scan(prc.layer.Graph.GetNodesWithProperty(ValuesetContextTerm.Name))
+	scan(prc.layer.Graph.GetNodesWithProperty(ValuesetContextExprTerm.Name))
+	scan(prc.layer.Graph.GetNodesWithProperty(ValuesetTablesTerm.Name))
 	if err != nil {
 		return err
 	}

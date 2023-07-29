@@ -65,7 +65,7 @@ func (rd *LDMarshaler) Marshal(input *lpg.Graph) interface{} {
 	}
 
 	type propertiesSupport interface {
-		GetProperties() map[string]*PropertyValue
+		GetProperties() map[string]PropertyValue
 	}
 
 	// Process the properties
@@ -84,7 +84,7 @@ func (rd *LDMarshaler) Marshal(input *lpg.Graph) interface{} {
 		}
 		if IsDocumentNode(gnode) {
 			if v, ok := GetRawNodeValue(gnode); ok {
-				onode.ldNode[NodeValueTerm] = v
+				onode.ldNode[NodeValueTerm.Name] = v
 			}
 		}
 	}
@@ -103,7 +103,7 @@ func (rd *LDMarshaler) Marshal(input *lpg.Graph) interface{} {
 				}
 			}
 			existing, ok := onode.ldNode[labelStr]
-			if GetTermInfo(labelStr).IsList {
+			if GetTerm(labelStr).IsList {
 				if !ok {
 					onode.ldNode[labelStr] = map[string]interface{}{"@list": []interface{}{map[string]interface{}{"@id": nodeIdMap[edge.GetTo()].id}}}
 				} else {
@@ -206,11 +206,11 @@ func UnmarshalJSONLDGraph(input interface{}, target *lpg.Graph, interner Interne
 
 	// Deal with properties and edges
 	type propertySupport interface {
-		GetProperties() map[string]*PropertyValue
+		GetProperties() map[string]PropertyValue
 	}
 	for _, inode := range inputNodes {
 		switch {
-		case hasType(DocumentNodeTerm, inode.Types):
+		case hasType(DocumentNodeTerm.Name, inode.Types):
 			// A document node
 			for k, v := range inode.Node {
 				if v == nil {
@@ -218,7 +218,7 @@ func UnmarshalJSONLDGraph(input interface{}, target *lpg.Graph, interner Interne
 				}
 				switch k {
 				case "@id", "@type":
-				case NodeValueTerm:
+				case NodeValueTerm.Name:
 					val, vals, _, err := getValuesOrIDs(v)
 					if err != nil {
 						return err
@@ -234,9 +234,9 @@ func UnmarshalJSONLDGraph(input interface{}, target *lpg.Graph, interner Interne
 						return err
 					}
 					if values == nil && ids == nil {
-						inode.GraphNode.SetProperty(k, StringPropertyValue(DocumentNodeTerm, value))
+						inode.GraphNode.SetProperty(k, NewPropertyValue(DocumentNodeTerm.Name, value))
 					} else if values != nil {
-						inode.GraphNode.SetProperty(k, StringSlicePropertyValue(DocumentNodeTerm, values))
+						inode.GraphNode.SetProperty(k, NewPropertyValue(DocumentNodeTerm.Name, values))
 					} else if ids != nil {
 						for _, id := range ids {
 							tgt := inputNodes[id]
@@ -255,9 +255,9 @@ func UnmarshalJSONLDGraph(input interface{}, target *lpg.Graph, interner Interne
 					return err
 				}
 				if values == nil && ids == nil {
-					inode.GraphNode.SetProperty(k, StringPropertyValue(DefaultValueTerm, value))
+					inode.GraphNode.SetProperty(k, NewPropertyValue(DefaultValueTerm.Name, value))
 				} else if values != nil {
-					inode.GraphNode.SetProperty(k, StringSlicePropertyValue(DefaultValueTerm, values))
+					inode.GraphNode.SetProperty(k, NewPropertyValue(DefaultValueTerm.Name, values))
 				} else if ids != nil {
 					for _, id := range ids {
 						tgt := inputNodes[id]

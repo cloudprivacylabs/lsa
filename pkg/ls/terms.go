@@ -24,50 +24,28 @@ var (
 	OverlayTerm = NewTerm(LS, "Overlay").SetComposition(NoComposition).SetTags(SchemaElementTag).Register()
 
 	// ComposeTerm is used for overlays to redefine term compositions. One of CompositionType constants
-	ComposeTerm = NewTerm(LS, "compose").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ComposeTerm = StringTerm{NewTerm(LS, "compose").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// AttributeOverlaysTerm lists the overlays for schema attributes
 	// that are matched by ID, as opposed to matching by ID and their
 	// place in the layer
 	AttributeOverlaysTerm = NewTerm(LS, "attributeOverlays").SetList(true).SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
 
-	// NSMapTerm specifies a namespace map for an overlay. A Namespace
-	// map includes one or more expressions of the form:
-	//
-	//    from -> to
-	//
-	// where from and to are attribute id prefixes. All the prefixes of
-	// attributes that match from are converted to to.
-	//
-	// This is necessary when a different variants of a schema is used in
-	// a complex schema. Each variant gets its own namespace.
-	NSMapTerm = NewTerm(LS, "nsMap").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
-
 	// CharacterEncodingTerm is used to specify a character encoding for
 	// the data processed with the layer
-	CharacterEncodingTerm = NewTerm(LS, "characterEncoding").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
-
-	// InstanceOfTerm is an edge term that is used to connect values with
-	// their schema specifications
-	InstanceOfTerm = NewTerm(LS, "instanceOf").SetComposition(ErrorComposition).Register()
-
-	// SchemaNodeIDTerm denotes the schema node ID for ingested nodes
-	SchemaNodeIDTerm = NewTerm(LS, "schemaNodeId").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Register()
-
-	// SchemaVariantTerm is the schema variant type
-	SchemaVariantTerm = NewTerm(LS, "SchemaVariant").SetComposition(NoComposition).SetTags(SchemaElementTag).Register()
+	CharacterEncodingTerm = StringTerm{NewTerm(LS, "characterEncoding").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// DescriptionTerm is used for comments/descriptions
 	DescriptionTerm = NewTerm(LS, "description").SetComposition(SetComposition).SetTags(SchemaElementTag).Register()
 
 	// AttributeNameTerm represents the name of an attribute
-	AttributeNameTerm = NewTerm(LS, "attributeName").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	AttributeNameTerm = StringTerm{NewTerm(LS, "attributeName").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// AttributeIndexTerm represents the index of an array element
-	AttributeIndexTerm = NewTerm(LS, "attributeIndex").SetComposition(NoComposition).SetTags(SchemaElementTag).Register()
+	AttributeIndexTerm = IntegerTerm{NewTerm(LS, "attributeIndex").SetComposition(NoComposition).SetTags(SchemaElementTag).Register()}
 
 	// ConditionalTerm specifies conditions for ingestion
-	ConditionalTerm = NewTerm(LS, "conditional").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ConditionalTerm = StringTerm{NewTerm(LS, "conditional").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// LayerRootTerm is an edge term that connects layer node to the root node of the schema
 	LayerRootTerm = NewTerm(LS, "layer").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Register()
@@ -76,31 +54,27 @@ var (
 	DefaultValueTerm = NewTerm(LS, "defaultValue").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
 
 	// Format specifies a type-specific formatting directive, such as a date format
-	FormatTerm = NewTerm(LS, "format").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
-	// EntitySchemaTerm is inserted by the schema compilation to mark
-	// entity roots. It records the schema ID containing the entity
-	// definition.
-	EntitySchemaTerm = NewTerm(LS, "entitySchema").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Register()
+	FormatTerm = StringTerm{NewTerm(LS, "format").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// NodeIDTerm keeps the node ID or the attribute ID
-	NodeIDTerm = NewTerm(LS, "nodeId").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Register()
+	NodeIDTerm = StringTerm{NewTerm(LS, "nodeId").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Register()}
 
 	// IngestAsTerm ingests value as an edge, node, or property
-	IngestAsTerm = NewTerm(LS, "ingestAs").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	IngestAsTerm = StringTerm{NewTerm(LS, "ingestAs").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// AsPropertyOfTerm is optional. If specified, it gives the nearest
 	// ancestor node that is an instance of the given type. If not, it
 	// is the parent document node
-	AsPropertyOfTerm = NewTerm(LS, "asPropertyOf").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	AsPropertyOfTerm = StringTerm{NewTerm(LS, "asPropertyOf").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// EdgeLabelTerm represents the value used as an edge label, when ingesting an edge
-	EdgeLabelTerm = NewTerm(LS, "edgeLabel").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	EdgeLabelTerm = StringTerm{NewTerm(LS, "edgeLabel").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// OutputEdgeLabelTerm determines the labels of the output edges
-	OutputEdgeLabelTerm = NewTerm(LS, "outputEdgeLabel").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	OutputEdgeLabelTerm = StringTerm{NewTerm(LS, "outputEdgeLabel").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// PropertyNameTerm represents the value used as a property name when ingesting a property
-	PropertyNameTerm = NewTerm(LS, "propertyName").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	PropertyNameTerm = StringTerm{NewTerm(LS, "propertyName").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// DocumentNodeTerm is the type of document nodes
 	DocumentNodeTerm = NewTerm(LS, "DocumentNode").SetComposition(ErrorComposition).Register()
@@ -114,26 +88,17 @@ var (
 	// HasTerm is an edge term for linking document elements
 	HasTerm = NewTerm(LS, "has").SetComposition(ErrorComposition).Register()
 
-	// EntityIDFieldsTerm is a string or []string that lists the attribute IDs
-	// for entity ID. It is defined at the root node of a layer. All
-	// attribute IDs must refer to value nodes.
-	EntityIDFieldsTerm = NewTerm(LS, "entityIdFields").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
-
-	// EntityIDTerm is a string or []string that gives the unique ID of
-	// an entity. This is a node property at the root node of an entity
-	EntityIDTerm = NewTerm(LS, "entityId").SetComposition(OverrideComposition).Register()
-
-	// LabeledAsTerm adds labels to JSON schemas
-	LabeledAsTerm = NewTerm(LS, "labeledAs").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	// LabeledAsTerm adds labels to the node it contained in
+	LabeledAsTerm = StringSliceTerm{NewTerm(LS, "labeledAs").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// TypeDiscriminatorTerm represents a set of schema field hints for defining polymorphic objects
 	TypeDiscriminatorTerm = NewTerm(LS, "typeDiscriminator").SetComposition(NoComposition).SetTags(SchemaElementTag).Register()
 
 	// IncludeSchemaTerm represents another schema to replace and copy its contents
-	IncludeSchemaTerm = NewTerm(LS, "include").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	IncludeSchemaTerm = StringTerm{NewTerm(LS, "include").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// Namespace defines the namespace prefix
-	NamespaceTerm = NewTerm(LS, "namespace").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	NamespaceTerm = StringTerm{NewTerm(LS, "namespace").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// SourceTerm gives the source information for the data element
 	SourceTerm = NewTerm(LS, "provenance/source").SetComposition(OverrideComposition).SetTags(ProvenanceTag).Register()
@@ -161,7 +126,7 @@ var (
 	ObjectAttributeListTerm = NewTerm(LS, "Object/attributeList").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Register()
 	// Reference to another schema. This will be resolved to another
 	// schema during compilation
-	ReferenceTerm = NewTerm(LS, "Reference/ref").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ReferenceTerm = StringTerm{NewTerm(LS, "Reference/ref").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 	// ArrayItems contains the definition for the items of the array
 	ArrayItemsTerm = NewTerm(LS, "Array/elements").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Register()
 	// All components of a composite attribute
@@ -172,13 +137,13 @@ var (
 
 // IsAttributeType returns true if the term is one of the attribute types
 func IsAttributeType(typeName string) bool {
-	return typeName == AttributeTypeValue ||
-		typeName == AttributeNodeTerm ||
-		typeName == AttributeTypeObject ||
-		typeName == AttributeTypeArray ||
-		typeName == AttributeTypeReference ||
-		typeName == AttributeTypeComposite ||
-		typeName == AttributeTypePolymorphic
+	return typeName == AttributeTypeValue.Name ||
+		typeName == AttributeNodeTerm.Name ||
+		typeName == AttributeTypeObject.Name ||
+		typeName == AttributeTypeArray.Name ||
+		typeName == AttributeTypeReference.Name ||
+		typeName == AttributeTypeComposite.Name ||
+		typeName == AttributeTypePolymorphic.Name
 }
 
 // FilterAttributeTypes returns all recognized attribute types from
@@ -187,12 +152,12 @@ func IsAttributeType(typeName string) bool {
 func FilterAttributeTypes(types []string) []string {
 	ret := make([]string, 0, len(types))
 	for _, x := range types {
-		if x == AttributeTypeValue ||
-			x == AttributeTypeObject ||
-			x == AttributeTypeArray ||
-			x == AttributeTypeReference ||
-			x == AttributeTypeComposite ||
-			x == AttributeTypePolymorphic {
+		if x == AttributeTypeValue.Name ||
+			x == AttributeTypeObject.Name ||
+			x == AttributeTypeArray.Name ||
+			x == AttributeTypeReference.Name ||
+			x == AttributeTypeComposite.Name ||
+			x == AttributeTypePolymorphic.Name {
 			ret = append(ret, x)
 		}
 	}
@@ -204,13 +169,13 @@ func FilterAttributeTypes(types []string) []string {
 func FilterNonLayerTypes(types []string) []string {
 	ret := make([]string, 0, len(types))
 	for _, x := range types {
-		if x != AttributeTypeValue &&
-			x != AttributeTypeObject &&
-			x != AttributeTypeArray &&
-			x != AttributeTypeReference &&
-			x != AttributeTypeComposite &&
-			x != AttributeTypePolymorphic &&
-			x != AttributeNodeTerm {
+		if x != AttributeTypeValue.Name &&
+			x != AttributeTypeObject.Name &&
+			x != AttributeTypeArray.Name &&
+			x != AttributeTypeReference.Name &&
+			x != AttributeTypeComposite.Name &&
+			x != AttributeTypePolymorphic.Name &&
+			x != AttributeNodeTerm.Name {
 			ret = append(ret, x)
 		}
 	}

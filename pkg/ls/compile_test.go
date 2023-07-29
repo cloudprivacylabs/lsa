@@ -140,7 +140,7 @@ func isNodeIdentical(n1, n2 *lpg.Node) bool {
 	}
 	eq := true
 	n1.ForEachProperty(func(k string, v interface{}) bool {
-		pv, ok := v.(*PropertyValue)
+		pv, ok := v.(PropertyValue)
 		if !ok {
 			return true
 		}
@@ -149,12 +149,12 @@ func isNodeIdentical(n1, n2 *lpg.Node) bool {
 			eq = false
 			return false
 		}
-		pv2, ok := v2.(*PropertyValue)
+		pv2, ok := v2.(PropertyValue)
 		if !ok {
 			eq = false
 			return false
 		}
-		if !pv2.IsEqual(pv) {
+		if !pv2.Equal(pv) {
 			eq = false
 			return false
 		}
@@ -164,7 +164,7 @@ func isNodeIdentical(n1, n2 *lpg.Node) bool {
 		return false
 	}
 	n2.ForEachProperty(func(k string, v interface{}) bool {
-		_, ok := v.(*PropertyValue)
+		_, ok := v.(PropertyValue)
 		if !ok {
 			return true
 		}
@@ -173,7 +173,7 @@ func isNodeIdentical(n1, n2 *lpg.Node) bool {
 			eq = false
 			return false
 		}
-		_, ok = v2.(*PropertyValue)
+		_, ok = v2.(PropertyValue)
 		if !ok {
 			eq = false
 			return false

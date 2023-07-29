@@ -25,25 +25,25 @@ import (
 	"github.com/cloudprivacylabs/lpg/v2"
 )
 
-var HashSHA256Term = NewTerm(LS, "hash.sha256").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Register()
-var HashSHA1Term = NewTerm(LS, "hash.sha1").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Register()
-var HashSHA512Term = NewTerm(LS, "hash.sha512").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Register()
-var HashTerm = NewTerm(LS, "hash").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Register()
+var HashSHA256Term = StringSliceTerm{NewTerm(LS, "hash.sha256").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Register()}
+var HashSHA1Term = StringSliceTerm{NewTerm(LS, "hash.sha1").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Register()}
+var HashSHA512Term = StringSliceTerm{NewTerm(LS, "hash.sha512").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Register()}
+var HashTerm = StringSliceTerm{NewTerm(LS, "hash").SetComposition(OverrideComposition).SetMetadata(hashSemantics{}).SetTags(SchemaElementTag).Register()}
 
 type hashSemantics struct{}
 
 // ProcessNodePostDocIngest will search for nodes that are instances of
 // the schema node ids given in the docnode, get a hash of those, and
 // populate this node value with that hash
-func (hashSemantics) ProcessNodePostDocIngest(schemaRootNode, schemaNode *lpg.Node, term *PropertyValue, docNode *lpg.Node) error {
-	termName := term.GetSem().Term
+func (hashSemantics) ProcessNodePostDocIngest(schemaRootNode, schemaNode *lpg.Node, term PropertyValue, docNode *lpg.Node) error {
+	termName := term.Sem().Name
 	ix := strings.IndexRune(termName[len(LS):], '.')
 	hashFunc := "sha256"
 	if ix != -1 {
 		hashFunc = termName[ix+1:]
 	}
 	entityRoot := GetEntityRoot(docNode)
-	nodes := term.MustStringSlice()
+	nodes := term.AsStringSlice()
 	schemaNodes := make(map[string]*lpg.Node)
 	IterateDescendants(schemaRootNode, func(node *lpg.Node) bool {
 		id := GetNodeID(node)
@@ -67,13 +67,14 @@ func (hashSemantics) ProcessNodePostDocIngest(schemaRootNode, schemaNode *lpg.No
 	}
 	collected := make(map[string][]string)
 	IterateDescendants(entityRoot, func(node *lpg.Node) bool {
-		instance := AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString()
+		instance := SchemaNodeIDTerm.PropertyValue(node)
 		for _, ref := range refs {
-			if ref.Node != nil && AsPropertyValue(ref.Node.GetProperty(SchemaNodeIDTerm)).AsString() == instance {
+			if ref.Node != nil && SchemaNodeIDTerm.PropertyValue(ref.Node) == instance {
 				if ref.IsProperty() {
-					p := ref.AsPropertyValue()
-					if p != nil {
-						collected[instance] = append(collected[instance], p.AsString())
+					p, ok := ref.AsPropertyValue()
+					if ok {
+						s, _ := p.Value().(string)
+						collected[instance] = append(collected[instance], s)
 					}
 				} else {
 					v, ok := GetRawNodeValue(node)
@@ -100,7 +101,7 @@ func (hashSemantics) ProcessNodePostDocIngest(schemaRootNode, schemaNode *lpg.No
 	for i, x := range refs {
 		var key string
 		if x.IsProperty() {
-			key = AsPropertyValue(x.Node.GetProperty(SchemaNodeIDTerm)).AsString()
+			key = SchemaNodeIDTerm.PropertyValue(x.Node)
 		} else {
 			key = nodes[i]
 		}

@@ -22,10 +22,10 @@ import (
 // is a container (object or array), this is called after all children
 // of the node are ingested.
 type PostNodeIngest interface {
-	ProcessNodePostIngest(term *PropertyValue, docNode, layerNode *lpg.Node) error
+	ProcessNodePostIngest(term PropertyValue, docNode, layerNode *lpg.Node) error
 }
 
 // PostIngest is called after the ingestion of a document.
 type PostIngest interface {
-	ProcessNodePostDocIngest(schemaRootNode, schemaNode *lpg.Node, term *PropertyValue, docNode *lpg.Node) error
+	ProcessNodePostDocIngest(schemaRootNode, schemaNode *lpg.Node, term PropertyValue, docNode *lpg.Node) error
 }

@@ -24,8 +24,8 @@ import (
 // NewDocumentGraph creates a new graph with the correct indexes for document ingestion
 func NewDocumentGraph() *lpg.Graph {
 	g := lpg.NewGraph()
-	g.AddNodePropertyIndex(EntitySchemaTerm, lpg.BtreeIndex)
-	g.AddNodePropertyIndex(SchemaNodeIDTerm, lpg.HashIndex)
+	g.AddNodePropertyIndex(EntitySchemaTerm.Name, lpg.BtreeIndex)
+	g.AddNodePropertyIndex(SchemaNodeIDTerm.Name, lpg.HashIndex)
 	for _, f := range newDocGraphHooks {
 		f(g)
 	}
@@ -64,16 +64,16 @@ id: %v
 // Deprecated
 func GetEntityInfo(g *lpg.Graph) map[*lpg.Node]EntityInfo {
 	ret := make(map[*lpg.Node]EntityInfo)
-	for nodes := g.GetNodesWithProperty(EntitySchemaTerm); nodes.Next(); {
+	for nodes := g.GetNodesWithProperty(EntitySchemaTerm.Name); nodes.Next(); {
 		node := nodes.Node()
-		sch := AsPropertyValue(node.GetProperty(EntitySchemaTerm)).AsString()
+		sch := EntitySchemaTerm.PropertyValue(node)
 		if len(sch) > 0 {
 			types := FilterNonLayerTypes(node.GetLabels().Slice())
 			ret[node] = EntityInfo{
 				root:      node,
 				sch:       sch,
 				valueType: types,
-				id:        AsPropertyValue(node.GetProperty(EntityIDTerm)).MustStringSlice(),
+				id:        EntityIDTerm.PropertyValue(node),
 			}
 		}
 	}
@@ -83,11 +83,11 @@ func GetEntityInfo(g *lpg.Graph) map[*lpg.Node]EntityInfo {
 // GetEntityRootsByID returns all nodes that have entity id
 func GetEntityRootsByID(g *lpg.Graph) map[*lpg.Node]EntityInfo {
 	ret := make(map[*lpg.Node]EntityInfo)
-	for nodes := g.GetNodesWithProperty(EntityIDTerm); nodes.Next(); {
+	for nodes := g.GetNodesWithProperty(EntityIDTerm.Name); nodes.Next(); {
 		node := nodes.Node()
-		id := AsPropertyValue(node.GetProperty(EntityIDTerm)).MustStringSlice()
+		id := EntityIDTerm.PropertyValue(node)
 		if len(id) > 0 {
-			sch := AsPropertyValue(node.GetProperty(EntitySchemaTerm)).AsString()
+			sch := EntitySchemaTerm.PropertyValue(node)
 			types := FilterNonLayerTypes(node.GetLabels().Slice())
 			ret[node] = EntityInfo{
 				root:      node,
@@ -157,7 +157,7 @@ func GetParentDocumentNodes(node *lpg.Node) []*lpg.Node {
 	for edges := node.GetEdges(lpg.IncomingEdge); edges.Next(); {
 		edge := edges.Edge()
 		ancestor := edge.GetFrom()
-		if !ancestor.GetLabels().Has(DocumentNodeTerm) {
+		if !ancestor.GetLabels().Has(DocumentNodeTerm.Name) {
 			continue
 		}
 		out[ancestor] = struct{}{}
@@ -175,7 +175,7 @@ func GetEntityRoot(node *lpg.Node) *lpg.Node {
 	var find func(*lpg.Node) *lpg.Node
 	seen := make(map[*lpg.Node]struct{})
 	find = func(root *lpg.Node) *lpg.Node {
-		if _, ok := root.GetProperty(EntitySchemaTerm); ok {
+		if _, ok := root.GetProperty(EntitySchemaTerm.Name); ok {
 			return root
 		}
 		if _, ok := seen[root]; ok {
@@ -187,7 +187,7 @@ func GetEntityRoot(node *lpg.Node) *lpg.Node {
 		for edges := root.GetEdges(lpg.IncomingEdge); edges.Next(); {
 			edge := edges.Edge()
 			ancestor := edge.GetFrom()
-			if !ancestor.GetLabels().Has(DocumentNodeTerm) {
+			if !ancestor.GetLabels().Has(DocumentNodeTerm.Name) {
 				continue
 			}
 			if seenAncestor {
@@ -203,24 +203,24 @@ func GetEntityRoot(node *lpg.Node) *lpg.Node {
 
 // IsEntityRoot returns true if the node is an entity root
 func IsEntityRoot(node *lpg.Node) bool {
-	_, ok := node.GetProperty(EntitySchemaTerm)
+	_, ok := node.GetProperty(EntitySchemaTerm.Name)
 	return ok
 }
 
 // GetEntityIDFields returns the value of the entity ID fields from a document node.
-func GetEntityIDFields(node *lpg.Node) *PropertyValue {
+func GetEntityIDFields(node *lpg.Node) PropertyValue {
 	if node == nil {
-		return nil
+		return PropertyValue{}
 	}
-	idFields, _ := GetNodeOrSchemaProperty(node, EntityIDFieldsTerm)
+	idFields, _ := GetNodeOrSchemaProperty(node, EntityIDFieldsTerm.Name)
 	return idFields
 }
 
 // GetNodesInstanceOf returns document nodes that are instance of the given attribute id
 func GetNodesInstanceOf(g *lpg.Graph, attrId string) []*lpg.Node {
 	pattern := lpg.Pattern{{
-		Properties: map[string]interface{}{
-			SchemaNodeIDTerm: StringPropertyValue(SchemaNodeIDTerm, attrId),
+		Properties: map[string]any{
+			SchemaNodeIDTerm.Name: SchemaNodeIDTerm.MustPropertyValue(attrId),
 		},
 	}}
 	nodes, err := pattern.FindNodes(g, nil)
@@ -232,11 +232,11 @@ func GetNodesInstanceOf(g *lpg.Graph, attrId string) []*lpg.Node {
 
 // IsInstanceOf returns true if g is an instance of the schema node
 func IsInstanceOf(n *lpg.Node, schemaNodeID string) bool {
-	p, ok := GetNodeOrSchemaProperty(n, SchemaNodeIDTerm)
+	p, ok := GetNodeOrSchemaProperty(n, SchemaNodeIDTerm.Name)
 	if !ok {
 		return false
 	}
-	return p.AsString() == schemaNodeID
+	return p.Value() == schemaNodeID
 }
 
 // GetSchemaNodeIDMap returns a map of schema node IDs to slices of
@@ -244,7 +244,7 @@ func IsInstanceOf(n *lpg.Node, schemaNodeID string) bool {
 func GetSchemaNodeIDMap(docRoot *lpg.Node) map[string][]*lpg.Node {
 	ret := make(map[string][]*lpg.Node)
 	IterateDescendants(docRoot, func(node *lpg.Node) bool {
-		nodeId := AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString()
+		nodeId := SchemaNodeIDTerm.PropertyValue(node)
 		if len(nodeId) > 0 {
 			ret[nodeId] = append(ret[nodeId], node)
 		}
@@ -257,21 +257,21 @@ func GetSchemaNodeIDMap(docRoot *lpg.Node) map[string][]*lpg.Node {
 // root node if the schema node is part of an entity id
 func SetEntityIDVectorElement(entityRootNode *lpg.Node, schemaNodeID, value string) error {
 	idFieldsProp := GetEntityIDFields(entityRootNode)
-	if idFieldsProp == nil {
+	if idFieldsProp.Value() == nil {
 		return nil
 	}
-	if idFieldsProp.IsString() {
-		if schemaNodeID != idFieldsProp.AsString() {
-			return nil
-		}
-		entityRootNode.SetProperty(EntityIDTerm, StringPropertyValue(EntityIDTerm, value))
-		return nil
-	}
-
-	idFields := idFieldsProp.MustStringSlice()
+	idFields := EntityIDFieldsTerm.PropertyValue(entityRootNode)
 	if len(idFields) == 0 {
 		return nil
 	}
+	if len(idFields) == 1 {
+		if schemaNodeID != idFields[0] {
+			return nil
+		}
+		entityRootNode.SetProperty(EntityIDTerm.Name, EntityIDTerm.MustPropertyValue(value))
+		return nil
+	}
+
 	idIndex := -1
 	for i, idField := range idFields {
 		if schemaNodeID == idField {
@@ -285,13 +285,12 @@ func SetEntityIDVectorElement(entityRootNode *lpg.Node, schemaNodeID, value stri
 	}
 
 	// Get existing ID
-	entityID := AsPropertyValue(entityRootNode.GetProperty(EntityIDTerm))
-	existingEntityIDSlice := entityID.MustStringSlice()
+	existingEntityIDSlice := EntityIDTerm.PropertyValue(entityRootNode)
 	for len(existingEntityIDSlice) <= idIndex {
 		existingEntityIDSlice = append(existingEntityIDSlice, "")
 	}
 	existingEntityIDSlice[idIndex] = value
-	entityRootNode.SetProperty(EntityIDTerm, StringSlicePropertyValue(EntityIDTerm, existingEntityIDSlice))
+	entityRootNode.SetProperty(EntityIDTerm.Name, EntityIDTerm.MustPropertyValue(existingEntityIDSlice))
 	return nil
 }
 
@@ -300,7 +299,7 @@ func SetEntityIDVectorElement(entityRootNode *lpg.Node, schemaNodeID, value stri
 // id. The schema node ID and entity root node are found based on the
 // given node
 func SetEntityIDVectorElementFromNode(docNode *lpg.Node, value string) error {
-	schemaNodeID := AsPropertyValue(docNode.GetProperty(SchemaNodeIDTerm)).AsString()
+	schemaNodeID := SchemaNodeIDTerm.PropertyValue(docNode)
 	if len(schemaNodeID) == 0 {
 		return nil
 	}
@@ -320,8 +319,8 @@ type AttributeReference struct {
 
 func (a AttributeReference) IsProperty() bool { return len(a.Property) > 0 }
 
-func (a AttributeReference) AsPropertyValue() *PropertyValue {
-	return AsPropertyValue(a.Node.GetProperty(a.Property))
+func (a AttributeReference) AsPropertyValue() (PropertyValue, bool) {
+	return GetPropertyValue(a.Node, a.Property)
 }
 
 // GetAttributeReferenceBySchemaNode returns the attribute reference
@@ -341,7 +340,7 @@ func GetAttributeReferenceBySchemaPath(schemaPath []*lpg.Node, docContextNode *l
 	case "node", "edge":
 		var found *lpg.Node
 		IterateDescendants(docContextNode, func(node *lpg.Node) bool {
-			instance := AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString()
+			instance := SchemaNodeIDTerm.PropertyValue(node)
 			if instance == attr {
 				found = node
 				return false
@@ -366,7 +365,7 @@ func GetAttributeReferenceBySchemaPath(schemaPath []*lpg.Node, docContextNode *l
 		} else {
 			// Find ancestor that is instance of asPropertyOf
 			for i := len(schemaPath) - 2; i >= 0; i-- {
-				if AsPropertyValue(schemaPath[i].GetProperty(SchemaNodeIDTerm)).AsString() == asPropertyOf {
+				if SchemaNodeIDTerm.PropertyValue(schemaPath[i]) == asPropertyOf {
 					targetSchemaNode = schemaPath[i]
 					break
 				}
@@ -376,7 +375,7 @@ func GetAttributeReferenceBySchemaPath(schemaPath []*lpg.Node, docContextNode *l
 			var found *lpg.Node
 			targetSchemaNodeID := GetNodeID(targetSchemaNode)
 			IterateDescendants(docContextNode, func(node *lpg.Node) bool {
-				if AsPropertyValue(node.GetProperty(SchemaNodeIDTerm)).AsString() == targetSchemaNodeID {
+				if SchemaNodeIDTerm.PropertyValue(node) == targetSchemaNodeID {
 					found = node
 					return false
 				}

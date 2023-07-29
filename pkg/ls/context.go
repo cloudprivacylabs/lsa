@@ -8,7 +8,7 @@ type Context struct {
 	context.Context
 	logger     Logger
 	interner   Interner
-	properties map[interface{}]interface{}
+	properties map[any]any
 }
 
 func (ctx *Context) GetLogger() Logger {
@@ -27,11 +27,11 @@ func (ctx *Context) GetInterner() Interner {
 	return ctx.interner
 }
 
-func (ctx *Context) Get(key interface{}) interface{} {
+func (ctx *Context) Get(key any) any {
 	return ctx.properties[key]
 }
 
-func (ctx *Context) Set(key, value interface{}) {
+func (ctx *Context) Set(key, value any) {
 	ctx.properties[key] = value
 }
 
@@ -40,7 +40,7 @@ func DefaultContext() *Context {
 		Context:    context.Background(),
 		logger:     NewDefaultLogger(),
 		interner:   NewInterner(),
-		properties: make(map[interface{}]interface{}),
+		properties: make(map[any]any),
 	}
 }
 
@@ -49,6 +49,6 @@ func NewContext(ctx context.Context) *Context {
 		Context:    ctx,
 		logger:     NewDefaultLogger(),
 		interner:   NewInterner(),
-		properties: make(map[interface{}]interface{}),
+		properties: make(map[any]any),
 	}
 }

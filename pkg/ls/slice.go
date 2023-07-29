@@ -35,7 +35,7 @@ func GetSliceByTermsFunc(includeTerms []string, includeAttributeNodes bool) func
 		properties := make(map[string]interface{})
 		hasProperties := false
 		nd.ForEachProperty(func(k string, v interface{}) bool {
-			if prop, ok := v.(*PropertyValue); ok {
+			if prop, ok := v.(PropertyValue); ok {
 				if _, ok := incl[k]; ok {
 					properties[k] = prop
 					hasProperties = true
@@ -80,7 +80,7 @@ func (layer *Layer) Slice(layerType string, nodeFilter func(*Layer, *lpg.Node) *
 			}
 		}
 	}
-	ret.Graph.NewEdge(ret.GetLayerRootNode(), rootNode, LayerRootTerm, nil)
+	ret.Graph.NewEdge(ret.GetLayerRootNode(), rootNode, LayerRootTerm.Name, nil)
 	return ret
 }
 

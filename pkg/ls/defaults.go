@@ -25,14 +25,13 @@ func (gb GraphBuilder) AddDefaults(schemaRootNode, docRootNode *lpg.Node) {
 		return
 	}
 	ForEachAttributeNode(schemaRootNode, func(node *lpg.Node, path []*lpg.Node) bool {
-		def, exists := node.GetProperty(DefaultValueTerm)
+		defValue, exists := GetPropertyValueAs[string](node, DefaultValueTerm.Name)
 		if !exists {
 			return true
 		}
 		if len(path) == 1 {
 			return true
 		}
-		defValue := AsPropertyValue(def, true).AsString()
 		parentSchemaNode := path[len(path)-2]
 		for _, parentDocNode := range GetNodesInstanceOf(docRootNode.GetGraph(), GetNodeID(parentSchemaNode)) {
 			switch GetIngestAs(node) {
@@ -46,7 +45,7 @@ func (gb GraphBuilder) AddDefaults(schemaRootNode, docRootNode *lpg.Node) {
 				_, propertyName := GetIngestAsProperty(node)
 				if _, exists := parentDocNode.GetProperty(propertyName); !exists {
 					// Ingest default as property
-					parentDocNode.SetProperty(propertyName, StringPropertyValue(NodeValueTerm, defValue))
+					parentDocNode.SetProperty(propertyName, NewPropertyValue(NodeValueTerm.Name, defValue))
 				}
 			}
 		}

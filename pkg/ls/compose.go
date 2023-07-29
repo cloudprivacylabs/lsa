@@ -23,7 +23,7 @@ import (
 // Compose schema layers. Directly modifies the source and the
 // target. The source must be an overlay.
 func (layer *Layer) Compose(context *Context, source *Layer) error {
-	if source.GetLayerType() != OverlayTerm {
+	if source.GetLayerType() != OverlayTerm.Name {
 		return ErrCompositionSourceNotOverlay
 	}
 	// Check if target types are compatible. If they are non-empty, they must be the same
@@ -34,9 +34,10 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 			return ErrIncompatibleComposition
 		}
 	}
-	sourceCompose := AsPropertyValue(source.GetLayerRootNode().GetProperty(ComposeTerm)).AsString()
+	sourceCompose := ComposeTerm.PropertyValue(source.GetLayerRootNode())
 	nodeMap := make(map[*lpg.Node]*lpg.Node)
-	nsMap, err := GetNSMap(AsPropertyValue(source.GetLayerRootNode().GetProperty(NSMapTerm)).MustStringSlice())
+
+	nsMap, err := GetNSMap(NSMapTerm.PropertyValue(source.GetLayerRootNode()))
 	if err != nil {
 		return err
 	}
@@ -49,24 +50,23 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 				}
 			}
 			node.ForEachProperty(func(key string, value interface{}) bool {
-				if key == NodeValueTerm {
+				if key == NodeValueTerm.Name {
 					return true
 				}
-				pv, ok := value.(*PropertyValue)
+				pv, ok := value.(PropertyValue)
 				if !ok {
 					return true
 				}
+				term := GetTerm(key)
 
-				if pv.IsString() {
-					s := pv.AsString()
+				if s, ok := pv.Value().(string); ok {
 					for _, m := range nsMap {
 						if strings.HasPrefix(s, m[0]) {
-							node.SetProperty(key, StringPropertyValue(key, m[1]+s[len(m[0]):]))
+							node.SetProperty(key, term.MustPropertyValue(m[1]+s[len(m[0]):]))
 						}
 					}
 				}
-				if pv.IsStringSlice() {
-					slice := pv.AsStringSlice()
+				if slice := pv.AsStringSlice(); len(slice) > 0 {
 					newSlice := make([]string, len(slice))
 					changed := false
 					for i := range slice {
@@ -81,7 +81,7 @@ func (layer *Layer) Compose(context *Context, source *Layer) error {
 						}
 					}
 					if changed {
-						node.SetProperty(key, StringSlicePropertyValue(key, newSlice))
+						node.SetProperty(key, term.MustPropertyValue(newSlice))
 					}
 				}
 				return true
@@ -200,9 +200,9 @@ func mergeNodes(context *Context, targetLayer *Layer, target, source *lpg.Node, 
 		cType := CompositionType(sourceCompose)
 		var retErr error
 		source.ForEachProperty(func(key string, value interface{}) bool {
-			if p, ok := value.(*PropertyValue); ok {
+			if p, ok := value.(PropertyValue); ok {
 				tp, _ := target.GetProperty(key)
-				targetProperty, _ := tp.(*PropertyValue)
+				targetProperty, _ := tp.(PropertyValue)
 				newValue, err := cType.Compose(targetProperty, p)
 				if err != nil {
 					retErr = err
@@ -222,11 +222,11 @@ func mergeNodes(context *Context, targetLayer *Layer, target, source *lpg.Node, 
 }
 
 // ComposeProperty composes targetValue and sourceValue for key
-func ComposeProperty(context *Context, key string, targetValue, sourceValue *PropertyValue) (*PropertyValue, error) {
+func ComposeProperty(context *Context, key string, targetValue, sourceValue PropertyValue) (PropertyValue, error) {
 	var composer Composer
-	if targetValue != nil {
+	if targetValue.Value() != nil {
 		composer = GetComposerForProperty(targetValue)
-	} else if sourceValue != nil {
+	} else if sourceValue.Value() != nil {
 		composer = GetComposerForProperty(sourceValue)
 	} else {
 		composer = GetComposerForTerm(key)
@@ -234,7 +234,7 @@ func ComposeProperty(context *Context, key string, targetValue, sourceValue *Pro
 	newValue := targetValue
 	newValue, err := composer.Compose(newValue, sourceValue)
 	if err != nil {
-		return nil, ErrTerm{Term: key, Err: err}
+		return PropertyValue{}, ErrTerm{Term: key, Err: err}
 	}
 	return newValue, nil
 }
@@ -244,9 +244,9 @@ func ComposeProperty(context *Context, key string, targetValue, sourceValue *Pro
 func ComposeProperties(context *Context, target, source *lpg.Node) error {
 	var retErr error
 	source.ForEachProperty(func(key string, value interface{}) bool {
-		if p, ok := value.(*PropertyValue); ok {
+		if p, ok := value.(PropertyValue); ok {
 			tp, _ := target.GetProperty(key)
-			targetProperty, _ := tp.(*PropertyValue)
+			targetProperty, _ := tp.(PropertyValue)
 			newValue, err := ComposeProperty(context, key, targetProperty, p)
 			if err != nil {
 				retErr = err
@@ -270,10 +270,10 @@ func pathsMatch(targetPath, sourcePath []*lpg.Node) bool {
 		if sn == 0 {
 			return false
 		}
-		if sourcePath[sn-1].GetLabels().Has(SchemaTerm) || sourcePath[sn-1].GetLabels().Has(OverlayTerm) {
+		if sourcePath[sn-1].GetLabels().Has(SchemaTerm.Name) || sourcePath[sn-1].GetLabels().Has(OverlayTerm.Name) {
 			return true
 		}
-		if targetPath[tn-1].GetLabels().Has(SchemaTerm) || targetPath[tn-1].GetLabels().Has(OverlayTerm) {
+		if targetPath[tn-1].GetLabels().Has(SchemaTerm.Name) || targetPath[tn-1].GetLabels().Has(OverlayTerm.Name) {
 			return false
 		}
 		if GetAttributeID(targetPath[tn-1]) != GetAttributeID(sourcePath[sn-1]) {

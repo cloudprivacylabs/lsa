@@ -23,7 +23,7 @@ import (
 func instantiatePathNodeFunc(g *lpg.Graph) func(parent, schemaNode *lpg.Node) (*lpg.Node, error) {
 	return func(parent, schemaNode *lpg.Node) (*lpg.Node, error) {
 		newNode := InstantiateSchemaNode(g, schemaNode, true, map[*lpg.Node]*lpg.Node{})
-		g.NewEdge(parent, newNode, HasTerm, nil)
+		g.NewEdge(parent, newNode, HasTerm.Name, nil)
 		return newNode, nil
 	}
 }
@@ -48,7 +48,7 @@ func TestInstantiatePathBasic(t *testing.T) {
 	g := lpg.NewGraph()
 	root := InstantiateSchemaNode(g, layer.GetSchemaRootNode(), true, map[*lpg.Node]*lpg.Node{})
 	EnsurePath(root, nil, layer.GetSchemaRootNode(), layer.GetAttributeByID("attr1"), instantiatePathNodeFunc(g))
-	nodes := lpg.NextNodesWith(root, HasTerm)
+	nodes := lpg.NextNodesWith(root, HasTerm.Name)
 	if len(nodes) != 1 {
 		t.Errorf("Expecting 1 node")
 	}
@@ -88,15 +88,15 @@ func TestInstantiatePathNested(t *testing.T) {
 	g := lpg.NewGraph()
 	root := InstantiateSchemaNode(g, layer.GetSchemaRootNode(), true, map[*lpg.Node]*lpg.Node{})
 	EnsurePath(root, nil, layer.GetSchemaRootNode(), layer.GetAttributeByID("attr5"), instantiatePathNodeFunc(g))
-	nodes := lpg.NextNodesWith(root, HasTerm)
+	nodes := lpg.NextNodesWith(root, HasTerm.Name)
 	if len(nodes) != 1 {
 		t.Errorf("Expecting 1 node")
 	}
-	nodes = lpg.NextNodesWith(nodes[0], HasTerm)
+	nodes = lpg.NextNodesWith(nodes[0], HasTerm.Name)
 	if len(nodes) != 1 {
 		t.Errorf("Expecting 1 node")
 	}
-	nodes = lpg.NextNodesWith(nodes[0], HasTerm)
+	nodes = lpg.NextNodesWith(nodes[0], HasTerm.Name)
 	if len(nodes) != 1 {
 		t.Errorf("Expecting 1 node")
 	}
@@ -143,19 +143,19 @@ func TestInstantiatePathNestedWithAncestor(t *testing.T) {
 	root := InstantiateSchemaNode(g, layer.GetSchemaRootNode(), true, map[*lpg.Node]*lpg.Node{})
 	attr4, _ := EnsurePath(root, nil, layer.GetSchemaRootNode(), layer.GetAttributeByID("attr4"), instantiatePathNodeFunc(g))
 	attr7, _ := EnsurePath(root, attr4, layer.GetSchemaRootNode(), layer.GetAttributeByID("attr7"), instantiatePathNodeFunc(g))
-	nodes := lpg.NextNodesWith(root, HasTerm)
+	nodes := lpg.NextNodesWith(root, HasTerm.Name)
 	if len(nodes) != 1 {
 		t.Errorf("Expecting 1 node")
 	}
-	nodes = lpg.NextNodesWith(nodes[0], HasTerm)
+	nodes = lpg.NextNodesWith(nodes[0], HasTerm.Name)
 	if len(nodes) != 1 {
 		t.Errorf("Expecting 1 node")
 	}
-	nodes = lpg.NextNodesWith(nodes[0], HasTerm)
+	nodes = lpg.NextNodesWith(nodes[0], HasTerm.Name)
 	if len(nodes) != 1 {
 		t.Errorf("Expecting 1 node")
 	}
-	nodes = lpg.NextNodesWith(nodes[0], HasTerm)
+	nodes = lpg.NextNodesWith(nodes[0], HasTerm.Name)
 	if len(nodes) != 1 {
 		t.Errorf("Expecting 1 node")
 	}

@@ -87,8 +87,8 @@ type EdgeCompiler interface {
 
 // CompilablePropertyContainer contains properties and a compiled data map
 type CompilablePropertyContainer interface {
-	GetProperty(string) (interface{}, bool)
-	SetProperty(string, interface{})
+	GetProperty(string) (any, bool)
+	SetProperty(string, any)
 }
 
 // TermCompiler interface represents term compilation algorithm. This
@@ -100,7 +100,7 @@ type TermCompiler interface {
 	// CompileTerm gets a node or edge, the term and its value, and
 	// compiles it. It can store compilation data in the compiled data
 	// map.
-	CompileTerm(*CompileContext, CompilablePropertyContainer, string, *PropertyValue) error
+	CompileTerm(*CompileContext, CompilablePropertyContainer, string, PropertyValue) error
 }
 
 type emptyCompiler struct{}
@@ -108,7 +108,7 @@ type emptyCompiler struct{}
 // CompileNode returns the value unmodified
 func (emptyCompiler) CompileNode(*CompileContext, *Layer, *lpg.Node) error { return nil }
 func (emptyCompiler) CompileEdge(*CompileContext, *Layer, *lpg.Edge) error { return nil }
-func (emptyCompiler) CompileTerm(*CompileContext, CompilablePropertyContainer, string, *PropertyValue) error {
+func (emptyCompiler) CompileTerm(*CompileContext, CompilablePropertyContainer, string, PropertyValue) error {
 	return nil
 }
 
@@ -156,10 +156,10 @@ func GetTermCompiler(term string) TermCompiler {
 
 // CompiledProperties is a lazy-initialized map
 type CompiledProperties struct {
-	m map[interface{}]interface{}
+	m map[any]any
 }
 
-func (p *CompiledProperties) GetCompiledProperty(key interface{}) (interface{}, bool) {
+func (p *CompiledProperties) GetCompiledProperty(key any) (any, bool) {
 	if p.m == nil {
 		return nil, false
 	}
@@ -167,14 +167,14 @@ func (p *CompiledProperties) GetCompiledProperty(key interface{}) (interface{}, 
 	return property, exists
 }
 
-func (p *CompiledProperties) SetCompiledProperty(key, value interface{}) {
+func (p *CompiledProperties) SetCompiledProperty(key, value any) {
 	if p.m == nil {
-		p.m = make(map[interface{}]interface{})
+		p.m = make(map[any]any)
 	}
 	p.m[key] = value
 }
 
-func (p *CompiledProperties) CopyCompiledToMap(target map[interface{}]interface{}) {
+func (p *CompiledProperties) CopyCompiledToMap(target map[any]any) {
 	if p.m == nil {
 		return
 	}
@@ -188,7 +188,7 @@ func (p *CompiledProperties) CopyTo(target *CompiledProperties) {
 		return
 	}
 	if target.m == nil {
-		target.m = make(map[interface{}]interface{})
+		target.m = make(map[any]any)
 	}
 	for k, v := range p.m {
 		target.m[k] = v
@@ -201,12 +201,12 @@ func (p *CompiledProperties) CopyTo(target *CompiledProperties) {
 // property.
 type CompileOCSemantics struct{}
 
-func (CompileOCSemantics) CompileTerm(ctx *CompileContext, target CompilablePropertyContainer, term string, value *PropertyValue) error {
-	if value == nil {
+func (CompileOCSemantics) CompileTerm(ctx *CompileContext, target CompilablePropertyContainer, term string, value PropertyValue) error {
+	if value.Value() == nil {
 		return nil
 	}
 	expr := make([]opencypher.Evaluatable, 0)
-	for _, str := range value.MustStringSlice() {
+	for _, str := range value.AsStringSlice() {
 		e, err := ctx.CompileOpencypher(str)
 		if err != nil {
 			return err
@@ -272,12 +272,12 @@ type DialectValue struct {
 	Value   any
 }
 
-func (DialectValueSemantics) CompileTerm(ctx *CompileContext, target CompilablePropertyContainer, term string, value *PropertyValue) error {
-	if value == nil {
+func (DialectValueSemantics) CompileTerm(ctx *CompileContext, target CompilablePropertyContainer, term string, value PropertyValue) error {
+	if value.Value() == nil {
 		return nil
 	}
 	result := make([]DialectValue, 0)
-	for _, str := range value.MustStringSlice() {
+	for _, str := range value.AsStringSlice() {
 		parts := strings.SplitN(str, ":", 2)
 		if len(parts) != 2 {
 			return fmt.Errorf("Invalid dialect:value expression: %s", str)

@@ -25,7 +25,7 @@ var UUIDTerm = NewTerm(LS, "uuid").SetComposition(OverrideComposition).SetTags(S
 type uuidSemantics struct{}
 
 // ProcessNodePostDocIngest will generate a uuid
-func (uuidSemantics) ProcessNodePostDocIngest(schemaRootNode, schemaNode *lpg.Node, term *PropertyValue, docNode *lpg.Node) error {
+func (uuidSemantics) ProcessNodePostDocIngest(schemaRootNode, schemaNode *lpg.Node, term PropertyValue, docNode *lpg.Node) error {
 	value := uuid.New().String()
 	SetRawNodeValue(docNode, value)
 	SetEntityIDVectorElementFromNode(docNode, value)

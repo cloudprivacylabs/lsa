@@ -29,7 +29,7 @@ func ConsolidateDuplicateEntities(g *lpg.Graph, label string) {
 	allRoots := make([]rootNode, 0)
 	for nodes := g.GetNodesWithAllLabels(lpg.NewStringSet(label)); nodes.Next(); {
 		node := nodes.Node()
-		id := AsPropertyValue(node.GetProperty(EntityIDTerm)).MustStringSlice()
+		id := EntityIDTerm.PropertyValue(node)
 		if len(id) == 0 {
 			continue
 		}

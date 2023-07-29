@@ -38,7 +38,7 @@ type Layer struct {
 // NewLayerGraph creates a new graph indexes to store layers
 func NewLayerGraph() *lpg.Graph {
 	g := lpg.NewGraph()
-	g.AddNodePropertyIndex(NodeIDTerm, lpg.HashIndex)
+	g.AddNodePropertyIndex(NodeIDTerm.Name, lpg.HashIndex)
 	for _, f := range newLayerGraphHooks {
 		f(g)
 	}
@@ -80,13 +80,13 @@ func NewLayerFromRootNode(layerInfoNode *lpg.Node) *Layer {
 // Schema and Overlay nodes are returned as layers.
 func LayersFromGraph(g *lpg.Graph) []*Layer {
 	ret := make([]*Layer, 0)
-	set := lpg.NewStringSet(SchemaTerm)
+	set := lpg.NewStringSet(SchemaTerm.Name)
 	for nodes := g.GetNodesWithAllLabels(set); nodes.Next(); {
 		node := nodes.Node()
 		l := Layer{Graph: g, layerInfo: node}
 		ret = append(ret, &l)
 	}
-	set = lpg.NewStringSet(OverlayTerm)
+	set = lpg.NewStringSet(OverlayTerm.Name)
 	for nodes := g.GetNodesWithAllLabels(set); nodes.Next(); {
 		node := nodes.Node()
 		l := Layer{Graph: g, layerInfo: node}
@@ -109,9 +109,6 @@ func (l *Layer) CloneInto(targetGraph *lpg.Graph) (*Layer, map[*lpg.Node]*lpg.No
 	ret := &Layer{Graph: targetGraph}
 	nodeMap := make(map[*lpg.Node]*lpg.Node)
 	lpg.CopySubgraph(l.layerInfo, targetGraph, func(key string, value interface{}) interface{} {
-		if p, ok := value.(*PropertyValue); ok {
-			return p.Clone()
-		}
 		return value
 	}, nodeMap)
 	ret.layerInfo = nodeMap[l.layerInfo]
@@ -123,7 +120,7 @@ func (l *Layer) GetLayerRootNode() *lpg.Node { return l.layerInfo }
 
 // Returns the overlay attribute nodes if there are any
 func (l *Layer) GetOverlayAttributes() []*lpg.Node {
-	return lpg.TargetNodes(l.layerInfo.GetEdgesWithLabel(lpg.OutgoingEdge, AttributeOverlaysTerm))
+	return lpg.TargetNodes(l.layerInfo.GetEdgesWithLabel(lpg.OutgoingEdge, AttributeOverlaysTerm.Name))
 }
 
 // GetSchemaRootNode returns the root node of the object defined by the schema
@@ -131,7 +128,7 @@ func (l *Layer) GetSchemaRootNode() *lpg.Node {
 	if l == nil {
 		return nil
 	}
-	edges := l.layerInfo.GetEdgesWithLabel(lpg.OutgoingEdge, LayerRootTerm)
+	edges := l.layerInfo.GetEdgesWithLabel(lpg.OutgoingEdge, LayerRootTerm.Name)
 	if edges.MaxSize() != 1 {
 		return nil
 	}
@@ -152,22 +149,22 @@ func (l *Layer) SetID(ID string) {
 // GetLayerType returns the layer type, SchemaTerm or OverlayTerm.
 func (l *Layer) GetLayerType() string {
 	labels := l.layerInfo.GetLabels()
-	if labels.Has(SchemaTerm) {
-		return SchemaTerm
+	if labels.Has(SchemaTerm.Name) {
+		return SchemaTerm.Name
 	}
-	if labels.Has(OverlayTerm) {
-		return OverlayTerm
+	if labels.Has(OverlayTerm.Name) {
+		return OverlayTerm.Name
 	}
 	return ""
 }
 
 // SetLayerType sets if the layer is a schema or an overlay
 func (l *Layer) SetLayerType(t string) {
-	if t != SchemaTerm && t != OverlayTerm {
+	if t != SchemaTerm.Name && t != OverlayTerm.Name {
 		panic("Invalid layer type:" + t)
 	}
 	labels := l.layerInfo.GetLabels()
-	labels.Remove(SchemaTerm, OverlayTerm)
+	labels.Remove(SchemaTerm.Name, OverlayTerm.Name)
 	labels.Add(t)
 	l.layerInfo.SetLabels(labels)
 }
@@ -181,7 +178,7 @@ func (l *Layer) GetEncoding() (encoding.Encoding, error) {
 	oi := l.GetSchemaRootNode()
 	var enc string
 	if oi != nil {
-		enc = AsPropertyValue(oi.GetProperty(CharacterEncodingTerm)).AsString()
+		enc = CharacterEncodingTerm.PropertyValue(oi)
 		if len(enc) == 0 {
 			return encoding.Nop, nil
 		}
@@ -193,7 +190,8 @@ func (l *Layer) GetEncoding() (encoding.Encoding, error) {
 // layer information node. This is the type of the entity defined by
 // the schema
 func (l *Layer) GetValueType() string {
-	return AsPropertyValue(l.layerInfo.GetProperty(ValueTypeTerm)).AsString()
+	s, _ := GetPropertyValueAs[string](l.layerInfo, ValueTypeTerm.Name)
+	return s
 }
 
 // SetValueType sets the value types of the layer
@@ -206,7 +204,7 @@ func (l *Layer) SetValueType(t string) {
 		}
 	}
 	if len(t) > 0 {
-		l.layerInfo.SetProperty(ValueTypeTerm, StringPropertyValue(ValueTypeTerm, t))
+		l.layerInfo.SetProperty(ValueTypeTerm.Name, NewPropertyValue(ValueTypeTerm.Name, t))
 		if oin := l.GetSchemaRootNode(); oin != nil {
 			labels := oin.GetLabels()
 			labels.Add(t)
@@ -220,7 +218,7 @@ func GetArrayElementNode(arraySchemaNode *lpg.Node) *lpg.Node {
 	if arraySchemaNode == nil {
 		return nil
 	}
-	n := lpg.TargetNodes(arraySchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ArrayItemsTerm))
+	n := lpg.TargetNodes(arraySchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ArrayItemsTerm.Name))
 	if len(n) == 1 {
 		return n[0]
 	}
@@ -232,7 +230,7 @@ func GetArrayElementNode(arraySchemaNode *lpg.Node) *lpg.Node {
 func GetObjectAttributeNodesBy(objectSchemaNode *lpg.Node, keyTerm string) (map[string][]*lpg.Node, error) {
 	nextNodes := make(map[string][]*lpg.Node)
 	addNextNode := func(node *lpg.Node) error {
-		key := AsPropertyValue(node.GetProperty(keyTerm)).AsString()
+		key, _ := GetPropertyValueAs[string](node, keyTerm)
 		if len(key) == 0 {
 			return nil
 		}
@@ -240,12 +238,12 @@ func GetObjectAttributeNodesBy(objectSchemaNode *lpg.Node, keyTerm string) (map[
 		return nil
 	}
 	if objectSchemaNode != nil {
-		for _, node := range lpg.TargetNodes(objectSchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ObjectAttributesTerm)) {
+		for _, node := range lpg.TargetNodes(objectSchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ObjectAttributesTerm.Name)) {
 			if err := addNextNode(node); err != nil {
 				return nil, err
 			}
 		}
-		for _, node := range lpg.TargetNodes(objectSchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ObjectAttributeListTerm)) {
+		for _, node := range lpg.TargetNodes(objectSchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ObjectAttributeListTerm.Name)) {
 			if err := addNextNode(node); err != nil {
 				return nil, err
 			}
@@ -259,10 +257,10 @@ func GetObjectAttributeNodesBy(objectSchemaNode *lpg.Node, keyTerm string) (map[
 func GetObjectAttributeNodes(objectSchemaNode *lpg.Node) []*lpg.Node {
 	nextNodes := make([]*lpg.Node, 0)
 	if objectSchemaNode != nil {
-		for _, node := range lpg.TargetNodes(objectSchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ObjectAttributesTerm)) {
+		for _, node := range lpg.TargetNodes(objectSchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ObjectAttributesTerm.Name)) {
 			nextNodes = append(nextNodes, node)
 		}
-		for _, node := range lpg.TargetNodes(objectSchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ObjectAttributeListTerm)) {
+		for _, node := range lpg.TargetNodes(objectSchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ObjectAttributeListTerm.Name)) {
 			nextNodes = append(nextNodes, node)
 		}
 	}
@@ -271,7 +269,7 @@ func GetObjectAttributeNodes(objectSchemaNode *lpg.Node) []*lpg.Node {
 
 // GetPolymorphicOptions returns the polymorphic options of a schema node
 func GetPolymorphicOptions(polymorphicSchemaNode *lpg.Node) []*lpg.Node {
-	return lpg.TargetNodes(polymorphicSchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, OneOfTerm))
+	return lpg.TargetNodes(polymorphicSchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, OneOfTerm.Name))
 }
 
 // GetNodesWithValidators returns all nodes under root that has validators
@@ -279,14 +277,11 @@ func GetNodesWithValidators(root *lpg.Node) map[*lpg.Node]struct{} {
 	ret := make(map[*lpg.Node]struct{})
 	ForEachAttributeNode(root, func(node *lpg.Node, _ []*lpg.Node) bool {
 		node.ForEachProperty(func(k string, in interface{}) bool {
-			pv, ok := in.(*PropertyValue)
+			pv, ok := in.(PropertyValue)
 			if !ok {
 				return true
 			}
-			md := pv.GetSem()
-			if md == nil {
-				return true
-			}
+			md := pv.Sem()
 			if _, ok := md.Metadata.(NodeValidator); ok {
 				ret[node] = struct{}{}
 			}
@@ -307,7 +302,7 @@ func (l *Layer) GetEntityIDNodes() []string {
 	if root == nil {
 		return nil
 	}
-	return AsPropertyValue(root.GetProperty(EntityIDFieldsTerm)).MustStringSlice()
+	return EntityIDFieldsTerm.PropertyValue(root)
 }
 
 // GetAttributesByID returns attribute nodes by ID
@@ -397,8 +392,8 @@ func GetAttributePath(root, node *lpg.Node) []*lpg.Node {
 // GetAttributeByID returns the attribute node by its ID.
 func (l *Layer) GetAttributeByID(id string) *lpg.Node {
 	getAttributeByIDPattern := lpg.Pattern{{
-		Labels:     lpg.NewStringSet(AttributeNodeTerm),
-		Properties: map[string]interface{}{NodeIDTerm: id}}}
+		Labels:     lpg.NewStringSet(AttributeNodeTerm.Name),
+		Properties: map[string]any{NodeIDTerm.Name: NodeIDTerm.MustPropertyValue(id)}}}
 	nodes, _ := getAttributeByIDPattern.FindNodes(l.Graph, nil)
 	if len(nodes) == 1 {
 		return nodes[0]
@@ -483,7 +478,7 @@ func forEachAttributeNode(root *lpg.Node, path []*lpg.Node, f func(*lpg.Node, []
 			continue
 		}
 		next := edge.GetTo()
-		if next.GetLabels().Has(AttributeNodeTerm) {
+		if next.GetLabels().Has(AttributeNodeTerm.Name) {
 			if !forEachAttributeNode(next, path, f, loop, ordered) {
 				return false
 			}
@@ -502,14 +497,12 @@ func ForEachAttributeNodeOrdered(root *lpg.Node, f func(node *lpg.Node, path []*
 
 // GetAttributeID returns the attributeID
 func GetAttributeID(node *lpg.Node) string {
-	v, _ := node.GetProperty(NodeIDTerm)
-	s, _ := v.(string)
-	return s
+	return NodeIDTerm.PropertyValue(node)
 }
 
 // SetAttrributeID sets the attribute ID
 func SetAttributeID(node *lpg.Node, ID string) {
-	node.SetProperty(NodeIDTerm, ID)
+	node.SetProperty(NodeIDTerm.Name, NodeIDTerm.MustPropertyValue(ID))
 }
 
 // CopySchemaNodeIntoGraph copies a schema node and the subtree under
@@ -536,7 +529,7 @@ func GetLayerEntityRoot(node *lpg.Node) *lpg.Node {
 	var find func(*lpg.Node) *lpg.Node
 	seen := make(map[*lpg.Node]struct{})
 	find = func(root *lpg.Node) *lpg.Node {
-		if _, ok := root.GetProperty(EntitySchemaTerm); ok {
+		if _, ok := root.GetProperty(EntitySchemaTerm.Name); ok {
 			return root
 		}
 		if _, ok := seen[root]; ok {
@@ -547,7 +540,7 @@ func GetLayerEntityRoot(node *lpg.Node) *lpg.Node {
 		for edges := root.GetEdges(lpg.IncomingEdge); edges.Next(); {
 			edge := edges.Edge()
 			ancestor := edge.GetFrom()
-			if !ancestor.GetLabels().Has(AttributeNodeTerm) {
+			if !ancestor.GetLabels().Has(AttributeNodeTerm.Name) {
 				continue
 			}
 			ret = find(ancestor)
@@ -563,7 +556,7 @@ func GetPathFromRoot(schemaNode *lpg.Node) []*lpg.Node {
 	var find func(*lpg.Node) *lpg.Node
 	seen := make(map[*lpg.Node]struct{})
 	find = func(root *lpg.Node) *lpg.Node {
-		if _, ok := root.GetProperty(EntitySchemaTerm); ok {
+		if _, ok := root.GetProperty(EntitySchemaTerm.Name); ok {
 			return root
 		}
 		if _, ok := seen[root]; ok {
@@ -573,7 +566,7 @@ func GetPathFromRoot(schemaNode *lpg.Node) []*lpg.Node {
 		for edges := root.GetEdges(lpg.IncomingEdge); edges.Next(); {
 			edge := edges.Edge()
 			ancestor := edge.GetFrom()
-			if !ancestor.GetLabels().Has(AttributeNodeTerm) {
+			if !ancestor.GetLabels().Has(AttributeNodeTerm.Name) {
 				continue
 			}
 			ret := find(ancestor)
@@ -618,14 +611,14 @@ func (l *Layer) GetLinkSpecs() ([]*LinkSpec, error) {
 // term. ParentNode is either a schema node or a doc node
 func GetOutputEdgeLabel(parentNode *lpg.Node) string {
 	if parentNode == nil {
-		return HasTerm
+		return HasTerm.Name
 	}
-	pv, exists := GetNodeOrSchemaProperty(parentNode, OutputEdgeLabelTerm)
+	pv, exists := GetNodeOrSchemaProperty(parentNode, OutputEdgeLabelTerm.Name)
 	if !exists {
-		return HasTerm
+		return HasTerm.Name
 	}
-	if s := pv.AsString(); len(s) > 0 {
+	if s, _ := pv.Value().(string); len(s) > 0 {
 		return s
 	}
-	return HasTerm
+	return HasTerm.Name
 }

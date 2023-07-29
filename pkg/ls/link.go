@@ -53,30 +53,30 @@ The aField field may itself be a foreign key value. Then, omit fk, or use aField
 
 var (
 	// ReferenceFK specifies the foreign key value
-	ReferenceFK = NewTerm(LS+"Reference/", "fkValue").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ReferenceFK = StringSliceTerm{NewTerm(LS+"Reference/", "fkValue").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 	// ReferenceFKFor is used for value nodes that are foreign keys
-	ReferenceFKFor = NewTerm(LS+"Reference/", "fkFor").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ReferenceFKFor = StringTerm{NewTerm(LS+"Reference/", "fkFor").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 	// ReferenceFKTerm specifies the foreign key attribute ID
-	ReferenceFKTerm = NewTerm(LS+"Reference/", "fk").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ReferenceFKTerm = StringSliceTerm{NewTerm(LS+"Reference/", "fk").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// ReferenceLabelTerm specifies the edge label between the referenced nodes
-	ReferenceLabelTerm = NewTerm(LS+"Reference/", "label").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ReferenceLabelTerm = StringTerm{NewTerm(LS+"Reference/", "label").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// ReferenceDirectionTerm specifies the direction of the edge. If
 	// "to" or "toTarget", the edge points to the target entity.
 	// If "from" or "fromTarget", the edge points
 	// to this entity.
-	ReferenceDirectionTerm = NewTerm(LS+"Reference/", "dir").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ReferenceDirectionTerm = StringTerm{NewTerm(LS+"Reference/", "dir").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// ReferenceLinkNodeTerm specifies the node in the current entity
 	// that will be linked to the other entity. If the references are
 	// defined in a Reference type node, then the node itself if the
 	// link. Otherwise, this gives the node that must be linked to the
 	// other entity.
-	ReferenceLinkNodeTerm = NewTerm(LS+"Reference/", "linkNode").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ReferenceLinkNodeTerm = StringTerm{NewTerm(LS+"Reference/", "linkNode").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 
 	// ReferenceMultiTerm specifies if there can be more than one link targets
-	ReferenceMultiTerm = NewTerm(LS+"Reference/", "multi").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
+	ReferenceMultiTerm = StringTerm{NewTerm(LS+"Reference/", "multi").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
 )
 
 type ForeignKeyInfo struct {
@@ -152,37 +152,38 @@ func GetLinkSpec(schemaNode *lpg.Node) (*LinkSpec, error) {
 	}
 
 	// A reference to another entity is a reference node
-	ref := AsPropertyValue(schemaNode.GetProperty(ReferenceTerm)).AsString()
+	ref := ReferenceTerm.PropertyValue(schemaNode)
 	if len(ref) == 0 {
-		ref = AsPropertyValue(schemaNode.GetProperty(ReferenceFKFor)).AsString()
+		ref = ReferenceFKFor.PropertyValue(schemaNode)
 		if len(ref) == 0 {
 			return nil, nil
 		}
 	}
 
-	link := AsPropertyValue(schemaNode.GetProperty(ReferenceDirectionTerm))
-	if link == nil {
+	link := ReferenceDirectionTerm.PropertyValue(schemaNode)
+	if len(link) == 0 {
 		return nil, nil
 	}
 	// schemaNode.SetProperty(ReferenceFK, "test_fk_val")
 	ret := LinkSpec{
 		SchemaNode:   schemaNode,
 		TargetEntity: ref,
-		Label:        AsPropertyValue(schemaNode.GetProperty(ReferenceLabelTerm)).AsString(),
-		Multi:        AsPropertyValue(schemaNode.GetProperty(ReferenceMultiTerm)).AsString() != "false",
 		IngestAs:     GetIngestAs(schemaNode),
 	}
+	ret.Label = ReferenceLabelTerm.PropertyValue(schemaNode)
+	s := ReferenceMultiTerm.PropertyValue(schemaNode)
+	ret.Multi = s != "false"
 	if len(ret.Label) == 0 {
-		ret.Label = AsPropertyValue(schemaNode.GetProperty(AttributeNameTerm)).AsString()
+		ret.Label = AttributeNameTerm.PropertyValue(schemaNode)
 	}
-	if !schemaNode.GetLabels().Has(AttributeTypeReference) {
-		ret.LinkNode = AsPropertyValue(schemaNode.GetProperty(ReferenceLinkNodeTerm)).AsString()
+	if !schemaNode.GetLabels().Has(AttributeTypeReference.Name) {
+		ret.LinkNode = ReferenceLinkNodeTerm.PropertyValue(schemaNode)
 	} else {
 		if ret.IngestAs != IngestAsNode && ret.IngestAs != IngestAsEdge {
 			return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Invalid ingestAs for link"}
 		}
 	}
-	switch link.AsString() {
+	switch link {
 	case "to", "toTarget":
 		ret.Forward = true
 	case "from", "fromTarget":
@@ -193,10 +194,10 @@ func GetLinkSpec(schemaNode *lpg.Node) (*LinkSpec, error) {
 		return nil, ErrInvalidLinkSpec{ID: GetNodeID(schemaNode), Msg: "Direction is not one of: `to`, `from`, `toTarget`, `fromTarget`"}
 	}
 
-	ret.FK = AsPropertyValue(schemaNode.GetProperty(ReferenceFKTerm)).MustStringSlice()
+	ret.FK = ReferenceFKTerm.PropertyValue(schemaNode)
 	if len(ret.FK) == 0 {
 		// If schema node is a value node, then the node is the FK
-		if schemaNode.GetLabels().Has(AttributeTypeValue) {
+		if schemaNode.GetLabels().Has(AttributeTypeValue.Name) {
 			ret.FK = []string{GetNodeID(schemaNode)}
 		}
 	}
@@ -217,7 +218,7 @@ func (spec *LinkSpec) GetForeignKeys(entityRoot *lpg.Node) ([]ForeignKeyInfo, er
 	// entity. ForeignKeyNdoes[i] keeps all the nodes for spec.FK[i]
 	foreignKeyNodes := make([][]*lpg.Node, len(spec.FK))
 	IterateDescendants(entityRoot, func(n *lpg.Node) bool {
-		attrId := AsPropertyValue(n.GetProperty(SchemaNodeIDTerm)).AsString()
+		attrId := SchemaNodeIDTerm.PropertyValue(n)
 		if len(attrId) == 0 {
 			return true
 		}

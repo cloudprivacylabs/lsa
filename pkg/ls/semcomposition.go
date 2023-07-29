@@ -14,13 +14,17 @@
 
 package ls
 
+import (
+	"reflect"
+)
+
 // Composer interface represents term composition algorithm. During
 // layer composition, any term metadata that implements Composer
 // interface will be composed using the customized implementation. If
 // the term does not implement the Composer interface, Setcomposition
 // will be used
 type Composer interface {
-	Compose(v1, v2 *PropertyValue) (*PropertyValue, error)
+	Compose(v1, v2 PropertyValue) (PropertyValue, error)
 }
 
 // CompositionType determines the composition semantics for the term
@@ -41,7 +45,7 @@ const (
 
 // GetComposerForTerm returns a term composer
 func GetComposerForTerm(term string) Composer {
-	info := GetTermInfo(term)
+	info := GetTerm(term)
 	c, ok := info.Metadata.(Composer)
 	if ok {
 		return c
@@ -51,11 +55,11 @@ func GetComposerForTerm(term string) Composer {
 
 // GetComposerForProperty returns the composer for the given
 // property. Never returns nil
-func GetComposerForProperty(p *PropertyValue) Composer {
-	if p == nil {
+func GetComposerForProperty(p PropertyValue) Composer {
+	if p.Value() == nil {
 		return nil
 	}
-	s := p.GetSem()
+	s := p.Sem()
 	c, ok := s.Metadata.(Composer)
 	if ok {
 		return c
@@ -64,31 +68,31 @@ func GetComposerForProperty(p *PropertyValue) Composer {
 }
 
 // Compose target and src based on the composition type
-func (c CompositionType) Compose(target, src *PropertyValue) (*PropertyValue, error) {
+func (c CompositionType) Compose(target, src PropertyValue) (PropertyValue, error) {
 	switch c {
 	case SetComposition:
 		return SetUnion(target, src), nil
 	case OverrideComposition:
-		if src == nil {
+		if src.Value() == nil {
 			return target, nil
 		}
 		return src, nil
 	case ListComposition:
 		return ListAppend(target, src), nil
 	case NoComposition:
-		if target == nil {
+		if target.Value() == nil {
 			return src, nil
 		}
 		return target, nil
 	case ErrorComposition:
-		if target != nil && src != nil {
+		if target.Value() != nil && src.Value() != nil {
 			// Composition is valid if values are the same
 			if target.Equal(src) {
 				return target, nil
 			}
-			return nil, ErrInvalidComposition
+			return PropertyValue{}, ErrInvalidComposition
 		}
-		if target != nil {
+		if target.Value() != nil {
 			return target, nil
 		}
 		return src, nil
@@ -97,74 +101,75 @@ func (c CompositionType) Compose(target, src *PropertyValue) (*PropertyValue, er
 }
 
 // SetUnion computes the set union of properties v1 and v2
-func SetUnion(v1, v2 *PropertyValue) *PropertyValue {
-	if v1 == nil {
+func SetUnion(v1, v2 PropertyValue) PropertyValue {
+	if v1.Value() == nil {
 		return v2
 	}
-	if v2 == nil {
+	if v2.Value() == nil {
 		return v1
 	}
-	if v1.IsStringSlice() {
-		slc := v1.AsStringSlice()
-		values := make(map[string]struct{}, len(slc))
-		ret := make([]string, 0, len(slc))
-		for _, k := range slc {
-			values[k] = struct{}{}
-			ret = append(ret, k)
-		}
-		if v2.IsStringSlice() {
-			for _, item := range v2.AsStringSlice() {
-				if _, exists := values[item]; !exists {
-					values[item] = struct{}{}
-					ret = append(ret, item)
-				}
+	if v1.Value() == v2.Value() {
+		return v1
+	}
+	values := make(map[reflect.Value]struct{})
+	val1 := reflect.ValueOf(v1.Value())
+	val2 := reflect.ValueOf(v2.Value())
+	vtomap := func(value reflect.Value) {
+		if value.Type().Kind() == reflect.Slice || value.Type().Kind() == reflect.Array {
+			n := value.Len()
+			for i := 0; i < n; i++ {
+				values[value.Index(i)] = struct{}{}
 			}
-			return StringSlicePropertyValue(v1.GetTerm(), ret)
+		} else {
+			values[value] = struct{}{}
 		}
-		if _, exists := values[v2.AsString()]; !exists {
-			ret = append(ret, v2.AsString())
-		}
-		return StringSlicePropertyValue(v1.GetTerm(), ret)
 	}
-	ret := []string{v1.AsString()}
-	if v2.IsStringSlice() {
-		for _, item := range v2.AsStringSlice() {
-			if item != ret[0] {
-				ret = append(ret, item)
+	vtomap(val1)
+	vtomap(val2)
+
+	makeSlice := func(elemType reflect.Type) PropertyValue {
+		result := reflect.MakeSlice(reflect.SliceOf(elemType), 0, len(values))
+		for k := range values {
+			reflect.AppendSlice(result, k)
+		}
+		return NewPropertyValue(v1.Term(), result.Interface())
+	}
+	makeAnySlice := func() PropertyValue {
+		result := make([]any, 0, len(values))
+		for k := range values {
+			result = append(result, k.Interface())
+		}
+		return NewPropertyValue(v1.Term(), result)
+	}
+
+	// If the union is between two same types, or slices/arrays of two
+	// same types, or one slice/array and one compatible type, the
+	// result is the slice of that type
+	if val1.Type().Kind() == reflect.Slice || val1.Type().Kind() == reflect.Array {
+		if val2.Type().Kind() == reflect.Slice || val2.Type().Kind() == reflect.Array {
+			// Both are slice/array. If compatible elements, result is the same type
+			if val1.Type().Elem() == val2.Type().Elem() {
+				return makeSlice(val1.Type().Elem())
 			}
+			return makeAnySlice()
 		}
-		if len(ret) == 1 {
-			return StringPropertyValue(v2.GetTerm(), ret[0])
+		// val1 is a slice/array. val2 is a value
+		if val1.Type().Elem() == val2.Type() {
+			return makeSlice(val1.Type().Elem())
 		}
-		return StringSlicePropertyValue(v2.GetTerm(), ret)
+		return makeAnySlice()
 	}
-	if ret[0] != v2.AsString() {
-		ret = append(ret, v2.AsString())
+	if val2.Type().Kind() == reflect.Slice || val2.Type().Kind() == reflect.Array {
+		if val1.Type() == val2.Type().Elem() {
+			return makeSlice(val2.Type().Elem())
+		}
+		return makeAnySlice()
 	}
-	if len(ret) == 1 {
-		return StringPropertyValue(v1.GetTerm(), ret[0])
-	}
-	return StringSlicePropertyValue(v1.GetTerm(), ret)
+	return makeAnySlice()
 }
 
 // ListAppend appends v2 and v1
-func ListAppend(v1, v2 *PropertyValue) *PropertyValue {
-	if v1 == nil {
-		return v2
-	}
-	if v2 == nil {
-		return v1
-	}
-	if v1.IsStringSlice() {
-		ret := v1.AsStringSlice()
-		if v2.IsStringSlice() {
-			return StringSlicePropertyValue(v1.GetTerm(), append(ret, v2.AsStringSlice()...))
-		}
-		return StringSlicePropertyValue(v1.GetTerm(), append(ret, v2.AsString()))
-	}
-	ret := []string{v1.AsString()}
-	if v2.IsStringSlice() {
-		return StringSlicePropertyValue(v1.GetTerm(), append(ret, v2.AsStringSlice()...))
-	}
-	return StringSlicePropertyValue(v1.GetTerm(), append(ret, v2.AsString()))
+func ListAppend(v1, v2 PropertyValue) PropertyValue {
+	val := GenericListAppend(v1.Value(), v2.Value())
+	return NewPropertyValue(v1.Term(), val)
 }

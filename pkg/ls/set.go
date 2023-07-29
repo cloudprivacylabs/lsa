@@ -14,6 +14,10 @@
 
 package ls
 
+import (
+	"reflect"
+)
+
 // StringSetUnion returns s1 setunion s2
 func StringSetUnion(s1, s2 []string) []string {
 	output := make([]string, 0, len(s1)+len(s2))
@@ -77,4 +81,67 @@ func StringSetToSlice(str map[string]struct{}) []string {
 		ret = append(ret, x)
 	}
 	return ret
+}
+
+// If v1 and/or v2 are slice/arrays of compatible types, then the result is v1+v2 slice of that type.
+// Otherwise, result is a []any.
+func GenericListAppend(v1, v2 any) any {
+	if v1 == nil {
+		return v2
+	}
+	if v2 == nil {
+		return v1
+	}
+	values := make([]reflect.Value, 0)
+	val1 := reflect.ValueOf(v1)
+	val2 := reflect.ValueOf(v2)
+	vtoslice := func(value reflect.Value) {
+		if value.Type().Kind() == reflect.Slice || value.Type().Kind() == reflect.Array {
+			n := value.Len()
+			for i := 0; i < n; i++ {
+				values = append(values, value.Index(i))
+			}
+		} else {
+			values = append(values, value)
+		}
+	}
+	vtoslice(val1)
+	vtoslice(val2)
+
+	makeSlice := func(elemType reflect.Type) any {
+		result := reflect.MakeSlice(reflect.SliceOf(elemType), 0, len(values))
+		for _, k := range values {
+			reflect.AppendSlice(result, k)
+		}
+		return result.Interface()
+	}
+	makeAnySlice := func() any {
+		result := make([]any, 0, len(values))
+		for _, k := range values {
+			result = append(result, k.Interface())
+		}
+		return result
+	}
+	if val1.Type().Kind() == reflect.Slice || val1.Type().Kind() == reflect.Array {
+		if val2.Type().Kind() == reflect.Slice || val2.Type().Kind() == reflect.Array {
+			if val1.Type().Elem() == val2.Type().Elem() {
+				return makeSlice(val1.Type().Elem())
+			}
+			return makeAnySlice()
+		}
+		if val1.Type().Elem() == val2.Type() {
+			return makeSlice(val1.Type().Elem())
+		}
+		return makeAnySlice()
+	}
+	if val2.Type().Kind() == reflect.Slice || val2.Type().Kind() == reflect.Array {
+		if val1.Type() == val2.Type().Elem() {
+			return makeSlice(val2.Type().Elem())
+		}
+		return makeAnySlice()
+	}
+	if val1.Type() == val2.Type() {
+		return makeSlice(val1.Type())
+	}
+	return makeAnySlice()
 }
