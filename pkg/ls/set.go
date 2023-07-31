@@ -111,7 +111,7 @@ func GenericListAppend(v1, v2 any) any {
 	makeSlice := func(elemType reflect.Type) any {
 		result := reflect.MakeSlice(reflect.SliceOf(elemType), 0, len(values))
 		for _, k := range values {
-			reflect.AppendSlice(result, k)
+			result = reflect.Append(result, k)
 		}
 		return result.Interface()
 	}

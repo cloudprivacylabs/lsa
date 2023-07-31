@@ -108,20 +108,36 @@ func SetUnion(v1, v2 PropertyValue) PropertyValue {
 	if v2.Value() == nil {
 		return v1
 	}
-	if v1.Value() == v2.Value() {
-		return v1
-	}
-	values := make(map[reflect.Value]struct{})
+
 	val1 := reflect.ValueOf(v1.Value())
 	val2 := reflect.ValueOf(v2.Value())
+	val1List := val1.Type().Kind() == reflect.Slice || val1.Type().Kind() == reflect.Array
+	val2List := val2.Type().Kind() == reflect.Slice || val2.Type().Kind() == reflect.Array
+	if !val1List && !val2List && v1.Value() == v2.Value() {
+		return v1
+	}
+	values := make([]any, 0)
+	has := func(val any) bool {
+		for _, x := range values {
+			if reflect.DeepEqual(x, val) {
+				return true
+			}
+		}
+		return false
+	}
 	vtomap := func(value reflect.Value) {
 		if value.Type().Kind() == reflect.Slice || value.Type().Kind() == reflect.Array {
 			n := value.Len()
 			for i := 0; i < n; i++ {
-				values[value.Index(i)] = struct{}{}
+				val := value.Index(i).Interface()
+				if !has(val) {
+					values = append(values, val)
+				}
 			}
 		} else {
-			values[value] = struct{}{}
+			if !has(value.Interface()) {
+				values = append(values, value.Interface())
+			}
 		}
 	}
 	vtomap(val1)
@@ -129,15 +145,15 @@ func SetUnion(v1, v2 PropertyValue) PropertyValue {
 
 	makeSlice := func(elemType reflect.Type) PropertyValue {
 		result := reflect.MakeSlice(reflect.SliceOf(elemType), 0, len(values))
-		for k := range values {
-			reflect.AppendSlice(result, k)
+		for _, k := range values {
+			result = reflect.Append(result, reflect.ValueOf(k))
 		}
 		return NewPropertyValue(v1.Term(), result.Interface())
 	}
 	makeAnySlice := func() PropertyValue {
 		result := make([]any, 0, len(values))
-		for k := range values {
-			result = append(result, k.Interface())
+		for _, k := range values {
+			result = append(result, k)
 		}
 		return NewPropertyValue(v1.Term(), result)
 	}
@@ -145,8 +161,8 @@ func SetUnion(v1, v2 PropertyValue) PropertyValue {
 	// If the union is between two same types, or slices/arrays of two
 	// same types, or one slice/array and one compatible type, the
 	// result is the slice of that type
-	if val1.Type().Kind() == reflect.Slice || val1.Type().Kind() == reflect.Array {
-		if val2.Type().Kind() == reflect.Slice || val2.Type().Kind() == reflect.Array {
+	if val1List {
+		if val2List {
 			// Both are slice/array. If compatible elements, result is the same type
 			if val1.Type().Elem() == val2.Type().Elem() {
 				return makeSlice(val1.Type().Elem())
@@ -159,7 +175,7 @@ func SetUnion(v1, v2 PropertyValue) PropertyValue {
 		}
 		return makeAnySlice()
 	}
-	if val2.Type().Kind() == reflect.Slice || val2.Type().Kind() == reflect.Array {
+	if val2List {
 		if val1.Type() == val2.Type().Elem() {
 			return makeSlice(val2.Type().Elem())
 		}
