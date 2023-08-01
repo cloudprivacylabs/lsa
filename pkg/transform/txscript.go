@@ -77,7 +77,7 @@ func (t *TransformScript) Compile(ctx *ls.Context) error {
 	cctx := &ls.CompileContext{}
 	t.compiledTargetSchemaNodes = make(map[string][]*compiledAnnotations)
 	for sid, ann := range t.TargetSchemaNodes {
-		ctx.GetLogger().Debug(map[string]interface{}{"script.compile.schemaNodeId": sid})
+		ctx.GetLogger().Debug(map[string]any{"script.compile.schemaNodeId": sid})
 
 		fields := strings.Fields(sid)
 		if len(fields) == 0 {
@@ -89,10 +89,10 @@ func (t *TransformScript) Compile(ctx *ls.Context) error {
 			annotations: NodeTransformAnnotations{},
 		}
 		for k, v := range ann {
-			pv, ok := v.(*ls.PropertyValue)
+			pv, ok := v.(ls.PropertyValue)
 			if ok {
 				if !ls.IsTermRegistered(k) {
-					ctx.GetLogger().Info(map[string]interface{}{"script.compile": "Unknown term", "term": k})
+					ctx.GetLogger().Info(map[string]any{"script.compile": "Unknown term", "term": k})
 				}
 				val.annotations[k] = v
 				if err := ls.GetTermCompiler(k).CompileTerm(cctx, val.annotations, k, pv); err != nil {
@@ -107,7 +107,7 @@ func (t *TransformScript) Compile(ctx *ls.Context) error {
 }
 
 // NodeTransformAnnotations contains a term, and one or more annotations
-type NodeTransformAnnotations map[string]interface{}
+type NodeTransformAnnotations map[string]any
 
 func (t *TransformScript) GetProperties(schemaPath []*lpg.Node) ls.CompilablePropertyContainer {
 	if t == nil {
@@ -129,9 +129,9 @@ func (t *TransformScript) GetSources(schemaPath []*lpg.Node) []string {
 	if nd == nil {
 		return nil
 	}
-	prop, ok := nd.GetProperty(SourcesTerm)
+	prop, ok := nd.GetProperty(SourcesTerm.Name)
 	if ok {
-		if s, ok := prop.([]interface{}); ok {
+		if s, ok := prop.([]any); ok {
 			ret := make([]string, 0, len(s))
 			for _, x := range s {
 				ret = append(ret, x.(string))
@@ -139,17 +139,20 @@ func (t *TransformScript) GetSources(schemaPath []*lpg.Node) []string {
 			return ret
 		}
 	}
-	if s := ls.AsPropertyValue(nd.GetProperty(SourcesTerm)).AsStringSlice(); len(s) > 0 {
-		return s
-	}
-	prop, ok = nd.GetProperty(SourceTerm)
-	if ok {
-		if s, ok := prop.(string); ok {
-			return []string{s}
+	pv, pvalue := prop.(ls.PropertyValue)
+	if pvalue {
+		s := pv.AsStringSlice()
+		if len(s) > 0 {
+			return s
 		}
 	}
-	if s := ls.AsPropertyValue(nd.GetProperty(SourceTerm)).AsString(); len(s) > 0 {
+	if s, ok := prop.(string); ok {
 		return []string{s}
+	}
+	if pvalue {
+		if str, ok := pv.Value().(string); ok {
+			return []string{str}
+		}
 	}
 	return nil
 }
@@ -165,29 +168,29 @@ func (t *TransformScript) Validate(targetSchema *ls.Layer) error {
 	return nil
 }
 
-func (nd NodeTransformAnnotations) GetProperty(key string) (interface{}, bool) {
+func (nd NodeTransformAnnotations) GetProperty(key string) (any, bool) {
 	v, ok := nd[key]
 	return v, ok
 }
 
-func (nd NodeTransformAnnotations) SetProperty(key string, value interface{}) {
+func (nd NodeTransformAnnotations) SetProperty(key string, value any) {
 	nd[key] = value
 }
 
-func (nd *NodeTransformAnnotations) setProperties(mv map[string]interface{}) {
-	set := func(k string, v interface{}) {
+func (nd *NodeTransformAnnotations) setProperties(mv map[string]any) {
+	set := func(k string, v any) {
 		switch value := v.(type) {
 		case string:
-			(*nd)[k] = ls.StringPropertyValue(k, value)
-		case []interface{}:
+			(*nd)[k] = ls.NewPropertyValue(k, value)
+		case []any:
 			sl := make([]string, 0, len(value))
 			for _, s := range value {
 				sl = append(sl, s.(string))
 			}
-			(*nd)[k] = ls.StringSlicePropertyValue(k, sl)
+			(*nd)[k] = ls.NewPropertyValue(k, sl)
 		}
 	}
-	*nd = make(map[string]interface{})
+	*nd = make(map[string]any)
 	for k, v := range mv {
 		u, err := url.Parse(k)
 		if err != nil || u.IsAbs() {
@@ -201,7 +204,7 @@ func (nd *NodeTransformAnnotations) setProperties(mv map[string]interface{}) {
 }
 
 func (nd *NodeTransformAnnotations) UnmarshalJSON(in []byte) error {
-	var mv map[string]interface{}
+	var mv map[string]any
 	if err := json.Unmarshal(in, &mv); err != nil {
 		return err
 	}
@@ -209,8 +212,8 @@ func (nd *NodeTransformAnnotations) UnmarshalJSON(in []byte) error {
 	return nil
 }
 
-func (nd *NodeTransformAnnotations) UnmarshalYAML(parse func(interface{}) error) error {
-	var mv map[string]interface{}
+func (nd *NodeTransformAnnotations) UnmarshalYAML(parse func(any) error) error {
+	var mv map[string]any
 	if err := parse(&mv); err != nil {
 		return err
 	}

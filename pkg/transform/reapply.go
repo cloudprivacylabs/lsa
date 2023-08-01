@@ -36,9 +36,9 @@ func ApplyLayer(ctx *ls.Context, g *lpg.Graph, layer *ls.Layer, reinterpretValue
 		// Find document graph nodes for this layer node
 		pattern := lpg.Pattern{
 			{
-				Labels: lpg.NewStringSet(ls.DocumentNodeTerm),
+				Labels: lpg.NewStringSet(ls.DocumentNodeTerm.Name),
 				Properties: map[string]interface{}{
-					ls.SchemaNodeIDTerm: ls.StringPropertyValue(ls.SchemaNodeIDTerm, layerNodeID),
+					ls.SchemaNodeIDTerm.Name: ls.NewPropertyValue(ls.SchemaNodeIDTerm.Name, layerNodeID),
 				},
 			}}
 		nodes, err := pattern.FindNodes(g, nil)
@@ -48,7 +48,7 @@ func ApplyLayer(ctx *ls.Context, g *lpg.Graph, layer *ls.Layer, reinterpretValue
 		}
 		for _, node := range nodes {
 			var value interface{}
-			if reinterpretValues && node.HasLabel(ls.AttributeTypeValue) {
+			if reinterpretValues && node.HasLabel(ls.AttributeTypeValue.Name) {
 				value, err = ls.GetNodeValue(node)
 				if err != nil {
 					applyErr = err
@@ -59,7 +59,7 @@ func ApplyLayer(ctx *ls.Context, g *lpg.Graph, layer *ls.Layer, reinterpretValue
 				applyErr = err
 				return false
 			}
-			if reinterpretValues && node.HasLabel(ls.AttributeTypeValue) {
+			if reinterpretValues && node.HasLabel(ls.AttributeTypeValue.Name) {
 				if err := ls.SetNodeValue(node, value); err != nil {
 					applyErr = err
 					return false
@@ -70,9 +70,9 @@ func ApplyLayer(ctx *ls.Context, g *lpg.Graph, layer *ls.Layer, reinterpretValue
 		// This is required if schema nodes were not embedded
 		pattern = lpg.Pattern{
 			{
-				Labels: lpg.NewStringSet(ls.AttributeNodeTerm),
-				Properties: map[string]interface{}{
-					ls.NodeIDTerm: layerNodeID,
+				Labels: lpg.NewStringSet(ls.AttributeNodeTerm.Name),
+				Properties: map[string]any{
+					ls.NodeIDTerm.Name: ls.NewPropertyValue(ls.NodeIDTerm.Name, layerNodeID),
 				},
 			}}
 		nodes, err = pattern.FindNodes(g, nil)

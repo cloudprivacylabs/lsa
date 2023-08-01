@@ -19,35 +19,35 @@ import (
 	"github.com/cloudprivacylabs/opencypher"
 )
 
-var EvaluateTerm = ls.NewTerm(TRANSFORM, "evaluate").SetComposition(ls.SetComposition).SetMetadata(EvaluateTermSemantics).SetTags(ls.SchemaElementTag).Register()
+var EvaluateTerm = ls.RegisterStringSliceTerm(ls.NewTerm(TRANSFORM, "evaluate").SetComposition(ls.SetComposition).SetMetadata(EvaluateTermSemantics).SetTags(ls.SchemaElementTag))
 
 type evaluateTermSemantics struct{}
 
 var EvaluateTermSemantics = evaluateTermSemantics{}
 
 func (evaluateTermSemantics) Get(node ls.CompilablePropertyContainer) []string {
-	return ls.AsPropertyValue(node.GetProperty(EvaluateTerm)).MustStringSlice()
+	return EvaluateTerm.PropertyValue(node)
 }
 
-func (evaluateTermSemantics) CompileTerm(ctx *ls.CompileContext, target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
-	if value == nil {
+func (evaluateTermSemantics) CompileTerm(ctx *ls.CompileContext, target ls.CompilablePropertyContainer, term string, value ls.PropertyValue) error {
+	if value.Value() == nil {
 		return nil
 	}
 	expr := make([]opencypher.Evaluatable, 0)
-	for _, str := range value.MustStringSlice() {
+	for _, str := range value.AsStringSlice() {
 		e, err := ctx.CompileOpencypher(str)
 		if err != nil {
 			return err
 		}
 		expr = append(expr, e)
 	}
-	target.SetProperty("$compiled_"+EvaluateTerm, expr)
+	target.SetProperty("$compiled_"+EvaluateTerm.Name, expr)
 	return nil
 }
 
 // GetEvaluatables returns the contents of the compiled evaluate term
 func (evaluateTermSemantics) GetEvaluatables(node ls.CompilablePropertyContainer) []opencypher.Evaluatable {
-	v, _ := node.GetProperty("$compiled_" + EvaluateTerm)
+	v, _ := node.GetProperty("$compiled_" + EvaluateTerm.Name)
 	x, _ := v.([]opencypher.Evaluatable)
 	return x
 }

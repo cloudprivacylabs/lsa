@@ -23,12 +23,12 @@ import (
 // graph nodes that contain the mapped schema node id. The contents of
 // the nodes under the mapContext that have prop:schemaNodeId will be
 // assigned to the current node
-var MapPropertyTerm = ls.NewTerm(TRANSFORM, "mapProperty").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Register()
+var MapPropertyTerm = ls.RegisterStringTerm(ls.NewTerm(TRANSFORM, "mapProperty").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag))
 
 // MapContextTerm gives an opencypher expression that results in a
 // node. That node will be used as the context for the map operations
 // under that node
-var MapContextTerm = ls.NewTerm(TRANSFORM, "mapContext").SetComposition(ls.OverrideComposition).SetMetadata(MapContextSemantics).SetTags(ls.SchemaElementTag).Register()
+var MapContextTerm = ls.RegisterStringTerm(ls.NewTerm(TRANSFORM, "mapContext").SetComposition(ls.OverrideComposition).SetMetadata(MapContextSemantics).SetTags(ls.SchemaElementTag))
 
 var SourceTerm = ls.NewTerm(TRANSFORM, "source").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Register()
 var SourcesTerm = ls.NewTerm(TRANSFORM, "sources").SetComposition(ls.OverrideComposition).SetTags(ls.SchemaElementTag).Register()
@@ -40,8 +40,8 @@ var MapContextSemantics = mapContextSemantics{}
 
 type mapContextSemantics struct{}
 
-func (mapContextSemantics) CompileTerm(ctx *ls.CompileContext, target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
-	e, err := ctx.CompileOpencypher(value.AsString())
+func (mapContextSemantics) CompileTerm(ctx *ls.CompileContext, target ls.CompilablePropertyContainer, term string, value ls.PropertyValue) error {
+	e, err := ctx.CompileOpencypher(value.Value().(string))
 	if err != nil {
 		return err
 	}
@@ -51,7 +51,7 @@ func (mapContextSemantics) CompileTerm(ctx *ls.CompileContext, target ls.Compila
 
 // GetEvaluatable returns the contents of the compiled mapContext term
 func (mapContextSemantics) GetEvaluatable(node ls.CompilablePropertyContainer) opencypher.Evaluatable {
-	v, _ := node.GetProperty("$compiled_" + MapContextTerm)
+	v, _ := node.GetProperty("$compiled_" + MapContextTerm.Name)
 	x, _ := v.(opencypher.Evaluatable)
 	return x
 }

@@ -47,7 +47,7 @@ func reingestNode(ctx *ls.Context, sourceNode *lpg.Node, target ls.GraphBuilder,
 		return nil
 	}
 
-	schemaNodeID := ls.AsPropertyValue(sourceNode.GetProperty(ls.SchemaNodeIDTerm)).AsString()
+	schemaNodeID := ls.SchemaNodeIDTerm.PropertyValue(sourceNode)
 	var schemaNode *lpg.Node
 	if len(schemaNodeID) > 0 {
 		schemaNode = variant.GetAttributeByID(schemaNodeID)
@@ -56,7 +56,7 @@ func reingestNode(ctx *ls.Context, sourceNode *lpg.Node, target ls.GraphBuilder,
 	var nodeValue interface{}
 	var rawValue string
 	var err error
-	if sourceNode.HasLabel(ls.AttributeTypeValue) {
+	if sourceNode.HasLabel(ls.AttributeTypeValue.Name) {
 		rawValue, _ = ls.GetRawNodeValue(sourceNode)
 		nodeValue, err = ls.GetNodeValue(sourceNode)
 		if err != nil {
@@ -69,7 +69,7 @@ func reingestNode(ctx *ls.Context, sourceNode *lpg.Node, target ls.GraphBuilder,
 	}
 	// Ingest the node
 	switch {
-	case sourceNode.HasLabel(ls.AttributeTypeValue):
+	case sourceNode.HasLabel(ls.AttributeTypeValue.Name):
 		switch ls.GetIngestAs(schemaNode) {
 		case "node":
 			_, node, err := target.RawValueAsNode(schemaNode, parentNode, "")
@@ -96,12 +96,12 @@ func reingestNode(ctx *ls.Context, sourceNode *lpg.Node, target ls.GraphBuilder,
 		}
 		return nil
 
-	case sourceNode.HasLabel(ls.AttributeTypeObject) || sourceNode.HasLabel(ls.AttributeTypeArray):
+	case sourceNode.HasLabel(ls.AttributeTypeObject.Name) || sourceNode.HasLabel(ls.AttributeTypeArray.Name):
 		var typeTerm string
-		if sourceNode.HasLabel(ls.AttributeTypeObject) {
-			typeTerm = ls.AttributeTypeObject
+		if sourceNode.HasLabel(ls.AttributeTypeObject.Name) {
+			typeTerm = ls.AttributeTypeObject.Name
 		} else {
-			typeTerm = ls.AttributeTypeArray
+			typeTerm = ls.AttributeTypeArray.Name
 		}
 		var newNode *lpg.Node
 		switch ls.GetIngestAs(schemaNode) {
@@ -124,7 +124,7 @@ func reingestNode(ctx *ls.Context, sourceNode *lpg.Node, target ls.GraphBuilder,
 		for edges := sourceNode.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
 			node := edge.GetTo()
-			if !node.HasLabel(ls.DocumentNodeTerm) {
+			if !node.HasLabel(ls.DocumentNodeTerm.Name) {
 				continue
 			}
 			if err := reingestNode(ctx, node, target, variant, append(graphPath, newNode), nodeMap); err != nil {

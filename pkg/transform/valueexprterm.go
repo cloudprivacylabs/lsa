@@ -22,32 +22,33 @@ import (
 // ValueExprTerm defines one or more opencypher expressions that
 // defines the value of the node. The first one that returns nonempty
 // resultset will be evaluated
-var ValueExprTerm = ls.NewTerm(TRANSFORM, "valueExpr").SetComposition(ls.OverrideComposition).SetMetadata(ValueExprTermSemantics).SetTags(ls.SchemaElementTag).Register()
-var ValueExprFirstTerm = ls.NewTerm(TRANSFORM, "valueExpr.first").SetComposition(ls.OverrideComposition).SetMetadata(ValueExprTermSemantics).SetTags(ls.SchemaElementTag).Register()
-var ValueExprAllTerm = ls.NewTerm(TRANSFORM, "valueExpr.all").SetComposition(ls.OverrideComposition).SetMetadata(ValueExprTermSemantics).SetTags(ls.SchemaElementTag).Register()
+var ValueExprTerm = ls.RegisterStringSliceTerm(ls.NewTerm(TRANSFORM, "valueExpr").SetComposition(ls.OverrideComposition).SetMetadata(ValueExprTermSemantics).SetTags(ls.SchemaElementTag))
+var ValueExprFirstTerm = ls.RegisterStringSliceTerm(ls.NewTerm(TRANSFORM, "valueExpr.first").SetComposition(ls.OverrideComposition).SetMetadata(ValueExprTermSemantics).SetTags(ls.SchemaElementTag))
+var ValueExprAllTerm = ls.RegisterStringSliceTerm(ls.NewTerm(TRANSFORM, "valueExpr.all").SetComposition(ls.OverrideComposition).SetMetadata(ValueExprTermSemantics).SetTags(ls.SchemaElementTag))
 
 type valueExprTermSemantics struct{}
 
 var ValueExprTermSemantics = valueExprTermSemantics{}
 
 func (valueExprTermSemantics) Get(node ls.CompilablePropertyContainer) []string {
-	p, ok := node.GetProperty(ValueExprAllTerm)
-	if ok {
-		return ls.AsPropertyValue(p, ok).MustStringSlice()
+	s := ValueExprAllTerm.PropertyValue(node)
+	if len(s) > 0 {
+		return s
 	}
-	p, ok = node.GetProperty(ValueExprFirstTerm)
-	if ok {
-		return ls.AsPropertyValue(p, ok).MustStringSlice()
+	s = ValueExprFirstTerm.PropertyValue(node)
+	if len(s) > 0 {
+		return s
 	}
-	return ls.AsPropertyValue(node.GetProperty(ValueExprTerm)).MustStringSlice()
+	s = ValueExprTerm.PropertyValue(node)
+	return s
 }
 
-func (valueExprTermSemantics) CompileTerm(ctx *ls.CompileContext, target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
-	if value == nil {
+func (valueExprTermSemantics) CompileTerm(ctx *ls.CompileContext, target ls.CompilablePropertyContainer, term string, value ls.PropertyValue) error {
+	if value.Value() == nil {
 		return nil
 	}
 	expr := make([]opencypher.Evaluatable, 0)
-	for _, str := range value.MustStringSlice() {
+	for _, str := range value.AsStringSlice() {
 		e, err := ctx.CompileOpencypher(str)
 		if err != nil {
 			return err

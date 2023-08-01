@@ -86,10 +86,7 @@ func (ctx *reshapeContext) preserveTag(property string) bool {
 			return true
 		}
 	}
-	term := ls.GetTermInfo(property)
-	if term == nil {
-		return false
-	}
+	term := ls.GetTerm(property)
 	for tag := range term.Tags {
 		if _, has := ctx.preserveNodePropertyTags[tag]; has {
 			return true
@@ -183,12 +180,12 @@ func (reshaper Reshaper) fillNodes(roots []*txDocNode) error {
 
 func (reshaper Reshaper) fillNode(node *txDocNode) error {
 	if node.schemaNode != nil {
-		if node.schemaNode.GetLabels().Has(ls.AttributeTypeArray) {
-			node.typeTerm = ls.AttributeTypeArray
-		} else if node.schemaNode.GetLabels().Has(ls.AttributeTypeObject) {
-			node.typeTerm = ls.AttributeTypeObject
+		if node.schemaNode.GetLabels().Has(ls.AttributeTypeArray.Name) {
+			node.typeTerm = ls.AttributeTypeArray.Name
+		} else if node.schemaNode.GetLabels().Has(ls.AttributeTypeObject.Name) {
+			node.typeTerm = ls.AttributeTypeObject.Name
 		} else {
-			node.typeTerm = ls.AttributeTypeValue
+			node.typeTerm = ls.AttributeTypeValue.Name
 		}
 	}
 	if node.sourceNode != nil {
@@ -201,7 +198,7 @@ func (reshaper Reshaper) fillNode(node *txDocNode) error {
 			if strings.HasPrefix(key, ls.LS) {
 				return true
 			}
-			p, ok := value.(*ls.PropertyValue)
+			p, ok := value.(ls.PropertyValue)
 			if !ok {
 				return true
 			}
@@ -297,7 +294,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 				return nil, err
 			}
 			ret = append(ret, sv)
-			if term == ValueExprTerm || term == ValueExprFirstTerm {
+			if term == ValueExprTerm.Name || term == ValueExprFirstTerm.Name {
 				if !isEmptyValue(sv) {
 					break
 				}
@@ -310,15 +307,15 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 
 	// Evaluate value expressions
 	{
-		v1, err := processValueExpr(ValueExprFirstTerm)
+		v1, err := processValueExpr(ValueExprFirstTerm.Name)
 		if err != nil {
 			return nil, wrapReshapeError(err, schemaNodeID)
 		}
-		v2, err := processValueExpr(ValueExprAllTerm)
+		v2, err := processValueExpr(ValueExprAllTerm.Name)
 		if err != nil {
 			return nil, wrapReshapeError(err, schemaNodeID)
 		}
-		v3, err := processValueExpr(ValueExprTerm)
+		v3, err := processValueExpr(ValueExprTerm.Name)
 		if err != nil {
 			return nil, wrapReshapeError(err, schemaNodeID)
 		}
@@ -328,7 +325,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 		results = append(results, v3...)
 	}
 
-	provenance, err := ls.CompileOCSemantics{}.Evaluate(reshaper.Script.GetProperties(ctx.schemaPath.items), ProvenanceTerm, ctx.getEvalContext())
+	provenance, err := ls.CompileOCSemantics{}.Evaluate(reshaper.Script.GetProperties(ctx.schemaPath.items), ProvenanceTerm.Name, ctx.getEvalContext())
 	if err != nil {
 		return nil, wrapReshapeError(err, schemaNodeID)
 	}
@@ -354,8 +351,8 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 	// propName`. In this case, nodes under the map context that has the
 	// property `propName: schemaNodeId` will be selected as the source
 	// nodes.
-	if mapProperty := ls.AsPropertyValue(reshaper.Script.GetProperties(ctx.schemaPath.items).GetProperty(MapPropertyTerm)).AsString(); len(mapProperty) > 0 {
-		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "valueFrom": MapPropertyTerm})
+	if mapProperty := MapPropertyTerm.PropertyValue(reshaper.Script.GetProperties(ctx.schemaPath.items)); len(mapProperty) > 0 {
+		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "valueFrom": MapPropertyTerm.Name})
 		// Find the nodes under the map context whose mapProperty property points to schemaNodeID
 		nodeValues := reshaper.findNodesUnderMapContext(ctx, mapProperty, []string{schemaNodeID})
 		for _, v := range nodeValues {
@@ -370,7 +367,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 	if nodeMappings := reshaper.Script.GetSources(ctx.schemaPath.items); len(nodeMappings) != 0 {
 		ctx.GetLogger().Debug(map[string]interface{}{"reshape": schemaNodeID, "valueFrom": "map by target"})
 		// Find the nodes under the map context whose source node ID is given in
-		nodeValues := reshaper.findNodesUnderMapContext(ctx, ls.SchemaNodeIDTerm, nodeMappings)
+		nodeValues := reshaper.findNodesUnderMapContext(ctx, ls.SchemaNodeIDTerm.Name, nodeMappings)
 		for _, v := range nodeValues {
 			results = append(results, opencypher.RValue{Value: v})
 		}
@@ -443,7 +440,7 @@ func (reshaper Reshaper) reshapeNode(ctx *reshapeContext) ([]*txDocNode, error) 
 	}
 
 	// If not a value node, try reshaping subtree
-	if !schemaNode.HasLabel(ls.AttributeTypeValue) {
+	if !schemaNode.HasLabel(ls.AttributeTypeValue.Name) {
 		v, err := reshaper.handleNode(ctx, nil)
 		if err != nil {
 			return nil, err
@@ -484,7 +481,7 @@ func (reshaper Reshaper) handleNode(ctx *reshapeContext, input *lpg.Node) (*txDo
 	defer ctx.generatedPath.pop()
 	// Descend into the schema
 	switch {
-	case ret.schemaNode.GetLabels().Has(ls.AttributeTypeObject):
+	case ret.schemaNode.GetLabels().Has(ls.AttributeTypeObject.Name):
 		children := ls.GetObjectAttributeNodes(ret.schemaNode)
 		ls.SortNodes(children)
 		for _, child := range children {
@@ -502,7 +499,7 @@ func (reshaper Reshaper) handleNode(ctx *reshapeContext, input *lpg.Node) (*txDo
 			return ret, nil
 		}
 
-	case ret.schemaNode.GetLabels().Has(ls.AttributeTypeArray):
+	case ret.schemaNode.GetLabels().Has(ls.AttributeTypeArray.Name):
 		elemNode := ls.GetArrayElementNode(ret.schemaNode)
 		ctx.schemaPath.push(elemNode)
 		defer ctx.schemaPath.pop()
@@ -517,7 +514,7 @@ func (reshaper Reshaper) handleNode(ctx *reshapeContext, input *lpg.Node) (*txDo
 			return ret, nil
 		}
 
-	case ret.schemaNode.GetLabels().Has(ls.AttributeTypeValue):
+	case ret.schemaNode.GetLabels().Has(ls.AttributeTypeValue.Name):
 		if input == nil {
 			return nil, nil
 		}
@@ -595,7 +592,7 @@ func (reshaper Reshaper) generateOutput(ctx *reshapeContext, input interface{}) 
 			if len(row) == 0 {
 				continue
 			}
-			if !schemaNode.HasLabel(ls.AttributeTypeValue) {
+			if !schemaNode.HasLabel(ls.AttributeTypeValue.Name) {
 				for k, v := range row {
 					if opencypher.IsNamedResult(k) {
 						ctx.setSymbolValue(k, v)
@@ -657,7 +654,7 @@ func (reshaper Reshaper) findNodesUnderMapContext(ctx *reshapeContext, propertyK
 	if ctx.mapContext.empty() {
 		for nodes := ctx.sourceGraph.GetNodesWithProperty(propertyKey); nodes.Next(); {
 			node := nodes.Node()
-			s := ls.AsPropertyValue(node.GetProperty(propertyKey)).AsString()
+			s, _ := ls.GetPropertyValueAs[string](node, propertyKey)
 			if has(s) {
 				ret = append(ret, node)
 			}
@@ -667,7 +664,7 @@ func (reshaper Reshaper) findNodesUnderMapContext(ctx *reshapeContext, propertyK
 
 	mc := ctx.mapContext.last()
 	ls.IterateDescendants(mc, func(node *lpg.Node) bool {
-		s := ls.AsPropertyValue(node.GetProperty(propertyKey)).AsString()
+		s, _ := ls.GetPropertyValueAs[string](node, propertyKey)
 		if has(s) {
 			ret = append(ret, node)
 		}

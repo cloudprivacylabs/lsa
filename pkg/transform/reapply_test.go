@@ -71,7 +71,7 @@ func (tc reapplyTestCase) Run(t *testing.T) {
 		// Expected properties must be a subset
 		propertiesOK := true
 		n2.ForEachProperty(func(k string, v interface{}) bool {
-			pv, ok := v.(*ls.PropertyValue)
+			pv, ok := v.(ls.PropertyValue)
 			if !ok {
 				return true
 			}
@@ -80,12 +80,12 @@ func (tc reapplyTestCase) Run(t *testing.T) {
 				propertiesOK = false
 				return false
 			}
-			pv2, ok := v2.(*ls.PropertyValue)
+			pv2, ok := v2.(ls.PropertyValue)
 			if !ok {
 				propertiesOK = false
 				return false
 			}
-			if !pv2.IsEqual(pv) {
+			if !pv2.Equal(pv) {
 				propertiesOK = false
 				return false
 			}
