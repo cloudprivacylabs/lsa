@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/cloudprivacylabs/lpg/v2"
 )
@@ -259,6 +260,14 @@ func (e ErrInvalidStringSliceValue) Error() string {
 	return fmt.Sprintf("Invalid string slice value: %v", e.Value)
 }
 
+type ErrInvalidBooleanValue struct {
+	Value any
+}
+
+func (e ErrInvalidBooleanValue) Error() string {
+	return fmt.Sprintf("Invalid boolean value: %v", e.Value)
+}
+
 // AnyType is the default type that does not do any translation
 type AnyType struct{}
 
@@ -443,4 +452,82 @@ func (FloatType) Coerce(input any) (any, error) {
 		return float64(v), err
 	}
 	return nil, ErrInvalidFloatValue{input}
+}
+
+// FloatTerm is a wrapper for float values.
+type FloatTerm struct {
+	Term
+}
+
+func RegisterFloatTerm(t Term) FloatTerm {
+	t.Type = FloatType{}
+	RegisterTerm(t)
+	return FloatTerm{t}
+}
+
+// PropertyValue returns the value of the property in the node or edge as float64
+func (s FloatTerm) PropertyValue(source lpg.WithProperties) float64 {
+	pv, _ := GetPropertyValueAs[float64](source, s.Name)
+	return pv
+}
+
+type BooleanType struct{}
+
+// Coerce an input value to bool
+func (BooleanType) Coerce(input any) (any, error) {
+	if i, ok := input.(bool); ok {
+		return i, nil
+	}
+	if input == nil {
+		return false, nil
+	}
+	switch k := input.(type) {
+	case int8:
+		return k != 0, nil
+	case int16:
+		return k != 0, nil
+	case int32:
+		return k != 0, nil
+	case int64:
+		return k != 0, nil
+	case int:
+		return k != 0, nil
+	case uint8:
+		return k != 0, nil
+	case uint16:
+		return k != 0, nil
+	case uint32:
+		return k != 0, nil
+	case uint64:
+		return k != 0, nil
+	case uint:
+		return k != 0, nil
+	case float32:
+		return k != 0, nil
+	case float64:
+		return k != 0, nil
+	case string:
+		return strings.ToLower(k) == "true", nil
+	case json.Number:
+		v, err := k.Int64()
+		return v != 0, err
+	}
+	return nil, ErrInvalidBooleanValue{input}
+}
+
+// BooleanTerm is a wrapper for bool values.
+type BooleanTerm struct {
+	Term
+}
+
+func RegisterBooleanTerm(t Term) BooleanTerm {
+	t.Type = BooleanType{}
+	RegisterTerm(t)
+	return BooleanTerm{t}
+}
+
+// PropertyValue returns the value of the property in the node or edge as bool
+func (s BooleanTerm) PropertyValue(source lpg.WithProperties) bool {
+	pv, _ := GetPropertyValueAs[bool](source, s.Name)
+	return pv
 }

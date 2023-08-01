@@ -28,10 +28,10 @@ func (validator JsonFormatValidator) validateValue(value, format string) error {
 	}
 	f := jsonschema.Formats[format]
 	if f == nil {
-		return ls.ErrValidation{Validator: JsonFormatTerm, Msg: fmt.Sprintf("Unknown format: %s: %v ", format, value)}
+		return ls.ErrValidation{Validator: JsonFormatTerm.Name, Msg: fmt.Sprintf("Unknown format: %s: %v ", format, value)}
 	}
 	if !f(value) {
-		return ls.ErrValidation{Validator: JsonFormatTerm, Msg: fmt.Sprintf("Invalid value for %s: %v", format, value)}
+		return ls.ErrValidation{Validator: JsonFormatTerm.Name, Msg: fmt.Sprintf("Invalid value for %s: %v", format, value)}
 	}
 	return nil
 }
@@ -57,13 +57,14 @@ func (validator JsonFormatValidator) ValidateNode(docNode, schemaNode *lpg.Node)
 	return validator.ValidateValue(&value, schemaNode)
 }
 
-func (validator JsonFormatValidator) CompileTerm(_ *ls.CompileContext, target ls.CompilablePropertyContainer, term string, value *ls.PropertyValue) error {
-	if !value.IsString() {
-		return ls.ErrValidatorCompile{Validator: JsonFormatTerm, Object: target, Msg: fmt.Sprintf("Invalid format value: %v", value)}
+func (validator JsonFormatValidator) CompileTerm(_ *ls.CompileContext, target ls.CompilablePropertyContainer, term string, value ls.PropertyValue) error {
+	str, ok := value.Value().(string)
+	if !ok {
+		return ls.ErrValidatorCompile{Validator: JsonFormatTerm.Name, Object: target, Msg: fmt.Sprintf("Invalid format value: %v", value)}
 	}
-	if jsonschema.Formats[value.AsString()] == nil {
-		return ls.ErrValidatorCompile{Validator: JsonFormatTerm, Object: target, Msg: "Invalid format value"}
+	if jsonschema.Formats[str] == nil {
+		return ls.ErrValidatorCompile{Validator: JsonFormatTerm.Name, Object: target, Msg: "Invalid format value"}
 	}
-	target.SetProperty(compiledJsonFormatTerm, value.AsString())
+	target.SetProperty(compiledJsonFormatTerm, str)
 	return nil
 }

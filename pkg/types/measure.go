@@ -183,7 +183,7 @@ func SetMeasureService(ctx *ls.Context, svc MeasureService) {
 func getMeasureValueNodes(ctx *ls.Context, g *lpg.Graph, measureSchemaNode *lpg.Node) ([]*lpg.Node, error) {
 	valueNodes := make([]*lpg.Node, 0)
 	evalCtx := ls.NewEvalContext(g)
-	results, err := ls.CompileOCSemantics{}.Evaluate(measureSchemaNode, MeasureValueNodeExpr, evalCtx)
+	results, err := ls.CompileOCSemantics{}.Evaluate(measureSchemaNode, MeasureValueNodeExpr.Name, evalCtx)
 	if err != nil {
 		return nil, ErrMeasureProcessing{
 			ID:  ls.GetNodeID(measureSchemaNode),
@@ -216,7 +216,7 @@ func getMeasureValueNodes(ctx *ls.Context, g *lpg.Graph, measureSchemaNode *lpg.
 			}
 		}
 	}
-	if s := ls.AsPropertyValue(measureSchemaNode.GetProperty(MeasureValueNode)).AsString(); len(s) > 0 {
+	if s, _ := ls.GetPropertyValueAs[string](measureSchemaNode, MeasureValueNode.Name); len(s) > 0 {
 		valueNodes = append(valueNodes, ls.GetNodesInstanceOf(g, s)...)
 	}
 	return valueNodes, nil
@@ -229,7 +229,7 @@ func findUnit(valueNode, measureSchemaNode *lpg.Node) (string, error) {
 	}
 	evalCtx := ls.NewEvalContext(valueNode.GetGraph())
 	evalCtx.SetVar("valueNode", opencypher.ValueOf(valueNode))
-	results, err := ls.CompileOCSemantics{}.Evaluate(measureSchemaNode, MeasureUnitExpr, evalCtx)
+	results, err := ls.CompileOCSemantics{}.Evaluate(measureSchemaNode, MeasureUnitExpr.Name, evalCtx)
 	if err != nil {
 		return "", ErrMeasureProcessing{
 			ID:  ls.GetNodeID(measureSchemaNode),
@@ -258,7 +258,7 @@ func findUnit(valueNode, measureSchemaNode *lpg.Node) (string, error) {
 		}
 	}
 	// If we are here, expressions did not match
-	unitNodeID := ls.AsPropertyValue(measureSchemaNode.GetProperty(MeasureUnitNode)).AsString()
+	unitNodeID, _ := ls.GetPropertyValueAs[string](measureSchemaNode, MeasureUnitNode.Name)
 	if len(unitNodeID) == 0 {
 		return "", nil
 	}
@@ -266,7 +266,7 @@ func findUnit(valueNode, measureSchemaNode *lpg.Node) (string, error) {
 	// Find the closest unit node starting from the value node
 	found := make([]*lpg.Node, 0)
 	addToFound := func(node *lpg.Node) bool {
-		if ls.AsPropertyValue(node.GetProperty(ls.SchemaNodeIDTerm)).AsString() == unitNodeID {
+		if ls.SchemaNodeIDTerm.PropertyValue(node) == unitNodeID {
 			found = append(found, node)
 			return true
 		}
@@ -363,7 +363,7 @@ func BuildMeasureNodes(ctx *ls.Context, builder ls.GraphBuilder, measureSchemaNo
 				}
 			}
 			labels := measureNode.GetLabels()
-			labels.Add(MeasureTerm)
+			labels.Add(MeasureTerm.Name)
 			measureNode.SetLabels(labels)
 		} else {
 			measureNode = sources[0]
@@ -405,10 +405,10 @@ func SetMeasureValue(ctx *ls.Context, svc MeasureService, measureNode, schemaNod
 	if schemaNode == nil {
 		schemaNode = measureNode
 	}
-	useUnit := ls.AsPropertyValue(schemaNode.GetProperty(MeasureUseUnitTerm)).AsString()
+	useUnit, _ := ls.GetPropertyValueAs[string](schemaNode, MeasureUseUnitTerm.Name)
 	if len(useUnit) > 0 && useUnit != value.Unit {
 		// We need to convert
-		domain := ls.AsPropertyValue(schemaNode.GetProperty(MeasureUnitDomainTerm)).AsString()
+		domain, _ := ls.GetPropertyValueAs[string](schemaNode, MeasureUnitDomainTerm.Name)
 		newMeasure, err := svc.Convert(value, useUnit, domain)
 		if err != nil {
 			return err
@@ -442,24 +442,23 @@ func (measureParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg
 }
 
 func (measureParser) GetNodeValue(node *lpg.Node) (interface{}, error) {
-	ret := Measure{
-		Value: ls.AsPropertyValue(node.GetProperty(MeasureValueTerm)).AsString(),
-		Unit:  ls.AsPropertyValue(node.GetProperty(MeasureUnitTerm)).AsString(),
-	}
+	ret := Measure{}
+	ret.Value, _ = ls.GetPropertyValueAs[string](node, MeasureValueTerm.Name)
+	ret.Unit, _ = ls.GetPropertyValueAs[string](node, MeasureUnitTerm.Name)
 	return ret, nil
 }
 
 func (measureParser) SetNodeValue(value interface{}, node *lpg.Node) error {
 	if value == nil {
-		node.RemoveProperty(MeasureValueTerm)
-		node.RemoveProperty(MeasureUnitTerm)
+		node.RemoveProperty(MeasureValueTerm.Name)
+		node.RemoveProperty(MeasureUnitTerm.Name)
 		ls.RemoveRawNodeValue(node)
 		return nil
 	}
 	switch t := value.(type) {
 	case Measure:
-		node.SetProperty(MeasureValueTerm, ls.StringPropertyValue(MeasureValueTerm, t.Value))
-		node.SetProperty(MeasureUnitTerm, ls.StringPropertyValue(MeasureUnitTerm, t.Unit))
+		node.SetProperty(MeasureValueTerm.Name, ls.NewPropertyValue(MeasureValueTerm.Name, t.Value))
+		node.SetProperty(MeasureUnitTerm.Name, ls.NewPropertyValue(MeasureUnitTerm.Name, t.Unit))
 		ls.SetRawNodeValue(node, t.String())
 		return nil
 	}

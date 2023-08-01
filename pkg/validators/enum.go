@@ -58,14 +58,19 @@ func (validator EnumValidator) validateValue(value *string, options []string) er
 }
 
 func (validator EnumValidator) ValidateValue(value *string, schemaNode *lpg.Node) error {
-	options := ls.AsPropertyValue(schemaNode.GetProperty(EnumTerm))
-	if options == nil {
-		return ls.ErrInvalidValidator{Validator: EnumTerm, Msg: "Invalid enum options"}
+	optionspv, _ := schemaNode.GetProperty(EnumTerm.Name)
+	options, ok := optionspv.(ls.PropertyValue)
+	if !ok {
+		return ls.ErrInvalidValidator{Validator: EnumTerm.Name, Msg: "Invalid enum options"}
 	}
-	if options.IsString() {
-		return validator.validateValue(value, []string{options.AsString()})
+	if str, ok := options.Value().(string); ok {
+		return validator.validateValue(value, []string{str})
 	}
-	return validator.validateValue(value, options.AsStringSlice())
+	slice, _ := ls.StringSliceType{}.Coerce(options.Value())
+	if slice != nil {
+		return validator.validateValue(value, slice.([]string))
+	}
+	return nil
 }
 
 // ValidateNode validates the node value if it is non-nil

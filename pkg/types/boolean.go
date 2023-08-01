@@ -43,7 +43,7 @@ func (JSONBooleanParser) GetNativeValue(value string, node *lpg.Node) (interface
 	if value == "true" {
 		return true, nil
 	}
-	return nil, ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm, Value: value}
+	return nil, ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm.Name, Value: value}
 }
 
 func (JSONBooleanParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
@@ -63,7 +63,7 @@ func (JSONBooleanParser) FormatNativeValue(newValue, oldValue interface{}, node 
 		}
 		return "true", nil
 	}
-	return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm, Value: newValue}
+	return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm.Name, Value: newValue}
 }
 
 type XMLBooleanParser struct{}
@@ -75,7 +75,7 @@ func (XMLBooleanParser) GetNativeValue(value string, node *lpg.Node) (interface{
 	if strings.ToLower(value) == "true" || value == "1" {
 		return true, nil
 	}
-	return nil, ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XMLBooleanTerm, Value: value}
+	return nil, ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XMLBooleanTerm.Name, Value: value}
 }
 
 func (XMLBooleanParser) FormatNativeValue(newValue, oldValue interface{}, node *lpg.Node) (string, error) {
@@ -98,5 +98,5 @@ func (XMLBooleanParser) FormatNativeValue(newValue, oldValue interface{}, node *
 		}
 		return "true", nil
 	}
-	return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm, Value: newValue}
+	return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONBooleanTerm.Name, Value: newValue}
 }

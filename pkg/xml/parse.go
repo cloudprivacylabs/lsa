@@ -111,13 +111,13 @@ func (ing *Parser) element(ctx parserContext, element *xmlElement) (*ParsedDocNo
 			return nil, nil
 		}
 		switch {
-		case ctx.schemaNode.HasLabel(ls.AttributeTypeValue):
+		case ctx.schemaNode.HasLabel(ls.AttributeTypeValue.Name):
 			return ing.parseValue(ctx, element)
-		case ctx.schemaNode.HasLabel(ls.AttributeTypeObject):
+		case ctx.schemaNode.HasLabel(ls.AttributeTypeObject.Name):
 			return ing.parseObject(ctx, element)
-		case ctx.schemaNode.HasLabel(ls.AttributeTypeArray):
+		case ctx.schemaNode.HasLabel(ls.AttributeTypeArray.Name):
 			return ing.parseArray(ctx, element)
-		case ctx.schemaNode.HasLabel(ls.AttributeTypePolymorphic):
+		case ctx.schemaNode.HasLabel(ls.AttributeTypePolymorphic.Name):
 			return ing.parsePolymorphic(ctx, element)
 		}
 		return nil, ls.ErrInvalidSchema(fmt.Sprintf("Cannot determine attribute type for %s", ls.GetNodeID(ctx.schemaNode)))
@@ -135,7 +135,7 @@ func (ing *Parser) parseValue(ctx parserContext, element *xmlElement) (*ParsedDo
 	// element has at most one text node, or valueAttr is set
 	var value string
 	if ctx.schemaNode != nil {
-		pvalue := ls.AsPropertyValue(ctx.schemaNode.GetProperty(ValueAttributeTerm)).AsString()
+		pvalue := ValueAttributeTerm.PropertyValue(ctx.schemaNode)
 		if len(pvalue) > 0 {
 			v, ok := element.findAttr(xml.Name{Local: pvalue})
 			if ok {
@@ -145,14 +145,14 @@ func (ing *Parser) parseValue(ctx parserContext, element *xmlElement) (*ParsedDo
 				ret := &ParsedDocNode{
 					name:       element.name,
 					schemaNode: ctx.schemaNode,
-					typeTerm:   ls.AttributeTypeValue,
+					typeTerm:   ls.AttributeTypeValue.Name,
 					properties: make(map[string]interface{}),
 					id:         ctx.path.Append(element.name.Local).Append(pvalue).String(),
 					value:      v,
 				}
-				ret.properties[ls.AttributeNameTerm] = ls.StringPropertyValue(ls.AttributeNameTerm, element.name.Local)
+				ret.properties[ls.AttributeNameTerm.Name] = ls.NewPropertyValue(ls.AttributeNameTerm.Name, element.name.Local)
 				if len(element.name.Space) > 0 {
-					ret.properties[NamespaceTerm] = ls.StringPropertyValue(NamespaceTerm, element.name.Space)
+					ret.properties[NamespaceTerm.Name] = ls.NewPropertyValue(NamespaceTerm.Name, element.name.Space)
 				}
 				return ret, nil
 			}
@@ -176,7 +176,7 @@ func (ing *Parser) parseValue(ctx parserContext, element *xmlElement) (*ParsedDo
 	ret := &ParsedDocNode{
 		name:       element.name,
 		schemaNode: ctx.schemaNode,
-		typeTerm:   ls.AttributeTypeValue,
+		typeTerm:   ls.AttributeTypeValue.Name,
 		properties: make(map[string]interface{}),
 		id:         ctx.path.Append(element.name.Local).String(),
 		value:      value,
@@ -186,12 +186,12 @@ func (ing *Parser) parseValue(ctx parserContext, element *xmlElement) (*ParsedDo
 		if !ing.IngestEmptyValues && len(attribute.value) == 0 {
 			continue
 		}
-		ret.properties[makeFullName(attribute.name)] = ls.StringPropertyValue(makeFullName(attribute.name), attribute.value)
+		ret.properties[makeFullName(attribute.name)] = ls.NewPropertyValue(makeFullName(attribute.name), attribute.value)
 	}
 
-	ret.properties[ls.AttributeNameTerm] = ls.StringPropertyValue(ls.AttributeNameTerm, element.name.Local)
+	ret.properties[ls.AttributeNameTerm.Name] = ls.NewPropertyValue(ls.AttributeNameTerm.Name, element.name.Local)
 	if len(element.name.Space) > 0 {
-		ret.properties[NamespaceTerm] = ls.StringPropertyValue(NamespaceTerm, element.name.Space)
+		ret.properties[NamespaceTerm.Name] = ls.NewPropertyValue(NamespaceTerm.Name, element.name.Space)
 	}
 	return ret, nil
 }
@@ -214,14 +214,14 @@ func (ing *Parser) attributes(ctx parserContext, element *xmlElement, childSchem
 			name:       attribute.name,
 			value:      attribute.value,
 			schemaNode: attrSchema,
-			typeTerm:   ls.AttributeTypeValue,
+			typeTerm:   ls.AttributeTypeValue.Name,
 			id:         fmt.Sprintf("%s#%s", ctx.path.String(), attribute.name.Local),
 			properties: make(map[string]interface{}),
 		}
 		if len(attribute.name.Space) > 0 {
-			attrNode.properties[NamespaceTerm] = ls.StringPropertyValue(NamespaceTerm, ctx.context.GetInterner().Intern(attribute.name.Space))
+			attrNode.properties[NamespaceTerm.Name] = ls.NewPropertyValue(NamespaceTerm.Name, ctx.context.GetInterner().Intern(attribute.name.Space))
 		}
-		attrNode.properties[ls.AttributeNameTerm] = ls.StringPropertyValue(ls.AttributeNameTerm, ctx.context.GetInterner().Intern(attribute.name.Local))
+		attrNode.properties[ls.AttributeNameTerm.Name] = ls.NewPropertyValue(ls.AttributeNameTerm.Name, ctx.context.GetInterner().Intern(attribute.name.Local))
 		children = append(children, attrNode)
 	}
 	return children, nil
@@ -235,13 +235,13 @@ func (ing *Parser) parseObject(ctx parserContext, element *xmlElement) (*ParsedD
 	ret := &ParsedDocNode{
 		name:       element.name,
 		schemaNode: ctx.schemaNode,
-		typeTerm:   ls.AttributeTypeObject,
+		typeTerm:   ls.AttributeTypeObject.Name,
 		properties: make(map[string]interface{}),
 		id:         ctx.path.String(),
 	}
-	ret.properties[ls.AttributeNameTerm] = ls.StringPropertyValue(ls.AttributeNameTerm, element.name.Local)
+	ret.properties[ls.AttributeNameTerm.Name] = ls.NewPropertyValue(ls.AttributeNameTerm.Name, element.name.Local)
 	if len(element.name.Space) > 0 {
-		ret.properties[NamespaceTerm] = ls.StringPropertyValue(NamespaceTerm, element.name.Space)
+		ret.properties[NamespaceTerm.Name] = ls.NewPropertyValue(NamespaceTerm.Name, element.name.Space)
 	}
 
 	ch, err := ing.attributes(ctx, element, childSchemaNodes)
@@ -261,7 +261,7 @@ func (ing *Parser) parseObject(ctx parserContext, element *xmlElement) (*ParsedD
 			// If nothing was found, check if there are polymorphic nodes
 			if childSchema == nil {
 				for _, childSchemaNode := range childSchemaNodes {
-					if !childSchemaNode.HasLabel(ls.AttributeTypePolymorphic) {
+					if !childSchemaNode.HasLabel(ls.AttributeTypePolymorphic.Name) {
 						continue
 					}
 					newCtx := ctx
@@ -284,7 +284,7 @@ func (ing *Parser) parseObject(ctx parserContext, element *xmlElement) (*ParsedD
 			}
 		case *xmlText:
 			newChildNode = &ParsedDocNode{
-				typeTerm: ls.AttributeTypeValue,
+				typeTerm: ls.AttributeTypeValue.Name,
 				value:    string(childNode.text),
 			}
 		}
@@ -301,13 +301,13 @@ func (ing *Parser) parseArray(ctx parserContext, element *xmlElement) (*ParsedDo
 	ret := &ParsedDocNode{
 		name:       element.name,
 		schemaNode: ctx.schemaNode,
-		typeTerm:   ls.AttributeTypeArray,
+		typeTerm:   ls.AttributeTypeArray.Name,
 		properties: make(map[string]interface{}),
 		id:         ctx.path.String(),
 	}
-	ret.properties[ls.AttributeNameTerm] = ls.StringPropertyValue(ls.AttributeNameTerm, element.name.Local)
+	ret.properties[ls.AttributeNameTerm.Name] = ls.NewPropertyValue(ls.AttributeNameTerm.Name, element.name.Local)
 	if len(element.name.Space) > 0 {
-		ret.properties[NamespaceTerm] = ls.StringPropertyValue(NamespaceTerm, element.name.Space)
+		ret.properties[NamespaceTerm.Name] = ls.NewPropertyValue(NamespaceTerm.Name, element.name.Space)
 	}
 
 	ch, err := ing.attributes(ctx, element, nil)
@@ -329,12 +329,12 @@ func (ing *Parser) parseArray(ctx parserContext, element *xmlElement) (*ParsedDo
 			}
 		case *xmlText:
 			newNode = &ParsedDocNode{
-				typeTerm: ls.AttributeTypeValue,
+				typeTerm: ls.AttributeTypeValue.Name,
 				value:    string(childNode.text),
 			}
 		}
 		if newNode != nil {
-			newNode.properties[ls.AttributeIndexTerm] = ls.IntPropertyValue(ls.AttributeIndexTerm, index)
+			newNode.properties[ls.AttributeIndexTerm.Name] = ls.NewPropertyValue(ls.AttributeIndexTerm.Name, index)
 			ret.children = append(ret.children, newNode)
 		}
 	}

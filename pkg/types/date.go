@@ -335,8 +335,8 @@ var PatternTimeTerm = ls.NewTerm(ls.LS, "time", "ls:time").SetComposition(ls.Ove
 	PatternTimeParser: PatternTimeParser{},
 }).Register()
 
-var GoTimeFormatTerm = ls.NewTerm(ls.LS, "goTimeFormat", "ls:goTimeFormat").SetComposition(ls.SetComposition).Register()
-var MomentTimeFormatTerm = ls.NewTerm(ls.LS, "momentTimeFormat", "ls:momentTimeFormat").SetComposition(ls.SetComposition).Register()
+var GoTimeFormatTerm = ls.RegisterStringSliceTerm(ls.NewTerm(ls.LS, "goTimeFormat", "ls:goTimeFormat").SetComposition(ls.SetComposition))
+var MomentTimeFormatTerm = ls.RegisterStringSliceTerm(ls.NewTerm(ls.LS, "momentTimeFormat", "ls:momentTimeFormat").SetComposition(ls.SetComposition))
 
 type XSDDateParser struct{}
 
@@ -530,7 +530,7 @@ func (parser XSDDateParser) FormatNativeValue(newValue, oldValue interface{}, no
 		if oldValue != nil {
 			oldDate, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		oldDate.Day = int(v)
@@ -539,7 +539,7 @@ func (parser XSDDateParser) FormatNativeValue(newValue, oldValue interface{}, no
 		if oldValue != nil {
 			oldDate, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		oldDate.Month = int(v)
@@ -548,7 +548,7 @@ func (parser XSDDateParser) FormatNativeValue(newValue, oldValue interface{}, no
 		if oldValue != nil {
 			oldDate, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		oldDate.Year = int(v)
@@ -557,7 +557,7 @@ func (parser XSDDateParser) FormatNativeValue(newValue, oldValue interface{}, no
 		if oldValue != nil {
 			oldDate, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		oldDate.Month = int(v.Month)
@@ -567,7 +567,7 @@ func (parser XSDDateParser) FormatNativeValue(newValue, oldValue interface{}, no
 		if oldValue != nil {
 			oldDate, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		oldDate.Month = int(v.Month)
@@ -584,7 +584,7 @@ func (parser XSDDateParser) FormatNativeValue(newValue, oldValue interface{}, no
 		}
 		return v.ToTime().In(v.Location).Format("2006-01-02Z0700"), nil
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -646,7 +646,7 @@ func (parser XSDDateTimeParser) FormatNativeValue(newValue, oldValue interface{}
 		if oldValue != nil {
 			old, ok = oldValue.(DateTime)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a DateTime"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm.Name, Value: oldValue, Msg: "Not a DateTime"}
 			}
 		}
 		old.Day = int(v)
@@ -655,7 +655,7 @@ func (parser XSDDateTimeParser) FormatNativeValue(newValue, oldValue interface{}
 		if oldValue != nil {
 			old, ok = oldValue.(DateTime)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a DateTime"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm.Name, Value: oldValue, Msg: "Not a DateTime"}
 			}
 		}
 		old.Month = int(v)
@@ -664,7 +664,7 @@ func (parser XSDDateTimeParser) FormatNativeValue(newValue, oldValue interface{}
 		if oldValue != nil {
 			old, ok = oldValue.(DateTime)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a DateTime"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm.Name, Value: oldValue, Msg: "Not a DateTime"}
 			}
 		}
 		old.Year = int(v)
@@ -673,7 +673,7 @@ func (parser XSDDateTimeParser) FormatNativeValue(newValue, oldValue interface{}
 		if oldValue != nil {
 			old, ok = oldValue.(DateTime)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a DateTime"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm.Name, Value: oldValue, Msg: "Not a DateTime"}
 			}
 		}
 		old.Month = int(v.Month)
@@ -683,7 +683,7 @@ func (parser XSDDateTimeParser) FormatNativeValue(newValue, oldValue interface{}
 		if oldValue != nil {
 			old, ok = oldValue.(DateTime)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm, Value: oldValue, Msg: "Not a DateTime"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTerm.Name, Value: oldValue, Msg: "Not a DateTime"}
 			}
 		}
 		old.Year = int(v.Year)
@@ -700,7 +700,7 @@ func (parser XSDDateTimeParser) FormatNativeValue(newValue, oldValue interface{}
 		}
 		return v.ToTime().In(v.Location).Format("2002-05-30T09:30:10.5-06:00"), nil
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTimeTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDDateTimeTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -740,7 +740,7 @@ func (parser XSDTimeParser) FormatNativeValue(newValue, oldValue interface{}, no
 	case time.Time:
 		return v.Format("15:04:05"), nil
 	case Date:
-		return "", ErrIncompatibleTypes{XSDTimeTerm, v}
+		return "", ErrIncompatibleTypes{XSDTimeTerm.Name, v}
 	case DateTime:
 		if v.Location == nil {
 			return v.ToTime().Format("09:00:00Z"), nil
@@ -757,7 +757,7 @@ func (parser XSDTimeParser) FormatNativeValue(newValue, oldValue interface{}, no
 		}
 		return strconv.FormatInt((v.ToTime().In(v.Location).UnixNano()), 10), nil
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDTimeTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDTimeTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -816,7 +816,7 @@ func (parser JSONDateParser) FormatNativeValue(newValue, oldValue interface{}, n
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Day = int(v)
@@ -825,7 +825,7 @@ func (parser JSONDateParser) FormatNativeValue(newValue, oldValue interface{}, n
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Month = int(v)
@@ -834,7 +834,7 @@ func (parser JSONDateParser) FormatNativeValue(newValue, oldValue interface{}, n
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Year = int(v)
@@ -843,7 +843,7 @@ func (parser JSONDateParser) FormatNativeValue(newValue, oldValue interface{}, n
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Month = int(v.Month)
@@ -853,7 +853,7 @@ func (parser JSONDateParser) FormatNativeValue(newValue, oldValue interface{}, n
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Year = int(v.Year)
@@ -870,7 +870,7 @@ func (parser JSONDateParser) FormatNativeValue(newValue, oldValue interface{}, n
 		}
 		return v.ToTime().In(v.Location).Format("2006-01-02Z0700"), nil
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -936,7 +936,7 @@ func (parser JSONDateTimeParser) FormatNativeValue(newValue, oldValue interface{
 		}
 		return v.ToTime().In(v.Location).Format(time.RFC3339Nano), nil
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTimeTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONDateTimeTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -1002,7 +1002,7 @@ func (parser JSONTimeParser) FormatNativeValue(newValue, oldValue interface{}, n
 		}
 		return v.ToTime().Format("HH:mm:ssZ"), nil
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONTimeTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: JSONTimeTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -1016,8 +1016,8 @@ func (PatternDateTimeParser) GetNativeValue(value string, node *lpg.Node) (inter
 	if len(value) == 0 {
 		return nil, nil
 	}
-	gf := ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).Slice()
-	mf := ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).Slice()
+	gf := GoTimeFormatTerm.PropertyValue(node)
+	mf := MomentTimeFormatTerm.PropertyValue(node)
 	garr := make([]dateTimeFormatter, 0, len(gf)+len(mf))
 	for _, x := range gf {
 		garr = append(garr, goFormat(x))
@@ -1040,11 +1040,10 @@ func (parser PatternDateTimeParser) FormatNativeValue(newValue, oldValue interfa
 		return "", nil
 	}
 	var formatter interface{}
-	if s, ok := node.GetProperty(GoTimeFormatTerm); ok {
-		formatter = goFormat(ls.AsPropertyValue(s, true).AsString())
-	}
-	if s, ok := node.GetProperty(MomentTimeFormatTerm); ok {
-		formatter = gomentFormat(ls.AsPropertyValue(s, true).AsString())
+	if s := GoTimeFormatTerm.PropertyValue(node); len(s) > 0 {
+		formatter = goFormat(s[0])
+	} else if s := MomentTimeFormatTerm.PropertyValue(node); len(s) > 0 {
+		formatter = gomentFormat(s[0])
 	}
 	if formatter == nil {
 		formatter = goFormat(time.RFC3339)
@@ -1076,7 +1075,7 @@ func (parser PatternDateTimeParser) FormatNativeValue(newValue, oldValue interfa
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Day = int(v)
@@ -1085,7 +1084,7 @@ func (parser PatternDateTimeParser) FormatNativeValue(newValue, oldValue interfa
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Month = int(v)
@@ -1094,7 +1093,7 @@ func (parser PatternDateTimeParser) FormatNativeValue(newValue, oldValue interfa
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Year = int(v)
@@ -1103,7 +1102,7 @@ func (parser PatternDateTimeParser) FormatNativeValue(newValue, oldValue interfa
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Month = int(v.Month)
@@ -1113,14 +1112,14 @@ func (parser PatternDateTimeParser) FormatNativeValue(newValue, oldValue interfa
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Year = int(v.Year)
 		old.Month = int(v.Month)
 		return formatter.(dateFormatter).formatDate(old)
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -1134,8 +1133,8 @@ func (PatternDateParser) GetNativeValue(value string, node *lpg.Node) (interface
 	if len(value) == 0 {
 		return nil, nil
 	}
-	gf := ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).Slice()
-	mf := ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).Slice()
+	gf := GoTimeFormatTerm.PropertyValue(node)
+	mf := MomentTimeFormatTerm.PropertyValue(node)
 	garr := make([]dateFormatter, 0, len(gf)+len(mf))
 	for _, x := range gf {
 		garr = append(garr, goFormat(x))
@@ -1158,11 +1157,10 @@ func (parser PatternDateParser) FormatNativeValue(newValue, oldValue interface{}
 		return "", nil
 	}
 	var formatter interface{}
-	if s, ok := node.GetProperty(GoTimeFormatTerm); ok {
-		formatter = goFormat(ls.AsPropertyValue(s, true).AsString())
-	}
-	if s, ok := node.GetProperty(MomentTimeFormatTerm); ok {
-		formatter = gomentFormat(ls.AsPropertyValue(s, true).AsString())
+	if s := GoTimeFormatTerm.PropertyValue(node); len(s) > 0 {
+		formatter = goFormat(s[0])
+	} else if s := MomentTimeFormatTerm.PropertyValue(node); len(s) > 0 {
+		formatter = gomentFormat(s[0])
 	}
 	if formatter == nil {
 		formatter = goFormat("2006-01-02")
@@ -1189,12 +1187,12 @@ func (parser PatternDateParser) FormatNativeValue(newValue, oldValue interface{}
 	case DateTime:
 		return formatter.(dateTimeFormatter).formatDateTime(v)
 	case TimeOfDay:
-		return "", ErrIncompatibleTypes{PatternDateTerm, v}
+		return "", ErrIncompatibleTypes{PatternDateTerm.Name, v}
 	case GDay:
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Day = int(v)
@@ -1203,7 +1201,7 @@ func (parser PatternDateParser) FormatNativeValue(newValue, oldValue interface{}
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Month = int(v)
@@ -1212,7 +1210,7 @@ func (parser PatternDateParser) FormatNativeValue(newValue, oldValue interface{}
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Year = int(v)
@@ -1221,7 +1219,7 @@ func (parser PatternDateParser) FormatNativeValue(newValue, oldValue interface{}
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Month = int(v.Month)
@@ -1231,14 +1229,14 @@ func (parser PatternDateParser) FormatNativeValue(newValue, oldValue interface{}
 		if oldValue != nil {
 			old, ok = oldValue.(Date)
 			if !ok {
-				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm, Value: oldValue, Msg: "Not a Date"}
+				return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTimeTerm.Name, Value: oldValue, Msg: "Not a Date"}
 			}
 		}
 		old.Year = int(v.Year)
 		old.Month = int(v.Month)
 		return formatter.(dateFormatter).formatDate(old)
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternDateTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -1252,8 +1250,8 @@ func (PatternTimeParser) GetNativeValue(value string, node *lpg.Node) (interface
 	if len(value) == 0 {
 		return nil, nil
 	}
-	gf := ls.AsPropertyValue(node.GetProperty(GoTimeFormatTerm)).Slice()
-	mf := ls.AsPropertyValue(node.GetProperty(MomentTimeFormatTerm)).Slice()
+	gf := GoTimeFormatTerm.PropertyValue(node)
+	mf := MomentTimeFormatTerm.PropertyValue(node)
 	garr := make([]timeFormatter, 0, len(gf)+len(mf))
 	for _, x := range gf {
 		garr = append(garr, goFormat(x))
@@ -1276,11 +1274,10 @@ func (parser PatternTimeParser) FormatNativeValue(newValue, oldValue interface{}
 		return "", nil
 	}
 	var formatter interface{}
-	if s, ok := node.GetProperty(GoTimeFormatTerm); ok {
-		formatter = goFormat(ls.AsPropertyValue(s, true).AsString())
-	}
-	if s, ok := node.GetProperty(MomentTimeFormatTerm); ok {
-		formatter = gomentFormat(ls.AsPropertyValue(s, true).AsString())
+	if s := GoTimeFormatTerm.PropertyValue(node); len(s) > 0 {
+		formatter = goFormat(s[0])
+	} else if s := MomentTimeFormatTerm.PropertyValue(node); len(s) > 0 {
+		formatter = gomentFormat(s[0])
 	}
 	if formatter == nil {
 		formatter = goFormat("15:04:05.999999999Z07:00")
@@ -1301,23 +1298,23 @@ func (parser PatternTimeParser) FormatNativeValue(newValue, oldValue interface{}
 	case time.Time:
 		return parser.FormatNativeValue(NewDateTime(v), oldValue, node)
 	case Date:
-		return "", ErrIncompatibleTypes{PatternTimeTerm, v}
+		return "", ErrIncompatibleTypes{PatternTimeTerm.Name, v}
 	case DateTime:
 		return formatter.(dateTimeFormatter).formatDateTime(v)
 	case TimeOfDay:
 		return formatter.(timeFormatter).formatTime(v)
 	case GDay:
-		return "", ErrIncompatibleTypes{PatternTimeTerm, v}
+		return "", ErrIncompatibleTypes{PatternTimeTerm.Name, v}
 	case GMonth:
-		return "", ErrIncompatibleTypes{PatternTimeTerm, v}
+		return "", ErrIncompatibleTypes{PatternTimeTerm.Name, v}
 	case GYear:
-		return "", ErrIncompatibleTypes{PatternTimeTerm, v}
+		return "", ErrIncompatibleTypes{PatternTimeTerm.Name, v}
 	case GMonthDay:
-		return "", ErrIncompatibleTypes{PatternTimeTerm, v}
+		return "", ErrIncompatibleTypes{PatternTimeTerm.Name, v}
 	case GYearMonth:
-		return "", ErrIncompatibleTypes{PatternTimeTerm, v}
+		return "", ErrIncompatibleTypes{PatternTimeTerm.Name, v}
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternTimeTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: PatternTimeTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -1347,7 +1344,7 @@ func (parser XSDGDayParser) FormatNativeValue(newValue, oldValue interface{}, no
 	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case time.Time:
-		return "", ErrIncompatibleTypes{XSDGDayTerm, v}
+		return "", ErrIncompatibleTypes{XSDGDayTerm.Name, v}
 	case Date:
 		return strconv.Itoa((v.Day)), nil
 	case DateTime:
@@ -1357,13 +1354,13 @@ func (parser XSDGDayParser) FormatNativeValue(newValue, oldValue interface{}, no
 	case GMonthDay:
 		return strconv.Itoa(int(v.Day)), nil
 	case GYearMonth:
-		return "", ErrIncompatibleTypes{XSDGDayTerm, v}
+		return "", ErrIncompatibleTypes{XSDGDayTerm.Name, v}
 	case UnixTime:
-		return "", ErrIncompatibleTypes{XSDGDayTerm, v}
+		return "", ErrIncompatibleTypes{XSDGDayTerm.Name, v}
 	case UnixTimeNano:
-		return "", ErrIncompatibleTypes{XSDGDayTerm, v}
+		return "", ErrIncompatibleTypes{XSDGDayTerm.Name, v}
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGDayTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGDayTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -1393,7 +1390,7 @@ func (parser XSDGMonthParser) FormatNativeValue(newValue, oldValue interface{}, 
 	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case time.Time:
-		return "", ErrIncompatibleTypes{XSDGMonthTerm, v}
+		return "", ErrIncompatibleTypes{XSDGMonthTerm.Name, v}
 	case Date:
 		return v.ToTime().Format("01"), nil
 	case DateTime:
@@ -1405,7 +1402,7 @@ func (parser XSDGMonthParser) FormatNativeValue(newValue, oldValue interface{}, 
 	case GYearMonth:
 		return strconv.Itoa(int(v.Month)), nil
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGMonthTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGMonthTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -1435,7 +1432,7 @@ func (parser XSDGMonthDayParser) FormatNativeValue(newValue, oldValue interface{
 	case opencypher.LocalTime:
 		return parser.FormatNativeValue(v.Time(), oldValue, node)
 	case time.Time:
-		return "", ErrIncompatibleTypes{XSDGMonthDayTerm, v}
+		return "", ErrIncompatibleTypes{XSDGMonthDayTerm.Name, v}
 	case Date:
 		return v.ToTime().Format("01-02"), nil
 	case DateTime:
@@ -1449,11 +1446,11 @@ func (parser XSDGMonthDayParser) FormatNativeValue(newValue, oldValue interface{
 	case GYearMonth:
 		return strconv.Itoa(int(v.Month)), nil
 	case UnixTime:
-		return "", ErrIncompatibleTypes{XSDGMonthDayTerm, v}
+		return "", ErrIncompatibleTypes{XSDGMonthDayTerm.Name, v}
 	case UnixTimeNano:
-		return "", ErrIncompatibleTypes{XSDGMonthDayTerm, v}
+		return "", ErrIncompatibleTypes{XSDGMonthDayTerm.Name, v}
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGMonthDayTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGMonthDayTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -1491,7 +1488,7 @@ func (parser XSDGYearParser) FormatNativeValue(newValue, oldValue interface{}, n
 	case GYearMonth:
 		return strconv.Itoa(int(v.Year)), nil
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGYearTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGYearTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -1531,7 +1528,7 @@ func (parser XSDGYearMonthParser) FormatNativeValue(newValue, oldValue interface
 	case GYearMonth:
 		return fmt.Sprintf("%02d-%02d", v.Year, v.Month), nil
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGYearMonthTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: XSDGYearMonthTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -1591,7 +1588,7 @@ func (parser UnixTimeParser) FormatNativeValue(newValue, oldValue interface{}, n
 		}
 		return strconv.FormatInt(v.ToTime().In(v.Location).UnixNano(), 10), nil
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: UnixTimeTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: UnixTimeTerm.Name, Value: newValue}
 	}
 	return "", nil
 }
@@ -1646,19 +1643,19 @@ func (parser UnixTimeNanoParser) FormatNativeValue(newValue, oldValue interface{
 		t := time.Date(1970, time.January, 1, int(v.Hour), int(v.Minute), int(v.Seconds), int(v.Nanoseconds), v.Location)
 		return strconv.FormatInt(t.UnixNano(), 10), nil
 	case GDay:
-		return "", ErrIncompatibleTypes{UnixTimeNanoTerm, v}
+		return "", ErrIncompatibleTypes{UnixTimeNanoTerm.Name, v}
 	case GMonth:
-		return "", ErrIncompatibleTypes{UnixTimeNanoTerm, v}
+		return "", ErrIncompatibleTypes{UnixTimeNanoTerm.Name, v}
 	case GYear:
-		return "", ErrIncompatibleTypes{UnixTimeNanoTerm, v}
+		return "", ErrIncompatibleTypes{UnixTimeNanoTerm.Name, v}
 	case GMonthDay:
-		return "", ErrIncompatibleTypes{UnixTimeNanoTerm, v}
+		return "", ErrIncompatibleTypes{UnixTimeNanoTerm.Name, v}
 	case GYearMonth:
-		return "", ErrIncompatibleTypes{UnixTimeNanoTerm, v}
+		return "", ErrIncompatibleTypes{UnixTimeNanoTerm.Name, v}
 	case UnixTime:
 		return strconv.FormatInt(v.Seconds*1e9, 10), nil
 	default:
-		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: UnixTimeTerm, Value: newValue}
+		return "", ls.ErrInvalidValue{ID: ls.GetNodeID(node), Type: UnixTimeTerm.Name, Value: newValue}
 	}
 	return "", nil
 }

@@ -37,7 +37,7 @@ func MatchName(name, requiredName xml.Name) bool {
 // localname properties
 func GetXMLName(node *lpg.Node) xml.Name {
 	return xml.Name{
-		Space: ls.AsPropertyValue(node.GetProperty(NamespaceTerm)).AsString(),
-		Local: ls.AsPropertyValue(node.GetProperty(ls.AttributeNameTerm)).AsString(),
+		Space: NamespaceTerm.PropertyValue(node),
+		Local: ls.AttributeNameTerm.PropertyValue(node),
 	}
 }

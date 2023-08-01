@@ -26,7 +26,7 @@ func (tc getSetTestCase) run(t *testing.T) {
 	for k, v := range tc.srcProperties {
 		srcProperties[k] = v
 	}
-	srcProperties[ls.ValueTypeTerm] = ls.StringSlicePropertyValue(ls.ValueTypeTerm, tc.srcTypes)
+	srcProperties[ls.ValueTypeTerm.Name] = ls.NewPropertyValue(ls.ValueTypeTerm.Name, tc.srcTypes)
 	srcNode := g.NewNode(nil, srcProperties)
 	ls.SetRawNodeValue(srcNode, fmt.Sprint(tc.srcValue))
 	targetProperties := make(map[string]interface{})
@@ -34,7 +34,7 @@ func (tc getSetTestCase) run(t *testing.T) {
 		targetProperties[k] = v
 	}
 	if len(tc.targetTypes) > 0 {
-		targetProperties[ls.ValueTypeTerm] = ls.StringSlicePropertyValue(ls.ValueTypeTerm, tc.targetTypes)
+		targetProperties[ls.ValueTypeTerm.Name] = ls.NewPropertyValue(ls.ValueTypeTerm.Name, tc.targetTypes)
 	}
 	targetNode := g.NewNode(tc.targetTypes, targetProperties)
 	v, err := ls.GetNodeValue(srcNode)

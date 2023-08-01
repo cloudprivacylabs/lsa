@@ -72,7 +72,7 @@ func (e ErrCannotHaveAttributes) Error() string {
 func findBestMatchingSchemaAttribute(name xml.Name, schemaAttrs []*lpg.Node, requireAttr bool) (*lpg.Node, error) {
 	var matched *lpg.Node
 	for _, attr := range schemaAttrs {
-		_, attrTerm := attr.GetProperty(AttributeTerm)
+		_, attrTerm := attr.GetProperty(AttributeTerm.Name)
 		if requireAttr != attrTerm {
 			continue
 		}

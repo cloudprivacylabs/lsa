@@ -20,32 +20,32 @@ import (
 
 var booleanTests = []getSetTestCase{
 	{
-		srcTypes:      []string{JSONBooleanTerm},
+		srcTypes:      []string{JSONBooleanTerm.Name},
 		srcValue:      "true",
-		targetTypes:   []string{JSONBooleanTerm},
+		targetTypes:   []string{JSONBooleanTerm.Name},
 		expectedValue: "true",
 	},
 	{
-		srcTypes:      []string{JSONBooleanTerm},
+		srcTypes:      []string{JSONBooleanTerm.Name},
 		srcValue:      "false",
-		targetTypes:   []string{JSONBooleanTerm},
+		targetTypes:   []string{JSONBooleanTerm.Name},
 		expectedValue: "false",
 	},
 	{
-		srcTypes:       []string{JSONBooleanTerm},
+		srcTypes:       []string{JSONBooleanTerm.Name},
 		srcValue:       "False",
 		expectGetError: true,
 	},
 	{
-		srcTypes:      []string{XMLBooleanTerm},
+		srcTypes:      []string{XMLBooleanTerm.Name},
 		srcValue:      "1",
-		targetTypes:   []string{JSONBooleanTerm},
+		targetTypes:   []string{JSONBooleanTerm.Name},
 		expectedValue: "true",
 	},
 	{
-		srcTypes:      []string{XMLBooleanTerm},
+		srcTypes:      []string{XMLBooleanTerm.Name},
 		srcValue:      "0",
-		targetTypes:   []string{JSONBooleanTerm},
+		targetTypes:   []string{JSONBooleanTerm.Name},
 		expectedValue: "false",
 	},
 }
