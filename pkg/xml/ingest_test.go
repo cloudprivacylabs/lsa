@@ -90,7 +90,11 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 		if s1 != s2 {
 			return false
 		}
-		if !ls.IsPropertiesEqual(ls.PropertiesAsMap(n1), ls.PropertiesAsMap(n2)) {
+		m1 := ls.PropertiesAsMap(n1)
+		delete(m1, ls.NodeIDTerm.Name)
+		m2 := ls.PropertiesAsMap(n2)
+		delete(m2, ls.NodeIDTerm.Name)
+		if !ls.IsPropertiesEqual(m1, m2) {
 			return false
 		}
 		return true
