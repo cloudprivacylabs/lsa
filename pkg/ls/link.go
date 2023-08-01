@@ -53,30 +53,30 @@ The aField field may itself be a foreign key value. Then, omit fk, or use aField
 
 var (
 	// ReferenceFK specifies the foreign key value
-	ReferenceFK = StringSliceTerm{NewTerm(LS+"Reference/", "fkValue").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ReferenceFK = RegisterStringSliceTerm(NewTerm(LS+"Reference/", "fkValue").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 	// ReferenceFKFor is used for value nodes that are foreign keys
-	ReferenceFKFor = StringTerm{NewTerm(LS+"Reference/", "fkFor").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ReferenceFKFor = RegisterStringTerm(NewTerm(LS+"Reference/", "fkFor").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 	// ReferenceFKTerm specifies the foreign key attribute ID
-	ReferenceFKTerm = StringSliceTerm{NewTerm(LS+"Reference/", "fk").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ReferenceFKTerm = RegisterStringSliceTerm(NewTerm(LS+"Reference/", "fk").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// ReferenceLabelTerm specifies the edge label between the referenced nodes
-	ReferenceLabelTerm = StringTerm{NewTerm(LS+"Reference/", "label").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ReferenceLabelTerm = RegisterStringTerm(NewTerm(LS+"Reference/", "label").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// ReferenceDirectionTerm specifies the direction of the edge. If
 	// "to" or "toTarget", the edge points to the target entity.
 	// If "from" or "fromTarget", the edge points
 	// to this entity.
-	ReferenceDirectionTerm = StringTerm{NewTerm(LS+"Reference/", "dir").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ReferenceDirectionTerm = RegisterStringTerm(NewTerm(LS+"Reference/", "dir").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// ReferenceLinkNodeTerm specifies the node in the current entity
 	// that will be linked to the other entity. If the references are
 	// defined in a Reference type node, then the node itself if the
 	// link. Otherwise, this gives the node that must be linked to the
 	// other entity.
-	ReferenceLinkNodeTerm = StringTerm{NewTerm(LS+"Reference/", "linkNode").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ReferenceLinkNodeTerm = RegisterStringTerm(NewTerm(LS+"Reference/", "linkNode").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// ReferenceMultiTerm specifies if there can be more than one link targets
-	ReferenceMultiTerm = StringTerm{NewTerm(LS+"Reference/", "multi").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ReferenceMultiTerm = RegisterStringTerm(NewTerm(LS+"Reference/", "multi").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 )
 
 type ForeignKeyInfo struct {

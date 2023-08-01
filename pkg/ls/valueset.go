@@ -51,46 +51,46 @@ var (
 	// A node must contain either the ValuesetContextTerm or the ValuesetTablesTerm to be used in lookup
 	//
 	// If context is empty, entity root is assumed
-	ValuesetContextTerm = StringTerm{NewTerm(LS, "vs/context").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ValuesetContextTerm = RegisterStringTerm(NewTerm(LS, "vs/context").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 	// ValuesetContextExprTerm is an opencyper expression that gives the context node using "this" as the current node
-	ValuesetContextExprTerm = StringTerm{NewTerm(LS, "vs/contextExpr").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ValuesetContextExprTerm = RegisterStringTerm(NewTerm(LS, "vs/contextExpr").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// ValuesetTablesTerm specifies the list of table IDs to
 	// lookup. This is optional.  A node must contain either the
 	// ValuesetContextTerm or the ValuesetTablesTerm to be used in
 	// lookup
-	ValuesetTablesTerm = StringSliceTerm{NewTerm(LS, "vs/valuesets").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ValuesetTablesTerm = RegisterStringSliceTerm(NewTerm(LS, "vs/valuesets").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// ValuesetRequestKeysTerm specifies the keys that will be used in
 	// the valueset request. These keys are interpreted by the valueset
 	// lookup.
-	ValuesetRequestKeysTerm = StringSliceTerm{NewTerm(LS, "vs/requestKeys").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ValuesetRequestKeysTerm = RegisterStringSliceTerm(NewTerm(LS, "vs/requestKeys").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// ValuesetRequestValuesTerm contains entries matching
 	// ValuesetRequestKeysTerm. It specifies the schema node IDs of the
 	// nodes containing values to lookup
-	ValuesetRequestValuesTerm = StringSliceTerm{NewTerm(LS, "vs/requestValues").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ValuesetRequestValuesTerm = RegisterStringSliceTerm(NewTerm(LS, "vs/requestValues").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// ValuesetRequestTerm specifies one or more openCypher expressions
 	// that builds up a valuest lookup request. The named results of
 	// those expressions are added to the request key/value pairs
-	ValuesetRequestTerm = StringSliceTerm{NewTerm(LS, "vs/request").SetComposition(OverrideComposition).SetTags(SchemaElementTag).SetMetadata(CompileOCSemantics{}).Register()}
+	ValuesetRequestTerm = RegisterStringSliceTerm(NewTerm(LS, "vs/request").SetComposition(OverrideComposition).SetTags(SchemaElementTag).SetMetadata(CompileOCSemantics{}))
 
 	// ValuesetResultKeys term contains the keys that will be returned
 	// from the valueset lookup. Values of these keys will be inserted under the context
-	ValuesetResultKeysTerm = StringSliceTerm{NewTerm(LS, "vs/resultKeys").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ValuesetResultKeysTerm = RegisterStringSliceTerm(NewTerm(LS, "vs/resultKeys").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// ValuesetResultValuesTerm specifies the schema node IDs for the
 	// nodes that will receive the matching key values. If there is only
 	// one, resultKeys is optional The result value nodes must be a
 	// direct descendant of one of the nodes from the document node up
 	// to the context node.
-	ValuesetResultValuesTerm = StringSliceTerm{NewTerm(LS, "vs/resultValues").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ValuesetResultValuesTerm = RegisterStringSliceTerm(NewTerm(LS, "vs/resultValues").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// ValuesetResultContext determines the node under which the results
 	// will be added. This is needed if the results will be added under
 	// a different entity attached to the valueset context.
-	ValuesetResultContextTerm = StringTerm{NewTerm(LS, "vs/resultContext").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ValuesetResultContextTerm = RegisterStringTerm(NewTerm(LS, "vs/resultContext").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 )
 
 // ValuesetInfo describes value set information for a schema node.

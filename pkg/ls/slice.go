@@ -39,6 +39,8 @@ func GetSliceByTermsFunc(includeTerms []string, includeAttributeNodes bool) func
 				if _, ok := incl[k]; ok {
 					properties[k] = prop
 					hasProperties = true
+				} else if k == NodeIDTerm.Name {
+					properties[k] = prop
 				}
 			} else {
 				properties[k] = v

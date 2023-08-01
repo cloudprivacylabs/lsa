@@ -270,7 +270,7 @@ func (compiler *Compiler) compileIncludeAttribute(context *Context, ctx *compile
 			lpg.CopySubgraph(edge.GetTo(), tgtGraph, ClonePropertyValueFunc, nodeMap)
 			lpg.CopyEdge(edge, tgtGraph, ClonePropertyValueFunc, nodeMap)
 		}
-		for n := range nodeMap {
+		for _, n := range nodeMap {
 			if namespace != "" {
 				setNamespace(n, namespace)
 			}

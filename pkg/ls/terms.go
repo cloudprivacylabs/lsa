@@ -24,7 +24,7 @@ var (
 	OverlayTerm = NewTerm(LS, "Overlay").SetComposition(NoComposition).SetTags(SchemaElementTag).Register()
 
 	// ComposeTerm is used for overlays to redefine term compositions. One of CompositionType constants
-	ComposeTerm = StringTerm{NewTerm(LS, "compose").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ComposeTerm = RegisterStringTerm(NewTerm(LS, "compose").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// AttributeOverlaysTerm lists the overlays for schema attributes
 	// that are matched by ID, as opposed to matching by ID and their
@@ -33,19 +33,19 @@ var (
 
 	// CharacterEncodingTerm is used to specify a character encoding for
 	// the data processed with the layer
-	CharacterEncodingTerm = StringTerm{NewTerm(LS, "characterEncoding").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	CharacterEncodingTerm = RegisterStringTerm(NewTerm(LS, "characterEncoding").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// DescriptionTerm is used for comments/descriptions
 	DescriptionTerm = NewTerm(LS, "description").SetComposition(SetComposition).SetTags(SchemaElementTag).Register()
 
 	// AttributeNameTerm represents the name of an attribute
-	AttributeNameTerm = StringTerm{NewTerm(LS, "attributeName").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	AttributeNameTerm = RegisterStringTerm(NewTerm(LS, "attributeName").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// AttributeIndexTerm represents the index of an array element
-	AttributeIndexTerm = IntegerTerm{NewTerm(LS, "attributeIndex").SetComposition(NoComposition).SetTags(SchemaElementTag).Register()}
+	AttributeIndexTerm = RegisterIntegerTerm(NewTerm(LS, "attributeIndex").SetComposition(NoComposition).SetTags(SchemaElementTag))
 
 	// ConditionalTerm specifies conditions for ingestion
-	ConditionalTerm = StringTerm{NewTerm(LS, "conditional").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ConditionalTerm = RegisterStringTerm(NewTerm(LS, "conditional").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// LayerRootTerm is an edge term that connects layer node to the root node of the schema
 	LayerRootTerm = NewTerm(LS, "layer").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Register()
@@ -54,27 +54,27 @@ var (
 	DefaultValueTerm = NewTerm(LS, "defaultValue").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()
 
 	// Format specifies a type-specific formatting directive, such as a date format
-	FormatTerm = StringTerm{NewTerm(LS, "format").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	FormatTerm = RegisterStringTerm(NewTerm(LS, "format").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// NodeIDTerm keeps the node ID or the attribute ID
-	NodeIDTerm = StringTerm{NewTerm(LS, "nodeId").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Register()}
+	NodeIDTerm = RegisterStringTerm(NewTerm(LS, "nodeId").SetComposition(NoComposition).SetTags(SchemaElementTag))
 
 	// IngestAsTerm ingests value as an edge, node, or property
-	IngestAsTerm = StringTerm{NewTerm(LS, "ingestAs").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	IngestAsTerm = RegisterStringTerm(NewTerm(LS, "ingestAs").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// AsPropertyOfTerm is optional. If specified, it gives the nearest
 	// ancestor node that is an instance of the given type. If not, it
 	// is the parent document node
-	AsPropertyOfTerm = StringTerm{NewTerm(LS, "asPropertyOf").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	AsPropertyOfTerm = RegisterStringTerm(NewTerm(LS, "asPropertyOf").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// EdgeLabelTerm represents the value used as an edge label, when ingesting an edge
-	EdgeLabelTerm = StringTerm{NewTerm(LS, "edgeLabel").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	EdgeLabelTerm = RegisterStringTerm(NewTerm(LS, "edgeLabel").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// OutputEdgeLabelTerm determines the labels of the output edges
-	OutputEdgeLabelTerm = StringTerm{NewTerm(LS, "outputEdgeLabel").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	OutputEdgeLabelTerm = RegisterStringTerm(NewTerm(LS, "outputEdgeLabel").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// PropertyNameTerm represents the value used as a property name when ingesting a property
-	PropertyNameTerm = StringTerm{NewTerm(LS, "propertyName").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	PropertyNameTerm = RegisterStringTerm(NewTerm(LS, "propertyName").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// DocumentNodeTerm is the type of document nodes
 	DocumentNodeTerm = NewTerm(LS, "DocumentNode").SetComposition(ErrorComposition).Register()
@@ -89,16 +89,16 @@ var (
 	HasTerm = NewTerm(LS, "has").SetComposition(ErrorComposition).Register()
 
 	// LabeledAsTerm adds labels to the node it contained in
-	LabeledAsTerm = StringSliceTerm{NewTerm(LS, "labeledAs").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	LabeledAsTerm = RegisterStringSliceTerm(NewTerm(LS, "labeledAs").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// TypeDiscriminatorTerm represents a set of schema field hints for defining polymorphic objects
 	TypeDiscriminatorTerm = NewTerm(LS, "typeDiscriminator").SetComposition(NoComposition).SetTags(SchemaElementTag).Register()
 
 	// IncludeSchemaTerm represents another schema to replace and copy its contents
-	IncludeSchemaTerm = StringTerm{NewTerm(LS, "include").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	IncludeSchemaTerm = RegisterStringTerm(NewTerm(LS, "include").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// Namespace defines the namespace prefix
-	NamespaceTerm = StringTerm{NewTerm(LS, "namespace").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	NamespaceTerm = RegisterStringTerm(NewTerm(LS, "namespace").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 	// SourceTerm gives the source information for the data element
 	SourceTerm = NewTerm(LS, "provenance/source").SetComposition(OverrideComposition).SetTags(ProvenanceTag).Register()
@@ -126,7 +126,7 @@ var (
 	ObjectAttributeListTerm = NewTerm(LS, "Object/attributeList").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Register()
 	// Reference to another schema. This will be resolved to another
 	// schema during compilation
-	ReferenceTerm = StringTerm{NewTerm(LS, "Reference/ref").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register()}
+	ReferenceTerm = RegisterStringTerm(NewTerm(LS, "Reference/ref").SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 	// ArrayItems contains the definition for the items of the array
 	ArrayItemsTerm = NewTerm(LS, "Array/elements").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Register()
 	// All components of a composite attribute

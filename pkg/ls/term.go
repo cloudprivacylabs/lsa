@@ -277,15 +277,15 @@ func (StringType) Coerce(input any) (any, error) {
 	return fmt.Sprint(input), nil
 }
 
-// StringTerm is a wrapper for string values. Use it to declare string terms:
-//
-//	var strTerm = StringTerm { Term:NewTerm(...) }.Register()
-//
-// Then you can use it as:
-//
-//	str:=strTerm.PropertyValue(node)
+// StringTerm is a wrapper for string values. Use it to declare string terms.
 type StringTerm struct {
 	Term
+}
+
+func RegisterStringTerm(t Term) StringTerm {
+	t.Type = StringType{}
+	RegisterTerm(t)
+	return StringTerm{t}
 }
 
 // PropertyValue returns the value of the property in the node or edge as a string
@@ -314,15 +314,15 @@ func (StringSliceType) Coerce(input any) (any, error) {
 	return nil, ErrInvalidStringSliceValue{input}
 }
 
-// StringSliceTerm is a wrapper for []string values. Use it to declare []string terms:
-//
-//	var strSliceTerm = StringSliceTerm { Term:NewTerm(...) }.Register()
-//
-// Then you can use it as:
-//
-//	slice:=strSliceTerm.PropertyValue(node)
+// StringSliceTerm is a wrapper for []string values.
 type StringSliceTerm struct {
 	Term
+}
+
+func RegisterStringSliceTerm(t Term) StringSliceTerm {
+	t.Type = StringSliceType{}
+	RegisterTerm(t)
+	return StringSliceTerm{t}
 }
 
 // PropertyValue returns the value of the property in the node or edge as a []string
@@ -381,15 +381,15 @@ func (IntegerType) Coerce(input any) (any, error) {
 	return nil, ErrInvalidIntegerValue{input}
 }
 
-// IntegerTerm is a wrapper for int values. Use it to declare int terms:
-//
-//	var intTerm = IntegerTerm { Term:NewTerm(...) }.Register()
-//
-// Then you can use it as:
-//
-//	val:=intTerm.PropertyValue(node)
+// IntegerTerm is a wrapper for int values.
 type IntegerTerm struct {
 	Term
+}
+
+func RegisterIntegerTerm(t Term) IntegerTerm {
+	t.Type = IntegerType{}
+	RegisterTerm(t)
+	return IntegerTerm{t}
 }
 
 // PropertyValue returns the value of the property in the node or edge as an int

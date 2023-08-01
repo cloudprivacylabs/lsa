@@ -19,23 +19,17 @@ import ()
 // EntitySchemaTerm is inserted by the schema compilation to mark
 // entity roots. It records the schema ID containing the entity
 // definition.
-var EntitySchemaTerm = StringTerm{
-	Term: NewTerm(LS, "entitySchema").
-		SetType(StringType{}).
-		SetComposition(ErrorComposition).
-		SetTags(SchemaElementTag).
-		Register(),
-}
+var EntitySchemaTerm = RegisterStringTerm(NewTerm(LS, "entitySchema").
+	SetType(StringType{}).
+	SetComposition(ErrorComposition).
+	SetTags(SchemaElementTag))
 
 // EntityIDFieldsTerm is a string or []string that lists the attribute IDs
 // for entity ID. It is defined at the root node of a layer. All
 // attribute IDs must refer to value nodes.
-var EntityIDFieldsTerm = StringSliceTerm{
-	Term: NewTerm(LS, "entityIdFields").SetComposition(OverrideComposition).SetTags(SchemaElementTag).Register(),
-}
+var EntityIDFieldsTerm = RegisterStringSliceTerm(NewTerm(LS, "entityIdFields").
+	SetComposition(OverrideComposition).SetTags(SchemaElementTag))
 
 // EntityIDTerm is a string or []string that gives the unique ID of
 // an entity. This is a node property at the root node of an entity
-var EntityIDTerm = StringSliceTerm{
-	Term: NewTerm(LS, "entityId").SetComposition(OverrideComposition).Register(),
-}
+var EntityIDTerm = RegisterStringSliceTerm(NewTerm(LS, "entityId").SetComposition(OverrideComposition))

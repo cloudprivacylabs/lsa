@@ -18,11 +18,7 @@ import ()
 
 // InstanceOfTerm is an edge term that is used to connect values with
 // their schema specifications
-var InstanceOfTerm = StringTerm{
-	Term: NewTerm(LS, "instanceOf").SetComposition(ErrorComposition).Register(),
-}
+var InstanceOfTerm = RegisterStringTerm(NewTerm(LS, "instanceOf").SetComposition(ErrorComposition))
 
 // SchemaNodeIDTerm denotes the schema node ID for ingested nodes
-var SchemaNodeIDTerm = StringTerm{
-	Term: NewTerm(LS, "schemaNodeId").SetComposition(ErrorComposition).SetTags(SchemaElementTag).Register(),
-}
+var SchemaNodeIDTerm = RegisterStringTerm(NewTerm(LS, "schemaNodeId").SetComposition(ErrorComposition).SetTags(SchemaElementTag))
