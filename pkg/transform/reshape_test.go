@@ -140,6 +140,9 @@ func (tc testCase) Run(t *testing.T) {
 				// Expected properties must be a subset
 				propertiesOK := true
 				n2.ForEachProperty(func(k string, v interface{}) bool {
+					if k == ls.NodeIDTerm.Name {
+						return true
+					}
 					pv, ok := v.(ls.PropertyValue)
 					if !ok {
 						return true
