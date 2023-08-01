@@ -67,7 +67,7 @@ func (ing *Parser) getObjectNodes(schemaNode *lpg.Node) (map[string][]*lpg.Node,
 	if exists {
 		return nodes, nil
 	}
-	nodes, err := ls.GetObjectAttributeNodesBy(schemaNode, ls.AttributeNameTerm)
+	nodes, err := ls.GetObjectAttributeNodesBy(schemaNode, ls.AttributeNameTerm.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func (ing *Parser) parseDoc(ctx parserContext, input jsonom.Node) (*ParsedDocNod
 	if ctx.schemaNode == nil && ing.OnlySchemaAttributes {
 		return nil, nil
 	}
-	if ctx.schemaNode != nil && ctx.schemaNode.HasLabel(ls.AttributeTypePolymorphic) {
+	if ctx.schemaNode != nil && ctx.schemaNode.HasLabel(ls.AttributeTypePolymorphic.Name) {
 		return ing.parsePolymorphic(ctx, input)
 	}
 	switch next := input.(type) {
@@ -108,7 +108,7 @@ var PolyHintBlock = func(*jsonom.KeyValue) {}
 func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*ParsedDocNode, error) {
 	// An object node
 	if ctx.schemaNode != nil {
-		if !ctx.schemaNode.HasLabel(ls.AttributeTypeObject) {
+		if !ctx.schemaNode.HasLabel(ls.AttributeTypeObject.Name) {
 			return nil, ls.ErrSchemaValidation{Msg: fmt.Sprintf("An object is expected here but found %s", ctx.schemaNode.GetLabels()), Path: ctx.path.Copy()}
 		}
 	}
@@ -119,7 +119,7 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 	// if a cache exists for this schema node, parse nodes with type hint first
 	if discrims, cached := ing.discriminator[ctx.schemaNode]; cached {
 		for _, snode := range discrims {
-			kv := input.Get(ls.AsPropertyValue(snode.GetProperty(ls.AttributeNameTerm)).AsString())
+			kv := input.Get(ls.AttributeNameTerm.PropertyValue(snode))
 			newCtx := ctx
 			newCtx.schemaNode = snode
 			newCtx.path = newCtx.path.AppendString(kv.Key())
@@ -141,7 +141,7 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 		ing.discriminator[ctx.schemaNode] = make([]*lpg.Node, 0)
 		for _, sln := range nextNodes {
 			for _, snode := range sln {
-				if snode.HasLabel(ls.TypeDiscriminatorTerm) {
+				if snode.HasLabel(ls.TypeDiscriminatorTerm.Name) {
 					ing.discriminator[ctx.schemaNode] = append(ing.discriminator[ctx.schemaNode], snode)
 				}
 			}
@@ -150,7 +150,7 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 
 	ret := ParsedDocNode{
 		schemaNode: ctx.schemaNode,
-		typeTerm:   ls.AttributeTypeObject,
+		typeTerm:   ls.AttributeTypeObject.Name,
 		children:   make([]ls.ParsedDocNode, 0, input.Len()),
 		id:         ctx.path.String(),
 	}
@@ -204,13 +204,13 @@ func (ing *Parser) parseObject(ctx parserContext, input *jsonom.Object) (*Parsed
 func (ing *Parser) parseArray(ctx parserContext, input *jsonom.Array) (*ParsedDocNode, error) {
 	// An array node
 	if ctx.schemaNode != nil {
-		if !ctx.schemaNode.HasLabel(ls.AttributeTypeArray) {
+		if !ctx.schemaNode.HasLabel(ls.AttributeTypeArray.Name) {
 			return nil, ls.ErrSchemaValidation{Msg: fmt.Sprintf("An array is expected here but found %s", ctx.schemaNode.GetLabels()), Path: ctx.path.Copy()}
 		}
 	}
 	ret := ParsedDocNode{
 		schemaNode: ctx.schemaNode,
-		typeTerm:   ls.AttributeTypeArray,
+		typeTerm:   ls.AttributeTypeArray.Name,
 		children:   make([]ls.ParsedDocNode, 0, input.Len()),
 		id:         ctx.path.String(),
 	}
@@ -243,7 +243,7 @@ func (ing *Parser) testOption(option *lpg.Node, ctx parserContext, input jsonom.
 func (ing *Parser) parsePolymorphic(ctx parserContext, input jsonom.Node) (*ParsedDocNode, error) {
 	var found *lpg.Node
 	var ret *ParsedDocNode
-	for edges := ctx.schemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ls.OneOfTerm); edges.Next(); {
+	for edges := ctx.schemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ls.OneOfTerm.Name); edges.Next(); {
 		edge := edges.Edge()
 		option := edge.GetTo()
 		// fmt.Println("Option", option)
@@ -271,7 +271,7 @@ func (ing *Parser) parseValue(ctx parserContext, input *jsonom.Value) (*ParsedDo
 		}
 	}
 	if ctx.schemaNode != nil {
-		if !ctx.schemaNode.HasLabel(ls.AttributeTypeValue) {
+		if !ctx.schemaNode.HasLabel(ls.AttributeTypeValue.Name) {
 			return nil, ls.ErrSchemaValidation{Msg: fmt.Sprintf("A value is expected here but found %s", ctx.schemaNode.GetLabels()), Path: ctx.path.Copy()}
 		}
 	}
@@ -281,16 +281,16 @@ func (ing *Parser) parseValue(ctx parserContext, input *jsonom.Value) (*ParsedDo
 		switch v := input.Value().(type) {
 		case bool:
 			value = fmt.Sprint(v)
-			typ = BooleanTypeTerm
+			typ = BooleanTypeTerm.Name
 		case string:
 			value = v
-			typ = StringTypeTerm
+			typ = StringTypeTerm.Name
 		case uint8, uint16, uint32, uint64, int8, int16, int32, int64, int, uint, float32, float64:
 			value = fmt.Sprint(input.Value())
-			typ = NumberTypeTerm
+			typ = NumberTypeTerm.Name
 		case json.Number:
 			value = string(v)
-			typ = NumberTypeTerm
+			typ = NumberTypeTerm.Name
 		default:
 			value = fmt.Sprint(v)
 		}
@@ -302,7 +302,7 @@ func (ing *Parser) parseValue(ctx parserContext, input *jsonom.Value) (*ParsedDo
 	}
 	ret := ParsedDocNode{
 		schemaNode: ctx.schemaNode,
-		typeTerm:   ls.AttributeTypeValue,
+		typeTerm:   ls.AttributeTypeValue.Name,
 		value:      value,
 		valueTypes: []string{typ},
 		id:         ctx.path.String(),

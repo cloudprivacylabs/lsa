@@ -275,7 +275,7 @@ func TestIngestRootAnnotation(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	layers, err := BuildEntityGraph(lpg.NewGraph(), ls.SchemaTerm, LinkRefsBySchemaRef, compiled...)
+	layers, err := BuildEntityGraph(lpg.NewGraph(), ls.SchemaTerm.Name, LinkRefsBySchemaRef, compiled...)
 	if err != nil {
 		t.Error(err)
 		return

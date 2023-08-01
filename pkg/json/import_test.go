@@ -47,13 +47,13 @@ func TestAnnotations(t *testing.T) {
 		t.Errorf("No extension")
 	}
 	targetGraph := lpg.NewGraph()
-	layers, err := BuildEntityGraph(targetGraph, ls.SchemaTerm, LinkRefsBySchemaRef, compiled[0])
+	layers, err := BuildEntityGraph(targetGraph, ls.SchemaTerm.Name, LinkRefsBySchemaRef, compiled[0])
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	node := lpg.NextNodesWith(layers[0].Layer.GetSchemaRootNode(), ls.ObjectAttributeListTerm)[0]
-	if ls.AsPropertyValue(node.GetProperty("field")).AsString() != "value" {
+	node := lpg.NextNodesWith(layers[0].Layer.GetSchemaRootNode(), ls.ObjectAttributeListTerm.Name)[0]
+	if s, _ := ls.GetPropertyValueAs[string](node, "field"); s != "value" {
 		t.Errorf("Wrong value: %+v", node)
 	}
 }
@@ -74,25 +74,25 @@ func TestRefs(t *testing.T) {
 		return
 	}
 	targetGraph := lpg.NewGraph()
-	graphs, err := BuildEntityGraph(targetGraph, ls.SchemaTerm, LinkRefsByLayerID, compiled...)
+	graphs, err := BuildEntityGraph(targetGraph, ls.SchemaTerm.Name, LinkRefsByLayerID, compiled...)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	// Array must have a reference to item
 	root := graphs[0].Layer.GetSchemaRootNode()
-	if !root.GetLabels().Has(ls.AttributeTypeArray) {
+	if !root.GetLabels().Has(ls.AttributeTypeArray.Name) {
 		t.Errorf("%s: Not an array", ls.GetNodeID(root))
 	}
-	items := lpg.NextNodesWith(root, ls.ArrayItemsTerm)
+	items := lpg.NextNodesWith(root, ls.ArrayItemsTerm.Name)
 	if len(items) != 1 {
 		t.Errorf("Wrong items")
 	}
 	itemNode := items[0]
-	if !itemNode.GetLabels().Has(ls.AttributeTypeReference) {
+	if !itemNode.GetLabels().Has(ls.AttributeTypeReference.Name) {
 		t.Errorf("Items not a ref")
 	}
-	if ls.AsPropertyValue(itemNode.GetProperty(ls.ReferenceTerm)).AsString() != "http://item" {
+	if s, _ := ls.GetPropertyValueAs[string](itemNode, ls.ReferenceTerm.Name); s != "http://item" {
 		t.Errorf("Wrong ref: %v", itemNode)
 	}
 }
@@ -112,7 +112,7 @@ func TestLoop(t *testing.T) {
 		return
 	}
 	targetGraph := lpg.NewGraph()
-	_, err = BuildEntityGraph(targetGraph, ls.SchemaTerm, LinkRefsBySchemaRef, compiled...)
+	_, err = BuildEntityGraph(targetGraph, ls.SchemaTerm.Name, LinkRefsBySchemaRef, compiled...)
 	if err != nil {
 		t.Error(err)
 		return

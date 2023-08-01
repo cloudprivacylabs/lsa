@@ -222,11 +222,11 @@ func BuildEntityGraph(targetGraph *lpg.Graph, typeTerm string, linkRefsBy LinkRe
 
 		// Set the layer ID from the entity layer ID
 		imported.Layer.SetID(ctx.currentEntity.LayerID)
-		rootNode := imported.Layer.Graph.NewNode([]string{ls.AttributeNodeTerm, ctx.currentEntity.ValueType}, nil)
+		rootNode := imported.Layer.Graph.NewNode([]string{ls.AttributeNodeTerm.Name, ctx.currentEntity.ValueType}, nil)
 		//ls.SetNodeID(rootNode, ctx.currentEntity.ID)
 		// Set the value type of the layer to root node ID
 		imported.Layer.SetValueType(ctx.currentEntity.ValueType)
-		imported.Layer.Graph.NewEdge(imported.Layer.GetLayerRootNode(), rootNode, ls.LayerRootTerm, nil)
+		imported.Layer.Graph.NewEdge(imported.Layer.GetLayerRootNode(), rootNode, ls.LayerRootTerm.Name, nil)
 		importer := schemaImporter{
 			entityId: ctx.currentEntity.GetLayerRoot(),
 			layer:    imported.Layer,

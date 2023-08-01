@@ -190,7 +190,7 @@ func (imp schemaImporter) schemaAttrs(attr *schemaProperty, path schemaPath, key
 }
 
 func (imp schemaImporter) newAttrNode(attr *schemaProperty, path schemaPath) (*lpg.Node, error) {
-	newNode := imp.layer.Graph.NewNode([]string{ls.AttributeNodeTerm}, nil)
+	newNode := imp.layer.Graph.NewNode([]string{ls.AttributeNodeTerm.Name}, nil)
 	attr.node = newNode
 	return newNode, imp.setNodeProperties(attr, newNode, path)
 }
@@ -203,29 +203,29 @@ func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode *lpg.N
 	labels := newNode.GetLabels()
 	ls.SetNodeID(newNode, path.String())
 	if len(attr.format) > 0 {
-		newNode.SetProperty(validators.JsonFormatTerm, ls.StringPropertyValue(validators.JsonFormatTerm, attr.format))
+		newNode.SetProperty(validators.JsonFormatTerm.Name, ls.NewPropertyValue(validators.JsonFormatTerm.Name, attr.format))
 	}
 	if len(attr.pattern) > 0 {
-		newNode.SetProperty(validators.PatternTerm, ls.StringPropertyValue(validators.PatternTerm, attr.pattern))
+		newNode.SetProperty(validators.PatternTerm.Name, ls.NewPropertyValue(validators.PatternTerm.Name, attr.pattern))
 	}
 	//if len(attr.description) > 0 {
-	//	newNode.SetProperty(ls.DescriptionTerm, ls.StringPropertyValue(attr.description))
+	//	newNode.SetProperty(ls.DescriptionTerm, ls.NewPropertyValue(attr.description))
 	//}
 	if len(attr.typ) > 0 {
-		newNode.SetProperty(ls.ValueTypeTerm, ls.StringPropertyValue(ls.ValueTypeTerm, attr.typ[0]))
+		newNode.SetProperty(ls.ValueTypeTerm.Name, ls.NewPropertyValue(ls.ValueTypeTerm.Name, attr.typ[0]))
 	}
 	if len(attr.key) > 0 {
-		newNode.SetProperty(ls.AttributeNameTerm, ls.StringPropertyValue(ls.AttributeNameTerm, attr.key))
+		newNode.SetProperty(ls.AttributeNameTerm.Name, ls.NewPropertyValue(ls.AttributeNameTerm.Name, attr.key))
 	}
 	if len(attr.enum) > 0 {
 		elements := make([]string, 0, len(attr.enum))
 		for _, v := range attr.enum {
 			elements = append(elements, imp.interner.Intern(fmt.Sprint(v)))
 		}
-		newNode.SetProperty(validators.EnumTerm, ls.StringSlicePropertyValue(validators.EnumTerm, elements))
+		newNode.SetProperty(validators.EnumTerm.Name, ls.NewPropertyValue(validators.EnumTerm.Name, elements))
 	}
 	if attr.defaultValue != nil {
-		newNode.SetProperty(ls.DefaultValueTerm, ls.StringPropertyValue(ls.DefaultValueTerm, *attr.defaultValue))
+		newNode.SetProperty(ls.DefaultValueTerm.Name, ls.NewPropertyValue(ls.DefaultValueTerm.Name, *attr.defaultValue))
 	}
 	for k, v := range attr.annotations {
 		if err := ls.GetTermMarshaler(k).UnmarshalJSON(imp.layer, k, v, newNode, imp.interner); err != nil {
@@ -234,39 +234,39 @@ func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode *lpg.N
 	}
 
 	if attr.reference != nil {
-		labels.Add(ls.AttributeTypeReference)
+		labels.Add(ls.AttributeTypeReference.Name)
 		newNode.SetLabels(labels)
 		switch imp.linkRefs {
 		case LinkRefsBySchemaRef:
-			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(ls.ReferenceTerm, attr.reference.Ref))
+			newNode.SetProperty(ls.ReferenceTerm.Name, ls.NewPropertyValue(ls.ReferenceTerm.Name, attr.reference.Ref))
 		case LinkRefsByLayerID:
-			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(ls.ReferenceTerm, attr.reference.LayerID))
+			newNode.SetProperty(ls.ReferenceTerm.Name, ls.NewPropertyValue(ls.ReferenceTerm.Name, attr.reference.LayerID))
 		case LinkRefsByValueType:
-			newNode.SetProperty(ls.ReferenceTerm, ls.StringPropertyValue(ls.ReferenceTerm, attr.reference.ValueType))
+			newNode.SetProperty(ls.ReferenceTerm.Name, ls.NewPropertyValue(ls.ReferenceTerm.Name, attr.reference.ValueType))
 		}
 		return nil
 	}
 	if attr.object != nil {
-		labels.Add(ls.AttributeTypeObject)
+		labels.Add(ls.AttributeTypeObject.Name)
 		newNode.SetLabels(labels)
 		return nil
 	}
 	if attr.array != nil {
-		labels.Add(ls.AttributeTypeArray)
+		labels.Add(ls.AttributeTypeArray.Name)
 		newNode.SetLabels(labels)
 		return nil
 	}
 	if len(attr.oneOf) > 0 {
-		labels.Add(ls.AttributeTypePolymorphic)
+		labels.Add(ls.AttributeTypePolymorphic.Name)
 		newNode.SetLabels(labels)
 		return nil
 	}
 	if len(attr.allOf) > 0 {
-		labels.Add(ls.AttributeTypeComposite)
+		labels.Add(ls.AttributeTypeComposite.Name)
 		newNode.SetLabels(labels)
 		return nil
 	}
-	labels.Add(ls.AttributeTypeValue)
+	labels.Add(ls.AttributeTypeValue.Name)
 	newNode.SetLabels(labels)
 	return nil
 }
@@ -274,7 +274,7 @@ func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode *lpg.N
 func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode *lpg.Node, path schemaPath) error {
 	labels := newNode.GetLabels()
 	if attr.object != nil {
-		labels.Add(ls.AttributeTypeObject)
+		labels.Add(ls.AttributeTypeObject.Name)
 		newNode.SetLabels(labels)
 		attrIds := make(map[string]string)
 		for _, v := range attr.object.properties {
@@ -285,7 +285,7 @@ func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode *lpg.Nod
 			if len(v.key) > 0 {
 				attrIds[v.key] = ls.GetNodeID(node)
 			}
-			imp.layer.Graph.NewEdge(newNode, node, ls.ObjectAttributeListTerm, nil)
+			imp.layer.Graph.NewEdge(newNode, node, ls.ObjectAttributeListTerm.Name, nil)
 		}
 		if len(attr.object.required) > 0 {
 			req := make([]string, 0, len(attr.object.required))
@@ -295,18 +295,18 @@ func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode *lpg.Nod
 					req = append(req, id)
 				}
 			}
-			newNode.SetProperty(validators.RequiredTerm, ls.StringSlicePropertyValue(validators.RequiredTerm, req))
+			newNode.SetProperty(validators.RequiredTerm.Name, ls.NewPropertyValue(validators.RequiredTerm.Name, req))
 		}
 		return nil
 	}
 	if attr.array != nil {
-		labels.Add(ls.AttributeTypeArray)
+		labels.Add(ls.AttributeTypeArray.Name)
 		newNode.SetLabels(labels)
 		n, err := imp.schemaAttrs(attr.array.items, path, "*")
 		if err != nil {
 			return err
 		}
-		imp.layer.Graph.NewEdge(newNode, n, ls.ArrayItemsTerm, nil)
+		imp.layer.Graph.NewEdge(newNode, n, ls.ArrayItemsTerm.Name, nil)
 		return nil
 	}
 
@@ -322,26 +322,26 @@ func (imp schemaImporter) buildChildAttrs(attr *schemaProperty, newNode *lpg.Nod
 		return elements, nil
 	}
 	if len(attr.oneOf) > 0 {
-		labels.Add(ls.AttributeTypePolymorphic)
+		labels.Add(ls.AttributeTypePolymorphic.Name)
 		newNode.SetLabels(labels)
 		choices, err := buildChoices(attr.oneOf)
 		if err != nil {
 			return err
 		}
 		for _, x := range choices {
-			imp.layer.Graph.NewEdge(newNode, x, ls.OneOfTerm, nil)
+			imp.layer.Graph.NewEdge(newNode, x, ls.OneOfTerm.Name, nil)
 		}
 		return nil
 	}
 	if len(attr.allOf) > 0 {
-		labels.Add(ls.AttributeTypeComposite)
+		labels.Add(ls.AttributeTypeComposite.Name)
 		newNode.SetLabels(labels)
 		choices, err := buildChoices(attr.allOf)
 		if err != nil {
 			return err
 		}
 		for _, x := range choices {
-			imp.layer.Graph.NewEdge(newNode, x, ls.AllOfTerm, nil)
+			imp.layer.Graph.NewEdge(newNode, x, ls.AllOfTerm.Name, nil)
 		}
 		return nil
 	}

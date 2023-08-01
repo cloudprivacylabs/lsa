@@ -40,7 +40,7 @@ type ExportOptions struct {
 // what key to use
 func GetBuildNodeKeyBySchemaNodeFunc(f func(schemaNode, docNode *lpg.Node) (string, bool, error)) func(*lpg.Node) (string, bool, error) {
 	return func(node *lpg.Node) (string, bool, error) {
-		schemaNodes := lpg.TargetNodes(node.GetEdgesWithLabel(lpg.OutgoingEdge, ls.InstanceOfTerm))
+		schemaNodes := lpg.TargetNodes(node.GetEdgesWithLabel(lpg.OutgoingEdge, ls.InstanceOfTerm.Name))
 		if len(schemaNodes) != 1 {
 			return "", false, nil
 		}
@@ -59,28 +59,28 @@ func (options ExportOptions) BuildNodeKey(node *lpg.Node) (string, bool, error) 
 // from the node if it exists. If not, it looks at the attributeName
 // of the node reached by instanceOf edge. If none found it return false
 func DefaultBuildNodeKeyFunc(node *lpg.Node) (string, bool, error) {
-	v := ls.AsPropertyValue(node.GetProperty(ls.AttributeNameTerm))
-	if v != nil {
-		if v.IsString() {
-			return v.AsString(), true, nil
-		}
-		if v.IsStringSlice() {
-			return v.AsStringSlice()[0], true, nil
+	nv, _ := node.GetProperty(ls.AttributeNameTerm.Name)
+	v, ok := nv.(ls.PropertyValue)
+	sl := ls.StringSliceType{}
+	if ok {
+		s, _ := sl.Coerce(v)
+		if slice, _ := s.([]string); len(slice) > 0 {
+			return slice[0], true, nil
 		}
 	}
 	found := false
 	foundLabel := ""
 	for _, inst := range append(ls.InstanceOf(node), node) {
-		v := ls.AsPropertyValue(inst.GetProperty(ls.AttributeNameTerm))
-		if v != nil {
+		nv, _ := inst.GetProperty(ls.AttributeNameTerm.Name)
+		v, ok := nv.(ls.PropertyValue)
+		if ok {
 			if found {
 				return "", false, nil
 			}
 			found = true
-			if v.IsString() {
-				foundLabel = v.AsString()
-			} else if v.IsStringSlice() {
-				foundLabel = v.AsStringSlice()[0]
+			s, _ := sl.Coerce(v)
+			if slice, _ := s.([]string); len(slice) > 0 {
+				foundLabel = slice[0]
 			}
 		}
 	}
@@ -131,7 +131,7 @@ func exportJSON(node *lpg.Node, options ExportOptions, seen map[*lpg.Node]struct
 	seen[node] = struct{}{}
 
 	nodeType := node.GetLabels()
-	if !nodeType.Has(ls.DocumentNodeTerm) {
+	if !nodeType.Has(ls.DocumentNodeTerm.Name) {
 		// Not a document node
 		return nil, nil
 	}
@@ -153,12 +153,12 @@ func exportJSON(node *lpg.Node, options ExportOptions, seen map[*lpg.Node]struct
 	}
 
 	switch {
-	case types.Has(ls.AttributeTypeObject):
+	case types.Has(ls.AttributeTypeObject.Name):
 		ret := jsonom.NewObject()
 		if t := getTypes(); t != nil {
 			ret.Set("@type", t)
 		}
-		gnodes := lpg.TargetNodes(node.GetEdgesWithLabel(lpg.OutgoingEdge, ls.HasTerm))
+		gnodes := lpg.TargetNodes(node.GetEdgesWithLabel(lpg.OutgoingEdge, ls.HasTerm.Name))
 		nodes := make([]*lpg.Node, 0, len(gnodes))
 		for _, node := range gnodes {
 			nodes = append(nodes, node)
@@ -179,9 +179,9 @@ func exportJSON(node *lpg.Node, options ExportOptions, seen map[*lpg.Node]struct
 		}
 		return ret, nil
 
-	case types.Has(ls.AttributeTypeArray):
+	case types.Has(ls.AttributeTypeArray.Name):
 		ret := jsonom.NewArray()
-		gnodes := lpg.TargetNodes(node.GetEdgesWithLabel(lpg.OutgoingEdge, ls.HasTerm))
+		gnodes := lpg.TargetNodes(node.GetEdgesWithLabel(lpg.OutgoingEdge, ls.HasTerm.Name))
 		nodes := make([]*lpg.Node, 0, len(gnodes))
 		for _, node := range gnodes {
 			nodes = append(nodes, node)
@@ -196,7 +196,7 @@ func exportJSON(node *lpg.Node, options ExportOptions, seen map[*lpg.Node]struct
 		}
 		return ret, nil
 
-	case types.Has(ls.AttributeTypeValue):
+	case types.Has(ls.AttributeTypeValue.Name):
 		nativeValue, err := ls.GetNodeValue(node)
 		if err != nil {
 			return nil, err
