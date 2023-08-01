@@ -24,7 +24,6 @@ import (
 	"github.com/cloudprivacylabs/lpg/v2"
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 )
 
 func addSchemaFlags(flags *pflag.FlagSet) {
@@ -210,7 +209,7 @@ func LoadSchemaFromFileOrRepo(ctx *ls.Context, compiledSchema, repoDir, schemaNa
 	if len(schemaName) == 0 {
 		return nil, fmt.Errorf("Empty schema name")
 	}
-	var repo *fs.Repository
+	var repo *Repository
 	if len(repoDir) > 0 {
 		var err error
 		repo, err = getRepo(repoDir, ctx.GetInterner())

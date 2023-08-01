@@ -66,8 +66,8 @@ func (e ErrInvalidID) Error() string {
 // of Layer objects
 func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []int, entityID string, required string, input [][]string) (*ls.Layer, error) {
 	layer := ls.NewLayer()
-	root := layer.Graph.NewNode([]string{ls.AttributeTypeObject, ls.AttributeNodeTerm}, nil)
-	layer.Graph.NewEdge(layer.GetLayerRootNode(), root, ls.LayerRootTerm, nil)
+	root := layer.Graph.NewNode([]string{ls.AttributeTypeObject.Name, ls.AttributeNodeTerm.Name}, nil)
+	layer.Graph.NewEdge(layer.GetLayerRootNode(), root, ls.LayerRootTerm.Name, nil)
 
 	idTemplate, err := template.New("").Parse(attributeID)
 	if err != nil {
@@ -146,9 +146,9 @@ func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []
 			}
 
 			var attr *lpg.Node
-			attr = layer.Graph.NewNode([]string{ls.AttributeNodeTerm, ls.AttributeTypeValue}, nil)
+			attr = layer.Graph.NewNode([]string{ls.AttributeNodeTerm.Name, ls.AttributeTypeValue.Name}, nil)
 			ls.SetNodeID(attr, id)
-			layer.Graph.NewEdge(root, attr, ls.ObjectAttributeListTerm, nil)
+			layer.Graph.NewEdge(root, attr, ls.ObjectAttributeListTerm.Name, nil)
 			ls.SetNodeIndex(attr, index)
 			if requiredTemplate != nil {
 				s, err := runtmp(requiredTemplate, "")
@@ -156,7 +156,7 @@ func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []
 					return nil, err
 				}
 				if s == "true" {
-					attr.SetProperty(validators.RequiredTerm, ls.StringPropertyValue(validators.RequiredTerm, "true"))
+					attr.SetProperty(validators.RequiredTerm.Name, ls.NewPropertyValue(validators.RequiredTerm.Name, "true"))
 				}
 			}
 
@@ -170,22 +170,17 @@ func Import(attributeID string, terms []TermSpec, startRow, nRows int, idRows []
 				if len(data) > 0 {
 					if term.Array {
 						elems := strings.Split(data, term.ArraySeparator)
-						attr.SetProperty(term.Term, ls.StringSlicePropertyValue(term.Term, elems))
+						attr.SetProperty(term.Term, ls.NewPropertyValue(term.Term, elems))
 					} else {
-						attr.SetProperty(term.Term, ls.StringPropertyValue(term.Term, data))
+						attr.SetProperty(term.Term, ls.NewPropertyValue(term.Term, data))
 					}
 				}
 			}
 		}
 	}
 	if len(entityIDFields) > 0 {
-		var v *ls.PropertyValue
-		if len(entityIDFields) == 1 {
-			v = ls.StringPropertyValue(ls.EntityIDFieldsTerm, entityIDFields[0])
-		} else {
-			v = ls.StringSlicePropertyValue(ls.EntityIDFieldsTerm, entityIDFields)
-		}
-		root.SetProperty(ls.EntityIDFieldsTerm, v)
+		v := ls.NewPropertyValue(ls.EntityIDFieldsTerm.Name, entityIDFields)
+		root.SetProperty(ls.EntityIDFieldsTerm.Name, v)
 	}
 	return layer, nil
 }
@@ -215,7 +210,7 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 			row[i] = strings.TrimSpace(row[i])
 		}
 		if len(row) > 1 {
-			if row[0] == "valueType" || row[0] == ls.ValueTypeTerm {
+			if row[0] == "valueType" || row[0] == ls.ValueTypeTerm.Name {
 				if len(valueType) > 0 {
 					return nil, fmt.Errorf("valueType is duplicated at row %d", index+1)
 				}
@@ -237,7 +232,7 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 						x := strings.TrimSpace(x)
 						if len(x) > 0 {
 							if term == "entityIdFields" {
-								term = ls.EntityIDFieldsTerm
+								term = ls.EntityIDFieldsTerm.Name
 							}
 							schemaAnnotations[term] = append(schemaAnnotations[term], x)
 						}
@@ -313,25 +308,25 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 		}
 		switch typ[0] {
 		case "Schema":
-			typ[0] = ls.SchemaTerm
+			typ[0] = ls.SchemaTerm.Name
 		case "Overlay":
-			typ[0] = ls.OverlayTerm
+			typ[0] = ls.OverlayTerm.Name
 		case "Value":
-			typ[0] = ls.AttributeTypeValue
+			typ[0] = ls.AttributeTypeValue.Name
 		case "Object":
-			typ[0] = ls.AttributeTypeObject
+			typ[0] = ls.AttributeTypeObject.Name
 		case "Array":
-			typ[0] = ls.AttributeTypeArray
+			typ[0] = ls.AttributeTypeArray.Name
 		case "Polymoprhic":
-			typ[0] = ls.AttributeTypePolymorphic
+			typ[0] = ls.AttributeTypePolymorphic.Name
 		case "Composite":
-			typ[0] = ls.AttributeTypeComposite
+			typ[0] = ls.AttributeTypeComposite.Name
 		}
 		if len(mrow["@id"]) != 1 {
 			continue
 		}
 		// This must be an overlay or schema
-		if typ[0] == ls.SchemaTerm || typ[0] == ls.OverlayTerm {
+		if typ[0] == ls.SchemaTerm.Name || typ[0] == ls.OverlayTerm.Name {
 			layerInfo = append(layerInfo, mrow)
 		} else {
 			// Attr row
@@ -375,10 +370,10 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 			}
 		}
 		if len(valueType) > 0 {
-			layerMap[ls.ValueTypeTerm] = valueType
+			layerMap[ls.ValueTypeTerm.Name] = valueType
 		}
 		for k, v := range schemaAnnotations {
-			if k != ls.EntityIDFieldsTerm {
+			if k != ls.EntityIDFieldsTerm.Name {
 				layerMap[k] = v
 			}
 		}
@@ -386,19 +381,19 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 		layerMap["@type"] = layer["@type"][0]
 
 		layerNode := make(map[string]interface{})
-		layerMap[ls.LayerRootTerm] = layerNode
+		layerMap[ls.LayerRootTerm.Name] = layerNode
 		if len(valueType) > 0 {
-			layerNode[ls.ValueTypeTerm] = valueType
+			layerNode[ls.ValueTypeTerm.Name] = valueType
 		}
-		if x, ok := schemaAnnotations[ls.EntityIDFieldsTerm]; ok {
-			layerNode[ls.EntityIDFieldsTerm] = x
+		if x, ok := schemaAnnotations[ls.EntityIDFieldsTerm.Name]; ok {
+			layerNode[ls.EntityIDFieldsTerm.Name] = x
 		}
 		objectNode := []interface{}{}
 		// Attributes
 		for attrIndex, attrRow := range attrRows {
 			if attrIndex == 0 {
 				// Must be object
-				if attrRow["@type"][0] != "Object" && attrRow["@type"][0] != ls.AttributeTypeObject {
+				if attrRow["@type"][0] != "Object" && attrRow["@type"][0] != ls.AttributeTypeObject.Name {
 					return nil, fmt.Errorf("First attribute row must define an object")
 				}
 				id := attrRow["@id"][0]
@@ -426,7 +421,7 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 				objectNode = append(objectNode, attrNode)
 			}
 		}
-		layerNode[ls.ObjectAttributeListTerm] = objectNode
+		layerNode[ls.ObjectAttributeListTerm.Name] = objectNode
 
 		l, err := ls.UnmarshalLayer(layerMap, ctx.GetInterner())
 		if err != nil {

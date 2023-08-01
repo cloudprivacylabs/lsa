@@ -56,9 +56,9 @@ func (spec CSVImportSpec) Import(records [][]string) (*ls.Layer, error) {
 		return nil, err
 	}
 	if layerType == "Overlay" {
-		layerType = ls.OverlayTerm
+		layerType = ls.OverlayTerm.Name
 	} else if layerType == "Schema" {
-		layerType = ls.SchemaTerm
+		layerType = ls.SchemaTerm.Name
 	}
 	layer, err := Import(spec.AttributeID, spec.Terms, spec.StartRow, spec.NRows, spec.EntityIDRows, spec.EntityID, spec.Required, records)
 	if err != nil {

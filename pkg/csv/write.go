@@ -75,10 +75,10 @@ func (wr *Writer) BuildRow(root *lpg.Node) ([]string, error) {
 
 	for edges := root.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 		node := edges.Edge().GetTo()
-		if !node.HasLabel(ls.DocumentNodeTerm) {
+		if !node.HasLabel(ls.DocumentNodeTerm.Name) {
 			continue
 		}
-		attrName := ls.AsPropertyValue(node.GetProperty(ls.AttributeNameTerm)).AsString()
+		attrName := ls.AttributeNameTerm.PropertyValue(node)
 		if len(attrName) == 0 {
 			continue
 		}
@@ -175,7 +175,7 @@ func (wr *Writer) WriteRows(writer *csv.Writer, g *lpg.Graph) error {
 	}
 
 	for _, root := range roots {
-		if !root.HasLabel(ls.DocumentNodeTerm) {
+		if !root.HasLabel(ls.DocumentNodeTerm.Name) {
 			continue
 		}
 		if err := wr.WriteRow(writer, root); err != nil {

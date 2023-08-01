@@ -205,12 +205,12 @@ func (bundle *Bundle) loadVariants(ctx *ls.Context, layerLoader func(*ls.Context
 		}
 		// Import the schema
 		if len(schemaEntities) > 0 {
-			if err := bundle.importJSONSchema(ctx, ls.SchemaTerm, schemaEntities); err != nil {
+			if err := bundle.importJSONSchema(ctx, ls.SchemaTerm.Name, schemaEntities); err != nil {
 				return err
 			}
 		}
 		if len(overlayEntities) > 0 {
-			if err := bundle.importJSONSchema(ctx, ls.OverlayTerm, overlayEntities); err != nil {
+			if err := bundle.importJSONSchema(ctx, ls.OverlayTerm.Name, overlayEntities); err != nil {
 				return err
 			}
 		}

@@ -80,7 +80,7 @@ func (repo *Repository) RemoveObject(ID string) {
 // GetSchema returns a schema with the given id
 func (repo *Repository) GetSchema(id string) *ls.Layer {
 	l := repo.layers[id]
-	if l != nil && l.GetLayerType() == ls.SchemaTerm {
+	if l != nil && l.GetLayerType() == ls.SchemaTerm.Name {
 		return l
 	}
 	return nil
@@ -89,7 +89,7 @@ func (repo *Repository) GetSchema(id string) *ls.Layer {
 // GetOverlay returns an overlay with the given id
 func (repo *Repository) GetOverlay(id string) *ls.Layer {
 	l := repo.layers[id]
-	if l != nil && l.GetLayerType() == ls.OverlayTerm {
+	if l != nil && l.GetLayerType() == ls.OverlayTerm.Name {
 		return l
 	}
 	return nil

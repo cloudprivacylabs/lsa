@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package fs
+package cmd
 
 import (
 	"encoding/json"
@@ -40,12 +40,12 @@ type Repository struct {
 }
 
 // New returns a new file repository under the given directory.
-func New(root string) *Repository {
+func NewRepo(root string) *Repository {
 	return &Repository{root: root, interner: ls.NewInterner()}
 }
 
 // NewWithInterner returns a new file repository under the given directory.
-func NewWithInterner(root string, interner ls.Interner) *Repository {
+func NewRepoWithInterner(root string, interner ls.Interner) *Repository {
 	return &Repository{root: root, interner: interner}
 }
 
@@ -175,7 +175,7 @@ func (repo *Repository) BuildIndex() ([]IndexEntry, []string, error) {
 				return false
 			}
 			switch {
-			case hasType(ls.SchemaTerm), hasType(ls.OverlayTerm), hasType("Schema"), hasType("Overlay"):
+			case hasType(ls.SchemaTerm.Name), hasType(ls.OverlayTerm.Name), hasType("Schema"), hasType("Overlay"):
 				layer, err := ls.UnmarshalLayer(obj, repo.interner)
 				if err != nil {
 					warnings = append(warnings, fmt.Sprintf("Cannot parse %s: %v", fname, err))
@@ -208,7 +208,7 @@ func (repo *Repository) LoadAndCompose(context *ls.Context, id string) (*ls.Laye
 
 func (repo *Repository) GetSchema(id string) *ls.Layer {
 	for _, x := range repo.index {
-		if x.ID == id && x.Type == ls.SchemaTerm {
+		if x.ID == id && x.Type == ls.SchemaTerm.Name {
 			return repo.loadLayer(x.File)
 		}
 	}
@@ -217,7 +217,7 @@ func (repo *Repository) GetSchema(id string) *ls.Layer {
 
 func (repo *Repository) GetOverlay(id string) *ls.Layer {
 	for _, x := range repo.index {
-		if x.ID == id && x.Type == ls.OverlayTerm {
+		if x.ID == id && x.Type == ls.OverlayTerm.Name {
 			return repo.loadLayer(x.File)
 		}
 	}
@@ -226,7 +226,7 @@ func (repo *Repository) GetOverlay(id string) *ls.Layer {
 
 func (repo *Repository) GetLayer(id string) *ls.Layer {
 	for _, x := range repo.index {
-		if x.ID == id && (x.Type == ls.OverlayTerm || x.Type == ls.SchemaTerm) {
+		if x.ID == id && (x.Type == ls.OverlayTerm.Name || x.Type == ls.SchemaTerm.Name) {
 			return repo.loadLayer(x.File)
 		}
 	}

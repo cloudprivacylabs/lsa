@@ -30,7 +30,7 @@ type rootNode struct {
 }
 
 func (i rootNode) GetSchemaNode() *lpg.Node              { return i.schemaNode }
-func (i rootNode) GetTypeTerm() string                   { return ls.AttributeTypeObject }
+func (i rootNode) GetTypeTerm() string                   { return ls.AttributeTypeObject.Name }
 func (i rootNode) GetValue() string                      { return "" }
 func (i rootNode) GetValueTypes() []string               { return nil }
 func (i rootNode) GetChildren() []ls.ParsedDocNode       { return i.children }
@@ -49,7 +49,7 @@ type cellNode struct {
 }
 
 func (i cellNode) GetSchemaNode() *lpg.Node              { return i.schemaNode }
-func (i cellNode) GetTypeTerm() string                   { return ls.AttributeTypeValue }
+func (i cellNode) GetTypeTerm() string                   { return ls.AttributeTypeValue.Name }
 func (i cellNode) GetValue() string                      { return i.value }
 func (i cellNode) GetValueTypes() []string               { return nil }
 func (i cellNode) GetChildren() []ls.ParsedDocNode       { return nil }
@@ -95,7 +95,7 @@ func (ing Parser) parseRow(ctx parserContext, row []string) (ls.ParsedDocNode, e
 				continue
 			}
 			allAttributes = append(allAttributes, node)
-			name := ls.AsPropertyValue(node.GetProperty(ls.AttributeNameTerm)).AsString()
+			name := ls.AttributeNameTerm.PropertyValue(node)
 			if len(name) > 0 {
 				attributes[name] = append(attributes[name], node)
 			}
@@ -141,11 +141,8 @@ func (ing Parser) parseRow(ctx parserContext, row []string) (ls.ParsedDocNode, e
 		} else if ctx.schemaNode != nil || !ing.OnlySchemaAttributes {
 			var schemaNode *lpg.Node
 			for _, attr := range allAttributes {
-				p := ls.AsPropertyValue(attr.GetProperty(ls.AttributeIndexTerm))
-				if p == nil {
-					continue
-				}
-				if p.IsInt() && p.AsInt() == columnIndex {
+				p := ls.AttributeIndexTerm.PropertyValue(attr)
+				if p == columnIndex {
 					schemaNode = attr
 					break
 				}
@@ -160,10 +157,10 @@ func (ing Parser) parseRow(ctx parserContext, row []string) (ls.ParsedDocNode, e
 			}
 		}
 		if newChild != nil {
-			newChild.properties = make(map[string]interface{})
-			newChild.properties[ls.AttributeIndexTerm] = ls.IntPropertyValue(ls.AttributeIndexTerm, columnIndex)
+			newChild.properties = make(map[string]any)
+			newChild.properties[ls.AttributeIndexTerm.Name] = ls.NewPropertyValue(ls.AttributeIndexTerm.Name, columnIndex)
 			if len(columnName) > 0 {
-				newChild.properties[ls.AttributeNameTerm] = ls.StringPropertyValue(ls.AttributeNameTerm, columnName)
+				newChild.properties[ls.AttributeNameTerm.Name] = ls.NewPropertyValue(ls.AttributeNameTerm.Name, columnName)
 			}
 			children = append(children, newChild)
 		}

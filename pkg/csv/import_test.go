@@ -78,13 +78,13 @@ func TestImportSchema(t *testing.T) {
 	if layers[0].GetID() != "https://sch" {
 		t.Errorf("Wrong id")
 	}
-	if layers[0].GetLayerType() != ls.SchemaTerm {
+	if layers[0].GetLayerType() != ls.SchemaTerm.Name {
 		t.Errorf("Wrong type")
 	}
 	if layers[1].GetID() != "https://ovl" {
 		t.Errorf("Wrong id")
 	}
-	if layers[1].GetLayerType() != ls.OverlayTerm {
+	if layers[1].GetLayerType() != ls.OverlayTerm.Name {
 		t.Errorf("Wrong type")
 	}
 	if layers[0].GetValueType() != "type" {
@@ -106,17 +106,17 @@ func TestImportSchema(t *testing.T) {
 	t.Log(string(d))
 
 	attr := layers[0].GetAttributeByID("field1")
-	if !attr.HasLabel(ls.AttributeTypeValue) {
+	if !attr.HasLabel(ls.AttributeTypeValue.Name) {
 		t.Errorf("Not value")
 	}
-	if ls.AsPropertyValue(attr.GetProperty("https://dpv_something")).AsString() != "" {
+	if s, _ := ls.GetPropertyValueAs[string](attr, "https://dpv_something"); s != "" {
 		t.Error("Wrong dpv")
 	}
 	attr = layers[1].GetAttributeByID("field1")
-	if ls.AsPropertyValue(attr.GetProperty(ls.ValueTypeTerm)).AsString() != "string" {
+	if s, _ := ls.GetPropertyValueAs[string](attr, ls.ValueTypeTerm.Name); s != "string" {
 		t.Errorf("Wrong type")
 	}
-	if ls.AsPropertyValue(attr.GetProperty("https://dpv_something")).AsStringSlice()[0] != "dpv:value" {
+	if s, _ := ls.GetPropertyValueAs[[]string](attr, "https://dpv_something"); s[0] != "dpv:value" {
 		t.Error("Wrong dpv")
 	}
 }

@@ -20,7 +20,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 )
@@ -49,7 +48,7 @@ var compileCmd = &cobra.Command{
 				fail("Schema is required")
 			}
 			if len(repoDir) > 0 {
-				var repo *fs.Repository
+				var repo *Repository
 				var err error
 				repo, err = getRepo(repoDir, ctx.GetInterner())
 				if err != nil {

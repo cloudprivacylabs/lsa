@@ -25,7 +25,6 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
-	"github.com/cloudprivacylabs/lsa/pkg/repo/fs"
 	"github.com/cloudprivacylabs/lsa/pkg/types"
 )
 
@@ -130,8 +129,8 @@ func unroll(in interface{}, depth int) interface{} {
 	return in
 }
 
-func getRepo(repodir string, interner ls.Interner) (*fs.Repository, error) {
-	repo := fs.NewWithInterner(repodir, interner)
+func getRepo(repodir string, interner ls.Interner) (*Repository, error) {
+	repo := NewRepoWithInterner(repodir, interner)
 	if err := repo.Load(); err != nil {
 		if errors.Is(err, fs.ErrNoIndex) || errors.Is(err, fs.ErrBadIndex) {
 			warnings, err := repo.UpdateIndex()
