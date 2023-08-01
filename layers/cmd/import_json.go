@@ -44,7 +44,7 @@ func (req *ImportJSONSchemaRequest) CompileAndImport() (*lpg.Graph, []jsonsch.En
 		return nil, nil, err
 	}
 	g := lpg.NewGraph()
-	layers, err := jsonsch.BuildEntityGraph(g, ls.SchemaTerm, jsonsch.LinkRefsByLayerID, c...)
+	layers, err := jsonsch.BuildEntityGraph(g, ls.SchemaTerm.Name, jsonsch.LinkRefsByLayerID, c...)
 	return g, layers, err
 }
 
@@ -67,7 +67,7 @@ func (req *ImportJSONSchemaRequest) Slice(index int, item jsonsch.EntityLayer) (
 		if err != nil {
 			return nil, err
 		}
-		if layer.GetLayerType() == ls.SchemaTerm {
+		if layer.GetLayerType() == ls.SchemaTerm.Name {
 			if baseID != "" {
 				return nil, fmt.Errorf("Multiple schemas")
 			}
