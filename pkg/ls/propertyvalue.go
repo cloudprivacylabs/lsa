@@ -36,9 +36,11 @@ type PropertyValue struct {
 
 // NewPropertyValue create a new property value for the given term and value
 func NewPropertyValue(term string, value any) PropertyValue {
+	t := GetTerm(term)
+	val, _ := t.Type.Coerce(value)
 	return PropertyValue{
-		sem:   GetTerm(term),
-		value: value,
+		sem:   t,
+		value: val,
 	}
 }
 

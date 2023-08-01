@@ -160,7 +160,7 @@ func (tc testCase) Run(t *testing.T) {
 						return false
 					}
 					if !pv2.Equal(pv) {
-						t.Logf("Error at %s: %v: Values are not equal", k, v)
+						t.Logf("Error at %s: %v: Values are not equal: %v %T %v %T", k, v, pv2.Value(), pv2.Value(), pv.Value(), pv.Value())
 						propertiesOK = false
 						return false
 					}

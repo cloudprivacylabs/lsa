@@ -37,10 +37,10 @@ type LDMarshaler struct {
 	EdgeLabelGeneratorFunc func(*lpg.Edge) string
 }
 
-func (rd *LDMarshaler) Marshal(input *lpg.Graph) interface{} {
+func (rd *LDMarshaler) Marshal(input *lpg.Graph) any {
 	type outputNode struct {
 		id     string
-		ldNode map[string]interface{}
+		ldNode map[string]any
 	}
 	blankNodeId := 0
 	// Assign IDs to all nodes
@@ -60,7 +60,7 @@ func (rd *LDMarshaler) Marshal(input *lpg.Graph) interface{} {
 				blankNodeId++
 			}
 		}
-		outNode := outputNode{ldNode: map[string]interface{}{"@id": idstr}, id: idstr}
+		outNode := outputNode{ldNode: map[string]any{"@id": idstr}, id: idstr}
 		nodeIdMap[node] = outNode
 	}
 
@@ -75,7 +75,7 @@ func (rd *LDMarshaler) Marshal(input *lpg.Graph) interface{} {
 			if t.Len() == 1 {
 				onode.ldNode["@type"] = t.Slice()[0]
 			} else {
-				arr := make([]interface{}, 0, t.Len())
+				arr := make([]any, 0, t.Len())
 				for _, x := range t.Slice() {
 					arr = append(arr, x)
 				}
@@ -105,38 +105,38 @@ func (rd *LDMarshaler) Marshal(input *lpg.Graph) interface{} {
 			existing, ok := onode.ldNode[labelStr]
 			if GetTerm(labelStr).IsList {
 				if !ok {
-					onode.ldNode[labelStr] = map[string]interface{}{"@list": []interface{}{map[string]interface{}{"@id": nodeIdMap[edge.GetTo()].id}}}
+					onode.ldNode[labelStr] = map[string]any{"@list": []any{map[string]any{"@id": nodeIdMap[edge.GetTo()].id}}}
 				} else {
-					x := existing.(map[string]interface{})["@list"].([]interface{})
-					x = append(x, map[string]interface{}{"@id": nodeIdMap[edge.GetTo()].id})
-					existing.(map[string]interface{})["@list"] = x
+					x := existing.(map[string]any)["@list"].([]any)
+					x = append(x, map[string]any{"@id": nodeIdMap[edge.GetTo()].id})
+					existing.(map[string]any)["@list"] = x
 				}
 			} else {
 				if !ok {
-					onode.ldNode[labelStr] = map[string]interface{}{"@id": nodeIdMap[edge.GetTo()].id}
-				} else if arr, ok := existing.([]interface{}); ok {
-					arr = append(arr, map[string]interface{}{"@id": nodeIdMap[edge.GetTo()].id})
+					onode.ldNode[labelStr] = map[string]any{"@id": nodeIdMap[edge.GetTo()].id}
+				} else if arr, ok := existing.([]any); ok {
+					arr = append(arr, map[string]any{"@id": nodeIdMap[edge.GetTo()].id})
 					onode.ldNode[labelStr] = arr
 				} else {
-					onode.ldNode[labelStr] = []interface{}{onode.ldNode[labelStr], map[string]interface{}{"@id": nodeIdMap[edge.GetTo()].id}}
+					onode.ldNode[labelStr] = []any{onode.ldNode[labelStr], map[string]any{"@id": nodeIdMap[edge.GetTo()].id}}
 				}
 			}
 		}
 	}
-	graph := make([]interface{}, 0, len(nodeIdMap))
+	graph := make([]any, 0, len(nodeIdMap))
 	for _, v := range nodeIdMap {
 		graph = append(graph, v.ldNode)
 	}
-	return map[string]interface{}{"@graph": graph}
+	return map[string]any{"@graph": graph}
 }
 
 // getValuesOrIDs returns the @values, or @ids contained in the interface
 // This can be a single value, an array, or a @list
-func getValuesOrIDs(in interface{}) (value string, values, ids []string, err error) {
+func getValuesOrIDs(in any) (value string, values, ids []string, err error) {
 	if in == nil {
 		return
 	}
-	if arr, ok := in.([]interface{}); ok {
+	if arr, ok := in.([]any); ok {
 		if len(arr) == 1 {
 			return getValuesOrIDs(arr[0])
 		}
@@ -162,7 +162,7 @@ func getValuesOrIDs(in interface{}) (value string, values, ids []string, err err
 		return
 	}
 
-	if m, ok := in.(map[string]interface{}); ok {
+	if m, ok := in.(map[string]any); ok {
 		if lst, ok := m["@list"]; ok {
 			return getValuesOrIDs(lst)
 		}
@@ -179,7 +179,7 @@ func getValuesOrIDs(in interface{}) (value string, values, ids []string, err err
 }
 
 // UnmarshalJSONLDGraph Unmarshals a graph in JSON-LD format
-func UnmarshalJSONLDGraph(input interface{}, target *lpg.Graph, interner Interner) error {
+func UnmarshalJSONLDGraph(input any, target *lpg.Graph, interner Interner) error {
 	if interner == nil {
 		interner = NewInterner()
 	}
@@ -234,9 +234,9 @@ func UnmarshalJSONLDGraph(input interface{}, target *lpg.Graph, interner Interne
 						return err
 					}
 					if values == nil && ids == nil {
-						inode.GraphNode.SetProperty(k, NewPropertyValue(DocumentNodeTerm.Name, value))
+						inode.GraphNode.SetProperty(k, NewPropertyValue(k, value))
 					} else if values != nil {
-						inode.GraphNode.SetProperty(k, NewPropertyValue(DocumentNodeTerm.Name, values))
+						inode.GraphNode.SetProperty(k, NewPropertyValue(k, values))
 					} else if ids != nil {
 						for _, id := range ids {
 							tgt := inputNodes[id]
@@ -255,9 +255,9 @@ func UnmarshalJSONLDGraph(input interface{}, target *lpg.Graph, interner Interne
 					return err
 				}
 				if values == nil && ids == nil {
-					inode.GraphNode.SetProperty(k, NewPropertyValue(DefaultValueTerm.Name, value))
+					inode.GraphNode.SetProperty(k, NewPropertyValue(k, value))
 				} else if values != nil {
-					inode.GraphNode.SetProperty(k, NewPropertyValue(DefaultValueTerm.Name, values))
+					inode.GraphNode.SetProperty(k, NewPropertyValue(k, values))
 				} else if ids != nil {
 					for _, id := range ids {
 						tgt := inputNodes[id]
