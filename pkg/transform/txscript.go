@@ -139,17 +139,21 @@ func (t *TransformScript) GetSources(schemaPath []*lpg.Node) []string {
 			return ret
 		}
 	}
-	pv, pvalue := prop.(ls.PropertyValue)
-	if pvalue {
+	pv, ok := prop.(ls.PropertyValue)
+	if ok {
 		s := pv.AsStringSlice()
 		if len(s) > 0 {
 			return s
 		}
 	}
-	if s, ok := prop.(string); ok {
-		return []string{s}
+	prop, ok = nd.GetProperty(SourceTerm.Name)
+	if ok {
+		if s, ok := prop.(string); ok {
+			return []string{s}
+		}
 	}
-	if pvalue {
+	pv, ok = prop.(ls.PropertyValue)
+	if ok {
 		if str, ok := pv.Value().(string); ok {
 			return []string{str}
 		}
