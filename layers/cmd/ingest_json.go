@@ -53,7 +53,7 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 	var layer *ls.Layer
 	var err error
 	if !ji.initialized {
-		layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, ji.CompiledSchema, ji.Repo, ji.Schema, ji.Type, ji.Bundle)
+		layer, err = LoadSchemaFromFile(pipeline.Context, ji.CompiledSchema, ji.Schema, ji.Type, ji.Bundle)
 		if err != nil {
 			return err
 		}
@@ -98,7 +98,7 @@ func (ji *JSONIngester) Run(pipeline *pipeline.PipelineContext) error {
 			}
 			entities := ls.GetEntityInfo(pipeline.Graph)
 			for e := range entities {
-				e.SetProperty(ls.SourceTerm, ls.StringPropertyValue(ls.SourceTerm, entryInfo.GetName()))
+				e.SetProperty(ls.SourceTerm.Name, ls.NewPropertyValue(ls.SourceTerm.Name, entryInfo.GetName()))
 			}
 			if err := pipeline.Next(); err != nil {
 				doneErr = err

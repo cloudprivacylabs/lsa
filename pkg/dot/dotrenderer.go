@@ -223,7 +223,7 @@ func (r Renderer) NodeBoxRenderer(ID string, node *lpg.Node, wr io.Writer) (bool
 		label.WriteString(fmt.Sprintf("id=%s\\l", escapeForDot(id)))
 	}
 	node.ForEachProperty(func(k string, v interface{}) bool {
-		if pv, ok := v.(*ls.PropertyValue); ok {
+		if pv, ok := v.(ls.PropertyValue); ok {
 			label.WriteString(fmt.Sprintf("%s=%v\\l", escapeForDot(k), escapeForDot(fmt.Sprint(pv.GetNativeValue()))))
 		}
 		return true
@@ -257,7 +257,7 @@ func (r Renderer) NodeTableRenderer(ID string, node *lpg.Node, wr io.Writer) (bo
 		io.WriteString(wr, r.Options.Properties.Font.Write("id="+id)+"<br/>")
 	}
 	node.ForEachProperty(func(k string, v interface{}) bool {
-		if pv, ok := v.(*ls.PropertyValue); ok {
+		if pv, ok := v.(ls.PropertyValue); ok {
 			io.WriteString(wr, r.Options.Properties.Font.Write(fmt.Sprintf("%s=%v", k, pv))+"<br/>")
 		}
 		return true

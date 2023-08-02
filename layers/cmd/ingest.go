@@ -27,8 +27,7 @@ import (
 )
 
 func addSchemaFlags(flags *pflag.FlagSet) {
-	flags.String("repo", "", "Schema repository directory")
-	flags.String("schema", "", "If repo is given, the schema id. Otherwise schema file.")
+	flags.String("schema", "", "Schema file.")
 	flags.String("type", "", "Use if a bundle is given for data types. The type name to ingest.")
 	flags.StringSlice("bundle", nil, "Schema bundle(s).")
 }
@@ -45,7 +44,6 @@ func init() {
 }
 
 type BaseIngestParams struct {
-	Repo                 string   `json:"repo" yaml:"repo"`
 	Schema               string   `json:"schema" yaml:"schema"`
 	Type                 string   `json:"type" yaml:"type"`
 	Bundle               []string `json:"bundle" yaml:"bundle"`
@@ -57,12 +55,11 @@ type BaseIngestParams struct {
 
 // IsEmptySchema returns true if none of the schema properties are set
 func (b BaseIngestParams) IsEmptySchema() bool {
-	return len(b.Repo) == 0 && len(b.Schema) == 0 && len(b.Type) == 0 && len(b.Bundle) == 0 && len(b.CompiledSchema) == 0
+	return len(b.Schema) == 0 && len(b.Type) == 0 && len(b.Bundle) == 0 && len(b.CompiledSchema) == 0
 }
 
 func (b *BaseIngestParams) fromCmd(cmd *cobra.Command) {
 	b.CompiledSchema, _ = cmd.Flags().GetString("compiledschema")
-	b.Repo, _ = cmd.Flags().GetString("repo")
 	b.Schema, _ = cmd.Flags().GetString("schema")
 	b.Bundle, _ = cmd.Flags().GetStringSlice("bundle")
 	b.Type, _ = cmd.Flags().GetString("type")
@@ -75,14 +72,12 @@ const baseIngestParamsHelp = `
   # Schema loading parameters
   # One of:
   #   bundle/type
-  #   repo/schema (schemaID)
   #   schema (schema file)
   #   compiledSchema
 
   bundle: bundleFileName
   type: typeName in bundle
-  repo: schema repository directory
-  schema: if repo is given, the ID of the schema. Otherwise, the schema file
+  schema: The schema file
   compiledSchema: compiled schema graph file
   ingestNullValues: false # Whether to ingest empty/null values
 
@@ -102,14 +97,6 @@ There are several ways a schema variant can be specified:
 
 This form ingests data using the given schema file.
   
-  layers ingest xml --repo <repodir> --schema <schemaId>
-
-This form uses a repository to resolve and load schemas. When run,
-this command will first read all schema files under "repoDir" and
-create an index. Then, it will load the schema variant with id
-"schemaId". If the schema variant refers to other schemas or overlays,
-those are resolved using the schemas in the "repoDir".
-
   layers ingest csv --bundle <bundlefile> --type <typeName>
 
 This form uses a bundle that specifies type names and corresponding
@@ -142,11 +129,10 @@ This form will use a previously compiled schema.
 
 func loadSchemaCmd(ctx *ls.Context, cmd *cobra.Command) *ls.Layer {
 	compiledSchema, _ := cmd.Flags().GetString("compiledschema")
-	repoDir, _ := cmd.Flags().GetString("repo")
 	schemaName, _ := cmd.Flags().GetString("schema")
 	bundleNames, _ := cmd.Flags().GetStringSlice("bundle")
 	typeName, _ := cmd.Flags().GetString("type")
-	layer, err := LoadSchemaFromFileOrRepo(ctx, compiledSchema, repoDir, schemaName, typeName, bundleNames)
+	layer, err := LoadSchemaFromFile(ctx, compiledSchema, schemaName, typeName, bundleNames)
 	if err != nil {
 		failErr(err)
 	}
@@ -183,7 +169,7 @@ func loadCompiledSchema(ctx *ls.Context, compiledSchema, schemaName string) (*ls
 	return layer, layers, nil
 }
 
-func LoadSchemaFromFileOrRepo(ctx *ls.Context, compiledSchema, repoDir, schemaName, typeName string, bundleNames []string) (*ls.Layer, error) {
+func LoadSchemaFromFile(ctx *ls.Context, compiledSchema, schemaName, typeName string, bundleNames []string) (*ls.Layer, error) {
 	if len(compiledSchema) > 0 {
 		l, _, err := loadCompiledSchema(ctx, compiledSchema, schemaName)
 		return l, err
@@ -208,28 +194,6 @@ func LoadSchemaFromFileOrRepo(ctx *ls.Context, compiledSchema, repoDir, schemaNa
 	}
 	if len(schemaName) == 0 {
 		return nil, fmt.Errorf("Empty schema name")
-	}
-	var repo *Repository
-	if len(repoDir) > 0 {
-		var err error
-		repo, err = getRepo(repoDir, ctx.GetInterner())
-		if err != nil {
-			return nil, err
-		}
-		layer, err := repo.GetComposedSchema(ctx, schemaName)
-		if err != nil {
-			return nil, err
-		}
-		compiler := ls.Compiler{
-			Loader: ls.SchemaLoaderFunc(func(x string) (*ls.Layer, error) {
-				return repo.LoadAndCompose(ctx, x)
-			}),
-		}
-		layer, err = compiler.Compile(ctx, schemaName)
-		if err != nil {
-			return nil, err
-		}
-		return layer, nil
 	}
 	data, err := cmdutil.ReadURL(schemaName)
 	if err != nil {
@@ -259,7 +223,7 @@ func OutputIngestedGraph(cmd *cobra.Command, outFormat string, target *lpg.Graph
 		for nodes := target.GetNodes(); nodes.Next(); {
 			node := nodes.Node()
 			if ls.IsDocumentNode(node) {
-				for _, edge := range lpg.EdgeSlice(node.GetEdgesWithLabel(lpg.OutgoingEdge, ls.InstanceOfTerm)) {
+				for _, edge := range lpg.EdgeSlice(node.GetEdgesWithLabel(lpg.OutgoingEdge, ls.InstanceOfTerm.Name)) {
 					schemaNodes[edge.GetTo()] = struct{}{}
 				}
 			}

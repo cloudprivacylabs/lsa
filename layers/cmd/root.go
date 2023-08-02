@@ -15,8 +15,6 @@
 package cmd
 
 import (
-	"errors"
-	"fmt"
 	"log"
 	"os"
 	"runtime/pprof"
@@ -127,35 +125,4 @@ func unroll(in interface{}, depth int) interface{} {
 		return ret
 	}
 	return in
-}
-
-func getRepo(repodir string, interner ls.Interner) (*Repository, error) {
-	repo := NewRepoWithInterner(repodir, interner)
-	if err := repo.Load(); err != nil {
-		if errors.Is(err, fs.ErrNoIndex) || errors.Is(err, fs.ErrBadIndex) {
-			warnings, err := repo.UpdateIndex()
-			if len(warnings) > 0 {
-				for _, x := range warnings {
-					fmt.Println(x)
-				}
-			}
-			if err != nil {
-				return nil, err
-			}
-		} else {
-			return nil, err
-		}
-	}
-	if repo.IsIndexStale() {
-		warnings, err := repo.UpdateIndex()
-		if len(warnings) > 0 {
-			for _, x := range warnings {
-				fmt.Println(x)
-			}
-		}
-		if err != nil {
-			return nil, err
-		}
-	}
-	return repo, nil
 }

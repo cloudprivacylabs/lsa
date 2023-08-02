@@ -78,7 +78,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 	var layer *ls.Layer
 	var err error
 	if !ci.initialized {
-		layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, ci.CompiledSchema, ci.Repo, ci.Schema, ci.Type, ci.Bundle)
+		layer, err = LoadSchemaFromFile(pipeline.Context, ci.CompiledSchema, ci.Schema, ci.Type, ci.Bundle)
 		if err != nil {
 			return err
 		}
@@ -180,7 +180,7 @@ func (ci *CSVIngester) Run(pipeline *pipeline.PipelineContext) error {
 					doneErr = err
 					return
 				}
-				r.SetProperty(ls.SourceTerm, ls.StringPropertyValue(ls.SourceTerm, fmt.Sprintf("%s#%d", entryInfo.GetName(), row)))
+				r.SetProperty(ls.SourceTerm.Name, ls.NewPropertyValue(ls.SourceTerm.Name, fmt.Sprintf("%s#%d", entryInfo.GetName(), row)))
 				if ci.IngestByRows {
 					if err := pipeline.Next(); err != nil {
 						doneErr = err
@@ -453,7 +453,7 @@ func (cji *CSVJoinIngester) csvParseIngestEntities(pipeline *pipeline.PipelineCo
 		if parsed == nil {
 			return errors.New("Parsed CSV document is nil")
 		}
-		parsed.GetProperties()[ls.SourceTerm] = ls.StringPropertyValue(ls.SourceTerm, entryName)
+		parsed.GetProperties()[ls.SourceTerm.Name] = ls.NewPropertyValue(ls.SourceTerm.Name, entryName)
 
 		_, err = ingester.Ingest(builder, parsed)
 		if err != nil {

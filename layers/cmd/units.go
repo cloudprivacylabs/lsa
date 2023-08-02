@@ -124,7 +124,7 @@ func (ms *MeasureStep) Run(pipeline *pipeline.PipelineContext) error {
 			ms.layer, _ = pipeline.Properties["layer"].(*ls.Layer)
 		} else {
 			var err error
-			ms.layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, ms.CompiledSchema, ms.Repo, ms.Schema, ms.Type, ms.Bundle)
+			ms.layer, err = LoadSchemaFromFile(pipeline.Context, ms.CompiledSchema, ms.Schema, ms.Type, ms.Bundle)
 			if err != nil {
 				return err
 			}

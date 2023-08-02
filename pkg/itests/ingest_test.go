@@ -75,8 +75,8 @@ func (tc ingestTest) testDefaultValues(t *testing.T) {
 	for nodeItr := builder.GetGraph().GetNodes(); nodeItr.Next(); {
 		node := nodeItr.Node()
 		// Check if default values have been added
-		if x, exists := node.GetProperty(ls.NodeValueTerm); exists {
-			val := ls.AsPropertyValue(x, true).AsString()
+		if x, exists := node.GetProperty(ls.NodeValueTerm.Name); exists {
+			val := x.(ls.PropertyValue).Value().(string)
 			if val == "valDefault" || val == "objDefault" || val == "xyz" {
 				t.Logf("Default value has been placed: %v", val)
 			} else {
@@ -151,7 +151,7 @@ func TestParseEmptyCSV(t *testing.T) {
 // layers ingest json --bundle testdata/fhir/schemas/fhir.bundle.yaml --type https://hl7.org/fhir/Bundle testdata/fhir/schemas/Aaron697_Brekke496_2fa15bc7-8866-461a-9000-f739e425860a.json --output web > wodiscrim.json
 func TestIngestPolyHint(t *testing.T) {
 	ctx := ls.DefaultContext()
-	layer, err := cmd.LoadSchemaFromFileOrRepo(ctx, "", "", "", "https://hl7.org/fhir/Bundle", []string{"testdata/fhir/schemas/fhir.discriminator.bundle.yaml"})
+	layer, err := cmd.LoadSchemaFromFile(ctx, "", "", "https://hl7.org/fhir/Bundle", []string{"testdata/fhir/schemas/fhir.discriminator.bundle.yaml"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -173,7 +173,7 @@ func TestIngestPolyHint(t *testing.T) {
 	findPoly := func() bool {
 		for nx := builder.GetGraph().GetNodes(); nx.Next(); {
 			node := nx.Node()
-			if node.HasLabel(ls.TypeDiscriminatorTerm) {
+			if node.HasLabel(ls.TypeDiscriminatorTerm.Name) {
 				return true
 			}
 			fmt.Println(node.GetLabels().String())

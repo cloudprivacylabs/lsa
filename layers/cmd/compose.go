@@ -31,7 +31,6 @@ import (
 func init() {
 	rootCmd.AddCommand(composeCmd)
 	composeCmd.Flags().String("output", "jsonld", "Output format (dot, json, jsonld, web)")
-	composeCmd.Flags().String("repo", "", "Schema repository directory. If a repository is given, all layers are resolved using that repository. Otherwise, all layers are read as files.")
 	composeCmd.Flags().StringSlice("bundle", nil, "Bundle file(s)")
 	composeCmd.Flags().String("type", "", "Value Type")
 
@@ -46,51 +45,39 @@ var composeCmd = &cobra.Command{
 	Args: cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := getContext()
-		repoDir, _ := cmd.Flags().GetString("repo")
 		bundleNames, _ := cmd.Flags().GetStringSlice("bundle")
 		typeName, _ := cmd.Flags().GetString("type")
 		interner := ls.NewInterner()
 		var output *ls.Layer
-		if len(repoDir) == 0 {
-			if len(bundleNames) > 0 && len(typeName) > 0 {
-				bundle, err := LoadBundle(ctx, bundleNames)
-				if err != nil {
-					failErr(err)
-				}
-				output, err = bundle.LoadSchema(typeName)
-				if err != nil {
-					failErr(err)
-				}
-			} else {
-				if len(args) == 0 {
-					fail("Input files requied")
-				}
-				inputs, err := cmdutil.ReadJSONMultiple(args)
-				if err != nil {
-					failErr(err)
-				}
-				for i, input := range inputs {
-					layer, err := ls.UnmarshalLayer(input, interner)
-					if err != nil {
-						fail(fmt.Sprintf("Cannot unmarshal %s: %v", args[i], err))
-					}
-					if output == nil {
-						output = layer
-					} else {
-						if err := output.Compose(ctx, layer); err != nil {
-							fail(fmt.Sprintf("Cannot compose %s: %s", args[i], err))
-						}
-					}
-				}
+		if len(bundleNames) > 0 && len(typeName) > 0 {
+			bundle, err := LoadBundle(ctx, bundleNames)
+			if err != nil {
+				failErr(err)
+			}
+			output, err = bundle.LoadSchema(typeName)
+			if err != nil {
+				failErr(err)
 			}
 		} else {
-			repo, err := getRepo(repoDir, interner)
+			if len(args) == 0 {
+				fail("Input files requied")
+			}
+			inputs, err := cmdutil.ReadJSONMultiple(args)
 			if err != nil {
 				failErr(err)
 			}
-			output, err = repo.GetComposedSchema(ctx, args[0])
-			if err != nil {
-				failErr(err)
+			for i, input := range inputs {
+				layer, err := ls.UnmarshalLayer(input, interner)
+				if err != nil {
+					fail(fmt.Sprintf("Cannot unmarshal %s: %v", args[i], err))
+				}
+				if output == nil {
+					output = layer
+				} else {
+					if err := output.Compose(ctx, layer); err != nil {
+						fail(fmt.Sprintf("Cannot compose %s: %s", args[i], err))
+					}
+				}
 			}
 		}
 		if output != nil {

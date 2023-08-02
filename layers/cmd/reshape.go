@@ -104,7 +104,7 @@ func (rs *ReshapeStep) Run(pipeline *pipeline.PipelineContext) error {
 		if rs.IsEmptySchema() {
 			rs.layer, _ = pipeline.Properties["layer"].(*ls.Layer)
 		} else {
-			rs.layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, rs.CompiledSchema, rs.Repo, rs.Schema, rs.Type, rs.Bundle)
+			rs.layer, err = LoadSchemaFromFile(pipeline.Context, rs.CompiledSchema, rs.Schema, rs.Type, rs.Bundle)
 			if err != nil {
 				return err
 			}

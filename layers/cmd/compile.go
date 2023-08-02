@@ -35,63 +35,37 @@ var compileCmd = &cobra.Command{
 	Long:  `Compile schemas. If a bundle is given, all schemas in the bundle are compiled`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := getContext()
-		repoDir, _ := cmd.Flags().GetString("repo")
 		bundleNames, _ := cmd.Flags().GetStringSlice("bundle")
 		schemaName, _ := cmd.Flags().GetString("schema")
 		typeName, _ := cmd.Flags().GetString("type")
-		if len(repoDir) > 0 && len(bundleNames) > 0 {
-			fail("One of repo or bundle is required")
-		}
 		var layer *ls.Layer
 		if len(bundleNames) == 0 {
 			if len(schemaName) == 0 {
 				fail("Schema is required")
 			}
-			if len(repoDir) > 0 {
-				var repo *Repository
-				var err error
-				repo, err = getRepo(repoDir, ctx.GetInterner())
-				if err != nil {
-					failErr(err)
-				}
-				layer, err = repo.GetComposedSchema(ctx, schemaName)
-				if err != nil {
-					failErr(err)
-				}
-				compiler := ls.Compiler{
-					Loader: ls.SchemaLoaderFunc(func(x string) (*ls.Layer, error) {
-						return repo.LoadAndCompose(ctx, x)
-					}),
-				}
-				layer, err = compiler.Compile(ctx, schemaName)
-				if err != nil {
-					failErr(err)
-				}
-			} else {
-				data, err := cmdutil.ReadURL(schemaName)
-				if err != nil {
-					failErr(err)
-				}
-				layers, err := ReadLayers(data, ctx.GetInterner())
-				if err != nil {
-					failErr(err)
-				}
-				if len(layers) > 1 {
-					fail("There are more than one layers in input")
-				}
-				layer = layers[0]
-				compiler := ls.Compiler{
-					Loader: ls.SchemaLoaderFunc(func(x string) (*ls.Layer, error) {
-						if x == schemaName || x == layer.GetID() {
-							return layer, nil
-						}
-						return nil, fmt.Errorf("Not found")
-					}),
-				}
-				layer, err = compiler.Compile(ctx, schemaName)
-				if err != nil {
-					failErr(err)
-				}
+			data, err := cmdutil.ReadURL(schemaName)
+			if err != nil {
+				failErr(err)
+			}
+			layers, err := ReadLayers(data, ctx.GetInterner())
+			if err != nil {
+				failErr(err)
+			}
+			if len(layers) > 1 {
+				fail("There are more than one layers in input")
+			}
+			layer = layers[0]
+			compiler := ls.Compiler{
+				Loader: ls.SchemaLoaderFunc(func(x string) (*ls.Layer, error) {
+					if x == schemaName || x == layer.GetID() {
+						return layer, nil
+					}
+					return nil, fmt.Errorf("Not found")
+				}),
+			}
+			layer, err = compiler.Compile(ctx, schemaName)
+			if err != nil {
+				failErr(err)
 			}
 		} else {
 			loader, err := LoadBundle(ctx, bundleNames)

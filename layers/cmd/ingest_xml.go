@@ -54,7 +54,7 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 	var layer *ls.Layer
 	var err error
 	if !xml.initialized {
-		layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, xml.CompiledSchema, xml.Repo, xml.Schema, xml.Type, xml.Bundle)
+		layer, err = LoadSchemaFromFile(pipeline.Context, xml.CompiledSchema, xml.Schema, xml.Type, xml.Bundle)
 		if err != nil {
 			return err
 		}
@@ -105,7 +105,7 @@ func (xml *XMLIngester) Run(pipeline *pipeline.PipelineContext) error {
 			}
 			entities := ls.GetEntityInfo(pipeline.Graph)
 			for e := range entities {
-				e.SetProperty(ls.SourceTerm, ls.StringPropertyValue(ls.SourceTerm, entryInfo.GetName()))
+				e.SetProperty(ls.SourceTerm.Name, ls.NewPropertyValue(ls.SourceTerm.Name, entryInfo.GetName()))
 			}
 			if err := builder.LinkNodes(pipeline.Context, xml.parser.Layer); err != nil {
 				doneErr = err

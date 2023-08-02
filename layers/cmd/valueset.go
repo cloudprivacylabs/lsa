@@ -617,7 +617,7 @@ func (vs *ValuesetStep) Run(pipeline *pipeline.PipelineContext) error {
 		if vs.IsEmptySchema() {
 			vs.layer, _ = pipeline.Properties["layer"].(*ls.Layer)
 		} else {
-			vs.layer, err = LoadSchemaFromFileOrRepo(pipeline.Context, vs.CompiledSchema, vs.Repo, vs.Schema, vs.Type, vs.Bundle)
+			vs.layer, err = LoadSchemaFromFile(pipeline.Context, vs.CompiledSchema, vs.Schema, vs.Type, vs.Bundle)
 			if err != nil {
 				return err
 			}

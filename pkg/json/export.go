@@ -63,7 +63,7 @@ func DefaultBuildNodeKeyFunc(node *lpg.Node) (string, bool, error) {
 	v, ok := nv.(ls.PropertyValue)
 	sl := ls.StringSliceType{}
 	if ok {
-		s, _ := sl.Coerce(v)
+		s, _ := sl.Coerce(v.Value())
 		if slice, _ := s.([]string); len(slice) > 0 {
 			return slice[0], true, nil
 		}

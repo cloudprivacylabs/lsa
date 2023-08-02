@@ -42,18 +42,18 @@ func (spec SliceByTermsSpec) Slice(sourceLayer *ls.Layer, targetType string, tem
 	var layer *ls.Layer
 	id := execTemplate(spec.ID, templateData)
 	switch spec.Type {
-	case "Overlay", ls.OverlayTerm:
+	case "Overlay", ls.OverlayTerm.Name:
 		f := ls.GetSliceByTermsFunc(spec.Terms, false)
 		if spec.Terms == nil {
 			f = ls.IncludeAllNodesInSliceFunc
 		}
-		layer = sourceLayer.Slice(ls.OverlayTerm, f)
-	case "Schema", ls.SchemaTerm:
+		layer = sourceLayer.Slice(ls.OverlayTerm.Name, f)
+	case "Schema", ls.SchemaTerm.Name:
 		f := ls.GetSliceByTermsFunc(spec.Terms, true)
 		if spec.Terms == nil {
 			f = ls.IncludeAllNodesInSliceFunc
 		}
-		layer = sourceLayer.Slice(ls.SchemaTerm, f)
+		layer = sourceLayer.Slice(ls.SchemaTerm.Name, f)
 	default:
 		return nil, fmt.Errorf("Layer type unspecified")
 	}
