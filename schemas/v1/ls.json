@@ -1,0 +1,173 @@
+{
+    "@context": {
+        "@version": 1.1,
+        
+        "ls": "https://lschema.org/",
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "json": "https://json.org#",
+        "lstransform": "https://lschema.org/transform/",
+        "lsxml": "https://lschema.org/xml/",
+        
+        "Attribute": "ls:Attribute",
+        "DocumentNode":"ls:DocumentNode",
+        "Value": "ls:Value",
+        "Object": {
+            "@id": "ls:Object",
+            "@context": {
+                "attributes": {
+                    "@id": "ls:Object/attributes",
+                    "@container": "@id"
+                },
+                "attributeList": {
+                    "@id": "ls:Object/attributeList",
+                    "@container": "@list"
+                }
+            }
+        },
+        "Array": {
+            "@id": "ls:Array",
+            "@context": {
+                "arrayElements":  "ls:Array/elements"
+            }
+        },
+        "Reference": {
+            "@id": "ls:Reference",
+            "@context": {
+                "ref": "ls:Reference/ref",
+                "dir": "ls:Reference/dir",
+                "fk": "ls:Reference/fk",
+                "target": "ls:Reference/target",
+                "label": "ls:Reference/label",
+                "multi": "ls:Reference/multi"
+            }
+        },
+        "Composite": {
+            "@id": "ls:Composite",
+            "@context": {
+                "allOf": {
+                    "@id": "ls:Composite/allOf",
+                    "@container": "@list"
+                }
+            }
+        },
+        "Polymorphic": {
+            "@id": "ls:Polymorphic",
+            "@context": {
+                "oneOf": {
+                    "@id": "ls:Polymorphic/oneOf",
+                    "@container": "@list"
+                }
+            }
+        },
+        
+        "layer":  "ls:layer",
+        "Overlay": {
+            "@id": "ls:Overlay",
+            "@context": {
+                "compose": "ls:compose",
+                "nsMap": "ls:nsMap",
+                "layer": "ls:layer",
+                "attributeOverlays": {
+                    "@id": "ls:attributeOverlays",
+                    "@container": "@list"
+                }
+            }
+        },
+        "Schema": {
+            "@id": "ls:Schema",
+            "@context": {
+                "layer": "ls:layer"
+            }
+        },
+
+        "source": "ls:provenance/source",
+        
+        "edgeLabel": "ls:edgeLabel",
+        "outputEdgeLabel": "ls:outputEdgeLabel",
+        
+        "conditional": "ls:conditional",
+
+        "xmlns": "lsxml:ns",
+        "xmlattribute": "lsxml:attribute",
+        "xmlvalueAttr": "lsxml:valueAttr",
+
+        "vsContext": "ls:vs/context",
+        "vsValuesets": "ls:vs/valuesets",
+        "vsRequestKeys": "ls:vs/requestKeys",
+        "vsRequestValues": "ls:vs/requestValues",
+        "vsResultKeys": "ls:vs/resultKeys",
+        "vsResultValues": "ls:vs/resultValues",
+        "vsRequest": "ls:vs/request",
+        "vsResultContext": "ls:vs/resultContext",
+
+        "Measure": "ls:Measure",
+        "measureUnit": "ls:measure/unit",
+        "measureValue": "ls:measure/value",
+        "measureUseUnit": "ls:measure/useUnit",
+        "measureUnitDomain": "ls:measure/unitDomain",
+        "measureUnitNode": "ls:measure/unitNode",
+        "measureValueNode": "ls:measure/valueNode",
+        "measureUnitExpr": "ls:measure/unitExpr",
+        "measureValueExpr": "ls:measure/valueExpr",
+                
+        "valueType": "ls:valueType",
+
+        "entityId": "ls:entityId",
+        "entityIdFields": "ls:entityIdFields",
+        "ingestAs": "ls:ingestAs",
+
+        "characterEncoding":"ls:characterEncoding",
+        "description":"ls:description",
+        "attributeName": "ls:attributeName",
+        "attributeIndex": "ls:attributeIndex",
+        "label": "ls:label",
+
+        "labeledAs":"ls:labeledAs",
+
+        "include":"ls:include",
+        "namespace":"ls:namespace",
+
+        "defaultValue":"ls:defaultValue",
+
+        "required":"ls:validation/required",
+        "pattern":"ls:validation/pattern",
+        "jsonFormat": "ls:validation/jsonFormat",
+        "enumeration": "ls:validation/enumeration",
+        "const": "ls:validation/const",
+
+        "hash": "ls:hash",
+        "hash.sha1": "ls:hash.sha1",
+        "hash.sha256": "ls:hash.sha256",
+        "hash.sha512": "ls:hash.sha512",
+
+        "uuid": "ls:uuid",
+
+        "setValue": "ls:setValue",
+
+        "goTimeFormat": "ls:goTimeFormat",
+        "momentTimeFormat": "ls:momentTimeFormat",
+
+        "has": "ls:has",
+        "instanceOf":"ls:instanceOf",
+        "asPropertyOf" : "ls:asPropertyOf",
+        "asProperty": "ls:asProperty",
+
+        "referenceFKFor": "ls:Reference/fkFor",
+        "referenceDir": "ls:Reference/dir",
+        "referenceLinkNode": "ls:Reference/linkNode",
+        "referenceFK": "ls:Reference/fk",
+        "referenceLabel": "ls:Reference/label",
+        "referenceMulti": "ls:Reference/multi",
+        
+        "transformEvaluate": "lstransform:evaluate",
+        "transformValueExpr": "lstransform:valueExpr",
+        "transformValueExpr.first": "lstransform:valueExpr.first",
+        "transformValueExpr.all": "lstransform:valueExpr.all",
+
+        "transformMapProperty": "lstransform:mapProperty",
+        "transformMapContext": "lstransform:mapContext",
+
+        "typeDiscriminator":"ls:typeDiscriminator"
+        
+    }
+}
