@@ -58,7 +58,7 @@ receive the normalized value for the gender field.
 
 {{< highlight json >}}
 {
-    "@context": "https://lschema.org/ls.json",
+    "@context": "https://lschema.org/v1/ls.json",
     "@id": "https://example.org/Person/schema",
     "@type": "Schema",
     "valueType": "https://example.org/Person",
@@ -87,7 +87,7 @@ We now add the valueset annotations using an overlay:
 
 {{< highlight json >}}
 {
-    "@context": "https://lschema.org/ls.json",
+    "@context": "https://lschema.org/v1/ls.json",
     "@id": "https://example.org/Person/vs_overlay",
     "@type": "Overlay",
     "valueType": "https://example.org/Person",
@@ -233,7 +233,7 @@ this valueset lookup contains two values: `code_system: LOINC` and
 
 {{<highlight json>}}
 {
-    "@context": "https://lschema.org/ls.json",
+    "@context": "https://lschema.org/v1/ls.json",
     "@id": "https://example.org/Person/schema",
     "@type": "Schema",
     "valueType": "https://example.org/Person",

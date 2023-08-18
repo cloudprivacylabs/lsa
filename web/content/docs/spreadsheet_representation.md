@@ -109,7 +109,7 @@ These layers can be referenced in a bundle using their layer ids.
     "schemaSpreadsheets": [
         {
             "file":"person-schema.xlsx",
-            "context": [ "https://lschema.org/ls.json" ]
+            "context": [ "https://lschema.org/v1/ls.json" ]
         }
     ],
     "variants": {

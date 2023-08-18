@@ -78,7 +78,7 @@ Below is an example schema for a `Person` data type containing
 ```
 person.schema.json:
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@id": "https://example.org/Person/schema",
   "@type": "Schema",
   "valueType": "https://example.org/Person",
@@ -106,7 +106,7 @@ to the `lastName` attribute:
 ```
 person-dpv.overlay.json:
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@id": "https://example.org/Person/dpv-ovl",
   "@type": "Overlay",
   "valueType": "https://example.org/Person",

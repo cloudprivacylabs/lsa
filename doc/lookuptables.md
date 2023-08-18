@@ -66,7 +66,7 @@ The schema also accepts lookup table references:
 
 ```
 {
-    "@context": "https://lschema.org/ls.json",
+    "@context": "https://lschema.org/v1/ls.json",
     "@id":"http://id",
     "@type": "Schema",
     "lookupTable": [

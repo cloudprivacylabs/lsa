@@ -117,7 +117,7 @@ data fields can be defined as follows:
 patient-dpv.overlay.json:
 {
     "@context": [
-        "https://lschema.org/ls.json",
+        "https://lschema.org/v1/ls.json",
         {
             "dpv":"http://www.w3id.org/dpv#"
         }

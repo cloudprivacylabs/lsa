@@ -82,7 +82,7 @@ and layers are extracted. These layers then can be used in a bundle.
     "schemaSpreadsheets": [
         {
             "file":"omop-schemas.xlsx",
-            "context": [ "https://lschema.org/ls.json" ]
+            "context": [ "https://lschema.org/v1/ls.json" ]
         }
     ],
     "typeNames": {

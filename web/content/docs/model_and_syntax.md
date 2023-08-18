@@ -79,7 +79,7 @@ The JSON-LD representation for a schema is as follows:
 
 {{< highlight json >}}
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@type": "Schema",
   "@id": "https://schema_id",
   "valueType": "Person",
@@ -97,7 +97,7 @@ The JSON-LD representation for a schema is as follows:
 An overlay compatible with this schema is as follows:
 {{< highlight json >}}
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@type": "Overlay",
   "@id": "https://ovl_id",
   "valueType": "Person",
@@ -132,7 +132,7 @@ As an example, consider the overlay:
 
 {{< highlight json >}}
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@type": "Overlay",
   "@id": "https://ovl_id",
   "valueType": "https://example.org/Person",
@@ -163,7 +163,7 @@ As an example, consider the following overlay:
 
 {{< highlight json >}}
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@type": "Overlay",
   "@id": "https://ovl_id",
   "valueType": "https://hl7.org/fhir/Patient",
@@ -213,7 +213,7 @@ The corresponding JSON-LD schema is:
 
 {{< highlight json >}}
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@type": "Schema",
   "@id": "https://test.org/person_schema",
   "valueType": "Person",
@@ -249,7 +249,7 @@ The corresponding JSON-LD schema is:
 
 {{< highlight json >}}
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@type": "Schema",
   "@id": "https://test.org/person_schema",
   "valueType": "Person",
@@ -277,7 +277,7 @@ And its JSON-LD representation is:
 
 {{< highlight json >}}
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@type": "Schema",
   "@id": "https://test.org/person_schema",
   "valueType": "Person",
@@ -322,7 +322,7 @@ The JSON-LD schema for this is:
 
 {{< highlight json >}}
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@type": "Schema",
   "@id": "https://test.org/person_schema",
   "valueType": "Person",
@@ -363,7 +363,7 @@ The JSON-LD schema for this is:
 
 {{< highlight json >}}
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@type": "Schema",
   "@id": "https://test.org/person_schema",
   "valueType": "Person",
@@ -406,7 +406,7 @@ The JSON-LD schema for this is:
 
 {{< highlight json >}}
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@type": "Schema",
   "@id": "https://test.org/person_schema",
   "valueType": "Person",
@@ -454,7 +454,7 @@ The JSON-LD schema for this is:
 
 {{< highlight json >}}
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@type": "Schema",
   "@id": "https://test.org/account_schema",
   "valueType": "Account",

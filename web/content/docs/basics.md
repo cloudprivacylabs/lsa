@@ -144,7 +144,7 @@ A JSON-LD layered schema looks like this:
 
 {{< highlight json >}}
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@type": "Schema",
   "valueType": "Person",
   "layer": {
@@ -176,7 +176,7 @@ first and last names.
 
 {{< highlight json >}}
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@type": "Overlay",
   "valueType": "Person",
   "layer": {
@@ -203,7 +203,7 @@ for the above schema and overlay is:
 
 {{< highlight json >}}
 {
-  "@context": "https://lschema.org/ls.json",
+  "@context": "https://lschema.org/v1/ls.json",
   "@type": "Schema",
   "valueType": "Person",
   "layer": {
