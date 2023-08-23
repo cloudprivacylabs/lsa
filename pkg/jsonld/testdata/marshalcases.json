@@ -1,0 +1,338 @@
+[
+    {
+        "name": "NoAttributes",
+        "input": {
+            "@context": "../../schemas/v1/ls.json",
+            "@type":"Schema",
+            "@id": "http://testschema"
+        },
+        "graph": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "name": "EmptyAttributes",
+        "input": {
+            "@context": "../../schemas/v1/ls.json",
+            "@type":"Schema",
+            "@id": "http://testschema",
+            "layer": {
+                "@type": "Object",
+                "@id":"root",
+                "attributes": [
+                ]
+            }
+        },
+        "graph": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Object",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "name": "ValueAttribute",
+        "input": {
+            "@context": "../../schemas/v1/ls.json",
+            "@type":"Schema",
+            "@id": "http://testschema",
+            "layer": {
+                "@type": ["Object",
+                          "https://lschema.org/valueType"],
+                "@id":"root",
+                "attributes": [
+                    {
+                        "@id": "http://attr1",
+                        "@type": "Value"
+                    }
+                ]
+            }
+        },
+        "graph": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Value",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://attr1"
+                    }
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/valueType",
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 0,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "name": "Nesting",
+        "input": {
+            "@context": "../../schemas/v1/ls.json",
+            "@type":"Schema",
+            "@id": "http://testschema",
+            "layer": {
+                "@type": "Object",
+                "@id":"root",
+                "attributes": [
+                    {
+                        "@id": "http://attr1",
+                        "@type": "Value"
+                    },
+                    {
+                        "@id": "http://attr2",
+                        "@type": "Object",
+                        "attributes": [
+                            {
+                                "@id": "http://attr3",
+                                "@type": "Value"
+                            },
+                            {
+                                "@id": "http://attr4",
+                                "@type": "Array",
+                                "arrayElements": {
+                                    "@id": "http://attr5",
+                                    "@type": "Value"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "graph": {
+            "nodes": [
+                {
+                    "n": 6,
+                    "labels": [
+                        "https://lschema.org/Object",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 0,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/Object/attributes"
+                }
+                    ]
+                },
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://attr1"
+                    }
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Object",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://attr2"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Value",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://attr3"
+                    }
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Array",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://attr4"
+                    },
+                    "edges": [
+                        {
+                            "to": 4,
+                            "label": "https://lschema.org/Array/elements"
+                        }
+                    ]
+                },
+                {
+                    "n": 4,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://attr5"
+                    }
+                },
+                {
+                    "n": 5,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
+                        {
+                            "to": 6,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                }
+            ]
+        }  
+    },
+    {
+        "name": "SimpleAnnotations",
+        "input": {
+            "@context": "../../schemas/v1/ls.json",
+            "@type":"Schema",
+            "@id": "http://testschema",
+            "layer": {
+                "@type": "Object",
+                "@id":"root",
+                "attributes": [
+                    {
+                        "@type": ["Object"],
+                        "@id": "http://attr1",
+                        "@type": ["https://lschema.org/Value"],
+                        "http://test.org/stringValue":"value"
+                    }
+                ]
+            }
+        },
+        "graph": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Value",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "http://test.org/stringValue": "value",
+                        "https://lschema.org/nodeId": "http://attr1"
+                    }
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Object",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 0,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+]

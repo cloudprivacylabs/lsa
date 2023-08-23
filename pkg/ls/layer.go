@@ -238,12 +238,12 @@ func GetObjectAttributeNodesBy(objectSchemaNode *lpg.Node, keyTerm string) (map[
 		return nil
 	}
 	if objectSchemaNode != nil {
-		for _, node := range lpg.TargetNodes(objectSchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ObjectAttributesTerm.Name)) {
+		for _, node := range lpg.TargetNodes(objectSchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ObjectAttributeListTerm.Name)) {
 			if err := addNextNode(node); err != nil {
 				return nil, err
 			}
 		}
-		for _, node := range lpg.TargetNodes(objectSchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ObjectAttributeListTerm.Name)) {
+		for _, node := range lpg.TargetNodes(objectSchemaNode.GetEdgesWithLabel(lpg.OutgoingEdge, ObjectAttributesTerm.Name)) {
 			if err := addNextNode(node); err != nil {
 				return nil, err
 			}
