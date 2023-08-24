@@ -72,7 +72,7 @@ type Term struct {
 	// Tags define additional metadata about a term
 	Tags map[string]struct{}
 
-	Metadata interface{}
+	Metadata any
 }
 
 // Known tags for term semantics
@@ -530,4 +530,59 @@ func RegisterBooleanTerm(t Term) BooleanTerm {
 func (s BooleanTerm) PropertyValue(source lpg.WithProperties) bool {
 	pv, _ := GetPropertyValueAs[bool](source, s.Name)
 	return pv
+}
+
+type JSONType struct{}
+
+// Coerce an input value to JSON
+func (JSONType) Coerce(input any) (any, error) {
+	var msg json.RawMessage
+	msg, err := json.Marshal(input)
+	if err != nil {
+		return nil, err
+	}
+	return msg, nil
+}
+
+// JSONTerm is a wrapper for JSON values.
+type JSONTerm struct {
+	Term
+}
+
+func RegisterJSONTerm(t Term) JSONTerm {
+	t.Type = JSONType{}
+	RegisterTerm(t)
+	return JSONTerm{t}
+}
+
+// PropertyValue returns the value of the property in the node or edge as JSON raw message
+func (s JSONTerm) PropertyValue(source lpg.WithProperties) json.RawMessage {
+	pv, _ := GetPropertyValueAs[json.RawMessage](source, s.Name)
+	return pv
+}
+
+// JSONTermMetadata can be used as the term metadata to
+// marshal/unmarshal JSON message into a struct during compilation
+type JSONTermMetadata struct {
+	NewInstance func() any
+}
+
+func (c JSONTermMetadata) CompileTerm(ctx *CompileContext, container CompilablePropertyContainer, term string, value PropertyValue) error {
+	val, _ := value.Value().(json.RawMessage)
+	if val == nil {
+		return nil
+	}
+	var target any
+	if c.NewInstance != nil {
+		target = c.NewInstance()
+		if err := json.Unmarshal(val, target); err != nil {
+			return err
+		}
+	} else {
+		if err := json.Unmarshal(val, &target); err != nil {
+			return err
+		}
+	}
+	container.SetProperty(term+"_compiled", target)
+	return nil
 }
