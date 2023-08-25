@@ -17,6 +17,8 @@ package jsonld
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/cloudprivacylabs/lpg/v2"
@@ -24,9 +26,10 @@ import (
 )
 
 type marshalTestCase struct {
-	Name  string          `json:"name"`
-	Input any             `json:"input"`
-	Graph json.RawMessage `json:"graph"`
+	Name      string          `json:"name"`
+	Input     any             `json:"input"`
+	Graph     json.RawMessage `json:"graph"`
+	Compacted any             `json:"compacted"`
 }
 
 func (tc marshalTestCase) GetName() string { return tc.Name }
@@ -66,6 +69,86 @@ func (tc marshalTestCase) Run(t *testing.T) {
 		json.Indent(&dst, got, "", "  ")
 		t.Errorf("%s: Got:\n%s\n", tc.Name, dst.String())
 	}
+
+	if tc.Compacted != nil {
+		marshaled, err := MarshalLayer(layer)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		if err := deepCompare(tc.Compacted, marshaled); err != nil {
+			t.Errorf("%v: Expected: %v\nGot: %v", err, tc.Compacted, marshaled)
+		}
+
+	}
+}
+
+func deepCompare(v1, v2 any) error {
+	if v1 == nil && v2 == nil {
+		return nil
+	}
+	arr1, ok := v1.([]any)
+	if ok {
+		arr2, ok := v2.([]any)
+		if !ok {
+			return fmt.Errorf("Expecting array %v, got %v", v1, v2)
+		}
+		if len(arr1) != len(arr2) {
+			return fmt.Errorf("Different lengths: %v vs %v", v1, v2)
+		}
+		for i := range arr1 {
+			if err := deepCompare(arr1[i], arr2[i]); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+	obj1, ok := v1.(map[string]any)
+	if ok {
+		obj2, ok := v2.(map[string]any)
+		if !ok {
+			return fmt.Errorf("Expecting obj %v, got %v", v1, v2)
+		}
+		if len(obj1) != len(obj2) {
+			return fmt.Errorf("Different lengths: %v vs %v", v1, v2)
+		}
+		for k, val1 := range obj1 {
+			val2, ok := obj2[k]
+			if !ok {
+				return fmt.Errorf("Missing key %s", k)
+			}
+			if k == "@type" {
+				set1 := lpg.NewStringSet()
+				set2 := lpg.NewStringSet()
+				if a, ok := val1.([]any); ok {
+					for _, x := range a {
+						set1.Add(x.(string))
+					}
+				} else {
+					set1.Add(val1.(string))
+				}
+				if a, ok := val2.([]any); ok {
+					for _, x := range a {
+						set2.Add(x.(string))
+					}
+				} else {
+					set2.Add(val2.(string))
+				}
+				if !set1.IsEqual(set2) {
+					return fmt.Errorf("Expected type %v, got %v", set1, set2)
+				}
+			} else {
+				if err := deepCompare(val1, val2); err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	}
+	if reflect.DeepEqual(v1, v2) {
+		return nil
+	}
+	return fmt.Errorf("Expecting %v got %v", v1, v2)
 }
 
 func TestMarshaling(t *testing.T) {

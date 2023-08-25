@@ -18,6 +18,10 @@
                     }
                 }
             ]
+        },
+        "compacted": {
+            "@id": "http://testschema",
+            "@type": "https://lschema.org/Schema"
         }
     },
     {
@@ -61,6 +65,14 @@
                     }
                 }
             ]
+        },
+        "compacted": {
+            "@id": "http://testschema",
+            "@type": "https://lschema.org/Schema",
+            "https://lschema.org/layer": {
+                "@id": "root",
+                "@type": ["https://lschema.org/Attribute","https://lschema.org/Object"]
+            }
         }
     },
     {
@@ -126,6 +138,23 @@
                     ]
                 }
             ]
+        },
+        "compacted": {
+            "@id": "http://testschema",
+            "@type": "https://lschema.org/Schema",
+            "https://lschema.org/layer": {
+                "@id": "root",
+                "@type": [
+                    "https://lschema.org/Attribute",
+                    "https://lschema.org/Object",
+                    "https://lschema.org/valueType"
+                ],
+                "https://lschema.org/Object/attributes": {
+                    "http://attr1": {
+                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"]
+                    }
+                }
+            }
         }
     },
     {
@@ -333,6 +362,122 @@
                     ]
                 }
             ]
+        },
+        "compacted": {
+            "@id": "http://testschema",
+            "@type": "https://lschema.org/Schema",
+            "https://lschema.org/layer": {
+                "@id": "root",
+                "@type": ["https://lschema.org/Object","https://lschema.org/Attribute"],
+                "https://lschema.org/Object/attributes": {
+                    "http://attr1": {
+                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
+                        "http://test.org/stringValue": "value"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "name": "ComplexAnnotations",
+        "input": {
+            "@context": "../../schemas/v1/ls.json",
+            "@type":"Schema",
+            "@id": "http://testschema",
+            "layer": {
+                "@type": "Object",
+                "@id":"root",
+                "attributes": [
+                    {
+                        "@type": ["Object"],
+                        "@id": "http://attr1",
+                        "@type": ["https://lschema.org/Value"],
+                        "http://test.org/objValue":{
+                            "http://v1": "val",
+                            "http://arr": [1,2,3],
+                            "http://obj": {
+                                "http://a":"b"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "graph": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Value",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "http://test.org/objValue": {
+                            "http://arr": [
+                                1,
+                                2,
+                                3
+                            ],
+                            "http://obj": {
+                                "http://a": "b"
+                            },
+                            "http://v1": "val"
+                        },
+                        "https://lschema.org/nodeId": "http://attr1"
+                    }
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Object",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 0,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                }
+            ]
+        },
+        "compacted": {
+            "@id": "http://testschema",
+            "@type": "https://lschema.org/Schema",
+            "https://lschema.org/layer": {
+                "@id": "root",
+                "@type": ["https://lschema.org/Object","https://lschema.org/Attribute"],
+                "https://lschema.org/Object/attributes": {
+                    "http://attr1": {
+                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
+                        "http://test.org/objValue":{
+                            "http://v1": "val",
+                            "http://arr": [1,2,3],
+                            "http://obj": {
+                                "http://a":"b"
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 ]

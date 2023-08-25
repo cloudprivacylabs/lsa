@@ -15,6 +15,8 @@
 package jsonld
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -34,7 +36,7 @@ type unmarshalInfo struct {
 type ldId string
 
 // compact will follow the links in the input ldNode and create a compacted view of the node
-func compact(ldNode any, attributeNodes map[string]unmarshalInfo, ldNodes map[string]any, loop map[string]struct{}) (any, error) {
+func compact(ldNode any, attributeNodes map[string]unmarshalInfo, ldNodes map[string]any, loop map[string]struct{}, isLdNode bool) (any, error) {
 	arr, ok := ldNode.([]any)
 	if ok {
 		// Dealing with an array
@@ -42,11 +44,11 @@ func compact(ldNode any, attributeNodes map[string]unmarshalInfo, ldNodes map[st
 			return nil, nil
 		}
 		if len(arr) == 1 {
-			return compact(arr[0], attributeNodes, ldNodes, loop)
+			return compact(arr[0], attributeNodes, ldNodes, loop, false)
 		}
 		ret := make([]any, 0, len(arr))
 		for _, x := range arr {
-			val, err := compact(x, attributeNodes, ldNodes, loop)
+			val, err := compact(x, attributeNodes, ldNodes, loop, false)
 			if err != nil {
 				return nil, err
 			}
@@ -59,6 +61,13 @@ func compact(ldNode any, attributeNodes map[string]unmarshalInfo, ldNodes map[st
 	if ok {
 		if id, ok := m["@id"]; ok {
 			if idstr, ok := id.(string); ok {
+				// Has node with this id?
+				referredNode := ldNodes[idstr]
+				// Is this an ID reference node?
+				if len(m) == 1 && referredNode != nil && !isLdNode {
+					return compact(referredNode, attributeNodes, ldNodes, loop, true)
+				}
+
 				if _, has := loop[idstr]; has {
 					return nil, ls.MakeErrInvalidInput(idstr, "Loop in graph")
 				}
@@ -71,25 +80,23 @@ func compact(ldNode any, attributeNodes map[string]unmarshalInfo, ldNodes map[st
 				if _, has := attributeNodes[idstr]; has {
 					return nil, ls.MakeErrInvalidInput(idstr, "Illegal reference to an attribute node")
 				}
-				// Has node with this id?
-				referredNode := ldNodes[idstr]
-				if referredNode != nil {
-					return compact(referredNode, attributeNodes, ldNodes, loop)
-				}
 			}
 		}
 		if val, ok := m["@value"]; ok {
-			return compact(val, attributeNodes, ldNodes, loop)
+			return compact(val, attributeNodes, ldNodes, loop, false)
 		}
 		if lst, ok := m["@list"]; ok {
-			return compact(lst, attributeNodes, ldNodes, loop)
+			return compact(lst, attributeNodes, ldNodes, loop, false)
 		}
 		if lst, ok := m["@set"]; ok {
-			return compact(lst, attributeNodes, ldNodes, loop)
+			return compact(lst, attributeNodes, ldNodes, loop, false)
 		}
 		ret := make(map[string]any)
 		for key, value := range m {
-			val, err := compact(value, attributeNodes, ldNodes, loop)
+			if key == "@id" {
+				continue
+			}
+			val, err := compact(value, attributeNodes, ldNodes, loop, false)
 			if err != nil {
 				return nil, err
 			}
@@ -115,7 +122,7 @@ func collectProperties(attr unmarshalInfo, attributeNodes map[string]unmarshalIn
 		}
 		// Remaining properties are to be recorded in the graph node,
 		// based on the type of the property
-		pvalue, err := compact(value, attributeNodes, ldNodes, map[string]struct{}{})
+		pvalue, err := compact(value, attributeNodes, ldNodes, map[string]struct{}{}, false)
 		if err != nil {
 			return err
 		}
@@ -124,6 +131,8 @@ func collectProperties(attr unmarshalInfo, attributeNodes map[string]unmarshalIn
 	return nil
 }
 
+// UnmarshalLayer unmarshals a JSON-LD schema. The JSON file must be
+// parsed before passing into here
 func UnmarshalLayer(in any, interner ls.Interner) (*ls.Layer, error) {
 	if interner == nil {
 		interner = ls.NewInterner()
@@ -133,10 +142,19 @@ func UnmarshalLayer(in any, interner ls.Interner) (*ls.Layer, error) {
 	if err != nil {
 		return nil, err
 	}
-	if m, ok := flattened.(map[string]any); ok {
-		flattened = m["@graph"]
+	if arr, ok := flattened.([]any); ok && len(arr) == 1 {
+		flattened = arr[0]
 	}
-	nodes, _ := flattened.([]any)
+	if m, ok := flattened.(map[string]any); ok {
+		g, ok := m["@graph"]
+		if ok {
+			flattened = g
+		}
+	}
+	nodes, ok := flattened.([]any)
+	if !ok {
+		nodes = []any{flattened}
+	}
 	if len(nodes) == 0 {
 		return nil, ls.MakeErrInvalidInput("", "Layer graph has no nodes")
 	}
@@ -333,126 +351,120 @@ func UnmarshalLayer(in any, interner ls.Interner) (*ls.Layer, error) {
 	return ls.NewLayerFromRootNode(rootNode), nil
 }
 
-// // Marshals the layer into an expanded jsonld document
-// func MarshalLayer(layer *Layer) (any, error) {
-// 	schRoot := layer.GetSchemaRootNode()
-// 	var layerOut any
-// 	nodeMap := make(map[*lpg.Node]string)
-// 	if schRoot != nil {
-// 		var err error
-// 		layerOut, err = marshalNode(layer, schRoot, nodeMap)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 	}
-// 	attrOverlays := make([]any, 0)
-// 	for edges := layer.GetLayerRootNode().GetEdgesWithLabel(lpg.OutgoingEdge, AttributeOverlaysTerm.Name); edges.Next(); {
-// 		attr := edges.Edge().GetTo()
-// 		attrOut, err := marshalNode(layer, attr, nodeMap)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		attrOverlays = append(attrOverlays, attrOut)
-// 	}
-// 	v := map[string]any{}
-// 	if len(attrOverlays) > 0 {
-// 		v[AttributeOverlaysTerm.Name] = []any{
-// 			map[string]any{"@list": attrOverlays}}
-// 	}
-// 	if layerOut != nil {
-// 		v[LayerRootTerm.Name] = []any{layerOut}
-// 	}
-// 	if id := layer.GetID(); len(id) > 0 {
-// 		v["@id"] = id
-// 	}
-// 	if t := layer.GetLayerType(); len(t) > 0 {
-// 		v["@type"] = []string{t}
-// 	}
-// 	layer.GetLayerRootNode().ForEachProperty(func(k string, value any) bool {
-// 		if _, p := value.(PropertyValue); !p {
-// 			return true
-// 		}
-// 		val, err := GetTermMarshaler(k).MarshalLd(layer, layer.GetLayerRootNode(), k)
-// 		if err != nil {
-// 			return false
-// 		}
-// 		if val != nil {
-// 			v[k] = val
-// 		}
-// 		return true
-// 	})
-// 	return []any{v}, nil
-// }
+// Marshals the layer into a compacted jsonld document
+func MarshalLayer(layer *ls.Layer) (any, error) {
+	schRoot := layer.GetLayerRootNode()
+	var marshalNode func(*lpg.Node) (string, map[string]any, error)
 
-// func marshalNode(layer *Layer, node *lpg.Node, nodeMap map[*lpg.Node]string) (any, error) {
-// 	if nodeId, ok := nodeMap[node]; ok {
-// 		return []any{map[string]any{"@id": nodeId}}, nil
-// 	}
-// 	nodeMap[node] = GetNodeID(node)
-// 	m := make(map[string]any)
-// 	s := GetAttributeID(node)
-// 	if len(s) > 0 {
-// 		m["@id"] = s
-// 	}
-// 	t := node.GetLabels()
-// 	if t.Len() > 0 {
-// 		m["@type"] = t.SortedSlice()
-// 	}
+	marshalPropertyValue := func(pv ls.PropertyValue) (any, error) {
+		val := pv.Value()
+		if val == nil {
+			return nil, nil
+		}
+		if js, ok := val.(json.RawMessage); ok {
+			decoder := json.NewDecoder(bytes.NewReader(js))
+			var m any
+			if err := decoder.Decode(&m); err != nil {
+				return nil, err
+			}
+			return m, nil
+		}
+		return val, nil
+	}
 
-// 	var err error
-// 	node.ForEachProperty(func(k string, value any) bool {
-// 		if _, p := value.(PropertyValue); !p {
-// 			return true
-// 		}
-// 		val, err := GetTermMarshaler(k).MarshalLd(layer, node, k)
-// 		if err != nil {
-// 			return false
-// 		}
-// 		if val != nil {
-// 			m[k] = val
-// 		}
-// 		return true
-// 	})
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	marshalNode = func(node *lpg.Node) (string, map[string]any, error) {
+		id := ls.NodeIDTerm.PropertyValue(node)
+		types := make([]any, 0)
+		for s := range node.GetLabels().M {
+			types = append(types, s)
+		}
+		ldNode := make(map[string]any)
+		if len(types) > 0 {
+			if len(types) == 1 {
+				ldNode["@type"] = types[0]
+			} else {
+				ldNode["@type"] = types
+			}
+		}
 
-// 	edges := lpg.EdgeSlice(node.GetEdges(lpg.OutgoingEdge))
-// 	sort.Slice(edges, func(i, j int) bool {
-// 		return GetNodeIndex(edges[i].GetTo()) < GetNodeIndex(edges[j].GetTo())
-// 	})
-// 	for _, edge := range edges {
-// 		toNode, err := marshalNode(layer, edge.GetTo(), nodeMap)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		existing := m[edge.GetLabel()]
-// 		switch edge.GetLabel() {
-// 		case ObjectAttributeListTerm.Name, AllOfTerm.Name, OneOfTerm.Name:
-// 			if existing == nil {
-// 				m[edge.GetLabel()] = []any{map[string]any{"@list": []any{toNode}}}
-// 			} else {
-// 				listMap := existing.([]any)[0].(map[string]any)
-// 				listMap["@list"] = append(listMap["@list"].([]any), toNode)
-// 			}
+		var err error
+		node.ForEachProperty(func(key string, value any) bool {
+			if key == ls.NodeIDTerm.Name {
+				return true
+			}
+			propertyValue, ok := value.(ls.PropertyValue)
+			if !ok {
+				return true
+			}
+			ldNode[key], err = marshalPropertyValue(propertyValue)
+			if err != nil {
+				return false
+			}
+			return true
+		})
+		if err != nil {
+			return "", nil, err
+		}
 
-// 		case ObjectAttributesTerm.Name:
-// 			if existing == nil {
-// 				m[ObjectAttributesTerm.Name] = []any{toNode}
-// 			} else {
-// 				m[ObjectAttributesTerm.Name] = append(m[ObjectAttributesTerm.Name].([]any), toNode)
-// 			}
+		type outgoing struct {
+			id   string
+			node map[string]any
+		}
 
-// 		case ArrayItemsTerm.Name:
-// 			m[ArrayItemsTerm.Name] = []any{toNode}
+		outgoingEdges := make(map[string][]outgoing)
 
-// 		default:
-// 			if existing == nil {
-// 				m[edge.GetLabel()] = []any{toNode}
-// 			} else {
-// 				m[edge.GetLabel()] = append(m[edge.GetLabel()].([]any), toNode)
-// 			}
-// 		}
-// 	}
-// 	return m, nil
-// }
+		for edges := node.GetEdges(lpg.OutgoingEdge); edges.Next(); {
+			edge := edges.Edge()
+			label := edge.GetLabel()
+			if label == ls.LayerRootTerm.Name ||
+				label == ls.ObjectAttributeListTerm.Name ||
+				label == ls.ObjectAttributesTerm.Name ||
+				label == ls.AllOfTerm.Name ||
+				label == ls.OneOfTerm.Name ||
+				label == ls.ArrayItemsTerm.Name {
+				childId, nd, err := marshalNode(edge.GetTo())
+				if err != nil {
+					return "", nil, err
+				}
+				if childId != "" && childId != label {
+					nd["@id"] = childId
+				}
+				outgoingEdges[label] = append(outgoingEdges[label], outgoing{
+					id:   childId,
+					node: nd,
+				})
+			}
+		}
+
+		if len(outgoingEdges) > 0 {
+			for label, edge := range outgoingEdges {
+				if label == ls.LayerRootTerm.Name ||
+					label == ls.ArrayItemsTerm.Name {
+					ldNode[label] = edge[0].node
+				} else if label == ls.AllOfTerm.Name ||
+					label == ls.OneOfTerm.Name ||
+					label == ls.ObjectAttributeListTerm.Name {
+					arr := make([]any, 0, len(edge))
+					for _, x := range edge {
+						arr = append(arr, x.node)
+					}
+					ldNode[label] = arr
+				} else {
+					m := make(map[string]any)
+					for _, v := range edge {
+						m[v.id] = v.node
+						delete(v.node, "@id")
+					}
+					ldNode[label] = m
+				}
+			}
+		}
+		return id, ldNode, nil
+	}
+	id, node, err := marshalNode(schRoot)
+	if err != nil {
+		return nil, err
+	}
+	node["@id"] = id
+	return node, nil
+}

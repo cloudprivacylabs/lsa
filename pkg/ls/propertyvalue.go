@@ -67,9 +67,6 @@ func (pv PropertyValue) MarshalJSON() ([]byte, error) {
 
 // Equal compares two property values, and returns true if they are equal
 func (pv PropertyValue) Equal(v PropertyValue) bool {
-	if pv.value == v.value {
-		return true
-	}
 	return reflect.DeepEqual(pv.value, v.value)
 }
 
